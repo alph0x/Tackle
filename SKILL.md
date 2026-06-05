@@ -1,6 +1,6 @@
 ---
 name: Tackle
-description: Use when starting a non-trivial, multi-session or multi-track initiative (Jira ticket, feature, refactor, investigation, bug with unknowns) that needs a durable action plan broken into self-contained points, before writing implementation code. Triggers include "plan de acción", "armá/armar un plan", "plan this out", "tackle this", "iniciativa". Also use when resuming such an initiative from an existing plan folder under docs/plans/.
+description: Use when starting a non-trivial, multi-session or multi-track initiative (Jira ticket, feature, refactor, investigation, bug with unknowns) that needs a durable action plan broken into self-contained points, before writing implementation code. Triggers include "plan de acción", "armá/armar un plan", "plan this out", "tackle this", "iniciativa". Also use when resuming such an initiative from an existing plan folder under docs/plans/, or when asked how an existing initiative is going ("cómo viene", "status", "seguimiento", progress check), which initiatives exist ("qué planes hay"), or what the next point to work on is ("qué sigue").
 ---
 
 # Tackle
@@ -17,11 +17,36 @@ Tackle turns an initiative into a **durable action plan**, broken into self-cont
 
 **Language:** all workspace artifacts are written in **English**, regardless of the conversation language.
 
-**Routing.** If `docs/plans/<initiative>/` already exists for this initiative → skip to Step 8 (Resume). Otherwise run Steps 1–7 to create it.
+**Routing — what the user says → what runs:**
 
-## Step 1 — Intake (ASK to contextualize)
+| The user says (any language) | Mode |
+|---|---|
+| "tackle this" / "plan de acción" / new initiative | **Create** → Steps 1–7 |
+| "resume / retomá `<initiative>`" — keep planning | **Resume** → Step 8 |
+| "how is `<initiative>` going?" / "status" / "seguimiento" | **Status** → Step 9 |
+| "what plans are there?" / "qué iniciativas hay" | **List** → Step 9 |
+| "give me the next point" / "qué sigue" | **Next** → Step 9 |
 
-Before planning anything, **ask the user — as one batched set of questions, not drip-fed — for the context Tackle needs**. Do not assume. Cover at least:
+If the initiative is ambiguous (several under `docs/plans/`), show the List and ask which.
+
+## Output contract (chat = signal; files = depth)
+
+Applies to **every** Tackle chat response, in every mode. The user must never have to dig through prose to learn whether action is needed:
+
+1. **Open with one status line**: `🟢 on track — nothing on you` · `🟡 needs your input` · `🔴 blocked`.
+2. **Close with the action footer** — the only two questions the user actually has:
+   ```
+   ⚠️ On you: <what only the user can decide/do, with answer options ready> — or "✅ nothing on you"
+   ▶ Continue: <ONE literal next thing to say — e.g. say "next" and I'll print P-04's prompt>
+   ```
+3. **Hard caps**: digest ≤ 12 lines; handoff ≤ one screen. Don't paste file contents into chat — point to them.
+4. **Group blockers by owner — you / other teams / me — in that order.** The user's first question is "is it on me?".
+5. **One recommended next action, singular.** Alternatives live in the files; offer them only if asked.
+6. **Progressive disclosure**: compact first, then offer depth ("want the full board / the point detail?") — never dump it unprompted.
+
+## Step 1 — Intake (infer first, then ASK to contextualize)
+
+**Infer before asking — turn the interrogation into a confirmation.** First detect what the environment already tells you: ticket ID from the branch name (`feature/MBTX-4488` → MBTX-4488), repo from the working directory, sibling plans under `docs/plans/`, ticket content via your issue-tracker integration if one is available. Present what you inferred as *"this is what I already know — confirm or correct"*, and ask — **one batched set of questions, not drip-fed** — only the real gaps. Never silently assume what you didn't verify. Cover at least:
 - **The explicit requirement** — the ask in the user's words; ticket ID / link if any.
 - **Documentation** — relevant docs, specs, design notes, API/vendor docs, links, files to read.
 - **Scope hints** — what's in, what's explicitly out, deadlines, target validation, related/sibling work.
@@ -57,6 +82,8 @@ When unsure between Lite and Full, start **Lite**; it upgrades by adding `README
 
 **Tie-breaker:** touches ≥2 modules OR changes the public API → **Full**. Confined to one file with no public surface change → **Lite**.
 
+Present the level as a one-tap choice with your recommendation marked and a one-line justification (use your environment's structured-ask facility if present; plain question otherwise). Same for the gitignore 3-way in Step 3.
+
 ## Step 3 — Location & gitignore
 
 Plans live under **`docs/plans/<initiative>/`** in the repo. Name `<initiative>` after the ticket (`MBTX-4488/`) or a slug (`error-handling/`); provisional slug if unassigned, rename later. Create `docs/plans/` if missing.
@@ -67,6 +94,8 @@ Then ASK the user how to treat plans in version control (3-way, never decide sil
 - **Ignore nothing** → commit everything (don't touch `.gitignore`).
 
 ## Step 4 — Scaffold the core (copy templates, fill placeholders)
+
+Steps 4–6 are minutes of silent file work — **keep visible progress** (your environment's task/todo tracker if present, else one-line updates in chat: "core scaffolded → grounding → decomposing"). Don't go dark on the user.
 
 Copy from `references/` and fill `{{PLACEHOLDERS}}`. NEVER leave empty slots you won't fill — delete unused sections.
 
@@ -99,7 +128,11 @@ Investigate the actual repo and fill `plan.md` / `reference.md` from it, not fro
 
 ## Step 6 — Decompose into points (the heart)
 
-Break the initiative into **independent points** (work units) with a dependency graph in `plan.md`. IDs are zero-padded: `P-01`, `P-02`… For each point write `points/P-0N-<slug>.md` from `references/point.tmpl.md` so a cold agent can resolve it **from that file alone**. Each point MUST include: Goal · grounded Context (`file:line`) · Non-goals · **Recommended approach** · **Alternatives / fallbacks** · **Recommended starting prompt** (ready to paste in a fresh session, on any model) · Acceptance · Verification · Dependencies · linked open questions · a **Definition of Ready** self-check. A point links to deeper artifacts instead of duplicating them. Per-point execution status lives only in `plan.md` §5.
+Break the initiative into **independent points** (work units) with a dependency graph in `plan.md`. IDs are zero-padded: `P-01`, `P-02`…
+
+**Checkpoint — validate before writing briefings:** present the point table + dependency graph **in chat** and get the user's OK before writing the `points/*.md` files. Redoing a table is cheap; redoing N briefings is not. Adjust the cut on feedback, then write.
+
+For each point write `points/P-0N-<slug>.md` from `references/point.tmpl.md` so a cold agent can resolve it **from that file alone**. Each point MUST include: Goal · grounded Context (`file:line`) · Non-goals · **Recommended approach** · **Alternatives / fallbacks** · **Recommended starting prompt** (ready to paste in a fresh session, on any model) · Acceptance · Verification · Dependencies · linked open questions · a **Definition of Ready** self-check. A point links to deeper artifacts instead of duplicating them. Per-point execution status lives only in `plan.md` §5.
 
 **Point size rule**: a point should be completable in one focused session (1–3 hours of work).
 If it's bigger, split. If it's smaller than 30 min, merge with a sibling.
@@ -117,6 +150,16 @@ Recommended installs (mention only if absent; all follow the portable Agent Skil
 - karpathy skills — https://github.com/multica-ai/andrej-karpathy-skills
 - solid (SOLID + clean architecture + TDD) — https://github.com/ramziddin/solid-skills · `npx skills add ramziddin/solid-skills`
 
+## Step 7.5 — Handoff (present the plan to the user)
+
+Never end a planning session by silently writing files. Close **in chat** with:
+- Gate level + workspace path.
+- The point board in the **digest format** (Step 9) with the suggested attack order (from the dependency graph; flag what can run in parallel).
+- What's blocked and on whom — especially anything that needs the **user** (open `Q-xx`, external packets to send).
+- The recommended **first point** and its ready-to-paste starting prompt.
+
+The user should know what to do next without opening a single file.
+
 ## Conventions (baked into the templates)
 
 1. **Log append-only**: one entry per session (`## YYYY-MM-DD · session N · <title>` → Did / Decisions / Blockers / Next). Never rewrite old entries. No secrets.
@@ -128,16 +171,46 @@ Recommended installs (mention only if absent; all follow the portable Agent Skil
 7. **Ground in `file:line`** from the codebase. No claim about code without a verified reference.
 8. **Points are self-contained.** A point links to depth, but carries enough to be solved standalone on any model.
 9. **No new files without reason.** New file → update README + AGENTS maps.
+10. **Fixed status vocabulary** (in `plan.md` §5 and external packets): 🔴 not started · 🟡 in progress · ⏸ blocked · 🟢 done. Don't invent variants — digests depend on it.
+11. **Status flows back via the executor contract** in the workspace `AGENTS.md`: whoever works a point (any agent, any session) updates `plan.md` §5 + appends a log entry. Tackle doesn't execute, but it plants the contract so tracking survives execution.
 
 ## Step 8 — Resume (re-invocation)
 
 Re-entering an existing plan under `docs/plans/<initiative>/`: read `AGENTS.md` → the **State snapshot** in the last `log.md` entry → `decisions.md` (what's settled) → `questions.md` (blockers) → the relevant `points/P-0N.md`.
+
+**Open with a digest, not silence:** before continuing, show the user where things stand in the **digest format** (Step 9), and re-ask any user-owned open `Q-xx` directly in chat. Then refine.
 
 **Re-validate before continuing** the active point: re-check ONLY the active point's grounded
 `file:line` claims against the *current* code — the repo may have drifted since planning.
 If it drifted, update that point's Context and note the drift in a new log entry. Don't
 re-verify inactive points. Append a new log entry as you work; never rewrite old ones.
 Tackle keeps planning/refining points — it never starts implementing.
+
+## Step 9 — Follow-up modes (status · list · next)
+
+**Digest format (fixed — same shape in handoff, resume and status, so the user learns to scan it; status line + action footer per the Output contract):**
+
+```
+🟡 needs your input — ttp-error-handling · 2/4 done ▓▓░░
+🟢 P-01 read errors domain      🟡 P-02 gateway 400 (in progress)
+⏸ P-03 error docs — blocked on Q-02 (gateway team, follow-up overdue 3d)
+🔴 P-04 extend handler (unblocked, ready)
+
+⚠️ On you: Q-02 — error-code strategy: (a) map per code · (b) passthrough. Reply "a" or "b".
+▶ Continue: say "next" and I'll print P-04's prompt.
+```
+
+**Status** — "how is it going?": read-only digest from `plan.md` §5 + last log snapshot. Also:
+- External packets 🟡 past their `Follow-up by` date → flag explicitly for chasing.
+- **Questions owned by the user → re-ask them directly in chat**, with the options already drafted in `questions.md`/the packet. Don't just point at files.
+- Drift: spot-check the active point's `file:line` claims against the current repo; warn if it moved.
+- Reconcile if stale: execution happened but §5 wasn't updated (code merged, board still 🔴) → fix §5 + append a log entry noting it. That's the only write a status check makes.
+
+**List** — "what plans are there?": scan `docs/plans/*/`; one line each: name · gate level · X/Y done · blocked on · last activity (newest log entry date). Call out zombies (stale, nothing blocking them).
+
+**Next** — "what's next?": pick the next unblocked point from the dependency graph and print its **ready-to-paste starting prompt** (from `points/P-0N-*.md`) right in the chat, with its acceptance one-liner. The user should never have to open a file to start working.
+
+**Closing the initiative:** when every point is 🟢 — append a final log entry (outcome + learnings worth keeping), set the README status line to `DONE`, and ask the user whether to keep, archive, or delete the folder (consistent with the Step 3 gitignore choice).
 
 ## Definition of Done (planning complete)
 
@@ -148,6 +221,7 @@ Tackle is done when **the initiative is ready to be tackled**, not when code is 
 - [ ] Every point has a self-contained briefing that passes its **Definition of Ready**.
 - [ ] Blocking questions are either resolved (→ `decisions.md`) or explicitly flagged in `questions.md` with owners.
 - [ ] `log.md` has this session's entry with a current State snapshot; `README.md` / `AGENTS.md` maps are accurate.
+- [ ] The user saw the plan: decomposition validated in chat (Step 6 checkpoint) and handoff summary presented (Step 7.5).
 - [ ] No implementation code written — Tackle planned, it did not execute.
 
 ## Common mistakes
@@ -160,3 +234,9 @@ Tackle is done when **the initiative is ready to be tackled**, not when code is 
 - Defaulting to **Full** for a small change → ceremony. Match the gate to the real shape.
 - Deciding the gitignore treatment silently → always ask the 3-way (Step 3).
 - Resuming without re-validating grounded claims → stale plan. Re-check `file:line` first.
+- Writing all the point briefings before the user validated the decomposition → rework. Checkpoint first (Step 6).
+- Ending with files written but nothing presented in chat → the user shouldn't need to open files to know what's next (Step 7.5 / Step 8 digest).
+- Treating a status ask as a resume → don't re-plan; give the digest (Step 9).
+- Interrogating the user about things the environment already knows (branch, repo, ticket, siblings) → infer first, confirm after (Step 1).
+- Burying user-owned questions in `questions.md` → re-ask them in chat on every resume/status (Steps 8–9).
+- Walls of text in chat — restating file contents, multiple suggested actions, no clear ask → Output contract: status line, ≤12-line digest, one action footer.

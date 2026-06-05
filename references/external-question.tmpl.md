@@ -9,6 +9,8 @@
 | To | {{team / person}} |
 | Channel | {{Slack #channel / email / ticket}} |
 | Status | {{🔴 to send / 🟡 sent, waiting / 🟢 answered}} |
+| Sent on | {{YYYY-MM-DD, or "—" if not sent yet}} |
+| Follow-up by | {{YYYY-MM-DD — date to chase if still unanswered}} |
 | Blocks | {{which point(s) this blocks, or "non-blocking"}} |
 
 ## Context (just enough)

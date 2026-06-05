@@ -40,6 +40,18 @@ docs/plans/{{slug}}/
 8. **Verification**: per-module tests + local mock when applicable. No-regression mandatory
    on shared code.
 
+## Executor contract (when you work a point)
+
+Tackle planned this workspace; execution happens here, in sessions like yours. To keep
+tracking alive, when you pick up, finish, pause, or abandon a point you MUST:
+
+1. Set its status in `plan.md` §5 — fixed vocabulary: 🔴 not started · 🟡 in progress · ⏸ blocked · 🟢 done.
+2. Append a `log.md` entry with an updated State snapshot. Never rewrite old entries.
+3. Record questions answered along the way as `D-xx` in `decisions.md`; mark the `Q-xx` resolved.
+4. If the code drifted from the point's `file:line` claims, update that point's Context.
+
+A merged PR with a stale status board is a broken handoff — the board is part of the work.
+
 ## Status / next
 
 See the last entry in `log.md`.

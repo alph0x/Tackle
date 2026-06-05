@@ -19,7 +19,8 @@
 
 ## 5. Point decomposition
 <!-- One row per point. Each point has a self-contained briefing in points/<id>-<slug>.md.
-     A point may map 1:1 to a phase. Delete the Spec/Plan cols if not using superpowers depth. -->
+     A point may map 1:1 to a phase. Delete the Spec/Plan cols if not using superpowers depth.
+     Status vocabulary (fixed): 🔴 not started · 🟡 in progress · ⏸ blocked (say on what) · 🟢 done -->
 
 | Point | What | Briefing | Depth (optional) | Depends on | Status |
 |---|---|---|---|---|---|
