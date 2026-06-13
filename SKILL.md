@@ -44,6 +44,10 @@ Applies to **every** Tackle chat response, in every mode. The user must never ha
 5. **One recommended next action, singular.** Alternatives live in the files; offer them only if asked.
 6. **Progressive disclosure**: compact first, then offer depth ("want the full board / the point detail?") — never dump it unprompted.
 
+## Decision ownership — the user decides every doubt (no exceptions)
+
+**Tackle assumes nothing.** Every doubt that surfaces while planning — scope, architecture, naming, a tradeoff, an ambiguous requirement, a gap in the codebase — goes to the user as a decision. **Recommend** (mark your pick, give options + a one-line why), but the user decides; this is the one rule with no exception. *Infer* (from branch/repo/code) to turn a question into a fast confirmation — that's not assuming, it's grounding, and you still confirm. The only time you proceed without a live answer is when the user **explicitly delegated** it ("just figure it out") or is unavailable; even then you don't bake a silent assumption — you record it as a **user-owned open `Q-xx`**, surface it, and let them overturn it later. A planning choice the user never saw is a bug.
+
 ## Step 1 — Intake (infer first, then ASK to contextualize)
 
 **Infer before asking — turn the interrogation into a confirmation.** First detect what the environment already tells you: ticket ID from the branch name (`feature/MBTX-4488` → MBTX-4488), repo from the working directory, sibling plans under `docs/plans/`, ticket content via your issue-tracker integration if one is available. Present what you inferred as *"this is what I already know — confirm or correct"*, and ask — **one batched set of questions, not drip-fed** — only the real gaps. Never silently assume what you didn't verify. Cover at least:
@@ -58,13 +62,13 @@ Read what they point you to. Record what was gathered in the first `log.md` entr
 If the intake surfaces questions that need another team, note them as draft Qs and create
 `external-questions/` packets as soon as they become concrete.
 
-**Thin / deferred answers** ("just figure it out", partial replies): never block on intake. Proceed with what you have, recover the rest from the codebase, and record every gap as a `Q-xx` in `questions.md` — mark the ones you proceeded on as **assumptions**. Surface the gaps; don't silently invent answers.
+**Doubts during intake → ask, don't assume** (per *Decision ownership*). Recover from the codebase what the codebase can answer; for anything it can't, raise it to the user with recommended options. The default is to ask, not to proceed.
 
-**If the user says "just figure it out" or gives thin answers**, still record three things:
-  1. What you assumed.
+**Only if the user explicitly delegated** ("just figure it out") or is unavailable do you proceed provisionally — and then record, per gap, a **user-owned `Q-xx`** in `questions.md`:
+  1. What you provisionally chose (and the option you'd recommend they confirm).
   2. What you couldn't verify.
-  3. The risk of each assumption.
-Each becomes a `Q-xx` in `questions.md`; mark them as **assumptions** so they're visible.
+  3. The risk if the choice is wrong.
+Mark these **provisional — awaiting user confirmation** so they're visible and overturnable; never let one harden into a silent assumption.
 
 ## Step 2 — Size the initiative (gate)
 
@@ -76,11 +80,9 @@ Do NOT scaffold a full workspace for everything. Pick a level:
 | **Lite** | Single-session, bounded scope, a few unknowns | add one validation to an existing endpoint, plumb a field already wired | `plan.md` + `log.md` + `todo.md` only (`references/lite-plan.tmpl.md`) |
 | **Full** | Multi-session OR multi-track OR multi-team OR high uncertainty OR handoff expected | introduce a new subsystem, multi-module refactor, feature spanning sessions | Full core + `points/` + appendices |
 
-When unsure between Lite and Full, start **Lite**; it upgrades by adding `README.md` / `AGENTS.md` / `reference.md` / `points/`.
+**Decide by the tie-breaker, not by vibe:** touches ≥2 modules OR changes the public API OR spans sessions/teams OR a handoff is expected → **Full**; confined to one file with no public surface change → **Lite**. Only when the tie-breaker genuinely doesn't settle it, start **Lite** (it upgrades cleanly by adding `README.md` / `AGENTS.md` / `reference.md` / `points/`).
 
 **Bigger workspace ≠ better plan.** Over-sizing burns effort and buries the work in ceremony; under-sizing loses context across sessions. Match the level to the real shape — don't default to Full because it feels thorough. If **None**: stop here.
-
-**Tie-breaker:** touches ≥2 modules OR changes the public API → **Full**. Confined to one file with no public surface change → **Lite**.
 
 Present the level as a one-tap choice with your recommendation marked and a one-line justification (use your environment's structured-ask facility if present; plain question otherwise). Same for the gitignore 3-way in Step 3.
 
@@ -110,21 +112,40 @@ Copy from `references/` and fill `{{PLACEHOLDERS}}`. NEVER leave empty slots you
 - `reference.md` — current code state with `file:line` (shared, cross-point map) → `references/reference.tmpl.md`
 - `points/` — one self-contained `.md` per point (Full only) → `references/point.tmpl.md` (filled example: `references/EXAMPLE-point.md`)
 
-**Optional:** `external-questions/` — packets to send to other teams → `references/external-question.tmpl.md` (create only when a question goes external).
+**Optional:** `external-questions/` — packets to send to other teams → `references/external-question.tmpl.md` (create only when a question goes external). · `reference-docs/` — read-only snapshots of external material (sibling-repo source, vendor docs, diagrams, adopted rules) so the workspace is self-contained → `references/reference-docs-README.tmpl.md` (create when the plan depends on anything outside this repo; see Step 5).
+
+**Depth artifacts (Full only — create each ONLY when its trigger fires; never by default, they're ceremony otherwise):**
+- `foundations.md` — grounding table (decision → principle → source) → `references/foundations.tmpl.md`. **When:** the initiative introduces non-trivial architecture (new subsystem, layering, a set of patterns).
+- `design-contract.md` (a.k.a. `api-spec.md`) — the authoritative public surface points implement → `references/design-contract.tmpl.md`. **When:** several points must agree on one shared surface (API, wire format, state machine, error taxonomy).
+- `execution-strategy.md` — waves + inter-wave quality gate + deferral → `references/execution-strategy.tmpl.md`. **When:** execution will be multi-agent/parallel or phased. (Still planning, not executing — it plans the attack.)
 
 If using superpowers for depth, also create `specs/` and `plans/` as needed (not scaffolded by
 default — create them when you start using `brainstorming` / `writing-plans`).
 
-**Appendices (free, descriptive names — NOT numbered):** add only when needed (`error-catalog.md`, `design-strategy.md`). When you add one, update the `README.md` and `AGENTS.md` file maps.
+**Appendices (free, descriptive names):** add only when needed (`error-catalog.md`, `design-strategy.md`). When you add one, update the `README.md` and `AGENTS.md` file maps.
+
+**Reference organization for a large, multi-domain initiative:** when one `reference.md` would be a wall, split it into a **numbered, feature-sliced set** with an ordered reading path — architecture/foundation first, then one self-contained doc per domain (e.g. `00-architecture.md`, `01-foundation.md`, `02-<domain>.md`, …`NN-<domain>.md`). The numbering gives a cold agent a deterministic onboarding order; the slices map cleanly onto point cuts (a domain doc ↔ the point[s] that touch it). Use this only when the domain is genuinely broad — for a focused change, one `reference.md` is better.
 
 ## Step 5 — Briefing (ground it in the codebase)
 
 Investigate the actual repo and fill `plan.md` / `reference.md` from it, not from assumptions:
+- **Lead with the de-risking finding.** Actively hunt for the ONE verified fact that reshapes the risk profile — and put it first in `plan.md` §4. Usually it makes the work *safer/smaller* ("the old path is dormant → adoption, not hot replacement → low regression risk by construction"), but it may instead *raise* the risk ("this is the hot path for 30 targets → every change needs a parity gate") — surface it either way. Finding it is the highest-leverage move in planning; don't bury it under a generic state dump.
+- **Anchor the approach to precedent.** Find the existing **house pattern** in this repo (the convention sibling modules already follow) and/or a **proven reference architecture** (in-house module, external project) this design should mirror — cite it `file:line`. Default to mirroring precedent over inventing; deviating from it is a decision (`D-xx`), not a default.
 - **Objective + expected result**: observable outcome.
-- **Non-goals**: explicit out-of-scope — prevents scope creep.
+- **Non-goals**: explicit out-of-scope — prevents scope creep. Name the specific anti-patterns (from this codebase) you're deliberately NOT carrying over.
 - **Current state**: every claim about code cites `file:line`, verified with your code-search / find-references tools — not memory.
-- **Domain invariants / constraints**: consult the authoritative source for the domain (spec, domain MCP, canonical constants) if your environment has one; else use the repo's own constants and annotate.
+- **Domain invariants / constraints**: consult the authoritative source for the domain (spec, domain MCP, canonical constants) if your environment has one; else use the repo's own constants and annotate. Phrase invariants so they're **structural and verifiable** (a check, not prose) — they become per-point acceptance.
+- **Rollout / reversibility (if it touches a production path)**: plan how it ships safely as a first-class concern, not an afterthought — enablement flag default-off, canary target, coexistence with the old path, and the **no-op/parity check** that proves flag-off changes nothing. Record it in `plan.md` §7; make the parity check **universal acceptance** (§6.1) when the old/new paths coexist for the whole initiative, or point-level when one point owns the cutover.
 - **Boundary**: `reference.md` holds facts shared by ≥2 points. Most Context in a point will simply link to `reference.md`; a point only needs unique Context when it touches code no other point touches.
+- **Snapshot external dependencies into `reference-docs/` (read-only).** When the plan leans on material outside this repo — a sibling repo's source, vendor/API docs, diagrams, a prior initiative's rules or resolved external Q&A — copy it into `reference-docs/` so the workspace survives the source moving or going unavailable (Tackle's durability promise depends on this). Add a `reference-docs/README.md` (`references/reference-docs-README.tmpl.md`) with **provenance** (source · branch · date), a **never-edit/re-snapshot** rule, and an **index** (folder → contents → which point/spec uses it). `reference.md` still lists the *live* paths — prefer them when both exist; the snapshot is the fallback.
+
+## Step 5.5 — Architecture (recommend; the user decides) — gate-appropriate
+
+**The backbone is always Clean Code + SOLID and the best referents of software design** — grounded in `foundations.md`, never "it felt cleaner". The *shape* on top of that is a choice scaled to the gate:
+- **None / Lite** → no new architecture: follow the existing structure of the file/module you're touching. Don't impose a paradigm on a bounded change.
+- **Full** → **recommend** one architecture matched to the initiative (e.g. hexagonal/ports-&-adapters, layered/clean, MVVM, event-driven…), justified from what Step 5 found — and **present it as the user's choice** (one-tap structured ask: the recommendation marked, 1–2 line rationale, the realistic alternatives). The user decides; Tackle proposes. **Default the recommendation to the house pattern** you anchored to in Step 5 — deviating from precedent must earn it.
+
+Record the chosen architecture as a `D-xx` (with its why) and open `foundations.md` with it. The point decomposition (Step 6) then follows the architecture's seams — the layers/ports/boundaries become natural point cuts.
 
 ## Step 6 — Decompose into points (the heart)
 
@@ -132,10 +153,19 @@ Break the initiative into **independent points** (work units) with a dependency 
 
 **Checkpoint — validate before writing briefings:** present the point table + dependency graph **in chat** and get the user's OK before writing the `points/*.md` files. Redoing a table is cheap; redoing N briefings is not. Adjust the cut on feedback, then write.
 
-For each point write `points/P-0N-<slug>.md` from `references/point.tmpl.md` so a cold agent can resolve it **from that file alone**. Each point MUST include: Goal · grounded Context (`file:line`) · Non-goals · **Recommended approach** · **Alternatives / fallbacks** · **Recommended starting prompt** (ready to paste in a fresh session, on any model) · Acceptance · Verification · Dependencies · linked open questions · a **Definition of Ready** self-check. A point links to deeper artifacts instead of duplicating them. Per-point execution status lives only in `plan.md` §5.
+For each point write `points/P-0N-<slug>.md` from `references/point.tmpl.md` so a cold agent can resolve it **from that file alone**. Each point MUST include: Goal (single responsibility) · **Consumes / Produces / Runs-alongside / Touches** (write scope) · grounded Context (`file:line`) · Non-goals · **Recommended approach** · **Alternatives / fallbacks** · **Recommended starting prompt** · Acceptance · **Done signal** (the loop's runnable exit check) · **recovery + iteration budget** · Dependencies · linked open questions · a **Definition of Ready** self-check. A point links to deeper artifacts instead of duplicating them. Per-point execution status lives only in `plan.md` §5.
 
-**Point size rule**: a point should be completable in one focused session (1–3 hours of work).
-If it's bigger, split. If it's smaller than 30 min, merge with a sibling.
+**Engineer each point as a loop (loop engineering).** Plan so execution can be a tight autonomous loop: *do → run the done-signal → green = next · red = recover → escalate if stuck*. So every point carries an explicit **done-signal command** (a pass/fail exit, no human judgment), a **recovery path + iteration budget** (self-correct a bounded number of times, then STOP and ask — Decision ownership), and explicit **Consumes/Produces** so points chain as a pipeline and independent ones run as concurrent loops. A point you can't reduce to a runnable done-signal isn't ready — sharpen it until you can.
+
+**Point size — max granularity, one verifiable done-signal.** A point is the *smallest* change that has ONE responsibility AND ends in its own machine-checkable done-signal. Default to splitting: two small loop-runnable points beat one that bundles two concerns (smaller loops = smaller blast radius, more parallelism, cleaner recovery). **Common split that's easy to miss: a pure/port-free core vs the effectful shell around it** (functional core / imperative shell) — the pure part has its own done-signal with zero test doubles and usually no dependencies, so it's its own (often earlier, more-parallel) point. Floor: if a candidate has no done-signal you can run *without* finishing another point, merge them. Rough clock 30 min–3 h, but the responsibility + done-signal test wins over the clock.
+
+**Decompose for parallelism — cut points so they run as concurrent loops across subagents.** The plan is a *parallelization plan*: prefer many independent points over one long chain. Minimize dependency depth; isolate a shared surface into ONE early point (e.g. the design contract) so the rest fan out against it without colliding. Each point's **Consumes/Produces** makes the graph a real pipeline; mark which run in parallel. A point that forces everything else to wait is a smell — split the bottleneck.
+
+**Group into phases/waves when the work is staged or wide.** *Tie-breaker (like the Step-2 gate):* ≥2 points runnable in parallel, OR any quality boundary / phase line, OR multi-agent execution → use waves with a quality bar between them. Otherwise a flat ordered list is fine — don't manufacture waves. A point gated on an open `Q-xx` is **Deferred** — list it as such with the blocking question, NOT as an active point; don't plan work behind an unanswered external dependency. When execution will be multi-agent or phased, capture the waves in `execution-strategy.md` (Step 4 depth artifact).
+
+**Fan-out across N near-identical targets** (e.g. migrate 30 white-label apps): model it as ONE parameterized point with the per-target checklist + a worked example, not N copies and not one vague point — and usually Deferred behind the "who-owns-the-cutover/cadence" question. Note the cardinality explicitly. Its *acceptance* is "the worked example passes + the checklist covers the variance axes" (verifiable now); the "all N migrated" rollup is tracked on the board, not as the point's code-acceptance.
+
+**Define the universal per-point acceptance once** (`plan.md` §6.1): the bar EVERY point must clear. Beyond the generics (tests, grounding, contract conformance, no-regression, board hygiene), **promote the load-bearing structural invariants from `design-contract.md` / Step 5 into §6.1** — the domain-specific gates that actually catch drift (e.g. "core compiles with zero deps", "concurrency-clean under the language's strict mode", "self-documenting: no explanatory inline comments"). Each point *references* §6.1 and adds only point-specific criteria. Make those **exhaustive and mechanically verifiable** — where a finite set exists (error cases, states, endpoints), cover EVERY case (table-driven); prefer criteria a grep or a reviewer can check over aspirational prose. Never restate the §6.1 bar N times (that's drift waiting to happen).
 
 ## Step 7 — Compose with available skills (optional, planning aids only)
 
@@ -156,7 +186,13 @@ Never end a planning session by silently writing files. Close **in chat** with:
 - Gate level + workspace path.
 - The point board in the **digest format** (Step 9) with the suggested attack order (from the dependency graph; flag what can run in parallel).
 - What's blocked and on whom — especially anything that needs the **user** (open `Q-xx`, external packets to send).
-- The recommended **first point** and its ready-to-paste starting prompt.
+- The recommended **first point**, preceded by its **pre-attack summary** (see below), then its ready-to-paste starting prompt.
+
+**Pre-attack summary (whenever a point is about to be tackled — here and in Step 9 Next).** Before handing over a point, give the user the context to know what they're greenlighting, in ≤4 lines drawn from the briefing:
+- **Problem** — the specific thing this point fixes/builds and why (grounded, not generic).
+- **Solution** — the recommended approach in a line or two.
+- **What will change** — the concrete files/surface touched + how it's verified.
+Then the starting prompt. The user should grasp *what is about to happen* without opening the point file.
 
 The user should know what to do next without opening a single file.
 
@@ -173,6 +209,12 @@ The user should know what to do next without opening a single file.
 9. **No new files without reason.** New file → update README + AGENTS maps.
 10. **Fixed status vocabulary** (in `plan.md` §5 and external packets): 🔴 not started · 🟡 in progress · ⏸ blocked · 🟢 done. Don't invent variants — digests depend on it.
 11. **Status flows back via the executor contract** in the workspace `AGENTS.md`: whoever works a point (any agent, any session) updates `plan.md` §5 + appends a log entry. Tackle doesn't execute, but it plants the contract so tracking survives execution.
+12. **Single-source the per-point acceptance** in `plan.md` §6.1; points reference it, never restate it (the bar itself: Step 6).
+13. **Contract supersede-first** (when `design-contract.md` exists): points implement the spec as written; a genuine deviation supersedes the spec (edit it + record `D-xx`) BEFORE the divergent code — so points never silently drift apart.
+14. **Grounding before merge** (when `foundations.md` exists): a new pattern/abstraction needs its decision → principle → source row; "it felt cleaner" is not grounding. Disagreements argue against the cited principle, not taste.
+15. **Decisions carry their why; questions carry what they determine.** A `D-xx` records the rationale + tradeoff (`decisions.md` template). A `Q-xx` records what its answer unblocks + what you already investigated — don't ask others what the codebase can tell you.
+
+*(Process rules — best-practices/self-documenting backbone, parallelism + the quality-guardian loop, external-dep snapshots — live in their Steps: 5.5, 6, 5. Not repeated here.)*
 
 ## Step 8 — Resume (re-invocation)
 
@@ -208,7 +250,7 @@ Tackle keeps planning/refining points — it never starts implementing.
 
 **List** — "what plans are there?": scan `docs/plans/*/`; one line each: name · gate level · X/Y done · blocked on · last activity (newest log entry date). Call out zombies (stale, nothing blocking them).
 
-**Next** — "what's next?": pick the next unblocked point from the dependency graph and print its **ready-to-paste starting prompt** (from `points/P-0N-*.md`) right in the chat, with its acceptance one-liner. The user should never have to open a file to start working.
+**Next** — "what's next?": pick the next unblocked point from the dependency graph and present it as a **pre-attack summary** (Step 7.5 — Problem · Solution · What will change, ≤4 lines) so the user has the context for what's about to happen, THEN print its **ready-to-paste starting prompt** (from `points/P-0N-*.md`) with its acceptance one-liner. The user should never have to open a file to start working — and should know *what* they're greenlighting before they do.
 
 **Closing the initiative:** when every point is 🟢 — append a final log entry (outcome + learnings worth keeping), set the README status line to `DONE`, and ask the user whether to keep, archive, or delete the folder (consistent with the Step 3 gitignore choice).
 
@@ -218,17 +260,27 @@ Tackle is done when **the initiative is ready to be tackled**, not when code is 
 - [ ] Gate level chosen and justified (Step 2).
 - [ ] Location set under `docs/plans/<initiative>/`; gitignore 3-way answered (Step 3).
 - [ ] `plan.md`: objective, non-goals, current state (grounded), point decomposition + dependency graph complete.
+- [ ] `plan.md` §4 **leads with the de-risking finding** and cites the **precedent** the approach mirrors.
+- [ ] Universal per-point acceptance defined once in `plan.md` §6.1; points reference it.
+- [ ] If production-facing: rollout/reversibility (flag, canary, no-op check) is planned (§7 + the point).
+- [ ] Full-gate depth artifacts created **only where their trigger fired** (`foundations.md` / `design-contract.md` / `execution-strategy.md`) — not by default.
+- [ ] Architecture chosen by the user from a gate-appropriate recommendation (Step 5.5), recorded as a `D-xx`; Full plans open `foundations.md` with the Clean Code + SOLID backbone.
+- [ ] Decomposition cuts for parallelism; `execution-strategy.md` names the waves + the per-point/per-class **code-quality guardian** loop (when multi-agent).
+- [ ] Every point is **loop-ready**: max-granular (one responsibility), a runnable **done-signal** + recovery + iteration budget, and Consumes/Produces/Touches wired.
+- [ ] External dependencies snapshotted read-only into `reference-docs/` (provenance + index) when the plan leans on out-of-repo material — workspace resolves every point even if the source is gone.
+- [ ] Point-specific acceptance is exhaustive over its case set and verifiable by test/grep/review (not aspirational prose).
 - [ ] Every point has a self-contained briefing that passes its **Definition of Ready**.
 - [ ] Blocking questions are either resolved (→ `decisions.md`) or explicitly flagged in `questions.md` with owners.
 - [ ] `log.md` has this session's entry with a current State snapshot; `README.md` / `AGENTS.md` maps are accurate.
 - [ ] The user saw the plan: decomposition validated in chat (Step 6 checkpoint) and handoff summary presented (Step 7.5).
+- [ ] Every doubt was surfaced to the user as a decision; no silent assumptions (provisional `Q-xx` only where the user delegated).
 - [ ] No implementation code written — Tackle planned, it did not execute.
 
 ## Common mistakes
 
 - Treating Tackle as an executor → it only plans. Stop at "ready to tackle".
 - Assuming Claude-only tools/skills → name capabilities, use what the environment has, do the rest by hand.
-- Planning without intake, or blocking on thin intake → ask batched (Step 1); on gaps, proceed + record assumptions as `Q-xx`.
+- Planning without intake → ask batched (Step 1). On a doubt → **ask, don't assume**; only proceed if the user delegated, as a user-owned ⚠️ provisional `Q-xx` (Decision ownership).
 - A point that needs the rest of the workspace to be understood → not self-contained. Fix it.
 - Duplicating per-point status across plan/point/todo, or the same `file:line` in reference + point → drift.
 - Defaulting to **Full** for a small change → ceremony. Match the gate to the real shape.
@@ -240,3 +292,16 @@ Tackle is done when **the initiative is ready to be tackled**, not when code is 
 - Interrogating the user about things the environment already knows (branch, repo, ticket, siblings) → infer first, confirm after (Step 1).
 - Burying user-owned questions in `questions.md` → re-ask them in chat on every resume/status (Steps 8–9).
 - Walls of text in chat — restating file contents, multiple suggested actions, no clear ask → Output contract: status line, ≤12-line digest, one action footer.
+- Burying the de-risking finding under a generic state dump, or inventing an approach when the repo already has a house pattern → lead §4 with the finding; mirror precedent (Step 5).
+- Restating the acceptance bar in every point → define it once in §6.1; points reference it (Step 6).
+- Creating `foundations.md` / `design-contract.md` / `execution-strategy.md` for a small change → ceremony. Create each only when its trigger fires (Step 4).
+- A flat point list when the work is staged, or planning a point behind an unanswered question → group into waves; mark question-gated points **Deferred** (Step 6).
+- Treating rollout as an afterthought on production-facing work → plan flag/canary/no-op as first-class (Step 5, §7).
+- Imposing a heavy architecture on a Lite change, or picking the architecture *for* the user on a Full one → gate-appropriate; recommend, the user decides (Step 5.5).
+- Scattering explanatory inline comments instead of self-documenting code → comments only when strictly necessary; doc-comments on public surface, the *why* in commits/docs (Step 5.5 / §6.1).
+- A long dependency chain when points could fan out, or no quality-guardian loop in a multi-agent plan → decompose for parallelism + name the per-point/per-class reviewer loop (Step 6, `execution-strategy.md`).
+- A point whose "done" is a judgment call, not a runnable check → not loop-ready; give it a done-signal command + recovery + iteration budget (Step 6).
+- Bundling two concerns in one point ("and") → split to max granularity; smaller loops = smaller blast radius + more parallelism (Step 6).
+- Handing the user a point with just a prompt → precede it with the Problem · Solution · What-will-change summary so they know what they're greenlighting (Step 7.5 / Step 9 Next).
+- Depending on a sibling repo / external docs but snapshotting nothing → the workspace breaks when the source moves; copy it read-only into `reference-docs/` with provenance (Step 5).
+- Aspirational point acceptance ("handles errors well") → make it exhaustive over its case set (cover EVERY case, table-driven) and grep/reviewer-verifiable (Step 6).

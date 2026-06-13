@@ -21,6 +21,11 @@ docs/plans/{{slug}}/
 ├── points/        ← one self-contained .md per point (goal, approach, prompt, alternatives)
 └── AGENTS.md      ← this file
 ```
+<!-- Depth artifacts (list each one you actually created; delete the lines you didn't):
+├── foundations.md        ← grounding: decision → principle → source (if new architecture)
+├── design-contract.md    ← authoritative API/state/error surface; points implement it (if a shared surface)
+├── execution-strategy.md ← waves + quality gate + deferral (if multi-agent / phased execution)
+├── reference-docs/       ← READ-ONLY snapshots of external material + provenance (if the plan depends on anything outside this repo) -->
 <!-- Reuse (don't duplicate) shared docs from the root if any. List appendices here. -->
 
 ## Rules
@@ -38,7 +43,17 @@ docs/plans/{{slug}}/
    environment has one; otherwise use the repo's own canonical constants and annotate it.
 7. **Don't touch out-of-scope** (see non-goals in `plan.md`).
 8. **Verification**: per-module tests + local mock when applicable. No-regression mandatory
-   on shared code.
+   on shared code. Every point also clears the **universal acceptance** in `plan.md` §6.1.
+9. **Contract supersede-first** (if `design-contract.md` exists): implement it as written; a
+   genuine deviation supersedes the spec (edit it + add a `D-xx`) BEFORE the divergent code.
+10. **Grounding** (if `foundations.md` exists): a new pattern/abstraction does not merge
+    without its decision → principle → source row; "it felt cleaner" is not a justification.
+11. **Best practices are the backbone**: Clean Code + SOLID. **Self-documenting code** — no
+    explanatory inline comments; doc-comments on the public surface only, the *why* in commit
+    bodies / these docs. An internal comment is a review finding whose fix is a refactor.
+12. **Quality loop** (multi-agent execution): a code-quality guardian runs per point/class
+    (smells, redundancy, SOLID, naming) and loops with the implementer until clean before the
+    unit is accepted — see `execution-strategy.md`.
 
 ## Executor contract (when you work a point)
 
