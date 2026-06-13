@@ -1,6 +1,6 @@
 ---
 name: Tackle
-description: Use when starting a non-trivial, multi-session or multi-track initiative (Jira ticket, feature, refactor, investigation, bug with unknowns) that needs a durable action plan broken into self-contained points, before writing implementation code. Triggers include "plan de acción", "armá/armar un plan", "plan this out", "tackle this", "iniciativa". Also use when resuming such an initiative from an existing plan folder under docs/plans/, or when asked how an existing initiative is going ("cómo viene", "status", "seguimiento", progress check), which initiatives exist ("qué planes hay"), or what the next point to work on is ("qué sigue").
+description: Use when starting a non-trivial, multi-session or multi-track initiative (Jira ticket, feature, refactor, investigation, bug with unknowns) that needs a durable action plan broken into self-contained points, before writing implementation code. Triggers include "plan de acción", "armá/armar un plan", "plan this out", "tackle this", "iniciativa". Also use when resuming such an initiative from an existing plan folder under docs/plans/, or when asked how an existing initiative is going ("cómo viene", "status", "seguimiento", progress check), which initiatives exist ("qué planes hay"), what the next point to work on is ("qué sigue"), or when migrating an old plan to the current methodology ("migrar/actualizar/modernizar el plan").
 ---
 
 # Tackle
@@ -26,6 +26,7 @@ Tackle turns an initiative into a **durable action plan**, broken into self-cont
 | "how is `<initiative>` going?" / "status" / "seguimiento" | **Status** → Step 9 |
 | "what plans are there?" / "qué iniciativas hay" | **List** → Step 9 |
 | "give me the next point" / "qué sigue" | **Next** → Step 9 |
+| "migrate / upgrade / modernizá `<initiative>`" to the new format | **Migrate** → Step 8.5 |
 
 If the initiative is ambiguous (several under `docs/plans/`), show the List and ask which.
 
@@ -244,6 +245,20 @@ Re-entering an existing plan under `docs/plans/<initiative>/`: read `AGENTS.md` 
 
 Note every drift you fixed in a new log entry; never rewrite old ones. Tackle keeps planning/refining — it never starts implementing.
 
+**Old-format plan?** If the workspace predates the current methodology (no `Methodology:` stamp in `AGENTS.md`, or points with no done-signal / `Depends-on`+`Touches` / no `plan.md` §6.1), don't silently plan on top of it — offer **Migrate** (Step 8.5) first.
+
+## Step 8.5 — Migrate an old plan to the current methodology
+
+A plan from an earlier Tackle version lacks today's structure (done-signals, §6.1 universal acceptance, `Depends-on`/`Touches`, decision-ownership markers, judgment-point gates, the depth artifacts). **Migrate the structure; preserve the history. Do NOT re-plan.**
+
+1. **Detect the gap.** Read the workspace; the `Methodology:` stamp in `AGENTS.md` tells you the source version (absent = pre-1.2). Note what's missing vs the current methodology and which of today's depth-artifact triggers (Step 4) now fire for this initiative.
+2. **Preserve what's settled.** `log.md` stays append-only (add a migration entry — never rewrite history); `decisions.md`/`questions.md` are kept as-is; `plan.md` §5 statuses are preserved. Migration doesn't re-litigate closed decisions.
+3. **Scope to forward-looking work only.** Migrate points that are still 🔴/🟡/⏸ — the ones that will still be executed. 🟢 **done points are history; never retrofit done-signals onto completed work.**
+4. **Re-ground (all remaining points, not just the active one).** Old plans drift — re-validate every remaining point's `file:line` against the current repo (the one time you re-check inactive points). Structural drift → offer a re-decompose (Step 8 hard-drift branch) instead of patching.
+5. **Backfill the new structure, gate-appropriate.** Create `plan.md` §6.1; for each remaining point add a runnable **done-signal** (or mark it a judgment point), `Depends-on` (+ what it needs) and `Touches`, and rewrite its Acceptance to reference §6.1. Apply the cross-cutting rules (self-documenting, rollout-if-production). Create only the depth artifacts whose triggers now fire — don't force them onto a plan that doesn't need them.
+6. **Lint + checkpoint.** Run the **Step 6.5 lint** on the migrated plan, then present the migration diff in chat (what changed · what was preserved) and get the user's OK (decision-ownership; provisional if delegated).
+7. **Record it.** A `D-xx` ("migrated to Tackle <ver> methodology"), a migration `log.md` entry, and bump the `Methodology:` stamp in `AGENTS.md`. Migration writes no implementation code — it's planning.
+
 ## Step 9 — Follow-up modes (status · list · next)
 
 **Digest format (fixed — same shape in handoff, resume and status, so the user learns to scan it; status line + action footer per the Output contract):**
@@ -305,4 +320,5 @@ A scan-list of failure modes; the rule lives in the cited home, not here.
 - Files written but nothing in chat · point handed off without its pre-attack summary → Step 7.5 / Step 9.
 - Duplicating status / `file:line` across files · point not self-contained → Conventions 5, 7, 8.
 - Resuming without re-validating the active point (file:line, done-signal, contract drift) → Step 8.
+- Planning on top of an old-format plan, or re-planning it from scratch instead of migrating → offer Migrate (Step 8.5): upgrade structure, preserve history, forward-looking points only.
 - Treating a status ask as a re-plan · walls of text, no clear ask → Step 9 / Output contract.
