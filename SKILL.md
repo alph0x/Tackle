@@ -167,6 +167,19 @@ For each point write `points/P-0N-<slug>.md` from `references/point.tmpl.md` so 
 
 **Define the universal per-point acceptance once** (`plan.md` §6.1): the bar EVERY point must clear. Beyond the generics (tests, grounding, contract conformance, no-regression, board hygiene), **promote the load-bearing structural invariants from `design-contract.md` / Step 5 into §6.1** — the domain-specific gates that actually catch drift (e.g. "core compiles with zero deps", "concurrency-clean under the language's strict mode", "self-documenting: no explanatory inline comments"). Each point *references* §6.1 and adds only point-specific criteria. Make those **exhaustive and mechanically verifiable** — where a finite set exists (error cases, states, endpoints), cover EVERY case (table-driven); prefer criteria a grep or a reviewer can check over aspirational prose. Never restate the §6.1 bar N times (that's drift waiting to happen).
 
+## Step 6.5 — Validate the plan (self-consistency lint)
+
+Once the briefings are drafted, **lint the wired plan before handoff** — catch a broken pipeline now, not mid-execution. This is a reasoning check (read what you wrote; no script, no new artifacts), distinct from the Step 6 checkpoint: that validated the *cut* with the user, this validates the *wiring*. Re-run it whenever the decomposition changes (incl. on Resume).
+
+- **Pipeline wired** — every point's `Consumes` is satisfied by an upstream `Produces` (or by existing code in `reference.md`): no dangling input. Every `Produces` is consumed downstream or is the deliverable: no dead output (a `Produces` nobody needs usually means a missing point or an over-built one).
+- **Graph is a DAG** — no dependency cycles; it topologically orders into the waves. No orphan/unreachable point (unless a deliberate parallel track).
+- **Parallel-safe** — points that `Runs-alongside` in the same wave have **disjoint `Touches`** (else flag them for isolated worktrees or serialize).
+- **Every point loop-ready** — passes its DoR: single responsibility, runnable done-signal + budget, no open user-owned decision inside it.
+- **Deferral & questions sound** — every Deferred point names its blocking `Q-xx`; every `Q-xx` has an owner + what it Determines; no user-owned doubt left silent (Decision ownership).
+- **Depth artifacts coherent** (when they exist) — `design-contract.md`: every section maps to ≥1 implementing point, every contract-implementing point cites its section; `foundations.md`: every new abstraction in the points has a grounding row.
+
+A plan that fails the lint is **not ready to tackle**: fix it, or surface the unresolvable item (e.g. a `Q-xx` with no owner) to the user. Report the lint result in the handoff ("pipeline wired ✓, 0 orphans, 2 parallel pairs worktree-flagged").
+
 ## Step 7 — Compose with available skills (optional, planning aids only)
 
 Detect what's installed; use it to PLAN, not execute. If absent, plan with your own judgment — these are not required:
@@ -182,8 +195,8 @@ Recommended installs (mention only if absent; all follow the portable Agent Skil
 
 ## Step 7.5 — Handoff (present the plan to the user)
 
-Never end a planning session by silently writing files. Close **in chat** with:
-- Gate level + workspace path.
+Never end a planning session by silently writing files. Don't hand off a plan that fails the Step 6.5 lint. Close **in chat** with:
+- Gate level + workspace path + the one-line lint result (pipeline wired ✓, orphans, worktree-flagged pairs).
 - The point board in the **digest format** (Step 9) with the suggested attack order (from the dependency graph; flag what can run in parallel).
 - What's blocked and on whom — especially anything that needs the **user** (open `Q-xx`, external packets to send).
 - The recommended **first point**, preceded by its **pre-attack summary** (see below), then its ready-to-paste starting prompt.
@@ -226,7 +239,8 @@ Re-entering an existing plan under `docs/plans/<initiative>/`: read `AGENTS.md` 
 `file:line` claims against the *current* code — the repo may have drifted since planning.
 If it drifted, update that point's Context and note the drift in a new log entry. Don't
 re-verify inactive points. Append a new log entry as you work; never rewrite old ones.
-Tackle keeps planning/refining points — it never starts implementing.
+Tackle keeps planning/refining points — it never starts implementing. If you change the
+decomposition (add/split/re-wire points), re-run the Step 6.5 lint before handing back.
 
 ## Step 9 — Follow-up modes (status · list · next)
 
@@ -267,6 +281,7 @@ Tackle is done when **the initiative is ready to be tackled**, not when code is 
 - [ ] Architecture chosen by the user from a gate-appropriate recommendation (Step 5.5), recorded as a `D-xx`; Full plans open `foundations.md` with the Clean Code + SOLID backbone.
 - [ ] Decomposition cuts for parallelism; `execution-strategy.md` names the waves + the per-point/per-class **code-quality guardian** loop (when multi-agent).
 - [ ] Every point is **loop-ready**: max-granular (one responsibility), a runnable **done-signal** + recovery + iteration budget, and Consumes/Produces/Touches wired.
+- [ ] Plan passes the **self-consistency lint** (Step 6.5): pipeline wired (Consumes↔Produces), DAG acyclic, parallel `Touches` disjoint, every point loop-ready, every `Q-xx` owned.
 - [ ] External dependencies snapshotted read-only into `reference-docs/` (provenance + index) when the plan leans on out-of-repo material — workspace resolves every point even if the source is gone.
 - [ ] Point-specific acceptance is exhaustive over its case set and verifiable by test/grep/review (not aspirational prose).
 - [ ] Every point has a self-contained briefing that passes its **Definition of Ready**.
@@ -302,6 +317,7 @@ Tackle is done when **the initiative is ready to be tackled**, not when code is 
 - A long dependency chain when points could fan out, or no quality-guardian loop in a multi-agent plan → decompose for parallelism + name the per-point/per-class reviewer loop (Step 6, `execution-strategy.md`).
 - A point whose "done" is a judgment call, not a runnable check → not loop-ready; give it a done-signal command + recovery + iteration budget (Step 6).
 - Bundling two concerns in one point ("and") → split to max granularity; smaller loops = smaller blast radius + more parallelism (Step 6).
+- Handing off a plan with a dangling `Consumes`, a dependency cycle, an orphan point, or colliding parallel `Touches` → run the Step 6.5 lint first; a broken pipeline must surface in planning, not mid-execution.
 - Handing the user a point with just a prompt → precede it with the Problem · Solution · What-will-change summary so they know what they're greenlighting (Step 7.5 / Step 9 Next).
 - Depending on a sibling repo / external docs but snapshotting nothing → the workspace breaks when the source moves; copy it read-only into `reference-docs/` with provenance (Step 5).
 - Aspirational point acceptance ("handles errors well") → make it exhaustive over its case set (cover EVERY case, table-driven) and grep/reviewer-verifiable (Step 6).
