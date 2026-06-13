@@ -9,9 +9,7 @@
 > has none, so the file truly stands alone). Tackle plans this point; it does not implement it here.
 
 ## Status & wiring
-**Depends on**: P-01 (response envelope must expose a `meta` object) · **Runs alongside** (parallel-safe): P-03 (rate-limit headers — disjoint files) · execution status in `plan.md` §5.
-- **Consumes**: the `meta` envelope field from P-01 (`reference.md` §Envelope).
-- **Produces**: `meta.nextCursor` contract that P-05 (client SDK) consumes.
+**Depends on**: P-01 (its `meta` envelope field — `reference.md` §Envelope) · execution status in `plan.md` §5. Runs in parallel with P-03 (disjoint Touches) — read off the graph, not re-listed.
 - **Touches (write scope)**: `src/data/ItemsRepository.ts`, `src/api/ItemsController.ts`, `src/api/dto/ListResponse.ts`, `test/items/*`. Nothing else.
 
 ## Goal (single responsibility — one loop-completable change)
@@ -55,7 +53,7 @@ Loop until green: npm test -- test/items
 - [ ] `GET /items` caps at 50 and returns `meta.nextCursor` (null on last page) — tested.
 - [ ] Cursor loop visits every item exactly once under concurrent inserts — integration test asserts no dupes/skips across an insert.
 - [ ] Every malformed-cursor shape → `400` not `500`: empty, non-base64, truncated, wrong field count — table-driven, suite asserts exactly 4 cases.
-- **If it fails →** insert-stability flaky → sort key not deterministic, add `id` tie-break (see Alternatives); malformed-cursor 500s → decode/validate before the query, map to 400 at the boundary. **Budget**: 3 attempts, then STOP + log + escalate (Decision ownership).
+- **If it fails →** insert-stability flaky → sort key not deterministic, add `id` tie-break (see Alternatives); malformed-cursor 500s → decode/validate before the query, map to 400 at the boundary. Self-correct up to the workspace budget (`AGENTS.md`), then STOP + escalate.
 
 ## Open questions for this point
 - Q-07 — does P-01's envelope land before this point? (non-blocking; fallback above)
@@ -63,5 +61,5 @@ Loop until green: npm test -- test/items
 ## Definition of Ready (the gates that can FAIL)
 - [x] Single responsibility — one change (keyset pagination), no "and".
 - [x] No unresolved user-owned questions inside it (Q-07 non-blocking with a fallback).
-- [x] Loop-ready — runnable done-signal (`npm test -- test/items`) with unambiguous pass (asserts the 4 cursor cases) + budget.
+- [x] Loop-ready — runnable done-signal (`npm test -- test/items`) with unambiguous pass (asserts the 4 cursor cases).
 - [x] Cold-agent-resolvable from this file alone.

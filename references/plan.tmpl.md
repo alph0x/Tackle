@@ -62,6 +62,8 @@ module this design follows — `path` / repo, with file:line.}}
 
 ### 6.2 Initiative-level acceptance
 - [ ] {{observable, verifiable end-state for the whole initiative}}
+<!-- Verification = each point's done-signal command + this §6.1 bar. Shared tooling (test
+     runner, local mock/stub) is named once in `reference.md`/`AGENTS.md`, not a separate section. -->
 
 ## 7. Risks / dependencies
 
@@ -69,7 +71,3 @@ module this design follows — `path` / repo, with file:line.}}
 - **Rollout / reversibility** (if this touches a production path): {{how it ships safely —
   enablement flag default-off, canary target, coexistence with the old path, and the
   no-op/parity check that proves flag-off changes nothing. Omit if not production-facing.}}
-
-## 8. Verification / tooling
-
-- {{per-module tests, local mock/stub, no-regression, etc.}}

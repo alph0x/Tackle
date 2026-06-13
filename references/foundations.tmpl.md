@@ -10,26 +10,15 @@ introduces gets a row here BEFORE it ships** — decision → principle → sour
 cleaner"* is not a justification. Reviewers verify a row exists and that the cited principle
 actually fits; superseding a row requires superseding its decision (`D-xx`).
 
-## The canon (referents this initiative draws from)
-
-Trace choices to something stronger than taste. The defaults below are the standing backbone;
-add/trim referents to fit the domain (framework guidelines, an RFC, the authoritative spec, a
-proven in-house module the design mirrors).
-
-| Referent | Work / source | What we take |
-|---|---|---|
-| Robert C. Martin | *Clean Code*, *Clean Architecture* | SOLID, the Dependency Rule, boundaries, meaningful names, small functions, error handling over codes, **self-documenting code (comments compensate for failure to express in code)** |
-| Kent Beck | *TDD by Example*, *XP Explained* | red→green→refactor, the four rules of Simple Design, YAGNI |
-| Martin Fowler | *Refactoring* | the code-smells catalog (long method, god class, feature envy, shotgun surgery, primitive obsession), refactoring as continuous design |
-| Gamma/Helm/Johnson/Vlissides | *Design Patterns* | pattern vocabulary used PRECISELY (Facade, Adapter, Command, Null Object…) |
-| {{e.g. Cockburn / Evans / Parnas / Liskov / Meyer / Nygard / Hunt&Thomas}} | {{Hexagonal / DDD / information hiding / LSP / Design by Contract / Release It! / Pragmatic Programmer}} | {{the specific principle this design leans on}} |
-| {{the in-house module X}} | {{path or repo}} | {{the proven house pattern we mirror — precedent over invention}} |
-
 ## Decision → principle → source (the standing choices)
 
-| Choice (where it shows up) | Grounding (the principle) | Source |
+Backbone: Clean Code + SOLID. Cite the *specific* referent per row (Martin/Beck/Fowler/GoF,
+Cockburn/Evans/Parnas/Liskov/Meyer/Nygard, an RFC, the spec, the in-house module you mirror) —
+the citation is the row's `Source`, so no separate canon table is needed.
+
+| Choice (where it shows up) | Grounding (the principle) | Source (the referent) |
 |---|---|---|
-| {{the abstraction/pattern, + where in the code/spec}} | {{the principle it satisfies}} | {{referent above}} |
+| {{the abstraction/pattern, + where in the code/spec}} | {{the principle it satisfies}} | {{the specific referent — e.g. Martin, Dependency Rule; or `Libraries/X`}} |
 
 ## How to use this file during execution
 

@@ -43,8 +43,10 @@ docs/plans/{{slug}}/
 6. **Domain invariants / constraints**: consult the authoritative domain source/MCP if your
    environment has one; otherwise use the repo's own canonical constants and annotate it.
 7. **Don't touch out-of-scope** (see non-goals in `plan.md`).
-8. **Verification**: per-module tests + local mock when applicable. No-regression mandatory
-   on shared code. Every point also clears the **universal acceptance** in `plan.md` §6.1.
+8. **Verification = the point's done-signal + `plan.md` §6.1.** Nothing else; no separate
+   verification surface. A point is done when its done-signal command passes and §6.1 holds.
+   **Loop budget (default): {{N}} attempts, then STOP and escalate** (Decision ownership) — a
+   point overrides this only in its own Acceptance.
 9. **Contract supersede-first** (if `design-contract.md` exists): implement it as written; a
    genuine deviation supersedes the spec (edit it + add a `D-xx`) BEFORE the divergent code.
 10. **Grounding** (if `foundations.md` exists): a new pattern/abstraction does not merge

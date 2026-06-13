@@ -6,10 +6,8 @@
 > Context). Tackle plans this point; it does not implement it here.
 
 ## Status & wiring
-**Depends on**: {{none / P-0X}} · **Runs alongside** (parallel-safe): {{P-0Y / —}} · execution status in `plan.md` §5 (single board — don't duplicate here).
-- **Consumes**: {{the surface/output this point needs from upstream — e.g. "the `XPort` protocol from P-01"; "—" if none}}.
-- **Produces**: {{the surface this point hands downstream — what the next loop builds on}}.
-- **Touches (write scope)**: {{the files/dirs this point may modify — bounds the blast radius; lets parallel loops run in isolated worktrees without colliding, and keeps the done-signal's diff reviewable}}.
+**Depends on**: {{none / P-0X — and what it needs from it, e.g. "P-01 (its `XPort` protocol)"}} · execution status in `plan.md` §5 (single board — don't duplicate here). Parallelism is read off the graph + Touches, not re-listed here.
+- **Touches (write scope)**: {{the files/dirs this point may modify — bounds the blast radius; disjoint Touches ⇒ parallel-safe (isolated worktrees), and keeps the done-signal's diff reviewable}}.
 
 ## Goal (single responsibility — one loop-completable change)
 {{What "done" means — observable, testable, ONE coherent change. If stating "done" needs an "and", split the point.}}
@@ -50,7 +48,7 @@ Loop until green: {{the done-signal command}}.
 - **Done-signal**: `{{the exact command (or a short combo of mechanical checks) — e.g. cd <pkg> && swift test --filter <Suite>}}` → pass = {{exit 0, N tests, 0 failures}}.
 - [ ] Meets the **universal per-point acceptance** in `plan.md` §6.1 (don't restate it here).
 - [ ] {{point-specific condition — exhaustive over its case set (assert the count), verifiable by test/grep}}.
-- **If it fails →** {{likely failure → concrete fix}}. **Budget**: {{N}} attempts, then STOP — append a `log.md` note + escalate to the user (a stuck loop is a question, not another retry — Decision ownership).
+- **If it fails →** {{likely failure → concrete fix}}. Self-correct up to the workspace iteration budget (`AGENTS.md`), then STOP + escalate (set a per-point budget here only if it differs).
 
 ## Open questions for this point
 - {{Q-0x in `questions.md` — if any is user-owned and unresolved, this point is Deferred, not loop-ready}}
@@ -59,5 +57,5 @@ Loop until green: {{the done-signal command}}.
 <!-- Only the checks not already visible by reading the sections above. Don't re-checklist the doc. -->
 - [ ] **Single responsibility**: stating "done" needs no "and" (if it does → split; see the functional-core/effectful-shell split in Step 6).
 - [ ] **No open decisions inside it**: zero unresolved user-owned questions (if any → it's Deferred, not ready — Decision ownership).
-- [ ] **Loop-ready**: the done-signal is a runnable command with an unambiguous pass (incl. a count assertion where a finite set exists) + budget.
+- [ ] **Loop-ready**: the Acceptance done-signal is a runnable command with an unambiguous pass (count-asserted where a finite set exists).
 - [ ] **Cold-agent-resolvable from this file alone** — the one true test of every section above.

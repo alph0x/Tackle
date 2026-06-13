@@ -13,7 +13,7 @@ Tackle turns an initiative into a **durable action plan**, broken into self-cont
 
 **Runs on the codebase.** Tackle is designed to run from inside the target repository. If you are not inside a repo, stop and ask for the codebase path before proceeding. Once confirmed, ground every claim in real `file:line`.
 
-**Model- and harness-agnostic.** Works with any agent, model or IDE (GPT, Claude Opus/Sonnet, Cursor Composer, Kimi, DeepSeek, …). Follows the open Agent Skills format (this `SKILL.md` + `references/`). Instructions name *capabilities*, not vendor tools: use whatever **code search** (grep/ripgrep, IDE search, LSP), **go-to-definition / find-references**, **file read/write**, and **ask-the-user** facilities your environment provides. Anything your environment lacks, do by hand. Other skills mentioned below are **optional aids** — use them only if present.
+**Model- and harness-agnostic.** Works with any agent/model/IDE; follows the open Agent Skills format (this `SKILL.md` + `references/`). Instructions name *capabilities* (code search, go-to-def/find-refs, file I/O, ask-the-user), not vendor tools — do by hand what your environment lacks. Other skills named below are **optional aids**, used only if present.
 
 **Language:** all workspace artifacts are written in **English**, regardless of the conversation language.
 
@@ -53,7 +53,7 @@ Applies to every Tackle chat response that presents a plan or its state (Create/
 - **Tag each: 🔴 blocking** (can't proceed without it — gates the phase) vs **🟡 proceed-on-default** (you move on the recommendation now, recorded as a ⚠️ provisional `Q-xx`, confirmed later). Only the 🔴 ones stop you.
 - **Lead with the few that change the plan's shape**; bundle the rest as "defaults I'll take unless you object."
 - **Never drip-feed inside a phase** (ask → wait → ask → wait), and **never re-ask a closed `D-xx`** without cause.
-The chat footer points to the batch as ONE action (e.g. `⚠️ On you: 3 architecture decisions — defaults marked, reply "ok" or override any`), consistent with the Output contract's single-action close.
+Surface the batch as ONE footer action (Output contract).
 
 ## Step 1 — Intake (infer first, then ASK to contextualize)
 
@@ -69,13 +69,7 @@ Read what they point you to. Record what was gathered in the first `log.md` entr
 If the intake surfaces questions that need another team, note them as draft Qs and create
 `external-questions/` packets as soon as they become concrete.
 
-**Doubts during intake → ask, don't assume** (per *Decision ownership*). Recover from the codebase what the codebase can answer; for anything it can't, raise it to the user with recommended options. The default is to ask, not to proceed.
-
-**Only if the user explicitly delegated** ("just figure it out") or is unavailable do you proceed provisionally — and then record, per gap, a **user-owned `Q-xx`** in `questions.md`:
-  1. What you provisionally chose (and the option you'd recommend they confirm).
-  2. What you couldn't verify.
-  3. The risk if the choice is wrong.
-Mark these **provisional — awaiting user confirmation** so they're visible and overturnable; never let one harden into a silent assumption.
+Doubts during intake follow *Decision ownership*: recover what the codebase can answer, raise the rest to the user. Only on explicit delegation do you proceed provisionally — recording each gap as a ⚠️ provisional `Q-xx` (what you chose, what you couldn't verify, the risk), overturnable, never a silent assumption.
 
 ## Step 2 — Size the initiative (gate)
 
@@ -89,9 +83,9 @@ Do NOT scaffold a full workspace for everything. Pick a level:
 
 **Decide by the tie-breaker, not by vibe:** touches ≥2 modules OR changes the public API OR spans sessions/teams OR a handoff is expected → **Full**; confined to one file with no public surface change → **Lite**. Only when the tie-breaker genuinely doesn't settle it, start **Lite** (it upgrades cleanly by adding `README.md` / `AGENTS.md` / `reference.md` / `points/`).
 
-**Bigger workspace ≠ better plan.** Over-sizing burns effort and buries the work in ceremony; under-sizing loses context across sessions. Match the level to the real shape — don't default to Full because it feels thorough.
+**Bigger workspace ≠ better plan** — match the level to the real shape; don't default to Full because it feels thorough (over-sizing buries the work in ceremony, under-sizing loses context across sessions).
 
-**The gate scales ceremony, not principles.** *Decision ownership* (no silent assumptions — ask, recommend a default), **self-documenting code**, a **runnable done-signal**, and **rollout/reversibility if it touches production** apply at EVERY level. Only the *artifacts* are gated: `points/` + depth files are Full; Lite folds them into `plan.md` (`references/lite-plan.tmpl.md`). If **None** (inline, no workspace): still don't assume doubts, and still state the one done-signal you'll verify the change with before stopping here.
+**The gate scales ceremony, not principles.** Decision ownership, self-documenting code, a runnable done-signal, and rollout-if-production apply at EVERY level — only the *artifacts* are gated (`points/` + depth files are Full; Lite folds them into `plan.md`). Even **None** (inline): don't assume doubts, and state the one done-signal before stopping.
 
 Present the level as a one-tap choice with your recommendation marked and a one-line justification (use your environment's structured-ask facility if present; plain question otherwise). Same for the gitignore 3-way in Step 3.
 
@@ -121,7 +115,7 @@ Copy from `references/` and fill `{{PLACEHOLDERS}}`. NEVER leave empty slots you
 - `reference.md` — current code state with `file:line` (shared, cross-point map) → `references/reference.tmpl.md`
 - `points/` — one self-contained `.md` per point (Full only) → `references/point.tmpl.md` (filled example: `references/EXAMPLE-point.md`)
 
-**Optional:** `external-questions/` — packets to send to other teams → `references/external-question.tmpl.md` (create only when a question goes external). · `reference-docs/` — read-only snapshots of external material (sibling-repo source, vendor docs, diagrams, adopted rules) so the workspace is self-contained → `references/reference-docs-README.tmpl.md` (create when the plan depends on anything outside this repo; see Step 5).
+**Optional:** `external-questions/` — packets to other teams → `references/external-question.tmpl.md` (when a question goes external). · `reference-docs/` — read-only snapshots of external material → `references/reference-docs-README.tmpl.md` (when the plan depends on anything outside this repo; see Step 5 for the why).
 
 **Depth artifacts (Full only — create each ONLY when its trigger fires; never by default, they're ceremony otherwise):**
 - `foundations.md` — grounding table (decision → principle → source) → `references/foundations.tmpl.md`. **When:** the initiative introduces non-trivial architecture (new subsystem, layering, a set of patterns).
@@ -133,7 +127,7 @@ default — create them when you start using `brainstorming` / `writing-plans`).
 
 **Appendices (free, descriptive names):** add only when needed (`error-catalog.md`, `design-strategy.md`). When you add one, update the `README.md` and `AGENTS.md` file maps.
 
-**Reference organization for a large, multi-domain initiative:** when one `reference.md` would be a wall, split it into a **numbered, feature-sliced set** with an ordered reading path — architecture/foundation first, then one self-contained doc per domain (e.g. `00-architecture.md`, `01-foundation.md`, `02-<domain>.md`, …`NN-<domain>.md`). The numbering gives a cold agent a deterministic onboarding order; the slices map cleanly onto point cuts (a domain doc ↔ the point[s] that touch it). Use this only when the domain is genuinely broad — for a focused change, one `reference.md` is better.
+**Large multi-domain initiative:** if one `reference.md` would be a wall, split it into a **numbered, feature-sliced set** (`00-architecture.md`, `01-foundation.md`, `02-<domain>.md`…) for a deterministic reading order; slices map onto point cuts. Only when the domain is genuinely broad — otherwise one `reference.md`.
 
 ## Step 5 — Briefing (ground it in the codebase)
 
@@ -162,13 +156,13 @@ Break the initiative into **independent points** (work units) with a dependency 
 
 **Checkpoint — validate before writing briefings:** present the point table + dependency graph **in chat** and get the user's OK before writing the `points/*.md` files. Redoing a table is cheap; redoing N briefings is not. Adjust the cut on feedback, then write.
 
-For each point write `points/P-0N-<slug>.md` from `references/point.tmpl.md` so a cold agent can resolve it **from that file alone**. Each point MUST include: Goal (single responsibility) · **Consumes / Produces / Runs-alongside / Touches** (write scope) · grounded Context (`file:line`) · Non-goals · **Recommended approach** · **Alternatives / fallbacks** · **Recommended starting prompt** · Acceptance · **Done signal** (the loop's runnable exit check) · **recovery + iteration budget** · Dependencies · linked open questions · a **Definition of Ready** self-check. A point links to deeper artifacts instead of duplicating them. Per-point execution status lives only in `plan.md` §5.
+For each point write `points/P-0N-<slug>.md` from `references/point.tmpl.md` so a cold agent can resolve it **from that file alone**. Each point MUST include: Goal (single responsibility) · **Depends-on** (the edge + what it needs from upstream) · **Touches** (write scope) · grounded Context (`file:line`) · Non-goals · **Recommended approach** · **Alternatives / fallbacks** · **Recommended starting prompt** · **Acceptance** (which carries the runnable **done-signal** + recovery) · linked open questions · a **Definition of Ready** self-check. **A point is verified by exactly two things: its done-signal command and `plan.md` §6.1** — no separate "verification" surface. A point links to deeper artifacts instead of duplicating them. Per-point execution status lives only in `plan.md` §5.
 
-**Engineer each point as a loop (loop engineering).** Plan so execution can be a tight autonomous loop: *do → run the done-signal → green = next · red = recover → escalate if stuck*. So every point carries an explicit **done-signal command** (a pass/fail exit, no human judgment), a **recovery path + iteration budget** (self-correct a bounded number of times, then STOP and ask — Decision ownership), and explicit **Consumes/Produces** so points chain as a pipeline and independent ones run as concurrent loops. A point you can't reduce to a runnable done-signal isn't ready — sharpen it until you can.
+**Engineer each point as a loop (loop engineering).** Plan so execution can be a tight autonomous loop: *do → run the done-signal → green = next · red = recover → escalate if stuck*. So every point carries an explicit **done-signal command** (a pass/fail exit, no human judgment) and a **recovery hint**; it self-corrects up to the workspace iteration budget (`AGENTS.md` default), then STOPS and asks (Decision ownership). Its `Depends-on` + `Touches` place it in the pipeline so independent points run as concurrent loops. A point you can't reduce to a runnable done-signal isn't ready — sharpen it until you can.
 
-**Point size — max granularity, one verifiable done-signal.** A point is the *smallest* change that has ONE responsibility AND ends in its own machine-checkable done-signal. Default to splitting: two small loop-runnable points beat one that bundles two concerns (smaller loops = smaller blast radius, more parallelism, cleaner recovery). **Common split that's easy to miss: a pure/port-free core vs the effectful shell around it** (functional core / imperative shell) — the pure part has its own done-signal with zero test doubles and usually no dependencies, so it's its own (often earlier, more-parallel) point. Floor: if a candidate has no done-signal you can run *without* finishing another point, merge them. Rough clock 30 min–3 h, but the responsibility + done-signal test wins over the clock.
+**Point size — max granularity, one verifiable done-signal.** A point is the *smallest* change with ONE responsibility that ends in its own machine-checkable done-signal. Default to splitting — and the split that's easy to miss is a **pure/port-free core vs its effectful shell** (functional core / imperative shell): the pure part has its own done-signal with no doubles or deps, so it's its own earlier, more-parallel point. Floor: if a candidate has no done-signal runnable *without* finishing another point, merge them. ~30 min–3 h, but responsibility + done-signal beats the clock.
 
-**Decompose for parallelism — cut points so they run as concurrent loops across subagents.** The plan is a *parallelization plan*: prefer many independent points over one long chain. Minimize dependency depth; isolate a shared surface into ONE early point (e.g. the design contract) so the rest fan out against it without colliding. Each point's **Consumes/Produces** makes the graph a real pipeline; mark which run in parallel. A point that forces everything else to wait is a smell — split the bottleneck.
+**Decompose for parallelism — cut points so they run as concurrent loops across subagents.** The plan is a *parallelization plan*: prefer many independent points over one long chain. Minimize dependency depth; isolate a shared surface into ONE early point (e.g. the design contract) so the rest fan out against it without colliding. The dependency graph (`plan.md` §5) + each point's **Touches** are the pipeline — anything in a wave not on your `Depends-on` chain runs alongside you. A point that forces everything else to wait is a smell — split the bottleneck.
 
 **Group into phases/waves when the work is staged or wide.** *Tie-breaker (like the Step-2 gate):* ≥2 points runnable in parallel, OR any quality boundary / phase line, OR multi-agent execution → use waves with a quality bar between them. Otherwise a flat ordered list is fine — don't manufacture waves. A point gated on an open `Q-xx` is **Deferred** — list it as such with the blocking question, NOT as an active point; don't plan work behind an unanswered external dependency. When execution will be multi-agent or phased, capture the waves in `execution-strategy.md` (Step 4 depth artifact).
 
@@ -180,10 +174,10 @@ For each point write `points/P-0N-<slug>.md` from `references/point.tmpl.md` so 
 
 Once the briefings are drafted, **lint the wired plan before handoff** — catch a broken pipeline now, not mid-execution. This is a reasoning check (read what you wrote; no script, no new artifacts), distinct from the Step 6 checkpoint: that validated the *cut* with the user, this validates the *wiring*. Re-run it whenever the decomposition changes (incl. on Resume).
 
-- **Pipeline wired** — every point's `Consumes` is satisfied by an upstream `Produces` (or by existing code in `reference.md`): no dangling input. Every `Produces` is consumed downstream or is the deliverable: no dead output (a `Produces` nobody needs usually means a missing point or an over-built one).
+- **Pipeline wired** — every point's `Depends-on` resolves to a real upstream point (or existing code in `reference.md`) that provides what this point needs: no dangling dependency, no point whose output nobody needs (a dead-end usually means a missing or over-built point).
 - **Graph is a DAG** — no dependency cycles; it topologically orders into the waves. No orphan/unreachable point (unless a deliberate parallel track).
-- **Parallel-safe** — points that `Runs-alongside` in the same wave have **disjoint `Touches`** (else flag them for isolated worktrees or serialize).
-- **Every point loop-ready** — passes its DoR: single responsibility, runnable done-signal + budget, no open user-owned decision inside it.
+- **Parallel-safe** — points in the same wave have **disjoint `Touches`** (else flag for isolated worktrees or serialize).
+- **Every point loop-ready** — passes its DoR: single responsibility, runnable done-signal, no open user-owned decision inside it.
 - **Deferral & questions sound** — every Deferred point names its blocking `Q-xx`; every `Q-xx` has an owner + what it Determines; no user-owned doubt left silent (Decision ownership).
 - **Depth artifacts coherent** (when they exist) — `design-contract.md`: every section maps to ≥1 implementing point, every contract-implementing point cites its section; `foundations.md`: every new abstraction in the points has a grounding row.
 
@@ -274,7 +268,7 @@ Note every drift you fixed in a new log entry; never rewrite old ones. Tackle ke
 
 **List** — "what plans are there?": scan `docs/plans/*/`; one line each: name · gate level · X/Y done · blocked on · last activity (newest log entry date). Call out zombies (stale, nothing blocking them).
 
-**Next** — "what's next?": pick the next unblocked point from the dependency graph and present it as a **pre-attack summary** (Step 7.5 — Problem · Solution · What will change, ≤4 lines) so the user has the context for what's about to happen, THEN print its **ready-to-paste starting prompt** (from `points/P-0N-*.md`) with its acceptance one-liner. The user should never have to open a file to start working — and should know *what* they're greenlighting before they do.
+**Next** — "what's next?": pick the next unblocked point; present its **pre-attack summary** (Step 7.5), THEN its ready-to-paste starting prompt + acceptance one-liner. The user should never open a file to start — and should know what they're greenlighting first.
 
 **Closing the initiative:** when every point is 🟢 — append a final log entry (outcome + learnings worth keeping), set the README status line to `DONE`, and ask the user whether to keep, archive, or delete the folder (consistent with the Step 3 gitignore choice).
 
@@ -289,11 +283,10 @@ Tackle is done when **the initiative is ready to be tackled**, not when code is 
 - [ ] If production-facing: rollout/reversibility (flag, canary, no-op check) is planned (§7 + the point).
 - [ ] Full-gate depth artifacts created **only where their trigger fired** (`foundations.md` / `design-contract.md` / `execution-strategy.md`) — not by default.
 - [ ] Architecture chosen by the user from a gate-appropriate recommendation (Step 5.5), recorded as a `D-xx`; Full plans open `foundations.md` with the Clean Code + SOLID backbone.
-- [ ] Decomposition cuts for parallelism; `execution-strategy.md` names the waves + the per-point/per-class **code-quality guardian** loop (when multi-agent).
-- [ ] Every point is **loop-ready**: max-granular (one responsibility), a runnable **done-signal** + recovery + iteration budget, and Consumes/Produces/Touches wired.
-- [ ] Plan passes the **self-consistency lint** (Step 6.5): pipeline wired (Consumes↔Produces), DAG acyclic, parallel `Touches` disjoint, every point loop-ready, every `Q-xx` owned.
-- [ ] External dependencies snapshotted read-only into `reference-docs/` (provenance + index) when the plan leans on out-of-repo material — workspace resolves every point even if the source is gone.
-- [ ] Point-specific acceptance is exhaustive over its case set and verifiable by test/grep/review (not aspirational prose).
+- [ ] Decomposition cuts for parallelism; `execution-strategy.md` names the waves + the **code-quality guardian** loop (when multi-agent).
+- [ ] Every point is **loop-ready**: one responsibility, a runnable **done-signal**, `Depends-on` + `Touches` wired.
+- [ ] Plan passes the **Step 6.5 lint**.
+- [ ] External deps snapshotted into `reference-docs/` when the plan leans on out-of-repo material (Step 5).
 - [ ] Every point has a self-contained briefing that passes its **Definition of Ready**.
 - [ ] Blocking questions are either resolved (→ `decisions.md`) or explicitly flagged in `questions.md` with owners.
 - [ ] `log.md` has this session's entry with a current State snapshot; `README.md` / `AGENTS.md` maps are accurate.
@@ -301,34 +294,17 @@ Tackle is done when **the initiative is ready to be tackled**, not when code is 
 - [ ] Every doubt was surfaced to the user as a decision; no silent assumptions (provisional `Q-xx` only where the user delegated).
 - [ ] No implementation code written — Tackle planned, it did not execute.
 
-## Common mistakes
+## Common mistakes (each → its home rule)
 
-- Treating Tackle as an executor → it only plans. Stop at "ready to tackle".
-- Assuming Claude-only tools/skills → name capabilities, use what the environment has, do the rest by hand.
-- Planning without intake → ask batched (Step 1). On a doubt → **ask, don't assume**; only proceed if the user delegated, as a user-owned ⚠️ provisional `Q-xx` (Decision ownership).
-- Drip-feeding questions one at a time, or asking without a recommended default → batch per phase, each item with a default + 🔴 blocking / 🟡 proceed-on-default tag (Decision ownership → Cadence). "Ask every doubt" ≠ "interrogate".
-- A point that needs the rest of the workspace to be understood → not self-contained. Fix it.
-- Duplicating per-point status across plan/point/todo, or the same `file:line` in reference + point → drift.
-- Defaulting to **Full** for a small change → ceremony. Match the gate to the real shape.
-- Deciding the gitignore treatment silently → always ask the 3-way (Step 3).
-- Resuming without re-validating the active point → stale plan. Re-check its `file:line`, its **done-signal** still runs, and its `design-contract.md` section didn't drift (Step 8).
-- Writing all the point briefings before the user validated the decomposition → rework. Checkpoint first (Step 6).
-- Ending with files written but nothing presented in chat → the user shouldn't need to open files to know what's next (Step 7.5 / Step 8 digest).
-- Treating a status ask as a resume → don't re-plan; give the digest (Step 9).
-- Interrogating the user about things the environment already knows (branch, repo, ticket, siblings) → infer first, confirm after (Step 1).
-- Burying user-owned questions in `questions.md` → re-ask them in chat on every resume/status (Steps 8–9).
-- Walls of text in chat — restating file contents, multiple suggested actions, no clear ask → Output contract: status line, ≤12-line digest, one action footer.
-- Burying the de-risking finding under a generic state dump, or inventing an approach when the repo already has a house pattern → lead §4 with the finding; mirror precedent (Step 5).
-- Restating the acceptance bar in every point → define it once in §6.1; points reference it (Step 6).
-- Creating `foundations.md` / `design-contract.md` / `execution-strategy.md` for a small change → ceremony. Create each only when its trigger fires (Step 4).
-- A flat point list when the work is staged, or planning a point behind an unanswered question → group into waves; mark question-gated points **Deferred** (Step 6).
-- Treating rollout as an afterthought on production-facing work → plan flag/canary/no-op as first-class (Step 5, §7).
-- Imposing a heavy architecture on a Lite change, or picking the architecture *for* the user on a Full one → gate-appropriate; recommend, the user decides (Step 5.5).
-- Scattering explanatory inline comments instead of self-documenting code → comments only when strictly necessary; doc-comments on public surface, the *why* in commits/docs (Step 5.5 / §6.1).
-- A long dependency chain when points could fan out, or no quality-guardian loop in a multi-agent plan → decompose for parallelism + name the per-point/per-class reviewer loop (Step 6, `execution-strategy.md`).
-- A point whose "done" is a judgment call, not a runnable check → not loop-ready; give it a done-signal command + recovery + iteration budget (Step 6).
-- Bundling two concerns in one point ("and") → split to max granularity; smaller loops = smaller blast radius + more parallelism (Step 6).
-- Handing off a plan with a dangling `Consumes`, a dependency cycle, an orphan point, or colliding parallel `Touches` → run the Step 6.5 lint first; a broken pipeline must surface in planning, not mid-execution.
-- Handing the user a point with just a prompt → precede it with the Problem · Solution · What-will-change summary so they know what they're greenlighting (Step 7.5 / Step 9 Next).
-- Depending on a sibling repo / external docs but snapshotting nothing → the workspace breaks when the source moves; copy it read-only into `reference-docs/` with provenance (Step 5).
-- Aspirational point acceptance ("handles errors well") → make it exhaustive over its case set (cover EVERY case, table-driven) and grep/reviewer-verifiable (Step 6).
+A scan-list of failure modes; the rule lives in the cited home, not here.
+- Executing instead of planning · Claude-only tool assumptions → Scope, Model-agnostic (Overview).
+- Silent assumptions · drip-feeding or un-defaulted questions · interrogating about inferable facts → Decision ownership + Cadence.
+- Over-sizing the gate · heavy architecture on Lite · picking the architecture *for* the user → Step 2, Step 5.5.
+- Gitignore decided silently → Step 3. · Depth artifacts by default → Step 4.
+- Burying the de-risking finding · inventing when a house pattern exists · rollout as afterthought · no `reference-docs/` snapshot → Step 5.
+- Flat list when staged · no parallelism · bundling two concerns ("and") · non-runnable done-signal · aspirational acceptance · restating the §6.1 bar per point → Step 6.
+- Dangling dependency · cycle · orphan · colliding parallel `Touches` → run the Step 6.5 lint.
+- Files written but nothing in chat · point handed off without its pre-attack summary → Step 7.5 / Step 9.
+- Duplicating status / `file:line` across files · point not self-contained → Conventions 5, 7, 8.
+- Resuming without re-validating the active point (file:line, done-signal, contract drift) → Step 8.
+- Treating a status ask as a re-plan · walls of text, no clear ask → Step 9 / Output contract.

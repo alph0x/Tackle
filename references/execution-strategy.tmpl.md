@@ -17,17 +17,13 @@
 - **Implementer** — one per point, briefed with the point's ready-to-paste starting prompt.
   Decomposition is built to run **several implementers in parallel** (Step 6) — the orchestrator
   launches a fan-out wave in one batch.
-- **Code-quality guardian** — a reviewer dedicated to *within-unit quality*: smells, redundancy,
-  DRY, SOLID, Clean Code, self-documenting code (no needless comments), naming. **Granularity
-  tie-breaker:** per-class when the point creates ≥2 public types; per-point otherwise. It
-  **loops directly with the implementer who wrote the code** — sends findings back, the
-  implementer fixes, re-checks — until clean, before the unit is accepted. Keep that implementer
-  alive through the loop (messaging beats re-briefing). It does not rewrite the code; it drives
-  the author to satisfy the bar. **Division of labor:** the guardian owns quality *inside* a
-  unit; the inter-wave gate (below) owns what only shows in the *merged* tree — cross-unit drift,
-  races, duplication between points. They don't re-litigate each other's scope.
-- **Spec/acceptance reviewer** — checks the output against the point's acceptance + the design
-  contract before the point flips 🟢 (can be the same pass as the guardian or a parallel one).
+- **Code-quality guardian** — reviews *within-unit* quality before a point flips 🟢: smells,
+  redundancy, DRY, SOLID, self-documenting code, naming, AND conformance to the point's
+  acceptance + design-contract section. Runs per point (or per class when a point creates ≥2
+  public types). It **loops with the implementer who wrote the code** (kept alive — messaging
+  beats re-briefing) until clean; it drives the author, it does not rewrite. The **inter-wave
+  gate** (below) is the complement: it owns what only shows in the *merged* tree — cross-unit
+  drift, races, duplication between points.
 
 ## Waves (derived from the dependency graph)
 
