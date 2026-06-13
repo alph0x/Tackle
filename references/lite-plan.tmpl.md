@@ -2,9 +2,9 @@
 
 Lite workspace: this `plan.md` + `log.md` + `todo.md`. If it grows to multi-session or
 multi-track, upgrade to Full: add `README.md`, `AGENTS.md`, `reference.md`, `points/` (+ the
-depth artifacts as their triggers fire — see Step 4). The cross-cutting rules still apply at Lite — just without the Full
-artifacts: **no silent assumptions** (surface doubts, recommend a default — Decision
-ownership), **self-documenting code** (no needless comments), and a **runnable done-signal**.
+depth artifacts as their triggers fire — see Step 4). The cross-cutting rules still apply at Lite,
+without the Full artifacts: **no silent assumptions**, **self-documenting code**, and a
+**runnable done-signal** (each enforced in its section below).
 
 ## Objective
 {{What is achieved, observable.}}

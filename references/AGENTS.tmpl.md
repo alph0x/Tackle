@@ -45,15 +45,16 @@ docs/plans/{{slug}}/
 7. **Don't touch out-of-scope** (see non-goals in `plan.md`).
 8. **Verification = the point's done-signal + `plan.md` §6.1.** Nothing else; no separate
    verification surface. A point is done when its done-signal command passes and §6.1 holds.
-   **Loop budget (default): {{N}} attempts, then STOP and escalate** (Decision ownership) — a
-   point overrides this only in its own Acceptance.
+   **Loop budget (default): {{N — suggest 3}} attempts, then STOP and escalate** (Decision
+   ownership) — a point overrides this only in its own Acceptance.
 9. **Contract supersede-first** (if `design-contract.md` exists): implement it as written; a
    genuine deviation supersedes the spec (edit it + add a `D-xx`) BEFORE the divergent code.
 10. **Grounding** (if `foundations.md` exists): a new pattern/abstraction does not merge
     without its decision → principle → source row; "it felt cleaner" is not a justification.
 11. **Best practices are the backbone**: Clean Code + SOLID. **Self-documenting code** — no
     explanatory inline comments; doc-comments on the public surface only, the *why* in commit
-    bodies / these docs. An internal comment is a review finding whose fix is a refactor.
+    bodies / these docs. An internal comment is a review finding; its fix is to clarify the
+    code, not reword the comment.
 12. **Quality loop** (multi-agent execution): a code-quality guardian runs per point/class
     (smells, redundancy, SOLID, naming) and loops with the implementer until clean before the
     unit is accepted — see `execution-strategy.md`.

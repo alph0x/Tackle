@@ -33,10 +33,10 @@ If the initiative is ambiguous (several under `docs/plans/`), show the List and 
 
 Applies to every Tackle chat response that presents a plan or its state (Create/Resume/Status/List/Next). A **None**-gate inline answer or a one-line clarification is exempt from the full status-line/footer — keep those terse. The user must never have to dig through prose to learn whether action is needed:
 
-1. **Open with one status line**: `🟢 on track — nothing on you` · `🟡 needs your input` · `🔴 blocked`.
+1. **Open with one status line**: `🟢 on track — nothing on you` · `🟡 needs your input` · `🔴 blocked`. (This 3-state line answers *"is it on me?"* — a different axis from the board's 4-state lifecycle `🔴 not started · 🟡 in progress · ⏸ blocked · 🟢 done`, Convention 10. Same palette, different question; don't conflate the two 🔴/🟢 senses.)
 2. **Close with the action footer** — the only two questions the user actually has:
    ```
-   ⚠️ On you: <what only the user can decide/do, with answer options ready> — or "✅ nothing on you"
+   ⚠️ On you: <what only the user can decide/do — options ready if it's a choice, else an open prompt ("reply with X, or 'you pick'")> — or "✅ nothing on you"
    ▶ Continue: <ONE literal next thing to say — e.g. say "next" and I'll print P-04's prompt>
    ```
 3. **Hard caps**: digest ≤ 12 lines; handoff ≤ one screen. Don't paste file contents into chat — point to them.
@@ -48,11 +48,15 @@ Applies to every Tackle chat response that presents a plan or its state (Create/
 
 **Tackle assumes nothing.** Every doubt that surfaces while planning — scope, architecture, naming, a tradeoff, an ambiguous requirement, a gap in the codebase — goes to the user as a decision. **Recommend** (mark your pick, give options + a one-line why), but the user decides; this is the one rule with no exception. *Infer* (from branch/repo/code) to turn a question into a fast confirmation — that's not assuming, it's grounding, and you still confirm. The only time you proceed without a live answer is when the user **explicitly delegated** it ("just figure it out") or is unavailable; even then you don't bake a silent assumption — you record it as a **user-owned open `Q-xx`**, surface it, and let them overturn it later. A planning choice the user never saw is a bug.
 
-**Cadence — batch doubts, don't drip-feed.** Surfacing every doubt does NOT mean a stream of one-off questions (that's its own failure mode). Collect the doubts a phase raises — intake, architecture, decomposition — and ask them in **ONE consolidated round** via your environment's structured-ask facility (a form), so the user clears many in one pass. Rules:
+**Delegation/absence degrades EVERY mandatory choice — it never blocks.** Under "just figure it out" or an absent user, the otherwise-required user decisions — the gate (Step 2), gitignore (Step 3), architecture (Step 5.5), the decomposition checkpoint (Step 6), rollout (Step 5) — each become a ⚠️ provisional `Q-xx` with your recommended default; you proceed and surface them all on handoff. Never stall on a checkpoint or a "the user decides" gate that the user already told you to drive.
+
+**Classify each doubt (one tree):** user-owned + you can default → 🟡 **provisional** (proceed, record). User-owned + you genuinely can't default → it blocks *what it gates*: one point → mark that point **Deferred** (name the `Q-xx`); the whole cut/phase → 🔴 **phase-gating** (stop the batch). Under delegation/absence, the "can't default" branch collapses to 🟡 (you always have a recommended default). External-team-owned → **Deferred** point + an `external-questions/` packet.
+
+**Cadence — batch doubts, don't drip-feed.** Surfacing every doubt does NOT mean a stream of one-off questions (that's its own failure mode). Collect the doubts a phase raises — intake, architecture, decomposition — and ask them in **ONE consolidated round**: a form via your environment's structured-ask facility if it has one, else a compact numbered list (blocking items first, defaults inline). This batch is the one response **exempt from the ≤12-line digest cap** — it's the work, not a digest. Rules:
 - **Every item carries a recommended default + a one-line why** — so the user can rubber-stamp ("take the defaults") or override only the ones they care about. N questions become one low-effort review, not an interrogation.
 - **Tag each: 🔴 blocking** (can't proceed without it — gates the phase) vs **🟡 proceed-on-default** (you move on the recommendation now, recorded as a ⚠️ provisional `Q-xx`, confirmed later). Only the 🔴 ones stop you.
 - **Lead with the few that change the plan's shape**; bundle the rest as "defaults I'll take unless you object."
-- **Never drip-feed inside a phase** (ask → wait → ask → wait), and **never re-ask a closed `D-xx`** without cause.
+- **Never drip-feed inside a phase** (ask → wait → ask → wait), and **never re-ask a closed `D-xx`** without cause. But a *blocking* doubt that surfaces after a phase's batch closed re-opens a **minimal** batch — that's not drip-feeding (drip-feeding is asking serially what you could have batched).
 Surface the batch as ONE footer action (Output contract).
 
 ## Step 1 — Intake (infer first, then ASK to contextualize)
@@ -81,11 +85,11 @@ Do NOT scaffold a full workspace for everything. Pick a level:
 | **Lite** | Single-session, bounded scope, a few unknowns | add one validation to an existing endpoint, plumb a field already wired | `plan.md` + `log.md` + `todo.md` only (`references/lite-plan.tmpl.md`) |
 | **Full** | Multi-session OR multi-track OR multi-team OR high uncertainty OR handoff expected | introduce a new subsystem, multi-module refactor, feature spanning sessions | Full core + `points/` + appendices |
 
-**Decide by the tie-breaker, not by vibe:** touches ≥2 modules OR changes the public API OR spans sessions/teams OR a handoff is expected → **Full**; confined to one file with no public surface change → **Lite**. Only when the tie-breaker genuinely doesn't settle it, start **Lite** (it upgrades cleanly by adding `README.md` / `AGENTS.md` / `reference.md` / `points/`).
+**Decide by the tie-breaker, not by vibe:** touches ≥2 modules OR changes the public API OR spans sessions/teams OR a handoff is expected OR **needs a canary/coexistence rollout** → **Full**; confined to one file with no public surface change → **Lite**. A production-behavior change is Lite only if its rollback is a single revert; if it needs a flag-coexistence/canary plan (a durable rollout decision), it's **Full** (that decision needs a `D-xx` home Lite doesn't have). Only when the tie-breaker genuinely doesn't settle it, start **Lite** (upgrades cleanly by adding `README.md` / `AGENTS.md` / `reference.md` / `points/`).
 
 **Bigger workspace ≠ better plan** — match the level to the real shape; don't default to Full because it feels thorough (over-sizing buries the work in ceremony, under-sizing loses context across sessions).
 
-**The gate scales ceremony, not principles.** Decision ownership, self-documenting code, a runnable done-signal, and rollout-if-production apply at EVERY level — only the *artifacts* are gated (`points/` + depth files are Full; Lite folds them into `plan.md`). Even **None** (inline): don't assume doubts, and state the one done-signal before stopping.
+**The gate scales ceremony, not principles** — but it scales *both* artifacts AND process. Full/Lite carry Decision ownership, self-documenting code, a done-signal, rollout-if-production. **None has a hard ceremony floor:** state the change + its one done-signal + any single real doubt, inline, in ≤3 lines — **skip** the gate structured-ask, the gitignore 3-way (no workspace), and batching (no phases). A one-line constant bump must not cost five ceremony beats.
 
 Present the level as a one-tap choice with your recommendation marked and a one-line justification (use your environment's structured-ask facility if present; plain question otherwise). Same for the gitignore 3-way in Step 3.
 
@@ -93,7 +97,7 @@ Present the level as a one-tap choice with your recommendation marked and a one-
 
 Plans live under **`docs/plans/<initiative>/`** in the repo. Name `<initiative>` after the ticket (`MBTX-4488/`) or a slug (`error-handling/`); provisional slug if unassigned, rename later. Create `docs/plans/` if missing.
 
-Then ASK the user how to treat plans in version control (3-way, never decide silently):
+(Skip this step for **None** — no workspace, nothing to ignore.) Then ASK the user how to treat plans in version control (3-way, never decide silently):
 - **Ignore all plans** → add `docs/plans/` to `.gitignore`.
 - **Ignore specific plans** → add `docs/plans/<initiative>/` to `.gitignore` (this plan only).
 - **Ignore nothing** → commit everything (don't touch `.gitignore`).
@@ -119,7 +123,7 @@ Copy from `references/` and fill `{{PLACEHOLDERS}}`. NEVER leave empty slots you
 
 **Depth artifacts (Full only — create each ONLY when its trigger fires; never by default, they're ceremony otherwise):**
 - `foundations.md` — grounding table (decision → principle → source) → `references/foundations.tmpl.md`. **When:** the initiative introduces non-trivial architecture (new subsystem, layering, a set of patterns).
-- `design-contract.md` (a.k.a. `api-spec.md`) — the authoritative public surface points implement → `references/design-contract.tmpl.md`. **When:** several points must agree on one shared surface (API, wire format, state machine, error taxonomy).
+- `design-contract.md` (a.k.a. `api-spec.md`) — the authoritative public surface points implement → `references/design-contract.tmpl.md`. **When:** points could each get a shared surface *wrong independently* — i.e. conformance drift is the risk (API, wire format, state machine, error taxonomy). That's what makes it **normative** and a point's "required reading" (Convention 8). Contrast `reference.md`, which holds *descriptive* shared facts (what the code is); if you only need to point at shared context, that's `reference.md` and an ordinary `Depends-on`, not a contract.
 - `execution-strategy.md` — waves + inter-wave quality gate + deferral → `references/execution-strategy.tmpl.md`. **When:** execution will be multi-agent/parallel or phased. (Still planning, not executing — it plans the attack.)
 
 If using superpowers for depth, also create `specs/` and `plans/` as needed (not scaffolded by
@@ -154,13 +158,15 @@ Record the chosen architecture as a `D-xx` (with its why) and open `foundations.
 
 Break the initiative into **independent points** (work units) with a dependency graph in `plan.md`. IDs are zero-padded: `P-01`, `P-02`…
 
-**Checkpoint — validate before writing briefings:** present the point table + dependency graph **in chat** and get the user's OK before writing the `points/*.md` files. Redoing a table is cheap; redoing N briefings is not. Adjust the cut on feedback, then write.
+**Checkpoint — validate before writing briefings:** present the point table + dependency graph **in chat** and get the user's OK before writing the `points/*.md` files. Redoing a table is cheap; redoing N briefings is not. Adjust the cut on feedback, then write. (Absent/delegated user: don't stall — write the briefings, record the cut as a provisional `Q-xx` "validate decomposition," and surface it on handoff.)
 
 For each point write `points/P-0N-<slug>.md` from `references/point.tmpl.md` so a cold agent can resolve it **from that file alone**. Each point MUST include: Goal (single responsibility) · **Depends-on** (the edge + what it needs from upstream) · **Touches** (write scope) · grounded Context (`file:line`) · Non-goals · **Recommended approach** · **Alternatives / fallbacks** · **Recommended starting prompt** · **Acceptance** (which carries the runnable **done-signal** + recovery) · linked open questions · a **Definition of Ready** self-check. **A point is verified by exactly two things: its done-signal command and `plan.md` §6.1** — no separate "verification" surface. A point links to deeper artifacts instead of duplicating them. Per-point execution status lives only in `plan.md` §5.
 
-**Engineer each point as a loop (loop engineering).** Plan so execution can be a tight autonomous loop: *do → run the done-signal → green = next · red = recover → escalate if stuck*. So every point carries an explicit **done-signal command** (a pass/fail exit, no human judgment) and a **recovery hint**; it self-corrects up to the workspace iteration budget (`AGENTS.md` default), then STOPS and asks (Decision ownership). Its `Depends-on` + `Touches` place it in the pipeline so independent points run as concurrent loops. A point you can't reduce to a runnable done-signal isn't ready — sharpen it until you can.
+**Engineer each point as a loop (loop engineering).** Plan so execution can be a tight autonomous loop: *do → run the done-signal → green = next · red = recover → escalate if stuck*. So every point carries an explicit **done-signal command** (a pass/fail exit, no human judgment) and a **recovery hint**; it self-corrects up to the workspace iteration budget (`AGENTS.md` default), then STOPS and asks (Decision ownership). Its `Depends-on` + `Touches` place it in the pipeline so independent points run as concurrent loops. First try to sharpen a fuzzy point until it HAS a runnable done-signal — most "untestable" points are just under-specified.
 
-**Point size — max granularity, one verifiable done-signal.** A point is the *smallest* change with ONE responsibility that ends in its own machine-checkable done-signal. Default to splitting — and the split that's easy to miss is a **pure/port-free core vs its effectful shell** (functional core / imperative shell): the pure part has its own done-signal with no doubles or deps, so it's its own earlier, more-parallel point. Floor: if a candidate has no done-signal runnable *without* finishing another point, merge them. ~30 min–3 h, but responsibility + done-signal beats the clock.
+**Judgment/investigation points** (research "which library", error-copy/UX polish, a design spike) genuinely can't end in a `command → exit 0`. Do NOT manufacture a fake green check (`test -f research.md` proves nothing). Their done-signal is **an artifact + an acceptance rubric, checked by a human or a reviewer agent** — e.g. "`decisions.md` has a `D-xx` choosing the library with the comparison matrix filled," "the error copy meets the rubric in Acceptance." State it as such and mark the point's exit as review-gated, not command-gated. This is the same non-command acceptance the fan-out point uses — generalized; honesty beats a green that lies.
+
+**Point size — max granularity, one verifiable done-signal.** A point is the *smallest* change with ONE responsibility that ends in its own machine-checkable done-signal. Default to splitting — and the split that's easy to miss is a **pure/port-free core vs its effectful shell** (functional core / imperative shell): the pure part has its own done-signal with no doubles or deps, so it's its own earlier, more-parallel point. Floor: if a candidate has no done-signal runnable *without* finishing another point, merge them — and if two points always ship together and a reviewer would review them as one, merge them too. Granularity serves parallelism and clean recovery, not itself; don't shatter a small plan into a swarm of trivial 30-min points. ~30 min–3 h, but responsibility + done-signal beats the clock.
 
 **Decompose for parallelism — cut points so they run as concurrent loops across subagents.** The plan is a *parallelization plan*: prefer many independent points over one long chain. Minimize dependency depth; isolate a shared surface into ONE early point (e.g. the design contract) so the rest fan out against it without colliding. The dependency graph (`plan.md` §5) + each point's **Touches** are the pipeline — anything in a wave not on your `Depends-on` chain runs alongside you. A point that forces everything else to wait is a smell — split the bottleneck.
 
@@ -185,16 +191,7 @@ A plan that fails the lint is **not ready to tackle**: fix it, or surface the un
 
 ## Step 7 — Compose with available skills (optional, planning aids only)
 
-Detect what's installed; use it to PLAN, not execute. If absent, plan with your own judgment — these are not required:
-- **superpowers** (if present) → `brainstorming` to refine a point's design, `writing-plans` to draft its step breakdown; store depth in `specs/`/`plans/` and link it from the point. (`executing-plans` / `subagent-driven-development` are for *later*, outside Tackle.)
-- **karpathy-guidelines** (if present) → applies throughout (think-before-coding, simplicity, surgical changes, goal-driven).
-- **solid** / `ramziddin/solid-skills` (if present) → architecture / SOLID / clean-code / design-pattern decisions while shaping a point's approach.
-- **A recommended skill is missing** → note it ONCE, concisely, with the URL. Don't re-nag.
-
-Recommended installs (mention only if absent; all follow the portable Agent Skills format):
-- superpowers — https://github.com/obra/superpowers
-- karpathy skills — https://github.com/multica-ai/andrej-karpathy-skills
-- solid (SOLID + clean architecture + TDD) — https://github.com/ramziddin/solid-skills · `npx skills add ramziddin/solid-skills`
+If present, use them to **PLAN, not execute**: **superpowers** (`brainstorming` to refine a point's design, `writing-plans` for its step breakdown → store in `specs/`/`plans/`, link from the point; `executing-plans` is for later, outside Tackle) · **karpathy-guidelines** (applies throughout) · a **SOLID/clean-architecture** skill (design decisions while shaping a point). If absent, plan with your own judgment and note the gap once (don't re-nag). Install URLs: superpowers `github.com/obra/superpowers` · karpathy `github.com/multica-ai/andrej-karpathy-skills` · solid `github.com/ramziddin/solid-skills`.
 
 ## Step 7.5 — Handoff (present the plan to the user)
 
@@ -230,7 +227,7 @@ The user should know what to do next without opening a single file.
 14. **Grounding before merge** (when `foundations.md` exists): a new pattern/abstraction needs its decision → principle → source row; "it felt cleaner" is not grounding. Disagreements argue against the cited principle, not taste.
 15. **Decisions carry their why; questions carry what they determine.** A `D-xx` records the rationale + tradeoff (`decisions.md` template). A `Q-xx` records what its answer unblocks + what you already investigated — don't ask others what the codebase can tell you.
 
-*(Process rules — best-practices/self-documenting backbone, parallelism + the quality-guardian loop, external-dep snapshots — live in their Steps: 5.5, 6, 5. Not repeated here.)*
+*(Process rules live in their Steps, not here: best-practices/self-documenting backbone → 5.5; parallelism → 6; the quality-guardian loop → `execution-strategy.md`; external-dep snapshots → 5.)*
 
 ## Step 8 — Resume (re-invocation)
 
@@ -243,6 +240,7 @@ Re-entering an existing plan under `docs/plans/<initiative>/`: read `AGENTS.md` 
 - **Done-signal**: its exit command still exists and is still the right check (tooling/paths/test names didn't move); fix it if stale.
 - **Contract**: any `design-contract.md` section it implements hasn't been superseded since the briefing was written (if it was, reconcile the point or the spec — supersede-first).
 - **Wiring**: if you add/split/re-wire points, re-run the **Step 6.5 lint** before handing back.
+- **Hard drift**: if the grounding is *structurally* broken (touched files renamed/deleted, the done-signal's target gone — not just shifted line numbers), patching line numbers is the wrong move — the **decomposition itself may be stale**. Flag it and offer the user a re-decompose rather than handing back a plan whose other points silently rotted.
 
 Note every drift you fixed in a new log entry; never rewrite old ones. Tackle keeps planning/refining — it never starts implementing.
 

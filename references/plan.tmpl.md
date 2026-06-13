@@ -54,7 +54,7 @@ module this design follows — `path` / repo, with file:line.}}
 - [ ] {{tests cover the change (test-first if the project mandates TDD); the suite is green}}
 - [ ] {{structural invariant 1, promoted from the contract — e.g. "core compiles with zero deps"}}
 - [ ] {{concurrency/safety gate, if relevant — e.g. "clean under the language's strict concurrency mode"}}
-- [ ] **Self-documenting code**: no explanatory inline comments; doc-comments on the public surface only; the *why* lives in commits/docs (an internal comment is a refactor finding, not a wording fix).
+- [ ] **Self-documenting code**: no explanatory inline comments; doc-comments on the public surface only; the *why* in commits/docs (an internal comment is a review finding — its fix is to clarify the code, not reword the comment).
 - [ ] {{grounded: any new abstraction has its row in `foundations.md` (if that file exists)}}
 - [ ] {{contract conformance: matches `design-contract.md`, or the spec was superseded first (if that file exists)}}
 - [ ] {{no regression on shared code; no new warnings}}
