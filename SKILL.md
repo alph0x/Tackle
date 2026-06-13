@@ -89,7 +89,9 @@ Do NOT scaffold a full workspace for everything. Pick a level:
 
 **Decide by the tie-breaker, not by vibe:** touches ≥2 modules OR changes the public API OR spans sessions/teams OR a handoff is expected → **Full**; confined to one file with no public surface change → **Lite**. Only when the tie-breaker genuinely doesn't settle it, start **Lite** (it upgrades cleanly by adding `README.md` / `AGENTS.md` / `reference.md` / `points/`).
 
-**Bigger workspace ≠ better plan.** Over-sizing burns effort and buries the work in ceremony; under-sizing loses context across sessions. Match the level to the real shape — don't default to Full because it feels thorough. If **None**: stop here.
+**Bigger workspace ≠ better plan.** Over-sizing burns effort and buries the work in ceremony; under-sizing loses context across sessions. Match the level to the real shape — don't default to Full because it feels thorough.
+
+**The gate scales ceremony, not principles.** *Decision ownership* (no silent assumptions — ask, recommend a default), **self-documenting code**, a **runnable done-signal**, and **rollout/reversibility if it touches production** apply at EVERY level. Only the *artifacts* are gated: `points/` + depth files are Full; Lite folds them into `plan.md` (`references/lite-plan.tmpl.md`). If **None** (inline, no workspace): still don't assume doubts, and still state the one done-signal you'll verify the change with before stopping here.
 
 Present the level as a one-tap choice with your recommendation marked and a one-line justification (use your environment's structured-ask facility if present; plain question otherwise). Same for the gitignore 3-way in Step 3.
 
