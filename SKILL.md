@@ -31,7 +31,7 @@ If the initiative is ambiguous (several under `docs/plans/`), show the List and 
 
 ## Output contract (chat = signal; files = depth)
 
-Applies to **every** Tackle chat response, in every mode. The user must never have to dig through prose to learn whether action is needed:
+Applies to every Tackle chat response that presents a plan or its state (Create/Resume/Status/List/Next). A **None**-gate inline answer or a one-line clarification is exempt from the full status-line/footer — keep those terse. The user must never have to dig through prose to learn whether action is needed:
 
 1. **Open with one status line**: `🟢 on track — nothing on you` · `🟡 needs your input` · `🔴 blocked`.
 2. **Close with the action footer** — the only two questions the user actually has:
@@ -227,7 +227,7 @@ The user should know what to do next without opening a single file.
 5. **One per-point status board = `plan.md` §5.** `point.md` and `todo.md` don't duplicate execution status (`todo.md` tracks *planning readiness* — a different axis).
 6. **Logs stay terse; the newest entry carries a State snapshot** sufficient to resume without re-reading history. Keep entries short — append-only ≠ verbose.
 7. **Ground in `file:line`** from the codebase. No claim about code without a verified reference.
-8. **Points are self-contained.** A point links to depth, but carries enough to be solved standalone on any model.
+8. **Points are self-contained** — a point links to depth and carries enough to be solved standalone on any model. The ONE allowed prerequisite is a named `design-contract.md` section the point implements (required reading, named in its Context); everything else is depth, not a precondition.
 9. **No new files without reason.** New file → update README + AGENTS maps.
 10. **Fixed status vocabulary** (in `plan.md` §5 and external packets): 🔴 not started · 🟡 in progress · ⏸ blocked · 🟢 done. Don't invent variants — digests depend on it.
 11. **Status flows back via the executor contract** in the workspace `AGENTS.md`: whoever works a point (any agent, any session) updates `plan.md` §5 + appends a log entry. Tackle doesn't execute, but it plants the contract so tracking survives execution.

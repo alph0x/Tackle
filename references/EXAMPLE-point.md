@@ -4,8 +4,9 @@
      point looks like. Not part of any real plan — copy the SHAPE, not the contents. -->
 
 > **Self-contained briefing.** A fresh agent in a new session must be able to resolve THIS
-> point from this file alone (links below are for depth, not prerequisites). Tackle plans
-> this point; it does not implement it here.
+> point from this file alone. Links are for depth, not prerequisites — EXCEPT a named
+> `design-contract.md` section the point implements, which IS required reading (this example
+> has none, so the file truly stands alone). Tackle plans this point; it does not implement it here.
 
 ## Status & wiring
 **Depends on**: P-01 (response envelope must expose a `meta` object) · **Runs alongside** (parallel-safe): P-03 (rate-limit headers — disjoint files) · execution status in `plan.md` §5.

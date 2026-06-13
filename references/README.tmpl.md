@@ -31,7 +31,13 @@ Canonical source: **last entry in `log.md`**. One-line summary: `{{PLAN — DRAF
 | `reference.md` | Current code state with `file:line` |
 | `points/` | One self-contained `.md` per point (goal, approach, prompt, alternatives) |
 | `AGENTS.md` | Workspace conventions |
-<!-- Add appendices here when created (descriptive name, not numbered). -->
+<!-- Add the lines below only for the artifacts you actually created (delete the rest):
+| `design-contract.md` | Authoritative API/state/error surface points implement |
+| `foundations.md` | Grounding: decision → principle → source |
+| `execution-strategy.md` | Waves + quality gate + deferral |
+| `reference-docs/` | Read-only snapshots of external material (+ provenance) |
+| `external-questions/` | Packets sent to other teams |
+Add appendices here too (descriptive name, not numbered). -->
 
 ## Reading order (new agent / human)
 

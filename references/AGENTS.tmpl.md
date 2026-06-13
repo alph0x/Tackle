@@ -25,7 +25,8 @@ docs/plans/{{slug}}/
 ├── foundations.md        ← grounding: decision → principle → source (if new architecture)
 ├── design-contract.md    ← authoritative API/state/error surface; points implement it (if a shared surface)
 ├── execution-strategy.md ← waves + quality gate + deferral (if multi-agent / phased execution)
-├── reference-docs/       ← READ-ONLY snapshots of external material + provenance (if the plan depends on anything outside this repo) -->
+├── reference-docs/       ← READ-ONLY snapshots of external material + provenance (if the plan depends on anything outside this repo)
+├── external-questions/   ← packets sent to other teams (if a question goes external) -->
 <!-- Reuse (don't duplicate) shared docs from the root if any. List appendices here. -->
 
 ## Rules

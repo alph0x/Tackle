@@ -47,7 +47,7 @@ Loop until green: {{the done-signal command}}.
      are what passing means. EXHAUSTIVE + MECHANICALLY verifiable, not prose: where a finite set
      exists (error cases, states, endpoints), cover EVERY case AND assert the COUNT in the
      command (e.g. test count == N) so a lazy suite can't go green with half the cases. -->
-- **Done-signal**: `{{the exact command — e.g. cd <pkg> && swift test --filter <Suite>}}` → pass = {{exit 0, N tests, 0 failures}}.
+- **Done-signal**: `{{the exact command (or a short combo of mechanical checks) — e.g. cd <pkg> && swift test --filter <Suite>}}` → pass = {{exit 0, N tests, 0 failures}}.
 - [ ] Meets the **universal per-point acceptance** in `plan.md` §6.1 (don't restate it here).
 - [ ] {{point-specific condition — exhaustive over its case set (assert the count), verifiable by test/grep}}.
 - **If it fails →** {{likely failure → concrete fix}}. **Budget**: {{N}} attempts, then STOP — append a `log.md` note + escalate to the user (a stuck loop is a question, not another retry — Decision ownership).
