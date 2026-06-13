@@ -238,16 +238,17 @@ The user should know what to do next without opening a single file.
 
 ## Step 8 — Resume (re-invocation)
 
-Re-entering an existing plan under `docs/plans/<initiative>/`: read `AGENTS.md` → the **State snapshot** in the last `log.md` entry → `decisions.md` (what's settled) → `questions.md` (blockers) → the relevant `points/P-0N.md`.
+Re-entering an existing plan under `docs/plans/<initiative>/`: read `AGENTS.md` → the **State snapshot** in the last `log.md` entry → `decisions.md` (what's settled) → `questions.md` (blockers) → the relevant `points/P-0N.md` → and, **if they exist**, `design-contract.md` (the surface the point implements) + `execution-strategy.md` (which wave/loop you're in).
 
 **Open with a digest, not silence:** before continuing, show the user where things stand in the **digest format** (Step 9), and re-ask any user-owned open `Q-xx` directly in chat. Then refine.
 
-**Re-validate before continuing** the active point: re-check ONLY the active point's grounded
-`file:line` claims against the *current* code — the repo may have drifted since planning.
-If it drifted, update that point's Context and note the drift in a new log entry. Don't
-re-verify inactive points. Append a new log entry as you work; never rewrite old ones.
-Tackle keeps planning/refining points — it never starts implementing. If you change the
-decomposition (add/split/re-wire points), re-run the Step 6.5 lint before handing back.
+**Re-validate the active point against the *current* repo** (only the active point — not inactive ones):
+- **Grounding**: its `file:line` claims still resolve; if the code drifted, update the point's Context.
+- **Done-signal**: its exit command still exists and is still the right check (tooling/paths/test names didn't move); fix it if stale.
+- **Contract**: any `design-contract.md` section it implements hasn't been superseded since the briefing was written (if it was, reconcile the point or the spec — supersede-first).
+- **Wiring**: if you add/split/re-wire points, re-run the **Step 6.5 lint** before handing back.
+
+Note every drift you fixed in a new log entry; never rewrite old ones. Tackle keeps planning/refining — it never starts implementing.
 
 ## Step 9 — Follow-up modes (status · list · next)
 
@@ -266,7 +267,7 @@ decomposition (add/split/re-wire points), re-run the Step 6.5 lint before handin
 **Status** — "how is it going?": read-only digest from `plan.md` §5 + last log snapshot. Also:
 - External packets 🟡 past their `Follow-up by` date → flag explicitly for chasing.
 - **Questions owned by the user → re-ask them directly in chat**, with the options already drafted in `questions.md`/the packet. Don't just point at files.
-- Drift: spot-check the active point's `file:line` claims against the current repo; warn if it moved.
+- Drift: spot-check the active point's `file:line` claims, its **done-signal command**, and any `design-contract.md` section it implements against the current repo; warn on any that moved (full re-validation is Resume's job, not status').
 - Reconcile if stale: execution happened but §5 wasn't updated (code merged, board still 🔴) → fix §5 + append a log entry noting it. That's the only write a status check makes.
 
 **List** — "what plans are there?": scan `docs/plans/*/`; one line each: name · gate level · X/Y done · blocked on · last activity (newest log entry date). Call out zombies (stale, nothing blocking them).
@@ -308,7 +309,7 @@ Tackle is done when **the initiative is ready to be tackled**, not when code is 
 - Duplicating per-point status across plan/point/todo, or the same `file:line` in reference + point → drift.
 - Defaulting to **Full** for a small change → ceremony. Match the gate to the real shape.
 - Deciding the gitignore treatment silently → always ask the 3-way (Step 3).
-- Resuming without re-validating grounded claims → stale plan. Re-check `file:line` first.
+- Resuming without re-validating the active point → stale plan. Re-check its `file:line`, its **done-signal** still runs, and its `design-contract.md` section didn't drift (Step 8).
 - Writing all the point briefings before the user validated the decomposition → rework. Checkpoint first (Step 6).
 - Ending with files written but nothing presented in chat → the user shouldn't need to open files to know what's next (Step 7.5 / Step 8 digest).
 - Treating a status ask as a resume → don't re-plan; give the digest (Step 9).
