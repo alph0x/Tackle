@@ -48,9 +48,16 @@ Applies to **every** Tackle chat response, in every mode. The user must never ha
 
 **Tackle assumes nothing.** Every doubt that surfaces while planning — scope, architecture, naming, a tradeoff, an ambiguous requirement, a gap in the codebase — goes to the user as a decision. **Recommend** (mark your pick, give options + a one-line why), but the user decides; this is the one rule with no exception. *Infer* (from branch/repo/code) to turn a question into a fast confirmation — that's not assuming, it's grounding, and you still confirm. The only time you proceed without a live answer is when the user **explicitly delegated** it ("just figure it out") or is unavailable; even then you don't bake a silent assumption — you record it as a **user-owned open `Q-xx`**, surface it, and let them overturn it later. A planning choice the user never saw is a bug.
 
+**Cadence — batch doubts, don't drip-feed.** Surfacing every doubt does NOT mean a stream of one-off questions (that's its own failure mode). Collect the doubts a phase raises — intake, architecture, decomposition — and ask them in **ONE consolidated round** via your environment's structured-ask facility (a form), so the user clears many in one pass. Rules:
+- **Every item carries a recommended default + a one-line why** — so the user can rubber-stamp ("take the defaults") or override only the ones they care about. N questions become one low-effort review, not an interrogation.
+- **Tag each: 🔴 blocking** (can't proceed without it — gates the phase) vs **🟡 proceed-on-default** (you move on the recommendation now, recorded as a ⚠️ provisional `Q-xx`, confirmed later). Only the 🔴 ones stop you.
+- **Lead with the few that change the plan's shape**; bundle the rest as "defaults I'll take unless you object."
+- **Never drip-feed inside a phase** (ask → wait → ask → wait), and **never re-ask a closed `D-xx`** without cause.
+The chat footer points to the batch as ONE action (e.g. `⚠️ On you: 3 architecture decisions — defaults marked, reply "ok" or override any`), consistent with the Output contract's single-action close.
+
 ## Step 1 — Intake (infer first, then ASK to contextualize)
 
-**Infer before asking — turn the interrogation into a confirmation.** First detect what the environment already tells you: ticket ID from the branch name (`feature/MBTX-4488` → MBTX-4488), repo from the working directory, sibling plans under `docs/plans/`, ticket content via your issue-tracker integration if one is available. Present what you inferred as *"this is what I already know — confirm or correct"*, and ask — **one batched set of questions, not drip-fed** — only the real gaps. Never silently assume what you didn't verify. Cover at least:
+**Infer before asking — turn the interrogation into a confirmation.** First detect what the environment already tells you: ticket ID from the branch name (`feature/MBTX-4488` → MBTX-4488), repo from the working directory, sibling plans under `docs/plans/`, ticket content via your issue-tracker integration if one is available. Present what you inferred as *"this is what I already know — confirm or correct"*, and ask — **one batched round, each gap with a recommended default** (Decision ownership → Cadence), not drip-fed — only the real gaps. Never silently assume what you didn't verify. Cover at least:
 - **The explicit requirement** — the ask in the user's words; ticket ID / link if any.
 - **Documentation** — relevant docs, specs, design notes, API/vendor docs, links, files to read.
 - **Scope hints** — what's in, what's explicitly out, deadlines, target validation, related/sibling work.
@@ -296,6 +303,7 @@ Tackle is done when **the initiative is ready to be tackled**, not when code is 
 - Treating Tackle as an executor → it only plans. Stop at "ready to tackle".
 - Assuming Claude-only tools/skills → name capabilities, use what the environment has, do the rest by hand.
 - Planning without intake → ask batched (Step 1). On a doubt → **ask, don't assume**; only proceed if the user delegated, as a user-owned ⚠️ provisional `Q-xx` (Decision ownership).
+- Drip-feeding questions one at a time, or asking without a recommended default → batch per phase, each item with a default + 🔴 blocking / 🟡 proceed-on-default tag (Decision ownership → Cadence). "Ask every doubt" ≠ "interrogate".
 - A point that needs the rest of the workspace to be understood → not self-contained. Fix it.
 - Duplicating per-point status across plan/point/todo, or the same `file:line` in reference + point → drift.
 - Defaulting to **Full** for a small change → ceremony. Match the gate to the real shape.
