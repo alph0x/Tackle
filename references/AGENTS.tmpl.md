@@ -1,6 +1,6 @@
 # AGENTS — workspace `docs/plans/{{slug}}/`
 
-**Methodology: Tackle 1.2** <!-- the Tackle version this workspace was built/migrated under; a future version reads this to decide whether to migrate (Step 8.5). -->
+**Methodology: Tackle 1.3** <!-- the Tackle version this workspace was built/migrated under; a future version reads this to decide whether to migrate (Step 8.5). -->
 
 Conventions for any agent (Claude Code, Cursor, GPT, human) that picks up this plan.
 <!-- If it inherits from a root AGENTS.md, say so here and don't repeat its rules. -->
