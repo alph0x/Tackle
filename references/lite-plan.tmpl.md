@@ -1,5 +1,7 @@
 # {{TITLE}} (lite)
 
+<!-- Methodology: Tackle 1.2 — the version this plan was built/migrated under (Lite has no AGENTS.md, so the stamp lives here; Step 8.5 reads it). -->
+
 Lite workspace: this `plan.md` + `log.md` + `todo.md`. If it grows to multi-session or
 multi-track, upgrade to Full: add `README.md`, `AGENTS.md`, `reference.md`, `points/` (+ the
 depth artifacts as their triggers fire — see Step 4). The cross-cutting rules still apply at Lite,
