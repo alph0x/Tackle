@@ -27,7 +27,7 @@ inputs are handled (preserve the original code; unmapped ≠ terminal crash).}}
 {{The properties that must always hold — phrased so they can be tested, not just asserted in
 prose. e.g. "recoverable vs terminal is structural: recoverable failures appear as state with
 retry/abort; anything thrown from result() is terminal." "Core compiles with zero
-dependencies." Each invariant should map to a check in some point's Verification.}}
+dependencies." Promote each load-bearing invariant into `plan.md` §6.1 (or a point's done-signal) so it's an actual pass/fail check, not prose.}}
 
 ## Spec → point map
 | Spec section | Implemented by |
