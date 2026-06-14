@@ -50,6 +50,7 @@ Loop until green: npm test -- test/items
 ## Acceptance — the loop's exit gate
 - **Done-signal**: `npm test -- test/items` → pass = exit 0, all `test/items/*` green, 0 failures. Plus `grep -rn "findAll" src/api/ItemsController.ts` returns nothing (old unbounded path gone).
 - [ ] Meets the **universal per-point acceptance** in `plan.md` §6.1 (don't restate it here).
+- [ ] **Security** (endpoint axis) — folded into the done-signal: `test/items` asserts `GET /items` rejects unauthenticated and cross-tenant access (401/403), and that the cursor is opaque (base64 over `(created_at,id)` only — no internal PK or row count leaked).
 - [ ] `GET /items` caps at 50 and returns `meta.nextCursor` (null on last page) — tested.
 - [ ] Cursor loop visits every item exactly once under concurrent inserts — integration test asserts no dupes/skips across an insert.
 - [ ] Every malformed-cursor shape → `400` not `500`: empty, non-base64, truncated, wrong field count — table-driven, suite asserts exactly 4 cases.

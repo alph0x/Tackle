@@ -50,10 +50,16 @@ module this design follows — `path` / repo, with file:line.}}
      "Acceptance" links to this block and adds only its point-specific criteria. Keep these
      verifiable (a command or an inspection), not aspirational. Trim to what this initiative
      actually needs. PROMOTE the load-bearing structural invariants from design-contract.md /
-     Step 5 up into this block — they're the gates that actually catch drift. -->
+     Step 5 up into this block — they're the gates that actually catch drift. This block is the
+     always-on BACKBONE (Architecture + Conventions & Style) plus the quality-dimension axes that
+     fire initiative-wide; per-point axes live in each point's Acceptance, not here. -->
 - [ ] {{tests cover the change (test-first if the project mandates TDD); the suite is green}}
 - [ ] {{structural invariant 1, promoted from the contract — e.g. "core compiles with zero deps"}}
-- [ ] {{concurrency/safety gate, if relevant — e.g. "clean under the language's strict concurrency mode"}}
+<!-- Quality-dimension axes (SKILL.md Step 6 catalog): keep an axis HERE only if it fires for EVERY point.
+     An axis that fires for only SOME points lives in those points' Acceptance, not here. -->
+- [ ] {{concurrency axis, if it fires initiative-wide — e.g. "clean under the language's strict concurrency mode"}}
+- [ ] {{security axis, if it fires initiative-wide — e.g. "no unauthenticated path reaches X; inputs validated at the boundary; no secret in logs/errors"}}
+- [ ] {{performance axis, if it fires initiative-wide — e.g. "stays within the p99 budget; no N+1 on the hot path"}}
 - [ ] **Self-documenting code**: no explanatory inline comments; doc-comments on the public surface only; the *why* in commits/docs (an internal comment is a review finding — its fix is to clarify the code, not reword the comment).
 - [ ] {{grounded: any new abstraction has its row in `foundations.md` (if that file exists)}}
 - [ ] {{contract conformance: matches `design-contract.md`, or the spec was superseded first (if that file exists)}}

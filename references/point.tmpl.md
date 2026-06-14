@@ -48,6 +48,7 @@ Loop until green: {{the done-signal command}}.
 - **Done-signal**: `{{the exact command (or a short combo of mechanical checks) — e.g. cd <pkg> && swift test --filter <Suite>}}` → pass = {{exit 0, N tests, 0 failures}}.
   <!-- Judgment/investigation point (research, copy/UX, design spike) with no honest command? Make this a REVIEW-gate instead: "exit = artifact + rubric, reviewed" (e.g. `decisions.md` D-xx chosen with the matrix filled). Never a fake `test -f` green. -->
 - [ ] Meets the **universal per-point acceptance** in `plan.md` §6.1 (don't restate it here).
+- [ ] {{quality-dimension checks this point's **Touches** fire — Security / Performance / Concurrency / Correctness / … per the catalog (SKILL.md Step 6) — each **folded into the done-signal above** as a runnable fragment using this repo's tooling (e.g. "authz test in the suite asserts unauthenticated/cross-tenant → 401/403"), or a **review-gated** criterion only if no honest command exists. Omit axes that don't fire; don't restate the §6.1 universal ones}}.
 - [ ] {{point-specific condition — exhaustive over its case set (assert the count), verifiable by test/grep}}.
 - **If it fails →** {{likely failure → concrete fix}}. Self-correct up to the workspace iteration budget (`AGENTS.md`), then STOP + escalate (set a per-point budget here only if it differs).
 
