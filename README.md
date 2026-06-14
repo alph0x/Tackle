@@ -48,7 +48,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 | "what's next?" / "qué sigue" | **Next** — the next point's pre-attack summary + ready-to-paste prompt |
 | "migrate / upgrade `<x>`" | **Migrate** — bring an old plan up to the current methodology, preserving history |
 
-**The Create pipeline:** Intake (infer first, then ask) → Gate (None/Lite/Full) → Location & gitignore → Scaffold → Briefing (ground in `file:line`, lead with the de-risking finding, anchor to precedent) → Architecture (recommended, you decide) → Decompose into loop-runnable points → Lint the wired plan → Handoff in chat. Each point is engineered as a closed loop: a runnable **done-signal**, `Depends-on`/`Touches` wiring for parallelism, recovery + an iteration budget — so execution can run autonomously, point by point, across agents.
+**The Create pipeline:** Intake (infer first, then ask) → Gate (None/Lite/Full) → Location & gitignore → Scaffold → Briefing (ground in `file:line`, lead with the de-risking finding, anchor to precedent, weigh the quality dimensions the work fires — security/perf/concurrency/correctness) → Architecture (recommended, you decide) → Decompose into loop-runnable points → Lint the wired plan → Handoff in chat. Each point is engineered as a closed loop: a runnable **done-signal**, `Depends-on`/`Touches` wiring for parallelism, recovery + an iteration budget — so execution can run autonomously, point by point, across agents.
 
 **Principles that hold at every gate:** Tackle assumes nothing — every doubt goes to you as a decision (recommended default marked, batched, never drip-fed); self-documenting code; a runnable done-signal; rollout/reversibility when it touches production.
 
