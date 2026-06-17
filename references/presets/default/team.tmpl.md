@@ -13,6 +13,22 @@ When a point enters execution, the orchestrator spawns a **point team** sized to
 
 Default: **Solo** unless the point briefing explicitly requests a larger team.
 
+### Specialist roles (Squad only)
+
+| Specialist | When to add | Responsibility |
+|---|---|---|
+| **Simplicity Auditor** | Any point that adds code, dependencies, or abstractions. | Runs the simplicity ladder: does this need to exist? stdlib? native? installed dep? one line? Cuts speculative flexibility, factories with one product, config for static values, and boilerplate. |
+| **Architecture Reviewer** | Point changes core structure or introduces new abstractions. | Validates the change against `foundations.md`, SOLID, and the long-term shape of the codebase. |
+| **Security Reviewer** | Point touches auth, input validation, secrets, or trust boundaries. | Runs the security checklist from `design-contract.md` / `SKILL.md` Step 6 and flags vulnerabilities. |
+| **Test Engineer** | Point needs non-trivial test coverage or test infrastructure. | Designs tests, verifies edge cases, ensures the done-signal is meaningful. |
+| **Integration Reviewer** | Point affects multiple subsystems or external contracts. | Checks cross-file impact and migration path for callers. |
+| **Risk Manager** | Point has high blast radius or many unknowns. | Tracks assumptions, flags blockers early, and ensures rollback plan exists. |
+| **Regression Auditor** | Any point that touches `SKILL.md`, routing, or existing templates. | Verifies old triggers and templates still work; catches silent breakage of Tackle 1.x behavior. |
+| **Boundary Auditor** | Point touches trust boundaries, sensitive data, or scope-delimited files. | Verifies nothing leaks outside `Touches`, no secrets exposed, no permissions widened. |
+| **Contract Auditor** | Points where `contract.md` is the authority. | Formal line-by-line check that the implementation matches the contract beyond what Spec Reader covers. |
+| **Testability Auditor** | When the done-signal is complex or relies on external tooling. | Verifies the done-signal is mechanical, reproducible, and fails red when the logic breaks. |
+| **Doc Auditor** | When the point changes the public surface. | Verifies `README.md`, `SKILL.md`, `CHANGELOG.md`, and methodology stamps reflect the change. |
+
 ## Single source of truth for state
 
 - **`board.md`** is the only place that records point status (🔴 🟡 ⏸ 🟢).
@@ -63,6 +79,9 @@ Driver writes smallest change + runs done-signal
 Reviewer/Spec Reader + Quality Guardian review (if multi-agent)
         │
         ▼
+Specialist auditors review (if Squad)
+        │
+        ▼
 Coordinator/Reviewer marks board.md 🟢 and appends log.md entry
 ```
 
@@ -70,7 +89,7 @@ Coordinator/Reviewer marks board.md 🟢 and appends log.md entry
 
 - Technical discussion happens in IRC or file comments.
 - The Driver acts on concrete next steps only.
-- Disagreements about spec → Spec Reader wins; about quality → Quality Guardian wins; about priority/flow → Coordinator wins.
+- Disagreements about spec → Spec Reader wins; about quality → Quality Guardian wins; about simplicity → Simplicity Auditor wins; about priority/flow → Coordinator wins.
 - Deadlock → Coordinator escalates to user.
 
 ## When a point is done
@@ -80,4 +99,7 @@ A point flips to 🟢 only when:
 1. Driver: done-signal passes.
 2. Reviewer/Spec Reader: output matches the point briefing and `design-contract.md`.
 3. Quality Guardian: no quality findings (if pod/squad mode).
-4. Coordinator/Reviewer: `board.md` updated (and `log.md` if pod/squad mode).
+4. Simplicity Auditor: no over-engineering findings (if squad mode).
+5. Regression Auditor: no regression findings (if squad mode and point touches existing surface).
+6. Doc Auditor: no documentation gaps (if squad mode and point changes public surface).
+7. Coordinator/Reviewer: `board.md` updated (and `log.md` if pod/squad mode).
