@@ -73,9 +73,9 @@ In short: **overrides > presets > sdd > core**. Nothing Tackle-related lives at 
 2. **Questions only in `questions.md`**; **decisions only in `decisions.md`**.
 3. **Ground every claim in `file:line`** from the repo.
 4. **One point = one responsibility + one runnable done-signal**.
-5. **Contract supersede-first** — implement `design-contract.md` as written; deviations require a `D-xx` first.
-6. **Self-documenting code** — Clean Code + SOLID; no explanatory inline comments.
-7. **Status vocabulary** — 🔴 not started · 🟡 in progress · ⏸ blocked · 🟢 done.
+5. **Contract supersede-first**: implement `design-contract.md` as written; deviations require a `D-xx` first.
+6. **Self-documenting code**: Clean Code + SOLID; no explanatory inline comments.
+7. **Status vocabulary**: 🔴 not started · 🟡 in progress · ⏸ blocked · 🟢 done.
 8. **Decision ownership** — the user decides every doubt; batch recommendations with defaults.
 
 ## Output contract
@@ -84,7 +84,7 @@ Open every plan response with one status line (`🟢 on track / 🟡 needs your 
 
 ## Where the detail lives
 
-- **Full methodology (Steps 1–11)**: `references/GUIDE.md`
+- **Full methodology (per-step guides)**: `references/guides/`
 - **Workspace contract**: `references/AGENTS.tmpl.md`
 - **Execution teams**: `references/team.tmpl.md`
 - **Templates**: `references/*.tmpl.md`, `references/sdd/*.tmpl.md`, `references/presets/<preset>/*.tmpl.md`
