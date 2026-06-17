@@ -1,6 +1,6 @@
 # {{TITLE}} (lite)
 
-<!-- Methodology: Tackle 1.4 — the version this plan was built/migrated under (Lite has no AGENTS.md, so the stamp lives here; Step 8.5 reads it). -->
+<!-- Methodology: Tackle 1.5 — the version this plan was built/migrated under (Lite has no AGENTS.md, so the stamp lives here; Step 8.5 / Step 10 reads it). -->
 
 Lite workspace: this `plan.md` + `log.md` + `todo.md`. If it grows to multi-session or
 multi-track, upgrade to Full: add `README.md`, `AGENTS.md`, `reference.md`, `points/` (+ the

@@ -27,8 +27,84 @@ Tackle turns an initiative into a **durable action plan**, broken into self-cont
 | "what plans are there?" / "qué iniciativas hay" | **List** → Step 9 |
 | "give me the next point" / "qué sigue" | **Next** → Step 9 |
 | "migrate / upgrade / modernizá `<initiative>`" to the new format | **Migrate** → Step 8.5 |
+| "mejorá este plan" / "improve this plan" / "tackle-upgrade `<initiative>`" | **Improve** → Step 10 |
 
 If the initiative is ambiguous (several under `docs/plans/`), show the List and ask which.
+
+If the user points at a folder that is **not** under `docs/plans/` (e.g. a loose markdown file, a Jira-export, a previous initiative's notes), the Improve mode treats it as an unstructured plan and converts it into a Tackle workspace under `docs/plans/<initiative>/` (Mode B below).
+
+**Two-step Improve contract:** Improve is a migration, not a re-plan. It upgrades the *structure* and applies the current methodology's hard-won rules; it does NOT re-litigate closed decisions or throw away settled design. If the source is rotten beyond repair (archaeology, no coherent decomposition, structural drift across every point), flag it and recommend a fresh **Create** instead.
+
+
+## Step 10 — Improve / upgrade an existing plan (new-mode migration)
+
+Triggered by "mejorá este plan" / "improve this plan" / "tackle-upgrade <initiative>".
+
+### 10.1 Detect the source
+
+Inspect the path the user gave. Ask if unclear.
+
+| What is there | Mode | Action |
+|---|---|---|
+| `docs/plans/<initiative>/` exists with `AGENTS.md` and a **Tackle** `Methodology:` stamp (any version whose core structure is intact: `plan.md` §6.1, done-signals, `Depends-on`+`Touches`) | **Mode A — Tackle-to-Tackle upgrade** | Diff the stamp vs current `SKILL.md`; apply only the rules introduced since that stamp (Step 5.75, Q-guard, skeleton-board-first, contract-churn guard, etc.); re-lint; bump stamp. |
+| `docs/plans/<initiative>/` exists but has **no** `Methodology:` stamp, or its structure is missing `plan.md` §6.1 / done-signals / `Depends-on`+`Touches` (pre-Tackle or Tackle archaeology) | **Mode A' — Old Tackle recovery** | Run **Step 8.5** to rebuild the base Tackle shape from the existing material, preserving history; then run **Mode A** to bring it to the current version. |
+| Any other folder/file (loose markdown, Jira export, Miro/Notion dump, `TODO.md`, `PLAN.md`, branch notes) | **Mode B — Unstructured → Tackle** | Ingest, infer the objective, extract decisions/questions, create a Full or Lite Tackle workspace. |
+| Nothing / empty path | **Stop** | Ask for the source. |
+
+### 10.2 Mode A — Tackle-to-Tackle upgrade
+
+1. **Read the workspace in resume order** (Step 8).
+2. **Diff methodology**: compare the workspace's `Methodology:` stamp against the current `SKILL.md`. List the rules introduced since that stamp that the plan does NOT yet satisfy. Examples: Step 5.75 contract-stabilization, Step 6 skeleton-board-first, Step 6.5 Q-guard / contract-churn guard, intake anchor (Step 1.5).
+3. **Apply non-breaking structure changes only**:
+   - Add missing artifacts if their trigger now fires.
+   - Split or merge points only where the current methodology identifies a structural smell AND the user confirms (or delegated). Do NOT re-plan the cut because it "looks nicer".
+   - Update every point's `Context` to cite the contract section it implements (Step 5.75 reference-only rule) if it currently inlines spec.
+   - Re-run the **Step 6.5 lint** with the new guards (Q-guard, contract-churn guard).
+4. **Record**: new `log.md` entry "Upgraded to Tackle <ver>"; bump `Methodology:` stamp in `AGENTS.md` (and `plan.md` header for Lite); add a `D-xx` if a structural choice was required.
+5. **Handoff**: digest + what changed + what was preserved + lint result.
+
+### 10.3 Mode A' — Old Tackle migration
+
+Run **Step 8.5** first. Then run **Mode A** on the result.
+
+### 10.4 Mode B — Unstructured → Tackle
+
+Treat the source as raw material, not as a plan to preserve verbatim.
+
+1. **Ingest**: read every file the user points to. Extract:
+   - Objective (what result is wanted).
+   - Non-goals (what is explicitly out).
+   - Decisions already made (become provisional `D-xx` candidates — confirm before locking).
+   - Open questions (become `Q-xx`).
+   - Existing decomposition, if any (tasks, epics, bullet lists).
+   - External references (become `reference-docs/` snapshots).
+2. **Run Step 1.5 intake anchor**: problem, observable result, top 2 non-goals, highest-shape decision.
+3. **Run Step 2 gate sizing**: Full vs Lite vs None. Default to Full if the source has ≥2 tracks, external deps, or handoff intent.
+4. **If Full and a design contract is implied but missing**: run Step 5.75 — draft the contract BEFORE decomposition. If the source is too fuzzy to stabilize, do NOT decompose yet; surface the blocking questions and stop.
+5. **Decompose** (Step 6 skeleton board first) from the extracted tasks, splitting merged concerns and merging dangling deps.
+6. **Lint + handoff**.
+
+### 10.5 Stop conditions
+
+- If the source plan has already started execution (code exists, PRs merged), Improve becomes **Resume + migrate board hygiene only**; do not restructure executed work.
+- If the source is archaeological (no living grounding, every `file:line` dead, decomposition nonsensical), stop and recommend a fresh **Create**.
+- If the user wants a better plan because the current one is *wrong* (not just old), that is **Create** with preserved decisions, not **Improve**.
+
+## Step 11 — Versioning and release notes (optional)
+
+When the methodology itself changes, record the change so agents and users know what changed between Tackle versions.
+
+Tackle does not require a `CHANGELOG.md`, but if the workspace lives in a repo that is shared (like this skill repo), add a short entry under `references/CHANGELOG.md` or similar:
+
+```
+## Tackle 1.5
+- Step 5.75: stabilize design contract before decomposition.
+- Step 6: skeleton-board-first checkpoint.
+- Step 6.5: Q-guard + contract-churn guard.
+- Step 10: Improve / upgrade mode (Tackle-to-Tackle and unstructured → Tackle).
+```
+
+Bump the default `Methodology:` stamp written by new workspaces to the new version.
 
 ## Output contract (chat = signal; files = depth)
 
@@ -75,6 +151,17 @@ If the intake surfaces questions that need another team, note them as draft Qs a
 `external-questions/` packets as soon as they become concrete.
 
 Doubts during intake follow *Decision ownership*: recover what the codebase can answer, raise the rest to the user. Only on explicit delegation do you proceed provisionally — recording each gap as a ⚠️ provisional `Q-xx` (what you chose, what you couldn't verify, the risk), overturnable, never a silent assumption.
+
+### Step 1.5 — Anchor the intake before sizing
+
+Before choosing a gate (Step 2), lock the shape of the problem in one screen. Write it into the first `log.md` entry and do not proceed until these four items are filled — even if the answer is provisional:
+
+1. **Problem in one sentence** — the specific pain or gap, in user outcome terms.
+2. **Observable result** — what changes for the integrator/user when this is done.
+3. **Top 2 non-goals** — the things this initiative explicitly does NOT do; name the anti-patterns from this repo you are refusing to carry over.
+4. **Highest-shape decision** — the single open question whose answer changes the cut of the plan the most; if it is unresolved, every point that touches it is Deferred until it is decided (see Step 6.5 Q-guard).
+
+This anchor is the cheapest place to catch scope drift. If you cannot fill (1) and (2), you are still diagnosing, not planning — stop and clarify instead of scaffolding artifacts.
 
 ## Step 2 — Size the initiative (gate)
 
@@ -156,11 +243,27 @@ Investigate the actual repo and fill `plan.md` / `reference.md` from it, not fro
 
 Record the chosen architecture as a `D-xx` (with its why) and open `foundations.md` with it. The point decomposition (Step 6) then follows the architecture's seams — the layers/ports/boundaries become natural point cuts.
 
+## Step 5.75 — Stabilize the design contract before decomposition (Full-gate hard gate)
+
+When a `design-contract.md`/`api-spec.md` exists, **do not write point briefings until the contract survives one full planning session unchanged**. The contract is the single source of truth for every public surface, state, error, and wire shape. If it keeps changing while points are being drafted, the points become a propagation chore, not an execution plan.
+
+**Process:**
+1. Draft the contract as a depth artifact (Step 4) *before* the skeleton board (Step 6).
+2. Walk it with the user (or their delegate) and reconcile the highest-shape decisions (Step 1.5) *inside the contract*.
+3. Land all overturnable decisions as `D-xx` — or mark them provisional and keep the affected sections out of the contract until they land.
+4. Only when the contract has no open user-owned question that changes a section may you proceed to Step 6.
+
+**Contract churn rule:** if a contract section changes after any `points/*.md` exists, every point referencing that section is stale. The Step 6.5 lint fails until the references are reconciled. Do not treat this as normal iteration; it signals that decomposition happened too early.
+
+**Reference-only points:** a point MUST cite the contract section it implements (`api-spec.md §X`) in its Context and MUST NOT inline the spec. If the contract says it, the point links to it. If the point needs to say it differently, the contract is superseded first (AGENTS rule 7 / Convention 13).
+
 ## Step 6 — Decompose into points (the heart)
 
 Break the initiative into **independent points** (work units) with a dependency graph in `plan.md`. IDs are zero-padded: `P-01`, `P-02`…
 
-**Checkpoint — validate before writing briefings:** present the point table + dependency graph **in chat** and get the user's OK before writing the `points/*.md` files. Redoing a table is cheap; redoing N briefings is not. Adjust the cut on feedback, then write. (Absent/delegated user: don't stall — write the briefings, record the cut as a provisional `Q-xx` "validate decomposition," and surface it on handoff.)
+**Prerequisite (Full):** Step 5.75 is satisfied — the design contract is stable and every overturnable decision is landed or explicitly out-of-contract. If the contract is still churning, go back to Step 5.75.
+
+**Checkpoint — skeleton board first:** before writing any `points/*.md` briefing, present only a skeleton table in chat: `P-0N` · one-line **What** · **Depends-on** · **Touches** · the shape of the done-signal (command vs review-gate). No approach, no alternatives, no prompts. Get the user's OK on the cut and the dependency graph. Redoing a skeleton is cheap; redoing N briefings is not. Only after the cut is approved do you flesh out the points. (Absent/delegated user: don't stall — write the briefings, record the cut as a provisional `Q-xx` "validate decomposition," and surface it on handoff.)
 
 For each point write `points/P-0N-<slug>.md` from `references/point.tmpl.md` so a cold agent can resolve it **from that file alone**. Each point MUST include: Goal (single responsibility) · **Depends-on** (the edge + what it needs from upstream) · **Touches** (write scope) · grounded Context (`file:line`) · Non-goals · **Recommended approach** · **Alternatives / fallbacks** · **Recommended starting prompt** · **Acceptance** (which carries the runnable **done-signal** + recovery) · linked open questions · a **Definition of Ready** self-check. **A point is verified by exactly two things: its done-signal command and `plan.md` §6.1** — no separate "verification" surface. A point links to deeper artifacts instead of duplicating them. Per-point execution status lives only in `plan.md` §5.
 
@@ -199,8 +302,10 @@ Once the briefings are drafted, **lint the wired plan before handoff** — catch
 - **Graph is a DAG** — no dependency cycles; it topologically orders into the waves. No orphan/unreachable point (unless a deliberate parallel track).
 - **Parallel-safe** — points in the same wave have **disjoint `Touches`** (else flag for isolated worktrees or serialize).
 - **Every point loop-ready** — passes its DoR: single responsibility, runnable done-signal, no open user-owned decision inside it.
+- **Contract churn guard** — if `design-contract.md`/`api-spec.md` sections changed since the last `log.md` entry, every point citing those sections must have been reconciled; otherwise the plan is **not ready to tackle**. A contract that is still mutating means decomposition happened too early (return to Step 5.75). Report churn explicitly: which sections moved and which points reference them.
 - **Quality dimensions derived** — every point's *fired* axes (from its `Touches`, per the catalog) are folded into its done-signal (or review-gated if no honest command exists), wired to the repo tooling in `reference.md`; a point that fires none just leans on §6.1 (expected, not a gap); initiative-wide axes live in §6.1, not restated per point.
 - **Deferral & questions sound** — every Deferred point names its blocking `Q-xx`; every `Q-xx` has an owner + what it Determines; no user-owned doubt left silent (Decision ownership).
+- **Q-guard** — an active point (not Deferred) may not depend on an unresolved user-owned `Q-xx`. If the point's `Depends-on`, `Touches`, or done-signal assumes a decision that is still open, the point is Deferred until that `Q-xx` is resolved. This prevents replanning the same point when the decision flips.
 - **Depth artifacts coherent** (when they exist) — `design-contract.md`: every section maps to ≥1 implementing point, every contract-implementing point cites its section; `foundations.md`: every new abstraction in the points has a grounding row.
 
 A plan that fails the lint is **not ready to tackle**: fix it, or surface the unresolvable item (e.g. a `Q-xx` with no owner) to the user. Report the lint result in the handoff ("pipeline wired ✓, 0 orphans, 2 parallel pairs worktree-flagged").
@@ -302,7 +407,8 @@ A plan from an earlier Tackle version lacks today's structure (done-signals, §6
 
 ## Definition of Done (planning complete)
 
-Tackle is done when **the initiative is ready to be tackled**, not when code is written:
+- [ ] Full-gate: design contract is stable before decomposition (Step 5.75); no contract churn since the last `log.md` entry unless every affected point is reconciled.
+- [ ] Intake anchor is recorded in `log.md` (Step 1.5): problem, observable result, top 2 non-goals, and highest-shape decision.
 - [ ] Gate level chosen and justified (Step 2).
 - [ ] Location set under `docs/plans/<initiative>/`; gitignore 3-way answered (Step 3).
 - [ ] `plan.md`: objective, non-goals, current state (grounded), point decomposition + dependency graph complete.
@@ -326,12 +432,12 @@ Tackle is done when **the initiative is ready to be tackled**, not when code is 
 ## Common mistakes (each → its home rule)
 
 A scan-list of failure modes; the rule lives in the cited home, not here.
-- Executing instead of planning · Claude-only tool assumptions → Scope, Model-agnostic (Overview).
+- Flat list when staged · no parallelism · bundling two concerns ("and") · non-runnable done-signal · aspirational acceptance · restating the §6.1 bar per point · writing full point briefings before the skeleton board is approved · decomposing while the design contract is still churning → Step 6 (and Step 5.75).
 - Silent assumptions · drip-feeding or un-defaulted questions · interrogating about inferable facts → Decision ownership + Cadence.
 - Over-sizing the gate · heavy architecture on Lite · picking the architecture *for* the user → Step 2, Step 5.5.
 - Gitignore decided silently → Step 3. · Depth artifacts by default → Step 4.
 - Burying the de-risking finding · inventing when a house pattern exists · rollout as afterthought · skipping a quality dimension (security/perf/concurrency/correctness) silently, or letting it stay prose instead of folding it into the firing point's done-signal / §6.1 (or a review-gate when no honest command exists) → Step 5 pass + Step 6 catalog. · no `reference-docs/` snapshot → Step 5.
-- Flat list when staged · no parallelism · bundling two concerns ("and") · non-runnable done-signal · aspirational acceptance · restating the §6.1 bar per point → Step 6.
+- Flat list when staged · no parallelism · bundling two concerns ("and") · non-runnable done-signal · aspirational acceptance · restating the §6.1 bar per point · writing full point briefings before the skeleton board is approved → Step 6.
 - Dangling dependency · cycle · orphan · colliding parallel `Touches` → run the Step 6.5 lint.
 - Files written but nothing in chat · point handed off without its pre-attack summary → Step 7.5 / Step 9.
 - Duplicating status / `file:line` across files · point not self-contained → Conventions 5, 7, 8.

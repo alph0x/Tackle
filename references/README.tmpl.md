@@ -1,5 +1,7 @@
 # {{TITLE}} — {{one line: what this is}}
 
+> **Methodology: Tackle 1.5.** See `AGENTS.md` for the workspace contract.
+
 {{2-3 line description: what this initiative solves.}}
 
 <!-- If this is a sibling of another plan, link it and reuse its shared docs instead of duplicating. -->
