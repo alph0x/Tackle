@@ -1,12 +1,12 @@
 # Tackle
 
-A model-agnostic planning skill that turns an initiative into a durable action plan, broken into self-contained points that can be attacked across different sessions and agents.
+A model-agnostic planning skill that turns an initiative into a durable action plan, broken into self-contained points that can be attacked across different sessions and agents — and can execute that plan point-by-point when you ask it to.
 
 ## What it does
 
 Tackle produces a workspace of grounded markdown artifacts under `docs/plans/<initiative>/` in your repository. Each point's `.md` carries all the info needed to resolve it in a fresh session — context, approach, recommended prompt, and alternatives.
 
-**Tackle plans. It does not execute.** Execution happens later, in separate sessions, using the point briefings.
+**Tackle plans and can execute the plan it produces.** It never writes implementation code on its own. The optional `/tackle-implement` and `/tackle-next` modes drive execution by spawning the point team defined in `team.md`, running each point's done-signal, and advancing the board.
 
 ## Who is it for
 
@@ -15,6 +15,7 @@ Any team or developer that:
 - Hands off work between agents, models, or humans
 - Needs plans that survive context window limits and session boundaries
 - Wants every point to be independently tackleable by a cold agent
+- Wants the same skill to drive execution, not just planning
 
 ## Install
 
@@ -37,23 +38,38 @@ Copy `SKILL.md` and the `references/` directory into your agent's skill director
 
 Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this`, `iniciativa`.
 
-**Modes** (Tackle routes on what you say):
+**SDD phase triggers (optional, chainable):**
 
 | You say | Mode |
 |---|---|
-| "tackle this" / new initiative | **Create** — build the plan (the pipeline below) |
-| "resume / retomá `<x>`" | **Resume** — re-enter a plan, re-validate the active point, continue |
+| `/tackle-init [preset]` | **Init** — create the plan-local customization tree (`presets/`, `overrides/`) |
+| `/tackle-constitution` | **Constitution** — establish project principles |
+| `/tackle-specify` | **Specify** — write the product spec |
+| `/tackle-plan` | **Plan** — build the full decomposed plan (standalone default) |
+| `/tackle-tasks` | **Tasks** — flatten the plan into a checklist |
+| `/tackle-implement` | **Implement** — execute the plan point-by-point |
+| `/tackle-next` | **Execute next** — execute one ready point |
+| `/tackle-checklist` | **Checklist** — generate a quality checklist |
+
+**Legacy modes:**
+
+| You say | Mode |
+|---|---|
+| "tackle this" / new initiative | **Create** — build the plan (same as `/tackle-plan`) |
+| "resume / retomá `<x>`" | **Resume** — re-enter a plan |
 | "how is `<x>` going?" / "status" | **Status** — read-only digest |
 | "what plans are there?" | **List** — one line per initiative |
-| "what's next?" / "qué sigue" | **Next** — the next point's pre-attack summary + ready-to-paste prompt |
-| "migrate / upgrade `<x>`" | **Migrate** — bring an old plan up to the current methodology, preserving history |
-| "mejorá este plan" / "improve this plan" / "tackle-upgrade `<x>`" | **Improve** — upgrade a Tackle plan to the latest methodology, or convert an unstructured plan into Tackle |
+| "what's next?" / "qué sigue" | **Next** — the next point's pre-attack summary |
+| "migrate / upgrade `<x>`" | **Migrate** — bring an old plan up to the current methodology |
+| "mejorá este plan" / "improve this plan" | **Improve** — upgrade a Tackle plan or convert an unstructured plan |
 
-**The Create pipeline:** Intake (infer first, then ask) → Gate (None/Lite/Full) → Location & gitignore → Scaffold → Briefing (ground in `file:line`, lead with the de-risking finding, anchor to precedent, weigh the quality dimensions the work fires — security/perf/concurrency/correctness) → Architecture (recommended, you decide) → **Stabilize the design contract (Full)** → Decompose into loop-runnable points (skeleton board first) → Lint the wired plan → Handoff in chat. Each point is engineered as a closed loop: a runnable **done-signal**, `Depends-on`/`Touches` wiring for parallelism, recovery + an iteration budget — so execution can run autonomously, point by point, across agents.
+**The Create pipeline:** Intake → Gate (None/Lite/Full) → Location & gitignore → Scaffold → Briefing → Architecture → Stabilize contract → Decompose → Lint → Handoff.
 
+**Execution:** `/tackle-implement` reads `board.md`, picks the next ready point in dependency order, runs its done-signal, and updates `board.md` + `log.md`. Team sizing is Solo/Pair/Pod/Squad per `team.md`.
 
-**Version:** Tackle 1.5. See `references/CHANGELOG.md` for what's new.
-**Principles that hold at every gate:** Tackle assumes nothing — every doubt goes to you as a decision (recommended default marked, batched, never drip-fed); self-documenting code; a runnable done-signal; rollout/reversibility when it touches production.
+**Template-resolution stack:** overrides → presets → sdd → core.
+
+**Version:** Tackle 2.0. See `references/CHANGELOG.md` for what's new.
 
 ## What it produces
 
@@ -62,23 +78,23 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 | `README.md` | Human index, reading order |
 | `AGENTS.md` | Operating contract for any agent that picks up the plan |
 | `plan.md` | Objective, non-goals, point decomposition + dependency graph |
+| `board.md` | Canonical status board for execution |
 | `log.md` | Append-only session log (canonical state) |
 | `todo.md` | Planning-readiness checklist |
-| `questions.md` | Single source of open questions (`Q-01`…) |
-| `decisions.md` | Closed decisions register (`D-01`…, "don't revisit without cause") |
-| `reference.md` | Current code state with `file:line` (shared across points) |
-| `points/P-0N-*.md` | One self-contained briefing per point (goal, done-signal, wiring, approach, prompt) |
+| `questions.md` | Single source of open questions |
+| `decisions.md` | Closed decisions register |
+| `reference.md` | Current code state with `file:line` |
+| `points/P-0N-*.md` | One self-contained briefing per point |
 
 **Depth artifacts (Full only, created only when their trigger fires):**
 
 | Artifact | When |
 |---|---|
-| `foundations.md` | The initiative introduces non-trivial architecture (decision → principle → source grounding) |
-| `design-contract.md` | Several points must conform to one shared surface (API, wire format, state machine, errors) |
-| `execution-strategy.md` | Execution will be multi-agent / parallel / phased (waves + quality gate + the code-quality guardian loop) |
-| `reference-docs/` | The plan depends on material outside the repo (read-only snapshots + provenance) |
-
-Lite folds the essentials into a single `plan.md`; None plans inline with no workspace. Bigger workspace ≠ better plan — the gate scales ceremony to the real shape of the work.
+| `foundations.md` | Non-trivial architecture |
+| `design-contract.md` | Shared surface that points must conform to |
+| `execution-strategy.md` | Multi-agent/parallel/phased execution |
+| `team.md` | Multi-agent execution teams |
+| `reference-docs/` | External material snapshots |
 
 ## Model-agnostic
 

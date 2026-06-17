@@ -9,7 +9,7 @@ description: Use when starting a non-trivial, multi-session or multi-track initi
 
 Tackle turns an initiative into a **durable action plan**, broken into self-contained **points** that can be attacked across different sessions and agents. It produces a workspace of grounded markdown artifacts under `docs/plans/<initiative>/` that survives session and agent handoffs.
 
-**Scope — Tackle PLANS, it does NOT execute.** It stops at "everything is ready to be tackled". It does not write implementation code. Each point's `.md` must carry *all* the info needed to resolve that point in a fresh session — context, approach, recommended prompt, and alternatives. Execution happens later, in separate sessions, using those point briefings.
+**Scope — Tackle plans and can execute the plan it produces.** It never writes implementation code on its own. Each point's `.md` carries *all* the info needed to resolve that point in a fresh session — context, approach, recommended prompt, and alternatives. The optional `/tackle-implement` and `/tackle-next` modes drive execution by spawning the point team defined in `team.md`, running each point's done-signal, and advancing the board.
 
 **Runs on the codebase.** Tackle is designed to run from inside the target repository. If you are not inside a repo, stop and ask for the codebase path before proceeding. Once confirmed, ground every claim in real `file:line`.
 
@@ -21,15 +21,98 @@ Tackle turns an initiative into a **durable action plan**, broken into self-cont
 
 | The user says (any language) | Mode |
 |---|---|
-| "tackle this" / "plan de acción" / new initiative | **Create** → Steps 1–7 |
-| "resume / retomá `<initiative>`" — keep planning | **Resume** → Step 8 |
-| "how is `<initiative>` going?" / "status" / "seguimiento" | **Status** → Step 9 |
-| "what plans are there?" / "qué iniciativas hay" | **List** → Step 9 |
-| "give me the next point" / "qué sigue" | **Next** → Step 9 |
-| "migrate / upgrade / modernizá `<initiative>`" to the new format | **Migrate** → Step 8.5 |
-| "mejorá este plan" / "improve this plan" / "tackle-upgrade `<initiative>`" | **Improve** → Step 10 |
+| `/tackle-init [preset]` | **Init** → create `docs/plans/<initiative>/` and the plan-local customization tree: `presets/<preset>/` and `overrides/` |
+| `/tackle-constitution` | **Constitution** → produce `docs/plans/<initiative>/constitution.md` |
+| `/tackle-specify` | **Specify** → produce `docs/plans/<initiative>/spec.md` |
+| `/tackle-plan` or `tackle this` / `plan de acción` / `armá/armar un plan` / `plan this out` / `iniciativa` | **Plan** → Steps 1–7 |
+| `/tackle-tasks` | **Tasks** → produce `docs/plans/<initiative>/tasks.md` |
+| `/tackle-implement` | **Implement** → execute the plan point-by-point in dependency order |
+| `/tackle-next` | **Execute next** → execute exactly one ready point and stop |
+| `/tackle-checklist` | **Checklist** → produce `docs/plans/<initiative>/checklist.md` |
+| `resume / retomá <initiative>` | **Resume** → Step 8 |
+| `how is <initiative> going?` / `status` / `seguimiento` | **Status** → Step 9 |
+| `what plans are there?` / `qué iniciativas hay` | **List** → Step 9 |
+| `give me the next point` / `qué sigue` | **Next** → Step 9 |
+| `migrate / upgrade / modernizá <initiative>` | **Migrate** → Step 8.5 |
+| `mejorá este plan` / `improve this plan` / `tackle-upgrade <initiative>` | **Improve** → Step 10 |
 
 If the initiative is ambiguous (several under `docs/plans/`), show the List and ask which.
+
+### SDD phase entry points (optional)
+
+These phases can be used standalone or chained. `/tackle-plan` is still the standalone default path.
+
+| Phase | Trigger | Output | Stops after |
+|---|---|---|---|
+| Init | `/tackle-init [preset]` | `docs/plans/<initiative>/presets/<preset>/`, `docs/plans/<initiative>/overrides/` | Workspace skeleton only; no content yet. |
+| Constitution | `/tackle-constitution` | `docs/plans/<initiative>/constitution.md` | Principles and constraints; no spec or points. |
+| Specify | `/tackle-specify` | `docs/plans/<initiative>/spec.md` | Requirements and acceptance; no points. |
+| Plan | `/tackle-plan` | Full workspace (`plan.md`, `points/`, etc.) | Complete decomposed plan. |
+| Tasks | `/tackle-tasks` | `docs/plans/<initiative>/tasks.md` | Flattened checklist from `plan.md` §5. |
+| Implement | `/tackle-implement` | Updated `board.md` + `log.md` | All ready points are done or one is blocked. |
+| Execute next | `/tackle-next` | Updated `board.md` + `log.md` | Exactly one ready point. |
+| Checklist | `/tackle-checklist` | `docs/plans/<initiative>/checklist.md` | Checklist from selected source. |
+
+### Template-resolution stack
+
+Tackle resolves templates and presets in this order, first match wins:
+
+```
+docs/plans/<initiative>/overrides/     ← plan-local overrides
+  > docs/plans/<initiative>/presets/<preset>/  ← chosen preset
+  > references/sdd/                    ← SDD phase templates
+  > references/                        ← base templates
+```
+
+In short: **overrides > presets > sdd > core**.
+
+* **Presets** live in `references/presets/<preset>/` and are copied into `docs/plans/<initiative>/presets/<preset>/` by `/tackle-init`.
+* **Overrides** live in `docs/plans/<initiative>/overrides/` and are empty by default; drop files here to replace any template or preset file for this initiative only.
+* **Nothing Tackle-related is installed at the repo root.** All customization is visible inside `docs/plans/<initiative>/`.
+
+### Execution loop (`/tackle-implement` and `/tackle-next`)
+
+Tackle 2.0 can execute the plan it produces, not just plan it:
+
+1. Read `docs/plans/<initiative>/board.md` for the dependency graph and current status.
+2. Pick the next ready point in dependency order.
+3. Render `references/sdd/implement.tmpl.md` (or the override/preset equivalent) with the point's context.
+4. Run the point's done-signal.
+5. If green → mark 🟢, append a `log.md` entry, continue to the next ready point (`/tackle-implement`) or stop (`/tackle-next`).
+6. If red → recover and retry up to the point's loop budget (default from `AGENTS.md`). If still red, mark ⏸ blocked, append `log.md`, and stop.
+
+The execution team size is Solo/Pair/Pod/Squad per `team.md`. The workspace (`board.md`, `log.md`) is the state machine; chat history is not.
+
+### Init mode
+
+Triggered by `/tackle-init [preset]`.
+
+1. Confirm the initiative name (or ask if ambiguous).
+2. Create `docs/plans/<initiative>/` if it does not exist.
+3. Copy `references/presets/<preset>/` into `docs/plans/<initiative>/presets/<preset>/`.
+4. Create `docs/plans/<initiative>/overrides/`.
+5. If the requested preset is missing, fall back to `references/presets/default/`.
+
+### Constitution phase
+
+Triggered by `/tackle-constitution`.
+
+1. Confirm the initiative name (or ask if ambiguous).
+2. Create `docs/plans/<initiative>/` if it does not exist.
+3. Render `references/sdd/constitution.tmpl.md` to `docs/plans/<initiative>/constitution.md`.
+4. Fill the placeholders with the user: project name, date, purpose, principles, quality bar, non-goals, conflict resolution.
+5. Stop — the Constitution phase produces only `constitution.md`. No spec, no points, no execution.
+
+### Specify mode
+
+Triggered by `/tackle-specify` or `tackle-specify`.
+
+1. Confirm the initiative name (or ask if ambiguous).
+2. Create `docs/plans/<initiative>/` if it does not exist.
+3. Render `references/sdd/specify.tmpl.md` to `docs/plans/<initiative>/spec.md`.
+4. Fill the placeholders with the user: what is being built, why it matters, non-goals, user stories, acceptance criteria, open questions, and references.
+5. Stop — the Specify phase produces only `spec.md`. No points, no depth artifacts, no execution.
+
 
 If the user points at a folder that is **not** under `docs/plans/` (e.g. a loose markdown file, a Jira-export, a previous initiative's notes), the Improve mode treats it as an unstructured plan and converts it into a Tackle workspace under `docs/plans/<initiative>/` (Mode B below).
 
@@ -60,7 +143,7 @@ Inspect the path the user gave. Ask if unclear.
    - Split or merge points only where the current methodology identifies a structural smell AND the user confirms (or delegated). Do NOT re-plan the cut because it "looks nicer".
    - Update every point's `Context` to cite the contract section it implements (Step 5.75 reference-only rule) if it currently inlines spec.
    - Re-run the **Step 6.5 lint** with the new guards (Q-guard, contract-churn guard).
-4. **Record**: new `log.md` entry "Upgraded to Tackle <ver>"; bump `Methodology:` stamp in `AGENTS.md` (and `plan.md` header for Lite); add a `D-xx` if a structural choice was required.
+4. **Record**: new `log.md` entry "Upgraded to Tackle 2.0"; bump `Methodology:` stamp in `AGENTS.md` (and `plan.md` header for Lite) to **Tackle 2.0**; add a `D-xx` if a structural choice was required.
 5. **Handoff**: digest + what changed + what was preserved + lint result.
 
 ### 10.3 Mode A' — Old Tackle migration
@@ -97,6 +180,13 @@ When the methodology itself changes, record the change so agents and users know 
 Tackle does not require a `CHANGELOG.md`, but if the workspace lives in a repo that is shared (like this skill repo), add a short entry under `references/CHANGELOG.md` or similar:
 
 ```
+## Tackle 2.0
+- SDD phase entry points: `/tackle-init`, `/tackle-constitution`, `/tackle-specify`, `/tackle-tasks`, `/tackle-implement`, `/tackle-next`, `/tackle-checklist`.
+- Plan execution: `/tackle-implement` and `/tackle-next` run points point-by-point.
+- Template-resolution stack: overrides > presets > sdd > core.
+- Visible plan-local customization: `presets/` and `overrides/` inside `docs/plans/<initiative>/`.
+- New depth artifacts: `team.md` (execution team protocol) and `board.md` (canonical status board).
+
 ## Tackle 1.5
 - Step 5.75: stabilize design contract before decomposition.
 - Step 6: skeleton-board-first checkpoint.
@@ -104,7 +194,7 @@ Tackle does not require a `CHANGELOG.md`, but if the workspace lives in a repo t
 - Step 10: Improve / upgrade mode (Tackle-to-Tackle and unstructured → Tackle).
 ```
 
-Bump the default `Methodology:` stamp written by new workspaces to the new version.
+Bump the default `Methodology:` stamp written by new workspaces to **Tackle 2.0**.
 
 ## Output contract (chat = signal; files = depth)
 
@@ -213,6 +303,8 @@ Copy from `references/` and fill `{{PLACEHOLDERS}}`. NEVER leave empty slots you
 - `foundations.md` — grounding table (decision → principle → source) → `references/foundations.tmpl.md`. **When:** the initiative introduces non-trivial architecture (new subsystem, layering, a set of patterns).
 - `design-contract.md` (a.k.a. `api-spec.md`) — the authoritative public surface points implement → `references/design-contract.tmpl.md`. **When:** points could each get a shared surface *wrong independently* — i.e. conformance drift is the risk (API, wire format, state machine, error taxonomy). That's what makes it **normative** and a point's "required reading" (Convention 8). Contrast `reference.md`, which holds *descriptive* shared facts (what the code is); if you only need to point at shared context, that's `reference.md` and an ordinary `Depends-on`, not a contract.
 - `execution-strategy.md` — waves + inter-wave quality gate + deferral → `references/execution-strategy.tmpl.md`. **When:** execution will be multi-agent/parallel or phased. (Still planning, not executing — it plans the attack.)
+- `team.md` — execution team roles and protocol → `references/team.tmpl.md`. **When:** points will be executed by multi-agent teams (Pair/Pod/Squad) so every agent knows the rules.
+- `board.md` — canonical status board derived from `plan.md` §5 → `references/board.tmpl.md`. **When:** the plan will be executed with `/tackle-implement` or `/tackle-next`; it is the state machine for execution.
 
 If using superpowers for depth, also create `specs/` and `plans/` as needed (not scaffolded by
 default — create them when you start using `brainstorming` / `writing-plans`).
@@ -306,7 +398,7 @@ Once the briefings are drafted, **lint the wired plan before handoff** — catch
 - **Quality dimensions derived** — every point's *fired* axes (from its `Touches`, per the catalog) are folded into its done-signal (or review-gated if no honest command exists), wired to the repo tooling in `reference.md`; a point that fires none just leans on §6.1 (expected, not a gap); initiative-wide axes live in §6.1, not restated per point.
 - **Deferral & questions sound** — every Deferred point names its blocking `Q-xx`; every `Q-xx` has an owner + what it Determines; no user-owned doubt left silent (Decision ownership).
 - **Q-guard** — an active point (not Deferred) may not depend on an unresolved user-owned `Q-xx`. If the point's `Depends-on`, `Touches`, or done-signal assumes a decision that is still open, the point is Deferred until that `Q-xx` is resolved. This prevents replanning the same point when the decision flips.
-- **Depth artifacts coherent** (when they exist) — `design-contract.md`: every section maps to ≥1 implementing point, every contract-implementing point cites its section; `foundations.md`: every new abstraction in the points has a grounding row.
+- **Depth artifacts coherent** (when they exist) — `design-contract.md`: every section maps to ≥1 implementing point, every contract-implementing point cites its section; `foundations.md`: every new abstraction in the points has a grounding row; `team.md`: team sizing matches point complexity; `board.md`: status reflects `plan.md` §5 and execution progress.
 
 A plan that fails the lint is **not ready to tackle**: fix it, or surface the unresolvable item (e.g. a `Q-xx` with no owner) to the user. Report the lint result in the handoff ("pipeline wired ✓, 0 orphans, 2 parallel pairs worktree-flagged").
 
@@ -331,28 +423,27 @@ Then the starting prompt. The user should grasp *what is about to happen* withou
 The user should know what to do next without opening a single file.
 
 ## Conventions (baked into the templates)
-
 1. **Log append-only**: one entry per session (`## YYYY-MM-DD · session N · <title>` → Did / Decisions / Blockers / Next). Never rewrite old entries. No secrets.
-2. **Questions single-source** in `questions.md` (`Q-01`…). External ones also as packets in `external-questions/`.
-3. **Canonical state = last log entry.** README/AGENTS link to it; they do NOT duplicate status.
-4. **Decisions single-source = `decisions.md`** (`D-01`…, "don't revisit without cause", append-only by superseding). A resolved `Q-xx` becomes a `D-xx`; the log links the `D-id`.
-5. **One per-point status board = `plan.md` §5.** `point.md` and `todo.md` don't duplicate execution status (`todo.md` tracks *planning readiness* — a different axis).
-6. **Logs stay terse; the newest entry carries a State snapshot** sufficient to resume without re-reading history. Keep entries short — append-only ≠ verbose.
-7. **Ground in `file:line`** from the codebase. No claim about code without a verified reference.
-8. **Points are self-contained** — a point links to depth and carries enough to be solved standalone on any model. The ONE allowed prerequisite is a named `design-contract.md` section the point implements (required reading, named in its Context); everything else is depth, not a precondition.
-9. **No new files without reason.** New file → update README + AGENTS maps.
-10. **Fixed status vocabulary** (in `plan.md` §5 and external packets): 🔴 not started · 🟡 in progress · ⏸ blocked · 🟢 done. Don't invent variants — digests depend on it.
-11. **Status flows back via the executor contract** in the workspace `AGENTS.md`: whoever works a point (any agent, any session) updates `plan.md` §5 + appends a log entry. Tackle doesn't execute, but it plants the contract so tracking survives execution.
+2. **Language**: all workspace artifacts are written in **English**, regardless of the conversation language.
+3. **Questions only in `questions.md`**; **closed decisions only in `decisions.md`** (`D-id`, "don't revisit without cause", append-only by superseding).
+4. **Canonical state = last `log.md` entry; execution status = `board.md`.** Don't duplicate either elsewhere.
+5. **Ground in code, don't infer.** Every claim carries a `file:line` verified against the repo.
+6. **No new files without reason.** New file → update README + AGENTS maps.
+7. **Don't touch out-of-scope** (see `plan.md` §Non-goals).
+8. **Verification = the point's done-signal + `plan.md` §6.1.** A point is done when its done-signal passes and §6.1 holds. **Loop budget (default): 3 attempts, then STOP and escalate** (a point overrides this only in its own Acceptance).
+9. **Contract supersede-first** (if `design-contract.md` exists): implement it as written; a genuine deviation supersedes the spec (edit it + add a `D-xx`) BEFORE the divergent code.
+10. **Grounding** (if `foundations.md` exists): a new pattern/abstraction does not merge without its decision → principle → source row; "it felt cleaner" is not grounding.
+11. **Fixed status vocabulary** (in `plan.md` §5 and `board.md`): 🔴 not started · 🟡 in progress · ⏸ blocked · 🟢 done. Don't invent variants — digests depend on it.
 12. **Single-source the per-point acceptance** in `plan.md` §6.1; points reference it, never restate it (the bar itself: Step 6).
-13. **Contract supersede-first** (when `design-contract.md` exists): points implement the spec as written; a genuine deviation supersedes the spec (edit it + record `D-xx`) BEFORE the divergent code — so points never silently drift apart.
-14. **Grounding before merge** (when `foundations.md` exists): a new pattern/abstraction needs its decision → principle → source row; "it felt cleaner" is not grounding. Disagreements argue against the cited principle, not taste.
+13. **Quality loop** (multi-agent execution): a code-quality guardian runs per point before it flips 🟢 — see `execution-strategy.md` / `team.md`.
+14. **Best practices are the backbone**: Clean Code + SOLID. **Self-documenting code** — no explanatory inline comments; doc-comments on the public surface only, the *why* in commit bodies / these docs.
 15. **Decisions carry their why; questions carry what they determine.** A `D-xx` records the rationale + tradeoff (`decisions.md` template). A `Q-xx` records what its answer unblocks + what you already investigated — don't ask others what the codebase can tell you.
 
-*(Process rules live in their Steps, not here: best-practices/self-documenting backbone → 5.5; parallelism → 6; the quality-guardian loop → `execution-strategy.md`; external-dep snapshots → 5.)*
+*(Process rules live in their Steps, not here: best-practices/self-documenting backbone → 5.5; parallelism → 6; the quality-guardian loop → `execution-strategy.md` / `team.md`; external-dep snapshots → 5.)*
 
 ## Step 8 — Resume (re-invocation)
 
-Re-entering an existing plan under `docs/plans/<initiative>/`: read `AGENTS.md` → the **State snapshot** in the last `log.md` entry → `decisions.md` (what's settled) → `questions.md` (blockers) → the relevant `points/P-0N.md` → and, **if they exist**, `design-contract.md` (the surface the point implements) + `execution-strategy.md` (which wave/loop you're in).
+Re-entering an existing plan under `docs/plans/<initiative>/`: read `AGENTS.md` → the **State snapshot** in the last `log.md` entry → `decisions.md` (what's settled) → `questions.md` (blockers) → the relevant `points/P-0N.md` → and, **if they exist**, `design-contract.md` (the surface the point implements), `execution-strategy.md` (which wave/loop you're in), `team.md` (execution protocol), and `board.md` (current status).
 
 **Open with a digest, not silence:** before continuing, show the user where things stand in the **digest format** (Step 9), and re-ask any user-owned open `Q-xx` directly in chat. Then refine.
 
@@ -393,11 +484,11 @@ A plan from an earlier Tackle version lacks today's structure (done-signals, §6
 ▶ Continue: say "next" and I'll print P-04's prompt.
 ```
 
-**Status** — "how is it going?": read-only digest from `plan.md` §5 + last log snapshot. Also:
+**Status** — "how is it going?": read-only digest from `board.md` + last log snapshot. Also:
 - External packets 🟡 past their `Follow-up by` date → flag explicitly for chasing.
 - **Questions owned by the user → re-ask them directly in chat**, with the options already drafted in `questions.md`/the packet. Don't just point at files.
 - Drift: spot-check the active point's `file:line` claims, its **done-signal command**, and any `design-contract.md` section it implements against the current repo; warn on any that moved (full re-validation is Resume's job, not status').
-- Reconcile if stale: execution happened but §5 wasn't updated (code merged, board still 🔴) → fix §5 + append a log entry noting it. That's the only write a status check makes.
+- Reconcile if stale: execution happened but `board.md` wasn't updated (code merged, board still 🔴) → fix `board.md` + append a log entry noting it. That's the only write a status check makes.
 
 **List** — "what plans are there?": scan `docs/plans/*/`; one line each: name · gate level · X/Y done · blocked on · last activity (newest log entry date). Call out zombies (stale, nothing blocking them).
 
@@ -416,9 +507,9 @@ A plan from an earlier Tackle version lacks today's structure (done-signals, §6
 - [ ] Universal per-point acceptance defined once in `plan.md` §6.1; points reference it.
 - [ ] If production-facing: rollout/reversibility (flag, canary, no-op check) is planned (§7 + the point).
 - [ ] Quality dimensions handled gate-appropriately — **Full:** Step 5 pass (incl. discovering the repo's quality tooling into `reference.md`) + per-point derivation from `Touches` (Step 6), each firing axis folded into its point's done-signal (review-gated only if no honest command) or, if initiative-wide, a §6.1 invariant; **Lite/None:** the plausible-touch walk only. Surprising skips recorded as non-goals; none skipped silently.
-- [ ] Full-gate depth artifacts created **only where their trigger fired** (`foundations.md` / `design-contract.md` / `execution-strategy.md`) — not by default.
+- [ ] Full-gate depth artifacts created **only where their trigger fired** (`foundations.md` / `design-contract.md` / `execution-strategy.md` / `team.md` / `board.md`) — not by default.
 - [ ] Architecture chosen by the user from a gate-appropriate recommendation (Step 5.5), recorded as a `D-xx`; Full plans open `foundations.md` with the Clean Code + SOLID backbone.
-- [ ] Decomposition cuts for parallelism; `execution-strategy.md` names the waves + the **code-quality guardian** loop (when multi-agent).
+- [ ] Decomposition cuts for parallelism; `execution-strategy.md` names the waves + the **code-quality guardian** loop (when multi-agent), and `team.md` names the team sizing.
 - [ ] Every point is **loop-ready**: one responsibility, a runnable **done-signal**, `Depends-on` + `Touches` wired.
 - [ ] Plan passes the **Step 6.5 lint**.
 - [ ] External deps snapshotted into `reference-docs/` when the plan leans on out-of-repo material (Step 5).

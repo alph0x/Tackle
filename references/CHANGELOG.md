@@ -1,4 +1,13 @@
 # Tackle changelog
+## Tackle 2.0
+
+- **SDD phase entry points**: `/tackle-init`, `/tackle-constitution`, `/tackle-specify`, `/tackle-tasks`, `/tackle-implement`, `/tackle-next`, `/tackle-checklist`.
+- **Plan execution**: `/tackle-implement` runs the plan point-by-point; `/tackle-next` executes one ready point.
+- **Template-resolution stack**: `docs/plans/<initiative>/overrides/` → `presets/<preset>/` → `references/sdd/` → `references/`.
+- **Visible plan-local customization**: `presets/` and `overrides/` live inside `docs/plans/<initiative>/`, not at the repo root.
+- **New depth artifacts**: `team.md` (execution team protocol) and `board.md` (canonical status board).
+- **Variable execution teams**: Solo / Pair / Pod / Squad, sized to point complexity.
+- Bumped default `Methodology:` stamp to **Tackle 2.0** in `AGENTS.tmpl.md`, `lite-plan.tmpl.md`, and `README.tmpl.md`.
 
 ## Tackle 1.5
 
