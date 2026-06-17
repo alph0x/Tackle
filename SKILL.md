@@ -52,7 +52,7 @@ In short: **overrides > presets > sdd > core**. Nothing Tackle-related lives at 
 
 ## Execution loop
 
-`/tackle-implement` and `/tackle-next` run `board.md` in dependency order, executing each point's done-signal and updating `board.md` + `log.md`. Team size is Solo/Pair/Pod/Squad per `team.md`.
+`/tackle-implement` and `/tackle-next` spawn the point team defined in `team.md` and run `board.md` in dependency order. The Driver executes each point and runs its done-signal; reviewers verify and the Coordinator updates `board.md` + `log.md`. Team size is Solo/Pair/Pod/Squad per `team.md`.
 
 ## Core conventions
 

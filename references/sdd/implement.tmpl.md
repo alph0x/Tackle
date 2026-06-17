@@ -15,10 +15,9 @@ Repeat while ready points exist, nothing blocks, and budget remains:
 1. Read points in dependency order from `board.md` (fallback: `plan.md` §5).
 2. Pick the first 🔴 point whose dependencies are 🟢.
 3. Set it 🟡 in `board.md`.
-4. Read its briefing (`points/P-0N-*.md`) and execute it as the Driver.
-5. Run its **Done-signal**.
-6. If green: set 🟢, append one line to `log.md`, continue.
-7. If red: retry up to the loop budget (default 3). Still red → set ⏸, append blocker to `log.md`, stop and escalate.
+4. Spawn the point team for that point per `team.md` (Solo/Pair/Pod/Squad); the Driver executes the briefing and runs its **Done-signal**, reviewers verify, and the Coordinator updates state.
+5. If green: set 🟢, append one line to `log.md`, continue.
+6. If red: retry up to the loop budget (default 3). Still red → set ⏸, append blocker to `log.md`, stop and escalate.
 
 ## Guardrails
 

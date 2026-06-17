@@ -17,9 +17,8 @@ points: docs/plans/{{INITIATIVE_NAME}}/points/
 2. Pick the first 🔴 point whose dependencies are 🟢 (or none).
 3. Set its status to 🟡 in `board.md`.
 4. Read the point briefing's `Recommended starting prompt` and `Done-signal`.
-5. Execute the point as the implementer (Driver).
-6. Run the point's `Done-signal`.
-7. If green: set status to 🟢, append `log.md`, return.
-8. If red: retry up to the loop budget; if still red, set status to ⏸, append `log.md`, stop and escalate.
+5. Spawn the point team for that point per `team.md` (Solo/Pair/Pod/Squad); the Driver executes the briefing and runs its **Done-signal**, reviewers verify, and the Coordinator updates state.
+6. If green: set status to 🟢, append `log.md`, return.
+7. If red: retry up to the loop budget; if still red, set status to ⏸, append `log.md`, stop and escalate.
 
 Do not continue to the next point.
