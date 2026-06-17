@@ -35,36 +35,17 @@ docs/plans/{{slug}}/
 
 ## Rules
 
-1. **Log append-only**: one entry per session, chronological, never rewrite old entries.
-2. **Questions only in `questions.md`** (single source). External ones also as a packet in
-   `external-questions/` (create the folder only when needed).
-   **Closed decisions only in `decisions.md`** (`D-id`, "don't revisit without cause", append-only by
-   superseding). A resolved `Q-xx` becomes a `D-xx`; the log links the `D-id`.
-3. **Canonical state = last `log.md` entry; execution status = `board.md`.** Don't duplicate either elsewhere.
-4. **Ground in code, don't infer.** Every claim about the code carries a `file:line`,
-   verified against the repo `{{repo path}}`.
-5. **No new files without reason.** If you add one, update `README.md` and this `AGENTS.md`.
-6. **Domain invariants / constraints**: consult the authoritative domain source/MCP if your
-   environment has one; otherwise use the repo's own canonical constants and annotate it.
-7. **Don't touch out-of-scope** (see non-goals in `plan.md`).
-8. **Verification = the point's done-signal + `plan.md` §6.1.** Nothing else; no separate
-   verification surface. A point is done when its done-signal command passes and §6.1 holds.
-   **Loop budget (default): {{N — suggest 3}} attempts, then STOP and escalate** (Decision
-   ownership) — a point overrides this only in its own Acceptance.
-9. **Contract supersede-first** (if `design-contract.md` exists): implement it as written; a
-   genuine deviation supersedes the spec (edit it + add a `D-xx`) BEFORE the divergent code.
-10. **Grounding** (if `foundations.md` exists): a new pattern/abstraction does not merge
-    without its decision → principle → source row; "it felt cleaner" is not a justification.
-11. **Best practices are the backbone**: Clean Code + SOLID. **Self-documenting code** — no
-    explanatory inline comments; doc-comments on the public surface only, the *why* in commit
-    bodies / these docs. An internal comment is a review finding; its fix is to clarify the
-    code, not reword the comment.
-12. **Quality loop** (multi-agent execution): a code-quality guardian runs per point
-    (smells, redundancy, SOLID, naming) and loops with the implementer until clean before the
-    unit is accepted — see `execution-strategy.md` / `team.md`.
-13. **Execution rule**: if `/tackle-implement` or `/tackle-next` is running, `board.md` is the
-    state machine; only the Coordinator updates it and `log.md`; the Driver writes code;
-    reviewers review only.
+1. **State**: `log.md` is append-only; `board.md` is the execution status. Don't duplicate either elsewhere.
+2. **Single source**: questions in `questions.md`; closed decisions in `decisions.md` (`D-id`, append-only, supersede to change).
+3. **Ground every claim in `file:line`** verified against the repo.
+4. **Scope**: don't touch out-of-scope (see `plan.md` §Non-goals).
+5. **Verification**: point's done-signal + `plan.md` §6.1. Default loop budget: 3 attempts, then STOP and escalate.
+6. **Contract supersede-first** (if `design-contract.md` exists): implement it as written; deviations become a `D-xx` before the divergent code.
+7. **Grounding** (if `foundations.md` exists): new patterns need decision → principle → source before merge.
+8. **Quality loop** (multi-agent): a code-quality guardian reviews before a point flips 🟢.
+9. **Execution rule**: `/tackle-implement` runs `board.md` in dependency order; only the Coordinator updates board/log, only the Driver writes code.
+
+Full conventions: `SKILL.md` §Core conventions.
 
 ## Executor contract (when you work a point)
 

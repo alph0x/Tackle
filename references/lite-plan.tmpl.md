@@ -1,13 +1,8 @@
 # {{TITLE}} (lite)
 
-<!-- Methodology: Tackle 2.0 — the version this plan was built/migrated under (Lite has no AGENTS.md, so the stamp lives here; Step 8.5 / Step 10 reads it). -->
+Lite workspace: `plan.md` + `log.md` + `todo.md`. Upgrade to Full if it grows to multi-session / multi-track: add `README.md`, `AGENTS.md`, `reference.md`, `points/` (and depth artifacts as their triggers fire — `foundations.md`, `design-contract.md`, `execution-strategy.md`, `team.md`, `board.md`; see Step 4).
 
-Lite workspace: this `plan.md` + `log.md` + `todo.md`. If it grows to multi-session or
-multi-track, upgrade to Full: add `README.md`, `AGENTS.md`, `reference.md`, `points/` (+ the
-depth artifacts as their triggers fire — `foundations.md`, `design-contract.md`,
-`execution-strategy.md`, `team.md`, `board.md`; see Step 4). The cross-cutting rules still apply at Lite,
-without the Full artifacts: **no silent assumptions**, **self-documenting code**, and a
-**runnable done-signal** (each enforced in its section below).
+Cross-cutting rules still apply at Lite: no silent assumptions, self-documenting code, and a runnable done-signal per point.
 
 ## Objective
 {{What is achieved, observable.}}

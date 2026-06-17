@@ -6,103 +6,103 @@ source: {{SOURCE_PATH}}
 
 # Quality checklist — {{INITIATIVE_NAME}}
 
-## How to use this checklist
+Read `{{SOURCE_PATH}}` first. Walk the six dimensions below; skip dimensions the source does not fire and record why. Each fired dimension becomes concrete review prompts or a runnable done-signal fragment.
 
-This checklist is derived from `{{SOURCE_PATH}}`. Read the source artifact first, then walk the five quality dimensions below. Skip any dimension the source does not fire, and record the reason under **Why skipped** in that section. Each fired axis must become either a concrete review prompt or a runnable done-signal fragment. Do not leave generic prose as a substitute for a check.
+## Security
 
-## Quality dimensions
+Check every trust boundary, external input, secret, path, query, and crypto op in `{{SOURCE_PATH}}`.
 
-### Security
-
-Framing: every trust boundary, external input, secret, path, query, and cryptographic operation in `{{SOURCE_PATH}}` must have a verifiable control.
-
-- [ ] For every route / endpoint / public function in `{{SOURCE_PATH}}` §API, is there an authz test that asserts unauthenticated → 401 / unauthorized → 403?
-- [ ] Does every user-supplied value pass through validation before it reaches business logic or a query builder?
-- [ ] Are secrets (tokens, keys, passwords) loaded from environment / a secrets manager, never committed or logged?
-- [ ] Are file paths / identifiers scoped to the authenticated principal (no path traversal / insecure direct object reference)?
-- [ ] Is cryptography limited to approved algorithms and libraries recorded in `reference.md`?
-
-Tooling / runnable fragment:
+- [ ] Every route / endpoint / public function has an authz test for 401/403.
+- [ ] Every user-supplied value is validated before business logic / query builder.
+- [ ] Secrets load from environment / secrets manager, never committed or logged.
+- [ ] Paths / identifiers are scoped to the authenticated principal (no traversal / IDOR).
+- [ ] Crypto uses approved algorithms and libraries recorded in `reference.md`.
 
 ```bash
-# example: adjust to the repo's test runner
+# adjust to the repo's test runner
 {{SECURITY_RUNNABLE}}
 ```
 
 Why skipped: {{SECURITY_SKIP_REASON}}
 
-### Performance
+## Performance
 
-Framing: hot paths, loops over data size N, I/O inside requests, and allocation in tight loops must be bounded or measured.
+Check hot paths, loops over N, I/O inside requests, and allocations in tight loops.
 
-- [ ] For every loop or batch operation in `{{SOURCE_PATH}}`, is its cost stated in terms of N and bounded by the acceptance criteria?
-- [ ] Does any path make I/O (network, disk, DB) inside a user-facing request? If so, is it async, batched, or justified?
-- [ ] Are tight loops free of allocations that scale with N?
-- [ ] Is there a benchmark or latency target for the hot path named in `{{SOURCE_PATH}}`?
-
-Tooling / runnable fragment:
+- [ ] Every loop / batch cost is stated in terms of N and bounded by acceptance criteria.
+- [ ] I/O inside user-facing requests is async, batched, or justified.
+- [ ] Tight loops don't allocate in proportion to N.
+- [ ] Hot path has a benchmark or latency target.
 
 ```bash
-# example: adjust to the repo's benchmark / profiler
+# adjust to the repo's benchmark / profiler
 {{PERFORMANCE_RUNNABLE}}
 ```
 
 Why skipped: {{PERFORMANCE_SKIP_REASON}}
 
-### Concurrency
+## Concurrency
 
-Framing: shared mutable state, async flow, parallel access, and locking must be explicit and race-free.
+Check shared mutable state, async flow, parallel access, and locking.
 
-- [ ] Does any mutable state cross an async / thread boundary? If yes, is access synchronized or made immutable?
-- [ ] Are there locks with a documented ordering and a timeout / deadlock guard?
-- [ ] Does `{{SOURCE_PATH}}` describe parallel agents or subagents? If so, are their `Depends-on` + `Touches` constraints enough to prevent collisions?
-- [ ] Has the code been run under the repo's race / thread-sanitizer flag?
-
-Tooling / runnable fragment:
+- [ ] Mutable state crossing async / thread boundaries is synchronized or immutable.
+- [ ] Locks have documented ordering and a timeout / deadlock guard.
+- [ ] Parallel agents / subagents have `Depends-on` + `Touches` constraints that prevent collisions.
+- [ ] Code has been run under the repo's race / thread-sanitizer flag.
 
 ```bash
-# example: adjust to the repo's concurrency checker
+# adjust to the repo's concurrency checker
 {{CONCURRENCY_RUNNABLE}}
 ```
 
 Why skipped: {{CONCURRENCY_SKIP_REASON}}
 
-### Correctness
+## Observability
 
-Framing: finite case-sets, boundary / edge inputs, and error states must be enumerated and checked.
+Check that production paths are debuggable and their failure modes are visible.
 
-- [ ] For every conditional or state machine in `{{SOURCE_PATH}}`, are the branches enumerated in the acceptance criteria or tests?
-- [ ] Are boundary inputs (empty, max, nil, overflow, timeout) listed with expected behavior?
-- [ ] Does every error path return a usable error shape and leave the system in a safe state?
-- [ ] Is the done-signal in `{{SOURCE_PATH}}` a runnable command or an explicit review gate with a rubric?
-
-Tooling / runnable fragment:
++- [ ] Every new production path logs enough context to debug failures without guessing.
++- [ ] Key metrics exist for throughput, errors, and latency on user-facing or critical paths.
++- [ ] Alerts fire on symptoms (not just causes) for failure modes that affect users or SLOs.
++- [ ] A runbook or rollback path exists for critical failure modes.
 
 ```bash
-# example: adjust to the repo's test suite
+# adjust to the repo's observability validation (logs / metrics / traces)
+{{OBSERVABILITY_RUNNABLE}}
+```
+
+Why skipped: {{OBSERVABILITY_SKIP_REASON}}
+
+## Correctness
+
+Check finite case-sets, boundary inputs, and error states.
+
+- [ ] Branches of every conditional / state machine are enumerated in acceptance criteria or tests.
+- [ ] Boundary inputs (empty, max, nil, overflow, timeout) have expected behavior listed.
+- [ ] Every error path returns a usable error shape and leaves the system safe.
+- [ ] Done-signal is a runnable command or an explicit review gate with a rubric.
+
+```bash
+# adjust to the repo's test suite
 {{CORRECTNESS_RUNNABLE}}
 ```
 
 Why skipped: {{CORRECTNESS_SKIP_REASON}}
 
-### Conventions & Style
+## Conventions & Style
 
-Framing: the codebase's linter, formatter, naming, and self-documenting-code rules are the always-on backbone.
+Check linter, formatter, naming, and self-documenting-code rules.
 
-- [ ] Does the plan's text follow the language convention in `SKILL.md` (English for workspace artifacts)?
-- [ ] Does every `file:line` citation in `{{SOURCE_PATH}}` resolve to real code?
-- [ ] Are there no inline comments explaining *what* the plan says; intent and non-obvious tradeoffs only?
-- [ ] Does the artifact pass the repo's formatter / linter without overrides?
-
-Tooling / runnable fragment:
+- [ ] Workspace artifacts follow the language convention in `SKILL.md`.
+- [ ] Every `file:line` citation in `{{SOURCE_PATH}}` resolves to real code.
+- [ ] No inline comments explaining *what*; intent and non-obvious tradeoffs only.
+- [ ] Artifact passes the repo's formatter / linter without overrides.
 
 ```bash
-# example: adjust to the repo's lint / format command
+# adjust to the repo's lint / format command
 {{CONVENTIONS_RUNNABLE}}
 ```
 
-Why skipped: {{CONVENTIONS_SKIP_REASON}}
-
 ## Degraded source path
 
-If `{{SOURCE_PATH}}` does not exist when `/tackle-checklist` is invoked, produce a degraded `checklist.md` that lists the five dimensions above and asks the user to point to a `spec.md` or `plan.md` under `docs/plans/{{INITIATIVE_NAME}}/`. Do not fail silently.
+If `{{SOURCE_PATH}}` does not exist, list the six dimensions above and ask the user to point to a `spec.md` or `plan.md` under `docs/plans/{{INITIATIVE_NAME}}/`. Do not fail silently.

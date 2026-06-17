@@ -7,12 +7,12 @@ description: Use when starting a non-trivial, multi-session or multi-track initi
 
 ## Overview
 
-Tackle turns an initiative into a **durable action plan** under `docs/plans/<initiative>/`, broken into self-contained **points** that survive session and agent handoffs.
+Tackle creates a durable action plan under `docs/plans/<initiative>/`, broken into self-contained points that survive handoffs.
 
-- **It plans and can execute the plan it produces.** It never writes implementation code on its own.
-- **It runs inside the target repo.** Ground every claim in `file:line`.
-- **It is model-agnostic.** Follows the Agent Skills format: this `SKILL.md` + `references/`.
-- **All workspace artifacts are written in English.**
+- Plans and can execute the plan it produces; never writes implementation code on its own.
+- Runs inside the target repo; grounds every claim in `file:line`.
+- Model-agnostic: `SKILL.md` + `references/`.
+- Workspace artifacts are in English.
 
 ## Routing
 
@@ -35,20 +35,7 @@ Tackle turns an initiative into a **durable action plan** under `docs/plans/<ini
 
 If several initiatives exist under `docs/plans/`, show the List and ask which.
 
-## SDD phase entry points (optional)
-
-| Phase | Trigger | Output |
-|---|---|---|
-| Init | `/tackle-init [preset]` | `presets/<preset>/`, `overrides/` |
-| Constitution | `/tackle-constitution` | `constitution.md` |
-| Specify | `/tackle-specify` | `spec.md` |
-| Plan | `/tackle-plan` | Full workspace |
-| Tasks | `/tackle-tasks` | `tasks.md` |
-| Implement | `/tackle-implement` | Updated `board.md` + `log.md` |
-| Execute next | `/tackle-next` | Updated `board.md` + `log.md` |
-| Checklist | `/tackle-checklist` | `checklist.md` |
-
-`/tackle-plan` remains the standalone default path.
+`/tackle-plan` is the standalone default path.
 
 ## Template-resolution stack
 
@@ -65,7 +52,7 @@ In short: **overrides > presets > sdd > core**. Nothing Tackle-related lives at 
 
 ## Execution loop
 
-`/tackle-implement` and `/tackle-next` read `board.md`, pick the next ready point in dependency order, run its done-signal, and update `board.md` + `log.md`. Team size is Solo/Pair/Pod/Squad per `team.md`.
+`/tackle-implement` and `/tackle-next` run `board.md` in dependency order, executing each point's done-signal and updating `board.md` + `log.md`. Team size is Solo/Pair/Pod/Squad per `team.md`.
 
 ## Core conventions
 
@@ -80,7 +67,7 @@ In short: **overrides > presets > sdd > core**. Nothing Tackle-related lives at 
 
 ## Output contract
 
-Open every plan response with one status line (`🟢 on track / 🟡 needs your input / 🔴 blocked`). Close with an action footer: `⚠️ On you: ...` and `▶ Continue: ...`. Hard caps: digest ≤ 12 lines; handoff ≤ one screen. Don't paste file contents into chat — point to them.
+Open with one status line (`🟢 on track / 🟡 needs your input / 🔴 blocked`). Close with `⚠️ On you: ...` and `▶ Continue: ...`. Digest ≤ 12 lines; handoff ≤ one screen. Don't paste file contents — point to them.
 
 ## Where the detail lives
 
