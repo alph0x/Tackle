@@ -9,7 +9,7 @@ description: Use when starting a non-trivial, multi-session or multi-track initi
 
 Tackle creates a durable action plan under `docs/plans/<initiative>/`, broken into self-contained points that survive handoffs.
 
-- Plans and can execute the plan it produces; never writes implementation code on its own.
+- Plans by default; executes only when explicitly asked. `/tackle-plan` stops at handoff; `/tackle-implement` and `/tackle-next` require confirmation unless the user upfront asked for plan+execute.
 - Runs inside the target repo; grounds every claim in `file:line`.
 - Model-agnostic: `SKILL.md` + `references/`.
 - Workspace artifacts are in English.
@@ -21,7 +21,8 @@ Tackle creates a durable action plan under `docs/plans/<initiative>/`, broken in
 | `/tackle-init [preset]` | **Init** → create plan-local `presets/` and `overrides/` |
 | `/tackle-constitution` | **Constitution** → write `constitution.md` |
 | `/tackle-specify` | **Specify** → write `spec.md` |
-| `/tackle-plan` or `tackle this` / `plan de acción` / `armar un plan` / `plan this out` / `iniciativa` | **Plan** → run Steps 1–7 |
+| `/tackle-plan` or `tackle this` / `plan de acción` / `armar un plan` / `plan this out` / `iniciativa` | **Plan** → Steps 1–7, then hand off |
+| `/tackle-plan` + explicit execute request, or `tackle this and implement it` / `plan de acción y ejecutá` / `do it` | **Plan + Execute** → Steps 1–7, then run execution |
 | `/tackle-tasks` | **Tasks** → write `tasks.md` |
 | `/tackle-implement` | **Implement** → execute all ready points |
 | `/tackle-next` | **Execute next** → execute one ready point |
@@ -51,8 +52,9 @@ docs/plans/<initiative>/overrides/
 In short: **overrides > presets > sdd > core**. Nothing Tackle-related lives at the repo root.
 
 ## Execution loop
-
 `/tackle-implement` and `/tackle-next` spawn the point team defined in `team.md` and run `board.md` in dependency order. The Driver executes each point and runs its done-signal; reviewers verify and the Coordinator updates `board.md` + `log.md`. Team size is Solo/Pair/Pod/Squad per `team.md`.
+
+**Execution requires explicit intent.** If the user did **not** upfront ask for plan+execute, `/tackle-implement` and `/tackle-next` must present the point's pre-attack summary and ask for confirmation before changing code. "Yes", "go ahead", or equivalent confirms; silence or ambiguity means stop.
 
 ## Core conventions
 
