@@ -56,6 +56,19 @@ In short: **overrides > presets > sdd > core**. Nothing Tackle-related lives at 
 
 **Execution requires explicit intent.** If the user did **not** upfront ask for plan+execute, `/tackle-implement` and `/tackle-next` must present the point's pre-attack summary and ask for confirmation before changing code. "Yes", "go ahead", or equivalent confirms; silence or ambiguity means stop.
 
+
+## Optional skills
+
+At the start of planning, check whether these optional companion skills are available:
+
+- `superpowers` — for `brainstorming` and `writing-plans` depth.
+- `karpathy-guidelines` — for simplicity-first discipline.
+- A `solid-skills` or clean-architecture skill — for architecture / SOLID decisions.
+
+If they are not installed, suggest installing them to the user. If the user agrees, install them. If the user declines, ask what planning-related skills they do have installed, and use any relevant ones. If the user has none and does not want to install any, plan with your own judgment and note the gap once — do not re-nag.
+
+Always use these skills for planning aids only, never for execution.
+
 ## Core conventions
 
 1. **Log append-only** — one entry per session; never rewrite history.
