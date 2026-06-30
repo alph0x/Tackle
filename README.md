@@ -71,7 +71,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 
 **Template-resolution stack:** overrides → presets → sdd → core.
 
-**Version:** Tackle 2.1.0. See `references/CHANGELOG.md` for what's new.
+**Version:** Tackle 2.1.1. See `references/CHANGELOG.md` for what's new.
 
 ## What it produces
 

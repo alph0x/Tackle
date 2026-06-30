@@ -1,4 +1,12 @@
 # Tackle changelog
+## Tackle 2.1.1
+
+- Added `/tackle-ground` command to mechanically read and record every cited `file:line`.
+- Added concrete HIGH/MEDIUM/LOW certainty-level examples to the verify guide.
+- Hardened gitignore decision recording: requires a `D-xx` in `decisions.md` when not adding to `.gitignore`.
+- Added harness map to `AGENTS.tmpl.md` so workspaces record their concrete tool bindings.
+- Updated execution loop: cold-session modes must read `board.md`, `log.md`, and `decisions.md` before acting.
+
 ## Tackle 2.1.0
 
 - Added grounding gate: points are ungrounded until every cited `file:line` is read.
