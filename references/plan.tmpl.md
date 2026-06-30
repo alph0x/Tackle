@@ -29,19 +29,20 @@ module this design follows — `path` / repo, with file:line.}}
 {{Summary of the relevant code state, with `file:line` for the key points.}}
 
 ## 5. Point decomposition
+<!-- Right-size check: if this table has ≤4 rows and no cross-track work, consider collapsing to `lite-plan.tmpl.md`. -->
 <!-- One row per point. Each point has a self-contained briefing in points/<id>-<slug>.md.
-     A point may map 1:1 to a phase. Delete the Spec/Plan cols if not using superpowers depth.
-     Status vocabulary (fixed): 🔴 not started · 🟡 in progress · ⏸ blocked (say on what) · 🟢 done -->
+     A point may map 1:1 to a phase. Delete the Spec/Plan cols if not using superpowers depth. -->
 
-| Point | What | Briefing | Depth (optional) | Depends on | Status |
+| Point | What | Traces to | Briefing | Depth (optional) | Depends on |
 |---|---|---|---|---|---|
-| **P-01 · {{...}}** | {{...}} | `points/P-01-{{slug}}.md` | `specs/{{date}}-P-01.md` · `plans/{{date}}-P-01.md` | {{none}} | {{🔴 not started}} |
+| **P-01 · {{...}}** | {{...}} | `spec.md:NN` / ticket line | `points/P-01-{{slug}}.md` | `specs/{{date}}-P-01.md` · `plans/{{date}}-P-01.md` | {{none}} |
 
 ### Dependency graph
 ```
 {{P-01 ──► P-02   (P-01 blocks P-02)}}
 {{P-03            (independent)}}
 ```
+<!-- Parallelism is read off the graph; **status lives only in `board.md`** -->
 
 ## 6. Acceptance criteria
 
@@ -53,7 +54,7 @@ module this design follows — `path` / repo, with file:line.}}
      Step 5 up into this block — they're the gates that actually catch drift. This block is the
      always-on BACKBONE (Architecture + Conventions & Style) plus the quality-dimension axes that
      fire initiative-wide; per-point axes live in each point's Acceptance, not here. -->
-- [ ] {{tests cover the change (test-first if the project mandates TDD); the suite is green}}
+- [ ] {{tests cover the change (test-first if the project mandates TDD); the suite is green; each point's done-signal is a literal command with a pass condition}}
 - [ ] {{structural invariant 1, promoted from the contract — e.g. "core compiles with zero deps"}}
 <!-- Quality-dimension axes (SKILL.md Step 6 catalog): keep an axis HERE only if it fires for EVERY point.
      An axis that fires for only SOME points lives in those points' Acceptance, not here. -->
