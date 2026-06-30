@@ -1,6 +1,16 @@
 # Step 3 — Location & gitignore
 
-Create `docs/plans/<initiative>/`. **Ask the user explicitly**: "Should `docs/plans/` be added to `.gitignore`?" If yes, append `docs/plans/` to `.gitignore`; if no, record the decision in `decisions.md` so the question is not re-asked. Never silently skip this question.
+Create `docs/plans/<initiative>/`. **Ask the user explicitly**: "Should `docs/plans/` be added to `.gitignore`?" If yes, append `docs/plans/` to `.gitignore`; if no, record the decision in `decisions.md` as:
+
+```markdown
+## D-0x — gitignore for docs/plans/
+
+- Decision: do not add `docs/plans/` to `.gitignore`.
+- Reason: {{user's reason or "user wants plan history tracked"}}.
+- Asked: {{date}}.
+```
+
+Never silently skip this question.
 
 # Step 4 — Scaffold the core
 
