@@ -1,6 +1,6 @@
 # Team protocol — {{TITLE}}
 
-When a point enters execution, the orchestrator spawns a **point team** sized to the point's complexity. The workspace (`board.md`, `log.md`, the point file, and the touched files) is the single source of truth; IRC is only for coordination.
+When a point enters execution, the orchestrator spawns a **point team** sized to the point's complexity and risk. The workspace (`board.md`, `log.md`, the point file, and the touched files) is the single source of truth; IRC is only for coordination. The team is harness-agnostic: "the most capable model" handles planning/judgment, "the balanced model" handles validation, "the fast model" handles mechanical work. Use whatever model selection your harness provides.
 
 ## Team sizing
 
@@ -27,7 +27,7 @@ Add specialists when the point's risk justifies it; default Squad = Driver + Rev
 
 ## Single source of truth for state
 
-- **`board.md`** is the only place that records point status (🔴 🟡 ⏸ 🟢).
+- **`board.md`** is the only place that records point status (🔴 🟡 ⏸ 🟢). `plan.md` §5 never carries status columns.
 - **`log.md`** is append-only history. It records what happened, not the current state.
 - **`todo.md`** is for planning-readiness; it is not updated during execution.
 - **No IRC status payloads.** Coordination messages are plain prose; the board is where status lives.
@@ -54,6 +54,12 @@ Add specialists when the point's risk justifies it; default Squad = Driver + Rev
 - Owns flow and workspace hygiene; updates `board.md` and `log.md`.
 - Collects PASS from reviewers; decides when the point is 🟢.
 
+### Verifier / Red-Teamer
+- Runs `/tackle-verify` on the point before it is handed to the Driver.
+- Produces a findings list with certainty levels (HIGH/MEDIUM/LOW).
+- A HIGH finding blocks execution; MEDIUM blocks unless the user accepts the risk; LOW is advisory.
+- Independent from the Driver and Reviewer; can be the same agent as the Coordinator only on trivial Solo points.
+
 ## Lifecycle
 
 1. Reviewer/Spec Reader summarizes scope (skip in Solo).
@@ -73,8 +79,9 @@ Add specialists when the point's risk justifies it; default Squad = Driver + Rev
 
 A point flips to 🟢 only when:
 
-1. Driver: done-signal passes.
-2. Reviewer/Spec Reader: output matches briefing and `design-contract.md`.
-3. Quality Guardian: no quality findings (if Pod/Squad).
-4. Simplicity/Regression/Performance & Concurrency Auditor: no findings (if Squad and triggered).
-5. Coordinator/Reviewer: `board.md` updated (and `log.md` if Pod/Squad).
+1. **Verifier / Red-Teamer**: `/tackle-verify` passed with no HIGH findings and no unresolved MEDIUM findings.
+2. Driver: done-signal passes.
+3. Reviewer/Spec Reader: output matches briefing and `design-contract.md`.
+4. Quality Guardian: no quality findings (if Pod/Squad).
+5. Simplicity/Regression/Performance & Concurrency Auditor: no findings (if Squad and triggered).
+6. Coordinator/Reviewer: `board.md` updated (and `log.md` if Pod/Squad).

@@ -25,6 +25,12 @@
   gate** (below) is the complement: it owns what only shows in the *merged* tree — cross-unit
   drift, races, duplication between points.
 
+## Pre-wave verification gate (BLOCKING)
+
+Before any wave starts, run `/tackle-verify` on every point in the wave. A point with HIGH findings is removed from the wave and returned to planning. MEDIUM findings require explicit user acceptance; LOW findings become notes for the Driver.
+
+This gate runs once per wave, not per point, so parallel-ready points are verified in batch.
+
 ## Waves (derived from the dependency graph)
 
 Group the points into waves: everything with no unmet dependency runs in one wave; the next
@@ -48,6 +54,7 @@ Deferred (gated on a question): {{P-0y blocked on Q-0z — do not start until re
 After a wave's points merge and before the next wave starts, run ONE gate over the **merged**
 tree (per-point reviewers see one point; the gate sees the whole, where drift and races live):
 
+0. **Verification re-check** — re-run `/tackle-verify` on the merged diff; new drift or broken claims block the next wave.
 1. **Run the checks, don't read them** — the suite is green; stability holds (repeat ×N under
    a hard timeout; a hang = fail); concurrency is race-clean if the env has a checker.
 2. **Fundamentals** — DRY, no smells, the dependency rule holds, naming per the project's
