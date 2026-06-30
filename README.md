@@ -51,6 +51,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 | `/tackle-next` | **Execute next** — execute one ready point |
 | `/tackle-checklist` | **Checklist** — generate a quality checklist |
 | `/tackle-verify` | **Verify** — red-team pass over each point before implementation |
+| `/tackle-ground` | **Ground** — mechanically read and mark every `file:line` cited in the plan |
 
 **Legacy modes:**
 

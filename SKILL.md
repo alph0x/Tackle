@@ -28,6 +28,7 @@ Tackle creates a durable action plan under `docs/plans/<initiative>/`, broken in
 | `/tackle-next` | **Execute next** → execute one ready point |
 | `/tackle-checklist` | **Checklist** → write `checklist.md` |
 | `/tackle-verify` | **Verify** → red-team pass over each point before implementation |
+| `/tackle-ground` | **Ground** → mechanically read and mark every `file:line` cited in a plan |
 | `resume / retomá <initiative>` | **Resume** → Step 8 |
 | `status / seguimiento / cómo viene` | **Status** → Step 9 |
 | `what plans are there? / qué planes hay` | **List** → Step 9 |
