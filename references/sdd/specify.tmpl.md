@@ -23,3 +23,7 @@
 ## References
 
 {{References}}
+
+## Anchored traces
+
+- `A-01` — {{ticket/spec line}}: {{one-line requirement}}.
