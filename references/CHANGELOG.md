@@ -1,4 +1,17 @@
 # Tackle changelog
+## Tackle 2.1.0
+
+- Added grounding gate: points are ungrounded until every cited `file:line` is read.
+- Added `/tackle-verify` red-team pass with certainty levels, detection-before-judgment, and plan-vs-code drift check.
+- Added right-size/collapse pass; default small slices to lite-plan.
+- Added source-of-truth trace field to points and spec/constitution templates.
+- Enforced literal command + pass condition for every done-signal.
+- Clarified `board.md` as the single canonical source of status.
+- `/tackle-plan` now explicitly asks about `docs/plans/` gitignore.
+- Strengthened harness/LLM agnosticism guard.
+- Revised team protocol with a dedicated Verifier/Red-Teamer role and pre-wave verification gate.
+- Added v2.0 → v2.1.0 migration checklist.
+
 ## Tackle 2.0
 
 - **SDD phase entry points**: `/tackle-init`, `/tackle-constitution`, `/tackle-specify`, `/tackle-tasks`, `/tackle-implement`, `/tackle-next`, `/tackle-checklist`.

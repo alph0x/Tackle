@@ -50,6 +50,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 | `/tackle-implement` | **Implement** — execute the plan point-by-point |
 | `/tackle-next` | **Execute next** — execute one ready point |
 | `/tackle-checklist` | **Checklist** — generate a quality checklist |
+| `/tackle-verify` | **Verify** — red-team pass over each point before implementation |
 
 **Legacy modes:**
 
@@ -60,7 +61,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 | "how is `<x>` going?" / "status" | **Status** — read-only digest |
 | "what plans are there?" | **List** — one line per initiative |
 | "what's next?" / "qué sigue" | **Next** — the next point's pre-attack summary |
-| "migrate / upgrade `<x>`" | **Migrate** — bring an old plan up to the current methodology |
+| "migrate / upgrade `<x>`" | **Migrate** — bring an old plan up to the current methodology (Step 8.5; v2.0 → v2.1.0 checklist in `references/guides/migrate.md`) |
 | "mejorá este plan" / "improve this plan" | **Improve** — upgrade a Tackle plan or convert an unstructured plan |
 
 **The Create pipeline:** Intake → Gate (None/Lite/Full) → Location & gitignore → Scaffold → Briefing → Architecture → Stabilize contract → Decompose → Lint → Handoff.
@@ -69,7 +70,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 
 **Template-resolution stack:** overrides → presets → sdd → core.
 
-**Version:** Tackle 2.0. See `references/CHANGELOG.md` for what's new.
+**Version:** Tackle 2.1.0. See `references/CHANGELOG.md` for what's new.
 
 ## What it produces
 
@@ -78,7 +79,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 | `README.md` | Human index, reading order |
 | `AGENTS.md` | Operating contract for any agent that picks up the plan |
 | `plan.md` | Objective, non-goals, point decomposition + dependency graph |
-| `board.md` | Canonical status board for execution |
+| `board.md` | Canonical status board for execution (canonical; do not duplicate status in `plan.md`) |
 | `log.md` | Append-only session log (canonical state) |
 | `todo.md` | Planning-readiness checklist |
 | `questions.md` | Single source of open questions |
