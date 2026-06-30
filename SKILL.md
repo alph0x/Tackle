@@ -27,6 +27,7 @@ Tackle creates a durable action plan under `docs/plans/<initiative>/`, broken in
 | `/tackle-implement` | **Implement** → execute all ready points |
 | `/tackle-next` | **Execute next** → execute one ready point |
 | `/tackle-checklist` | **Checklist** → write `checklist.md` |
+| `/tackle-verify` | **Verify** → red-team pass over each point before implementation |
 | `resume / retomá <initiative>` | **Resume** → Step 8 |
 | `status / seguimiento / cómo viene` | **Status** → Step 9 |
 | `what plans are there? / qué planes hay` | **List** → Step 9 |
@@ -73,12 +74,14 @@ Always use these skills for planning aids only, never for execution.
 
 1. **Log append-only** — one entry per session; never rewrite history.
 2. **Questions only in `questions.md`**; **decisions only in `decisions.md`**.
-3. **Ground every claim in `file:line`** from the repo.
+3. **Ground every claim in `file:line`** from the repo. A point is **ungrounded** until every cited `file:line` has been read in the current session; ungrounded points cannot be marked ready or executed.
 4. **One point = one responsibility + one runnable done-signal**.
 5. **Contract supersede-first**: implement `design-contract.md` as written; deviations require a `D-xx` first.
 6. **Self-documenting code**: Clean Code + SOLID; no explanatory inline comments.
 7. **Status vocabulary**: 🔴 not started · 🟡 in progress · ⏸ blocked · 🟢 done.
 8. **Decision ownership** — the user decides every doubt; batch recommendations with defaults.
+9. **Scaffold asks gitignore** — `/tackle-plan` must ask whether to add `docs/plans/` to `.gitignore` before creating files, and record the decision in `log.md` / `decisions.md`. Do not silently default.
+10. **Harness-agnostic** — Tackle works with any agent/LLM and any IDE harness. Never assume Claude, Anthropic, Cursor, Codex, or a specific model. Use generic terms: "the agent", "the orchestrator", "your harness", "the most capable model available". Any feature that only works on one harness belongs outside Tackle.
 
 ## Output contract
 
