@@ -6,7 +6,8 @@
 > Context). Tackle plans this point; it does not implement it here.
 
 ## Status & wiring
-**Depends on**: {{none / P-0X — and what it needs from it, e.g. "P-01 (its `XPort` protocol)"}} · execution status in `plan.md` §5 (single board — don't duplicate here). Parallelism is read off the graph + Touches, not re-listed here.
+**Depends on**: {{none / P-0X — and what it needs from it, e.g. "P-01 (its `XPort` protocol)"}} · execution status in `board.md` (single board — don't duplicate here). Parallelism is read off the graph + Touches, not re-listed here.
+- **Traces to**: {{spec/ticket line this point implements — e.g. `spec.md:NN` or `ticket-123` acceptance #2}}.
 - **Touches (write scope)**: {{the files/dirs this point may modify — bounds the blast radius; disjoint Touches ⇒ parallel-safe (isolated worktrees), and keeps the done-signal's diff reviewable}}.
 
 ## Goal (single responsibility — one loop-completable change)
@@ -41,10 +42,7 @@ Loop until green: {{the done-signal command}}.
 ```
 
 ## Acceptance — the loop's exit gate
-<!-- One home for "how the loop knows it's done". The command is the exit check; the criteria
-     are what passing means. EXHAUSTIVE + MECHANICALLY verifiable, not prose: where a finite set
-     exists (error cases, states, endpoints), cover EVERY case AND assert the COUNT in the
-     command (e.g. test count == N) so a lazy suite can't go green with half the cases. -->
+<!-- One home for "how the loop knows it's done". The command must be a literal runnable command (or a short pipe/combo) with an explicit pass condition. EXHAUSTIVE + MECHANICALLY verifiable: where a finite set exists, assert the COUNT. No prose gates, no `test -f`, no "document exists". -->
 - **Done-signal**: `{{the exact command (or a short combo of mechanical checks) — e.g. cd <pkg> && swift test --filter <Suite>}}` → pass = {{exit 0, N tests, 0 failures}}.
   <!-- Judgment/investigation point (research, copy/UX, design spike) with no honest command? Make this a REVIEW-gate instead: "exit = artifact + rubric, reviewed" (e.g. `decisions.md` D-xx chosen with the matrix filled). Never a fake `test -f` green. -->
 - [ ] Meets the **universal per-point acceptance** in `plan.md` §6.1 (don't restate it here).
@@ -57,7 +55,9 @@ Loop until green: {{the done-signal command}}.
 
 ## Definition of Ready (the gates that can FAIL — if the rest of the briefing is filled, these are what's left to check)
 <!-- Only the checks not already visible by reading the sections above. Don't re-checklist the doc. -->
+- [ ] **Grounded**: every cited `file:line` in Context was read in this session; if any citation is unread, the point is **ungrounded** and not ready.
+- [ ] **Anchored**: it traces to a line in the spec, ticket, or `constitution.md`; untraced scope is flagged as drift.
 - [ ] **Single responsibility**: stating "done" needs no "and" (if it does → split; see the functional-core/effectful-shell split in Step 6).
 - [ ] **No open decisions inside it**: zero unresolved user-owned questions (if any → it's Deferred, not ready — Decision ownership).
-- [ ] **Loop-ready**: the Acceptance done-signal is a runnable command with an unambiguous pass (count-asserted where a finite set exists).
+- [ ] **Loop-ready**: the Acceptance done-signal is a literal runnable command with an explicit pass condition (exit code / count / grep match); count-asserted where a finite set exists.
 - [ ] **Cold-agent-resolvable from this file alone** — the one true test of every section above.
