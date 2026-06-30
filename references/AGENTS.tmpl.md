@@ -45,6 +45,21 @@ docs/plans/{{slug}}/
 8. **Quality loop** (multi-agent): a code-quality guardian reviews before a point flips 🟢.
 9. **Execution rule**: `/tackle-implement` runs `board.md` in dependency order; only the Coordinator updates board/log, only the Driver writes code.
 
+## Harness map
+
+Tackle is harness-agnostic. This workspace records the concrete tools this environment uses to perform generic Tackle operations. Update this section if the tooling changes.
+
+| Generic operation | Harness tool / command in this repo | Notes |
+|---|---|---|
+| Read code at `file:line` | {{`read`, `cat`, LSP hover, etc.}} | |
+| Search code | {{`grep`, `ast_grep`, IDE symbol search, etc.}} | |
+| Run tests / done-signal | {{`npm test`, `bun test`, `pytest`, `swift test`, etc.}} | |
+| Run lint / typecheck | {{`npm run lint`, `tsc`, `cargo check`, etc.}} | |
+| Spawn parallel agents | {{Claude Code multi-agent, `task` subagent, manual fan-out, etc.}} | |
+| Git operations | {{`git`, GitHub CLI, IDE git UI, etc.}} | |
+
+If this workspace is shared across agents, fill this map once and never assume a specific IDE, model, or vendor tool.
+
 Full conventions: `SKILL.md` §Core conventions.
 
 ## Executor contract (when you work a point)
