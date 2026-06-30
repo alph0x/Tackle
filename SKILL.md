@@ -54,7 +54,9 @@ docs/plans/<initiative>/overrides/
 In short: **overrides > presets > sdd > core**. Nothing Tackle-related lives at the repo root.
 
 ## Execution loop
-`/tackle-implement` and `/tackle-next` spawn the point team defined in `team.md` and run `board.md` in dependency order. The Driver executes each point and runs its done-signal; reviewers verify and the Coordinator updates `board.md` + `log.md`. Team size is Solo/Pair/Pod/Squad per `team.md`.
+`/tackle-implement` and `/tackle-next` spawn the point team defined in `team.md` and run `board.md` in dependency order. Before acting, the agent MUST read `board.md`, `log.md`, and `decisions.md` (and `questions.md` if any question is unresolved). The Driver executes each point and runs its done-signal; reviewers verify and the Coordinator updates `board.md` + `log.md`. Team size is Solo/Pair/Pod/Squad per `team.md`.
+
+Cold-session modes (`resume`, `status`, `what plans are there?`, `give me the next point`, `/tackle-verify`, `/tackle-ground`) follow the same rule: read the state files first, then answer or act.
 
 **Execution requires explicit intent.** If the user did **not** upfront ask for plan+execute, `/tackle-implement` and `/tackle-next` must present the point's pre-attack summary and ask for confirmation before changing code. "Yes", "go ahead", or equivalent confirms; silence or ambiguity means stop.
 
