@@ -17,7 +17,12 @@ For each point in `plan.md` §5 / `board.md`:
 Classify every finding with a certainty level:
 
 - **HIGH** — mechanically confirmed (file missing, citation unread, command not runnable). Safe to block on.
+  - Examples: a cited **file does not exist** (e.g. `src/foo.ts:42`); the done-signal command returns exit code 1; `Depends-on: P-99` references a non-existent point.
 - **MEDIUM** — likely true, needs one extra check before blocking.
+  - Examples: the point claims "X never happens" but a grep finds one counter-example; the `Touches` list omits a file the Goal clearly modifies.
 - **LOW** — possible, needs human judgment.
+  - Examples: a variable name feels inconsistent with project convention; a prose description could be read two ways but the code is probably correct.
+
+Use these examples to calibrate: if you are not sure whether a finding is HIGH, downgrade it. If you cannot reproduce it mechanically, it is not HIGH.
 
 Output: append findings to `log.md`; update `board.md` to mark verified points. Any HIGH finding, or an ungrounded point, blocks execution until fixed or explicitly waived by the user. MEDIUM findings block unless the user explicitly accepts the risk; LOW findings are advisory.
