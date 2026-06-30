@@ -1,6 +1,6 @@
 # Step 3 — Location & gitignore
 
-Create `docs/plans/<initiative>/`. Ask the user if the plans directory should be gitignored. If yes, add `docs/plans/` to `.gitignore`.
+Create `docs/plans/<initiative>/`. **Ask the user explicitly**: "Should `docs/plans/` be added to `.gitignore`?" If yes, append `docs/plans/` to `.gitignore`; if no, record the decision in `decisions.md` so the question is not re-asked. Never silently skip this question.
 
 # Step 4 — Scaffold the core
 
