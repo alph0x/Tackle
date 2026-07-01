@@ -1,6 +1,6 @@
 # {{TITLE}} — {{one line: what this is}}
 
-> **Methodology: Tackle 2.0.** See `AGENTS.md` for the workspace contract.
+> **Methodology: Tackle 3.0.** See `AGENTS.md` for the workspace contract.
 
 {{2-3 line description: what this initiative solves.}}
 

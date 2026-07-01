@@ -7,7 +7,7 @@ description: Use when starting a non-trivial, multi-session or multi-track initi
 
 ## Overview
 
-Tackle creates a durable action plan under `docs/plans/<initiative>/`, broken into self-contained points that survive handoffs.
+**Tackle 3.0** — model-agnostic planning and execution methodology. Tackle creates a durable action plan under `docs/plans/<initiative>/`, broken into self-contained points that survive handoffs.
 
 - Plans by default; executes only when explicitly asked. `/tackle-plan` stops at handoff; `/tackle-implement` and `/tackle-next` require confirmation unless the user upfront asked for plan+execute.
 - Runs inside the target repo; grounds every claim in `file:line`.

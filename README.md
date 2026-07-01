@@ -67,11 +67,11 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 
 **The Create pipeline:** Intake → Gate (None/Lite/Full) → Location & gitignore → Scaffold → Briefing → Architecture → Stabilize contract → Decompose → Lint → Handoff.
 
-**Execution:** `/tackle-implement` reads `board.md`, picks the next ready point in dependency order, runs its done-signal, and updates `board.md` + `log.md`. Team sizing is Solo/Pair/Pod/Squad per `team.md`.
+**Execution:** `/tackle-implement` reads `board.md`, picks the next ready point in dependency order, runs its done-signal, and updates `board.md` + `log.md`. Team sizing is Solo/Pair/Pod/Squad per `team.md`. The learning loop stores profiles at `~/.tackle/user-profile.md` and `<repo>/.tackle/profile.md`.
 
 **Template-resolution stack:** overrides → presets → sdd → core.
 
-**Version:** Tackle 2.1.1. See `references/CHANGELOG.md` for what's new.
+**Version:** Tackle 3.0. See `references/CHANGELOG.md` for what's new.
 
 ## What it produces
 
@@ -85,7 +85,8 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 | `todo.md` | Planning-readiness checklist |
 | `questions.md` | Single source of open questions |
 | `decisions.md` | Closed decisions register |
-| `reference.md` | Current code state with `file:line` |
+| `retro.md` | Initiative retrospective artifact (created by `/tackle-retro`) |
+| `HANDOFF.md` | Portable handoff packet (created by `/tackle-handoff`) |
 | `points/P-0N-*.md` | One self-contained briefing per point |
 
 **Depth artifacts (Full only, created only when their trigger fires):**

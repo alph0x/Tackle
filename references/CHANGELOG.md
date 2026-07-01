@@ -1,4 +1,24 @@
 # Tackle changelog
+## Tackle 3.0
+
+- Anchored citations with mechanical drift checks and derived staleness (`/tackle-ground`).
+- Evidence blocks + attempt journals + escalation packets in the log.
+- Sealed Acceptance sections (`SEALED: D-xx`) and sealed contract sections.
+- Mechanical lint-spec guide with copy-paste checks and `lint: N/M checks passed` score line.
+- Regression sweep: re-run done-signals of intersecting 🟢 points before flipping a new one.
+- `/tackle-drill` cold-start readiness drill.
+- Context budgets (point ≤ 150 lines, contract section ≤ 40 lines, digest ≤ 12 lines) and log-archive protocol.
+- Reversibility section for production-path points.
+- `/tackle-trace` criterion↔point coverage matrix.
+- `/tackle-retro` initiative retrospective + `retro.md` template.
+- `/tackle-handoff` portable handoff packet.
+- Learning loop: opt-in profiles at `~/.tackle/user-profile.md` and `<repo>/.tackle/profile.md`, batch-confirmed writes via `/tackle-retro`, directive amendments.
+- Hygiene and guards: harness-agnostic conventions, no script shipping.
+- Maker/checker completion + subagent policy (mandatory in execution, optional-recommended in planning).
+- `/tackle-pulse` standing-loop digest for schedulers.
+- Autonomy ladder L1/L2/L3 with production-path cap at L2.
+- Internal composability: commands are entry points, not boundaries.
+
 ## Tackle 2.1.1
 
 - Added `/tackle-ground` command to mechanically read and record every cited `file:line`.

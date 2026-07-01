@@ -11,4 +11,4 @@ Record methodology changes in `references/CHANGELOG.md`:
 - New depth artifacts: `team.md` and `board.md`.
 ```
 
-Bump the default `Methodology:` stamp written by new workspaces to **Tackle 2.0**.
+Bump the default `Methodology:` stamp written by new workspaces to **Tackle 3.0**.
