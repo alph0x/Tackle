@@ -12,7 +12,7 @@ Cross-cutting rules still apply at Lite: no silent assumptions, self-documenting
 
 ## Current state (grounded)
 - **Key finding**: {{the one fact that shapes the risk, if any}} · **Mirrors**: {{the local pattern/file this follows}}.
-- `{{path:NN}}` — {{what exists today}}.
+- `{{path:NN}} — "{{literal fragment}}"` — {{what exists today}}. Fragment = verbatim substring of line NN; anchored citations apply at Lite too.
 
 ## Steps
 1. {{...}}
