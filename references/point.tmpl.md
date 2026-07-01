@@ -9,13 +9,15 @@
 **Depends on**: {{none / P-0X — and what it needs from it, e.g. "P-01 (its `XPort` protocol)"}} · execution status in `board.md` (single board — don't duplicate here). Parallelism is read off the graph + Touches, not re-listed here.
 - **Traces to**: {{spec/ticket line this point implements — e.g. `spec.md:NN` or `ticket-123` acceptance #2}}.
 - **Touches (write scope)**: {{the files/dirs this point may modify — bounds the blast radius; disjoint Touches ⇒ parallel-safe (isolated worktrees), and keeps the done-signal's diff reviewable}}.
+- **Autonomy override**: {{inherit (workspace level in AGENTS.md §Autonomy) / L1 / L2 / L3 — L3 requires the AGENTS.md §Autonomy conditions; production-path points cap at L2}}.
 
 ## Goal (single responsibility — one loop-completable change)
 {{What "done" means — observable, testable, ONE coherent change. If stating "done" needs an "and", split the point.}}
 
 ## Context (grounded)
 - {{Why this point exists; what part of the system it touches.}}
-- `{{path/File.swift:NN}}` — {{relevant current code/behavior}}.
+- `{{path/File.ext:NN}} — "{{literal fragment}}"` — {{relevant current code/behavior}}.
+  <!-- Anchored citation: fragment = verbatim substring of line NN, ≤ 60 chars, unique on that line, no double quotes (pick another fragment if unavoidable); a range `NN-MM` anchors to NN. -->
 - Deeper refs: {{`reference.md` §x · `specs/...md` · diagram}}.
 
 ## Non-goals
@@ -43,10 +45,14 @@ Loop until green: {{the done-signal command}}.
 
 ## Acceptance — the loop's exit gate
 <!-- One home for "how the loop knows it's done". The command must be a literal runnable command (or a short pipe/combo) with an explicit pass condition. EXHAUSTIVE + MECHANICALLY verifiable: where a finite set exists, assert the COUNT. No prose gates, no `test -f`, no "document exists". -->
+<!-- Seal at ready: when the point is marked ready, seal this heading by appending the marker
+     `SEALED: D-xx` as an HTML comment on the heading line (D-xx = the decision that marked it ready).
+     Editing anything in a sealed section afterwards requires a superseding `D-yy` recorded in
+     `decisions.md` FIRST; the marker then becomes `SEALED: D-yy supersedes D-xx`. -->
 - **Done-signal**: `{{the exact command (or a short combo of mechanical checks) — e.g. cd <pkg> && swift test --filter <Suite>}}` → pass = {{exit 0, N tests, 0 failures}}.
   <!-- Judgment/investigation point (research, copy/UX, design spike) with no honest command? Make this a REVIEW-gate instead: "exit = artifact + rubric, reviewed" (e.g. `decisions.md` D-xx chosen with the matrix filled). Never a fake `test -f` green. -->
 - [ ] Meets the **universal per-point acceptance** in `plan.md` §6.1 (don't restate it here).
-- [ ] {{quality-dimension checks this point's **Touches** fire — Security / Performance / Concurrency / Correctness / … per the catalog (SKILL.md Step 6) — each **folded into the done-signal above** as a runnable fragment using this repo's tooling (e.g. "authz test in the suite asserts unauthenticated/cross-tenant → 401/403"), or a **review-gated** criterion only if no honest command exists. Omit axes that don't fire; don't restate the §6.1 universal ones}}.
+- [ ] {{quality-dimension checks this point's **Touches** fire — Security / Performance / Concurrency / Correctness / … per the catalog (`references/guides/quality-dimensions.md`) — each **folded into the done-signal above** as a runnable fragment using this repo's tooling (e.g. "authz test in the suite asserts unauthenticated/cross-tenant → 401/403"), or a **review-gated** criterion only if no honest command exists. Omit axes that don't fire; don't restate the §6.1 universal ones}}.
 - [ ] {{point-specific condition — exhaustive over its case set (assert the count), verifiable by test/grep}}.
 - **If it fails →** {{likely failure → concrete fix}}. Self-correct up to the workspace iteration budget (`AGENTS.md`), then STOP + escalate (set a per-point budget here only if it differs).
 
@@ -55,7 +61,7 @@ Loop until green: {{the done-signal command}}.
 
 ## Definition of Ready (the gates that can FAIL — if the rest of the briefing is filled, these are what's left to check)
 <!-- Only the checks not already visible by reading the sections above. Don't re-checklist the doc. -->
-- [ ] **Grounded**: every cited `file:line` in Context was read in this session; if any citation is unread, the point is **ungrounded** and not ready.
+- [ ] **Grounded**: every Context citation passes the drift check recorded by the newest ground entry in `log.md` (`sed -n 'NNp' file | grep -Fq "fragment"` → exit 0) — not "read in this session"; any stale citation makes the point **ungrounded** and not ready.
 - [ ] **Anchored**: it traces to a line in the spec, ticket, or `constitution.md`; untraced scope is flagged as drift.
 - [ ] **Single responsibility**: stating "done" needs no "and" (if it does → split; see the functional-core/effectful-shell split in Step 6).
 - [ ] **No open decisions inside it**: zero unresolved user-owned questions (if any → it's Deferred, not ready — Decision ownership).

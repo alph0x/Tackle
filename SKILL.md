@@ -29,6 +29,9 @@ Tackle creates a durable action plan under `docs/plans/<initiative>/`, broken in
 | `/tackle-checklist` | **Checklist** → write `checklist.md` |
 | `/tackle-verify` | **Verify** → red-team pass over each point before implementation |
 | `/tackle-ground` | **Ground** → mechanically read and mark every `file:line` cited in a plan |
+| `/tackle-drill` or `drill this point` | **Drill** → cold-start readiness drill on one point briefing |
+| `/tackle-trace` or `trace coverage` | **Trace** → criterion↔point coverage matrix, gaps and drift |
+| `/tackle-handoff` or `prepare a handoff` | **Handoff packet** → generate portable `HANDOFF.md` for the initiative |
 | `resume / retomá <initiative>` | **Resume** → Step 8 |
 | `status / seguimiento / cómo viene` | **Status** → Step 9 |
 | `what plans are there? / qué planes hay` | **List** → Step 9 |
@@ -38,7 +41,9 @@ Tackle creates a durable action plan under `docs/plans/<initiative>/`, broken in
 
 If several initiatives exist under `docs/plans/`, show the List and ask which.
 
-`/tackle-plan` is the standalone default path.
+Natural-language triggers are canonical; slash commands are aliases for harnesses that support them. `/tackle-plan` (or `tackle this`) is the standalone default path.
+
+**Commands are entry points, not boundaries.** Tackle may invoke any of its modes and subagents internally, at will, whenever the flow benefits — planning may run grounding, lint, verify, drill, or trace mid-flow; execution may re-ground a point or re-run the regression sweep. Guardrails are never bypassed by going internal: the autonomy ladder still gates anything that edits source, execution intent stays explicit, writes still require the same consents as if the user had invoked the command, and internal invocations leave the same log/board trail as user-invoked ones.
 
 ## Template-resolution stack
 
@@ -51,14 +56,16 @@ docs/plans/<initiative>/overrides/
   > references/
 ```
 
-In short: **overrides > presets > sdd > core**. Nothing Tackle-related lives at the repo root.
+In short: **overrides > presets > sdd > core**. Nothing Tackle-related lives at the repo root, except `.tackle/` (opt-in learning-loop profiles).
 
 ## Execution loop
 `/tackle-implement` and `/tackle-next` spawn the point team defined in `team.md` and run `board.md` in dependency order. Before acting, the agent MUST read `board.md`, `log.md`, and `decisions.md` (and `questions.md` if any question is unresolved). The Driver executes each point and runs its done-signal; reviewers verify and the Coordinator updates `board.md` + `log.md`. Team size is Solo/Pair/Pod/Squad per `team.md`.
 
+**Regression sweep.** Before a point flips 🟢, re-run the done-signals of every 🟢 point whose Touches intersect the current point's Touches. Any failure reopens that point (🟢 → 🟡) and blocks the current one.
+
 Cold-session modes (`resume`, `status`, `what plans are there?`, `give me the next point`, `/tackle-verify`, `/tackle-ground`) follow the same rule: read the state files first, then answer or act.
 
-**Execution requires explicit intent.** If the user did **not** upfront ask for plan+execute, `/tackle-implement` and `/tackle-next` must present the point's pre-attack summary and ask for confirmation before changing code. "Yes", "go ahead", or equivalent confirms; silence or ambiguity means stop.
+**Execution requires explicit intent.** If the user did **not** upfront ask for plan+execute, `/tackle-implement` and `/tackle-next` must present the point's pre-attack summary and ask for confirmation before changing code. "Yes", "go ahead", or equivalent confirms; silence or ambiguity means stop. This rule is L2 (assisted), the default rung of the autonomy ladder declared in the workspace `AGENTS.md` §Autonomy (per-point overrides in the point briefing). L1 (report) is read-only and never edits source; L3 (unattended) skips per-point confirmation only when the workspace's `AGENTS.md` §Autonomy conditions all hold — never on production-path points without an explicit waiver.
 
 
 ## Optional skills

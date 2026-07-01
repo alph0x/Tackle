@@ -13,6 +13,8 @@ For each point in `plan.md` §5 / `board.md`:
 5. **Dependency sanity** — confirm `Depends-on` resolves to an actual point and is not aspirational; confirm parallel points have disjoint `Touches`.
 6. **Plan-vs-code drift** — compare the point's claimed `Touches` and Goal against the current repo; flag if the code already implements it (stale point) or if the described change does not match any touched file.
 7. **Agnosticism / Harness-agnostic check** — confirm the plan remains harness-agnostic: no harness-specific commands (e.g. `/command`, `@mention`, `.claude/`), no model brand names (e.g. `Claude`, `GPT`, `Opus`), and no vendor-specific file paths unless the point is explicitly about that harness. Flag violations as drift.
+8. **Seal integrity** — mechanical: every `SEALED: D-xx` id found in the workspace greps in `decisions.md` (a missing id is a HIGH finding); a sealed section edited with no superseding `SEALED: D-yy supersedes D-xx` marker is a HIGH finding.
+9. **Regression sweep computability** — confirm the point declares `Touches` precisely enough that the sweep set (🟢 points with intersecting Touches) is derivable mechanically (grep over `board.md` + `points/`); flag missing or vague `Touches`.
 
 Classify every finding with a certainty level:
 

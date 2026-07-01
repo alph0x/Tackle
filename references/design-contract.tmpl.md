@@ -10,6 +10,11 @@
 **supersede the spec FIRST** (edit this file + record a `D-xx`), then write the divergent code.
 That keeps every point agreeing on one source instead of drifting apart.
 
+When the contract stabilizes, each named section heading gains the seal marker
+`<!-- SEALED: D-xx -->` (D-xx = the sealing decision) on the heading line. The supersede-first
+flow then also updates the marker — `<!-- SEALED: D-yy supersedes D-xx -->` — so every
+deviation leaves a grep-able trail.
+
 Map each section to the points that implement it so coverage is auditable.
 
 ## Signatures / API surface

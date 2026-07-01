@@ -36,7 +36,8 @@ Add specialists when the point's risk justifies it; default Squad = Driver + Rev
 
 ### Driver
 - Owns code changes, writes files, runs tests, makes the done-signal pass.
-- Reports result and changed files.
+- Reports result and changed files, with its **Evidence** block (command, trimmed output, exit line).
+- Owns the attempt journal: appends one line per failed attempt, re-reads prior lines before retrying.
 
 ### Reviewer (Pair mode)
 - Verifies output matches the point briefing and `design-contract.md`.
@@ -52,7 +53,8 @@ Add specialists when the point's risk justifies it; default Squad = Driver + Rev
 
 ### Coordinator (Pod/Squad mode)
 - Owns flow and workspace hygiene; updates `board.md` and `log.md`.
-- Collects PASS from reviewers; decides when the point is 🟢.
+- Collects PASS from reviewers; flips 🟢 only when the evidence block is recorded in `log.md`.
+- On budget exhaustion or no-progress, flips the point ⏸ and files the escalation packet.
 
 ### Verifier / Red-Teamer
 - Runs `/tackle-verify` on the point before it is handed to the Driver.
@@ -80,8 +82,9 @@ Add specialists when the point's risk justifies it; default Squad = Driver + Rev
 A point flips to 🟢 only when:
 
 1. **Verifier / Red-Teamer**: `/tackle-verify` passed with no HIGH findings and no unresolved MEDIUM findings.
-2. Driver: done-signal passes.
+2. Driver: done-signal passes **with its evidence block recorded in `log.md`**.
 3. Reviewer/Spec Reader: output matches briefing and `design-contract.md`.
 4. Quality Guardian: no quality findings (if Pod/Squad).
 5. Simplicity/Regression/Performance & Concurrency Auditor: no findings (if Squad and triggered).
 6. Coordinator/Reviewer: `board.md` updated (and `log.md` if Pod/Squad).
+7. **Regression sweep**: done-signals of every 🟢 point with intersecting Touches re-ran green; any failure reopens that point (🟢 → 🟡) and blocks this one.
