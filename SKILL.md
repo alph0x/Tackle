@@ -29,6 +29,7 @@ Tackle creates a durable action plan under `docs/plans/<initiative>/`, broken in
 | `/tackle-checklist` | **Checklist** → write `checklist.md` |
 | `/tackle-verify` | **Verify** → red-team pass over each point before implementation |
 | `/tackle-ground` | **Ground** → mechanically read and mark every `file:line` cited in a plan |
+| `/tackle-retro` or `retro / retrospectiva / how did it go` | **Retro** → mine `board.md` + `log.md` into `retro.md` at initiative close |
 | `/tackle-drill` or `drill this point` | **Drill** → cold-start readiness drill on one point briefing |
 | `/tackle-trace` or `trace coverage` | **Trace** → criterion↔point coverage matrix, gaps and drift |
 | `/tackle-handoff` or `prepare a handoff` | **Handoff packet** → generate portable `HANDOFF.md` for the initiative |
