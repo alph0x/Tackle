@@ -6,6 +6,18 @@ at the end of the **newest** entry, a **State snapshot** sufficient to resume wi
 re-reading history. Keep entries terse (append-only ≠ verbose). Never rewrite old entries.
 Never log secrets. **This is the canonical state source of the plan.**
 
+**Evidence entries** — every "done-signal passed/failed" claim carries:
+
+````
+**Evidence** — `the literal command`
+```
+trimmed output (≤ 10 lines, keep counts/exit line)
+```
+exit: 0
+````
+
+No evidence block ⇒ the claim is an assertion, and the point may not flip 🟢.
+
 ---
 
 ## {{YYYY-MM-DD}} · session 1 · plan kickoff
@@ -24,6 +36,17 @@ Never log secrets. **This is the canonical state source of the plan.**
 
 ### Blockers / open questions
 - {{see `questions.md`: Q-01, ...}}
+<!-- Failed attempts: one journal line per attempt, each with its evidence block:
+attempt N: <what was tried> — failed because <lesson>
+On budget exhaustion or no-progress (two consecutive attempts with identical evidence
+output), the point flips ⏸ and the entry carries the escalation packet:
+### Escalation — P-NN
+- Attempts: N (budget M) · reason: budget | no-progress
+- Attempt journal: the per-attempt lines above (with evidence blocks, last attempt at minimum)
+- Hypothesis: the current best explanation of the failure
+- Unblocking question: the smallest question that would unblock → Q-xx (user-owned if applicable)
+-->
+
 
 ### Next
 - {{...}}
