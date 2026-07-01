@@ -38,6 +38,8 @@ wave waits on the gate. Each point runs as a loop — its **done-signal** (in th
 loop's exit check, its **iteration budget** the stop-and-escalate rule. Use each point's
 **Touches (write scope)** to assign worktrees: points with disjoint scopes run as concurrent
 loops safely; overlapping scopes need isolated worktrees (if supported) or serialize.
+`board.md` and `log.md` are written only in the main tree, only by the orchestrator;
+implementer worktrees carry code, never state files.
 
 ```
 Wave 1 (sequential):  {{P-01 ──► P-02}}        {{foundation}}

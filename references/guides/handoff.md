@@ -1,4 +1,4 @@
-# Step 7 — Handoff
+# Step 7.9 — Handoff
 
 Present the plan in chat with the output contract:
 1. Status line: `🟢 on track — nothing on you` / `🟡 needs your input` / `🔴 blocked`.
