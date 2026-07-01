@@ -12,6 +12,7 @@ Mechanical first: run every row of `guides/lint-spec.md` (copy-paste commands, f
 Then judge — the checks no command can decide:
 - Contract churn guard (contract sections changed → citing points reconciled).
 - Quality dimensions derived into done-signals.
+- Reversibility gate: a point whose Touches flag a production path carries the Rollout / reversibility section (revert procedure · flag default-off · no-op-when-off proof); no flagged path ⇒ section omitted, not left empty.
 - Deferral & questions sound.
 - Q-guard (active point may not depend on unresolved user-owned `Q-xx`).
 - Depth artifacts coherent.

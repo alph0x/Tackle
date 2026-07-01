@@ -8,7 +8,7 @@
 ## Status & wiring
 **Depends on**: {{none / P-0X — and what it needs from it, e.g. "P-01 (its `XPort` protocol)"}} · execution status in `board.md` (single board — don't duplicate here). Parallelism is read off the graph + Touches, not re-listed here.
 - **Traces to**: {{spec/ticket line this point implements — e.g. `spec.md:NN` or `ticket-123` acceptance #2}}.
-- **Touches (write scope)**: {{the files/dirs this point may modify — bounds the blast radius; disjoint Touches ⇒ parallel-safe (isolated worktrees), and keeps the done-signal's diff reviewable}}.
+- **Touches (write scope)**: {{the files/dirs this point may modify — bounds the blast radius; disjoint Touches ⇒ parallel-safe (isolated worktrees), and keeps the done-signal's diff reviewable. Explicitly flag any touched path that ships to production — a flagged path requires the Rollout / reversibility section below}}.
 - **Autonomy override**: {{inherit (workspace level in AGENTS.md §Autonomy) / L1 / L2 / L3 — L3 requires the AGENTS.md §Autonomy conditions; production-path points cap at L2}}.
 
 ## Goal (single responsibility — one loop-completable change)
@@ -42,6 +42,9 @@ Constraints: {{non-goals / no-regression / surgical}}.
 Acceptance: {{acceptance criteria}}.
 Loop until green: {{the done-signal command}}.
 ```
+
+## Rollout / reversibility (only if Touches include a production path)
+- {{revert procedure · flag default-off · no-op-when-off proof; delete this section if no touched path ships to production}}
 
 ## Acceptance — the loop's exit gate
 <!-- One home for "how the loop knows it's done". The command must be a literal runnable command (or a short pipe/combo) with an explicit pass condition. EXHAUSTIVE + MECHANICALLY verifiable: where a finite set exists, assert the COUNT. No prose gates, no `test -f`, no "document exists". -->
