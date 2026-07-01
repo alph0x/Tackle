@@ -31,6 +31,7 @@ Tackle creates a durable action plan under `docs/plans/<initiative>/`, broken in
 | `/tackle-ground` | **Ground** → mechanically read and mark every `file:line` cited in a plan |
 | `/tackle-retro` or `retro / retrospectiva / how did it go` | **Retro** → mine `board.md` + `log.md` into `retro.md` at initiative close |
 | `/tackle-pulse` or `run a pulse / health check / cómo está todo` | **Pulse** → read-only standing digest (Step 9 guide); scheduler-friendly, never executes points |
+| `stop evolving / dejá de evolucionar` (any phrasing) | **Evolution opt-out** → pause or purge the learning-loop profile at `~/.tackle/user-profile.md` or `<repo>/.tackle/profile.md`, per scope |
 | `/tackle-drill` or `drill this point` | **Drill** → cold-start readiness drill on one point briefing |
 | `/tackle-trace` or `trace coverage` | **Trace** → criterion↔point coverage matrix, gaps and drift |
 | `/tackle-handoff` or `prepare a handoff` | **Handoff packet** → generate portable `HANDOFF.md` for the initiative |

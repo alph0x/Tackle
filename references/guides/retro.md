@@ -20,9 +20,58 @@ Every metric carries a copy-paste recipe; the recipes live in the template's Met
 
 Distill from the metrics plus the Decisions and Blockers sections of the log. One line each. A lesson must be actionable by a future plan ("gate X earlier", "the attempt budget was too low for points shaped like Y"), not a platitude.
 
-## Profile candidates
+## Profile candidates (learning loop)
 
-Stub for now. Any candidate distilled from a retro requires **explicit, batched user confirmation** before being recorded anywhere — nothing is written silently. The full candidate flow (what qualifies, how batch confirmation happens, where confirmed candidates go) belongs to the learning-loop extension of this guide; until evolution is enabled, leave the section empty with its one-line pointer.
+The learning loop is the only mechanism that lets Tackle adapt to a user or project. It is opt-in, per scope, and never silent.
+
+### Opt-in (asked once per scope)
+
+At the first learning opportunity, ask per scope:
+
+- **Both scopes** if neither `~/.tackle/user-profile.md` nor `.tackle/profile.md` exists.
+- **Project only** if the user profile already exists and is enabled.
+
+A "no" writes the disabled stub (`Evolution: disabled (YYYY-MM-DD)`) in the relevant profile file and is never re-asked. The user can flip it later by enabling evolution or deleting the file.
+
+### Distilling candidates
+
+Mine the following sources during retro:
+
+- `decisions.md` deltas vs recommended defaults (recurring overrides).
+- `log.md` attempt-journal lines that exceed the budget or show no-progress.
+- Reopened points (`🟢 → 🟡`) in `log.md`.
+- Escalation packets from `log.md`.
+- `/tackle-verify` findings that recurred across points.
+
+Present candidates as a batch. Each candidate must include:
+
+- A hypothesis or directive entry.
+- The supporting evidence count.
+- A proposed confidence (0.0–1.0).
+
+### Confirming and writing
+
+Everything is batch-confirmed by the user before writing. Never append to a profile without an explicit "yes".
+
+For each confirmed candidate:
+
+- Update counters from intake tally lines: `profile proposals: N accepted, M overridden (<which>)`.
+- Accept ⇒ increment ✓; override ⇒ increment ✗.
+- If ✗ ≥ 3 with confidence < 0.3, set `status: retired` (kept, never deleted).
+- If a project hypothesis is confirmed in ≥ 2 repos, propose promoting it to the user profile (ask again).
+
+### Directives
+
+Recurring failure evidence may propose a `directive:` entry (C-20). A directive targets a named template or guide section and is applied on top of the resolution stack at instantiation time. Project directives outrank user directives. A directive whose target section no longer exists is flagged **stale** for re-confirm-or-retire.
+
+### Opt-out anytime
+
+The user can stop evolution at any moment, per scope, with any phrasing. Two modes:
+
+- **Pause**: flip the header to `Evolution: disabled (YYYY-MM-DD)`. Counters are kept; re-enabling resumes them.
+- **Purge**: delete the profile file entirely. The next learning opportunity may re-ask for opt-in.
+
+Both take effect immediately.
 
 ## Where results go
 
