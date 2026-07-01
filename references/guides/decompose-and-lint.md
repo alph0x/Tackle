@@ -7,15 +7,14 @@
 
 # Step 6.5 — Lint the wired plan
 
-Check:
-- Pipeline wired (every `Depends-on` resolves).
-- **Grounding gate**: every `file:line` cited in a point's Context was actually read; unread citations are flagged **ungrounded**.
+Mechanical first: run every row of `guides/lint-spec.md` (copy-paste commands, from the repo root) and report its score line — `lint: N/M checks passed`. Wiring, grounding, statuses, citations, log order, seals, and collisions are all decided there, not re-judged here.
+
+Then judge — the checks no command can decide:
 - Contract churn guard (contract sections changed → citing points reconciled).
 - Quality dimensions derived into done-signals.
 - Deferral & questions sound.
 - Q-guard (active point may not depend on unresolved user-owned `Q-xx`).
 - Depth artifacts coherent.
-- Plan passes the lint.
 
 # Step 6.6 — Right-size the plan
 
