@@ -35,7 +35,7 @@ docs/plans/{{slug}}/
 
 ## Rules
 
-1. **State**: `log.md` is append-only; `board.md` is the execution status. Don't duplicate either elsewhere.
+1. **State**: `log.md` is append-only; `board.md` is the execution status. Don't duplicate either elsewhere. `log.md` archives to `log-archive.md` past ~400 lines (entries older than the last 5 sessions move verbatim); override the thresholds here if this workspace needs different ones.
 2. **Single source**: questions in `questions.md`; closed decisions in `decisions.md` (`D-id`, append-only, supersede to change).
 3. **Ground every claim in `file:line`** verified against the repo.
 4. **Scope**: don't touch out-of-scope (see `plan.md` §Non-goals).

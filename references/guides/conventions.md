@@ -14,3 +14,4 @@
 12. Single-source per-point acceptance.
 13. Quality loop before flipping 🟢.
 14. Decisions carry their why; questions carry what they determine.
+15. Context budgets: point briefing ≤ 150 lines; design-contract section ≤ 40 lines; digest ≤ 12 lines; `log.md` archives to `log-archive.md` past ~400 lines.

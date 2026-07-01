@@ -6,6 +6,11 @@ at the end of the **newest** entry, a **State snapshot** sufficient to resume wi
 re-reading history. Keep entries terse (append-only ≠ verbose). Never rewrite old entries.
 Never log secrets. **This is the canonical state source of the plan.**
 
+**Archive protocol** — when `log.md` exceeds ~400 lines, move entries older than the
+last 5 sessions **verbatim** to `log-archive.md`. Append-only is preserved across the pair:
+never edit moved entries. The newest entry always keeps a self-sufficient State snapshot,
+so archiving never breaks resume. Thresholds are workspace-overridable in `AGENTS.md`.
+
 **Evidence entries** — every "done-signal passed/failed" claim carries:
 
 ````
