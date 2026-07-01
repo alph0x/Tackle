@@ -60,7 +60,9 @@ docs/plans/<initiative>/overrides/
 In short: **overrides > presets > sdd > core**. Nothing Tackle-related lives at the repo root, except `.tackle/` (opt-in learning-loop profiles).
 
 ## Execution loop
-`/tackle-implement` and `/tackle-next` spawn the point team defined in `team.md` and run `board.md` in dependency order. Before acting, the agent MUST read `board.md`, `log.md`, and `decisions.md` (and `questions.md` if any question is unresolved). The Driver executes each point and runs its done-signal; reviewers verify and the Coordinator updates `board.md` + `log.md`. Team size is Solo/Pair/Pod/Squad per `team.md`.
+`/tackle-implement` and `/tackle-next` spawn the point team defined in `team.md` and run `board.md` in dependency order. Before acting, the agent MUST read `board.md`, `log.md`, and `decisions.md` (and `questions.md` if any question is unresolved). The Driver executes each point and runs its done-signal; that run is informative, not gating. The 🟢-flipping run comes from an independent checker (maker/checker) per `team.md`, with its evidence recorded in `log.md`. Reviewers verify and the Coordinator updates `board.md` + `log.md`. Team size is Solo/Pair/Pod/Squad per `team.md`.
+
+In execution, spawning the `team.md` point team is **mandatory**. In planning, subagents are **optional, recommended** for grounding reads, the `/tackle-verify` red-team, and the `/tackle-drill` cold-start drill; intake, doubts, and decisions never delegate to a subagent.
 
 **Regression sweep.** Before a point flips 🟢, re-run the done-signals of every 🟢 point whose Touches intersect the current point's Touches. Any failure reopens that point (🟢 → 🟡) and blocks the current one.
 

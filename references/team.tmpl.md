@@ -1,6 +1,6 @@
 # Team protocol — {{TITLE}}
 
-When a point enters execution, the orchestrator spawns a **point team** sized to the point's complexity and risk. The workspace (`board.md`, `log.md`, the point file, and the touched files) is the single source of truth; IRC is only for coordination. The team is harness-agnostic: "the most capable model" handles planning/judgment, "the balanced model" handles validation, "the fast model" handles mechanical work. Use whatever model selection your harness provides.
+When a point enters execution, the orchestrator spawns a **point team** sized to the point's complexity and risk. In execution this protocol is **mandatory** — every point gets its team, and the checker role (see §When a point is done) is filled by an agent independent from the Driver, using whatever subagent or parallel facility the harness provides. The workspace (`board.md`, `log.md`, the point file, and the touched files) is the single source of truth; IRC is only for coordination. The team is harness-agnostic: "the most capable model" handles planning/judgment, "the balanced model" handles validation, "the fast model" handles mechanical work. Use whatever model selection your harness provides.
 
 ## Team sizing
 
@@ -81,10 +81,12 @@ Add specialists when the point's risk justifies it; default Squad = Driver + Rev
 
 A point flips to 🟢 only when:
 
-1. **Verifier / Red-Teamer**: `/tackle-verify` passed with no HIGH findings and no unresolved MEDIUM findings.
-2. Driver: done-signal passes **with its evidence block recorded in `log.md`**.
-3. Reviewer/Spec Reader: output matches briefing and `design-contract.md`.
-4. Quality Guardian: no quality findings (if Pod/Squad).
-5. Simplicity/Regression/Performance & Concurrency Auditor: no findings (if Squad and triggered).
-6. Coordinator/Reviewer: `board.md` updated (and `log.md` if Pod/Squad).
-7. **Regression sweep**: done-signals of every 🟢 point with intersecting Touches re-ran green; any failure reopens that point (🟢 → 🟡) and blocks this one.
+1. **maker/checker**: the Driver's own done-signal run is informative, never gating. The 🟢-flipping run and its evidence come from an **independent checker** — tiered by autonomy: Pair/Pod/Squad: the Verifier or Coordinator; Solo assisted (L2): the human confirms after seeing the evidence; Solo unattended (L3) or any production-path point: an independent fresh session/subagent reading only the point file and workspace state. If the harness cannot isolate a fresh session, fall back to the human checker and record that fallback in `log.md`.
+2. **Reward-hacking guard**: the checker greps the diff for removed, disabled, or loosened tests, assertions, or done-signals unless the point's Goal explicitly requires it. Any such change reopens the point (🟢 → 🟡) and blocks the current one.
+3. **Verifier / Red-Teamer**: `/tackle-verify` passed with no HIGH findings and no unresolved MEDIUM findings.
+4. Driver: done-signal passes **with its evidence block recorded in `log.md`**.
+5. Reviewer/Spec Reader: output matches briefing and `design-contract.md`.
+6. Quality Guardian: no quality findings (if Pod/Squad).
+7. Simplicity/Regression/Performance & Concurrency Auditor: no findings (if Squad and triggered).
+8. Coordinator/Reviewer: `board.md` updated (and `log.md` if Pod/Squad).
+9. **Regression sweep**: done-signals of every 🟢 point with intersecting Touches re-ran green; any failure reopens that point (🟢 → 🟡) and blocks this one.
