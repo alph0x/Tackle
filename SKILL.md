@@ -30,6 +30,7 @@ Tackle creates a durable action plan under `docs/plans/<initiative>/`, broken in
 | `/tackle-verify` | **Verify** → red-team pass over each point before implementation |
 | `/tackle-ground` | **Ground** → mechanically read and mark every `file:line` cited in a plan |
 | `/tackle-retro` or `retro / retrospectiva / how did it go` | **Retro** → mine `board.md` + `log.md` into `retro.md` at initiative close |
+| `/tackle-pulse` or `run a pulse / health check / cómo está todo` | **Pulse** → read-only standing digest (Step 9 guide); scheduler-friendly, never executes points |
 | `/tackle-drill` or `drill this point` | **Drill** → cold-start readiness drill on one point briefing |
 | `/tackle-trace` or `trace coverage` | **Trace** → criterion↔point coverage matrix, gaps and drift |
 | `/tackle-handoff` or `prepare a handoff` | **Handoff packet** → generate portable `HANDOFF.md` for the initiative |
@@ -66,7 +67,7 @@ In execution, spawning the `team.md` point team is **mandatory**. In planning, s
 
 **Regression sweep.** Before a point flips 🟢, re-run the done-signals of every 🟢 point whose Touches intersect the current point's Touches. Any failure reopens that point (🟢 → 🟡) and blocks the current one.
 
-Cold-session modes (`resume`, `status`, `what plans are there?`, `give me the next point`, `/tackle-verify`, `/tackle-ground`) follow the same rule: read the state files first, then answer or act.
+Cold-session modes (`resume`, `status`, `what plans are there?`, `give me the next point`, `/tackle-verify`, `/tackle-ground`, `/tackle-pulse`) follow the same rule: read the state files first, then answer or act.
 
 **Execution requires explicit intent.** If the user did **not** upfront ask for plan+execute, `/tackle-implement` and `/tackle-next` must present the point's pre-attack summary and ask for confirmation before changing code. "Yes", "go ahead", or equivalent confirms; silence or ambiguity means stop. This rule is L2 (assisted), the default rung of the autonomy ladder declared in the workspace `AGENTS.md` §Autonomy (per-point overrides in the point briefing). L1 (report) is read-only and never edits source; L3 (unattended) skips per-point confirmation only when the workspace's `AGENTS.md` §Autonomy conditions all hold — never on production-path points without an explicit waiver.
 
