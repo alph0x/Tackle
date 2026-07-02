@@ -1,3 +1,19 @@
+# Step 0 — Companion skills check
+
+Before intake, verify that the optional companion skills are available. These skills improve planning quality but are never used for execution:
+
+- `superpowers` — for `brainstorming` and `writing-plans` depth.
+- `karpathy-guidelines` — for simplicity-first discipline.
+- `solid-skills` or `clean-architecture` — for architecture / SOLID decisions.
+
+For each missing skill, suggest installing it to the user. Record the result in the log's `### Intake (context gathered)` section:
+
+```
+companion skills: superpowers [installed/missing/declined], karpathy-guidelines [installed/missing/declined], clean-architecture [installed/missing/declined]
+```
+
+If the user declines to install any missing skill, note the gap once and continue. Do not re-nag in later sessions.
+
 # Step 1 — Intake (infer first, then ask)
 
 Extract or confirm:

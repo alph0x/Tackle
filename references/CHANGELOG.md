@@ -1,4 +1,10 @@
 # Tackle changelog
+
+## Tackle 3.0.1
+
+- Companion skills check is now a mandatory Step 0 in `intake-and-gate.md`.
+- `SKILL.md` renamed "Optional skills" to "Companion skills" and clarified that the check must happen before intake and be recorded in the log.
+
 ## Tackle 3.0
 
 - Anchored citations with mechanical drift checks and derived staleness (`/tackle-ground`).

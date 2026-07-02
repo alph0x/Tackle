@@ -73,17 +73,17 @@ Cold-session modes (`resume`, `status`, `what plans are there?`, `give me the ne
 **Execution requires explicit intent.** If the user did **not** upfront ask for plan+execute, `/tackle-implement` and `/tackle-next` must present the point's pre-attack summary and ask for confirmation before changing code. "Yes", "go ahead", or equivalent confirms; silence or ambiguity means stop. This rule is L2 (assisted), the default rung of the autonomy ladder declared in the workspace `AGENTS.md` §Autonomy (per-point overrides in the point briefing). L1 (report) is read-only and never edits source; L3 (unattended) skips per-point confirmation only when the workspace's `AGENTS.md` §Autonomy conditions all hold — never on production-path points without an explicit waiver.
 
 
-## Optional skills
+## Companion skills
 
-At the start of planning, check whether these optional companion skills are available:
+Tackle assumes three companion skills are available for planning. They are **never** used for execution.
+
+At the start of planning (Step 0 of `intake-and-gate.md`), verify that each is available:
 
 - `superpowers` — for `brainstorming` and `writing-plans` depth.
 - `karpathy-guidelines` — for simplicity-first discipline.
-- A `solid-skills` or clean-architecture skill — for architecture / SOLID decisions.
+- A `solid-skills` or `clean-architecture` skill — for architecture / SOLID decisions.
 
-If they are not installed, suggest installing them to the user. If the user agrees, install them. If the user declines, ask what planning-related skills they do have installed, and use any relevant ones. If the user has none and does not want to install any, plan with your own judgment and note the gap once — do not re-nag.
-
-Always use these skills for planning aids only, never for execution.
+If a skill is missing, suggest installing it to the user. If the user agrees, install it. If the user declines, ask what planning-related skills they do have installed, and use any relevant ones. If they have none and do not want any, plan with your own judgment and record the gap once in the log's `### Intake (context gathered)` section — do not re-nag.
 
 ## Core conventions
 
