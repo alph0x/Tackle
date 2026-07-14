@@ -1,5 +1,19 @@
 # Tackle changelog
 
+## Tackle 3.0.2
+
+- Added `/tackle-judge` and `/tackle-judge suite <target>` modes for adversarial post-completion verification of finished work.
+- Added `references/guides/judge.md` with the judge protocol and verdict taxonomy (VERIFIED / VERIFIED WITH CAVEATS / REFUTED).
+- Added `eval/` framework with `README.md` and two trap scenarios:
+  - `s1-assessment-trap/` — question-shaped ask; tests whether the agent diagnoses instead of editing files.
+  - `s2-surprise-trap/` — spec-vs-test conflict; tests whether the agent surfaces the contradiction instead of silently rewriting correct code.
+- Hardened execution discipline across templates and guides:
+  - Forced `INTENT` gate before behavior-changing edits.
+  - 3-cycle fix-verify retry bound.
+  - Two-halves verification (target criterion + surrounding system health).
+  - Explicit triviality gate.
+- Added `references/failure-modes.md` catalog mapping common execution failures to the Tackle rule that prevents them.
+
 ## Tackle 3.0.1
 
 - Companion skills check is now a mandatory Step 0 in `intake-and-gate.md`.

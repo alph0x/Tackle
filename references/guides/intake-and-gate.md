@@ -57,3 +57,15 @@ Lock the problem, observable result, top 2 non-goals, and highest-shape decision
 | **Full** | Multi-session / multi-track / multi-team / high uncertainty / handoff expected | introduce a new subsystem |
 
 **Tie-breaker**: touches ≥2 modules OR changes public API OR spans sessions/teams OR handoff expected → **Full**.
+
+## Triviality gate
+
+A task is **trivial** only if **all** of these are true:
+- one file touched;
+- fewer than ~10 changed lines;
+- no new behavior introduced;
+- no searching needed to know what to change.
+
+If a task later fails any criterion, announce the gate failure and enter the full loop (Lite or Full, depending on the other signals). Do not silently upgrade a trivial task; state why the gate failed.
+
+A **Lite** task is the smallest non-trivial plan: it still needs a `plan.md`, `log.md`, and `todo.md`. Trivial tasks skip the plan workspace entirely.

@@ -1,0 +1,10 @@
+# Ignore Python runtime artifacts generated during fixture verification
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Ignore scratch/run directories used during eval
+scratch/
+runs/

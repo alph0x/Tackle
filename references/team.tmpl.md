@@ -36,6 +36,8 @@ Add specialists when the point's risk justifies it; default Squad = Driver + Rev
 
 ### Driver
 - Owns code changes, writes files, runs tests, makes the done-signal pass.
+- Before any behavior-changing edit, writes the INTENT gate line per the point briefing: `INTENT: current code does <X>; done-signal expects <Y>; <source> says <Z>.` If X, Y, and Z do not agree, surfaces the contradiction and stops.
+- Self-corrects up to **3 failed fix-verify cycles on the same issue**; after that, stops, reports the actual output and current hypothesis, and escalates.
 - Reports result and changed files, with its **Evidence** block (command, trimmed output, exit line).
 - Owns the attempt journal: appends one line per failed attempt, re-reads prior lines before retrying.
 
@@ -59,6 +61,7 @@ Add specialists when the point's risk justifies it; default Squad = Driver + Rev
 ### Verifier / Red-Teamer
 - Runs `/tackle-verify` on the point before it is handed to the Driver.
 - Produces a findings list with certainty levels (HIGH/MEDIUM/LOW).
+- Uses `references/failure-modes.md` as a checklist to name the risk created by skipped or faked execution steps.
 - A HIGH finding blocks execution; MEDIUM blocks unless the user accepts the risk; LOW is advisory.
 - Independent from the Driver and Reviewer; can be the same agent as the Coordinator only on trivial Solo points.
 

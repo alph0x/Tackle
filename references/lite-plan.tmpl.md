@@ -2,6 +2,8 @@
 
 Lite workspace: `plan.md` + `log.md` + `todo.md`. Default to Lite for small slices; upgrade to Full only when multi-session, multi-track, or handoff is expected. Upgrade adds `README.md`, `AGENTS.md`, `reference.md`, `points/` (and depth artifacts as their triggers fire — `foundations.md`, `design-contract.md`, `execution-strategy.md`, `team.md`, `board.md`; see Step 4).
 
+**Lite is non-trivial.** A task must fail the triviality gate (one file, <10 lines, no new behavior, no searching) before it earns a Lite workspace; otherwise execute it directly.
+
 Cross-cutting rules still apply at Lite: no silent assumptions, self-documenting code, and a runnable done-signal per point.
 
 ## Objective

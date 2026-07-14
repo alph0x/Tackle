@@ -28,6 +28,8 @@ description: Use when starting a non-trivial, multi-session or multi-track initi
 | `/tackle-next` | **Execute next** → execute one ready point |
 | `/tackle-checklist` | **Checklist** → write `checklist.md` |
 | `/tackle-verify` | **Verify** → red-team pass over each point before implementation |
+| `/tackle-judge` | **Judge** → adversarial verification of finished work |
+| `/tackle-judge suite <target>` | **Judge suite** → run the trap suite against a skill, model, or prompt |
 | `/tackle-ground` | **Ground** → mechanically read and mark every `file:line` cited in a plan |
 | `/tackle-retro` or `retro / retrospectiva / how did it go` | **Retro** → mine `board.md` + `log.md` into `retro.md` at initiative close |
 | `/tackle-pulse` or `run a pulse / health check / cómo está todo` | **Pulse** → read-only standing digest (Step 9 guide); scheduler-friendly, never executes points |

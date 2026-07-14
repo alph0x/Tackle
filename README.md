@@ -8,6 +8,33 @@ Tackle produces a workspace of grounded markdown artifacts under `docs/plans/<in
 
 **Tackle plans and can execute the plan it produces.** It never writes implementation code on its own. The optional `/tackle-implement` and `/tackle-next` modes drive execution by spawning the point team defined in `team.md`, running each point's done-signal, and advancing the board.
 
+## Execution discipline
+
+Tackle's execution loop is hardened with rules proven against common agent failures:
+
+- **INTENT gate** — before any behavior-changing edit, the agent must write `INTENT: current code does X; done-signal expects Y; source says Z` and resolve any contradiction.
+- **Retry bound** — stop after 3 failed fix-verify cycles on the same issue.
+- **Two-halves verification** — every done-signal must check both the target criterion and the surrounding system (build/tests/lint).
+- **Triviality gate** — a task is trivial only if it is one file, <10 changed lines, no new behavior, and no searching.
+- **Failure-modes catalog** — `references/failure-modes.md` maps common failures to the Tackle rule that prevents them.
+
+## Verification and judge
+
+- `/tackle-verify` is a pre-execution red-team pass over the plan.
+- `/tackle-judge` is a post-completion adversarial audit: it treats the agent's report as claims, diffs what actually changed, re-runs claimed verifications, hunts weakened tests and false completion, and delivers a verdict of **VERIFIED**, **VERIFIED WITH CAVEATS**, or **REFUTED**.
+- `/tackle-judge suite <target>` runs the trap suite in `eval/scenarios/` against a skill, model, or prompt.
+
+## Eval
+
+Tackle ships a smoke-test A/B eval in `eval/`:
+
+- `eval/README.md` describes the manual workflow.
+- `eval/scenarios/` contains trap fixtures with `GROUND-TRUTH.md` answer sheets.
+- Each scenario tests whether a mid-tier model following Tackle literally beats the same model free-styling at a trap.
+- Current scenarios:
+  - `s1-assessment-trap/` — question-shaped ask; the trap is editing files instead of diagnosing.
+  - `s2-surprise-trap/` — spec-vs-test conflict; the trap is silently editing correct code to satisfy a wrong test.
+
 ## Who is it for
 
 Any team or developer that:
@@ -51,6 +78,8 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 | `/tackle-next` | **Execute next** — execute one ready point |
 | `/tackle-checklist` | **Checklist** — generate a quality checklist |
 | `/tackle-verify` | **Verify** — red-team pass over each point before implementation |
+| `/tackle-judge` | **Judge** — adversarial verification of finished work |
+| `/tackle-judge suite <target>` | **Judge suite** — run the trap suite against a skill, model, or prompt |
 | `/tackle-ground` | **Ground** — mechanically read and mark every `file:line` cited in the plan |
 
 **Legacy modes:**
@@ -71,7 +100,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 
 **Template-resolution stack:** overrides → presets → sdd → core.
 
-**Version:** Tackle 3.0. See `references/CHANGELOG.md` for what's new.
+**Version:** Tackle 3.0.2. See `references/CHANGELOG.md` for what's new.
 
 ## What it produces
 

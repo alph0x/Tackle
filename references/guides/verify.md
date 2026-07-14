@@ -4,6 +4,15 @@ Triggered by `/tackle-verify`. Run this after the plan is decomposed and linted,
 
 **Principle: detection before judgment.** Use cheap mechanical checks (`grep`, `read`, `ast-grep`, `git`) first; use the LLM only for synthesis of the findings. This keeps the pass fast and reduces false positives.
 
+## Verification has two halves
+
+Every verification must cover:
+
+1. **Target half** — the point's specific done criterion passes, observed (it ran, rendered, counted, or matched). Do not infer this from reading code.
+2. **Surround half** — the system around the touched area remains healthy (build, tests, lint, or equivalent for the touched area).
+
+A green target check with a broken surrounding system is a failed verification. When the surrounding system cannot be checked (no runtime, missing credentials, human-eyes-only), label the claim **UNVERIFIABLE**, never assume it is true. See `references/failure-modes.md` for the symptom-to-rule catalog used by this check.
+
 For each point in `plan.md` §5 / `board.md`:
 
 1. **Grounding check** — confirm every cited `file:line` was actually read; flag ungrounded assertions.

@@ -28,6 +28,22 @@
 2. {{...}}
 3. Tests: {{what to cover and where}}
 
+## Intent gate (before any behavior-changing edit)
+
+Before editing behavior, write one literal line:
+
+```text
+INTENT: current code does <X>; done-signal expects <Y>; <source> says <Z>.
+```
+
+- `<X>` = current behavior at the touch point, grounded in `file:line`.
+- `<Y>` = what the point's verification expects.
+- `<Z>` = the stated intent from the authoritative source (`design-contract.md`, `spec.md`, `README.md`, docstring, or explicit user statement).
+
+Authority order when they disagree: explicit user statement > spec/README/docstring > tests > current code behavior.
+
+If `<X>`, `<Y>`, and `<Z>` do not agree, the disagreement is the finding. Do not silently edit to make one match another; surface the contradiction and wait for direction, or document the assumption and proceed only if the disagreement is resolved.
+
 ## Alternatives / fallbacks
 - **If {{condition / the recommended approach doesn't fit}}** → {{alternative approach + tradeoff}}.
 - **If blocked by {{X}}** → {{what to do; which question in `questions.md` it maps to}}.
@@ -56,9 +72,10 @@ Loop until green: {{the done-signal command}}.
 - The 🟢-flipping run of this command is the **checker's**, not the Driver's (maker/checker).
   <!-- Judgment/investigation point (research, copy/UX, design spike) with no honest command? Make this a REVIEW-gate instead: "exit = artifact + rubric, reviewed" (e.g. `decisions.md` D-xx chosen with the matrix filled). Never a fake `test -f` green. -->
 - [ ] Meets the **universal per-point acceptance** in `plan.md` §6.1 (don't restate it here).
+- [ ] Covers **both halves of verification**: target criterion observed, and surrounding system still healthy (build / tests / lint for the touched area).
 - [ ] {{quality-dimension checks this point's **Touches** fire — Security / Performance / Concurrency / Correctness / … per the catalog (`references/guides/quality-dimensions.md`) — each **folded into the done-signal above** as a runnable fragment using this repo's tooling (e.g. "authz test in the suite asserts unauthenticated/cross-tenant → 401/403"), or a **review-gated** criterion only if no honest command exists. Omit axes that don't fire; don't restate the §6.1 universal ones}}.
 - [ ] {{point-specific condition — exhaustive over its case set (assert the count), verifiable by test/grep}}.
-- **If it fails →** {{likely failure → concrete fix}}. Self-correct up to the workspace iteration budget (`AGENTS.md`), then STOP + escalate (set a per-point budget here only if it differs).
+- **If it fails →** {{likely failure → concrete fix}}. Self-correct up to **3 failed fix-verify cycles on the same issue** (or the workspace iteration budget, whichever comes first), then STOP + escalate (set a per-point budget here only if it differs).
 
 ## Open questions for this point
 - {{Q-0x in `questions.md` — if any is user-owned and unresolved, this point is Deferred, not loop-ready}}
