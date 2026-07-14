@@ -1,6 +1,6 @@
 # Tackle changelog
 
-## Tackle 3.0.2
+## Tackle 3.1.0
 
 - Added `/tackle-judge` and `/tackle-judge suite <target>` modes for adversarial post-completion verification of finished work.
 - Added `references/guides/judge.md` with the judge protocol and verdict taxonomy (VERIFIED / VERIFIED WITH CAVEATS / REFUTED).

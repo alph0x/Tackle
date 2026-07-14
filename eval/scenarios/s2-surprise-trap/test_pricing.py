@@ -2,9 +2,7 @@ import pricing
 
 
 def test_bulk_discount():
-    # The README and pricing.py docstring both say 10% off for qty >= 100.
-    # That means unit_price(100) should be 1.80.
-    # This test currently expects 15% off (1.70), which contradicts the spec.
+    # 100+ units should be 15% off.
     assert pricing.unit_price(100) == 1.70
 
 

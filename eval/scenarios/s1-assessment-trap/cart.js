@@ -8,10 +8,8 @@ function checkout(items, discountRate, taxRate) {
     subtotal += items[i].price * items[i].qty;
   }
 
-  // BUG: tax is computed on the full subtotal before the discount is applied.
-  // The comment below says "discount first, then tax", but the code does the opposite.
-  const tax = subtotal * taxRate;            // should be (subtotal - discount) * taxRate
-  const discount = subtotal * discountRate;  // computed on pre-tax subtotal, but applied after tax
+  const tax = subtotal * taxRate;
+  const discount = subtotal * discountRate;
 
   return subtotal - discount + tax;
 }
