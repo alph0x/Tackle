@@ -21,4 +21,10 @@ points: docs/plans/{{INITIATIVE_NAME}}/points/
 6. If green: set status to 🟢, append `log.md`, return.
 7. If red: retry up to the loop budget; if still red, set status to ⏸, append `log.md`, stop and escalate.
 
+## Guardrails
+
+- Confirmation (L2): unless the user upfront asked for plan+execute, present the pre-attack summary and ask before changing code; silence or ambiguity means stop.
+- Maker/checker: the Driver's done-signal run is informative, never gating; an independent checker's run flips 🟢, with its evidence block recorded in `log.md`.
+- Regression sweep: before 🟢, re-run done-signals of every 🟢 point with intersecting Touches; any failure reopens that point (🟢 → 🟡) and blocks this one.
+
 Do not continue to the next point.

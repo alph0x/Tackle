@@ -16,11 +16,14 @@ Repeat while ready points exist, nothing blocks, and budget remains:
 2. Pick the first 🔴 point whose dependencies are 🟢.
 3. Set it 🟡 in `board.md`.
 4. Spawn the point team for that point per `team.md` (Solo/Pair/Pod/Squad); the Driver executes the briefing and runs its **Done-signal**, reviewers verify, and the Coordinator updates state.
-5. If green: set 🟢, append one line to `log.md`, continue.
+5. If green per the guardrails above: set 🟢, append one line to `log.md`, continue.
 6. If red: retry up to the loop budget (default 3). Still red → set ⏸, append blocker to `log.md`, stop and escalate.
 
 ## Guardrails
 
+- Execution requires explicit intent (L2, the default autonomy rung in `AGENTS.md` §Autonomy): unless the user upfront asked for plan+execute, present the point's pre-attack summary and ask for confirmation before changing code; silence or ambiguity means stop.
+- Maker/checker: the Driver's own done-signal run is informative, never gating. The 🟢-flipping run comes from an independent checker per `team.md`, with its evidence block recorded in `log.md`.
+- Regression sweep: before a point flips 🟢, re-run the done-signals of every 🟢 point whose Touches intersect; any failure reopens that point (🟢 → 🟡) and blocks the current one.
 - Never edit a 🟢 point.
 - Never start a point whose dependencies are not 🟢.
 - Always update `board.md` before appending `log.md`.
