@@ -84,7 +84,7 @@ Loop until green: {{the done-signal command}}.
 <!-- Only the checks not already visible by reading the sections above. Don't re-checklist the doc. -->
 - [ ] **Grounded**: every Context citation passes the drift check recorded by the newest ground entry in `log.md` (`sed -n 'NNp' file | grep -Fq "fragment"` → exit 0) — not "read in this session"; any stale citation makes the point **ungrounded** and not ready.
 - [ ] **Anchored**: it traces to a line in the spec, ticket, or `constitution.md`; untraced scope is flagged as drift.
-- [ ] **Single responsibility**: stating "done" needs no "and" (if it does → split; see the functional-core/effectful-shell split in Step 6).
+- [ ] **Single responsibility**: stating "done" needs no "and" (if it does → split; one point = smallest change with ONE runnable done-signal, per `references/guides/decompose-and-lint.md`).
 - [ ] **No open decisions inside it**: zero unresolved user-owned questions (if any → it's Deferred, not ready — Decision ownership).
 - [ ] **Loop-ready**: the Acceptance done-signal is a literal runnable command with an explicit pass condition (exit code / count / grep match); count-asserted where a finite set exists.
 - [ ] **Cold-agent-resolvable from this file alone** — the one true test of every section above.

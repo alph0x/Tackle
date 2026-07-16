@@ -1,6 +1,6 @@
 # Team protocol — {{TITLE}}
 
-When a point enters execution, the orchestrator spawns a **point team** sized to the point's complexity and risk. In execution this protocol is **mandatory** — every point gets its team, and the checker role (see §When a point is done) is filled by an agent independent from the Driver, using whatever subagent or parallel facility the harness provides. The workspace (`board.md`, `log.md`, the point file, and the touched files) is the single source of truth; IRC is only for coordination. The team is harness-agnostic: "the most capable model" handles planning/judgment, "the balanced model" handles validation, "the fast model" handles mechanical work. Use whatever model selection your harness provides.
+When a point enters execution, the orchestrator spawns a **point team** sized to the point's complexity and risk. In execution this protocol is **mandatory** — every point gets its team, and the checker role (see §When a point is done) is filled by an agent independent from the Driver, using whatever subagent or parallel facility the harness provides. The workspace (`board.md`, `log.md`, the point file, and the touched files) is the single source of truth; the agent messaging channel is only for coordination. The team is harness-agnostic: "the most capable model" handles planning/judgment, "the balanced model" handles validation, "the fast model" handles mechanical work. Use whatever model selection your harness provides.
 
 ## Team sizing
 
@@ -30,7 +30,7 @@ Add specialists when the point's risk justifies it; default Squad = Driver + Rev
 - **`board.md`** is the only place that records point status (🔴 🟡 ⏸ 🟢). `plan.md` §5 never carries status columns.
 - **`log.md`** is append-only history. It records what happened, not the current state.
 - **`todo.md`** is for planning-readiness; it is not updated during execution.
-- **No IRC status payloads.** Coordination messages are plain prose; the board is where status lives.
+- **No status payloads over the agent messaging channel.** Coordination messages are plain prose; the board is where status lives.
 
 ## Roles (when used)
 
@@ -75,7 +75,7 @@ Add specialists when the point's risk justifies it; default Squad = Driver + Rev
 
 ## Communication rules
 
-- Technical discussion in IRC or file comments.
+- Technical discussion in the agent messaging channel or file comments.
 - Driver acts on concrete next steps only.
 - Disagreements: spec → Spec Reader; quality → Quality Guardian; simplicity → Simplicity Auditor; performance → Performance & Concurrency Auditor; priority/flow → Coordinator.
 - Deadlock → Coordinator escalates to user.

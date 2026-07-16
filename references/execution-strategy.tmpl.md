@@ -6,21 +6,23 @@
 > `plan.md` §5 is already the strategy — skip this file.
 >
 > **Tackle still does NOT execute.** This artifact *plans the attack*; the waves run later,
-> in separate sessions. It is harness-agnostic — it names roles (orchestrator / implementer /
-> reviewer), not vendor tools. Use whatever parallel-agent, isolation and review facilities
+> in separate sessions. It is harness-agnostic — it names roles (Coordinator / Driver /
+> Reviewer), not vendor tools. Use whatever parallel-agent, isolation and review facilities
 > your environment provides; do the rest sequentially by hand.
 
 ## Roles
 
-- **Orchestrator** — drives waves, relays review findings, merges in dependency order, keeps
-  the board (`plan.md` §5) + `log.md` current. **Never implements.**
-- **Implementer** — one per point, briefed with the point's ready-to-paste starting prompt.
-  Decomposition is built to run **several implementers in parallel** (Step 6) — the orchestrator
+Role definitions: `team.md` (canonical).
+
+- **Coordinator** — drives waves, relays review findings, merges in dependency order, keeps
+  `board.md` (the only place that records point status) + `log.md` current. **Never implements.**
+- **Driver** — one per point, briefed with the point's ready-to-paste starting prompt.
+  Decomposition is built to run **several Drivers in parallel** (Step 6) — the Coordinator
   launches a fan-out wave in one batch.
-- **Code-quality guardian** — reviews *within-unit* quality before a point flips 🟢: smells,
+- **Quality Guardian** — reviews *within-unit* quality before a point flips 🟢: smells,
   redundancy, DRY, SOLID, self-documenting code, naming, AND conformance to the point's
   acceptance + design-contract section. Runs per point (or per class when a point creates ≥2
-  public types). It **loops with the implementer who wrote the code** (kept alive — messaging
+  public types). It **loops with the Driver who wrote the code** (kept alive — messaging
   beats re-briefing) until clean; it drives the author, it does not rewrite. The **inter-wave
   gate** (below) is the complement: it owns what only shows in the *merged* tree — cross-unit
   drift, races, duplication between points.
@@ -38,8 +40,8 @@ wave waits on the gate. Each point runs as a loop — its **done-signal** (in th
 loop's exit check, its **iteration budget** the stop-and-escalate rule. Use each point's
 **Touches (write scope)** to assign worktrees: points with disjoint scopes run as concurrent
 loops safely; overlapping scopes need isolated worktrees (if supported) or serialize.
-`board.md` and `log.md` are written only in the main tree, only by the orchestrator;
-implementer worktrees carry code, never state files.
+`board.md` and `log.md` are written only in the main tree, only by the Coordinator;
+Driver worktrees carry code, never state files.
 
 ```
 Wave 1 (sequential):  {{P-01 ──► P-02}}        {{foundation}}
@@ -77,7 +79,7 @@ behind an unanswered external dependency.
 
 ## Orchestration notes
 
-- Keep an implementer alive through its review-fix loop (context retention beats re-briefing);
+- Keep a Driver alive through its review-fix loop (context retention beats re-briefing);
   spawn fresh agents only across waves.
 - Resist over-orchestration on small initiatives — collapse to a single sequential session;
   the self-contained briefings support both modes.

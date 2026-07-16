@@ -56,7 +56,7 @@ module this design follows — `path` / repo, with file:line.}}
      fire initiative-wide; per-point axes live in each point's Acceptance, not here. -->
 - [ ] {{tests cover the change (test-first if the project mandates TDD); the suite is green; each point's done-signal is a literal command with a pass condition}}
 - [ ] {{structural invariant 1, promoted from the contract — e.g. "core compiles with zero deps"}}
-<!-- Quality-dimension axes (SKILL.md Step 6 catalog): keep an axis HERE only if it fires for EVERY point.
+<!-- Quality-dimension axes (catalog: `references/guides/quality-dimensions.md`): keep an axis HERE only if it fires for EVERY point.
      An axis that fires for only SOME points lives in those points' Acceptance, not here. -->
 - [ ] {{concurrency axis, if it fires initiative-wide — e.g. "clean under the language's strict concurrency mode"}}
 - [ ] {{security axis, if it fires initiative-wide — e.g. "no unauthenticated path reaches X; inputs validated at the boundary; no secret in logs/errors"}}
@@ -65,7 +65,7 @@ module this design follows — `path` / repo, with file:line.}}
 - [ ] {{grounded: any new abstraction has its row in `foundations.md` (if that file exists)}}
 - [ ] {{contract conformance: matches `design-contract.md`, or the spec was superseded first (if that file exists)}}
 - [ ] {{no regression on shared code; no new warnings}}
-- [ ] {{board hygiene: `plan.md` §5 + `log.md` updated; resolved Q-xx → D-xx}}
+- [ ] {{board hygiene: `board.md` + `log.md` updated; resolved Q-xx → D-xx}}
 
 ### 6.2 Initiative-level acceptance
 - [ ] {{observable, verifiable end-state for the whole initiative}}
