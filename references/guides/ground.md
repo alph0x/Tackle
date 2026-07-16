@@ -11,7 +11,7 @@ Triggered by `/tackle-ground`. Run this before `/tackle-verify` or `/tackle-impl
 3. **Record the result** in `log.md`:
    - List every citation read.
    - Flag any citation that could not be resolved (file missing, line out of range, malformed).
-4. **Update `board.md`** — mark every point whose citations are all readable as **grounded**. Unreadable or missing citations mark the point **ungrounded**.
+4. **Leave `board.md` untouched** — board statuses stay 🔴🟡⏸🟢 (lint row 3). Grounding is recorded only in the `log.md` entry below and derived from it — never copied into the board or the point file.
 
 ## Output
 

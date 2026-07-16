@@ -1,4 +1,4 @@
-# Step 8 — Judge (adversarial verification of finished work)
+# Judge — adversarial verification of finished work
 
 Triggered by `/tackle-judge` or when the user asks "did that actually work?" / "verify what it did".
 

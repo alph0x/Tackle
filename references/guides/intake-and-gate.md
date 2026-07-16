@@ -43,6 +43,9 @@ profile proposals: N accepted, M overridden (<which>)
 
 If the profile is absent, disabled, or no defaults apply, skip this step without logging a tally.
 
+## Decision ownership
+
+The user decides every doubt. Batch doubts with a recommended default each; don't drip-feed. Tag each 🔴 blocking or 🟡 proceed-on-default. Under delegation, every mandatory choice becomes a provisional `Q-xx` with your default.
 
 # Step 1.5 — Anchor the intake before sizing
 

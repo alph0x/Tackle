@@ -1,6 +1,6 @@
 # Handoff packet — portable HANDOFF.md (/tackle-handoff)
 
-Triggered by `/tackle-handoff [initiative]` or a natural phrase like "prepare a handoff". Distinct from the end-of-planning chat handoff (`handoff.md`): that one formats a chat digest; this one generates a durable file for a session or person that has nothing else.
+Triggered by `/tackle-handoff [initiative]` or a natural phrase like "prepare a handoff". Distinct from the end-of-planning chat digest (the output contract in `SKILL.md`): that one formats a chat digest; this one generates a durable file for a session or person that has nothing else.
 
 Output file: `docs/plans/<initiative>/HANDOFF.md` — a portable single file. **Generated, never hand-maintained; regenerating overwrites it.** Overwriting is sanctioned precisely because the file carries no canonical state — `board.md` and `log.md` do; the packet is a read-only projection of them.
 
