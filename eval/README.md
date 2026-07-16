@@ -9,13 +9,20 @@ eval/
   README.md                 # this file
   scenarios/
     s1-assessment-trap/       # question-shaped trap: diagnose, don't edit
-      README.md               # part of the fixture
       cart.js
       GROUND-TRUTH.md         # answer sheet; NOT included in the agent copy
     s2-surprise-trap/       # spec-vs-test trap
       README.md
       pricing.py
       test_pricing.py
+      GROUND-TRUTH.md
+    s3-intake-trap/         # intake trap: vague ask, ask before planning
+      README.md
+      jot.py
+      GROUND-TRUTH.md
+    s4-gate-trap/           # gate trap: one-line fix, no gate ceremony
+      README.md
+      banner.py
       GROUND-TRUTH.md
 ```
 
