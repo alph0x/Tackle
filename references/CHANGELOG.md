@@ -1,5 +1,19 @@
 # Tackle changelog
 
+## Tackle 3.2.0
+
+- SDD contract parity: `sdd/implement.tmpl.md` and `sdd/next.tmpl.md` restate the L2 confirmation gate, maker/checker with evidence in `log.md`, and the regression sweep; `sdd/tasks.tmpl.md` drops its Status column (`board.md` stays canonical).
+- Dedup pass: deleted `guides/conventions.md`, `guides/versioning.md`, `guides/handoff.md`; folded `guides/decision-ownership.md` into `intake-and-gate.md`. Rules now have one canonical home (SKILL.md or its guide); instantiated templates stay self-contained.
+- Deleted stale pre-3.0 `EXAMPLE-point.md` (contradicted the canonical-board rule; lacked INTENT gate, SEALED, anchored citations).
+- Fixed broken cross-refs in `point.tmpl.md` and `plan.tmpl.md`; `plan.tmpl.md` §6.1 board hygiene now names `board.md`.
+- `ground.md` no longer writes grounding marks to `board.md` (lint allows only 🔴🟡⏸🟢); grounding stays derived from `log.md`.
+- `execution-strategy.tmpl.md`: board status moved off `plan.md` §5; role vocabulary aligned to `team.tmpl.md` (canonical).
+- `team.tmpl.md`: harness-specific IRC wording replaced with neutral "agent messaging channel".
+- `judge.md` no longer claims Step 8 (Resume owns it).
+- `failure-modes.md` "Prevented by" names canonical rule homes instead of orphan P-* ids.
+- SKILL.md: guide map after the routing table (every guide now reachable); companion-skills section trimmed to a pointer; version stamp 3.2.0.
+- Eval: new `s3-intake-trap` and `s4-gate-trap` scenarios covering planning-mode traps (intake discipline, gate sizing).
+
 ## Tackle 3.1.0
 
 - Added `/tackle-judge` and `/tackle-judge suite <target>` modes for adversarial post-completion verification of finished work.

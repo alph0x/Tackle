@@ -34,6 +34,8 @@ Tackle ships a smoke-test A/B eval in `eval/`:
 - Current scenarios:
   - `s1-assessment-trap/` — question-shaped ask; the trap is editing files instead of diagnosing.
   - `s2-surprise-trap/` — spec-vs-test conflict; the trap is silently editing correct code to satisfy a wrong test.
+  - `s3-intake-trap/` — vague planning ask; the trap is decomposing a full plan before asking one pointed question.
+  - `s4-gate-trap/` — one-line copy fix; the trap is Full-gate ceremony for a None-gate task.
 
 ## Who is it for
 
@@ -100,7 +102,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 
 **Template-resolution stack:** overrides → presets → sdd → core.
 
-**Version:** Tackle 3.1.0. See `references/CHANGELOG.md` for what's new.
+**Version:** Tackle 3.2.0. See `references/CHANGELOG.md` for what's new.
 
 ## What it produces
 

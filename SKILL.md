@@ -7,7 +7,7 @@ description: Use when starting a non-trivial, multi-session or multi-track initi
 
 ## Overview
 
-**Tackle 3.0** — model-agnostic planning and execution methodology. Tackle creates a durable action plan under `docs/plans/<initiative>/`, broken into self-contained points that survive handoffs.
+**Tackle 3.2.0** — model-agnostic planning and execution methodology. Tackle creates a durable action plan under `docs/plans/<initiative>/`, broken into self-contained points that survive handoffs.
 
 - Plans by default; executes only when explicitly asked. `/tackle-plan` stops at handoff; `/tackle-implement` and `/tackle-next` require confirmation unless the user upfront asked for plan+execute.
 - Runs inside the target repo; grounds every claim in `file:line`.
@@ -46,6 +46,8 @@ description: Use when starting a non-trivial, multi-session or multi-track initi
 
 If several initiatives exist under `docs/plans/`, show the List and ask which.
 
+**Guide map** (all under `references/guides/`): Steps 0–2 `intake-and-gate` · 3–4 `scaffold` · 5–5.75 `design-and-contract` · 6–6.6 `decompose-and-lint` (+ `lint-spec`) · 7 `verify` · 7.5 `ground` · 8 `resume` · 8.5 `migrate` · 9 `status-list-next` · 10 `improve`; same-named guides: `judge` · `retro` · `drill` · `trace` · `handoff-packet`. SDD phase templates live in `references/sdd/`.
+
 Natural-language triggers are canonical; slash commands are aliases for harnesses that support them. `/tackle-plan` (or `tackle this`) is the standalone default path.
 
 **Commands are entry points, not boundaries.** Tackle may invoke any of its modes and subagents internally, at will, whenever the flow benefits — planning may run grounding, lint, verify, drill, or trace mid-flow; execution may re-ground a point or re-run the regression sweep. Guardrails are never bypassed by going internal: the autonomy ladder still gates anything that edits source, execution intent stays explicit, writes still require the same consents as if the user had invoked the command, and internal invocations leave the same log/board trail as user-invoked ones.
@@ -77,15 +79,7 @@ Cold-session modes (`resume`, `status`, `what plans are there?`, `give me the ne
 
 ## Companion skills
 
-Tackle assumes three companion skills are available for planning. They are **never** used for execution.
-
-At the start of planning (Step 0 of `intake-and-gate.md`), verify that each is available:
-
-- `superpowers` — for `brainstorming` and `writing-plans` depth.
-- `karpathy-guidelines` — for simplicity-first discipline.
-- A `solid-skills` or `clean-architecture` skill — for architecture / SOLID decisions.
-
-If a skill is missing, suggest installing it to the user. If the user agrees, install it. If the user declines, ask what planning-related skills they do have installed, and use any relevant ones. If they have none and do not want any, plan with your own judgment and record the gap once in the log's `### Intake (context gathered)` section — do not re-nag.
+Planning Step 0 checks three optional companions — `superpowers`, `karpathy-guidelines`, and a `solid-skills`/`clean-architecture` skill — and records the result in the log (procedure: `references/guides/intake-and-gate.md` Step 0). Companions improve planning; they are **never** used for execution.
 
 ## Core conventions
 
@@ -109,4 +103,4 @@ Open with one status line (`🟢 on track / 🟡 needs your input / 🔴 blocked
 - **Full methodology (per-step guides)**: `references/guides/`
 - **Workspace contract**: `references/AGENTS.tmpl.md`
 - **Execution teams**: `references/team.tmpl.md`
-- **Templates**: `references/*.tmpl.md`, `references/sdd/*.tmpl.md`, `references/presets/<preset>/*.tmpl.md`
+- **Templates**: `references/*.tmpl.md`, `references/sdd/*.tmpl.md`; presets ship empty (see Template-resolution stack).
