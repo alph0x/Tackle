@@ -17,8 +17,8 @@ A profile stores hypotheses and directives distilled from retros. It is read dur
 
 ## Hypotheses
 
-- This repo prefers done-signals as grep commands with literal pass conditions over prose criteria · confidence: 0.9 · evidence: 3✓/0✗ (tackle-2.1.1-friction, tackle-3.2.0-review, tackle-model-teams — 13/13 points) · status: active · from: tackle-3.2.0-review, 2026-07-16; reinforced: tackle-model-teams, 2026-07-16
-- Behavioral trap evals must gate changes that delete normative content from skill files (keywords prove words, inventory proves rules, only eval proves behavior) · confidence: 0.7 · evidence: 1✓/0✗ (tackle-model-teams D-13/D-16 — s2 4-arm eval exposed the unreachable authority order; convention 11 fix verified by re-run) · status: active · from: tackle-model-teams, 2026-07-16
+- This repo prefers done-signals as grep commands with literal pass conditions over prose criteria · confidence: 0.9 · evidence: 4✓/0✗ (tackle-2.1.1-friction, tackle-3.2.0-review, tackle-model-teams, tackle-migrate-hardening — F-table mechanical) · status: active · from: tackle-3.2.0-review, 2026-07-16; reinforced: tackle-migrate-hardening, 2026-07-17
+- Behavioral trap evals and dogfood runs must gate changes that delete normative content or rewrite methodology flows (keywords prove words, inventory proves rules, only behavior proves behavior) · confidence: 0.8 · evidence: 2✓/0✗ (tackle-model-teams D-13/D-16 s2 4-arm eval; tackle-migrate-hardening P-04 dogfood migration as the migrate-guide behavioral test) · status: active · from: tackle-model-teams, 2026-07-16; reinforced: tackle-migrate-hardening, 2026-07-17
 
 ## Directives
 
