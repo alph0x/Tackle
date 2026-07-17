@@ -71,6 +71,8 @@ cp -r tackle ~/.cursor/skills/  # or your agent's skills directory
 **Any model / IDE:**
 Copy `SKILL.md` and the `references/` directory into your agent's skill directory.
 
+The install artifact is `SKILL.md` + `references/` only. `docs/plans/` (workspaces) and `docs/seeds/` (this project's backlog) are local to this repo and never ship with the skill; your own plans and seeds get the same gitignore treatment in your repo.
+
 ## How to use
 
 Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this`, `iniciativa`.
