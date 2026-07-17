@@ -1,5 +1,11 @@
 # Tackle changelog
 
+## Tackle 3.4.2
+
+- Migrate-chain catch-up: new `v3.3 → v3.4` checklist in `migrate.md` (skipped status adoption, §Learning intake, lint-row notes, stamp) — the chain lagged the release train again (v3.4.x shipped without it).
+- New release-sweep rule in `lint-spec.md`: **migrate-chain currency** — any release changing workspace-level contract must extend the migrate chain in the same release; a version bump without its checklist is a release defect.
+- Dogfooded the new checklist on `docs/plans/tackle-2.0` (first run: §Learning intake added, stamp 3.4.1, D-09 there).
+
 ## Tackle 3.4.1
 
 - Documented the `/tackle-init` procedure in `scaffold.md` (presets/overrides tree, resolution order, decision recording) — the mode was routed but had no documented procedure (found in feature-surface validation).

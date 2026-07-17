@@ -25,6 +25,15 @@ A migrated workspace MUST satisfy the full-adoption contract F-1..F-8; each line
 6. Lint + checkpoint.
 7. Record migration `D-xx` + log entry + bump stamp.
 
+## v3.3 → v3.4 checklist
+
+Run these when migrating a plan created with Tackle 3.3.x:
+
+1. **Adopt the skipped status** — add `⚪ skipped (optional slice not executed, with one-line reason)` to the workspace's status vocabulary references (`AGENTS.md` executor contract, `board.md` legend if present); lint rows 3/5 now accept/scan for it.
+2. **Add §Learning intake** — copy the §Learning intake section from `AGENTS.tmpl.md` into the workspace `AGENTS.md`: read `.tackle/profile.md` / `~/.tackle/user-profile.md` and the repo's `docs/seeds/` at session start; profiles written only via `/tackle-retro`.
+3. **Note the lint changes** — row 1 now exempts fenced code blocks; row 2 accepts board.md-only id lists for old formats. No workspace edit needed; the new rows apply at the next lint run.
+4. **Bump the stamp** — record a `D-xx` in `decisions.md`, append a `log.md` entry, and bump the workspace `Methodology:` stamp to Tackle 3.4.x.
+
 ## v3.2 → v3.3 checklist
 
 Run these when migrating a plan created with Tackle 3.2.x:
