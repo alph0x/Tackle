@@ -27,3 +27,12 @@ Create only when their trigger fires:
 - `coordinator.md` — Coordinator continuity projection (multi-agent execution).
 - `reports/` — point closure reports (created at first point close, Full gate).
 - `reference-docs/` — read-only external snapshots.
+
+## /tackle-init — plan-local customization
+
+Triggered by `/tackle-init [preset]` (optionally with a preset name). Creates the plan-local customization tree inside `docs/plans/<initiative>/`:
+
+- `presets/<preset>/` — seeded by copying `references/presets/<preset>/` (ships empty by design; the user adds `*.tmpl.md` files there to shadow core templates for this initiative).
+- `overrides/` — starts empty; any `*.tmpl.md` here shadows both presets and core for this initiative.
+
+Resolution order at instantiation time: `overrides/ > presets/<preset>/ > references/sdd/ > references/` (SKILL.md §Template-resolution stack). Record the chosen preset in `decisions.md`; never modify `references/` from an init.
