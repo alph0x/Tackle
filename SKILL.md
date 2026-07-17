@@ -7,7 +7,7 @@ description: Use when starting a non-trivial, multi-session or multi-track initi
 
 ## Overview
 
-**Tackle 3.3.0** — model-agnostic planning and execution methodology: durable plans under `docs/plans/<initiative>/`, self-contained points that survive handoffs.
+**Tackle 3.4.0** — model-agnostic planning and execution methodology: durable plans under `docs/plans/<initiative>/`, self-contained points that survive handoffs.
 
 - Plans by default; executes only when explicitly asked.
 - Runs inside the target repo; grounds every claim in `file:line`.
@@ -86,7 +86,7 @@ Planning Step 0 checks optional companions (`superpowers`, `karpathy-guidelines`
 4. **One point = one responsibility + one runnable done-signal**.
 5. **Contract supersede-first**: implement `design-contract.md` as written; deviations require a `D-xx` first.
 6. **Self-documenting code**: Clean Code + SOLID; no explanatory inline comments.
-7. **Status vocabulary**: 🔴 not started · 🟡 in progress · ⏸ blocked · 🟢 done.
+7. **Status vocabulary**: 🔴 not started · 🟡 in progress · ⏸ blocked · 🟢 done · ⚪ skipped.
 8. **Decision ownership** — the user decides every doubt; batch recommendations with defaults.
 9. **Scaffold asks gitignore** — `/tackle-plan` asks about `.gitignore` for `docs/plans/` before creating files; records the decision.
 10. **Harness-agnostic** — works with any agent/LLM and IDE harness; never assume a specific one. Use generic terms ("the agent", "your harness", "the most capable model available"); single-harness features belong outside Tackle.

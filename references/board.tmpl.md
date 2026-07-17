@@ -4,6 +4,8 @@
 
 Updated only by `/tackle-implement`, `/tackle-next`, or manually during a session.
 
+Status: 🔴 not started · 🟡 in progress · ⏸ blocked · 🟢 done · ⚪ skipped (optional slice not executed, with one-line reason).
+
 | Point | What | Briefing | Depends on | Status |
 |---|---|---|---|---|
 <!-- Add rows from plan.md §5 -->

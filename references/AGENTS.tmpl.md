@@ -1,6 +1,6 @@
 # AGENTS — workspace `docs/plans/{{slug}}/`
 
-**Methodology: Tackle 3.3.0** <!-- the Tackle version this workspace was built/migrated under; a future version reads this to decide whether to migrate (Step 8.5 / Step 10). -->
+**Methodology: Tackle 3.4.0** <!-- the Tackle version this workspace was built/migrated under; a future version reads this to decide whether to migrate (Step 8.5 / Step 10). -->
 
 Conventions for any agent (Claude Code, Cursor, GPT, human) that picks up this plan.
 <!-- If it inherits from a root AGENTS.md, say so here and don't repeat its rules. -->
@@ -93,7 +93,7 @@ If `unsupported`, this map is advisory only: spawn at whatever model the harness
 Tackle planned this workspace; execution happens here, in sessions like yours. To keep
 tracking alive, when you pick up, finish, pause, or abandon a point you MUST:
 
-1. Set its status in `board.md` — fixed vocabulary: 🔴 not started · 🟡 in progress · ⏸ blocked · 🟢 done.
+1. Set its status in `board.md` — fixed vocabulary: 🔴 not started · 🟡 in progress · ⏸ blocked · 🟢 done · ⚪ skipped (optional slice not executed, with one-line reason).
 2. Append a `log.md` entry with an updated State snapshot. Never rewrite old entries.
 3. Record questions answered along the way as `D-xx` in `decisions.md`; mark the `Q-xx` resolved.
 4. If the code drifted from the point's `file:line` claims, update that point's Context.

@@ -52,7 +52,7 @@ Add specialists when the point's risk justifies it; default Squad = Driver + Rev
 
 ## Single source of truth for state
 
-- **`board.md`** is the only place that records point status (🔴 🟡 ⏸ 🟢). `plan.md` §5 never carries status columns.
+- **`board.md`** is the only place that records point status (🔴 🟡 ⏸ 🟢 · ⚪ skipped (optional slice not executed, with one-line reason)). `plan.md` §5 never carries status columns.
 - **`log.md`** is append-only history. It records what happened, not the current state.
 - **`todo.md`** is for planning-readiness; it is not updated during execution.
 - **No status payloads over the agent messaging channel.** Coordination messages are plain prose; the board is where status lives.

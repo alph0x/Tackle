@@ -12,7 +12,7 @@ This checklist is derived from `docs/plans/{{INITIATIVE_NAME}}/plan.md` §5 (Poi
 
 ## Task checklist
 
-<!-- One row per point from plan.md §5, numbered T-01..T-NN in dependency order. Status lives only in board.md; tasks.md never carries status. -->
+<!-- One row per point from plan.md §5, numbered T-01..T-NN in dependency order. Status lives only in board.md; tasks.md never carries status. Board vocabulary: 🔴 not started · 🟡 in progress · ⏸ blocked · 🟢 done · ⚪ skipped (optional slice not executed, with one-line reason). -->
 
 | ID | Task | Source point | Owner | Depends on | Done-signal |
 |---|---|---|---|---|---|
