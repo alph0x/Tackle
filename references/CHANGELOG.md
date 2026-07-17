@@ -1,5 +1,14 @@
 # Tackle changelog
 
+## Tackle 3.4.0
+
+- Retro hygiene (from `tackle-migrate-hardening` retro): attempt-budget metric recipe broadened (`budget\|attempts`); comprehension-debt recipe split into real debt (no checker evidence) vs accepted debt (checker-verified, human-unread); lint-safe notation line (U+XXXX / `$'\uXXXX'` escapes) in lint-spec; new intake list `docs/seeds/pending-skill-fixes.md` so retro lessons propagate.
+
+- Migrate path rewritten for full adoption (F-1..F-8 contract in `guides/migrate.md`): v3.0→v3.1 checklist (INTENT gate, 3-cycle retry bound, two-halves verification, triviality gate), artifact renames (`contract.md`→`design-contract.md`, `strategy.md`→`execution-strategy.md`, `snapshots/`→`reference-docs/`), structural conformance (point-id list in `plan.md`, per-point Status fields removed — board stays canonical), citation policy (anchored OR git-historical via `git show <ref>:path`), single full-adoption track with no archival shortcut.
+- ⚪ skipped added to the status vocabulary (board-only): SKILL.md, `AGENTS.tmpl.md`, `board.tmpl.md`, `team.tmpl.md`, `sdd/tasks.tmpl.md`, plus lint-spec rows 3/5.
+- Lint-spec: row 1 exempts fenced code-block content (D-04 — briefings and done-signals may quote placeholders and status glyphs); row 2 notes old-plan id sources.
+- DOGFOOD PROOF: the real `tackle-2.0` workspace was migrated to full conformance with the rewritten guide — `lint: 8/8 checks passed`, F-1..F-8 all verified; git-historical citations pinned to commit `c0eaa68` (v2.x tags are anachronistic post-rebase).
+
 ## Tackle 3.3.0
 
 - Model-bound teams: three abstract tiers (fast / standard / frontier) bind roles to models per workspace via `AGENTS.tmpl.md` §Model map and `team.tmpl.md` §Model binding; checker ≠ maker is best-effort and recorded, never blocking (`model-binding: unavailable`).
