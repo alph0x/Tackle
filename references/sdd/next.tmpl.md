@@ -25,6 +25,9 @@ points: docs/plans/{{INITIATIVE_NAME}}/points/
 
 - Confirmation (L2): unless the user upfront asked for plan+execute, present the pre-attack summary and ask before changing code; silence or ambiguity means stop.
 - Maker/checker: the Driver's done-signal run is informative, never gating; an independent checker's run flips 🟢, with its evidence block recorded in `log.md`.
+- Model binding: team spawns follow the role→tier bindings resolved by the workspace `AGENTS.md` §Model map — checker ≠ maker attempted, best-effort; when tiers cannot be pinned the map is advisory.
+- Point closure (Full gate): the point closes with `reports/P-0N-report.md` and a Coordinator sign-off — human-signed for Solo L2 points; no sign-off, no 🟢 flip.
+- Coordinator continuity: ONE logical Coordinator per execution; its continuity state lives in `coordinator.md`.
 - Regression sweep: before 🟢, re-run done-signals of every 🟢 point with intersecting Touches; any failure reopens that point (🟢 → 🟡) and blocks this one.
 
 Do not continue to the next point.

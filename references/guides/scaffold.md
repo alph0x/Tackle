@@ -24,4 +24,6 @@ Create only when their trigger fires:
 - `execution-strategy.md` — waves + quality gate + deferral.
 - `team.md` — execution team roles and protocol.
 - `board.md` — canonical status board for execution.
+- `coordinator.md` — Coordinator continuity projection (multi-agent execution).
+- `reports/` — point closure reports (created at first point close, Full gate).
 - `reference-docs/` — read-only external snapshots.
