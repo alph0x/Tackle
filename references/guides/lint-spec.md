@@ -20,6 +20,12 @@ Every check is a literal copy-paste command: run from the **repo root**, in any 
 
 Per-citation, row 4 is equivalent to the canonical anchored-citation check (`sed -n 'NNp' path` piped to `grep -Fq "fragment"`), composed into one throwaway loop over every citation — documented commands may be composed into throwaway runtime loops, and this one is pipe-free so the cell stays copy-pasteable.
 
+## Release sweep
+
+Before any version tag, run every lint row on every active workspace (`docs/plans/*/`) plus the skill's own done-signals for the release; the tag waits on a clean sweep (`lint: N/N checks passed` everywhere, all done-signals passing). Any failure blocks the tag until fixed or explicitly waived by the user.
+
+D-13 trigger: if the release includes any change that deletes normative content from `SKILL.md` or a guide, the sweep additionally requires (1) a rule-inventory diff — every normative one-liner extracted before the edit must be greppable after, in `SKILL.md` or its named guide — and (2) one behavioral eval run (trap scenario, method arm = edited file) proving the skill still avoids the trap.
+
 ## Score line
 
 Run all 8 rows, then close the lint digest with exactly:
@@ -28,5 +34,6 @@ Run all 8 rows, then close the lint digest with exactly:
 
 - **M** = rows run (8 for this table; more if the workspace adds rows).
 - **N** = rows whose pass condition held.
+- Row 8 assumes `docs/plans/` contains only workspace directories — a stray file or non-workspace dir (e.g. a parked seed) makes the glob produce phantom paths. Park seeds elsewhere (`docs/seeds/`).
 - Row 8 is warn-severity: a collision lowers N and is reported, but blocks nothing by itself; a failure in rows 1–7 blocks execution until fixed or explicitly waived by the user.
 - This score line is what a human skims in a pulse or handoff for readiness (the pulse digest carries it); a lint digest without it is incomplete.

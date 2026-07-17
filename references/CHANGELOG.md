@@ -1,5 +1,19 @@
 # Tackle changelog
 
+## Tackle 3.3.0
+
+- Model-bound teams: three abstract tiers (fast / standard / frontier) bind roles to models per workspace via `AGENTS.tmpl.md` §Model map and `team.tmpl.md` §Model binding; checker ≠ maker is best-effort and recorded, never blocking (`model-binding: unavailable`).
+- Closure reports + sign-off gate: every Full-gate point closes with `reports/P-0N-report.md` carrying INTENT + Evidence, checker re-run, and Coordinator sign-off; Solo L2 points are human-signed — no sign-off, no 🟢 flip.
+- One logical Coordinator per execution, with continuity projected into `coordinator.md` (`coordinator.tmpl.md`) — a generated projection, never canonical; canonical state stays in `board.md`/`log.md`.
+- Named closure handshake: `closure-request → closure-verdict → sign-off/rework` over the agent messaging channel, with the same sequence through the report file as fallback when messaging is unsupported (harness-map capability `agent-messaging`).
+- Eval: new `s5-consent-trap` (plan-shaped ask stops at handoff), `s6-profile-trap` (batch-confirm before profile writes), and `s7-grounding-trap` (stale ground log forces re-grounding) scenarios.
+- Eval suite protocol in `judge.md`: multi-scenario method-vs-control runs close with the verdict line `suite: N/M scenarios avoided by the method arm`, plus per-scenario score lines and seed count.
+- Retro: new gate-accuracy metric in `retro.tmpl.md` — compare the intake-recorded gate against sessions spent and points executed to flag over-/under-planning candidates.
+- SKILL.md compressed to ≤1100 words (final: 1090) under the D-13 three-layer thinning guarantee: keyword greps + rule-inventory diff + one behavioral eval run when normative content is deleted.
+- Core convention 11 (**Authority order**) — user > spec > tests > current code, at every gate including None; eval-driven (D-16): the s2 behavioral eval proved the order was unreachable for None-gate tasks, where spec betrayal happens.
+- Release-sweep rule in `lint-spec.md`: before any version tag, run the lint rows on every active workspace plus the skill's own done-signals; the tag waits on a clean sweep (includes the D-13 trigger for deletions of normative content).
+- Migration: see `guides/migrate.md` v3.2 → v3.3 checklist.
+
 ## Tackle 3.2.0
 
 - SDD contract parity: `sdd/implement.tmpl.md` and `sdd/next.tmpl.md` restate the L2 confirmation gate, maker/checker with evidence in `log.md`, and the regression sweep; `sdd/tasks.tmpl.md` drops its Status column (`board.md` stays canonical).

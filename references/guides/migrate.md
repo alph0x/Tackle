@@ -12,6 +12,14 @@ Bring an old plan to the current methodology.
 6. Lint + checkpoint.
 7. Record migration `D-xx` + log entry + bump stamp.
 
+## v3.2 → v3.3 checklist
+
+Run these when migrating a plan created with Tackle 3.2.x:
+
+1. **Add §Model map + messaging capability** — copy the §Model map section from `AGENTS.tmpl.md` into the workspace `AGENTS.md` and fill in the concrete models the harness offers per tier; add the `agent-messaging: supported | unsupported` capability row to the harness map.
+2. **Adopt closure reports + coordinator** (executing Full-gate plans) — every point closes with `reports/P-0N-report.md` carrying the Coordinator sign-off section (human-signed for Solo L2 points; no sign-off, no 🟢 flip); add `coordinator.md` as the Coordinator continuity projection — a projection, never canonical.
+3. **Bump the stamp** — record a `D-xx` in `decisions.md`, append a `log.md` entry, and bump the workspace `Methodology:` stamp to Tackle 3.3.0.
+
 ## v2.1 → v3.0 checklist
 
 Run these when migrating a plan created with Tackle 2.1.x:
