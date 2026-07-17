@@ -1,5 +1,10 @@
 # Tackle changelog
 
+## Tackle 3.4.1
+
+- Documented the `/tackle-init` procedure in `scaffold.md` (presets/overrides tree, resolution order, decision recording) — the mode was routed but had no documented procedure (found in feature-surface validation).
+- Learning intake beyond planning: new repo-root `AGENTS.md` (read `.tackle/profile.md`, `~/.tackle/user-profile.md`, and `docs/seeds/` at session start in ANY session; profiles written only via `/tackle-retro`) + matching `## Learning intake` section in `AGENTS.tmpl.md`. Retro-persisted knowledge now applies outside Tackle plans, not only at planning Step 1.
+
 ## Tackle 3.4.0
 
 - Retro hygiene (from `tackle-migrate-hardening` retro): attempt-budget metric recipe broadened (`budget\|attempts`); comprehension-debt recipe split into real debt (no checker evidence) vs accepted debt (checker-verified, human-unread); lint-safe notation line (U+XXXX / `$'\uXXXX'` escapes) in lint-spec; new intake list `docs/seeds/pending-skill-fixes.md` so retro lessons propagate.
