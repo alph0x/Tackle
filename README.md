@@ -16,6 +16,7 @@ Tackle's execution loop is hardened with rules proven against common agent failu
 - **Retry bound** — stop after 3 failed fix-verify cycles on the same issue.
 - **Two-halves verification** — every done-signal must check both the target criterion and the surrounding system (build/tests/lint).
 - **Triviality gate** — a task is trivial only if it is one file, <10 changed lines, no new behavior, and no searching.
+- **Authority order** — user > spec > tests > current code, at every gate including None; a check that contradicts the spec is surfaced, never silently satisfied.
 - **Failure-modes catalog** — `references/failure-modes.md` maps common failures to the Tackle rule that prevents them.
 - **Model-bound teams** — point teams bind roles to abstract model tiers resolved by the workspace §Model map; Full-gate points close with closure reports and sign-off, and one persistent Coordinator carries continuity in `coordinator.md`.
 
@@ -87,6 +88,12 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 | `/tackle-judge` | **Judge** — adversarial verification of finished work |
 | `/tackle-judge suite <target>` | **Judge suite** — run the trap suite against a skill, model, or prompt |
 | `/tackle-ground` | **Ground** — mechanically read and mark every `file:line` cited in the plan |
+| `/tackle-retro` | **Retro** — mine `board.md` + `log.md` into `retro.md`; batch-confirmed learning-loop profile writes |
+| `/tackle-pulse` | **Pulse** — read-only standing digest for schedulers; never executes points |
+| `/tackle-drill` | **Drill** — cold-start readiness drill on one point briefing |
+| `/tackle-trace` | **Trace** — criterion↔point coverage matrix, gaps and drift |
+| `/tackle-handoff` | **Handoff packet** — generate portable `HANDOFF.md` |
+| `stop evolving` | **Evolution opt-out** — pause or purge the learning-loop profile |
 
 **Legacy modes:**
 
@@ -97,12 +104,12 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 | "how is `<x>` going?" / "status" | **Status** — read-only digest |
 | "what plans are there?" | **List** — one line per initiative |
 | "what's next?" / "qué sigue" | **Next** — the next point's pre-attack summary |
-| "migrate / upgrade `<x>`" | **Migrate** — bring an old plan up to the current methodology (Step 8.5; v2.0 → v2.1.0 checklist in `references/guides/migrate.md`) |
+| "migrate / upgrade `<x>`" | **Migrate** — bring an old plan to the current methodology, full-adoption (Step 8.5; checklist chain v2.0 → v3.4 in `references/guides/migrate.md`) |
 | "mejorá este plan" / "improve this plan" | **Improve** — upgrade a Tackle plan or convert an unstructured plan |
 
 **The Create pipeline:** Intake → Gate (None/Lite/Full) → Location & gitignore → Scaffold → Briefing → Architecture → Stabilize contract → Decompose → Lint → Handoff.
 
-**Execution:** `/tackle-implement` reads `board.md`, picks the next ready point in dependency order, runs its done-signal, and updates `board.md` + `log.md`. Team sizing is Solo/Pair/Pod/Squad per `team.md`. The learning loop stores profiles at `~/.tackle/user-profile.md` and `<repo>/.tackle/profile.md`.
+**Execution:** `/tackle-implement` reads `board.md`, picks the next ready point in dependency order, runs its done-signal, and updates `board.md` + `log.md`. Team sizing is Solo/Pair/Pod/Squad per `team.md`, with roles bound to model tiers (`fast`/`standard`/`frontier`) resolved by the workspace §Model map. Full-gate points close with `reports/P-0N-report.md` + sign-off; one persistent Coordinator keeps continuity in `coordinator.md`. The learning loop stores profiles at `~/.tackle/user-profile.md` and `<repo>/.tackle/profile.md` — read at session start alongside the repo's `docs/seeds/` (see the root `AGENTS.md` intake rule); profiles are written only by `/tackle-retro`, batch-confirmed, and can be paused or purged anytime.
 
 **Template-resolution stack:** overrides → presets → sdd → core.
 
@@ -115,7 +122,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 | `README.md` | Human index, reading order |
 | `AGENTS.md` | Operating contract for any agent that picks up the plan |
 | `plan.md` | Objective, non-goals, point decomposition + dependency graph |
-| `board.md` | Canonical status board for execution (canonical; do not duplicate status in `plan.md`) |
+| `board.md` | Canonical status board for execution (🔴🟡⏸🟢⚪; do not duplicate status in `plan.md`) |
 | `log.md` | Append-only session log (canonical state) |
 | `todo.md` | Planning-readiness checklist |
 | `questions.md` | Single source of open questions |
@@ -133,6 +140,8 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 | `execution-strategy.md` | Multi-agent/parallel/phased execution |
 | `team.md` | Multi-agent execution teams |
 | `reference-docs/` | External material snapshots |
+| `coordinator.md` | Coordinator continuity projection (multi-agent execution; generated, never canonical) |
+| `reports/` | Per-point closure reports with sign-off (created at first point close) |
 
 ## Model-agnostic
 
