@@ -1,6 +1,31 @@
 # Team protocol — {{TITLE}}
 
-When a point enters execution, the orchestrator spawns a **point team** sized to the point's complexity and risk. In execution this protocol is **mandatory** — every point gets its team, and the checker role (see §When a point is done) is filled by an agent independent from the Driver, using whatever subagent or parallel facility the harness provides. The workspace (`board.md`, `log.md`, the point file, and the touched files) is the single source of truth; the agent messaging channel is only for coordination. The team is harness-agnostic: "the most capable model" handles planning/judgment, "the balanced model" handles validation, "the fast model" handles mechanical work. Use whatever model selection your harness provides.
+When a point enters execution, the orchestrator spawns a **point team** sized to the point's complexity and risk. In execution this protocol is **mandatory** — every point gets its team, and the checker role (see §When a point is done) is filled by an agent independent from the Driver, using whatever subagent or parallel facility the harness provides. The workspace (`board.md`, `log.md`, the point file, and the touched files) is the single source of truth; the agent messaging channel is only for coordination.
+
+## Model binding
+
+Teams bind roles to **model tiers**, never to vendor models. Three tiers, abstract and harness-agnostic:
+
+- **`fast`** — mechanical work: grounding reads, greps, lint rows, drift checks.
+- **`standard`** — implementation, coordination, review.
+- **`frontier`** — adversarial verification, red-team, architecture judgment.
+
+Role→tier defaults (a point briefing may override):
+
+| Role | Tier |
+|---|---|
+| Driver | standard |
+| Reviewer / Quality Guardian / Coordinator | standard |
+| Spec Reader | fast |
+| Verifier / Red-Teamer | frontier |
+| Checker (maker/checker) | frontier attempted — see below |
+| Specialists (Squad) | standard |
+
+Grounding reads, lint, drill mechanics: `fast`.
+
+Agents are spawned **per role at point execution**, each on its role's bound tier — there are no predetermined agents. The workspace `AGENTS.md` §Model map binds tiers to the concrete models the harness offers; core templates never name vendor models.
+
+**Checker ≠ maker (best-effort, never blocks):** the checker SHOULD run on a different tier than the maker. If the harness cannot bind or isolate tiers, the checker runs on whatever is available and its evidence line in `log.md` records `model-binding: unavailable`. Compliance is recorded, never enforced.
 
 ## Team sizing
 
@@ -55,7 +80,8 @@ Add specialists when the point's risk justifies it; default Squad = Driver + Rev
 
 ### Coordinator (Pod/Squad mode)
 - Owns flow and workspace hygiene; updates `board.md` and `log.md`.
-- Collects PASS from reviewers; flips 🟢 only when the evidence block is recorded in `log.md`.
+- **Continuity:** ONE logical Coordinator owns the whole execution. It is long-lived across points and waves where the harness supports persistent agents; where it does not (or across sessions), it re-spawns per point and MUST read `coordinator.md` + `board.md` + `log.md` before its first action. It refreshes `coordinator.md` at every point close — a projection, never canonical; canonical state stays in `board.md`/`log.md`.
+- Collects PASS from reviewers; flips 🟢 only after sign-off — Full gate: the Coordinator sign-off section in `reports/P-0N-report.md`; Lite gate: the evidence block recorded in `log.md`.
 - On budget exhaustion or no-progress, flips the point ⏸ and files the escalation packet.
 
 ### Verifier / Red-Teamer
@@ -71,25 +97,51 @@ Add specialists when the point's risk justifies it; default Squad = Driver + Rev
 2. Driver writes smallest change + runs done-signal.
 3. Reviewer/Spec Reader + Quality Guardian review (if multi-agent).
 4. Specialist auditors review (if Squad).
-5. Coordinator/Reviewer marks `board.md` 🟢 and appends `log.md` entry.
+5. Coordinator/Reviewer marks `board.md` 🟢 and appends the `log.md` entry — Full gate only after the Coordinator sign-off section in `reports/P-0N-report.md`; Lite gate after the evidence block in `log.md`.
 
-## Communication rules
+## When a point is done
+
+Point closure is one protocol: the report file is the communication channel, the named handshake runs through its sections, and the Coordinator sign-off gates the flip.
+
+### Closure report — `reports/P-0N-report.md` (Full gate only)
+
+Every Full-gate point closes with one report file in the workspace `reports/` directory. **Lite-gate points keep their evidence in `log.md` as today (D-11).** `log.md` stays canonical: it keeps a one-line summary + pointer to the report, never the full evidence. Sections, in order, each appended by its owner:
+
+1. **Scope** — Reviewer/Spec Reader: must-produce / must-not-touch summary (skipped in Solo).
+2. **INTENT + Evidence** — Driver: INTENT gate lines, attempt journal, done-signal run with its **Evidence** block (command, trimmed output, exit line).
+3. **Reviews** — Reviewer/Spec Reader, Quality Guardian, specialists: PASS or findings.
+4. **Checker re-run** — independent checker (maker/checker, condition 1 below): done-signal re-run evidence, its **tier** per §Model binding, the reward-hacking guard result, and a `model-binding: unavailable` note when checker ≠ maker could not be honored.
+5. **Coordinator sign-off** — verdict (`closed` / `rework` + reason) + regression sweep result. **Solo assisted (L2) points: the human checker writes this section (D-09).** The 🟢 flip requires this section: no sign-off, no flip.
+
+Solo points compress to sections 2 + 4 + 5.
+
+### Closure handshake
+
+1. Driver → `closure-request` (point id + report pointer) after writing its INTENT + Evidence section.
+2. Checker → `closure-verdict` (re-run result + reward-hacking guard result) via the Checker re-run section.
+3. Coordinator → `sign-off` (flip authorized) or `rework` (finding + owner) via the Coordinator sign-off section.
+
+The report file is the record — each agent appends its section. Where the workspace harness map records `agent-messaging: supported`, the same messages MAY also travel over the agent messaging channel for rework speed; the file remains the record either way.
+
+**Rework bound (D-10):** at most **2 closure-rework cycles** per point, separate from the Driver's budget of 3 failed fix-verify cycles. Exhaustion ⇒ the point is marked blocked (⏸) and the Coordinator files the escalation packet.
+
+### Communication rules
 
 - Technical discussion in the agent messaging channel or file comments.
 - Driver acts on concrete next steps only.
 - Disagreements: spec → Spec Reader; quality → Quality Guardian; simplicity → Simplicity Auditor; performance → Performance & Concurrency Auditor; priority/flow → Coordinator.
 - Deadlock → Coordinator escalates to user.
 
-## When a point is done
+### Done-conditions
 
-A point flips to 🟢 only when:
+A point flips to 🟢 only when every condition holds; each maps to a report section (Lite gate: same conditions, evidence in `log.md`):
 
-1. **maker/checker**: the Driver's own done-signal run is informative, never gating. The 🟢-flipping run and its evidence come from an **independent checker** — tiered by autonomy: Pair/Pod/Squad: the Verifier or Coordinator; Solo assisted (L2): the human confirms after seeing the evidence; Solo unattended (L3) or any production-path point: an independent fresh session/subagent reading only the point file and workspace state. If the harness cannot isolate a fresh session, fall back to the human checker and record that fallback in `log.md`.
-2. **Reward-hacking guard**: the checker greps the diff for removed, disabled, or loosened tests, assertions, or done-signals unless the point's Goal explicitly requires it. Any such change reopens the point (🟢 → 🟡) and blocks the current one.
+1. **maker/checker**: the Driver's own done-signal run is informative, never gating. The 🟢-flipping run and its evidence come from an **independent checker** — tiered by autonomy: Pair/Pod/Squad: the Verifier or Coordinator; Solo assisted (L2): the human confirms after seeing the evidence; Solo unattended (L3) or any production-path point: an independent fresh session/subagent reading only the point file and workspace state. If the harness cannot isolate a fresh session, fall back to the human checker and record that fallback in `log.md`. (Report section 4 names the checker's tier.)
+2. **Reward-hacking guard**: the checker greps the diff for removed, disabled, or loosened tests, assertions, or done-signals unless the point's Goal explicitly requires it. Any such change reopens the point (🟢 → 🟡) and blocks the current one. (Report section 4 records the result.)
 3. **Verifier / Red-Teamer**: `/tackle-verify` passed with no HIGH findings and no unresolved MEDIUM findings.
-4. Driver: done-signal passes **with its evidence block recorded in `log.md`**.
+4. Driver: done-signal passes **with its Evidence block recorded** — in the report (Full) or in `log.md` (Lite).
 5. Reviewer/Spec Reader: output matches briefing and `design-contract.md`.
 6. Quality Guardian: no quality findings (if Pod/Squad).
 7. Simplicity/Regression/Performance & Concurrency Auditor: no findings (if Squad and triggered).
-8. Coordinator/Reviewer: `board.md` updated (and `log.md` if Pod/Squad).
-9. **Regression sweep**: done-signals of every 🟢 point with intersecting Touches re-ran green; any failure reopens that point (🟢 → 🟡) and blocks this one.
+8. Coordinator: `board.md` flipped 🟢 and `log.md` appended — one-line summary + pointer (Full) or the evidence entry (Lite).
+9. **Regression sweep**: done-signals of every 🟢 point with intersecting Touches re-ran green; any failure reopens that point (🟢 → 🟡) and blocks this one. (Report section 5 records the result.)

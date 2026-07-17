@@ -1,6 +1,6 @@
 # AGENTS — workspace `docs/plans/{{slug}}/`
 
-**Methodology: Tackle 3.2.0** <!-- the Tackle version this workspace was built/migrated under; a future version reads this to decide whether to migrate (Step 8.5 / Step 10). -->
+**Methodology: Tackle 3.3.0** <!-- the Tackle version this workspace was built/migrated under; a future version reads this to decide whether to migrate (Step 8.5 / Step 10). -->
 
 Conventions for any agent (Claude Code, Cursor, GPT, human) that picks up this plan.
 <!-- If it inherits from a root AGENTS.md, say so here and don't repeat its rules. -->
@@ -68,10 +68,25 @@ Tackle is harness-agnostic. This workspace records the concrete tools this envir
 | Run lint / typecheck | {{`npm run lint`, `tsc`, `cargo check`, etc.}} | |
 | Spawn parallel agents | {{Claude Code multi-agent, `task` subagent, manual fan-out, etc.}} | |
 | Git operations | {{`git`, GitHub CLI, IDE git UI, etc.}} | |
+| Agent messaging | {{agent messaging channel, mailbox file, manual relay via the report, etc.}} | `agent-messaging: supported \| unsupported` |
 
 If this workspace is shared across agents, fill this map once and never assume a specific IDE, model, or vendor tool.
 
 Full conventions: `SKILL.md` §Core conventions.
+
+## Model map
+
+Tackle tiers are abstract; this map records which concrete model this harness offers for each tier. Update this section if the offerings change.
+
+| Tier | Concrete model in this harness | Notes |
+|---|---|---|
+| `fast` | {{concrete fast-tier model name}} | |
+| `standard` | {{concrete standard-tier model name}} | |
+| `frontier` | {{concrete frontier-tier model name}} | |
+
+**model-binding: supported | unsupported** <!-- harness capability: can a spawn pin a concrete model for its tier? -->
+
+If `unsupported`, this map is advisory only: spawn at whatever model the harness provides and note every deviation from the map in `log.md`.
 
 ## Executor contract (when you work a point)
 

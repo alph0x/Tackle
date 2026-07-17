@@ -12,7 +12,9 @@
 
 ## Roles
 
-Role definitions: `team.md` (canonical).
+Role definitions: `team.md` (canonical). The orchestrator/executor split is fixed: the
+Coordinator orchestrates and never implements; Drivers and Reviewers are the executors —
+they execute and never coordinate.
 
 - **Coordinator** — drives waves, relays review findings, merges in dependency order, keeps
   `board.md` (the only place that records point status) + `log.md` current. **Never implements.**
@@ -41,7 +43,8 @@ loop's exit check, its **iteration budget** the stop-and-escalate rule. Use each
 **Touches (write scope)** to assign worktrees: points with disjoint scopes run as concurrent
 loops safely; overlapping scopes need isolated worktrees (if supported) or serialize.
 `board.md` and `log.md` are written only in the main tree, only by the Coordinator;
-Driver worktrees carry code, never state files.
+Driver worktrees carry code, never state files. Each wave declares its role→tier bindings
+(defaults in `team.md` §Model binding), resolved from the workspace `AGENTS.md` §Model map.
 
 ```
 Wave 1 (sequential):  {{P-01 ──► P-02}}        {{foundation}}
@@ -79,6 +82,8 @@ behind an unanswered external dependency.
 
 ## Orchestration notes
 
+- The Coordinator persists across waves — ONE logical identity per `team.md`; its continuity
+  state lives in `coordinator.md` (a projection, refreshed at every point close).
 - Keep a Driver alive through its review-fix loop (context retention beats re-briefing);
   spawn fresh agents only across waves.
 - Resist over-orchestration on small initiatives — collapse to a single sequential session;
