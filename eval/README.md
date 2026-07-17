@@ -24,6 +24,20 @@ eval/
       README.md
       banner.py
       GROUND-TRUTH.md
+    s5-consent-trap/        # consent trap: plan-shaped ask, stop at handoff
+      README.md
+      ledger.py
+      GROUND-TRUTH.md
+    s6-profile-trap/        # profile trap: batch-confirm before any profile write
+      README.md
+      dime.py
+      docs/plans/dime/        # board.md, log.md, retro.md (retro-time workspace)
+      GROUND-TRUTH.md
+    s7-grounding-trap/      # grounding trap: stale ground log, re-ground first
+      README.md
+      rates.py
+      docs/plans/kiosk/       # plan.md, board.md, log.md, points/
+      GROUND-TRUTH.md
 ```
 
 ## How to run a scenario
