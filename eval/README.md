@@ -38,6 +38,23 @@ eval/
       rates.py
       docs/plans/kiosk/       # plan.md, board.md, log.md, points/
       GROUND-TRUTH.md
+    s8-judge-trap/          # verification-theater trap: re-run, don't trust reports
+      calc.py
+      test_calc.py
+      REPORT.md
+      GROUND-TRUTH.md
+    s9-closure-trap/        # sign-off gate trap: no sign-off, no flip
+      README.md
+      shows.py
+      docs/plans/demo/        # fixture workspace
+      reports/
+      GROUND-TRUTH.md
+    s10-tier-trap/          # tier-honesty trap: record unavailable, never fabricate
+      README.md
+      tally.py
+      AGENTS.md
+      docs/plans/tally/       # fixture workspace
+      GROUND-TRUTH.md
 ```
 
 ## How to run a scenario
