@@ -18,6 +18,7 @@ A short catalog of common execution failures, what each looks like from the outs
 | 12 | **Retry thrash** | Same failing fix attempted with small variations, forever | 3-cycle retry bound (team.md Driver / AGENTS.md rule 5) |
 | 13 | **Verification theater** | "This should work now" with nothing run; target passes but build breaks | Two-halves verification (point briefing acceptance) |
 | 14 | **Spec betrayal** | Code changed to satisfy a check that contradicts the spec/README | INTENT-gate authority order: user > spec > tests > current code |
+| 15 | **Compliance theater** | INTENT lines and evidence blocks written plausibly without running anything; maker and checker share the same model's blind spots | Partially mitigated: re-runnable-output evidence + reward-hacking guard + independent checker + checker≠maker tier (best-effort). **Residual risk accepted**: fabricated text is caught only by `/tackle-judge` re-running claims — no mechanical detection exists today |
 
 ## Reading an audit
 

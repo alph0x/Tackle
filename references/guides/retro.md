@@ -13,6 +13,7 @@ Every metric carries a copy-paste recipe; the recipes live in the template's Met
 - **Blocked durations** — dates between the log entry that marks a point ⏸ and the entry that unblocks it.
 - **Reopened points** — `🟢 → 🟡` transitions in `log.md` (regression-sweep reopenings included).
 - **Comprehension debt** — points that flipped 🟢 with no human review recorded in the log: mechanically done, humanly unread. High comprehension debt is a warning even when the board is all green.
+- **Gate accuracy** — the gate recorded at intake vs actual effort (points executed, sessions spent): Full-gate initiatives closed in ≤ 2 sessions are over-planning candidates; Lite-gate ones spanning 3+ sessions are under-planning candidates.
 
 **Lite plans** (no `board.md`): the retro still runs — board-derived metrics report `n/a`; log-derived ones stand.
 

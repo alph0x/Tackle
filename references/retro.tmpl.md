@@ -11,6 +11,7 @@ Written at initiative close (or mid-flight as a partial retro — say so here) b
 | Blocked durations | `grep -nE "^## [0-9]{4}-" log.md; grep -n "⏸" log.md` — pair each ⏸ line with the entry dates around it | {{...}} |
 | Reopened points | `grep -n "🟢 → 🟡" log.md` | {{...}} |
 | Comprehension debt | `awk -F'\|' '/🟢/ {print $2}' board.md` — for each listed point, `grep -in "review" log.md`; 🟢 with no review line = debt | {{...}} |
+| Gate accuracy | `grep -in "gate" log.md plan.md` — read the gate recorded at intake (session 1 / plan header); `grep -cE "^## [0-9]{4}-" log.md` sessions spent; `grep -c "🟢" board.md` points executed (`n/a` in Lite) — Full gate closed in ≤ 2 sessions = over-planning candidate; Lite gate spanning 3+ sessions = under-planning candidate | {{...}} |
 
 ## What worked
 
