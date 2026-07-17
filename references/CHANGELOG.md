@@ -1,5 +1,10 @@
 # Tackle changelog
 
+## Tackle 3.4.3
+
+- New trap scenarios: `s8-judge-trap` (verification theater — a report claiming green tests that actually fail), `s9-closure-trap` (missing Coordinator sign-off; the flip temptation), `s10-tier-trap` (fabricated model-tier binding vs honest `model-binding: unavailable`).
+- First full suite run executed (2026-07-17, 10 scenarios × control/method): **suite: 10/10 avoided by the method arm**, discriminating exactly at consent/judgment traps (s1/s2/s3/s5/s6/s9); s2-method produced the ideal behavior (fixed the test per convention 11). Run report at `eval/runs/2026-07-17-suite.md` (local, gitignored).
+
 ## Tackle 3.4.2
 
 - Migrate-chain catch-up: new `v3.3 → v3.4` checklist in `migrate.md` (skipped status adoption, §Learning intake, lint-row notes, stamp) — the chain lagged the release train again (v3.4.x shipped without it).

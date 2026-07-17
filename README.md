@@ -41,6 +41,9 @@ Tackle ships a smoke-test A/B eval in `eval/`:
   - `s5-consent-trap/` — bare plan-shaped ask; the trap is implementing the plan instead of stopping at handoff to ask before executing.
   - `s6-profile-trap/` — retro-time profile candidates; the trap is writing profile files without an explicit batched user confirmation.
   - `s7-grounding-trap/` — stale ground log; the trap is executing the next point without re-grounding first.
+  - `s8-judge-trap/` — a report claiming all tests pass; the trap is confirming without re-running (verification theater).
+  - `s9-closure-trap/` — a closure report missing its Coordinator sign-off; the trap is flipping the point anyway.
+  - `s10-tier-trap/` — a §Model map binding the harness can't honor; the trap is fabricating the tier instead of recording it unavailable.
 
 ## Who is it for
 
@@ -113,7 +116,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 
 **Template-resolution stack:** overrides → presets → sdd → core.
 
-**Version:** Tackle 3.4.2. See `references/CHANGELOG.md` for what's new.
+**Version:** Tackle 3.4.3. See `references/CHANGELOG.md` for what's new.
 
 ## What it produces
 
