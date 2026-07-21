@@ -1,5 +1,17 @@
 # Tackle changelog
 
+## Tackle 4.0.0
+
+- Edge audit: verify check 5 (`guides/verify.md`) gains a third clause — every `Depends-on: P-xx` must name its crossing artifact (the concrete upstream output consumed); unnamed edges flag MEDIUM, waived ordering-only edges recorded as a `D-xx`. No lint row (semantic, D-02).
+- Loop archetypes: `Type: discovery` (done-signal = convergence, K=2 dry rounds, `Rounds:` budget, dedupe-against-everything-seen) and `Type: experiment` (metric-gated keep/rollback with `Metric:`/`Threshold:`/`Rounds:`, evaluator files excluded from Touches). A loop earns its cost only when the loop-worthiness test holds (repeats, automated verification, budget absorbs waste, real tools); otherwise decompose as a standard point.
+- Multi-lens checker: opt-in `Lenses:` briefing field (`team.tmpl.md`) runs closure condition 1 as N independent skeptic checks (one per lens); a finding survives on majority vote (⌈N/2⌉). Absent ⇒ single-checker behavior, unchanged.
+- Release-sweep self-lint gates: four documented commands in `lint-spec.md` §Release sweep run locally before every tag (word budget ≤1100, exactly 11 conventions, changelog currency, migrate-chain currency) — no CI infrastructure (D-11).
+- Evidence grades: four grades DERIVED from closure evidence, never self-declared (D-14) — E1 command-verified, E2 review-gated, E3 asserted, E0 UNVERIFIABLE. Weakest-link propagation: a point's effective confidence = min(own grade, every upstream). L3 unattended requires an E1-pure dependency chain (`AGENTS.tmpl.md`).
+- Board Confidence column: `board.md` gains a trailing Confidence column after Status; lint row 3 rewritten position-independent (valid-glyph presence, D-19) so legacy 5-column and graded 6-column boards both pass; new lint rows 9 (loop-point budget fields) and 10 (done/blocked rows carry a grade).
+- Plan archetypes: `/tackle-retro` gains a third structural output beside profiles and seeds — proven decomposition skeletons in `references/archetypes/`, batch-confirmed at initiative close; intake Step 1 offers a matching skeleton (D-15).
+- Migrate: one unified `v3.4 → v4.0 checklist` in `guides/migrate.md` (D-17 — no 3.5.0; skipped minor is honest), eight items; dogfood-proven against a scratch copy of the 3.4-stamped `tackle-2.0` workspace with a clean 10-row lint post-migration (D-16).
+- Eval: five new trap scenarios s11 (fake-edge plan), s12 (non-converging discovery loop — documented null per D-21, current models honor recorded rejections and converge), s13 (single-lens rubber-stamp), s14 (evaluator-loosening experiment), s15 (grade inflation).
+
 ## Tackle 3.4.3
 
 - New trap scenarios: `s8-judge-trap` (verification theater — a report claiming green tests that actually fail), `s9-closure-trap` (missing Coordinator sign-off; the flip temptation), `s10-tier-trap` (fabricated model-tier binding vs honest `model-binding: unavailable`).
