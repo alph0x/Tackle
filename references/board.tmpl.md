@@ -5,9 +5,10 @@
 Updated only by `/tackle-implement`, `/tackle-next`, or manually during a session.
 
 Status: 🔴 not started · 🟡 in progress · ⏸ blocked · 🟢 done · ⚪ skipped (optional slice not executed, with one-line reason).
+Confidence: E1 command-verified · E2 review-gated · E3 asserted · E0 UNVERIFIABLE (derived from closure evidence, never self-declared).
 
-| Point | What | Briefing | Depends on | Status |
-|---|---|---|---|---|
+| Point | What | Briefing | Depends on | Status | Confidence |
+|---|---|---|---|---|---|
 <!-- Add rows from plan.md §5 -->
 
 ### Dependency graph
