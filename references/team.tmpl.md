@@ -110,7 +110,13 @@ Every Full-gate point closes with one report file in the workspace `reports/` di
 1. **Scope** — Reviewer/Spec Reader: must-produce / must-not-touch summary (skipped in Solo).
 2. **INTENT + Evidence** — Driver: INTENT gate lines, attempt journal, done-signal run with its **Evidence** block (command, trimmed output, exit line).
 3. **Reviews** — Reviewer/Spec Reader, Quality Guardian, specialists: PASS or findings.
-4. **Checker re-run** — independent checker (maker/checker, condition 1 below): done-signal re-run evidence, its **tier** per §Model binding, the reward-hacking guard result, and a `model-binding: unavailable` note when checker ≠ maker could not be honored.
+4. **Checker re-run** — independent checker (maker/checker, condition 1 below): done-signal re-run evidence, its **tier** per §Model binding, the reward-hacking guard result, and a `model-binding: unavailable` note when checker ≠ maker could not be honored. When the briefing declares `Lenses:`, it also records the lens list, each lens's verdict, and the vote count.
+   It also records the point's **evidence grade**, derived mechanically from the evidence block (never self-declared):
+   - **E1 command-verified** ⇔ this section (Lite gate: the `log.md` evidence block) carries command + output + exit line from the independent checker.
+   - **E2 review-gated** ⇔ a review-gate marker with rubric + named reviewer (no honest command exists).
+   - **E0 UNVERIFIABLE** ⇔ an explicit UNVERIFIABLE label.
+   - **E3 asserted** ⇔ anything else.
+   Grades are DERIVED, never self-declared; any later re-derivation that disagrees is a grade-inflation finding.
 5. **Coordinator sign-off** — verdict (`closed` / `rework` + reason) + regression sweep result. **Solo assisted (L2) points: the human checker writes this section (D-09).** The 🟢 flip requires this section: no sign-off, no flip.
 
 Solo points compress to sections 2 + 4 + 5.
@@ -132,11 +138,15 @@ The report file is the record — each agent appends its section. Where the work
 - Disagreements: spec → Spec Reader; quality → Quality Guardian; simplicity → Simplicity Auditor; performance → Performance & Concurrency Auditor; priority/flow → Coordinator.
 - Deadlock → Coordinator escalates to user.
 
+### Opt-in `Lenses:` field (multi-lens checker)
+
+A point briefing MAY declare **`Lenses:`** — a list of distinct verification lenses (e.g. `correctness, security, repro`). Absent ⇒ today's single checker, unchanged. When declared, done-condition 1 runs as N independent skeptic checks decided by majority vote (see below), and closure report section 4 records the lens evidence.
+
 ### Done-conditions
 
 A point flips to 🟢 only when every condition holds; each maps to a report section (Lite gate: same conditions, evidence in `log.md`):
 
-1. **maker/checker**: the Driver's own done-signal run is informative, never gating. The 🟢-flipping run and its evidence come from an **independent checker** — tiered by autonomy: Pair/Pod/Squad: the Verifier or Coordinator; Solo assisted (L2): the human confirms after seeing the evidence; Solo unattended (L3) or any production-path point: an independent fresh session/subagent reading only the point file and workspace state. If the harness cannot isolate a fresh session, fall back to the human checker and record that fallback in `log.md`. (Report section 4 names the checker's tier.)
+1. **maker/checker**: the Driver's own done-signal run is informative, never gating. The 🟢-flipping run and its evidence come from an **independent checker** — tiered by autonomy: Pair/Pod/Squad: the Verifier or Coordinator; Solo assisted (L2): the human confirms after seeing the evidence; Solo unattended (L3) or any production-path point: an independent fresh session/subagent reading only the point file and workspace state. If the harness cannot isolate a fresh session, fall back to the human checker and record that fallback in `log.md`. (Report section 4 names the checker's tier.) When the briefing declares `Lenses:`, the checker runs N independent skeptic checks, one per lens — N ≥ 2, lenses distinct in kind, not rewordings — and a finding survives only under majority vote (⌈N/2⌉ lenses pass it); skeptic lenses inherit the checker's tier binding (frontier attempted, `model-binding: unavailable` recorded when unbindable), and the reward-hacking guard (condition 2) still reopens on loosened checks regardless of the vote.
 2. **Reward-hacking guard**: the checker greps the diff for removed, disabled, or loosened tests, assertions, or done-signals unless the point's Goal explicitly requires it. Any such change reopens the point (🟢 → 🟡) and blocks the current one. (Report section 4 records the result.)
 3. **Verifier / Red-Teamer**: `/tackle-verify` passed with no HIGH findings and no unresolved MEDIUM findings.
 4. Driver: done-signal passes **with its Evidence block recorded** — in the report (Full) or in `log.md` (Lite).
