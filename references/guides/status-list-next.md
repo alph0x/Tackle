@@ -18,5 +18,6 @@ Triggered by `/tackle-pulse` or "pulse" — typically by a scheduler: cron, a CI
 4. Cross-initiative collisions.
 5. Blocked points with their escalation packets.
 6. The next ready point with its ready-to-paste starting prompt.
+7. The weakest-link line — the initiative's weakest-link point: point id + grade + one-line reason (effective confidence = min over the dependency chain, a documented hand computation over `board.md` + the `plan.md` §5 graph).
 
 The point of the digest: a human skimming notifications stays the engineer in the loop. On a busy workspace, counts + pointers, never listings. Status may reuse the pulse machinery internally.

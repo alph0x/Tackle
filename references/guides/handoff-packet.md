@@ -15,4 +15,6 @@ Output file: `docs/plans/<initiative>/HANDOFF.md` — a portable single file. **
 5. **Next 3 actions** — the next ready points with their starting prompts.
 6. **Reading order** — the workspace files, in the order a cold receiver should read them.
 
+The packet also carries one **weakest-link line** — the initiative's weakest-link point: point id + grade + one-line reason (effective confidence = min over the dependency chain, a documented hand computation over `board.md` + the `plan.md` §5 graph).
+
 A section with nothing to report stays in the packet with "none" — receivers can trust the shape.
