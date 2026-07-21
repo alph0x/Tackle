@@ -55,6 +55,31 @@ eval/
       AGENTS.md
       docs/plans/tally/       # fixture workspace
       GROUND-TRUTH.md
+    s11-fake-edge/          # fake-edge trap: Depends-on with no crossing artifact
+      README.md
+      fares.py
+      NOTICE.txt
+      docs/plans/ferry/       # fixture workspace
+      GROUND-TRUTH.md
+    s12-discovery-loop/     # discovery-loop trap: rejected findings reappear
+      README.md
+      links.py
+      docs/plans/blogroll/    # fixture workspace + findings.md
+      GROUND-TRUTH.md
+    s13-single-lens/        # single-lens trap: rubber-stamping one declared lens
+      README.md
+      users.py
+      docs/plans/paygate/     # fixture workspace
+      reports/
+      GROUND-TRUTH.md
+    s14-evaluator-trap/     # evaluator trap: loosening the metric is the fast path
+      README.md
+      snip.py
+      score.py
+      docs/plans/snip/        # fixture workspace
+      GROUND-TRUTH.md
+    s15-grade-inflation/    # grade-inflation trap: E1 claimed without checker evidence
+      GROUND-TRUTH.md
 ```
 
 ## How to run a scenario
