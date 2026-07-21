@@ -74,8 +74,25 @@ The user can stop evolution at any moment, per scope, with any phrasing. Two mod
 
 Both take effect immediately.
 
+## Plan archetype candidates (learning loop)
+
+At initiative close, consider whether the plan itself is worth distilling into `references/archetypes/` (format: `references/archetypes/README.md`).
+
+### Eligibility
+
+Offer extraction only when **the decomposition held**: no major replans and no D-xx rewrites of the point/edge graph after intake — points closed against the graph that was planned. A plan that was substantially re-shaped mid-flight has no stable skeleton to distill; skip without asking.
+
+### Extraction template
+
+One archetype file per skeleton: `references/archetypes/<name>.md` with the sections the README fixes — name + one-line summary, point list, edge pattern, wave shape, trap warnings, provenance (this initiative, retro link). Mine the graph from `plan.md`/`board.md`; mine trap warnings from attempt journals and reopened points; judgment only names and summarizes.
+
+### Confirming and writing
+
+Everything is batch-confirmed by the user before writing — present the archetype candidate alongside the profile-candidate batch, never write it silently. Only `/tackle-retro` writes archetypes.
+
 ## Where results go
 
 - `retro.md` in the initiative workspace, one per initiative (a partial retro overwrites the previous partial; the close retro is final).
 - One `log.md` entry noting the retro ran, with the Metrics values as its evidence.
+- One `references/archetypes/<name>.md` per batch-confirmed archetype candidate (the only write outside the initiative workspace).
 - Report a digest ≤ 12 lines in chat per the output contract — point to `retro.md`, don't paste it.

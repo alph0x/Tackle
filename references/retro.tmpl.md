@@ -30,3 +30,17 @@ Written at initiative close (or mid-flight as a partial retro — say so here) b
 Filled only when evolution is enabled — see the learning-loop section of `guides/retro.md`. Every candidate requires explicit, batched user confirmation before being recorded anywhere.
 
 - {{none}}
+
+## Plan archetype candidate
+
+Filled only when the decomposition held — see the archetype section of `guides/retro.md`; format fixed by `references/archetypes/README.md`. Like profile candidates: explicit, batched user confirmation before writing; only `/tackle-retro` writes archetypes.
+
+- **Name**: {{kebab-case name}}
+- **Summary**: {{one line}}
+- **Point list**: {{titles + one-line responsibility each}}
+- **Edge pattern**: {{dependency-graph shape}}
+- **Wave shape**: {{execution waves}}
+- **Trap warnings**: {{what nearly or did break}}
+- **Provenance**: {{this initiative, retro link}}
+
+{{none}}

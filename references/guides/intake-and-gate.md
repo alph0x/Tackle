@@ -43,6 +43,12 @@ profile proposals: N accepted, M overridden (<which>)
 
 If the profile is absent, disabled, or no defaults apply, skip this step without logging a tally.
 
+### Archetypes
+
+Read `references/archetypes/` alongside the profiles. When an archetype's summary matches the incoming initiative's shape, offer its skeleton — point list, edge pattern, wave shape — as a proposal explicitly tagged `(from archetype <name>)`, flagging its trap warnings with the offer. These are proposals, never silent defaults: the user may accept, adapt, or override, and overrides are retro material.
+
+If no archetype matches, skip without offering. There is no scoring engine — read and judge, exactly like profiles and seeds.
+
 ## Decision ownership
 
 The user decides every doubt. Batch doubts with a recommended default each; don't drip-feed. Tag each 🔴 blocking or 🟡 proceed-on-default. Under delegation, every mandatory choice becomes a provisional `Q-xx` with your default.
