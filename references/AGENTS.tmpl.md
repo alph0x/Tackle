@@ -1,6 +1,6 @@
 # AGENTS — workspace `docs/plans/{{slug}}/`
 
-**Methodology: Tackle 3.4.3** <!-- the Tackle version this workspace was built/migrated under; a future version reads this to decide whether to migrate (Step 8.5 / Step 10). -->
+**Methodology: Tackle 4.0.0** <!-- the Tackle version this workspace was built/migrated under; a future version reads this to decide whether to migrate (Step 8.5 / Step 10). -->
 
 Conventions for any agent (Claude Code, Cursor, GPT, human) that picks up this plan.
 <!-- If it inherits from a root AGENTS.md, say so here and don't repeat its rules. -->
@@ -56,7 +56,7 @@ docs/plans/{{slug}}/
 
 - **L1 (report)** — read-only: status, resume digests, verification, grounding; never edits source.
 - **L2 (assisted)** — default: the agent proposes (pre-attack summary) and waits for confirmation before changing code; the human checks Solo points.
-- **L3 (unattended)** — no per-point confirmation, ONLY when ALL hold: upfront plan+execute intent recorded as a `D-xx`; the point is grounded, verified (no HIGH/MEDIUM findings), and inside its declared Touches; an independent checker and the iteration budget (Rule 5) apply; and the point touches no production path — production-path points cap at L2 unless the user waives it with an explicit `D-xx`.
+- **L3 (unattended)** — no per-point confirmation, ONLY when ALL hold: upfront plan+execute intent recorded as a `D-xx`; the point is grounded, verified (no HIGH/MEDIUM findings), and inside its declared Touches; an independent checker and the iteration budget (Rule 5) apply; the point's dependency chain is E1-pure (every upstream grade E1) — unattended execution never rests on asserted or review-gated upstream evidence; and the point touches no production path — production-path points cap at L2 unless the user waives it with an explicit `D-xx`.
 
 Per-point overrides live in the point briefing (`Autonomy override`). Moving up the ladder is itself a `D-xx`; moving down never needs one.
 
