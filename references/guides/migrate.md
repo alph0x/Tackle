@@ -25,6 +25,19 @@ A migrated workspace MUST satisfy the full-adoption contract F-1..F-8; each line
 6. Lint + checkpoint.
 7. Record migration `D-xx` + log entry + bump stamp.
 
+## v3.4 → v4.0 checklist
+
+Run these when migrating a plan created with Tackle 3.4.x:
+
+1. **Note `Type:` field awareness** — point briefings may declare `Type: standard` (the default when absent), `Type: discovery`, or `Type: experiment`; old points are `standard` by default and need no rewrite.
+2. **Audit `Depends-on` edges** — every `Depends-on` line names the crossing artifact (the concrete upstream output the point consumes — a file, a section, a schema, a protocol); a legitimate ordering-only edge is recorded as a `D-xx` waiver, never waived silently, and false edges are cut, not waived.
+3. **Consider `Lenses:` adoption** — a high-risk point MAY declare `Lenses:` (distinct verification lenses run as independent skeptic checks, decided by majority vote); absent ⇒ single-checker behavior, unchanged. No workspace edit required.
+4. **Add the Confidence column + backfill grades** — `board.md` gains a trailing `Confidence` column; lint row 3 is position-independent (legacy 5-column and graded 6-column boards both pass), so the column's placement is free. Backfill every closed point mechanically: **E1** if a checker evidence block (command + output + exit line from the independent checker) exists in `log.md`/`reports/`, **E3** otherwise — grades are derived from evidence, never judged, and never upgraded without the evidence.
+5. **Note the L3 E1-chain condition** — unattended (L3) execution now requires the point's dependency chain to be E1-pure; asserted or review-gated upstream evidence caps the point at L2. Informational — binds at the next L3 execution, no workspace edit.
+6. **Note lint rows 9–10** — row 9 checks loop-point budget fields (`Type: discovery` ⇒ `Rounds:`; `Type: experiment` ⇒ `Metric:` + `Threshold:` + `Rounds:`); row 10 checks every 🟢/⏸ board row carries a grade from E1/E2/E3/E0. The new rows apply at the next lint run; row 10 is satisfied by item 4's backfill.
+7. **Note plan archetypes** — proven decomposition skeletons (point list, edge pattern, wave shape, trap warnings, provenance) live in `references/archetypes/<name>.md`; when re-planning or adding work, check for a matching archetype. Informational — no workspace edit.
+8. **Bump the stamp** — record a `D-xx` in `decisions.md`, append a `log.md` entry, and bump the workspace `Methodology:` stamp to Tackle 4.0.0.
+
 ## v3.3 → v3.4 checklist
 
 Run these when migrating a plan created with Tackle 3.3.x:
