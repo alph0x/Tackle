@@ -10,6 +10,12 @@
 - **Traces to**: {{spec/ticket line this point implements — e.g. `spec.md:NN` or `ticket-123` acceptance #2}}.
 - **Touches (write scope)**: {{the files/dirs this point may modify — bounds the blast radius; disjoint Touches ⇒ parallel-safe (isolated worktrees), and keeps the done-signal's diff reviewable. Explicitly flag any touched path that ships to production — a flagged path requires the Rollout / reversibility section below}}.
 - **Autonomy override**: {{inherit (workspace level in AGENTS.md §Autonomy) / L1 / L2 / L3 — L3 requires the AGENTS.md §Autonomy conditions; production-path points cap at L2}}.
+- **Type** (optional): `Type: standard` (the default when absent — existing plans need no changes), `Type: discovery`, or `Type: experiment`. Loop types declare `Rounds: N` (hard budget, default 5); an experiment additionally declares `Metric:` {{the objective command — a test, benchmark, score}} and `Threshold:` {{the pass value}}.
+
+### Loop done-signals (only when `Type:` is a loop archetype)
+- **Discovery** (`Type: discovery`): the done-signal is **convergence**, not a checklist — `K` consecutive rounds surfacing zero new findings (K=2 default); the round-counter check IS the runnable signal. Dedupe findings against **everything seen**, not just confirmed results.
+- **Experiment** (`Type: experiment`): the done-signal is the `Metric:` reaching `Threshold:` — each round proposes one change, runs the metric, keeps it on improvement, rolls back otherwise (keep/rollback; the attempt journal is the loop's state). Touches MUST exclude the metric/evaluator files.
+- **Both**: `Rounds:` budget exhaustion ⇒ ⏸ blocked + escalation packet, never a fake 🟢; findings that outgrow the point become new points or seeds — the loop never silently expands scope.
 
 ## Goal (single responsibility — one loop-completable change)
 {{What "done" means — observable, testable, ONE coherent change. If stating "done" needs an "and", split the point.}}
