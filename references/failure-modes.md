@@ -19,6 +19,7 @@ A short catalog of common execution failures, what each looks like from the outs
 | 13 | **Verification theater** | "This should work now" with nothing run; target passes but build breaks | Two-halves verification (point briefing acceptance) |
 | 14 | **Spec betrayal** | Code changed to satisfy a check that contradicts the spec/README | INTENT-gate authority order: user > spec > tests > current code |
 | 15 | **Compliance theater** | INTENT lines and evidence blocks written plausibly without running anything; maker and checker share the same model's blind spots | Partially mitigated: re-runnable-output evidence + reward-hacking guard + independent checker + checker≠maker tier (best-effort). **Residual risk accepted**: fabricated text is caught only by `/tackle-judge` re-running claims — no mechanical detection exists today |
+| 16 | **Fake edge** | A point claims `Depends-on` for position in the graph, but nothing actually crosses the edge | Verify check 5 (edge audit): every `Depends-on` names its crossing artifact; a legitimate ordering-only edge is recorded as a `D-xx` waiver, never silently waived |
 
 ## Reading an audit
 

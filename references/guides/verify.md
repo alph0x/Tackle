@@ -19,18 +19,19 @@ For each point in `plan.md` §5 / `board.md`:
 2. **Claim counter** — for every factual claim ("always", "never", "only", "all", "none"), check the repo mechanically. Flag unsupported absolutes.
 3. **Scope minimality / source anchor** — confirm the point traces to a line in the spec/ticket/constitution; flag untraced scope as drift.
 4. **Done-signal honesty** — confirm the done-signal is a literal runnable command with an explicit pass condition (exit code / count / grep match); flag `test -f`, "document exists", or prose gates.
-5. **Dependency sanity** — confirm `Depends-on` resolves to an actual point and is not aspirational; confirm parallel points have disjoint `Touches`.
+5. **Dependency sanity** — confirm `Depends-on` resolves to an actual point and is not aspirational; confirm parallel points have disjoint `Touches`; flag any `Depends-on` that names no **crossing artifact** (the concrete output of the upstream point the downstream point consumes — a file, a section, a schema, a protocol). A legitimate ordering-only edge is never waived silently: record it as a `D-xx` (a scheduling choice, not a data dependency); false edges get cut, not waived.
 6. **Plan-vs-code drift** — compare the point's claimed `Touches` and Goal against the current repo; flag if the code already implements it (stale point) or if the described change does not match any touched file.
 7. **Agnosticism / Harness-agnostic check** — confirm the plan remains harness-agnostic: no harness-specific commands (e.g. `/command`, `@mention`, `.claude/`), no model brand names (e.g. `Claude`, `GPT`, `Opus`), and no vendor-specific file paths unless the point is explicitly about that harness. Flag violations as drift.
 8. **Seal integrity** — mechanical: every `SEALED: D-xx` id found in the workspace greps in `decisions.md` (a missing id is a HIGH finding); a sealed section edited with no superseding `SEALED: D-yy supersedes D-xx` marker is a HIGH finding.
 9. **Regression sweep computability** — confirm the point declares `Touches` precisely enough that the sweep set (🟢 points with intersecting Touches) is derivable mechanically (grep over `board.md` + `points/`); flag missing or vague `Touches`.
+10. **Grade re-derivation** — for every `board.md` row carrying a Confidence grade, re-derive the grade from its closure evidence (closure report section 4; Lite gate: the `log.md` evidence block): command + output + exit line from the independent checker ⇒ E1; a review-gate marker with rubric + named reviewer ⇒ E2; an explicit UNVERIFIABLE label ⇒ E0; anything else ⇒ E3. A declared grade that doesn't match derivation is a grade-inflation finding — HIGH, mechanically checkable.
 
 Classify every finding with a certainty level:
 
 - **HIGH** — mechanically confirmed (file missing, citation unread, command not runnable). Safe to block on.
   - Examples: a cited **file does not exist** (e.g. `src/foo.ts:42`); the done-signal command returns exit code 1; `Depends-on: P-99` references a non-existent point.
 - **MEDIUM** — likely true, needs one extra check before blocking.
-  - Examples: the point claims "X never happens" but a grep finds one counter-example; the `Touches` list omits a file the Goal clearly modifies.
+  - Examples: the point claims "X never happens" but a grep finds one counter-example; the `Touches` list omits a file the Goal clearly modifies; a `Depends-on: P-03` line names the upstream point but no crossing artifact, and no `D-xx` waiver records it as ordering-only.
 - **LOW** — possible, needs human judgment.
   - Examples: a variable name feels inconsistent with project convention; a prose description could be read two ways but the code is probably correct.
 
