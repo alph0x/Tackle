@@ -66,14 +66,14 @@ docs/plans/<initiative>/overrides/
 
 ## Execution loop
 
-`/tackle-implement` and `/tackle-next` spawn the `team.md` point team — **mandatory** in execution — and run `board.md` in dependency order. Read-first: `board.md`, `log.md`, `decisions.md` (and `questions.md` if unresolved) before acting; cold-session modes (`resume`, `status`, list, next, verify, ground, pulse) follow the same rule. Team sizes (Solo/Pair/Pod/Squad) and tier bindings: `references/team.tmpl.md` + `AGENTS.md` §Model map (`fast`/`standard`/`frontier`).
+`/tackle-implement` and `/tackle-next` spawn the `team.md` point team (mandatory) and run `board.md` in dependency order. Read-first: `board.md`, `log.md`, `decisions.md` (`questions.md` if unresolved) before acting; cold-session modes (`resume`, `status`, list, next, verify, ground, pulse) follow the same rule. Team sizes (Solo/Pair/Pod/Squad) and tier bindings: `references/team.tmpl.md` + `AGENTS.md` §Model map.
 
 - **Maker/checker** — the Driver's done-signal run is informative, not gating; the 🟢 flip requires an independent checker per `team.md`, evidence in `log.md`.
-- **Closure report** — Full-gate points close via `reports/P-0N-report.md`; Coordinator sign-off gates the 🟢 flip. Reviewers verify; one logical Coordinator updates `board.md` + `log.md`, continuity in `coordinator.md`.
-- **Regression sweep** — before a 🟢 flip, re-run done-signals of 🟢 points with intersecting Touches; failure reopens them (🟢 → 🟡) and blocks the flip.
-- **Explicit intent** — without an upfront plan+execute ask, present the pre-attack summary and ask before changing code; silence or ambiguity means stop. Default rung L2 (assisted) of the `AGENTS.md` §Autonomy ladder (L1 read-only, L3 unattended; per-point briefing overrides).
+- **Closure report** — Full-gate points close via `reports/P-0N-report.md`; Coordinator sign-off gates the 🟢 flip; the recorded grade is derived from the section-4 evidence block (checker command + output + exit line), never from a declared grade. Reviewers verify; one logical Coordinator updates `board.md` + `log.md`.
+- **Regression sweep** — before a 🟢 flip, re-run done-signals of 🟢 points with intersecting Touches; failure reopens them and blocks the flip.
+- **Explicit intent** — without an upfront plan+execute ask, present the pre-attack summary and ask before changing code; silence or ambiguity means stop. Default rung L2 (assisted) of the `AGENTS.md` §Autonomy ladder.
 
-In planning, subagents are optional (recommended) for grounding, `/tackle-verify`, `/tackle-drill`; intake, doubts, decisions never delegate.
+Subagents are optional in planning for grounding/verify/drill; intake, doubts, decisions never delegate.
 
 ## Companion skills
 
@@ -95,7 +95,7 @@ Step 0 checks optional companions (`superpowers`, `karpathy-guidelines`, `solid-
 
 ## Output contract
 
-Open with one status line (🟢/🟡/🔴); close with `⚠️ On you: ...` and `▶ Continue: ...`. Digest ≤ 12 lines; handoff ≤ one screen. Point to files, don't paste them.
+Open with one status line (🟢/🟡/🔴); close with `⚠️ On you: ...` and `▶ Continue: ...`. Digest ≤ 12 lines; handoff ≤ one screen. Point to files, don't paste.
 
 ## Where the detail lives
 
