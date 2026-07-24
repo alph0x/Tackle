@@ -1,5 +1,9 @@
 # Tackle changelog
 
+## Tackle 4.2.2
+
+- Fix in `guides/update.md` found by dogfooding the self-update against the real 4.2.1 release: the tag-archive tarball extracts as `Tackle-<version>/`, not `alph0x-Tackle-*` (the api.github.com format) — the guide now instructs locating the extracted root by listing the temp dir, never by assumed name. The s16 fixture's embedded guide copy is refreshed to match.
+
 ## Tackle 4.2.1
 
 - New archetype `eval-driven-method-fix` (from the tackle-grade-derivation retro): the loop that closed the s15 method gap — minimal entry-file clause, behavioral re-validation against the exposing trap, informational release. Trap warnings: measure wc instead of estimating, verify relocations against real target text, textual fixes that don't discriminate aren't fixes.
