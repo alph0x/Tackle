@@ -25,6 +25,13 @@ A migrated workspace MUST satisfy the full-adoption contract F-1..F-8; each line
 6. Lint + checkpoint.
 7. Record migration `D-xx` + log entry + bump stamp.
 
+## v4.0 → v4.1 checklist
+
+Run these when migrating a plan created with Tackle 4.0.x:
+
+1. **Note skill self-update** — the installed skill now checks for a new release daily during planning intake (Step 0 "Self-update check") and self-updates via `guides/update.md`; `/tackle-update` forces it. Informational — no workspace edit.
+2. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a `log.md` entry, and bump the plan stamp.
+
 ## v3.4 → v4.0 checklist
 
 Run these when migrating a plan created with Tackle 3.4.x:

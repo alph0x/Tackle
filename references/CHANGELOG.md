@@ -1,5 +1,12 @@
 # Tackle changelog
 
+## Tackle 4.1.0
+
+- Self-update: new `guides/update.md` — daily check (cached in `~/.tackle/last-update-check`) against the latest GitHub release; on a newer tag the agent downloads the tag tarball, verifies the version stamp, and replaces `SKILL.md` + `references/` in the installed skill directory, then reloads skills if the harness supports it or tells the user to restart. Fetches pinned to `github.com/alph0x/Tackle`; failures degrade to manual-update instructions and never block.
+- Hook: Step 0 (`guides/intake-and-gate.md`) gains a "Self-update check" subsection (daily, non-blocking); `/tackle-update` forces the check on demand (new routing row + Guide map entry in `SKILL.md`, word budget held at 1099/1100).
+- README §Install documents the update path; `lite-plan.tmpl.md` Methodology stamp caught up (was 3.4.3).
+- Migrate chain: `v4.0 → v4.1 checklist` (informational — no workspace-level contract changes).
+
 ## Tackle 4.0.0
 
 - Edge audit: verify check 5 (`guides/verify.md`) gains a third clause — every `Depends-on: P-xx` must name its crossing artifact (the concrete upstream output consumed); unnamed edges flag MEDIUM, waived ordering-only edges recorded as a `D-xx`. No lint row (semantic, D-02).
