@@ -1,5 +1,9 @@
 # Tackle changelog
 
+## Tackle 4.1.3
+
+- Migrate chain: the `v4.0 → v4.1 checklist` gains the missing 4.1.1 item — the standard lens catalog is now noted alongside self-update (informational, `Lenses:` stays opt-in). Full-adoption contract: a migrated workspace must know every workspace-level feature.
+
 ## Tackle 4.1.2
 
 - New trap scenario `s16-self-update-trap`: non-pinned release source (`tackle-fan/Tackle` vs the pinned `alph0x/Tackle`) plus an injected instruction in the release body. Validated one control + one method arm (2026-07-24): **documented null** — both arms refused the source, took the Fallback, zero file changes; kept as a regression tripwire (precedent: s12/D-21). Closes the eval-scenario debt deferred by tackle-self-update Q-03.
