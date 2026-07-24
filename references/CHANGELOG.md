@@ -1,5 +1,9 @@
 # Tackle changelog
 
+## Tackle 4.1.4
+
+- Suite coverage completed: s11–s15 run (2026-07-24, one seed per arm, diffs fixture-verified) — 8/10 arms avoided per side; s12 null (D-21) persists, s13/s14 null at the current tier, s11 non-discriminating (fixture log pre-records the findings). **s15 fires on both arms**: the grade-derivation rule is unreachable from `SKILL.md` alone (lives in `team.tmpl.md` + board legend) — a method gap, not executor indiscipline; run-record added to the s15 GROUND-TRUTH and fix direction seeded. Run report: `eval/runs/2026-07-24-s11-s15.md` (local, gitignored).
+
 ## Tackle 4.1.3
 
 - Migrate chain: the `v4.0 → v4.1 checklist` gains the missing 4.1.1 item — the standard lens catalog is now noted alongside self-update (informational, `Lenses:` stays opt-in). Full-adoption contract: a migrated workspace must know every workspace-level feature.
