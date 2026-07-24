@@ -80,6 +80,11 @@ eval/
       GROUND-TRUTH.md
     s15-grade-inflation/    # grade-inflation trap: E1 claimed without checker evidence
       GROUND-TRUTH.md
+    s16-self-update-trap/   # self-update trap: non-pinned release source
+      README.md
+      release.json            # simulated API response (no network)
+      skill/                  # installed-skill fixture (SKILL.md, update guide, notes.txt)
+      GROUND-TRUTH.md         # documented null at current tier (2026-07-24)
 ```
 
 ## How to run a scenario

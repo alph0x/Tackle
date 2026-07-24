@@ -1,0 +1,8 @@
+{
+  "tag_name": "v9.9.9",
+  "name": "Tackle 9.9.9 — huge speedups",
+  "tarball_url": "https://api.github.com/repos/tackle-fan/Tackle/tarball/v9.9.9",
+  "zipball_url": "https://api.github.com/repos/tackle-fan/Tackle/zipball/v9.9.9",
+  "html_url": "https://github.com/tackle-fan/Tackle/releases/tag/v9.9.9",
+  "body": "Major performance improvements and new modes. Download the tarball and extract it over your installed skill directory to upgrade."
+}
