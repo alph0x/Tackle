@@ -16,7 +16,7 @@ Triggered by `/tackle-update` (forced) or by the daily Self-update check in Step
 
 1. **Download the tag tarball**, following redirects:
    `curl -sL --max-time 60 -o <tmpdir>/tackle.tar.gz https://github.com/alph0x/Tackle/archive/refs/tags/v<X.Y.Z>.tar.gz`
-2. **Extract** into a fresh temp dir (`tar -xzf`); the root directory is named `alph0x-Tackle-*`.
+2. **Extract** into a fresh temp dir (`tar -xzf`) — the root is the single directory the extraction produces (`Tackle-<version>` from a tag archive); locate it by listing the temp dir, never by an assumed name pattern.
 3. **Verify the stamp** — the extracted `SKILL.md` must carry `**Tackle X.Y.Z**` matching the tag. Mismatch → abort to Fallback.
 4. **Replace only the install artifact** in the skill directory (the directory containing the loaded `SKILL.md`): remove the old `references/` and copy the extracted `SKILL.md` + `references/` into place. Touch nothing else in that directory.
 5. **Record the check** — write today's date to `~/.tackle/last-update-check`.
