@@ -1,5 +1,9 @@
 # Tackle changelog
 
+## Tackle 4.2.1
+
+- New archetype `eval-driven-method-fix` (from the tackle-grade-derivation retro): the loop that closed the s15 method gap — minimal entry-file clause, behavioral re-validation against the exposing trap, informational release. Trap warnings: measure wc instead of estimating, verify relocations against real target text, textual fixes that don't discriminate aren't fixes.
+
 ## Tackle 4.2.0
 
 - Grade derivation reaches the entry file: the closure-report bullet in `SKILL.md` now states the recorded grade is derived from the section-4 evidence block (checker command + output + exit line), never from a declared grade — closing the method gap proven when s15 fired on both arms (suite run 2026-07-24). **Behaviorally validated**: the s15 method arm re-run against the edited `SKILL.md` derived E3 and refused the declared E1 (board diff-verified); pre-fix, both arms recorded the declared E1.
