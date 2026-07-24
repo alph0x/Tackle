@@ -37,6 +37,7 @@ description: Use when starting a non-trivial, multi-session or multi-track initi
 | `/tackle-drill` or `drill this point` | **Drill** → cold-start readiness drill on one point briefing |
 | `/tackle-trace` or `trace coverage` | **Trace** → criterion↔point coverage matrix, gaps and drift |
 | `/tackle-handoff` or `prepare a handoff` | **Handoff packet** → generate portable `HANDOFF.md` for the initiative |
+| `/tackle-update` | **Update** → self-update |
 | `resume / retomá <initiative>` | **Resume** → Step 8 |
 | `status / seguimiento / cómo viene` | **Status** → Step 9 |
 | `what plans are there? / qué planes hay` | **List** → Step 9 |
@@ -44,9 +45,9 @@ description: Use when starting a non-trivial, multi-session or multi-track initi
 | `migrate / upgrade / modernizar <initiative>` | **Migrate** → Step 8.5 |
 | `improve this plan / tackle-upgrade <initiative>` | **Improve** → Step 10 |
 
-Several initiatives? Show the List, ask which.
+Several initiatives? Show the List.
 
-**Guide map** (`references/guides/`): Steps 0–2 `intake-and-gate` · 3–4 `scaffold` · 5–5.75 `design-and-contract` · 6–6.6 `decompose-and-lint` (+ `lint-spec`) · 7 `verify` · 7.5 `ground` · 8 `resume` · 8.5 `migrate` · 9 `status-list-next` · 10 `improve`; same-named: `judge` · `retro` · `drill` · `trace` · `handoff-packet`. SDD templates: `references/sdd/`.
+**Guide map** (`references/guides/`): Steps 0–2 `intake-and-gate` · 3–4 `scaffold` · 5–5.75 `design-and-contract` · 6–6.6 `decompose-and-lint` (+ `lint-spec`) · 7 `verify` · 7.5 `ground` · 8 `resume` · 8.5 `migrate` · 9 `status-list-next` · 10 `improve`; same-named: `judge` · `retro` · `drill` · `trace` · `handoff-packet` · `update`. SDD templates: `references/sdd/`.
 
 Natural-language triggers are canonical; slash commands are aliases.
 
@@ -76,7 +77,7 @@ In planning, subagents are optional (recommended) for grounding, `/tackle-verify
 
 ## Companion skills
 
-Planning Step 0 checks optional companions (`superpowers`, `karpathy-guidelines`, `solid-skills`/`clean-architecture`); procedure: `references/guides/intake-and-gate.md`. Never used for execution.
+Step 0 checks optional companions (`superpowers`, `karpathy-guidelines`, `solid-skills`/`clean-architecture`); procedure: `references/guides/intake-and-gate.md`. Never used for execution.
 
 ## Core conventions
 

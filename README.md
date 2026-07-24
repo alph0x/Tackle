@@ -79,6 +79,8 @@ cp -r tackle ~/.cursor/skills/  # or your agent's skills directory
 **Any model / IDE:**
 Copy `SKILL.md` and the `references/` directory into your agent's skill directory.
 
+**Updates:** the skill checks for a new release once a day during planning intake and self-updates (only `SKILL.md` + `references/` are touched); `/tackle-update` forces a check. If your harness can't reload skills, restart the session after an update.
+
 The install artifact is `SKILL.md` + `references/` only. `docs/plans/` (workspaces) and `docs/seeds/` (this project's backlog) are local to this repo and never ship with the skill; your own plans and seeds get the same gitignore treatment in your repo.
 
 ## How to use
