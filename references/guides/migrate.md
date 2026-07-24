@@ -30,7 +30,8 @@ A migrated workspace MUST satisfy the full-adoption contract F-1..F-8; each line
 Run these when migrating a plan created with Tackle 4.0.x:
 
 1. **Note skill self-update** — the installed skill now checks for a new release daily during planning intake (Step 0 "Self-update check") and self-updates via `guides/update.md`; `/tackle-update` forces it. Informational — no workspace edit.
-2. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a `log.md` entry, and bump the plan stamp.
+2. **Note the standard lens catalog** — `team.tmpl.md` §Opt-in `Lenses:` gained six standard lenses (`correctness`, `security`, `repro`, `performance`, `simplicity`, `polish`) with declaration triggers. `Lenses:` stays opt-in; old briefings need no rewrite. Informational — no workspace edit.
+3. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a `log.md` entry, and bump the plan stamp.
 
 ## v3.4 → v4.0 checklist
 
