@@ -1,5 +1,10 @@
 # Tackle changelog
 
+## Tackle 4.1.1
+
+- Standard lens catalog in `team.tmpl.md` §Opt-in `Lenses:` — six reusable lenses (`correctness`, `security`, `repro`, `performance`, `simplicity`, `polish`) with skeptic questions and declaration triggers; closes the persona-reviewer and polish gaps vs Compound Engineering without new modes or agents. Additive/optional — no workspace contract change.
+- Artifact completeness: `references/archetypes/skill-feature-with-eval.md` (announced in 4.0.0) was untracked and missing from the 4.0.0/4.1.0 tarballs; now committed.
+
 ## Tackle 4.1.0
 
 - Self-update: new `guides/update.md` — daily check (cached in `~/.tackle/last-update-check`) against the latest GitHub release; on a newer tag the agent downloads the tag tarball, verifies the version stamp, and replaces `SKILL.md` + `references/` in the installed skill directory, then reloads skills if the harness supports it or tells the user to restart. Fetches pinned to `github.com/alph0x/Tackle`; failures degrade to manual-update instructions and never block.
