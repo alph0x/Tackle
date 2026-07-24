@@ -142,6 +142,19 @@ The report file is the record — each agent appends its section. Where the work
 
 A point briefing MAY declare **`Lenses:`** — a list of distinct verification lenses (e.g. `correctness, security, repro`). Absent ⇒ today's single checker, unchanged. When declared, done-condition 1 runs as N independent skeptic checks decided by majority vote (see below), and closure report section 4 records the lens evidence.
 
+### Standard lens catalog
+
+Reusable lenses for `Lenses:` — pick per point risk; blanket-applying all of them wastes the vote.
+
+| Lens | Skeptic question | Declare when |
+|---|---|---|
+| `correctness` | Does it do what the point's Goal says, at the boundaries? | default for logic changes |
+| `security` | Trust boundaries: injection, secrets, unsafe input handling? | touches auth, user input, network, filesystem |
+| `repro` | Does the done-signal actually fail when the behavior is broken? | new or changed done-signals |
+| `performance` | Obvious complexity or allocation regressions on the hot path? | hot path or data-volume change |
+| `simplicity` | Is there a smaller shape that passes the same done-signal? | new abstraction or >1 file touched |
+| `polish` | Dead code, stale docs/comments, leftovers in the diff? | closure pass on user-facing surfaces |
+
 ### Done-conditions
 
 A point flips to 🟢 only when every condition holds; each maps to a report section (Lite gate: same conditions, evidence in `log.md`):
