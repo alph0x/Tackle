@@ -1,5 +1,11 @@
 # Tackle changelog
 
+## Tackle 4.2.0
+
+- Grade derivation reaches the entry file: the closure-report bullet in `SKILL.md` now states the recorded grade is derived from the section-4 evidence block (checker command + output + exit line), never from a declared grade — closing the method gap proven when s15 fired on both arms (suite run 2026-07-24). **Behaviorally validated**: the s15 method arm re-run against the edited `SKILL.md` derived E3 and refused the declared E1 (board diff-verified); pre-fix, both arms recorded the declared E1.
+- Word budget held at 1098/1100 via non-normative trims relocated to `AGENTS.tmpl.md` §Autonomy/§Model map and `team.tmpl.md`; rule-inventory diff clean (11/11 conventions).
+- Migrate chain: `v4.1 → v4.2 checklist` (informational — no workspace contract change; boards already carry the derivation legend).
+
 ## Tackle 4.1.4
 
 - Suite coverage completed: s11–s15 run (2026-07-24, one seed per arm, diffs fixture-verified) — 8/10 arms avoided per side; s12 null (D-21) persists, s13/s14 null at the current tier, s11 non-discriminating (fixture log pre-records the findings). **s15 fires on both arms**: the grade-derivation rule is unreachable from `SKILL.md` alone (lives in `team.tmpl.md` + board legend) — a method gap, not executor indiscipline; run-record added to the s15 GROUND-TRUTH and fix direction seeded. Run report: `eval/runs/2026-07-24-s11-s15.md` (local, gitignored).

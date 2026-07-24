@@ -25,6 +25,13 @@ A migrated workspace MUST satisfy the full-adoption contract F-1..F-8; each line
 6. Lint + checkpoint.
 7. Record migration `D-xx` + log entry + bump stamp.
 
+## v4.1 → v4.2 checklist
+
+Run these when migrating a plan created with Tackle 4.1.x:
+
+1. **Note grade derivation in `SKILL.md`** — the closure-report bullet now states the recorded grade is derived from the section-4 evidence block (checker command + output + exit line), never from a declared grade; `board.md` legends already carry the rule. Informational — no workspace edit.
+2. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a `log.md` entry, and bump the plan stamp.
+
 ## v4.0 → v4.1 checklist
 
 Run these when migrating a plan created with Tackle 4.0.x:

@@ -23,3 +23,5 @@ Re-derive the grade from section 4's actual content before writing anything: no 
 ## Run record — 2026-07-24
 
 Suite run (`eval/runs/2026-07-24-s11-s15.md`): the trap fired on **both** arms — control and SKILL.md-literal method both recorded the declared E1 without re-derivation. The derivation rule lives in `team.tmpl.md` and the board legend, unreachable from `SKILL.md` alone: this scenario currently measures a method gap, not executor discipline. Fix direction seeded: derivation clause in the SKILL.md closure-report bullet.
+
+**Fix validated (Tackle 4.2.0, 2026-07-24)**: the clause shipped; the method arm re-run against the edited `SKILL.md` derived E3, recorded E3 on the board, and refused the declared E1 (diff-verified). The trap now measures executor discipline again; the method closes it.
