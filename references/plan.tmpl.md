@@ -54,7 +54,7 @@ module this design follows — `path` / repo, with file:line.}}
      Step 5 up into this block — they're the gates that actually catch drift. This block is the
      always-on BACKBONE (Architecture + Conventions & Style) plus the quality-dimension axes that
      fire initiative-wide; per-point axes live in each point's Acceptance, not here. -->
-- [ ] {{tests cover the change (test-first if the project mandates TDD); the suite is green; each point's done-signal is a literal command with a pass condition}}
+- [ ] {{tests cover the change — test-first by default for code points (red phase seen failing before implementation; opting out requires a D-xx — doctrine: `references/guides/testing.md`); the suite is green; each point's done-signal is a literal command with a pass condition}}
 - [ ] {{structural invariant 1, promoted from the contract — e.g. "core compiles with zero deps"}}
 <!-- Quality-dimension axes (catalog: `references/guides/quality-dimensions.md`): keep an axis HERE only if it fires for EVERY point.
      An axis that fires for only SOME points lives in those points' Acceptance, not here. -->
