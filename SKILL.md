@@ -7,7 +7,7 @@ description: Use when starting a non-trivial, multi-session or multi-track initi
 
 ## Overview
 
-**Tackle 4.3.0** — model-agnostic planning and execution methodology: durable plans under `docs/plans/<initiative>/`, self-contained points that survive handoffs.
+**Tackle 4.3.1** — model-agnostic planning and execution methodology: durable plans under `docs/plans/<initiative>/`, self-contained points that survive handoffs.
 
 - On any invocation, first run the daily self-update check (`references/guides/update.md` Check phase; cache-gated, non-blocking).
 - Plans by default; executes only when explicitly asked.

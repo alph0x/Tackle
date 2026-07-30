@@ -1,5 +1,12 @@
 # Tackle changelog
 
+## Tackle 4.3.1
+
+- Fix in the self-update hook found by dogfooding on a second machine: the daily check lived only in planning intake (Step 0 of `guides/intake-and-gate.md`), so resume/status/execute invocations never ran it — an agent resuming an in-progress plan asserted "already gated for today" and moved on. The check is now hooked from the `SKILL.md` Overview: **on any invocation** (every mode, new plan or in-progress), first run the Check phase of `guides/update.md`; the network stays cache-gated to once per day.
+- Cache-gate hardening in `guides/update.md` §Check step 1: the file must be read — it may not exist, absence means run the check, and the gate state must never be asserted without reading it.
+- **Behaviorally validated**: new trap scenario `s18-resume-update-check` (2026-07-30, 1 seed/arm, transcript-verified) — the method arm read the update guide and the cache file before resuming; the control arm went straight to the fixture. The bullet discriminates.
+- Word budget held at 1096/1100 via non-normative trims (routing flavor line, companion-skill name list, tier-name parenthetical, presets note, guide-map compression); rule-inventory unchanged (11/11 conventions).
+
 ## Tackle 4.3.0
 
 - Testing doctrine: new `guides/testing.md` — agent speed inverts test economics (Uncle Bob): code is cheap, verification is where the value concentrates. Test-first is now the default shape for code points (red phase seen failing before implementation; opt-out requires a `D-xx`), with a depth-tier ladder — T0 unit / T1 acceptance / T2 property-based / T3 fuzz-torture / mutation as suite validation — each tier firing on a Touches heuristic and folding into the done-signal as a runnable fragment. The red phase doubles as the mechanical form of the checker's `repro` question.
