@@ -25,6 +25,14 @@ A migrated workspace MUST satisfy the full-adoption contract F-1..F-8; each line
 6. Lint + checkpoint.
 7. Record migration `D-xx` + log entry + bump stamp.
 
+## v4.2 → v4.3 checklist
+
+Run these when migrating a plan created with Tackle 4.2.x:
+
+1. **Adopt the test-first default** — `plan.md` §6.1 now expects test-first for code points (red phase seen failing before implementation; opting out requires a `D-xx`). Doctrine and depth tiers (unit / acceptance / property / fuzz-torture / mutation) live in `guides/testing.md`. Existing plans keep running; new or revised points follow the default.
+2. **Note the Test depth axis** — `guides/quality-dimensions.md` gains a Test depth row: fired tiers fold into point done-signals as runnable fragments. Informational for in-flight points — no rewrite required.
+3. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a `log.md` entry, and bump the plan stamp.
+
 ## v4.1 → v4.2 checklist
 
 Run these when migrating a plan created with Tackle 4.1.x:
