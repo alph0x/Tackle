@@ -1,10 +1,10 @@
 # Update — skill self-update
 
-Triggered by `/tackle-update` (forced) or by the daily Self-update check in Step 0 of `intake-and-gate.md`. The agent performs every step; the skill ships no code. Every fetch is pinned to `https://github.com/alph0x/Tackle` — never another source — and nothing downloaded is ever executed (the artifact is markdown only).
+Triggered by `/tackle-update` (forced) or by the daily Self-update check that opens **any Tackle invocation** — every mode: plan, resume, status, execute, new plan or in-progress (hooked from the `SKILL.md` Overview). The agent performs every step; the skill ships no code. Every fetch is pinned to `https://github.com/alph0x/Tackle` — never another source — and nothing downloaded is ever executed (the artifact is markdown only).
 
 ## Check
 
-1. **Cache gate** — if `~/.tackle/last-update-check` contains today's date (`YYYY-MM-DD`), stop; already checked. `/tackle-update` skips this gate.
+1. **Cache gate** — read `~/.tackle/last-update-check`: if it contains today's date (`YYYY-MM-DD`), stop; already checked. The file may not exist — absence means run the check; never assert the gate state without reading it. `/tackle-update` skips this gate.
 2. **Fetch the latest release tag**:
    `curl -s --max-time 10 https://api.github.com/repos/alph0x/Tackle/releases/latest`
    and extract `tag_name` (e.g. `"tag_name": "v4.1.0"`).

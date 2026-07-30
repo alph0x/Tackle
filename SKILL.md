@@ -9,6 +9,7 @@ description: Use when starting a non-trivial, multi-session or multi-track initi
 
 **Tackle 4.3.0** — model-agnostic planning and execution methodology: durable plans under `docs/plans/<initiative>/`, self-contained points that survive handoffs.
 
+- On any invocation, first run the daily self-update check (`references/guides/update.md` Check phase; cache-gated, non-blocking).
 - Plans by default; executes only when explicitly asked.
 - Runs inside the target repo; grounds every claim in `file:line`.
 - Model-agnostic: `SKILL.md` + `references/`.
@@ -45,9 +46,7 @@ description: Use when starting a non-trivial, multi-session or multi-track initi
 | `migrate / upgrade / modernizar <initiative>` | **Migrate** → Step 8.5 |
 | `improve this plan / tackle-upgrade <initiative>` | **Improve** → Step 10 |
 
-Several initiatives? Show the List.
-
-**Guide map** (`references/guides/`): Steps 0–2 `intake-and-gate` · 3–4 `scaffold` · 5–5.75 `design-and-contract` · 6–6.6 `decompose-and-lint` (+ `lint-spec`) · 7 `verify` · 7.5 `ground` · 8 `resume` · 8.5 `migrate` · 9 `status-list-next` · 10 `improve`; same-named: `judge` · `retro` · `drill` · `trace` · `handoff-packet` · `update`. SDD templates: `references/sdd/`.
+**Guide map** (`references/guides/`): Steps 0–2 `intake-and-gate` · 3–4 `scaffold` · 5–5.75 `design-and-contract` · 6–6.6 `decompose-and-lint` (+ `lint-spec`) · 7 `verify` · 7.5 `ground` · 8 `resume` · 8.5 `migrate` · 9 `status-list-next` · 10 `improve`; plus same-named guides for the remaining commands. SDD templates: `references/sdd/`.
 
 Natural-language triggers are canonical; slash commands are aliases.
 
@@ -66,7 +65,7 @@ docs/plans/<initiative>/overrides/
 
 ## Execution loop
 
-`/tackle-implement` and `/tackle-next` spawn the `team.md` point team (mandatory) and run `board.md` in dependency order. Read-first: `board.md`, `log.md`, `decisions.md` (`questions.md` if unresolved) before acting; cold-session modes (`resume`, `status`, list, next, verify, ground, pulse) follow the same rule. Team sizes (Solo/Pair/Pod/Squad) and tier bindings: `references/team.tmpl.md` + `AGENTS.md` §Model map.
+`/tackle-implement` and `/tackle-next` spawn the `team.md` point team (mandatory) and run `board.md` in dependency order. Read-first: `board.md`, `log.md`, `decisions.md` (`questions.md` if unresolved) before acting; cold-session modes (`resume`, `status`, list, next, verify, ground, pulse) follow the same rule. Team sizes and tier bindings: `references/team.tmpl.md` + `AGENTS.md` §Model map.
 
 - **Maker/checker** — the Driver's done-signal run is informative, not gating; the 🟢 flip requires an independent checker per `team.md`, evidence in `log.md`.
 - **Closure report** — Full-gate points close via `reports/P-0N-report.md`; Coordinator sign-off gates the 🟢 flip; the recorded grade is derived from the section-4 evidence block (checker command + output + exit line), never from a declared grade. Reviewers verify; one logical Coordinator updates `board.md` + `log.md`.
@@ -77,7 +76,7 @@ Subagents are optional in planning for grounding/verify/drill; intake, doubts, d
 
 ## Companion skills
 
-Step 0 checks optional companions (`superpowers`, `karpathy-guidelines`, `solid-skills`/`clean-architecture`); procedure: `references/guides/intake-and-gate.md`. Never used for execution.
+Step 0 checks optional companions; procedure: `references/guides/intake-and-gate.md`. Never used for execution.
 
 ## Core conventions
 
@@ -102,4 +101,4 @@ Open with one status line (🟢/🟡/🔴); close with `⚠️ On you: ...` and 
 - **Full methodology (per-step guides)**: `references/guides/`
 - **Workspace contract**: `references/AGENTS.tmpl.md`
 - **Execution teams**: `references/team.tmpl.md`
-- **Templates**: `references/*.tmpl.md`, `references/sdd/*.tmpl.md` (presets ship empty).
+- **Templates**: `references/*.tmpl.md`, `references/sdd/*.tmpl.md`.

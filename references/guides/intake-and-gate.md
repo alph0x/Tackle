@@ -14,9 +14,9 @@ companion skills: superpowers [installed/missing/declined], karpathy-guidelines 
 
 If the user declines to install any missing skill, note the gap once and continue. Do not re-nag in later sessions.
 
-## Self-update check (daily, non-blocking)
+## Self-update check (every invocation, non-blocking)
 
-Run the Check phase of `references/guides/update.md` (cache-gated to once per day). On a newer release, follow its Update + Reload phases. Any failure → skip silently and continue intake; the check never blocks.
+Run the Check phase of `references/guides/update.md` on **every Tackle invocation** — any mode, new plan or in-progress (network cache-gated to once per day). On a newer release, follow its Update + Reload phases. Any failure → skip silently and continue; the check never blocks.
 
 # Step 1 — Intake (infer first, then ask)
 
