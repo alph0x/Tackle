@@ -26,6 +26,10 @@ Independent feature cores fan out in wave 1 (∥, disjoint Touches); lint-suppor
 - **Portable gates**: sealed done-signals must use lowest-common-denominator tooling (`grep -l`, not `grep -lc`) — flag behavior varies by host.
 - **Independent checkers pay for themselves**: on this shape they caught three defects (a broken lint field-index, an obsolete trap, a non-portable gate) before any green flip.
 
+## Lite scaling
+
+The skeleton scales down to a 3-point Lite plan when the feature adds no mechanically verifiable structural invariant: **core → eval-scenario → release**, dropping lint-support and folding migrate-checklist into release (gate 4 of the release sweep forces the checklist anyway). Proven by tackle-testing-doctrine (2026-07-30): trap warnings still apply in full — cite by section, fixture-test fragments, portable gates.
+
 ## Provenance
 
 tackle-graph-execution (Tackle 4.0.0), 2026-07-20. Retro: `docs/plans/tackle-graph-execution/retro.md`. Eligibility caveat: the source graph was re-shaped post-seal (scope grew CI hook + 4.0.0 + single-release renumber); the FINAL shape distilled here is what proved stable through execution.
