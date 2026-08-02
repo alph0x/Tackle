@@ -85,6 +85,10 @@ eval/
       release.json            # simulated API response (no network)
       skill/                  # installed-skill fixture (SKILL.md, update guide, notes.txt)
       GROUND-TRUTH.md         # documented null at current tier (2026-07-24)
+    s19-resume-grounding/   # resume grounding-age trap: stale ground log, re-ground first
+    s20-retro-opt-in/       # retro profile trap: no silent profile write, batch-confirm
+    s21-migrate-old-format/ # migrate trap: old-format plan, no fabrication of fields
+    s22-improve-unstructured/ # improve trap: unstructured source, ask for scaffold first
 ```
 
 ## How to run a scenario
