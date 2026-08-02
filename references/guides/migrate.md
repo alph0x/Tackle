@@ -25,6 +25,13 @@ A migrated workspace MUST satisfy the full-adoption contract F-1..F-8; each line
 6. Lint + checkpoint.
 7. Record migration `D-xx` + log entry + bump stamp.
 
+## v4.3 → v4.4 checklist
+
+Run these when migrating a plan created with Tackle 4.3.x:
+
+1. **Note the slimmed entry navigation** — the `SKILL.md` routing table keeps one canonical trigger per mode (the "(any language)" header covers phrasing) and the execution-loop rules are compressed to one-liners with pointers to `team.tmpl.md` / `AGENTS.tmpl.md` §Autonomy; the "Commands are entry points" note moved to `guides/intake-and-gate.md`. Command surface, status vocabulary, artifacts, and closure protocol are unchanged. Informational — no workspace edit.
+2. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a `log.md` entry, and bump the plan stamp.
+
 ## v4.2 → v4.3 checklist
 
 Run these when migrating a plan created with Tackle 4.2.x:

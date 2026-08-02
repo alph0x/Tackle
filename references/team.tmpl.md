@@ -109,7 +109,7 @@ Every Full-gate point closes with one report file in the workspace `reports/` di
 
 1. **Scope** — Reviewer/Spec Reader: must-produce / must-not-touch summary (skipped in Solo).
 2. **INTENT + Evidence** — Driver: INTENT gate lines, attempt journal, done-signal run with its **Evidence** block (command, trimmed output, exit line).
-3. **Reviews** — Reviewer/Spec Reader, Quality Guardian, specialists: PASS or findings.
+3. **Reviews** — Reviewer/Spec Reader, Quality Guardian, specialists: PASS or findings. Reviewers verify the work, they don't trust the Driver's report.
 4. **Checker re-run** — independent checker (maker/checker, condition 1 below): done-signal re-run evidence, its **tier** per §Model binding, the reward-hacking guard result, and a `model-binding: unavailable` note when checker ≠ maker could not be honored. When the briefing declares `Lenses:`, it also records the lens list, each lens's verdict, and the vote count.
    It also records the point's **evidence grade**, derived mechanically from the evidence block (never self-declared):
    - **E1 command-verified** ⇔ this section (Lite gate: the `log.md` evidence block) carries command + output + exit line from the independent checker.

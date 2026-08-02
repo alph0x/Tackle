@@ -7,76 +7,67 @@ description: Use when starting a non-trivial, multi-session or multi-track initi
 
 ## Overview
 
-**Tackle 4.3.1** — model-agnostic planning and execution methodology: durable plans under `docs/plans/<initiative>/`, self-contained points that survive handoffs.
+**Tackle 4.4.0** — model-agnostic planning/execution methodology: durable plans under `docs/plans/<initiative>/`, self-contained points that survive handoffs; runs in the target repo, grounds every claim in `file:line`.
 
 - On any invocation, first run the daily self-update check (`references/guides/update.md` Check phase; cache-gated, non-blocking).
 - Plans by default; executes only when explicitly asked.
-- Runs inside the target repo; grounds every claim in `file:line`.
-- Model-agnostic: `SKILL.md` + `references/`.
 - Workspace artifacts are in English.
 
 ## Routing
 
 | The user says (any language) | Mode |
 |---|---|
-| `/tackle-init [preset]` | **Init** → create plan-local `presets/` and `overrides/` |
-| `/tackle-constitution` | **Constitution** → write `constitution.md` |
-| `/tackle-specify` | **Specify** → write `spec.md` |
-| `/tackle-plan` or `tackle this` / `plan de acción` / `armar un plan` / `plan this out` / `iniciativa` | **Plan** → Steps 1–7, then hand off |
-| `/tackle-plan` + explicit execute request, or `tackle this and implement it` / `plan de acción y ejecutá` / `do it` | **Plan + Execute** → Steps 1–7, then run execution |
-| `/tackle-tasks` | **Tasks** → write `tasks.md` |
-| `/tackle-implement` | **Implement** → execute all ready points |
-| `/tackle-next` | **Execute next** → execute one ready point |
-| `/tackle-checklist` | **Checklist** → write `checklist.md` |
-| `/tackle-verify` | **Verify** → red-team pass over each point before implementation |
-| `/tackle-judge` | **Judge** → adversarial verification of finished work |
-| `/tackle-judge suite <target>` | **Judge suite** → run the trap suite against a skill, model, or prompt |
-| `/tackle-ground` | **Ground** → mechanically read and mark every `file:line` cited in a plan |
-| `/tackle-retro` or `retro / retrospectiva / how did it go` | **Retro** → mine `board.md` + `log.md` into `retro.md` at initiative close |
-| `/tackle-pulse` or `run a pulse / health check / cómo está todo` | **Pulse** → read-only standing digest (Step 9 guide); scheduler-friendly, never executes points |
-| `stop evolving / dejá de evolucionar` (any phrasing) | **Evolution opt-out** → pause or purge the learning-loop profile at `~/.tackle/user-profile.md` or `<repo>/.tackle/profile.md`, per scope |
-| `/tackle-drill` or `drill this point` | **Drill** → cold-start readiness drill on one point briefing |
-| `/tackle-trace` or `trace coverage` | **Trace** → criterion↔point coverage matrix, gaps and drift |
-| `/tackle-handoff` or `prepare a handoff` | **Handoff packet** → generate portable `HANDOFF.md` for the initiative |
+| `/tackle-init [preset]` | **Init** → plan-local `presets/` + `overrides/` |
+| `/tackle-constitution` | **Constitution** → `constitution.md` |
+| `/tackle-specify` | **Specify** → `spec.md` |
+| `/tackle-plan` | **Plan** → Steps 1–7, then hand off |
+| `/tackle-plan` + explicit execute | **Plan + Execute** → Steps 1–7, then run execution |
+| `/tackle-tasks` | **Tasks** → `tasks.md` |
+| `/tackle-implement` | **Implement** → all ready points |
+| `/tackle-next` | **Execute next** → one ready point |
+| `/tackle-checklist` | **Checklist** → `checklist.md` |
+| `/tackle-verify` | **Verify** → red-team points pre-implementation |
+| `/tackle-judge` | **Judge** → adversarial check of finished work |
+| `/tackle-judge suite <target>` | **Judge suite** → trap suite vs skill/model/prompt |
+| `/tackle-ground` | **Ground** → mechanically mark cited `file:line`s |
+| `/tackle-retro` | **Retro** → mine `board.md` + `log.md` into `retro.md` |
+| `/tackle-pulse` | **Pulse** → read-only digest (Step 9); never executes points |
+| `stop evolving` | **Evolution opt-out** → pause/purge learning-loop profile, per scope |
+| `/tackle-drill` | **Drill** → cold-start drill on one point briefing |
+| `/tackle-trace` | **Trace** → criterion↔point coverage matrix, gaps, drift |
+| `/tackle-handoff` | **Handoff packet** → portable `HANDOFF.md` |
 | `/tackle-update` | **Update** → self-update |
-| `resume / retomá <initiative>` | **Resume** → Step 8 |
-| `status / seguimiento / cómo viene` | **Status** → Step 9 |
-| `what plans are there? / qué planes hay` | **List** → Step 9 |
-| `give me the next point / qué sigue` | **Next** → Step 9 |
-| `migrate / upgrade / modernizar <initiative>` | **Migrate** → Step 8.5 |
-| `improve this plan / tackle-upgrade <initiative>` | **Improve** → Step 10 |
+| `resume <initiative>` | **Resume** → Step 8 |
+| `status <initiative>` | **Status** → Step 9 |
+| `what plans are there?` | **List** → Step 9 |
+| `give me the next point` | **Next** → Step 9 |
+| `migrate <initiative>` | **Migrate** → Step 8.5 |
+| `improve this plan` | **Improve** → Step 10 |
 
-**Guide map** (`references/guides/`): Steps 0–2 `intake-and-gate` · 3–4 `scaffold` · 5–5.75 `design-and-contract` · 6–6.6 `decompose-and-lint` (+ `lint-spec`) · 7 `verify` · 7.5 `ground` · 8 `resume` · 8.5 `migrate` · 9 `status-list-next` · 10 `improve`; plus same-named guides for the remaining commands. SDD templates: `references/sdd/`.
+**Guide map** (`references/guides/`): 0–2 `intake-and-gate` · 3–4 `scaffold` · 5–5.75 `design-and-contract` · 6–6.6 `decompose-and-lint` · 7 `verify` · 7.5 `ground` · 8 `resume` · 8.5 `migrate` · 9 `status-list-next` · 10 `improve`; SDD: `references/sdd/`.
 
 Natural-language triggers are canonical; slash commands are aliases.
 
-**Commands are entry points, not boundaries.** Internal invocation never bypasses guardrails: the ladder gates edits, intent stays explicit, consents and the log/board trail match user-invoked ones.
+**Commands are entry points, not boundaries** — internal invocation never bypasses guardrails (`intake-and-gate.md`).
 
 ## Template-resolution stack
 
-```
-docs/plans/<initiative>/overrides/
-  > docs/plans/<initiative>/presets/<preset>/
-  > references/sdd/
-  > references/
-```
-
-**overrides > presets > sdd > core**, first match wins. Only `.tackle/` (opt-in profiles) lives at repo root.
+`overrides/ > presets/<preset>/ > sdd/ > references/`, first match wins; only `.tackle/` lives at repo root.
 
 ## Execution loop
 
-`/tackle-implement` and `/tackle-next` spawn the `team.md` point team (mandatory) and run `board.md` in dependency order. Read-first: `board.md`, `log.md`, `decisions.md` (`questions.md` if unresolved) before acting; cold-session modes (`resume`, `status`, list, next, verify, ground, pulse) follow the same rule. Team sizes and tier bindings: `references/team.tmpl.md` + `AGENTS.md` §Model map.
+`/tackle-implement` and `/tackle-next` spawn the `team.md` point team (mandatory) and run `board.md` in dependency order. Read-first: `board.md`, `log.md`, `decisions.md` (`questions.md` if unresolved) before acting; cold-session modes (`resume`, `status`, list, next, verify, ground, pulse) follow the same rule. Team sizes/tiers: `team.tmpl.md` + `AGENTS.md` §Model map.
 
-- **Maker/checker** — the Driver's done-signal run is informative, not gating; the 🟢 flip requires an independent checker per `team.md`, evidence in `log.md`.
-- **Closure report** — Full-gate points close via `reports/P-0N-report.md`; Coordinator sign-off gates the 🟢 flip; the recorded grade is derived from the section-4 evidence block (checker command + output + exit line), never from a declared grade. Reviewers verify; one logical Coordinator updates `board.md` + `log.md`.
-- **Regression sweep** — before a 🟢 flip, re-run done-signals of 🟢 points with intersecting Touches; failure reopens them and blocks the flip.
-- **Explicit intent** — without an upfront plan+execute ask, present the pre-attack summary and ask before changing code; silence or ambiguity means stop. Default rung L2 (assisted) of the `AGENTS.md` §Autonomy ladder.
+- **Maker/checker** — Driver's run informative, not gating; flip needs an independent checker (`team.tmpl.md` §5).
+- **Closure report** — Full-gate closes via `reports/P-0N-report.md`; Coordinator sign-off gates the flip; grade from section-4 evidence (`team.tmpl.md` §Closure report).
+- **Regression sweep** — re-run done-signals of 🟢 points with intersecting Touches before a flip; failure reopens and blocks (`team.tmpl.md` step 9).
+- **Explicit intent** — no upfront plan+execute ask → pre-attack summary + ask before changing code; silence/ambiguity means stop; default L2 (`AGENTS.md` §Autonomy).
 
 Subagents are optional in planning for grounding/verify/drill; intake, doubts, decisions never delegate.
 
 ## Companion skills
 
-Step 0 checks optional companions; procedure: `references/guides/intake-and-gate.md`. Never used for execution.
+Optional companions checked at Step 0 (`intake-and-gate.md`); never used for execution.
 
 ## Core conventions
 
@@ -94,11 +85,8 @@ Step 0 checks optional companions; procedure: `references/guides/intake-and-gate
 
 ## Output contract
 
-Open with one status line (🟢/🟡/🔴); close with `⚠️ On you: ...` and `▶ Continue: ...`. Digest ≤ 12 lines; handoff ≤ one screen. Point to files, don't paste.
+Open with one status line; close with `⚠️ On you: ...` and `▶ Continue: ...`. Digest ≤ 12 lines; handoff ≤ one screen. Point to files, don't paste.
 
 ## Where the detail lives
 
-- **Full methodology (per-step guides)**: `references/guides/`
-- **Workspace contract**: `references/AGENTS.tmpl.md`
-- **Execution teams**: `references/team.tmpl.md`
-- **Templates**: `references/*.tmpl.md`, `references/sdd/*.tmpl.md`.
+`references/guides/` (per-step guides) · `AGENTS.tmpl.md` (workspace contract) · `team.tmpl.md` (teams) · `*.tmpl.md` + `sdd/` (templates).

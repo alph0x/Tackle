@@ -82,3 +82,7 @@ A task is **trivial** only if **all** of these are true:
 If a task later fails any criterion, announce the gate failure and enter the full loop (Lite or Full, depending on the other signals). Do not silently upgrade a trivial task; state why the gate failed.
 
 A **Lite** task is the smallest non-trivial plan: it still needs a `plan.md`, `log.md`, and `todo.md`. Trivial tasks skip the plan workspace entirely.
+
+## Commands are entry points, not boundaries
+
+Internal invocation never bypasses guardrails: the ladder gates edits, intent stays explicit, and consents and the log/board trail match user-invoked ones. Slash commands and natural-language triggers are aliases into the same modes — a resume triggered by memory of a workspace is the same gate, the same read-first, the same consent as one the user typed.
