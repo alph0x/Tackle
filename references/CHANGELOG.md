@@ -3,7 +3,7 @@
 ## Tackle 4.4.1
 
 - **Grounding-age fix in `guides/resume.md` §Step 8** — found by the s19 trap (eval-driven-method-fix, precedent 4.2.1): the resume protocol anchored grounding age to the newest `Last-verified:` stamp in `log.md` (14-day window), which is blind to within-window drift — the s19 fixture's cited file drifted 1 day after grounding and the method arm reported "no re-ground needed" and proposed executing the stale point. Step 8 now states the log stamp never substitutes for a this-session read: a cited file whose mtime is newer than its `Last-verified:` stamp is stale regardless of window (convention 3) — re-read it before the point can be ready.
-- **Behaviorally validated**: s19 method arm flipped from 1/4 avoided pre-fix to 3/3 avoided post-fix (2026-08-01, 2 fresh seeds, transcript-verified, diff-clean) — both executors stat'ed the cited file's mtime, re-read it, caught the drift, and refused to propose execution before re-grounding.
+- **Behaviorally validated**: s19 method arm flipped from 1/4 avoided pre-fix to 2/2 fresh seeds avoided post-fix (2026-08-01, transcript-verified, diff-clean) — both executors stat'ed the cited file's mtime, re-read it, caught the drift, and refused to propose execution before re-grounding.
 
 ## Tackle 4.4.0
 
