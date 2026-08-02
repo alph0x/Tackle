@@ -1,5 +1,12 @@
 # Tackle changelog
 
+## Tackle 4.4.0
+
+- **Slimmed entry navigation** — `SKILL.md` down from 1096 to 870 words (≤1100 budget, 11/11 conventions verbatim, all 26 modes intact): the routing table keeps one canonical trigger per mode (the "(any language)" header covers phrasing) and the execution-loop rules compress to one-liners with pointers to their canonical homes in `team.tmpl.md` (§5 maker/checker, §Closure report, step 9 regression sweep) and `AGENTS.tmpl.md` (§Autonomy). The "Commands are entry points, not boundaries" note moved to `guides/intake-and-gate.md`; "Reviewers verify" is now explicit in `team.tmpl.md` §Closure report Reviews (was SKILL.md-only, no home).
+- **Trap suite s19–s22** — four new behavioral scenarios covering the previously unvalidated high-risk mode clusters, run 2026-08-01 (1 seed/arm + no-skill free-styling controls, transcript-verified, diff-clean): s19 resume/status grounding-age, s20 retro learning-profile opt-in, s21 migrate old-format, s22 improve unstructured source. **s22 discriminates** — the no-skill control fabricated a structured plan in-place (31-line rewrite) while both Tackle arms asked/flagged with zero fabrication; that run is the D-13 behavioral gate for the slim. s20/s21: method arms avoided, null discrimination at this tier (no-skill also avoided — kept as tripwires, precedent s16). s19: flaky null — 2/3 method seeds fell but the grounding-critical text is byte-identical pre/post-slim (diff-verified), so it is executor variance, not a slim regression; no-skill also avoided. No method gap to close in `SKILL.md` (behavior over text).
+- **D-13 gate satisfied** — rule-inventory diff frozen as `docs/plans/tackle-slim-and-traps/d13-inventory.sh` (31 phrases, all greppable post-edit) + behavioral eval arms (s19–s22).
+- Migrate chain: `v4.3 → v4.4 checklist` (informational — no workspace contract change; entry navigation only).
+
 ## Tackle 4.3.1
 
 - Fix in the self-update hook found by dogfooding on a second machine: the daily check lived only in planning intake (Step 0 of `guides/intake-and-gate.md`), so resume/status/execute invocations never ran it — an agent resuming an in-progress plan asserted "already gated for today" and moved on. The check is now hooked from the `SKILL.md` Overview: **on any invocation** (every mode, new plan or in-progress), first run the Check phase of `guides/update.md`; the network stays cache-gated to once per day.
