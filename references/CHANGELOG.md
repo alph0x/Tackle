@@ -1,5 +1,12 @@
 # Tackle changelog
 
+## Tackle 5.0.0
+
+- **The skill verifies itself — `tackle-check` (Major)**. Ships a POSIX-sh, single-file, zero-dependency runner as part of the install artifact (`SKILL.md` + `references/` + `tackle-check`) that executes the mechanical gates the methodology previously only documented: `lint <workspace>` (the 10 rows of `guides/lint-spec.md`), `catalog` (eval scenarios ⊆ README catalog — closes the s17/s18 drift class), and `done-signal <point>` (runs the point's literal exit-gate command). **D-02 revoked** — `lint-spec.md` now states the runner IS the rows and the table is its spec; rows stay copy-pasteable for hosts without the runner.
+- **Double-gate flip (workspace contract change — migrate chain fires)**. A point flips only after `tackle-check done-signal <point>` is green AND the independent checker signs off. Workspace flag `tackle-check-gate` — absent = off (4.x flip preserved), `on` = default for new workspaces; `v4.4 → v5.0 checklist` documents the decision and the migration.
+- **Behaviorally validated**: new trap scenario `s23-flip-gate` (2026-08-03, 1 seed/arm, transcript-verified) — the method arm (post-5.0 excerpt) ran the mechanical gate BEFORE the flip, recorded its output in the Evidence block, and only then flipped (E2); the control arm flipped on recorded evidence with no gate precondition (E1). The clause discriminates. Dogfood: `tackle-check lint` green on the initiative's own workspace and on the 4.4-era workspace (placeholder finding fixed); W3 fabricated-evidence probe — discriminating for missing-artifact class, report-content fabrication stays the accepted residual (`failure-modes.md` row 15).
+- Migrate chain: `v4.4 → v5.0 checklist` (double gate + flag decision + D-02 note).
+
 ## Tackle 4.4.1
 
 - **Grounding-age fix in `guides/resume.md` §Step 8** — found by the s19 trap (eval-driven-method-fix, precedent 4.2.1): the resume protocol anchored grounding age to the newest `Last-verified:` stamp in `log.md` (14-day window), which is blind to within-window drift — the s19 fixture's cited file drifted 1 day after grounding and the method arm reported "no re-ground needed" and proposed executing the stale point. Step 8 now states the log stamp never substitutes for a this-session read: a cited file whose mtime is newer than its `Last-verified:` stamp is stale regardless of window (convention 3) — re-read it before the point can be ready.

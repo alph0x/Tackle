@@ -25,6 +25,14 @@ A migrated workspace MUST satisfy the full-adoption contract F-1..F-8; each line
 6. Lint + checkpoint.
 7. Record migration `D-xx` + log entry + bump stamp.
 
+## v4.4 → v5.0 checklist
+
+Run these when migrating a plan created with Tackle 4.4.x:
+
+1. **Adopt the double gate (5.0)** — the flip now requires `tackle-check done-signal <point>` green AND the independent checker's sign-off (workspace flag `tackle-check-gate: on|off`, default on for new workspaces). Decide the flag: **on** = mechanical gate + sign-off; **off** = 4.x flip semantics preserved. The runner ships with the install artifact (`SKILL.md` + `references/` + `tackle-check`); run `sh tackle-check lint <workspace>` once to confirm the workspace lints clean before flipping anything.
+2. **D-02 revoked** — `guides/lint-spec.md` no longer forbids shipped scripts; the runner composes the lint rows (the runner IS the rows, the table is its spec). Existing hand-run lint flows still work verbatim.
+3. **Record** — write a `D-xx` in `decisions.md` noting the version adopted + the `tackle-check-gate` decision, append a `log.md` entry, and bump the plan stamp.
+
 ## v4.3 → v4.4 checklist
 
 Run these when migrating a plan created with Tackle 4.3.x:
