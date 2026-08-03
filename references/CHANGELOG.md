@@ -1,5 +1,10 @@
 # Tackle changelog
 
+## Tackle 5.0.1
+
+- **Self-update carries the runner (hotfix)** — `guides/update.md` §Update and §Fallback replaced only `SKILL.md` + `references/`, and the header claimed the artifact is "markdown only" — both false since 5.0, when `tackle-check` joined the install artifact. A 4.x install self-updating to 5.x would have received the double-gate contract (AGENTS.tmpl.md/team.tmpl.md reference the runner) without the runner. Fix: §Update step 3 verifies the stamp AND the runner in the extracted tree (5.x tag without `tackle-check` → Fallback); step 4 copies `SKILL.md` + `references/` + `tackle-check` with `chmod +x` (pre-5.0 tag keeps the local runner); §Fallback manual path includes the runner. Verified against the real v5.0.0 tarball: `Tackle-5.0.0/tackle-check` present.
+- **README currency gate (gate 5)** — the release sweep now blocks a tag whose README stamp doesn't match `SKILL.md` (sort -u over all stamp locations), after the README drifted to 4.0.0 while 5.0.0 shipped; README updated to 5.0 (23 traps, install artifact, double gate, `/tackle-update` row).
+
 ## Tackle 5.0.0
 
 - **The skill verifies itself — `tackle-check` (Major)**. Ships a POSIX-sh, single-file, zero-dependency runner as part of the install artifact (`SKILL.md` + `references/` + `tackle-check`) that executes the mechanical gates the methodology previously only documented: `lint <workspace>` (the 10 rows of `guides/lint-spec.md`), `catalog` (eval scenarios ⊆ README catalog — closes the s17/s18 drift class), and `done-signal <point>` (runs the point's literal exit-gate command). **D-02 revoked** — `lint-spec.md` now states the runner IS the rows and the table is its spec; rows stay copy-pasteable for hosts without the runner.
