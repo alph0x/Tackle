@@ -2,7 +2,7 @@
 
 A model-agnostic planning and execution skill that turns an initiative into a durable action plan — self-contained points a cold agent can resolve in a fresh session — and executes that plan point-by-point when you ask it to.
 
-**Tackle 5.0.0: the skill verifies itself.** Every dependency edge names its crossing artifact; every closed point carries an evidence grade derived from how it was actually verified; a plan's confidence is its weakest link; and the flip is gated by a shipped mechanical runner (`tackle-check`) plus an independent checker.
+**Tackle 5.0.1: the skill verifies itself.** Every dependency edge names its crossing artifact; every closed point carries an evidence grade derived from how it was actually verified; a plan's confidence is its weakest link; and the flip is gated by a shipped mechanical runner (`tackle-check`) plus an independent checker.
 
 ## What it does
 
@@ -124,7 +124,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 
 **Template-resolution stack:** overrides → presets → sdd → core.
 
-**Version:** Tackle 5.0.0. See `references/CHANGELOG.md` for what's new.
+**Version:** Tackle 5.0.1. See `references/CHANGELOG.md` for what's new.
 
 ## What it produces
 
