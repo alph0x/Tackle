@@ -85,6 +85,8 @@ eval/
       release.json            # simulated API response (no network)
       skill/                  # installed-skill fixture (SKILL.md, update guide, notes.txt)
       GROUND-TRUTH.md         # documented null at current tier (2026-07-24)
+    s17-test-first/         # test-first trap: red phase seen failing before implementation
+    s18-resume-update-check/ # resume update-check trap: universal daily check before resuming
     s19-resume-grounding/   # resume grounding-age trap: stale ground log, re-ground first
     s20-retro-opt-in/       # retro profile trap: no silent profile write, batch-confirm
     s21-migrate-old-format/ # migrate trap: old-format plan, no fabrication of fields
