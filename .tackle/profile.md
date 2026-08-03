@@ -33,6 +33,12 @@ A profile stores hypotheses and directives distilled from retros. It is read dur
 - A workspace whose board is all-green counts as closed for release-sweep scope, even with accumulated row-4 citation drift — re-ground belongs to a cleanup initiative if the workspace reopens · confidence: 0.5 · evidence: 1✓/0✗ (tackle-testing-doctrine D-03 — graph-execution 12🟢/0🟡/0🔴 with 5 pre-existing stale citations, waived at the 4.3.0 sweep) · status: active · from: tackle-testing-doctrine, 2026-07-30
 - Trap gates are sealed on host-independent observables (e.g. the cache-file *read*, not the fetch) and declared in the GROUND-TRUTH before the run — verdicts stay unambiguous on any host state · confidence: 0.5 · evidence: 1✓/0✗ (tackle-universal-update-check s18 — gate = the read; host cache carried today's date and the method arm's read-then-stop still passed cleanly) · status: active · from: tackle-universal-update-check, 2026-07-30
 
+## Hypotheses (added 2026-08-01)
+
+- A trap's discrimination is proven by a no-skill free-styling control (zero excerpt), not by the pre-slim excerpt control — the pre-slim arm measures regression only, the free-styling arm measures teeth · confidence: 0.7 · evidence: 1✓/0✗ (tackle-slim-and-traps — s22 no-skill fabricated a plan in-place (31-line diff) while both Tackle arms asked/flagged; s19/s20/s21 no-skill avoided → null) · status: active · from: tackle-slim-and-traps retro, 2026-08-01
+- Trap method arms must include the mode's destination guide in the excerpt (a real install has it) — without it "skill-following" degrades to convention-improvisation and flakiness is a harness artifact, not skill behavior · confidence: 0.7 · evidence: 1✓/0✗ (tackle-slim-and-traps s19 — arms without resume.md flaky 1/4 avoided; with the guide the arm reported grounding age per Step 8, behavior changed) · status: active · from: tackle-slim-and-traps retro, 2026-08-01
+- A method gap exposed by a trap scenario is closed in the entry file and validated by re-running that trap against the edited file (behavior over text) · confidence: 0.7 · evidence: 4✓/0✗ (tackle-grade-derivation — s15 0/2 pre-fix, E3 post-fix; tackle-testing-doctrine — s17 method test-first; tackle-universal-update-check — s18 method ran the check on resume; tackle-slim-and-traps — s19 1/4 pre-fix vs 2/2 fresh post-fix, resume.md mtime anchor) · status: active · from: tackle-grade-derivation retro, 2026-07-24; reinforced: tackle-testing-doctrine, 2026-07-30; tackle-universal-update-check, 2026-07-30; tackle-slim-and-traps, 2026-08-01
+
 ## Directives
 
 - none
