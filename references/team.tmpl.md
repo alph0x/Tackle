@@ -111,13 +111,14 @@ Every Full-gate point closes with one report file in the workspace `reports/` di
 2. **INTENT + Evidence** — Driver: INTENT gate lines, attempt journal, done-signal run with its **Evidence** block (command, trimmed output, exit line).
 3. **Reviews** — Reviewer/Spec Reader, Quality Guardian, specialists: PASS or findings. Reviewers verify the work, they don't trust the Driver's report.
 4. **Checker re-run** — independent checker (maker/checker, condition 1 below): done-signal re-run evidence, its **tier** per §Model binding, the reward-hacking guard result, and a `model-binding: unavailable` note when checker ≠ maker could not be honored. When the briefing declares `Lenses:`, it also records the lens list, each lens's verdict, and the vote count.
+   **Double gate (5.0, flag `tackle-check-gate`)**: the section also records the `tackle-check done-signal <point>` output — green is a precondition of the Coordinator's sign-off below; no mechanical green, no flip.
    It also records the point's **evidence grade**, derived mechanically from the evidence block (never self-declared):
    - **E1 command-verified** ⇔ this section (Lite gate: the `log.md` evidence block) carries command + output + exit line from the independent checker.
    - **E2 review-gated** ⇔ a review-gate marker with rubric + named reviewer (no honest command exists).
    - **E0 UNVERIFIABLE** ⇔ an explicit UNVERIFIABLE label.
    - **E3 asserted** ⇔ anything else.
    Grades are DERIVED, never self-declared; any later re-derivation that disagrees is a grade-inflation finding.
-5. **Coordinator sign-off** — verdict (`closed` / `rework` + reason) + regression sweep result. **Solo assisted (L2) points: the human checker writes this section (D-09).** The 🟢 flip requires this section: no sign-off, no flip.
+5. **Coordinator sign-off** — verdict (`closed` / `rework` + reason) + regression sweep result. **Solo assisted (L2) points: the human checker writes this section (D-09).** The 🟢 flip requires this section AND, when the workspace flag `tackle-check-gate: on` (absent = off, 4.x flip preserved), the mechanical green from section 4's `tackle-check done-signal` block: no sign-off, no flip; no mechanical green, no flip.
 
 Solo points compress to sections 2 + 4 + 5.
 

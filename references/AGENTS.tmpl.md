@@ -39,11 +39,13 @@ docs/plans/{{slug}}/
 
 ## Rules
 
+**tackle-check-gate: on** <!-- 5.0 double-gate flag; set to `off` to preserve the 4.x flip (no mechanical gate). ABSENT flag = off (existing workspaces keep 4.x behavior; new workspaces born with `on`). -->
+
 1. **State**: `log.md` is append-only; `board.md` is the execution status. Don't duplicate either elsewhere. `log.md` archives to `log-archive.md` past ~400 lines (entries older than the last 5 sessions move verbatim); override the thresholds here if this workspace needs different ones.
 2. **Single source**: questions in `questions.md`; closed decisions in `decisions.md` (`D-id`, append-only, supersede to change).
 3. **Ground every claim in `file:line`** verified against the repo.
 4. **Scope**: don't touch out-of-scope (see `plan.md` §Non-goals).
-5. **Verification**: point's done-signal + `plan.md` §6.1. A point flips 🟢 only with its **Evidence** block recorded in `log.md`. After every failed attempt the Driver appends an attempt-journal line and MUST re-read the prior lines before retrying — no retry may repeat a journaled dead end. Default loop budget: 3 attempts, then STOP and escalate with the escalation packet. Two consecutive attempts with identical evidence output = no-progress ⇒ escalate immediately, even with budget remaining — budget is the ceiling, no-progress is the tripwire.
+5. **Verification**: point's done-signal + `plan.md` §6.1. A point flips 🟢 only with its **Evidence** block recorded in `log.md`. **Double gate (5.0, workspace flag `tackle-check-gate` — absent flag = off, preserving the 4.x flip; `on` = new-workspace default)**: the Evidence block must include the `tackle-check done-signal <point>` output and the gate must be green BEFORE the flip — mechanical gate first, then the independent checker's sign-off. After every failed attempt the Driver appends an attempt-journal line and MUST re-read the prior lines before retrying — no retry may repeat a journaled dead end. Default loop budget: 3 attempts, then STOP and escalate with the escalation packet. Two consecutive attempts with identical evidence output = no-progress ⇒ escalate immediately, even with budget remaining — budget is the ceiling, no-progress is the tripwire.
 6. **Contract supersede-first** (if `design-contract.md` exists): implement it as written; deviations become a `D-xx` before the divergent code.
 7. **Grounding** (if `foundations.md` exists): new patterns need decision → principle → source before merge.
 8. **Quality loop** (multi-agent): a code-quality guardian reviews before a point flips 🟢. **maker/checker** — the Driver never produces the 🟢-flipping evidence alone; an independent checker re-runs the done-signal and records that evidence in `log.md`.

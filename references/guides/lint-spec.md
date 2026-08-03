@@ -1,6 +1,6 @@
 # Plan lint spec — mechanical checks
 
-Every check is a literal copy-paste command: run from the **repo root**, in any POSIX shell, plain `sh`/`grep`/`sed`/`awk` only. Replace `<slug>` with the initiative directory name (workspace = `docs/plans/<slug>/`). **No shipped scripts** (D-02): these rows are documentation — pasting them, or composing them into a throwaway loop at runtime, is fine; shipping an executable is not.
+Every check is a literal copy-paste command: run from the **repo root**, in any POSIX shell, plain `sh`/`grep`/`sed`/`awk` only. Replace `<slug>` with the initiative directory name (workspace = `docs/plans/<slug>/`). **No shipped scripts** (D-02, **REVOKED in Tackle 5.0**): these rows were documentation-only through 4.x — pasting them, or composing them into a throwaway loop at runtime, was fine; shipping an executable was not. Since 5.0 the shipped `tackle-check` runner composes exactly these rows: the runner IS the rows, this table is its spec, and edits land in both in the same change. The rows remain copy-pasteable for hosts that don't ship the runner.
 
 - Pass conditions are mechanical — an output count or an exit code, no judgment. Any output line is a finding to report verbatim.
 - No command uses the pipe character, so every cell copy-pastes verbatim from raw or rendered markdown.
