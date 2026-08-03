@@ -1,5 +1,12 @@
 # Tackle changelog
 
+## Tackle 5.0.2
+
+- **Elevated retro lessons to methodology** (from the slim-and-traps, self-verify, and hotfix retros — retro lessons that are generic methodology now ship in the skill instead of living only in learning profiles):
+  - **Artifact-manifest gate (gate 6)** — the release sweep now verifies `guides/update.md` lists exactly the files that ship (`SKILL.md` + `references/` + `tackle-check`); a release whose delivery channel doesn't carry an artifact ships green and installs broken (the 5.0.1 lesson, now mechanical).
+  - **D-13 dedicated trap** — the behavioral eval run required by the D-13 gate must be a trap dedicated to the feature being shipped, not a generic pre-existing scenario (text-presence doesn't prove behavior; s23-flip-gate proved the double gate).
+  - **Trap design rules** — `eval/README.md` gains a §Trap design rules section: the no-skill free-styling arm is the teeth test (pre-slim measures regression, not teeth; null is a valid outcome), and method arms must include the mode's destination guide in the excerpt (without it, flakiness is a harness artifact, not skill behavior).
+
 ## Tackle 5.0.1
 
 - **Self-update carries the runner (hotfix)** — `guides/update.md` §Update and §Fallback replaced only `SKILL.md` + `references/`, and the header claimed the artifact is "markdown only" — both false since 5.0, when `tackle-check` joined the install artifact. A 4.x install self-updating to 5.x would have received the double-gate contract (AGENTS.tmpl.md/team.tmpl.md reference the runner) without the runner. Fix: §Update step 3 verifies the stamp AND the runner in the extracted tree (5.x tag without `tackle-check` → Fallback); step 4 copies `SKILL.md` + `references/` + `tackle-check` with `chmod +x` (pre-5.0 tag keeps the local runner); §Fallback manual path includes the runner. Verified against the real v5.0.0 tarball: `Tackle-5.0.0/tackle-check` present.
