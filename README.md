@@ -103,6 +103,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 | `/tackle-judge` | **Judge** — adversarial verification of finished work |
 | `/tackle-judge suite <target>` | **Judge suite** — run the trap suite against a skill, model, or prompt |
 | `/tackle-ground` | **Ground** — mechanically read and mark every `file:line` cited in the plan |
+| `/tackle-update` | **Update** — force a self-update check (daily check also runs at planning intake) |
 | `/tackle-retro` | **Retro** — mine board + log into the retro artifact; batch-confirmed profile writes and plan-archetype extraction |
 | `/tackle-pulse` | **Pulse** — read-only standing digest for schedulers; never executes points |
 | `/tackle-drill` | **Drill** — cold-start readiness drill on one point briefing |
