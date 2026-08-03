@@ -25,6 +25,8 @@ Independent feature cores fan out in wave 1 (∥, disjoint Touches); lint-suppor
 - **Obsolete traps**: validate a behavioral scenario against the real executor tier before sealing an acceptance that requires it to fire — a trap models may no longer fall for burns budget.
 - **Portable gates**: sealed done-signals must use lowest-common-denominator tooling (`grep -l`, not `grep -lc`) — flag behavior varies by host.
 - **Independent checkers pay for themselves**: on this shape they caught three defects (a broken lint field-index, an obsolete trap, a non-portable gate) before any green flip.
+- **Self-referential done-signals**: a briefing that declares `**Run**: sh tackle-check done-signal <same briefing>` recurses without a base case when the executor extracts ALL Run lines (P-01 fork bomb, 2026-08-03). Never declare machine-run over the point that declares it — keep such demos checker-verified/manual, and guard the executor with an explicit FAIL for self-reference.
+- **Machine-run checks must fail on empty output**: `git ls-remote --tags` exits 0 even with no tag (empty output) — as a done-signal it passes spuriously. A mechanical gate needs a real failure condition (grep the output), not just exit-code trust.
 
 ## Lite scaling
 
@@ -32,4 +34,4 @@ The skeleton scales down to a 3-point Lite plan when the feature adds no mechani
 
 ## Provenance
 
-tackle-graph-execution (Tackle 4.0.0), 2026-07-20. Retro: `docs/plans/tackle-graph-execution/retro.md`. Eligibility caveat: the source graph was re-shaped post-seal (scope grew CI hook + 4.0.0 + single-release renumber); the FINAL shape distilled here is what proved stable through execution.
+tackle-graph-execution (Tackle 4.0.0), 2026-07-20. Retro: `docs/plans/tackle-graph-execution/retro.md`. Eligibility caveat: the source graph was re-shaped post-seal (scope grew CI hook + 4.0.0 + single-release renumber); the FINAL shape distilled here is what proved stable through execution. Re-confirmed 5×: tackle-model-teams, tackle-testing-doctrine (Lite scaling), tackle-universal-update-check (Lite), tackle-slim-and-traps (Lite), tackle-5.0-self-verify (Full, 2026-08-03 — s23-flip-gate as the D-13 behavioral arm, double-gate contract change).

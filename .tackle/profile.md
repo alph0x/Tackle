@@ -39,6 +39,11 @@ A profile stores hypotheses and directives distilled from retros. It is read dur
 - Trap method arms must include the mode's destination guide in the excerpt (a real install has it) — without it "skill-following" degrades to convention-improvisation and flakiness is a harness artifact, not skill behavior · confidence: 0.7 · evidence: 1✓/0✗ (tackle-slim-and-traps s19 — arms without resume.md flaky 1/4 avoided; with the guide the arm reported grounding age per Step 8, behavior changed) · status: active · from: tackle-slim-and-traps retro, 2026-08-01
 - A method gap exposed by a trap scenario is closed in the entry file and validated by re-running that trap against the edited file (behavior over text) · confidence: 0.7 · evidence: 4✓/0✗ (tackle-grade-derivation — s15 0/2 pre-fix, E3 post-fix; tackle-testing-doctrine — s17 method test-first; tackle-universal-update-check — s18 method ran the check on resume; tackle-slim-and-traps — s19 1/4 pre-fix vs 2/2 fresh post-fix, resume.md mtime anchor) · status: active · from: tackle-grade-derivation retro, 2026-07-24; reinforced: tackle-testing-doctrine, 2026-07-30; tackle-universal-update-check, 2026-07-30; tackle-slim-and-traps, 2026-08-01
 
+## Hypotheses (added 2026-08-03)
+
+- A behavioral contract feature needs its own trap scenario as the D-13 behavioral arm — text-presence (greps) doesn't prove behavior · confidence: 0.7 · evidence: 1✓/0✗ (tackle-5.0-self-verify — s23-flip-gate proved the double gate: method arm denied flip without mechanical green E2 vs control E1, while P-02 had only grep evidence) · status: active · from: tackle-5.0-self-verify retro, 2026-08-01
+- The shipped runner dogfoods the workspace that creates it and finds what manual review skips — real finding (slim-and-traps retro.md placeholder) surfaced by tackle-check, not by eyes · confidence: 0.6 · evidence: 1✓/0✗ (tackle-5.0-self-verify P-03 — tackle-check lint flagged a literal placeholder outside fences that human review had shipped) · status: active · from: tackle-5.0-self-verify retro, 2026-08-03
+
 ## Directives
 
 - none

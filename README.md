@@ -2,7 +2,7 @@
 
 A model-agnostic planning and execution skill that turns an initiative into a durable action plan — self-contained points a cold agent can resolve in a fresh session — and executes that plan point-by-point when you ask it to.
 
-**Tackle 4.0.0: durable plans that are graph-real and honest about their evidence.** Every dependency edge names its crossing artifact; every closed point carries an evidence grade derived from how it was actually verified; a plan's confidence is its weakest link.
+**Tackle 5.0.0: the skill verifies itself.** Every dependency edge names its crossing artifact; every closed point carries an evidence grade derived from how it was actually verified; a plan's confidence is its weakest link; and the flip is gated by a shipped mechanical runner (`tackle-check`) plus an independent checker.
 
 ## What it does
 
@@ -29,7 +29,7 @@ Tackle produces a workspace of grounded markdown artifacts under `docs/plans/<in
 
 ## Release self-lint
 
-Four shipped-skill gates run locally in the release sweep before every tag (`references/guides/lint-spec.md`): word budget (`SKILL.md` ≤ 1100 words), exactly 11 core conventions, changelog currency, and migrate-chain currency. No CI infrastructure — the release tag is the gate.
+Four shipped-skill gates run in the release sweep before every tag (`references/guides/lint-spec.md`): word budget (`SKILL.md` ≤ 1100 words), exactly 11 core conventions, changelog currency, and migrate-chain currency. Since 5.0 the gates compose into the shipped `tackle-check` runner (POSIX sh, zero deps) — the runner IS the rows, the table is its spec; the rows stay copy-pasteable for hosts without the runner. No CI infrastructure — the release tag is the gate.
 
 ## Execution discipline
 
@@ -42,6 +42,7 @@ Tackle's execution loop is hardened with rules proven against common agent failu
 - **Authority order** — user > spec > tests > current code, at every gate including None; a check that contradicts the spec is surfaced, never silently satisfied.
 - **Failure-modes catalog** — `references/failure-modes.md` maps common failures to the Tackle rule that prevents them.
 - **Model-bound teams** — point teams bind roles to abstract model tiers resolved by the workspace §Model map; Full-gate points close with closure reports and sign-off, and one persistent Coordinator carries continuity.
+- **Double-gate flip (5.0)** — a point flips only after `tackle-check done-signal <point>` is green AND the independent checker signs off (workspace flag `tackle-check-gate`; absent = off preserves the 4.x flip, `on` = default for new workspaces).
 
 ## Verification and judge
 
@@ -51,7 +52,7 @@ Tackle's execution loop is hardened with rules proven against common agent failu
 
 ## Eval
 
-Tackle ships a manual A/B eval in `eval/`: **15 trap scenarios** (`s1`–`s15`), each pitting a mid-tier model following Tackle literally against the same model free-styling at a known agent failure. The registry and workflow live in `eval/README.md`; each scenario carries its own `GROUND-TRUTH.md` answer sheet.
+Tackle ships a manual A/B eval in `eval/`: **23 trap scenarios** (`s1`–`s23`), each pitting a mid-tier model following Tackle literally against the same model free-styling at a known agent failure. The registry and workflow live in `eval/README.md`; each scenario carries its own `GROUND-TRUTH.md` answer sheet, and `tackle-check catalog` verifies scenarios ⊆ registry so the list can't drift.
 
 ## Who is it for
 
@@ -77,11 +78,11 @@ cp -r tackle ~/.cursor/skills/  # or your agent's skills directory
 ```
 
 **Any model / IDE:**
-Copy `SKILL.md` and the `references/` directory into your agent's skill directory.
+Copy `SKILL.md`, the `references/` directory, and the `tackle-check` runner into your agent's skill directory.
 
 **Updates:** the skill checks for a new release once a day during planning intake and self-updates (only `SKILL.md` + `references/` are touched); `/tackle-update` forces a check. If your harness can't reload skills, restart the session after an update.
 
-The install artifact is `SKILL.md` + `references/` only. `docs/plans/` (workspaces) and `docs/seeds/` (this project's backlog) are local to this repo and never ship with the skill; your own plans and seeds get the same gitignore treatment in your repo.
+The install artifact is `SKILL.md` + `references/` + `tackle-check` only. `docs/plans/` (workspaces) and `docs/seeds/` (this project's backlog) are local to this repo and never ship with the skill; your own plans and seeds get the same gitignore treatment in your repo.
 
 ## How to use
 
@@ -108,11 +109,12 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 | `/tackle-trace` | **Trace** — criterion↔point coverage matrix, gaps and drift |
 | `/tackle-handoff` | **Handoff packet** — generate a portable handoff artifact |
 | `stop evolving` | **Evolution opt-out** — pause or purge the learning-loop profile |
+| `tackle-check` | **Mechanical gate** — shipped POSIX-sh runner: `lint <workspace>` (10 lint rows), `catalog` (eval scenarios ⊆ registry), `done-signal <point>` (run the point's exit-gate); flip requires its green when the workspace flag `tackle-check-gate: on` |
 | "resume / retomá `<x>`" | **Resume** — re-enter a plan |
 | "how is `<x>` going?" / "status" | **Status** — read-only digest |
 | "what plans are there?" | **List** — one line per initiative |
 | "what's next?" / "qué sigue" | **Next** — the next point's pre-attack summary |
-| "migrate / upgrade `<x>`" | **Migrate** — bring an old plan to the current methodology (checklist chain v2.0 → v4.0 in `references/guides/migrate.md`) |
+| "migrate / upgrade `<x>`" | **Migrate** — bring an old plan to the current methodology (checklist chain v2.0 → v5.0 in `references/guides/migrate.md`) |
 | "mejorá este plan" / "improve this plan" | **Improve** — upgrade a Tackle plan or convert an unstructured plan |
 
 **The Create pipeline:** Intake → Gate (None/Lite/Full) → Location & gitignore → Scaffold → Briefing → Architecture → Stabilize contract → Decompose → Lint → Handoff.
@@ -121,7 +123,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 
 **Template-resolution stack:** overrides → presets → sdd → core.
 
-**Version:** Tackle 4.0.0. See `references/CHANGELOG.md` for what's new.
+**Version:** Tackle 5.0.0. See `references/CHANGELOG.md` for what's new.
 
 ## What it produces
 
