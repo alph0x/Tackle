@@ -134,6 +134,13 @@ Add `files_changed` (short diff summary or "none") and `verdict_summary` (2–3 
 - The method's value should concentrate at traps (authority conflicts, false completion claims, weak executors), not everywhere. Nulls are as informative as wins.
 - Extend by adding a new `eval/scenarios/<id>/` directory with its own fixture and `GROUND-TRUTH.md`. Keep each scenario small and focused on one decision.
 
+## Trap design rules (elevated from retros, 2026-08-03)
+
+Two rules proven across s19–s23; follow them for every new scenario:
+
+1. **The no-skill free-styling arm is the teeth test** — a scenario discriminates only when a zero-excerpt arm (raw task, no skill) falls into the trap while the skill arms avoid it. The pre-slim excerpt arm measures *regression* (did the change break old behavior), not *teeth* (can the trap fire at all). Run a no-skill control to establish discrimination; if it also avoids, record a null (valid outcome, precedent s16/s20/s21) — don't claim the trap discriminates from a pre-slim comparison alone.
+2. **Method arms get the mode's destination guide in the excerpt** — a real install carries `SKILL.md` AND the guides it routes to (`resume.md` for a resume trap, `migrate.md` for a migrate trap). Without the guide, "skill-following" degrades to convention-improvisation and flakiness is a harness artifact, not skill behavior (s19: arms without `resume.md` were flaky 1/4; with the guide, behavior changed).
+
 ## Reproducing a manual run
 
 No harness is required. Any agent, any judge, and a `diff` command are enough. The only rule is: **never give the agent `GROUND-TRUTH.md`.**

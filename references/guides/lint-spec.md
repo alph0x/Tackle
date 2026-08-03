@@ -29,7 +29,7 @@ Per-citation, row 4 is equivalent to the canonical anchored-citation check (`sed
 
 Before any version tag, run every lint row on every active workspace (`docs/plans/*/`) plus the skill's own done-signals for the release; the tag waits on a clean sweep (`lint: N/N checks passed` everywhere, all done-signals passing). Any failure blocks the tag until fixed or explicitly waived by the user.
 
-D-13 trigger: if the release includes any change that deletes normative content from `SKILL.md` or a guide, the sweep additionally requires (1) a rule-inventory diff — every normative one-liner extracted before the edit must be greppable after, in `SKILL.md` or its named guide — and (2) one behavioral eval run (trap scenario, method arm = edited file) proving the skill still avoids the trap.
+D-13 trigger: if the release includes any change that deletes normative content from `SKILL.md` or a guide, the sweep additionally requires (1) a rule-inventory diff — every normative one-liner extracted before the edit must be greppable after, in `SKILL.md` or its named guide — and (2) one behavioral eval run (trap scenario, method arm = edited file) proving the skill still avoids the trap. The eval run must be a **trap dedicated to the feature being shipped** (e.g. s23-flip-gate for the double gate), not a generic pre-existing scenario — text-presence (greps) doesn't prove behavior, and a behavioral contract feature needs its own trap (proven by s23: method denied the flip without mechanical green, control flipped E1).
 
 Migrate-chain currency: if the release changes any workspace-level contract (`AGENTS.tmpl.md`, status vocabulary, artifact names, closure protocol), the migrate guide MUST gain a checklist for the immediately previous version in the same release — a version bump without its migrate checklist is a release defect (precedent: v3.0→v3.1 and v3.3→v3.4 were both missed once).
 
@@ -47,6 +47,8 @@ The shipped skill lints itself in the same sweep. Run all four from the repo roo
    `v=$(awk '/^\*\*Tackle /{gsub(/\*/,"",$2); print $2; exit}' SKILL.md); mm=${v%.*}; x=${mm%%.*}; y=${mm##*.}; if [ "$y" -gt 0 ]; then p="$x.$((y-1))"; else p="[0-9.]+"; fi; grep -Eq "^## v$p → v$mm checklist" references/guides/migrate.md || echo "missing migrate checklist → v$mm"`
 5. **README currency** — every README version stamp equals the `SKILL.md` stamp (added 5.0.0 after the README drifted to 4.0.0 while the skill shipped 5.0.0; `sort -u` covers the stamp's two locations — header + Version line — so a half-updated README fails):
    `[ "$(grep -oE 'Tackle [0-9]+\.[0-9]+\.[0-9]+' README.md | sort -u)" = "Tackle $(awk '/^\*\*Tackle /{gsub(/\*/,"",$2); print $2; exit}' SKILL.md)" ] || echo "README stamp mismatch"`
+6. **Artifact-manifest currency** — the delivery channel lists exactly the files that ship (added 5.0.1 after `update.md` replaced only `SKILL.md` + `references/` while the artifact included `tackle-check` — a release whose channel doesn't carry an artifact ships green and installs broken; the runner's own `done-signal`/lint compose the same rows):
+   `for f in SKILL.md references tackle-check; do grep -q "$f" references/guides/update.md || echo "update.md missing artifact: $f"; done`
 
 Gate 4 derives the immediately previous version from the stamp: a minor bump requires exactly `v<x.(y-1)> → v<x.y>`; a major bump (`y` = 0) accepts the previous major's last minor on the left side — e.g. releasing 4.0.0 requires `## v3.4 → v4.0 checklist`.
 
