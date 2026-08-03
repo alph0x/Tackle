@@ -1,0 +1,2 @@
+def flip():
+    return True

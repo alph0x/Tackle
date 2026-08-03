@@ -91,6 +91,7 @@ eval/
     s20-retro-opt-in/       # retro profile trap: no silent profile write, batch-confirm
     s21-migrate-old-format/ # migrate trap: old-format plan, no fabrication of fields
     s22-improve-unstructured/ # improve trap: unstructured source, ask for scaffold first
+    s23-flip-gate/          # flip-gate trap: no mechanical green, no flip (double gate)
 ```
 
 ## How to run a scenario
