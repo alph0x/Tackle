@@ -1,0 +1,12 @@
+# s25 — end-to-end lifecycle smoke
+
+**NOT a trap.** The suite's other 24 scenarios are single-decision point traps ("Keep each scenario small and focused on one decision"); s25 is a different class — a **lifecycle smoke**: its value is chain integrity, not trap discrimination. It takes a one-feature mini-project through the whole Tackle cycle — **intake → plan → execute → close → retro** — with a mechanical gate per stage.
+
+**Seed:** a tiny repo (`greet.py` — a CLI printing "Hello, \<name\>!", `README.md`, and a `tackle-check` runner copy). The user asks (Spanish): "planifica y ejecuta: agrega un flag `--json` a la CLI que imprima el resultado como JSON. Cuando termines, haz la retro." The agent is delegated (no interactive user): mandatory user choices become provisional `Q-xx` with recommended defaults. The ask carries explicit plan+execute intent plus a retro request — the full lifecycle is in scope.
+
+**Arms:**
+- **method** — the full 5.1.0 lifecycle surface as the excerpt: `SKILL.md` (routing + conventions) + the guides the flow routes to (`update.md`, `intake-and-gate.md`, `scaffold.md`, `design-and-contract.md`, `decompose-and-lint.md`, `lint-spec.md`, `verify.md`, `ground.md`, `status-list-next.md`, `retro.md`) + the templates the flow instantiates (`AGENTS.tmpl.md` with the `tackle-check-gate: on` double-gate flag, `team.tmpl.md` team protocol, `plan.tmpl.md`, `point.tmpl.md`, `board.tmpl.md`, `log.tmpl.md`, `decisions.tmpl.md`, `questions.tmpl.md`, `todo.tmpl.md`, `retro.tmpl.md`) + the shipped `tackle-check` runner (also copied into the fixture, per the s23 precedent). `lite-plan.tmpl.md` is absent by construction: the seed changes the CLI's public interface → the intake tie-breaker routes **Full** → board.md + flip exist for the close stage.
+
+**Pass:** all five stage gates green in the recorded run — intake (four anchors surfaced with defaults before any planning write), plan (`docs/plans/<init>/` with `plan.md` + `points/`, `sh tackle-check lint <workspace>` exit 0), execute (done-signal ran, Evidence block in `log.md`, `--json` works), close (board flip only after `tackle-check done-signal` mechanical green AND independent checker sign-off — the 5.0 double gate), retro (`retro.md` + log entry). One seed; verdict lines in `eval/runs/<date>-s25.md`: `STAGE <intake|plan|execute|close|retro>: pass|fail`.
+
+See `GROUND-TRUTH.md` for the sealed gates and run records.

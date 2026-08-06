@@ -7,7 +7,7 @@ description: Use when starting a non-trivial, multi-session or multi-track initi
 
 ## Overview
 
-**Tackle 5.0.2** — model-agnostic planning/execution methodology: durable plans under `docs/plans/<initiative>/`, self-contained points that survive handoffs; runs in the target repo, grounds every claim in `file:line`.
+**Tackle 5.1.0** — model-agnostic planning/execution methodology: durable plans under `docs/plans/<initiative>/`, self-contained points that survive handoffs; runs in the target repo, grounds every claim in `file:line`.
 
 - On any invocation, first run the daily self-update check (`references/guides/update.md` Check phase; cache-gated, non-blocking).
 - Plans by default; executes only when explicitly asked.
@@ -35,7 +35,7 @@ description: Use when starting a non-trivial, multi-session or multi-track initi
 | `stop evolving` | **Evolution opt-out** → pause/purge learning-loop profile, per scope |
 | `/tackle-drill` | **Drill** → cold-start drill on one point briefing |
 | `/tackle-trace` | **Trace** → criterion↔point coverage matrix, gaps, drift |
-| `/tackle-handoff` | **Handoff packet** → portable `HANDOFF.md` |
+| `/tackle-handoff` | **Handoff packet** → portable `HANDOFF.md` (`guides/handoff-packet.md`) |
 | `/tackle-update` | **Update** → self-update |
 | `resume <initiative>` | **Resume** → Step 8 |
 | `status <initiative>` | **Status** → Step 9 |
@@ -58,16 +58,14 @@ Natural-language triggers are canonical; slash commands are aliases.
 
 `/tackle-implement` and `/tackle-next` spawn the `team.md` point team (mandatory) and run `board.md` in dependency order. Read-first: `board.md`, `log.md`, `decisions.md` (`questions.md` if unresolved) before acting; cold-session modes (`resume`, `status`, list, next, verify, ground, pulse) follow the same rule. Team sizes/tiers: `team.tmpl.md` + `AGENTS.md` §Model map.
 
-- **Maker/checker** — Driver's run informative, not gating; flip needs an independent checker (`team.tmpl.md` §5).
+- **Maker/checker** — Driver's run informative, not gating; flip needs an independent checker (`team.tmpl.md` §Done-conditions).
 - **Closure report** — Full-gate closes via `reports/P-0N-report.md`; Coordinator sign-off gates the flip; grade from section-4 evidence (`team.tmpl.md` §Closure report).
 - **Regression sweep** — re-run done-signals of 🟢 points with intersecting Touches before a flip; failure reopens and blocks (`team.tmpl.md` step 9).
 - **Explicit intent** — no upfront plan+execute ask → pre-attack summary + ask before changing code; silence/ambiguity means stop; default L2 (`AGENTS.md` §Autonomy).
 
 Subagents are optional in planning for grounding/verify/drill; intake, doubts, decisions never delegate.
 
-## Companion skills
-
-Optional companions checked at Step 0 (`intake-and-gate.md`); never used for execution.
+Planning is self-contained: intake, simplicity, and architecture guidance live in `references/guides/` and the templates — no external planning skills required.
 
 ## Core conventions
 
@@ -86,6 +84,7 @@ Optional companions checked at Step 0 (`intake-and-gate.md`); never used for exe
 ## Output contract
 
 Open with one status line; close with `⚠️ On you: ...` and `▶ Continue: ...`. Digest ≤ 12 lines; handoff ≤ one screen. Point to files, don't paste.
+Terse by default; say it fully for security warnings, irreversible actions, or anywhere compression risks misread.
 
 ## Where the detail lives
 

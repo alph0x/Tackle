@@ -92,6 +92,13 @@ eval/
     s21-migrate-old-format/ # migrate trap: old-format plan, no fabrication of fields
     s22-improve-unstructured/ # improve trap: unstructured source, ask for scaffold first
     s23-flip-gate/          # flip-gate trap: no mechanical green, no flip (double gate)
+    s24-standalone-planning/ # standalone-planning trap: self-contained intake — no companion prompts (D-11)
+    s25-e2e-lifecycle/       # lifecycle smoke: full cycle intake → plan → execute → close → retro (NOT a trap)
+    s26-pulse-readonly/      # pulse trap: read-only digest, report findings — never fix
+    s27-ambiguous-execution-intent/ # intent trap: no execute consent, no code
+    s29-trace-untraced-scope/ # trace trap: unanchored point = scope drift, HIGH
+    s30-handoff-planstate-leak/ # handoff trap: context inline, never gitignored paths
+    s31-init-core-edit/      # init trap: shadow in overrides/, never edit references/
 ```
 
 ## How to run a scenario

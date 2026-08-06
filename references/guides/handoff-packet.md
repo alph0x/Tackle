@@ -13,7 +13,9 @@ Output file: `docs/plans/<initiative>/HANDOFF.md` — a portable single file. **
 3. **Decisions digest** — active `D-xx`, one line each.
 4. **Open questions** — each `Q-xx` with its owner.
 5. **Next 3 actions** — the next ready points with their starting prompts.
-6. **Reading order** — the workspace files, in the order a cold receiver should read them.
+6. **Reading order** — the workspace files, in the order a cold receiver should read them. When the workspace files cannot be summarized without leaking plan-local paths or ids, this section states **`none — self-contained`**.
+
+**Portability rule** (binds every section): the packet is **portable** — it carries its context **inline**, never as references to **gitignored** plan-local state. No `docs/plans/` paths (not even the packet's own), no "see `<workspace file>`" pointers, no bare D-xx / Q-xx / point ids. The receiver "has nothing else", and the plan workspace commonly does not travel (convention 9: `docs/plans/` is gitignored by scaffold default), so any pointer into it breaks on the other machine. Every id appears only with its content inline; every section carries the state itself.
 
 The packet also carries one **weakest-link line** — the initiative's weakest-link point: point id + grade + one-line reason (effective confidence = min over the dependency chain, a documented hand computation over `board.md` + the `plan.md` §5 graph).
 

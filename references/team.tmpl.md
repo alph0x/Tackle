@@ -50,6 +50,30 @@ Add specialists when the point's risk justifies it; default Squad = Driver + Rev
 | **Performance & Concurrency Auditor** | Touches hot paths, parallelism, async/await, locks, or large-N structures. | Measures Big-O and wall-clock impact; checks races, lock ordering, async safety. |
 | **Regression Auditor** | Touches `SKILL.md`, routing, or existing templates. | Verifies old triggers and templates still work. |
 
+#### Simplicity ladder
+
+The Simplicity Auditor runs the simplicity ladder before accepting any code, dependency, or abstraction — and only after understanding the problem first: read the task and trace the real flow, because the shortest diff in the wrong place is a second bug.
+
+Rungs, in order:
+1. Does this need to exist at all? Speculative need is skipped — YAGNI — and the skip is said out loud.
+2. Does it already exist in this codebase? Reuse before rewrite; the shared function is fixed once, not copied and patched.
+3. Does the standard library or a native platform feature cover it? stdlib first.
+4. Does an already-installed dependency cover it? Never add a new one for what a few lines do.
+5. Can it be one line? One line.
+6. Only then, the minimum code that works.
+
+Operating rules: fix the root cause, not the symptom — grep every caller and fix the shared function once. Deletion over addition, boring over clever, fewest files, no unrequested abstractions; among equal-size stdlib options, take the one that is correct on edge cases. A deliberate simplification that cuts a real corner carries a marker naming the ceiling and the upgrade path — a decision record, not an explanatory comment; reviewers do not flag the marker as a comment violation.
+
+Boundaries — never simplify away: input validation at trust boundaries, error handling that prevents data loss, security, accessibility, or anything explicitly requested. Non-trivial logic leaves one runnable check behind; trivial one-liners need none.
+
+#### Security checklist
+
+The Security Reviewer runs this checklist on anything touching auth, input, secrets, or trust boundaries:
+- Inputs are validated at the trust boundary; nothing unescaped reaches a command, query, or path (injection).
+- Secrets never land in logs, errors, or diffs.
+- authz is checked on every path: unauthenticated or cross-tenant access returns 401/403, not a rendered resource.
+- No new dependency unless the simplicity ladder above justifies it.
+
 ## Single source of truth for state
 
 - **`board.md`** is the only place that records point status (🔴 🟡 ⏸ 🟢 · ⚪ skipped (optional slice not executed, with one-line reason)). `plan.md` §5 never carries status columns.

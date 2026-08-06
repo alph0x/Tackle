@@ -2,7 +2,7 @@
 
 A model-agnostic planning and execution skill that turns an initiative into a durable action plan — self-contained points a cold agent can resolve in a fresh session — and executes that plan point-by-point when you ask it to.
 
-**Tackle 5.0.2: the skill verifies itself.** Every dependency edge names its crossing artifact; every closed point carries an evidence grade derived from how it was actually verified; a plan's confidence is its weakest link; and the flip is gated by a shipped mechanical runner (`tackle-check`) plus an independent checker.
+**Tackle 5.1.0: planning is self-contained — no external companion skills required** (the essentials are adopted in-repo), **and the skill verifies itself.** Every dependency edge names its crossing artifact; every closed point carries an evidence grade derived from how it was actually verified; a plan's confidence is its weakest link; and the flip is gated by a shipped mechanical runner (`tackle-check`) plus an independent checker.
 
 ## What it does
 
@@ -29,7 +29,7 @@ Tackle produces a workspace of grounded markdown artifacts under `docs/plans/<in
 
 ## Release self-lint
 
-Four shipped-skill gates run in the release sweep before every tag (`references/guides/lint-spec.md`): word budget (`SKILL.md` ≤ 1100 words), exactly 11 core conventions, changelog currency, and migrate-chain currency. Since 5.0 the gates compose into the shipped `tackle-check` runner (POSIX sh, zero deps) — the runner IS the rows, the table is its spec; the rows stay copy-pasteable for hosts without the runner. No CI infrastructure — the release tag is the gate.
+Six shipped-skill gates run in the release sweep before every tag (`references/guides/lint-spec.md`): word budget (`SKILL.md` ≤ 1100 words), exactly 11 core conventions, changelog currency, migrate-chain currency, README currency, and artifact-manifest currency (the update channel must list exactly the files that ship). Since 5.0 the gates compose into the shipped `tackle-check` runner (POSIX sh, zero deps) — the runner IS the rows, the table is its spec; the rows stay copy-pasteable for hosts without the runner. No CI infrastructure — the release tag is the gate.
 
 ## Execution discipline
 
@@ -52,7 +52,7 @@ Tackle's execution loop is hardened with rules proven against common agent failu
 
 ## Eval
 
-Tackle ships a manual A/B eval in `eval/`: **23 trap scenarios** (`s1`–`s23`), each pitting a mid-tier model following Tackle literally against the same model free-styling at a known agent failure. The registry and workflow live in `eval/README.md`; each scenario carries its own `GROUND-TRUTH.md` answer sheet, and `tackle-check catalog` verifies scenarios ⊆ registry so the list can't drift.
+Tackle ships a manual A/B eval in `eval/`: **30 scenarios** (`s1`–`s31`) — 29 decision traps plus one end-to-end lifecycle smoke (`s25-e2e-lifecycle`, the full intake → plan → execute → close → retro chain), each pitting a mid-tier model following Tackle literally against the same model free-styling at a known agent failure. The registry and workflow live in `eval/README.md`; each scenario carries its own `GROUND-TRUTH.md` answer sheet, and `tackle-check catalog` verifies scenarios ⊆ registry so the list can't drift.
 
 ## Who is it for
 
@@ -80,7 +80,7 @@ cp -r tackle ~/.cursor/skills/  # or your agent's skills directory
 **Any model / IDE:**
 Copy `SKILL.md`, the `references/` directory, and the `tackle-check` runner into your agent's skill directory.
 
-**Updates:** the skill checks for a new release once a day during planning intake and self-updates (only `SKILL.md` + `references/` are touched); `/tackle-update` forces a check. If your harness can't reload skills, restart the session after an update.
+**Updates:** the skill checks for a new release once a day on any invocation and self-updates (`SKILL.md` + `references/` + `tackle-check` are replaced); `/tackle-update` forces a check. If your harness can't reload skills, restart the session after an update.
 
 The install artifact is `SKILL.md` + `references/` + `tackle-check` only. `docs/plans/` (workspaces) and `docs/seeds/` (this project's backlog) are local to this repo and never ship with the skill; your own plans and seeds get the same gitignore treatment in your repo.
 
@@ -103,7 +103,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 | `/tackle-judge` | **Judge** — adversarial verification of finished work |
 | `/tackle-judge suite <target>` | **Judge suite** — run the trap suite against a skill, model, or prompt |
 | `/tackle-ground` | **Ground** — mechanically read and mark every `file:line` cited in the plan |
-| `/tackle-update` | **Update** — force a self-update check (daily check also runs at planning intake) |
+| `/tackle-update` | **Update** — force a self-update check (daily check also runs on any invocation) |
 | `/tackle-retro` | **Retro** — mine board + log into the retro artifact; batch-confirmed profile writes and plan-archetype extraction |
 | `/tackle-pulse` | **Pulse** — read-only standing digest for schedulers; never executes points |
 | `/tackle-drill` | **Drill** — cold-start readiness drill on one point briefing |
@@ -115,7 +115,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 | "how is `<x>` going?" / "status" | **Status** — read-only digest |
 | "what plans are there?" | **List** — one line per initiative |
 | "what's next?" / "qué sigue" | **Next** — the next point's pre-attack summary |
-| "migrate / upgrade `<x>`" | **Migrate** — bring an old plan to the current methodology (checklist chain v2.0 → v5.0 in `references/guides/migrate.md`) |
+| "migrate / upgrade `<x>`" | **Migrate** — bring an old plan to the current methodology (checklist chain v2.0 → v5.1 in `references/guides/migrate.md`) |
 | "mejorá este plan" / "improve this plan" | **Improve** — upgrade a Tackle plan or convert an unstructured plan |
 
 **The Create pipeline:** Intake → Gate (None/Lite/Full) → Location & gitignore → Scaffold → Briefing → Architecture → Stabilize contract → Decompose → Lint → Handoff.
@@ -124,7 +124,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 
 **Template-resolution stack:** overrides → presets → sdd → core.
 
-**Version:** Tackle 5.0.2. See `references/CHANGELOG.md` for what's new.
+**Version:** Tackle 5.1.0. See `references/CHANGELOG.md` for what's new.
 
 ## What it produces
 
@@ -148,13 +148,7 @@ Full-gate plans also produce, only when each trigger fires: `foundations` (non-t
 
 ## Model-agnostic
 
-Works with GPT, Claude Opus/Sonnet, Cursor Composer, Kimi, DeepSeek, or any agent that can read markdown and search code. No vendor-specific tools assumed.
-
-## Optional companions
-
-- [superpowers](https://github.com/obra/superpowers) — for `brainstorming` / `writing-plans` depth
-- [karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills) — for simplicity-first discipline
-- [solid-skills](https://github.com/ramziddin/solid-skills) — for architecture / SOLID decisions
+Works with GPT, Claude Opus/Sonnet, Cursor Composer, Kimi, DeepSeek, or any agent that can read markdown and search code. No vendor-specific tools assumed. Planning is self-contained — no external planning skills are required, recommended, or checked for (adopted in 5.1.0).
 
 ## License
 

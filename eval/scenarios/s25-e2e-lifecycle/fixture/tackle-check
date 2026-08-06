@@ -1,0 +1,151 @@
+#!/bin/sh
+# tackle-check — mechanical gates for Tackle workspaces (Tackle 5.0)
+#
+# Usage:
+#   tackle-check lint <workspace>         run lint rows 1-10 on a plan workspace
+#   tackle-check catalog                  verify eval/scenarios/ ⊆ eval/README.md
+#   tackle-check done-signal <briefing>   run the point's literal **Run** exit-gate
+#
+# POSIX sh, zero dependencies, harness-agnostic (convention 10). Composes the
+# documented lint rows from references/guides/lint-spec.md — the runner IS the
+# rows; the spec is its source of truth. Exit 0 = all gates green; any FAIL
+# sets exit 1. Never executes an LLM or agent arm (non-goal).
+
+set -u
+fail=0
+
+report() { # report <row-label> <exit-status>
+  if [ "$2" -eq 0 ]; then
+    echo "PASS: $1"
+  else
+    echo "FAIL: $1"
+    fail=1
+  fi
+}
+
+row1() { # placeholders {{...}} outside fenced blocks
+  out=$(awk 'BEGIN{f=0} /^```/{f=!f; next} !f && /{{/{print FILENAME ":" FNR ": " $0}' "$ws"/*.md "$ws"/*/*.md 2>/dev/null)
+  [ -z "$out" ]
+}
+
+row2() { # every P-xx referenced exists in plan.md
+  [ -f "$ws/plan.md" ] || return 0
+  ids=$(awk '{while(match($0,/P-[0-9]+/)){print substr($0,RSTART,RLENGTH); $0=substr($0,RSTART+RLENGTH)}}' "$ws"/points/*.md "$ws"/board.md 2>/dev/null)
+  for id in $ids; do
+    grep -q "$id" "$ws/plan.md" || { echo "unresolved: $id"; return 1; }
+  done
+}
+
+row3() { # board.md statuses from the fixed vocabulary
+  [ -f "$ws/board.md" ] || return 0
+  out=$(awk 'BEGIN{FS=sprintf("%c",124)} $2 ~ /P-[0-9]/ && NF>3 {ok=0; for(i=2;i<=NF;i++){if(index($i,"🔴")||index($i,"🟡")||index($i,"⏸")||index($i,"🟢")||index($i,"⚪")) ok=1} if(!ok) print "bad status:" $0}' "$ws/board.md")
+  [ -z "$out" ]
+}
+
+row4() { # anchored citations still match their line
+  [ -f "$ws/plan.md" ] || return 0
+  out=$(awk 'match($0,/[A-Za-z0-9_\/.-]+\.[a-z]+:[0-9]+(-[0-9]+)? — "[^"]+"/){c=substr($0,RSTART,RLENGTH); p=c; sub(/:.*/,"",p); n=c; sub(/^[^:]*:/,"",n); n=n+0; split(c,q,"\""); s=q[2]; ok=0; f=p; i=0; while((getline L < f)>0){i++; if(i==n && index(L,s)) ok=1} close(f); if(i==0){f="'"$ws"'/" p; while((getline L < f)>0){i++; if(i==n && index(L,s)) ok=1} close(f)} if(!ok) print FILENAME ":" FNR " stale: " c}' "$ws"/points/*.md "$ws"/plan.md "$ws"/reference.md 2>/dev/null)
+  [ -z "$out" ]
+}
+
+row5() { # status emoji only in board.md
+  [ -f "$ws/plan.md" ] || return 0
+  out=$(grep -rn -e 🔴 -e 🟡 -e ⏸ -e 🟢 -e ⚪ "$ws/plan.md" "$ws/points" 2>/dev/null)
+  [ -z "$out" ]
+}
+
+row6() { # log.md entries in chronological order
+  [ -f "$ws/log.md" ] || return 0
+  out=$(awk '/^## 20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]/{d=substr($2,1,10); if(d<prev) print "out of order: " $0; prev=d}' "$ws/log.md")
+  [ -z "$out" ]
+}
+
+row7() { # every SEALED: D-xx resolves in decisions.md
+  [ -f "$ws/decisions.md" ] || return 0
+  ids=$(awk '{while(match($0,/SEALED: D-[0-9]+/)){print substr($0,RSTART+8,RLENGTH-8); $0=substr($0,RSTART+RLENGTH)}}' "$ws"/design-contract.md "$ws"/points/*.md 2>/dev/null)
+  for id in $ids; do
+    grep -q "$id" "$ws/decisions.md" || { echo "missing seal: $id"; return 1; }
+  done
+}
+
+row8() { # cross-initiative Touches collision (warn severity)
+  out=$(awk 'FILENAME ~ /board/ && /🟡/ {split(FILENAME,w,"/"); active[w[3]]=1} /Touches/ {split(FILENAME,w,"/"); ws=w[3]; while(match($0,/`[^`]+`/)){p=substr($0,RSTART+1,RLENGTH-2); if(seen[p] && seen[p]!=ws && active[seen[p]] && active[ws]) print "collision: " p " (" seen[p] " + " ws ")"; seen[p]=ws; $0=substr($0,RSTART+RLENGTH)}}' docs/plans/*/board.md docs/plans/*/points/*.md 2>/dev/null)
+  [ -z "$out" ]
+}
+
+row9() { # discovery points declare Rounds:; experiment points declare Metric:/Threshold:/Rounds:
+  miss=0
+  for f in $(grep -l '\*\*Type\*\*.*discovery' "$ws"/points/*.md 2>/dev/null); do
+    grep -q 'Rounds:' "$f" || { echo "discovery point without Rounds budget: $f"; miss=1; }
+  done
+  for f in $(grep -l '\*\*Type\*\*.*experiment' "$ws"/points/*.md 2>/dev/null); do
+    grep -q 'Metric:' "$f" && grep -q 'Threshold:' "$f" && grep -q 'Rounds:' "$f" || { echo "experiment point missing metric fields: $f"; miss=1; }
+  done
+  [ "$miss" -eq 0 ]
+}
+
+row10() { # done/blocked board rows carry an E-grade
+  [ -f "$ws/board.md" ] || return 0
+  out=$(awk 'BEGIN{FS=sprintf("%c",124)} $2 ~ /P-[0-9]/ && NF>3 {st=0; for(i=2;i<=NF;i++){if(index($i,"🟢")||index($i,"⏸")) st=1} if(st){ok=0; for(i=2;i<=NF;i++){if($i ~ /(^|[^A-Za-z0-9])E[0123]([^A-Za-z0-9]|$)/) ok=1} if(!ok) print "done/blocked row without grade: " $0}}' "$ws/board.md")
+  [ -z "$out" ]
+}
+
+lint() {
+  ws="$1"
+  report "row 1 placeholders ($ws)" "$(row1; echo $?)"
+  report "row 2 unresolved Depends-on ($ws)" "$(row2; echo $?)"
+  report "row 3 status vocabulary ($ws)" "$(row3; echo $?)"
+  report "row 4 stale citations ($ws)" "$(row4; echo $?)"
+  report "row 5 status outside board ($ws)" "$(row5; echo $?)"
+  report "row 6 log order ($ws)" "$(row6; echo $?)"
+  report "row 7 SEALED ids ($ws)" "$(row7; echo $?)"
+  report "row 8 Touches collision (warn)" "$(row8; echo $?)"
+  report "row 9 loop budgets ($ws)" "$(row9; echo $?)"
+  report "row 10 grades ($ws)" "$(row10; echo $?)"
+  [ "$fail" -eq 0 ]
+}
+
+catalog() {
+  miss=0
+  for d in eval/scenarios/*/; do
+    [ -d "$d" ] || continue
+    name=$(basename "$d")
+    grep -qF "$name" eval/README.md || { echo "MISSING from catalog: $name"; miss=1; }
+  done
+  [ "$miss" -eq 0 ] || fail=1
+}
+
+done_signal() { # run the literal **Run** commands from a point briefing
+  bf="$1"
+  tmp=$(mktemp) || return 1
+  sed -n 's/^.*\*\*Run\*\*: `\([^`]*\)`.*$/\1/p' "$bf" > "$tmp"
+  status=0
+  while IFS= read -r cmd; do
+    # self-referential guard: running done-signal on the briefing that declares it
+    # would recurse without a base case (P-01 fork bomb, 2026-08-03) — fail loud.
+    if printf '%s' "$cmd" | grep -q "tackle-check done-signal.*$(basename "$bf")"; then
+      echo "FAIL: self-referential done-signal ($(basename "$bf"))"
+      status=1
+      continue
+    fi
+    echo "== RUN: $cmd"
+    if sh -c "$cmd"; then
+      echo "PASS"
+    else
+      echo "FAIL"
+      status=1
+    fi
+  done < "$tmp"
+  rm -f "$tmp"
+  [ "$status" -eq 0 ] || fail=1
+}
+
+cmd="$1"
+shift
+case "$cmd" in
+  lint) lint "$1" ;;
+  catalog) catalog ;;
+  done-signal) done_signal "$1" ;;
+  *) echo "usage: tackle-check lint <workspace> | catalog | done-signal <briefing>" >&2; exit 2 ;;
+esac
+exit "$fail"

@@ -1,19 +1,3 @@
-# Step 0 — Companion skills check
-
-Before intake, verify that the optional companion skills are available. These skills improve planning quality but are never used for execution:
-
-- `superpowers` — for `brainstorming` and `writing-plans` depth.
-- `karpathy-guidelines` — for simplicity-first discipline.
-- `solid-skills` or `clean-architecture` — for architecture / SOLID decisions.
-
-For each missing skill, suggest installing it to the user. Record the result in the log's `### Intake (context gathered)` section:
-
-```
-companion skills: superpowers [installed/missing/declined], karpathy-guidelines [installed/missing/declined], clean-architecture [installed/missing/declined]
-```
-
-If the user declines to install any missing skill, note the gap once and continue. Do not re-nag in later sessions.
-
 ## Self-update check (every invocation, non-blocking)
 
 Run the Check phase of `references/guides/update.md` on **every Tackle invocation** — any mode, new plan or in-progress (network cache-gated to once per day). On a newer release, follow its Update + Reload phases. Any failure → skip silently and continue; the check never blocks.
@@ -27,6 +11,8 @@ Extract or confirm:
 - Highest-shape decision
 
 Do not assume; ground claims in `file:line`.
+
+The four anchors are the intent contract: **explore intent** before proposing approaches — extract and confirm all four first. Infer first, then ask: propose your reading of the request and confirm it, don't ask open-ended. Batch remaining doubts with a recommended default each (convention 8). The anchors gate decomposition (Step 1.5). This guide is self-contained: intake needs nothing outside it — no external planning skills.
 
 ## Learning-loop read (if enabled)
 

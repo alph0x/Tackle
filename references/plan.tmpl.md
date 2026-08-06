@@ -31,7 +31,7 @@ module this design follows — `path` / repo, with file:line.}}
 ## 5. Point decomposition
 <!-- Right-size check: if this table has ≤4 rows and no cross-track work, consider collapsing to `lite-plan.tmpl.md`. -->
 <!-- One row per point. Each point has a self-contained briefing in points/<id>-<slug>.md.
-     A point may map 1:1 to a phase. Delete the Spec/Plan cols if not using superpowers depth. -->
+     A point may map 1:1 to a phase. Delete the Spec/Plan cols if this plan doesn't use per-point depth artifacts. -->
 
 | Point | What | Traces to | Briefing | Depth (optional) | Depends on |
 |---|---|---|---|---|---|

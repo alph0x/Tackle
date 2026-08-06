@@ -10,6 +10,8 @@ introduces gets a row here BEFORE it ships** — decision → principle → sour
 cleaner"* is not a justification. Reviewers verify a row exists and that the cited principle
 actually fits; superseding a row requires superseding its decision (`D-xx`).
 
+Architecture recommendations are evaluated against the checklist in Step 5.5 of `design-and-contract.md`.
+
 ## Decision → principle → source (the standing choices)
 
 Backbone: Clean Code + SOLID. Cite the *specific* referent per row (Martin/Beck/Fowler/GoF,

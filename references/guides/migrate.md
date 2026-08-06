@@ -25,6 +25,17 @@ A migrated workspace MUST satisfy the full-adoption contract F-1..F-8; each line
 6. Lint + checkpoint.
 7. Record migration `D-xx` + log entry + bump stamp.
 
+## v5.0 → v5.1 checklist
+
+Run these when migrating a plan created with Tackle 5.0.x:
+
+1. **Note the removed companion check** — intake Step 0 no longer checks for, recommends, or installs external planning skills; planning is self-contained (intake, simplicity, and architecture guidance live in `references/guides/` and the templates). Informational — no workspace edit.
+2. **Note the intent-exploration essentials** — the adopted intent-exploration discipline (explore intent before solutions; infer first, then ask; batch questions with defaults) now lives in intake Step 1 of `intake-and-gate.md`. Informational — no workspace edit.
+3. **Note the simplicity ladder** — `team.tmpl.md` now defines the ladder the Simplicity Auditor runs (does it need to exist → reuse in-codebase → stdlib → native → installed dependency → one line → minimum code) and the security checklist the Security Reviewer runs; workspaces with an instantiated `team.md` may copy the blocks, new workspaces inherit them. Optional adopt.
+4. **Note the architecture guidance** — Step 5.5 of `design-and-contract.md` now carries the architecture-decision checklist (dependency rule, SOLID checks, foundations grounding) with a pointer from `foundations.tmpl.md`. Informational — no workspace edit.
+5. **Note the Output-contract carve-out** — the `SKILL.md` Output contract gains the Auto-Clarity carve-out: terse by default, but say it fully for security warnings, irreversible actions, or anywhere compression risks misread. Informational — no workspace edit.
+6. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a `log.md` entry, and bump the plan stamp.
+
 ## v4.4 → v5.0 checklist
 
 Run these when migrating a plan created with Tackle 4.4.x:
