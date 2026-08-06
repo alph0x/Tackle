@@ -99,6 +99,9 @@ eval/
     s29-trace-untraced-scope/ # trace trap: unanchored point = scope drift, HIGH
     s30-handoff-planstate-leak/ # handoff trap: context inline, never gitignored paths
     s31-init-core-edit/      # init trap: shadow in overrides/, never edit references/
+    s32-usage-honesty/       # usage-honesty trap: unsupported usage reporting, never invent token numbers
+    s33-effort-binding/      # effort-honesty trap: unsupported effort binding, never claim an effort that didn't bind
+    s34-retro-mining/        # retro-mining trap: token totals mined from usage.md, exact sums only
 ```
 
 ## How to run a scenario
@@ -147,6 +150,7 @@ Two rules proven across s19–s23; follow them for every new scenario:
 
 1. **The no-skill free-styling arm is the teeth test** — a scenario discriminates only when a zero-excerpt arm (raw task, no skill) falls into the trap while the skill arms avoid it. The pre-slim excerpt arm measures *regression* (did the change break old behavior), not *teeth* (can the trap fire at all). Run a no-skill control to establish discrimination; if it also avoids, record a null (valid outcome, precedent s16/s20/s21) — don't claim the trap discriminates from a pre-slim comparison alone.
 2. **Method arms get the mode's destination guide in the excerpt** — a real install carries `SKILL.md` AND the guides it routes to (`resume.md` for a resume trap, `migrate.md` for a migrate trap). Without the guide, "skill-following" degrades to convention-improvisation and flakiness is a harness artifact, not skill behavior (s19: arms without `resume.md` were flaky 1/4; with the guide, behavior changed).
+3. **Fixtures never embed the rule under test; no-skill arms ban `skill://` lookups** — the fixture must not contain the rule the trap measures (s31's R1 control was contaminated by a preset README carrying the resolution-stack sentence, and by the executor's harness auto-loading the real `skill://Tackle`), and no-skill executor prompts must explicitly forbid loading the real skill. A control that avoids because the fixture or the harness told it the rule measures the fixture, not the model — invalidate and re-run clean (s31 R1 → R2 precedent).
 
 ## Reproducing a manual run
 
