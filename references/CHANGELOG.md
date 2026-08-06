@@ -1,5 +1,22 @@
 # Tackle changelog
 
+## Tackle 5.2.0
+
+- **Usage ledger — the skill meters itself** (dogfood initiative `tackle-usage-metrics`). Every workspace born ≥ 5.2 carries `usage.md` (from the new `references/usage.tmpl.md`): one row per role run — point, role, tier, concrete model, effort, tokens in/out as the harness exposes them. Capability lines in `AGENTS.tmpl.md`: `usage-reporting: supported | partial | unsupported` (partial = cumulative total only; unsupported = `n/a` fields, rows still appended) and `effort-binding` beside `model-binding`. Recording is **informative, never gating** — no flip waits on token data, and `n/a`, never estimated (the anti-fabrication teeth).
+- **Effort dial** — a second cost control next to model tiers: abstract `low / medium / high / max` bound per workspace in `AGENTS.md` §Model map; `team.tmpl.md` role→effort defaults (Spec Reader low · Verifier/Red-Teamer/Checker high · Driver/Coordinator medium); point briefings may override via `**Effort**:`.
+- **Retro cost analysis** — `retro.tmpl.md` gains three mechanical token-mining recipes (by phase / by model / per point, each reporting its `n/a`-row count) and `guides/retro.md` a **Cost analysis** section: conclusions + downgrade recommendations (which points could have run at a lower tier/effort). The pulse digest reports usage-so-far.
+- **Lint rows 11–12 + runner** — row 11: every done board row has a usage row (pre-5.2 workspaces guard-skip); row 12: `**Effort**:` declarations use the vocabulary. Both land in table + `tackle-check` in the same change.
+- **Row-8 false-positive fix** — the cross-initiative collision check matched `/🟡/` on any board line, so the legend (`Status: 🔴 … 🟡 …`) counted every workspace as active and any Touches overlap fired, including against closed shipped initiatives; now anchored to data rows (D-11).
+- **Done-signal parser fix (pending-skill-fixes seed)** — `tackle-check done-signal` extracts both `**Run**:` and `**Done-signal**:` labels and FAILS on empty extraction — the old extractor matched only `**Run**:`, so template-born briefings (which declare `**Done-signal**:`) extracted zero commands and passed silently.
+- **Behaviorally validated** — three dedicated traps for the feature set, run 2026-08-06
+  (1 seed/arm, diff-verified): `s32-usage-honesty` **verdict: null** (both arms recorded
+  `n/a` honestly — regression guard); `s33-effort-binding` **verdict: discriminates** (the
+  no-skill control asserted an unbound `high` effort with no deviation note; the method arm
+  recorded `high (advisory; effort-binding: unsupported)` — the effort-dial honesty
+  contract has teeth); `s34-retro-mining` **verdict: null** (both arms mined the ledger's
+  exact recipe sums — no invention at this tier, regression guard).
+- Migrate chain: `v5.1 → v5.2 checklist` (new workspace contract: ledger + capability lines + Effort field).
+
 ## Tackle 5.1.0
 
 - **Planning is self-contained — external companion skills no longer required** (adoption note per D-03). The Step 0 companion-skills check is removed from `intake-and-gate.md`: intake no longer requires, recommends, or checks for external planning skills (superpowers, karpathy-guidelines, clean-architecture) and never prompts for missing ones (D-11, recorded as a deliberate revocation). The essentials those skills carried are adopted in Tackle's own prose — no verbatim imports: intent exploration before solutions lives in intake Step 1 (`explore intent`, `self-contained`); the simplicity ladder (YAGNI → in-codebase reuse → stdlib → native → installed dependency → one line → minimum code, with the root-cause rule and the marker-with-ceiling practice) and the security checklist land beside the roles that run them in `team.tmpl.md`; architecture-decision guidance (dependency rule, SOLID checks, foundations grounding) lands in Step 5.5 of `design-and-contract.md` with a pointer from `foundations.tmpl.md`; caveman's Auto-Clarity carve-out (say it fully where compression risks misread) is one line in the `SKILL.md` Output contract. Entry and template de-referenced: the `SKILL.md` companion section becomes the "Planning is self-contained" statement and the `plan.tmpl.md` comment drops the external name.

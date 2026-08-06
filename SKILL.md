@@ -7,7 +7,7 @@ description: Use when starting a non-trivial, multi-session or multi-track initi
 
 ## Overview
 
-**Tackle 5.1.0** — model-agnostic planning/execution methodology: durable plans under `docs/plans/<initiative>/`, self-contained points that survive handoffs; runs in the target repo, grounds every claim in `file:line`.
+**Tackle 5.2.0** — model-agnostic planning/execution methodology: durable plans under `docs/plans/<initiative>/`, self-contained points that survive handoffs; runs in the target repo, grounds every claim in `file:line`.
 
 - On any invocation, first run the daily self-update check (`references/guides/update.md` Check phase; cache-gated, non-blocking).
 - Plans by default; executes only when explicitly asked.
@@ -56,12 +56,13 @@ Natural-language triggers are canonical; slash commands are aliases.
 
 ## Execution loop
 
-`/tackle-implement` and `/tackle-next` spawn the `team.md` point team (mandatory) and run `board.md` in dependency order. Read-first: `board.md`, `log.md`, `decisions.md` (`questions.md` if unresolved) before acting; cold-session modes (`resume`, `status`, list, next, verify, ground, pulse) follow the same rule. Team sizes/tiers: `team.tmpl.md` + `AGENTS.md` §Model map.
+`/tackle-implement` and `/tackle-next` spawn the `team.md` point team (mandatory) and run `board.md` in dependency order. Read-first: `board.md`, `log.md`, `decisions.md` (`questions.md` if unresolved) before acting; cold-session modes (`resume`, `status`, list, next, verify, ground, pulse) follow the same rule. Team sizes/tiers/efforts: `team.tmpl.md` + `AGENTS.md` §Model map.
 
 - **Maker/checker** — Driver's run informative, not gating; flip needs an independent checker (`team.tmpl.md` §Done-conditions).
 - **Closure report** — Full-gate closes via `reports/P-0N-report.md`; Coordinator sign-off gates the flip; grade from section-4 evidence (`team.tmpl.md` §Closure report).
 - **Regression sweep** — re-run done-signals of 🟢 points with intersecting Touches before a flip; failure reopens and blocks (`team.tmpl.md` step 9).
 - **Explicit intent** — no upfront plan+execute ask → pre-attack summary + ask before changing code; silence/ambiguity means stop; default L2 (`AGENTS.md` §Autonomy).
+- **Usage ledger** — every role run appends one `usage.md` row (model, tier, effort, tokens as the harness exposes them; `n/a`, never estimated); retro mines it for cost; recording is informative, never gating.
 
 Subagents are optional in planning for grounding/verify/drill; intake, doubts, decisions never delegate.
 

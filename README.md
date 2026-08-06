@@ -2,7 +2,7 @@
 
 A model-agnostic planning and execution skill that turns an initiative into a durable action plan — self-contained points a cold agent can resolve in a fresh session — and executes that plan point-by-point when you ask it to.
 
-**Tackle 5.1.0: planning is self-contained — no external companion skills required** (the essentials are adopted in-repo), **and the skill verifies itself.** Every dependency edge names its crossing artifact; every closed point carries an evidence grade derived from how it was actually verified; a plan's confidence is its weakest link; and the flip is gated by a shipped mechanical runner (`tackle-check`) plus an independent checker.
+**Tackle 5.2.0: the skill meters itself.** Every workspace carries a `usage.md` ledger — each role run records model, tier, effort, and tokens as the harness exposes them (`n/a`, never estimated), and the retro mines what a plan cost from 0 to implemented with downgrade recommendations. Points gain an effort dial (`low/medium/high/max`) next to model tiers; the runner lints rows 1–12 and its done-signal executor extracts both labels and fails on empty extraction.
 
 ## What it does
 
@@ -52,7 +52,7 @@ Tackle's execution loop is hardened with rules proven against common agent failu
 
 ## Eval
 
-Tackle ships a manual A/B eval in `eval/`: **30 scenarios** (`s1`–`s31`) — 29 decision traps plus one end-to-end lifecycle smoke (`s25-e2e-lifecycle`, the full intake → plan → execute → close → retro chain), each pitting a mid-tier model following Tackle literally against the same model free-styling at a known agent failure. The registry and workflow live in `eval/README.md`; each scenario carries its own `GROUND-TRUTH.md` answer sheet, and `tackle-check catalog` verifies scenarios ⊆ registry so the list can't drift.
+Tackle ships a manual A/B eval in `eval/`: **33 scenarios** (`s1`–`s34`) — 32 decision traps plus one end-to-end lifecycle smoke (`s25-e2e-lifecycle`, the full intake → plan → execute → close → retro chain), each pitting a mid-tier model following Tackle literally against the same model free-styling at a known agent failure. The registry and workflow live in `eval/README.md`; each scenario carries its own `GROUND-TRUTH.md` answer sheet, and `tackle-check catalog` verifies scenarios ⊆ registry so the list can't drift.
 
 ## Who is it for
 
@@ -110,12 +110,12 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 | `/tackle-trace` | **Trace** — criterion↔point coverage matrix, gaps and drift |
 | `/tackle-handoff` | **Handoff packet** — generate a portable handoff artifact |
 | `stop evolving` | **Evolution opt-out** — pause or purge the learning-loop profile |
-| `tackle-check` | **Mechanical gate** — shipped POSIX-sh runner: `lint <workspace>` (10 lint rows), `catalog` (eval scenarios ⊆ registry), `done-signal <point>` (run the point's exit-gate); flip requires its green when the workspace flag `tackle-check-gate: on` |
+| `tackle-check` | **Mechanical gate** — shipped POSIX-sh runner: `lint <workspace>` (12 lint rows), `catalog` (eval scenarios ⊆ registry), `done-signal <point>` (run the point's exit-gate); flip requires its green when the workspace flag `tackle-check-gate: on` |
 | "resume / retomá `<x>`" | **Resume** — re-enter a plan |
 | "how is `<x>` going?" / "status" | **Status** — read-only digest |
 | "what plans are there?" | **List** — one line per initiative |
 | "what's next?" / "qué sigue" | **Next** — the next point's pre-attack summary |
-| "migrate / upgrade `<x>`" | **Migrate** — bring an old plan to the current methodology (checklist chain v2.0 → v5.1 in `references/guides/migrate.md`) |
+| "migrate / upgrade `<x>`" | **Migrate** — bring an old plan to the current methodology (checklist chain v2.0 → v5.2 in `references/guides/migrate.md`) |
 | "mejorá este plan" / "improve this plan" | **Improve** — upgrade a Tackle plan or convert an unstructured plan |
 
 **The Create pipeline:** Intake → Gate (None/Lite/Full) → Location & gitignore → Scaffold → Briefing → Architecture → Stabilize contract → Decompose → Lint → Handoff.
@@ -124,7 +124,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 
 **Template-resolution stack:** overrides → presets → sdd → core.
 
-**Version:** Tackle 5.1.0. See `references/CHANGELOG.md` for what's new.
+**Version:** Tackle 5.2.0. See `references/CHANGELOG.md` for what's new.
 
 ## What it produces
 
@@ -137,6 +137,7 @@ All artifacts are `.md` files under `docs/plans/<initiative>/`:
 | `plan` | Objective, non-goals, point decomposition + dependency graph |
 | `board` | Canonical status board for execution (🔴🟡⏸🟢⚪ plus a trailing **Confidence** column carrying the derived evidence grade; do not duplicate status in the plan) |
 | `log` | Append-only session log (canonical state) |
+| `usage` | Token/model/effort ledger — one row per role run, as the harness exposes them (`n/a`, never estimated); mined by the retro's cost analysis (born ≥ 5.2) |
 | `todo` | Planning-readiness checklist |
 | `questions` | Single source of open questions |
 | `decisions` | Closed decisions register |
