@@ -25,6 +25,33 @@ A migrated workspace MUST satisfy the full-adoption contract F-1..F-8; each line
 6. Lint + checkpoint.
 7. Record migration `D-xx` + log entry + bump stamp.
 
+## v5.1 → v5.2 checklist
+
+Run these when migrating a plan created with Tackle 5.1.x:
+
+1. **Add the usage ledger** — copy `references/usage.tmpl.md` into the workspace as
+   `usage.md`; from now on every role run (point roles, planning sessions, retro) appends
+   one row per the template's schema (Point/Role/Tier/Model/Effort/Tokens in/Tokens
+   out/Session; column meanings are documented in the template's header prose).
+   Historical rows are never backfilled — the ledger starts at adoption.
+2. **Add the capability lines + effort map** — the workspace `AGENTS.md` §Harness map gains
+   the `usage-reporting: supported | partial | unsupported` row; §Model map gains the
+   effort table (`low / medium / high / max` bound to the harness's concrete settings) and
+   the `effort-binding: supported | unsupported` line under `model-binding`. `partial` =
+   cumulative total only (record it in Tokens in, `n/a` out); `unsupported` = `n/a` token
+   fields, rows still appended; recording is informative, never gating.
+3. **Note the Effort field + role defaults** — point briefings may declare
+   `**Effort**: inherit | low | medium | high | max` (overriding the `team.tmpl.md` role
+   defaults). Binds at the next point execution — existing briefings need no rewrite.
+4. **Note lint rows 11–12** — the runner now enforces usage rows for done points (row 11;
+   guard-skips until `usage.md` exists — item 1 creates it) and the effort vocabulary
+   (row 12). Run `sh tackle-check lint <workspace>` once after item 1.
+5. **Note the runner parser change** — `tackle-check done-signal` now extracts both
+   `**Run**:` and `**Done-signal**:` labels and FAILS on empty extraction (no silent
+   green); review-gate briefings are unaffected.
+6. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a
+   `log.md` entry, and bump the plan stamp.
+
 ## v5.0 → v5.1 checklist
 
 Run these when migrating a plan created with Tackle 5.0.x:
