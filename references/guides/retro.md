@@ -14,8 +14,25 @@ Every metric carries a copy-paste recipe; the recipes live in the template's Met
 - **Reopened points** — `🟢 → 🟡` transitions in `log.md` (regression-sweep reopenings included).
 - **Comprehension debt** — points that flipped 🟢 with no human review recorded in the log: mechanically done, humanly unread. High comprehension debt is a warning even when the board is all green.
 - **Gate accuracy** — the gate recorded at intake vs actual effort (points executed, sessions spent): Full-gate initiatives closed in ≤ 2 sessions are over-planning candidates; Lite-gate ones spanning 3+ sessions are under-planning candidates.
+- **Tokens by phase** — PLAN / EXEC / RETRO token totals from `usage.md`, with the `n/a`-row count so coverage honesty survives aggregation.
+- **Tokens by model** — per-model token totals from `usage.md`: which concrete models actually consumed the budget.
+- **Tokens per point** — per-point token totals from `usage.md`: what each point actually cost to execute.
 
 **Lite plans** (no `board.md`): the retro still runs — board-derived metrics report `n/a`; log-derived ones stand.
+
+## Cost analysis
+
+Mined from the three token recipes (Tokens by phase / Tokens by model / Tokens per point), never remembered; report the `n/a`-row counts alongside the totals. Report `n/a` for the whole section when the workspace has no `usage.md`.
+
+### Conclusions
+
+- **Top-consuming points vs their bindings** — rank points by Tokens per point and compare each against its bound tier/effort: did the binding match the actual cost, or did a high-tier binding sit on a low-token point (and vice versa)?
+- **Phase shares** — the PLAN / EXEC / RETRO split from Tokens by phase: which phase consumed the budget, and does that match where the plan's difficulty actually lived?
+
+### Recommendations
+
+- **Downgrade candidates** — points whose actual work matched a lower tier/effort than bound (few tokens on an expensive binding): propose the cheaper binding for the next plan of that shape.
+- **Recurring shapes worth re-defaulting** — shapes that consistently consume above or below their role default effort: candidates for the role→effort defaults in `team.md`.
 
 ## What worked / what didn't / lessons
 

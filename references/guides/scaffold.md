@@ -16,6 +16,8 @@ Never silently skip this question.
 
 Copy templates from `references/` and fill `{{PLACEHOLDERS}}`. Delete unused sections. Never leave empty slots you won't fill.
 
+Core copies include `usage.md` from `usage.tmpl.md` (every workspace born ≥ 5.2).
+
 ## Depth artifacts
 
 Create only when their trigger fires:

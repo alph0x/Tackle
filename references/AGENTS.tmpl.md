@@ -21,6 +21,7 @@ docs/plans/{{slug}}/
 ├── plan.md        ← objective, non-goals, point decomposition, acceptance criteria, risks
 ├── board.md       ← canonical status board for execution
 ├── log.md         ← append-only session log (CANONICAL STATE SOURCE)
+├── usage.md       ← token/model/effort ledger (one row per role run)
 ├── todo.md        ← planning-readiness checklist per point
 ├── questions.md   ← single source of questions
 ├── decisions.md   ← closed decisions register (D-01…, single source)
@@ -75,6 +76,7 @@ Tackle is harness-agnostic. This workspace records the concrete tools this envir
 | Spawn parallel agents | {{Claude Code multi-agent, `task` subagent, manual fan-out, etc.}} | |
 | Git operations | {{`git`, GitHub CLI, IDE git UI, etc.}} | |
 | Agent messaging | {{agent messaging channel, mailbox file, manual relay via the report, etc.}} | `agent-messaging: supported \| unsupported` |
+| Usage reporting | {{token usage the harness exposes — per-run in/out split, cumulative total, or none}} | `usage-reporting: supported \| partial \| unsupported` — `partial`: cumulative total, no in/out split (record it in **Tokens in**, `n/a` in **Tokens out**); `unsupported`: no token exposure — rows still appended, token fields `n/a` |
 
 If this workspace is shared across agents, fill this map once and never assume a specific IDE, model, or vendor tool.
 
@@ -90,7 +92,12 @@ Tackle tiers are abstract; this map records which concrete model this harness of
 | `standard` | {{concrete standard-tier model name}} | |
 | `frontier` | {{concrete frontier-tier model name}} | |
 
+| Effort | Concrete setting in this harness | Notes |
+|---|---|---|
+| `low` / `medium` / `high` / `max` | (filled per workspace) | |
+
 **model-binding: supported | unsupported** <!-- harness capability: can a spawn pin a concrete model for its tier? -->
+**effort-binding: supported | unsupported** <!-- harness capability: can a spawn bind an effort level? unsupported = effort levels advisory only; deviations noted in log.md, never blocking -->
 
 If `unsupported`, this map is advisory only: spawn at whatever model the harness provides and note every deviation from the map in `log.md`.
 
@@ -103,6 +110,7 @@ tracking alive, when you pick up, finish, pause, or abandon a point you MUST:
 2. Append a `log.md` entry with an updated State snapshot. Never rewrite old entries.
 3. Record questions answered along the way as `D-xx` in `decisions.md`; mark the `Q-xx` resolved.
 4. If the code drifted from the point's `file:line` claims, update that point's Context.
+5. When you close a role run (point role, planning session, retro), append one row to `usage.md` per §1. Record only values the harness exposes; anything else is `n/a`, never estimated. Recording is **informative, never gating** — no 🟢 flip waits on token data (missing data ⇒ `n/a` fields, not a missing row).
 
 A merged PR with a stale status board is a broken handoff — the board is part of the work.
 

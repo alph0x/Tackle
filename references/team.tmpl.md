@@ -12,18 +12,20 @@ Teams bind roles to **model tiers**, never to vendor models. Three tiers, abstra
 
 Role→tier defaults (a point briefing may override):
 
-| Role | Tier |
-|---|---|
-| Driver | standard |
-| Reviewer / Quality Guardian / Coordinator | standard |
-| Spec Reader | fast |
-| Verifier / Red-Teamer | frontier |
-| Checker (maker/checker) | frontier attempted — see below |
-| Specialists (Squad) | standard |
+| Role | Tier | Effort |
+|---|---|---|
+| Driver | standard | medium |
+| Reviewer / Quality Guardian / Coordinator | standard | medium |
+| Spec Reader | fast | low |
+| Verifier / Red-Teamer | frontier | high |
+| Checker (maker/checker) | frontier attempted — see below | high |
+| Specialists (Squad) | standard | medium |
 
-Grounding reads, lint, drill mechanics: `fast`.
+Grounding reads, lint, drill mechanics: `fast`, effort `low`.
 
 Agents are spawned **per role at point execution**, each on its role's bound tier — there are no predetermined agents. The workspace `AGENTS.md` §Model map binds tiers to the concrete models the harness offers; core templates never name vendor models.
+
+Effort levels are abstract like tiers — `low / medium / high / max` — never harness-specific setting names; they are bound per workspace in `AGENTS.md` §Model map. `effort-binding: supported | unsupported` — `unsupported` ⇒ effort levels are advisory only, deviations noted in `log.md`, never blocking. A point briefing may override a role default via its `**Effort**:` field.
 
 **Checker ≠ maker (best-effort, never blocks):** the checker SHOULD run on a different tier than the maker. If the harness cannot bind or isolate tiers, the checker runs on whatever is available and its evidence line in `log.md` records `model-binding: unavailable`. Compliance is recorded, never enforced.
 

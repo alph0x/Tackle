@@ -12,6 +12,11 @@ Written at initiative close (or mid-flight as a partial retro — say so here) b
 | Reopened points | `grep -n "🟢 → 🟡" log.md` | {{...}} |
 | Comprehension debt | `awk -F'\|' '/🟢/ {print $2}' board.md` — for each listed point, check `log.md` for its checker evidence block; **real debt** = 🟢 with NO checker evidence; **accepted debt (informational)** = checker-verified but no human review line (`grep -in "review" log.md`) — report both counts separately | {{...}} |
 | Gate accuracy | `grep -in "gate" log.md plan.md` — read the gate recorded at intake (session 1 / plan header); `grep -cE "^## [0-9]{4}-" log.md` sessions spent; `grep -c "🟢" board.md` points executed (`n/a` in Lite) — Full gate closed in ≤ 2 sessions = over-planning candidate; Lite gate spanning 3+ sessions = under-planning candidate | {{...}} |
+| **Tokens by phase** | `awk -F'|' '$2 ~ /PLAN|P-[0-9]|RETRO/ {na=($7 ~ /n\/a/ || $8 ~ /n\/a/) ? na+1 : na; if($2 ~ /PLAN/) {pi+=$7; po+=$8} else if($2 ~ /RETRO/) {ri+=$7; ro+=$8} else {ei+=$7; eo+=$8}} END{printf "PLAN %d/%d\nEXEC %d/%d\nRETRO %d/%d\nn/a-rows %d\n", pi,po,ei,eo,ri,ro,na}' usage.md` | {{...}} |
+| **Tokens by model** | `awk -F'|' '$2 ~ /PLAN|P-[0-9]|RETRO/ {m=$5; gsub(/^ +| +$/,"",m); t[m]+=$7+$8; if($7 ~ /n\/a/) na[m]++} END{for(k in t) printf "%s %d (n/a-rows %d)\n", k, t[k], na[k]+0}' usage.md` | {{...}} |
+| **Tokens per point** | `awk -F'|' '$2 ~ /PLAN|P-[0-9]|RETRO/ {p=$2; gsub(/^ +| +$/,"",p); t[p]+=$7+$8; if($7 ~ /n\/a/) na[p]++} END{for(k in t) printf "%s %d (n/a-rows %d)\n", k, t[k], na[k]+0}' usage.md` | {{...}} |
+
+Usage metrics report `n/a` when the workspace has no `usage.md` (same convention as Lite board metrics).
 
 ## What worked
 
