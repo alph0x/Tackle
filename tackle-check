@@ -2,9 +2,9 @@
 # tackle-check — mechanical gates for Tackle workspaces (Tackle 5.0)
 #
 # Usage:
-#   tackle-check lint <workspace>         run lint rows 1-10 on a plan workspace
+#   tackle-check lint <workspace>         run lint rows 1-12 on a plan workspace
 #   tackle-check catalog                  verify eval/scenarios/ ⊆ eval/README.md
-#   tackle-check done-signal <briefing>   run the point's literal **Run** exit-gate
+#   tackle-check done-signal <briefing>   run the point's literal **Run**/**Done-signal** exit-gate
 #
 # POSIX sh, zero dependencies, harness-agnostic (convention 10). Composes the
 # documented lint rows from references/guides/lint-spec.md — the runner IS the
@@ -69,7 +69,7 @@ row7() { # every SEALED: D-xx resolves in decisions.md
 }
 
 row8() { # cross-initiative Touches collision (warn severity)
-  out=$(awk 'FILENAME ~ /board/ && /🟡/ {split(FILENAME,w,"/"); active[w[3]]=1} /Touches/ {split(FILENAME,w,"/"); ws=w[3]; while(match($0,/`[^`]+`/)){p=substr($0,RSTART+1,RLENGTH-2); if(seen[p] && seen[p]!=ws && active[seen[p]] && active[ws]) print "collision: " p " (" seen[p] " + " ws ")"; seen[p]=ws; $0=substr($0,RSTART+RLENGTH)}}' docs/plans/*/board.md docs/plans/*/points/*.md 2>/dev/null)
+  out=$(awk 'BEGIN{FS=sprintf("%c",124)} FILENAME ~ /board/ && $2 ~ /P-[0-9]/ && NF>3 {for(i=2;i<=NF;i++){if(index($i,"🟡")){split(FILENAME,w,"/"); active[w[3]]=1}}} /Touches/ {split(FILENAME,w,"/"); ws=w[3]; while(match($0,/`[^`]+`/)){p=substr($0,RSTART+1,RLENGTH-2); if(seen[p] && seen[p]!=ws && active[seen[p]] && active[ws]) print "collision: " p " (" seen[p] " + " ws ")"; seen[p]=ws; $0=substr($0,RSTART+RLENGTH)}}' docs/plans/*/board.md docs/plans/*/points/*.md 2>/dev/null)
   [ -z "$out" ]
 }
 
@@ -90,6 +90,21 @@ row10() { # done/blocked board rows carry an E-grade
   [ -z "$out" ]
 }
 
+row11() { # done points carry a usage.md row (guard-skip pre-5.2 workspaces without usage.md)
+  [ -f "$ws/usage.md" ] || return 0
+  miss=0
+  for id in $(awk 'BEGIN{FS=sprintf("%c",124)} $2 ~ /P-[0-9]/ && NF>3 {for(i=2;i<=NF;i++){if(index($i,"🟢")){g=$2; gsub(/^ +| +$/,"",g); print g; break}}}' "$ws/board.md" 2>/dev/null); do
+    grep -q "| $id " "$ws/usage.md" || { echo "done point without usage row: $id"; miss=1; }
+  done
+  [ "$miss" -eq 0 ]
+}
+
+row12() { # **Effort**: declarations use the §3 vocabulary (inherit|low|medium|high|max)
+  [ -f "$ws/plan.md" ] || return 0
+  out=$(awk '/^- \*\*Effort\*\*: / && $0 !~ /^- \*\*Effort\*\*: (inherit|low|medium|high|max)/ {print FILENAME ":" FNR ": " $0}' "$ws"/points/*.md 2>/dev/null)
+  [ -z "$out" ]
+}
+
 lint() {
   ws="$1"
   report "row 1 placeholders ($ws)" "$(row1; echo $?)"
@@ -102,6 +117,8 @@ lint() {
   report "row 8 Touches collision (warn)" "$(row8; echo $?)"
   report "row 9 loop budgets ($ws)" "$(row9; echo $?)"
   report "row 10 grades ($ws)" "$(row10; echo $?)"
+  report "row 11 usage rows ($ws)" "$(row11; echo $?)"
+  report "row 12 effort vocabulary ($ws)" "$(row12; echo $?)"
   [ "$fail" -eq 0 ]
 }
 
@@ -115,11 +132,15 @@ catalog() {
   [ "$miss" -eq 0 ] || fail=1
 }
 
-done_signal() { # run the literal **Run** commands from a point briefing
+done_signal() { # run the literal **Run**/**Done-signal** commands from a point briefing
   bf="$1"
   tmp=$(mktemp) || return 1
-  sed -n 's/^.*\*\*Run\*\*: `\([^`]*\)`.*$/\1/p' "$bf" > "$tmp"
+  sed -n -e 's/^.*\*\*Run\*\*: `\([^`]*\)`.*$/\1/p' -e 's/^.*\*\*Done-signal\*\*: `\([^`]*\)`.*$/\1/p' "$bf" > "$tmp"
   status=0
+  if [ ! -s "$tmp" ]; then
+    echo "FAIL: no done-signal commands extracted ($bf)"
+    status=1
+  fi
   while IFS= read -r cmd; do
     # self-referential guard: running done-signal on the briefing that declares it
     # would recurse without a base case (P-01 fork bomb, 2026-08-03) — fail loud.
