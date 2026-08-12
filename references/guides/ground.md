@@ -7,7 +7,9 @@ Triggered by `/tackle-ground`. Run this before `/tackle-verify` or `/tackle-impl
 ## Process
 
 1. **Collect citations** — scan `plan.md` §5 and every `points/P-*.md` Context for `path/to/file:NN` references.
-2. **Drift-check each one** — for every anchored citation `path:NN — "fragment"`, run `sed -n 'NNp' path | grep -Fq "fragment"` → exit 0 = grounded; anything else = **stale** ⇒ the point is **ungrounded**. Zero model judgment — the check decides.
+2. **Drift-check each one** — for every anchored citation `path:NN — "fragment"`, run the two-phase check. Zero model judgment — the check decides.
+   - **Phase 1 — line check**: `sed -n 'NNp' path | grep -Fq "fragment"` → exit 0 = **grounded**. Nothing else runs.
+   - **Phase 2 — whole-file fallback** (only on phase-1 failure): count the lines in `path` containing the fragment. Exactly 1, at line MM ⇒ **drifted → re-anchor**: rewrite the citation `path:NN` → `path:MM` in place (literal string replacement, never regex), zero model judgment; the citation is then grounded. 0 ⇒ **stale** ⇒ the point is **ungrounded**. More than 1 ⇒ **ambiguous** ⇒ flagged with the match count; the point is ungrounded until a more specific fragment is chosen.
 3. **Record the result** in `log.md`:
    - List every citation read.
    - Flag any citation that could not be resolved (file missing, line out of range, malformed).
@@ -21,7 +23,7 @@ Append to `log.md`:
 ## /tackle-ground — {{datetime}}
 Last-verified: {{YYYY-MM-DD}}
 
-- P-01: grounded (`src/foo.ts:42 — "return cachedValue"` ✓ · `src/bar.ts:10 — "export const retries"` ✓)
+- P-01: grounded (`src/foo.ts:42 — "return cachedValue"` ✓ · `src/bar.ts:10→23 — "export const retries"` re-anchored ✓)
 - P-02: ungrounded (`src/missing.ts:5 — "init()"` stale)
 ```
 

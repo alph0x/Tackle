@@ -72,7 +72,7 @@ Planning is self-contained: intake, simplicity, and architecture guidance live i
 
 1. **Log append-only** — one entry per session; never rewrite history.
 2. **Questions only in `questions.md`**; **decisions only in `decisions.md`**.
-3. **Ground every claim in `file:line`** — a point is **ungrounded** until every citation is read this session; ungrounded points can't be ready or executed.
+3. **Ground every claim in `file:line`** — a point is **ungrounded** until every citation passes the drift check (with re-anchor) recorded by the newest ground entry in `log.md`; ungrounded points can't be ready or executed.
 4. **One point = one responsibility + one runnable done-signal**.
 5. **Contract supersede-first**: implement `design-contract.md` as written; deviations require a `D-xx` first.
 6. **Self-documenting code**: Clean Code + SOLID; no explanatory inline comments.

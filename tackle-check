@@ -5,7 +5,7 @@
 #   tackle-check lint <workspace>         run lint rows 1-12 on a plan workspace
 #   tackle-check catalog                  verify eval/scenarios/ ⊆ eval/README.md
 #   tackle-check done-signal <briefing>   run the point's literal **Run**/**Done-signal** exit-gate
-#
+#   tackle-check ground <workspace>       two-phase drift check; re-anchors drifted citations
 # POSIX sh, zero dependencies, harness-agnostic (convention 10). Composes the
 # documented lint rows from references/guides/lint-spec.md — the runner IS the
 # rows; the spec is its source of truth. Exit 0 = all gates green; any FAIL
@@ -161,12 +161,62 @@ done_signal() { # run the literal **Run**/**Done-signal** commands from a point 
   [ "$status" -eq 0 ] || fail=1
 }
 
+ground() { # two-phase drift check + in-place re-anchor (design-contract §Runner surface)
+  ws="$1"
+  gfail=0
+  for f in "$ws"/points/*.md "$ws"/plan.md "$ws"/reference.md; do
+    [ -f "$f" ] || continue
+    tmp=$(mktemp) || return 1
+    out=$(awk -v ws="$ws" -v tmp="$tmp" '
+      {
+        if (match($0, /[A-Za-z0-9_\/.-]+\.[a-z]+:[0-9]+(-[0-9]+)? — "[^"]+"/)) {
+          c = substr($0, RSTART, RLENGTH)
+          p = c; sub(/:.*/, "", p)
+          n = c; sub(/^[^:]*:/, "", n); sub(/-[0-9]+$/, "", n); n = n + 0
+          split(c, q, "\""); s = q[2]
+          ok = 0; f2 = p; i = 0
+          while ((getline L < f2) > 0) { i++; if (i == n && index(L, s)) ok = 1 }
+          close(f2)
+          if (i == 0) { f2 = ws "/" p; while ((getline L < f2) > 0) { i++; if (i == n && index(L, s)) ok = 1 } close(f2) }
+          if (ok) {
+            print "grounded: " c
+          } else {
+            cnt = 0; mm = 0; i = 0
+            while ((getline L < f2) > 0) { i++; if (index(L, s)) { cnt++; mm = i } }
+            close(f2)
+            if (cnt == 1) {
+              old = c; new = p ":" mm " — \"" s "\""
+              line = $0; outl = ""
+              while ((k = index(line, old)) > 0) { outl = outl substr(line, 1, k - 1) new; line = substr(line, k + length(old)) }
+              outl = outl line
+              $0 = outl
+              print "re-anchored: " p ":" n "->" mm
+            } else if (cnt == 0) {
+              print "stale: " c; nfail++
+            } else {
+              print "ambiguous: " c " (" cnt " matches)"; nfail++
+            }
+          }
+        }
+        print $0 > tmp
+      }
+      END { exit (nfail ? 1 : 0) }
+    ' "$f" 2>/dev/null)
+    astatus=$?
+    [ -n "$out" ] && printf '%s\n' "$out"
+    if [ "$astatus" -ne 0 ]; then gfail=1; fi
+    if cmp -s "$tmp" "$f"; then rm -f "$tmp"; else mv "$tmp" "$f"; fi
+  done
+  [ "$gfail" -eq 0 ] || fail=1
+}
+
 cmd="$1"
 shift
 case "$cmd" in
   lint) lint "$1" ;;
   catalog) catalog ;;
   done-signal) done_signal "$1" ;;
-  *) echo "usage: tackle-check lint <workspace> | catalog | done-signal <briefing>" >&2; exit 2 ;;
+  ground) ground "$1" ;;
+  *) echo "usage: tackle-check lint <workspace> | catalog | done-signal <briefing> | ground <workspace>" >&2; exit 2 ;;
 esac
 exit "$fail"

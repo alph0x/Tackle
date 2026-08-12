@@ -24,7 +24,7 @@
 ## Context (grounded)
 - {{Why this point exists; what part of the system it touches.}}
 - `{{path/File.ext:NN}} — "{{literal fragment}}"` — {{relevant current code/behavior}}.
-  <!-- Anchored citation: fragment = verbatim substring of line NN, ≤ 60 chars, unique on that line, no double quotes (pick another fragment if unavoidable); a range `NN-MM` anchors to NN. -->
+  <!-- Anchored citation: fragment = verbatim substring of line NN, ≤ 60 chars, no double quotes, and SHOULD be unique in the file (the re-anchor check needs exactly one match; pick another fragment if unavoidable); a range `NN-MM` anchors to NN. -->
 - Deeper refs: {{`reference.md` §x · `specs/...md` · diagram}}.
 
 ## Non-goals

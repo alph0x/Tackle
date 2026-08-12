@@ -109,7 +109,7 @@ tracking alive, when you pick up, finish, pause, or abandon a point you MUST:
 1. Set its status in `board.md` — fixed vocabulary: 🔴 not started · 🟡 in progress · ⏸ blocked · 🟢 done · ⚪ skipped (optional slice not executed, with one-line reason).
 2. Append a `log.md` entry with an updated State snapshot. Never rewrite old entries.
 3. Record questions answered along the way as `D-xx` in `decisions.md`; mark the `Q-xx` resolved.
-4. If the code drifted from the point's `file:line` claims, update that point's Context.
+4. If the code drifted from the point's `file:line` claims, re-anchor the citations mechanically per the two-phase rule (`ground.md` step 2) before anything else; hand-edit only stale or ambiguous citations.
 5. When you close a role run (point role, planning session, retro), append one row to `usage.md` per §1. Record only values the harness exposes; anything else is `n/a`, never estimated. Recording is **informative, never gating** — no 🟢 flip waits on token data (missing data ⇒ `n/a` fields, not a missing row).
 
 A merged PR with a stale status board is a broken handoff — the board is part of the work.
