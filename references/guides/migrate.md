@@ -25,6 +25,31 @@ A migrated workspace MUST satisfy the full-adoption contract F-1..F-8; each line
 6. Lint + checkpoint.
 7. Record migration `D-xx` + log entry + bump stamp.
 
+## v5.2 → v5.3 checklist
+
+Run these when migrating a plan created with Tackle 5.2.x:
+
+1. **Note the two-phase drift check** — `ground.md` step 2 is now two-phase: the line
+   check first; on failure, a whole-file fallback counts matches — exactly one ⇒ the
+   citation is **re-anchored** mechanically (`path:NN` → `path:MM`, literal rewrite, zero
+   model judgment); zero ⇒ stale (unchanged behavior); more than one ⇒ ambiguous, flagged
+   with the match count. Staleness is decided by content, never session memory.
+2. **Note `tackle-check ground <workspace>`** — the runner's first writing gate: scans
+   `plan.md`/`reference.md`/`points/*.md`, re-anchors drifted citations in place (staged,
+   `cmp -s`-gated), prints one line per citation, exit 0 iff zero stale and zero
+   ambiguous. Lint row 4 stays read-only and names it as the fix path. Existing
+   citations with line-accurate fragments are untouched.
+3. **Raise fragment uniqueness** — new point briefings should pick a fragment appearing
+   on exactly one line of its file (the re-anchor needs a unique match); existing
+   fragments keep grounding on their cited line (phase 1), only their re-anchorability
+   changes.
+4. **Note the executor-contract wording** — `AGENTS.tmpl.md` item 4: on drift, re-anchor
+   mechanically per the two-phase rule before hand-editing anything.
+5. **Run the sweep once** — `sh tackle-check lint <workspace>`; then `sh tackle-check
+   ground <workspace>` if any citation is stale.
+6. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a
+   `log.md` entry, and bump the plan stamp.
+
 ## v5.1 → v5.2 checklist
 
 Run these when migrating a plan created with Tackle 5.1.x:

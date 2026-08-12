@@ -2,7 +2,7 @@
 
 A model-agnostic planning and execution skill that turns an initiative into a durable action plan — self-contained points a cold agent can resolve in a fresh session — and executes that plan point-by-point when you ask it to.
 
-**Tackle 5.2.0: the skill meters itself.** Every workspace carries a `usage.md` ledger — each role run records model, tier, effort, and tokens as the harness exposes them (`n/a`, never estimated), and the retro mines what a plan cost from 0 to implemented with downgrade recommendations. Points gain an effort dial (`low/medium/high/max`) next to model tiers; the runner lints rows 1–12 and its done-signal executor extracts both labels and fails on empty extraction.
+**Tackle 5.3.0: self-healing citations.** Anchored citations re-anchor mechanically when the code they cite moves — `tackle-check ground <workspace>` rewrites drifted line numbers by content match, never by judgment. Fragments should be unique per file; the runner gates workspaces with rows 1–12 and its done-signal executor.
 
 ## What it does
 
@@ -124,7 +124,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 
 **Template-resolution stack:** overrides → presets → sdd → core.
 
-**Version:** Tackle 5.2.0. See `references/CHANGELOG.md` for what's new.
+**Version:** Tackle 5.3.0. See `references/CHANGELOG.md` for what's new.
 
 ## What it produces
 

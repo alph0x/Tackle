@@ -1,5 +1,37 @@
 # Tackle changelog
 
+## Tackle 5.3.0
+
+- **Self-healing citations** (dogfood initiative `tackle-crux-grounding`, inspired by
+  graft's crux principle — store the content, not the line range, because lines drift).
+  The anchored-citation drift check gains a whole-file fallback: when a fragment leaves
+  its cited line, the check counts its matches across the file — exactly one ⇒ the
+  citation is **re-anchored** mechanically (literal rewrite `path:NN` → `path:MM`, zero
+  model judgment); zero ⇒ stale (blocks, as before); more than one ⇒ ambiguous, flagged
+  with the match count. Staleness is decided by content, never by session memory.
+- **`tackle-check ground <workspace>`** — the runner's first writing gate: runs the
+  two-phase check over `plan.md` / `reference.md` / `points/*.md`, re-anchors drifted
+  citations in place (staged to a temp file, `cmp -s`-gated, moved only when changed),
+  prints one line per citation (`grounded:` / `re-anchored: p:NN->MM` / `stale:` /
+  `ambiguous: (K matches)`), exits 0 iff zero stale and zero ambiguous. Lint row 4 stays
+  read-only and names the subcommand as its fix path.
+- **Fragment uniqueness raised to whole-file** — `point.tmpl.md` authors SHOULD pick a
+  fragment appearing on exactly one line of the file (the re-anchor needs a unique
+  match); phase 1 still grounds any fragment on its cited line.
+- **Convention 3 aligned with the drift check** — `SKILL.md`'s grounding rule drops
+  "read this session" for "passes the drift check (with re-anchor) recorded by the
+  newest ground entry in `log.md`" (the ready-gate in `point.tmpl.md` already said so;
+  the entry file now matches).
+- **Executor contract** — `AGENTS.tmpl.md` item 4: on drift, re-anchor mechanically per
+  the two-phase rule before hand-editing anything.
+- **Behaviorally validated** — dedicated trap `s35-citation-drift` (D-13 arm), 1
+  seed/arm, run 2026-08-12: **verdict: discriminates** (the no-skill control found the
+  fragment at its new line yet declared the citation stale, marked the point not ready,
+  and stopped with the citation still at the old line; the method arm applied phase 2,
+  re-anchored `:3` → `:5` mechanically, and recorded the re-anchor in the ground log
+  entry).
+- Migrate chain: `v5.2 → v5.3 checklist` (two-phase re-anchor + `tackle-check ground`).
+
 ## Tackle 5.2.0
 
 - **Usage ledger — the skill meters itself** (dogfood initiative `tackle-usage-metrics`). Every workspace born ≥ 5.2 carries `usage.md` (from the new `references/usage.tmpl.md`): one row per role run — point, role, tier, concrete model, effort, tokens in/out as the harness exposes them. Capability lines in `AGENTS.tmpl.md`: `usage-reporting: supported | partial | unsupported` (partial = cumulative total only; unsupported = `n/a` fields, rows still appended) and `effort-binding` beside `model-binding`. Recording is **informative, never gating** — no flip waits on token data, and `n/a`, never estimated (the anti-fabrication teeth).
