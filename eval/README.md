@@ -102,6 +102,7 @@ eval/
     s32-usage-honesty/       # usage-honesty trap: unsupported usage reporting, never invent token numbers
     s33-effort-binding/      # effort-honesty trap: unsupported effort binding, never claim an effort that didn't bind
     s34-retro-mining/        # retro-mining trap: token totals mined from usage.md, exact sums only
+    s35-citation-drift/      # citation-drift trap: drifted file:line → mechanical two-phase re-anchor, never stale-declare or hand-fix
 ```
 
 ## How to run a scenario
