@@ -33,13 +33,15 @@ Per-citation, row 4 is equivalent to the canonical anchored-citation check (`sed
 
 Before any version tag, run every lint row on every active workspace (`docs/plans/*/`) plus the skill's own done-signals for the release; the tag waits on a clean sweep (`lint: N/N checks passed` everywhere, all done-signals passing). Any failure blocks the tag until fixed or explicitly waived by the user.
 
+The shipped runner composes the sweep as one command: `tackle-check sweep` runs the self-lint gates 1–7 below, `catalog`, and the lint rows over every workspace (active workspaces — boards with a 🟡 data row — gate the exit code; closed ones report WARN, non-gating), closing with `sweep: N/M gates passed`. The documented rows and gates remain the fallback for hosts without the runner.
+
 D-13 trigger: if the release includes any change that deletes normative content from `SKILL.md` or a guide, the sweep additionally requires (1) a rule-inventory diff — every normative one-liner extracted before the edit must be greppable after, in `SKILL.md` or its named guide — and (2) one behavioral eval run (trap scenario, method arm = edited file) proving the skill still avoids the trap. The eval run must be a **trap dedicated to the feature being shipped** (e.g. s23-flip-gate for the double gate), not a generic pre-existing scenario — text-presence (greps) doesn't prove behavior, and a behavioral contract feature needs its own trap (proven by s23: method denied the flip without mechanical green, control flipped E1).
 
 Migrate-chain currency: if the release changes any workspace-level contract (`AGENTS.tmpl.md`, status vocabulary, artifact names, closure protocol), the migrate guide MUST gain a checklist for the immediately previous version in the same release — a version bump without its migrate checklist is a release defect (precedent: v3.0→v3.1 and v3.3→v3.4 were both missed once).
 
 ### Skill self-lint gates
 
-The shipped skill lints itself in the same sweep. Run all four from the repo root; each stays silent and exits 0 on pass — any echoed line blocks the tag until fixed. Every version value derives from the files; no gate hardcodes one.
+The shipped skill lints itself in the same sweep. Run all seven from the repo root; each stays silent and exits 0 on pass — any echoed line blocks the tag until fixed. Every version value derives from the files; no gate hardcodes one.
 
 1. **Word budget** — `SKILL.md` ≤ 1100 words:
    `[ "$(wc -w < SKILL.md)" -le 1100 ] || echo "SKILL.md over budget"`
@@ -53,6 +55,8 @@ The shipped skill lints itself in the same sweep. Run all four from the repo roo
    `[ "$(grep -oE 'Tackle [0-9]+\.[0-9]+\.[0-9]+' README.md | sort -u)" = "Tackle $(awk '/^\*\*Tackle /{gsub(/\*/,"",$2); print $2; exit}' SKILL.md)" ] || echo "README stamp mismatch"`
 6. **Artifact-manifest currency** — the delivery channel lists exactly the files that ship (added 5.0.1 after `update.md` replaced only `SKILL.md` + `references/` while the artifact included `tackle-check` — a release whose channel doesn't carry an artifact ships green and installs broken; the runner's own `done-signal`/lint compose the same rows):
    `for f in SKILL.md references tackle-check; do grep -q "$f" references/guides/update.md || echo "update.md missing artifact: $f"; done`
+7. **README content claims** — the README's self-description matches the files it describes (added 5.4.0 after the 5.2.0 pre-release review caught four content defects gate 5's stamp check can't see: lint row count, scenario counts, migrate-chain head, runner subcommands; the row-count, gate-count, chain-head and subcommand checks echo nothing and exit on the final grep, so any echoed line blocks the tag):
+   `` n=$(grep -c '^row[0-9]' tackle-check); grep -qF "rows 1–$n" README.md || echo "missing rows 1–$n"; grep -qF "($n lint rows)" README.md || echo "missing ($n lint rows)"; c=0; m=0; for d in eval/scenarios/*/; do [ -d "$d" ] || continue; c=$((c+1)); s=$(basename "$d"); s=${s%%-*}; s=${s#s}; [ "$s" -gt "$m" ] && m=$s; done; grep -qF "**$c scenarios** (" README.md || echo "scenario count off (**$c scenarios** ())"; grep -qF "\`s1\`–\`s$m\`" README.md || echo "scenario range off (\`s1\`–\`s$m\`)"; v=$(awk '/^\*\*Tackle /{gsub(/\*/,"",$2); print $2; exit}' SKILL.md); mm=${v%.*}; grep -qF "checklist chain v2.0 → v$mm" README.md || echo "migrate-chain head off (v2.0 → v$mm)"; row=$(grep 'Mechanical gate' README.md); for t in lint catalog done-signal ground sweep; do case "$row" in *"\`$t"*) ;; *) echo "mode row missing \`$t";; esac; done; g=$(awk '/^### Skill self-lint gates/{f=1;next} f && /^##/{exit} f && /^[0-9]+\. /{n++} END{print n+0}' references/guides/lint-spec.md); grep -qF "$g shipped-skill gates" README.md || echo "self-lint gate count off ($g shipped-skill gates)" ``
 
 Gate 4 derives the immediately previous version from the stamp: a minor bump requires exactly `v<x.(y-1)> → v<x.y>`; a major bump (`y` = 0) accepts the previous major's last minor on the left side — e.g. releasing 4.0.0 requires `## v3.4 → v4.0 checklist`.
 
@@ -64,6 +68,13 @@ Run all 12 rows, then close the lint digest with exactly:
 
 - **M** = rows run (12 for this table; more if the workspace adds rows).
 - **N** = rows whose pass condition held.
+
+The release sweep (`tackle-check sweep`) closes with exactly:
+
+`sweep: N/M gates passed`
+
+- **M** = 7 self-lint gates + 1 catalog + the number of active workspaces linted.
+- **N** = gates/workspaces whose pass condition held. Closed workspaces are linted but report `WARN` on failure and never enter N/M — a closed workspace cannot block a tag (its repair belongs to a cleanup initiative); an active workspace's failure does.
 - Row 8 assumes `docs/plans/` contains only workspace directories — a stray file or non-workspace dir (e.g. a parked seed) makes the glob produce phantom paths. Park seeds elsewhere (`docs/seeds/`).
 - Discussing scanned symbols inside workspaces (status glyphs, placeholder braces): use U+XXXX prose notation and `$'\uXXXX'` shell escapes so rows 1/3/5 don't self-flag the discussion.
 - Row 8 is warn-severity: a collision lowers N and is reported, but blocks nothing by itself; a failure in rows 1–7, 9, and 10–12 blocks execution until fixed or explicitly waived by the user.

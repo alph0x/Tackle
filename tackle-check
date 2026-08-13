@@ -6,6 +6,7 @@
 #   tackle-check catalog                  verify eval/scenarios/ ⊆ eval/README.md
 #   tackle-check done-signal <briefing>   run the point's literal **Run**/**Done-signal** exit-gate
 #   tackle-check ground <workspace>       two-phase drift check; re-anchors drifted citations
+#   tackle-check sweep                    release sweep: self-lint gates 1-7 + catalog + workspace lint
 # POSIX sh, zero dependencies, harness-agnostic (convention 10). Composes the
 # documented lint rows from references/guides/lint-spec.md — the runner IS the
 # rows; the spec is its source of truth. Exit 0 = all gates green; any FAIL
@@ -21,6 +22,85 @@ report() { # report <row-label> <exit-status>
     echo "FAIL: $1"
     fail=1
   fi
+}
+
+usage="usage: tackle-check lint <workspace> | catalog | done-signal <briefing> | ground <workspace> | sweep"
+
+gate1() { # SKILL.md ≤ 1100 words
+  [ "$(wc -w < SKILL.md)" -le 1100 ] || { echo "SKILL.md over budget"; return 1; }
+}
+
+gate2() { # exactly 11 numbered core conventions
+  [ "$(awk '/^## Core conventions/{f=1;next} f && /^## /{exit} f && /^[0-9]+\. /{n++} END{print n+0}' SKILL.md)" -eq 11 ] || { echo "conventions count off"; return 1; }
+}
+
+gate3() { # changelog head equals the SKILL.md stamp
+  [ "$(awk '/^## Tackle /{print $3; exit}' references/CHANGELOG.md)" = "$(awk '/^\*\*Tackle /{gsub(/\*/,"",$2); print $2; exit}' SKILL.md)" ] || { echo "changelog head mismatch"; return 1; }
+}
+
+gate4() { # migrate checklist heading into the current major.minor exists
+  v=$(awk '/^\*\*Tackle /{gsub(/\*/,"",$2); print $2; exit}' SKILL.md)
+  mm=${v%.*}; x=${mm%%.*}; y=${mm##*.}
+  if [ "$y" -gt 0 ]; then p="$x.$((y-1))"; else p="[0-9.]+"; fi
+  grep -Eq "^## v$p → v$mm checklist" references/guides/migrate.md || { echo "missing migrate checklist → v$mm"; return 1; }
+}
+
+gate5() { # every README version stamp equals the SKILL.md stamp
+  [ "$(grep -oE 'Tackle [0-9]+\.[0-9]+\.[0-9]+' README.md | sort -u)" = "Tackle $(awk '/^\*\*Tackle /{gsub(/\*/,"",$2); print $2; exit}' SKILL.md)" ] || { echo "README stamp mismatch"; return 1; }
+}
+
+gate6() { # update.md lists exactly the files that ship
+  g6fail=0
+  for f in SKILL.md references tackle-check; do
+    grep -q "$f" references/guides/update.md || { echo "update.md missing artifact: $f"; g6fail=1; }
+  done
+  [ "$g6fail" -eq 0 ]
+}
+
+gate7() { # README content claims — every expected value DERIVED, nothing hardcoded
+  g7fail=0
+  # 7a lint-row count from the runner's own row functions
+  n=$(grep -c '^row[0-9]' tackle-check)
+  grep -qF "rows 1–$n" README.md || { echo "README missing rows 1–$n"; g7fail=1; }
+  grep -qF "($n lint rows)" README.md || { echo "README missing ($n lint rows)"; g7fail=1; }
+  # 7b eval scenario count/range (s28 skipped — count ≠ max, check both)
+  c=0; m=0
+  for d in eval/scenarios/*/; do
+    [ -d "$d" ] || continue
+    c=$((c+1))
+    s=$(basename "$d"); s=${s%%-*}; s=${s#s}
+    [ "$s" -gt "$m" ] && m=$s
+  done
+  grep -qF "**$c scenarios** (" README.md || { echo "README scenario count off (**$c scenarios** ())"; g7fail=1; }
+  grep -qF "\`s1\`–\`s$m\`" README.md || { echo "README scenario range off (\`s1\`–\`s$m\`)"; g7fail=1; }
+  # 7c migrate-chain head derived from the SKILL.md stamp
+  v=$(awk '/^\*\*Tackle /{gsub(/\*/,"",$2); print $2; exit}' SKILL.md)
+  mm=${v%.*}
+  grep -qF "checklist chain v2.0 → v$mm" README.md || { echo "README migrate-chain head off (v2.0 → v$mm)"; g7fail=1; }
+  # 7d runner subcommand coverage: every usage token appears in the mode-table row
+  row=$(grep 'Mechanical gate' README.md)
+  for t in lint catalog done-signal ground sweep; do
+    case "$row" in *"\`$t"*) ;; *) echo "README mode row missing \`$t"; g7fail=1;; esac
+  done
+  # 7e self-lint gate count from the spec
+  g=$(awk '/^### Skill self-lint gates/{f=1;next} f && /^##/{exit} f && /^[0-9]+\. /{n++} END{print n+0}' references/guides/lint-spec.md)
+  grep -qF "$g shipped-skill gates" README.md || { echo "README self-lint gate count off ($g shipped-skill gates)"; g7fail=1; }
+  [ "$g7fail" -eq 0 ]
+}
+
+lint_rows() { # quiet row collector: echoes failing row numbers; returns 0 iff all pass
+  ws="$1"
+  n=0
+  for i in 1 2 3 4 5 6 7 8 9 10 11 12; do
+    if row$i; then :; else echo "$i"; n=$((n+1)); fi
+  done
+  [ "$n" -eq 0 ]
+}
+
+ws_active() { # board.md has ≥1 🟡 data row (row 8's predicate); no board.md ⇒ closed
+  w="$1"
+  [ -f "$w/board.md" ] || return 1
+  awk 'BEGIN{FS=sprintf("%c",124)} $2 ~ /P-[0-9]/ && NF>3 {for(i=2;i<=NF;i++){if(index($i,"🟡")) f=1}} END{exit (f?0:1)}' "$w/board.md"
 }
 
 row1() { # placeholders {{...}} outside fenced blocks
@@ -129,7 +209,8 @@ catalog() {
     name=$(basename "$d")
     grep -qF "$name" eval/README.md || { echo "MISSING from catalog: $name"; miss=1; }
   done
-  [ "$miss" -eq 0 ] || fail=1
+  [ "$miss" -eq 0 ] || { fail=1; return 1; }
+  return 0
 }
 
 done_signal() { # run the literal **Run**/**Done-signal** commands from a point briefing
@@ -210,6 +291,39 @@ ground() { # two-phase drift check + in-place re-anchor (design-contract §Runne
   [ "$gfail" -eq 0 ] || fail=1
 }
 
+sweep() { # release sweep: gates 1-7 + catalog + lint over every workspace
+  total=7; passed=0
+  for i in 1 2 3 4 5 6 7; do
+    if gate$i; then passed=$((passed+1)); report "gate $i" 0; else report "gate $i" 1; fi
+  done
+  if catalog; then passed=$((passed+1)); report "catalog" 0; else report "catalog" 1; fi
+  total=$((total+1))
+  for ws in docs/plans/*/; do
+    [ -d "$ws" ] || continue
+    w=${ws%/}
+    name=$(basename "$w")
+    if ws_active "$w"; then
+      total=$((total+1))
+      r=$(lint_rows "$w")
+      r=$(printf '%s' "$r" | tr '\n' ' ')
+      r=${r% }
+      if [ -z "$r" ]; then
+        passed=$((passed+1)); echo "PASS: lint $name"
+      else
+        echo "FAIL: lint $name (rows: $r)"
+        fail=1
+      fi
+    else
+      r=$(lint_rows "$w")
+      r=$(printf '%s' "$r" | tr '\n' ' ')
+      r=${r% }
+      [ -z "$r" ] || echo "WARN: lint $name fails rows: $r (closed — non-gating)"
+    fi
+  done
+  echo "sweep: $passed/$total gates passed"
+  [ "$passed" -eq "$total" ]
+}
+
 cmd="$1"
 shift
 case "$cmd" in
@@ -217,6 +331,7 @@ case "$cmd" in
   catalog) catalog ;;
   done-signal) done_signal "$1" ;;
   ground) ground "$1" ;;
-  *) echo "usage: tackle-check lint <workspace> | catalog | done-signal <briefing> | ground <workspace>" >&2; exit 2 ;;
+  sweep) sweep ;;
+  *) echo "$usage" >&2; exit 2 ;;
 esac
 exit "$fail"
