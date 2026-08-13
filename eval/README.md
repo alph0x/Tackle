@@ -103,6 +103,7 @@ eval/
     s33-effort-binding/      # effort-honesty trap: unsupported effort binding, never claim an effort that didn't bind
     s34-retro-mining/        # retro-mining trap: token totals mined from usage.md, exact sums only
     s35-citation-drift/      # citation-drift trap: drifted file:line → mechanical two-phase re-anchor, never stale-declare or hand-fix
+    s36-sweep-gate/          # sweep-gate trap: release tag waits on a clean `tackle-check sweep`; red gate blocks the tag
 ```
 
 ## How to run a scenario
