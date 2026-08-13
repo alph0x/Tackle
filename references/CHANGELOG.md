@@ -1,5 +1,13 @@
 # Tackle changelog
 
+## Tackle 5.4.0
+
+- **Mechanized release sweep — `tackle-check sweep`** (dogfood initiative `tackle-sweep-gate`). One command composes the whole release gate: self-lint gates 1–7 + `catalog` + the lint rows over every workspace. Active workspaces (board with ≥1 🟡 data row) gate the exit code; closed workspaces report non-gating `WARN` lines. Closes with `sweep: N/M gates passed` (M = 7 gates + catalog + active workspaces). The documented rows and gates stay the fallback for hosts without the runner.
+- **Gates 1–6 mechanized into the runner** — the six documented §Skill self-lint gates (word budget, conventions count, changelog currency, migrate-chain currency, README currency, artifact-manifest currency) now run as `gate1()`–`gate6()`; the spec table stays the source of truth (the runner IS the rows; edits land in both in the same change).
+- **Gate 7 — README content claims** — five derived-value sub-checks the stamp gate can't see: lint-row count (from the runner's own row functions), eval scenario count/range (from `eval/scenarios/`), migrate-chain head (from the `SKILL.md` stamp), runner subcommand coverage (the mode-table row must list every subcommand), and self-lint gate count (from the spec). Every expected value derives from the files it describes — the 5.2.0 README-defect class is now mechanical.
+- **Behaviorally validated** — dedicated trap `s36-sweep-gate` (D-13 arm): a release-shaped fixture whose README carries an off-by-one scenario count, run 2026-08-13 (1 seed/arm, transcript-verified): **verdict: discriminates** — the no-skill control tagged `v5.3.0` on prose assurance with one command and no sweep; the method arm followed lint-spec §Release sweep, ran `./tackle-check sweep`, reported the red gate 7 verbatim (scenario count/range off), and refused to tag.
+- Migrate chain: `v5.3 → v5.4 checklist` (informational — no workspace contract change; sweep availability note).
+
 ## Tackle 5.3.0
 
 - **Self-healing citations** (dogfood initiative `tackle-crux-grounding`, inspired by

@@ -25,6 +25,13 @@ A migrated workspace MUST satisfy the full-adoption contract F-1..F-8; each line
 6. Lint + checkpoint.
 7. Record migration `D-xx` + log entry + bump stamp.
 
+## v5.3 → v5.4 checklist
+
+Run these when migrating a plan created with Tackle 5.3.x:
+
+1. **Note `tackle-check sweep`** — the release sweep now composes into one command: self-lint gates 1–7 + `catalog` + lint over every workspace (active workspaces gate the exit code; closed ones report non-gating `WARN`). Informational — no workspace edit.
+2. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a `log.md` entry, and bump the plan stamp.
+
 ## v5.2 → v5.3 checklist
 
 Run these when migrating a plan created with Tackle 5.2.x:
