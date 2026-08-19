@@ -2,7 +2,7 @@
 
 A model-agnostic planning and execution skill that turns an initiative into a durable action plan — self-contained points a cold agent can resolve in a fresh session — and executes that plan point-by-point when you ask it to.
 
-**Tackle 5.4.0: mechanized release sweep.** `tackle-check sweep` runs the self-lint gates 1–7 plus `catalog` plus the lint rows over every workspace in one command — README content claims included (gate 7), active workspaces gate the exit code, closed ones report non-gating warnings. Anchored citations still re-anchor mechanically when the code they cite moves — `tackle-check ground <workspace>` rewrites drifted line numbers by content match, never by judgment. Fragments should be unique per file; the runner gates workspaces with rows 1–12 and its done-signal executor.
+**Tackle 5.4.0: mechanized release sweep.** `tackle-check sweep` runs the self-lint gates 1–7 plus `catalog` plus the lint rows over every workspace in one command — README content claims included (gate 7), active workspaces gate the exit code, closed ones report non-gating warnings. Anchored citations still re-anchor mechanically when the code they cite moves — `tackle-check ground <workspace>` rewrites drifted line numbers by content match, never by judgment. Fragments should be unique per file; the runner gates workspaces with rows 1–13 and its done-signal executor.
 
 ## What it does
 
@@ -52,7 +52,7 @@ Tackle's execution loop is hardened with rules proven against common agent failu
 
 ## Eval
 
-Tackle ships a manual A/B eval in `eval/`: **35 scenarios** (`s1`–`s36`) — 34 decision traps plus one end-to-end lifecycle smoke (`s25-e2e-lifecycle`, the full intake → plan → execute → close → retro chain), each pitting a mid-tier model following Tackle literally against the same model free-styling at a known agent failure. The registry and workflow live in `eval/README.md`; each scenario carries its own `GROUND-TRUTH.md` answer sheet, and `tackle-check catalog` verifies scenarios ⊆ registry so the list can't drift.
+Tackle ships a manual A/B eval in `eval/`: **38 scenarios** (`s1`–`s39`) — 37 decision traps plus one end-to-end lifecycle smoke (`s25-e2e-lifecycle`, the full intake → plan → execute → close → retro chain), each pitting a mid-tier model following Tackle literally against the same model free-styling at a known agent failure. The registry and workflow live in `eval/README.md`; each scenario carries its own `GROUND-TRUTH.md` answer sheet, and `tackle-check catalog` verifies scenarios ⊆ registry so the list can't drift.
 
 ## Who is it for
 
@@ -110,7 +110,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 | `/tackle-trace` | **Trace** — criterion↔point coverage matrix, gaps and drift |
 | `/tackle-handoff` | **Handoff packet** — generate a portable handoff artifact |
 | `stop evolving` | **Evolution opt-out** — pause or purge the learning-loop profile |
-| `tackle-check` | **Mechanical gate** — shipped POSIX-sh runner: `lint <workspace>` (12 lint rows), `catalog` (eval scenarios ⊆ registry), `done-signal <point>` (run the point's exit-gate), `ground <workspace>` (re-anchor drifted citations), `sweep` (release sweep: gates 1–7 + catalog + workspace lint); flip requires its green when the workspace flag `tackle-check-gate: on` |
+| `tackle-check` | **Mechanical gate** — shipped POSIX-sh runner: `lint <workspace>` (13 lint rows), `catalog` (eval scenarios ⊆ registry), `done-signal <point>` (run the point's exit-gate), `probe <workspace>` (cited-file staleness vs newest `Last-verified`), `ground <workspace>` (re-anchor drifted citations), `sweep` (release sweep: gates 1–7 + catalog + workspace lint); flip requires its green when the workspace flag `tackle-check-gate: on` |
 | "resume / retomá `<x>`" | **Resume** — re-enter a plan |
 | "how is `<x>` going?" / "status" | **Status** — read-only digest |
 | "what plans are there?" | **List** — one line per initiative |
