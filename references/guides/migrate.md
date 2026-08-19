@@ -25,6 +25,14 @@ A migrated workspace MUST satisfy the full-adoption contract F-1..F-8; each line
 6. Lint + checkpoint.
 7. Record migration `D-xx` + log entry + bump stamp.
 
+## v5.4 → v5.5 checklist
+
+Run these when migrating a plan created with Tackle 5.4.x:
+
+1. **Check `log.md` size against the archive threshold** — lint row 13 flags `log.md` over 400 lines (workspace-overridable via `Log archive threshold: N` in the workspace `AGENTS.md`). If flagged, run the archive protocol (`status-list-next.md` §Archive): move entries older than the last 5 sessions verbatim to `log-archive.md`, append ascending, never edit moved entries, confirm the newest entry still carries its State snapshot, and record a one-line `log.md` entry. Row 6 now covers the archive pair's ordering.
+2. **Ground stamps are now ISO-with-time** — `Last-verified:` is `YYYY-MM-DDTHH:MM:SSZ` (UTC); legacy date-only stamps still parse (start-of-day, conservative) and self-heal on the next ground entry. No edit needed; `tackle-check probe <workspace>` reports staleness either way.
+3. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a `log.md` entry, and bump the plan stamp.
+
 ## v5.3 → v5.4 checklist
 
 Run these when migrating a plan created with Tackle 5.3.x:

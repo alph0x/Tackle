@@ -2,7 +2,7 @@
 
 A model-agnostic planning and execution skill that turns an initiative into a durable action plan — self-contained points a cold agent can resolve in a fresh session — and executes that plan point-by-point when you ask it to.
 
-**Tackle 5.4.0: mechanized release sweep.** `tackle-check sweep` runs the self-lint gates 1–7 plus `catalog` plus the lint rows over every workspace in one command — README content claims included (gate 7), active workspaces gate the exit code, closed ones report non-gating warnings. Anchored citations still re-anchor mechanically when the code they cite moves — `tackle-check ground <workspace>` rewrites drifted line numbers by content match, never by judgment. Fragments should be unique per file; the runner gates workspaces with rows 1–13 and its done-signal executor.
+**Tackle 5.5.0: graft-validated suite gates.** The judge suite now audits arm compliance before scoring anything (a `skill://` auto-load is contamination — s31 R1 precedent), captures efficiency exactly as the harness exposes it (`n/a`, never estimate) with like-for-like aggregation and cache-aware weighted tokens, and `tackle-check probe <workspace>` reports cited-file staleness against the newest `Last-verified:` stamp. The dormant log-archive protocol is wired: lint row 13 flags `log.md` over its threshold, row 6 covers the archive pair, pulses read bounded and never archive. Anchored citations still re-anchor mechanically when the code they cite moves — `tackle-check ground <workspace>` rewrites drifted line numbers by content match, never by judgment. Fragments should be unique per file; the runner gates workspaces with rows 1–13 and its done-signal executor.
 
 ## What it does
 
@@ -115,7 +115,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 | "how is `<x>` going?" / "status" | **Status** — read-only digest |
 | "what plans are there?" | **List** — one line per initiative |
 | "what's next?" / "qué sigue" | **Next** — the next point's pre-attack summary |
-| "migrate / upgrade `<x>`" | **Migrate** — bring an old plan to the current methodology (checklist chain v2.0 → v5.4 in `references/guides/migrate.md`) |
+| "migrate / upgrade `<x>`" | **Migrate** — bring an old plan to the current methodology (checklist chain v2.0 → v5.5 in `references/guides/migrate.md`) |
 | "mejorá este plan" / "improve this plan" | **Improve** — upgrade a Tackle plan or convert an unstructured plan |
 
 **The Create pipeline:** Intake → Gate (None/Lite/Full) → Location & gitignore → Scaffold → Briefing → Architecture → Stabilize contract → Decompose → Lint → Handoff.
@@ -124,7 +124,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 
 **Template-resolution stack:** overrides → presets → sdd → core.
 
-**Version:** Tackle 5.4.0. See `references/CHANGELOG.md` for what's new.
+**Version:** Tackle 5.5.0. See `references/CHANGELOG.md` for what's new.
 
 ## What it produces
 
