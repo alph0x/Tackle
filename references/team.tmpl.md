@@ -194,4 +194,4 @@ A point flips to 🟢 only when every condition holds; each maps to a report sec
 6. Quality Guardian: no quality findings (if Pod/Squad).
 7. Simplicity/Regression/Performance & Concurrency Auditor: no findings (if Squad and triggered).
 8. Coordinator: `board.md` flipped 🟢 and `log.md` appended — one-line summary + pointer (Full) or the evidence entry (Lite).
-9. **Regression sweep**: done-signals of every 🟢 point with intersecting Touches re-ran green; any failure reopens that point (🟢 → 🟡) and blocks this one. (Report section 5 records the result.)
+9. **Regression sweep**: done-signals of every 🟢 point with intersecting Touches re-ran green; any failure reopens that point (🟢 → 🟡) and blocks this one. (Report section 5 records the result.) If the repo already carries a code-graph tool (e.g. graft, or a language server), the checker MAY tighten the Touches intersection to symbol-level callers before re-running; absence of such a tool changes nothing — file-level intersection remains the default and is never a finding.
