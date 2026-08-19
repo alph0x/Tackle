@@ -8,4 +8,4 @@ Re-enter an existing plan. Read in order:
 5. Relevant `points/P-0N.md`
 6. Depth artifacts if they exist
 
-Open with a digest and re-ask user-owned open `Q-xx` directly in chat. Report grounding age from the newest ground `Last-verified:` in `log.md` — older than the window (default 14 days, workspace-overridable in `AGENTS.md`) ⇒ recommend re-ground before execution. The log stamp never substitutes for a this-session read: a cited file whose mtime is newer than its `Last-verified:` stamp is stale regardless of window (convention 3) — re-read it before the point can be ready.
+Open with a digest and re-ask user-owned open `Q-xx` directly in chat. Report grounding age from the newest ground `Last-verified:` in `log.md` — older than the window (default 14 days, workspace-overridable in `AGENTS.md`) ⇒ recommend re-ground before execution. The log stamp never substitutes for a this-session read: run `tackle-check probe <workspace>` — it compares every cited file's mtime against the newest `Last-verified:` stamp and lists stale files; any stale ⇒ re-ground before the point can be ready.

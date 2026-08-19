@@ -10,6 +10,7 @@ Never log secrets. **This is the canonical state source of the plan.**
 last 5 sessions **verbatim** to `log-archive.md`. Append-only is preserved across the pair:
 never edit moved entries. The newest entry always keeps a self-sufficient State snapshot,
 so archiving never breaks resume. Thresholds are workspace-overridable in `AGENTS.md`.
+Runbook: `guides/status-list-next.md` §Archive; size gate: lint row 13 (`Log archive threshold: N` in the workspace `AGENTS.md`, default 400 lines).
 
 **Evidence entries** — every "done-signal passed/failed" claim carries:
 

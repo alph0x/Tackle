@@ -21,11 +21,13 @@ Append to `log.md`:
 
 ```markdown
 ## /tackle-ground — {{datetime}}
-Last-verified: {{YYYY-MM-DD}}
+Last-verified: {{YYYY-MM-DDTHH:MM:SSZ}}
 
 - P-01: grounded (`src/foo.ts:42 — "return cachedValue"` ✓ · `src/bar.ts:10→23 — "export const retries"` re-anchored ✓)
 - P-02: ungrounded (`src/missing.ts:5 — "init()"` stale)
 ```
+
+Legacy date-only stamps read as start-of-day — conservative; the next ground entry upgrades them.
 
 Any **ungrounded** point blocks `/tackle-implement` and `/tackle-next` until the citation is fixed or explicitly waived by the user.
 
@@ -36,3 +38,4 @@ Any **ungrounded** point blocks `/tackle-implement` and `/tackle-next` until the
 - Right after `/tackle-plan` finishes.
 - Before `/tackle-verify` (verification assumes grounding is already recorded).
 - On `resume` / `status` / `next` if the session is cold and the ground log is stale.
+- On any cold session when `tackle-check probe <workspace>` reports stale.

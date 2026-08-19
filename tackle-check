@@ -5,6 +5,7 @@
 #   tackle-check lint <workspace>         run lint rows 1-12 on a plan workspace
 #   tackle-check catalog                  verify eval/scenarios/ ⊆ eval/README.md
 #   tackle-check done-signal <briefing>   run the point's literal **Run**/**Done-signal** exit-gate
+#   tackle-check probe <workspace>        stat-only staleness probe: cited-file mtimes vs newest Last-verified
 #   tackle-check ground <workspace>       two-phase drift check; re-anchors drifted citations
 #   tackle-check sweep                    release sweep: self-lint gates 1-7 + catalog + workspace lint
 # POSIX sh, zero dependencies, harness-agnostic (convention 10). Composes the
@@ -24,7 +25,7 @@ report() { # report <row-label> <exit-status>
   fi
 }
 
-usage="usage: tackle-check lint <workspace> | catalog | done-signal <briefing> | ground <workspace> | sweep"
+usage="usage: tackle-check lint <workspace> | catalog | done-signal <briefing> | probe <workspace> | ground <workspace> | sweep"
 
 gate1() { # SKILL.md ≤ 1100 words
   [ "$(wc -w < SKILL.md)" -le 1100 ] || { echo "SKILL.md over budget"; return 1; }
@@ -79,7 +80,7 @@ gate7() { # README content claims — every expected value DERIVED, nothing hard
   grep -qF "checklist chain v2.0 → v$mm" README.md || { echo "README migrate-chain head off (v2.0 → v$mm)"; g7fail=1; }
   # 7d runner subcommand coverage: every usage token appears in the mode-table row
   row=$(grep 'Mechanical gate' README.md)
-  for t in lint catalog done-signal ground sweep; do
+  for t in lint catalog done-signal ground probe sweep; do
     case "$row" in *"\`$t"*) ;; *) echo "README mode row missing \`$t"; g7fail=1;; esac
   done
   # 7e self-lint gate count from the spec
@@ -91,7 +92,7 @@ gate7() { # README content claims — every expected value DERIVED, nothing hard
 lint_rows() { # quiet row collector: echoes failing row numbers; returns 0 iff all pass
   ws="$1"
   n=0
-  for i in 1 2 3 4 5 6 7 8 9 10 11 12; do
+  for i in 1 2 3 4 5 6 7 8 9 10 11 12 13; do
     if row$i; then :; else echo "$i"; n=$((n+1)); fi
   done
   [ "$n" -eq 0 ]
@@ -134,10 +135,31 @@ row5() { # status emoji only in board.md
   [ -z "$out" ]
 }
 
-row6() { # log.md entries in chronological order
+row6() { # log.md + log-archive.md entries in chronological order (per-file ascending + cross-file: archive newest <= log oldest)
   [ -f "$ws/log.md" ] || return 0
-  out=$(awk '/^## 20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]/{d=substr($2,1,10); if(d<prev) print "out of order: " $0; prev=d}' "$ws/log.md")
+  out=""; a_last=""; l_first=""
+  for f in "$ws/log-archive.md" "$ws/log.md"; do
+    [ -f "$f" ] || continue
+    r=$(awk '/^## 20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]/{d=substr($2,1,10); if(!fst) fst=d; if(d<prev) print "out of order: " FILENAME ": " $0; prev=d; last=d} END{if(FNR){print "F=" fst; print "L=" last}}' "$f")
+    [ -n "$(printf '%s\n' "$r" | sed -n '/^out of order:/p')" ] && out="$out
+$(printf '%s\n' "$r" | sed -n '/^out of order:/p')"
+    case "$f" in
+      *log-archive.md) a_last=$(printf '%s\n' "$r" | sed -n 's/^L=//p') ;;
+      *) l_first=$(printf '%s\n' "$r" | sed -n 's/^F=//p') ;;
+    esac
+  done
+  if [ -n "$a_last" ] && [ -n "$l_first" ] && [ "$a_last" \> "$l_first" ]; then
+    out="$out
+archive newest ($a_last) newer than log oldest ($l_first)"
+  fi
   [ -z "$out" ]
+}
+
+row13() { # log.md over the archive threshold (warn severity; workspace-overridable in AGENTS.md)
+  [ -f "$ws/log.md" ] || return 0
+  t=$(awk '/^Log archive threshold: [0-9]+/{print $NF; exit}' "$ws/AGENTS.md" 2>/dev/null)
+  t=${t:-400}
+  [ "$(wc -l < "$ws/log.md")" -le "$t" ] || { echo "log.md over archive threshold ($t)"; return 1; }
 }
 
 row7() { # every SEALED: D-xx resolves in decisions.md
@@ -199,6 +221,7 @@ lint() {
   report "row 10 grades ($ws)" "$(row10; echo $?)"
   report "row 11 usage rows ($ws)" "$(row11; echo $?)"
   report "row 12 effort vocabulary ($ws)" "$(row12; echo $?)"
+  report "row 13 log size ($ws)" "$(row13; echo $?)"
   [ "$fail" -eq 0 ]
 }
 
@@ -291,6 +314,51 @@ ground() { # two-phase drift check + in-place re-anchor (design-contract §Runne
   [ "$gfail" -eq 0 ] || fail=1
 }
 
+probe() { # stat-only staleness probe: cited-file mtimes vs newest Last-verified (never refreshes)
+  ws="$1"
+  stamp=$(awk '/^Last-verified: /{s=$2} END{print s}' "$ws/log.md" 2>/dev/null)
+  if [ -z "$stamp" ]; then
+    echo "probe: unknown (never grounded)"
+    return 0
+  fi
+  # legacy date-only stamps parse as start-of-day — conservative: same-day edits flag stale
+  case "$stamp" in *T*) iso="$stamp" ;; *) iso="${stamp}T00:00:00Z" ;; esac
+  # GNU/BSD date feature-detect (once per run)
+  if date -u -d @0 >/dev/null 2>&1; then gdate=1; else gdate=0; fi
+  if [ "$gdate" -eq 1 ]; then
+    epoch=$(date -u -d "$iso" +%s 2>/dev/null)
+  else
+    epoch=$(date -u -j -f %Y-%m-%dT%H:%M:%SZ "$iso" +%s 2>/dev/null)
+  fi
+  [ -n "$epoch" ] || { echo "probe: unknown (unparseable stamp: $stamp)"; return 0; }
+  # GNU/BSD stat feature-detect (once per run)
+  if stat -c %Y /dev/null >/dev/null 2>&1; then gstat=1; else gstat=0; fi
+  stale=0; total=0
+  paths=$(for f in "$ws"/points/*.md "$ws"/plan.md "$ws"/reference.md; do
+    [ -f "$f" ] || continue
+    awk 'match($0,/[A-Za-z0-9_\/.-]+\.[a-z]+:[0-9]+(-[0-9]+)? — "[^"]+"/){c=substr($0,RSTART,RLENGTH); p=c; sub(/:.*/,"",p); print p}' "$f"
+  done | sort -u)
+  for p in $paths; do
+    total=$((total+1))
+    f="$p"
+    [ -f "$f" ] || f="$ws/$p"
+    if [ ! -f "$f" ]; then
+      echo "missing: $p"
+      stale=$((stale+1))
+      continue
+    fi
+    if [ "$gstat" -eq 1 ]; then m=$(stat -c %Y "$f"); else m=$(stat -f %m "$f"); fi
+    if [ "$m" -gt "$epoch" ]; then
+      if [ "$gdate" -eq 1 ]; then miso=$(date -u -d @"$m" +%Y-%m-%dT%H:%M:%SZ); else miso=$(date -u -r "$m" +%Y-%m-%dT%H:%M:%SZ); fi
+      echo "stale: $p (mtime $miso > Last-verified $iso)"
+      stale=$((stale+1))
+    fi
+  done
+  echo "probe: $stale stale of $total cited files"
+  [ "$stale" -eq 0 ] || { fail=1; return 1; }
+  return 0
+}
+
 sweep() { # release sweep: gates 1-7 + catalog + lint over every workspace
   total=7; passed=0
   for i in 1 2 3 4 5 6 7; do
@@ -330,6 +398,7 @@ case "$cmd" in
   lint) lint "$1" ;;
   catalog) catalog ;;
   done-signal) done_signal "$1" ;;
+  probe) probe "$1" ;;
   ground) ground "$1" ;;
   sweep) sweep ;;
   *) echo "$usage" >&2; exit 2 ;;

@@ -2,7 +2,7 @@
 
 Triggered by `/tackle-retro [initiative]` or a natural phrase like "retro" / "how did it go". Runs at initiative close — every point 🟢 or the initiative abandoned — or on demand mid-flight as a **partial retro** (say so in the artifact title).
 
-**Principle: detection before judgment.** Mine `board.md` + `log.md` by grep/count first; use judgment only to distill the counts into lessons. Read-only over `board.md`, `log.md`, `decisions.md`; the only writes are `docs/plans/<initiative>/retro.md` (instantiated from `references/retro.tmpl.md`) and one `log.md` entry.
+**Principle: detection before judgment.** Mine `board.md` + `log.md` by grep/count first; use judgment only to distill the counts into lessons. When the workspace carries `log-archive.md`, every mining grep runs over `cat log-archive.md log.md` — entries move, never copy, so the union double-counts nothing. Read-only over `board.md`, `log.md`, `decisions.md`; the only writes are `docs/plans/<initiative>/retro.md` (instantiated from `references/retro.tmpl.md`) and one `log.md` entry.
 
 ## Metrics — mined, not remembered
 
