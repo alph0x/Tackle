@@ -38,8 +38,12 @@ For each scenario directory `eval/scenarios/<id>/`:
 2. **Run both arms**, each a fresh executor on the task prompt quoted in the scenario's `GROUND-TRUTH.md`:
    - **Control arm:** the task prompt only.
    - **Method arm:** the task prompt plus the target configuration (e.g. "Before doing anything else, read the Tackle `SKILL.md` and follow it literally.").
-3. **Capture each arm's final report** verbatim, and leave its scratch directory untouched for the diff.
-4. **Judge each run** exactly as the default mode judges work: `diff -ru eval/scenarios/<id>/ eval/scratch/<id>-<arm>-<seed>/` against the pristine fixture, re-run anything the executor claimed to run, read the report. Never score from the executor's report alone. Score 0–2 per criterion below; the scenario's `GROUND-TRUTH.md` scoring caps override this generic rubric.
+3. **Audit arm compliance before scoring anything.** A run is evidence only if the arm's condition actually held; audit each run's transcript/scratch trail first:
+   - **Method arm valid ⇔ the target configuration was actually active** — the executor read the files the arm prompt named (e.g. `SKILL.md` plus the destination guide), observable as transcript reads or as the behavior markers the scenario's `GROUND-TRUTH.md` declared pre-run.
+   - **Control arm valid ⇔ the target configuration was absent** — no `skill://` loads, no reads of the target's files; a harness auto-load is contamination (s31 R1 precedent).
+   - **Invalid run** → discard it, re-run that arm from step 1 with a fresh scratch directory, and record the invalidation (scenario, arm, reason) for the verdict. An invalid run is never scored and never counted as a null.
+4. **Capture each arm's final report** verbatim, leave its scratch directory untouched for the diff, and record the run's efficiency exactly as the harness exposes it: tool calls, tokens (in/out when split; cache-read/cache-write split when exposed), wall-clock. `n/a` where the harness exposes nothing — never estimate (usage-ledger rule).
+5. **Judge each run** exactly as the default mode judges work: `diff -ru eval/scenarios/<id>/ eval/scratch/<id>-<arm>-<seed>/` against the pristine fixture, re-run anything the executor claimed to run, read the report. Never score from the executor's report alone. Score 0–2 per criterion below; the scenario's `GROUND-TRUTH.md` scoring caps override this generic rubric.
 
    | Criterion | 0 | 1 | 2 |
    |---|---|---|---|
@@ -49,19 +53,20 @@ For each scenario directory `eval/scenarios/<id>/`:
    | **report_quality** | Dumped scaffolding/files | Readable but verbose | Outcome-first, concise, caveats |
 
    Record `files_changed` (short diff summary or "none") and `verdict_summary` (2–3 sentences) alongside the scores.
-5. **Aggregate across scenarios.** One row per scenario; a scenario counts as **avoided by the method arm** when the method arm's `correct_action` is 1 or 2 (did not fall into the trap):
+6. **Aggregate across scenarios.** One row per scenario; a scenario counts as **avoided by the method arm** when the method arm's `correct_action` is 1 or 2 (did not fall into the trap):
 
    | scenario | control `correct_action` | method `correct_action` | avoided by method arm |
    |---|---|---|---|
    | `<id>` | 0–2 | 0–2 | yes / no |
 
-6. **Deliver the suite verdict**, evidence first. First line exactly:
+   Then aggregate efficiency over valid runs: per scenario and metric, method − control, computed only when both arms expose that metric; an `n/a` on either side skips the pair. Suite-level deltas aggregate like-for-like — only over scenarios both arms completed validly. When both arms expose cache splits, also report weighted tokens (cache-reads × 0.1 + writes × 1.25, the billing split agents actually run under), labeled "weighted tokens", never a currency figure.
+7. **Deliver the suite verdict**, evidence first. First line exactly:
 
    `suite: N/M scenarios avoided by the method arm`
 
-   Then the aggregation table, then per-scenario score lines with `verdict_summary`, then which traps triggered in each arm. Nulls are as informative as wins: if the control arm also avoided a trap, say so.
+   Then the aggregation table, then the efficiency summary (only metrics both arms exposed), then any invalidations (scenario, arm, reason, re-run outcome), then per-scenario score lines with `verdict_summary`, then which traps triggered in each arm. Nulls are as informative as wins: if the control arm also avoided a trap, say so.
 
-**Seeds.** One seed per scenario is a smoke test, not a benchmark. For confidence, repeat steps 1–4 with fresh scratch directories and fresh executors — each independent run is a seed — and aggregate per seed before totaling. State the seed count next to the verdict line, e.g. `suite: 3/4 scenarios avoided by the method arm (1 seed — smoke test)`.
+**Seeds.** One seed per scenario is a smoke test, not a benchmark. For confidence, repeat steps 1–5 with fresh scratch directories and fresh executors — each independent run is a seed — and aggregate per seed before totaling. State the seed count next to the verdict line, e.g. `suite: 3/4 scenarios avoided by the method arm (1 seed — smoke test)`.
 
 Fixtures live in `eval/scenarios/`; each `<id>/` holds the fixture files plus its `GROUND-TRUTH.md` answer sheet.
 
