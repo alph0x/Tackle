@@ -10,6 +10,8 @@ Every check is a literal copy-paste command: run from the **repo root**, in any 
 - Row 9 anchors on the `**Type**` declaration line in a point's §Status & wiring — prose mentions of the loop-type strings elsewhere in a briefing do not trigger it.
 - Row 11 guard-skips workspaces without `usage.md` (pre-5.2): the `[ -f …/usage.md ] ||` no-op keeps old workspaces lint-clean. On workspaces that carry the ledger, row 11 flags a done point missing its usage row — a ledger defect (fix the ledger, not the row).
 - Row 12 scans `points/*.md` only (`grep -h`, no recursion): effort declarations must draw from the §3 vocabulary (`inherit` + `low`/`medium`/`high`/`max`); row 12 red = a declaration outside the vocabulary.
+- Row 14 checks every 🟢 row, not the first (the `print g` loop has no `break` — row 11's `break` was a latent single-row bug, fixed in the same change). Closed workspaces fail row 14 as sweep WARN, non-gating; active workspaces gate — a missing closure report blocks execution until written or explicitly waived.
+- Row 15's date→epoch conversion feature-detects GNU vs BSD `date` exactly as `probe()` does; both flavors cover macOS and Linux hosts.
 - Row 6 covers `log-archive.md` when present; the archive's newest entry must not be younger than `log.md`'s oldest. The cross-file comparison is composed in the runner (cells stay single-purpose).
 - Judgment-only checks (contract churn, quality dimensions, Q-guard…) stay in `decompose-and-lint.md` Step 6.5 — this table holds only what a command can decide.
 
@@ -28,6 +30,8 @@ Every check is a literal copy-paste command: run from the **repo root**, in any 
 | 11 · Usage rows for done points — every `board.md` row whose status is 🟢 has at least one `usage.md` row (`grep -q "| $id "`); workspaces without `usage.md` (pre-5.2) guard-skip | `for id in $(awk 'BEGIN{FS=sprintf("%c",124)} $2 ~ /P-[0-9]/ && NF>3 {for(i=2;i<=NF;i++){if(index($i,"🟢")){g=$2; gsub(/^ +| +$/,"",g); print g; break}}}' docs/plans/<slug>/board.md); do grep -q "| $id " docs/plans/<slug>/usage.md || echo "done point without usage row: $id"; done` | 0 lines of output |
 | 12 · Effort vocabulary — every `**Effort**:` declaration in `points/` is `inherit` or a §3 level (`low`/`medium`/`high`/`max`) | `awk '/^- \*\*Effort\*\*: / && $0 !~ /^- \*\*Effort\*\*: (inherit|low|medium|high|max)/ {print FILENAME ":" FNR ": " $0}' docs/plans/<slug>/points/*.md` | 0 lines of output |
 | 13 · Log over archive threshold — `log.md` exceeds the archive threshold (default 400 lines; workspace-overridable via `Log archive threshold: N` in the workspace `AGENTS.md`); fix path: the archive protocol (`status-list-next.md` §Archive) | `t=$(awk '/^Log archive threshold: [0-9]+/{print $NF; exit}' docs/plans/<slug>/AGENTS.md); t=${t:-400}; [ "$(wc -l < docs/plans/<slug>/log.md)" -le "$t" ] || echo "log.md over archive threshold ($t)"` | 0 lines of output — any line is a **warn** |
+| 14 · Closure reports for done points — every `board.md` row whose status is 🟢 has `reports/P-0N-report.md` (the report may be a stub naming its reviewer, per `team.tmpl.md` §Closure report); Lite workspaces (no `board.md`) guard-skip | `for id in $(awk 'BEGIN{FS=sprintf("%c",124)} $2 ~ /P-[0-9]/ && NF>3 {for(i=2;i<=NF;i++){if(index($i,"🟢")){g=$2; gsub(/^ +| +$/,"",g); print g}}}' docs/plans/<slug>/board.md); do [ -f "docs/plans/<slug>/reports/$id-report.md" ] || echo "done point without closure report: $id"; done` | 0 lines of output |
+| 15 · Reference-doc staleness — every `reference-docs/*.md` carrying a `captured: YYYY-MM-DD` first-line header is younger than the staleness window (default 14 days; workspace-overridable via `Reference staleness window: N` in the workspace `AGENTS.md`); undated files skip (the header convention lands in `reference-docs-README.tmpl.md`); fix path: re-snapshot from the live source and update `captured:` | `w=$(awk '/^Reference staleness window: [0-9]+/{print $NF; exit}' docs/plans/<slug>/AGENTS.md); w=${w:-14}; for f in docs/plans/<slug>/reference-docs/*.md; do [ -f "$f" ] || continue; d=$(awk '/^captured: 20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]/{print $2; exit}' "$f"); [ -n "$d" ] || continue; if date -u -d @0 >/dev/null 2>&1; then e=$(date -u -d "$d" +%s); else e=$(date -u -j -f %Y-%m-%d "$d" +%s 2>/dev/null); fi; [ -n "$e" ] || continue; [ $(( $(date -u +%s) - e )) -gt $((w * 86400)) ] && echo "stale reference-doc: $f (captured $d, window ${w}d)"; done` | 0 lines of output — any line is a **warn** |
 
 Per-citation, row 4 is equivalent to the canonical anchored-citation check (`sed -n 'NNp' path` piped to `grep -Fq "fragment"`), composed into one throwaway loop over every citation — documented commands may be composed into throwaway runtime loops, and this one is pipe-free so the cell stays copy-pasteable.
 
@@ -64,11 +68,11 @@ Gate 4 derives the immediately previous version from the stamp: a minor bump req
 
 ## Score line
 
-Run all 13 rows, then close the lint digest with exactly:
+Run all 15 rows, then close the lint digest with exactly:
 
 `lint: N/M checks passed`
 
-- **M** = rows run (13 for this table; more if the workspace adds rows).
+- **M** = rows run (15 for this table; more if the workspace adds rows).
 - **N** = rows whose pass condition held.
 
 The release sweep (`tackle-check sweep`) closes with exactly:
@@ -79,5 +83,5 @@ The release sweep (`tackle-check sweep`) closes with exactly:
 - **N** = gates/workspaces whose pass condition held. Closed workspaces are linted but report `WARN` on failure and never enter N/M — a closed workspace cannot block a tag (its repair belongs to a cleanup initiative); an active workspace's failure does.
 - Row 8 assumes `docs/plans/` contains only workspace directories — a stray file or non-workspace dir (e.g. a parked seed) makes the glob produce phantom paths. Park seeds elsewhere (`docs/seeds/`).
 - Discussing scanned symbols inside workspaces (status glyphs, placeholder braces): use U+XXXX prose notation and `$'\uXXXX'` shell escapes so rows 1/3/5 don't self-flag the discussion.
-- Rows 8 and 13 are warn-severity: they lower N and are reported, but block nothing by themselves; a failure in rows 1–7, 9, and 10–12 blocks execution until fixed or explicitly waived by the user.
+- Rows 8, 13 and 15 are warn-severity: they lower N and are reported, but block nothing by themselves; a failure in rows 1–7, 9–12, and 14 blocks execution until fixed or explicitly waived by the user.
 - This score line is what a human skims in a pulse or handoff for readiness (the pulse digest carries it); a lint digest without it is incomplete.

@@ -2,7 +2,7 @@
 # tackle-check — mechanical gates for Tackle workspaces (Tackle 5.0)
 #
 # Usage:
-#   tackle-check lint <workspace>         run lint rows 1-12 on a plan workspace
+#   tackle-check lint <workspace>         run lint rows 1-15 on a plan workspace
 #   tackle-check catalog                  verify eval/scenarios/ ⊆ eval/README.md
 #   tackle-check done-signal <briefing>   run the point's literal **Run**/**Done-signal** exit-gate
 #   tackle-check probe <workspace>        stat-only staleness probe: cited-file mtimes vs newest Last-verified
@@ -92,7 +92,7 @@ gate7() { # README content claims — every expected value DERIVED, nothing hard
 lint_rows() { # quiet row collector: echoes failing row numbers; returns 0 iff all pass
   ws="$1"
   n=0
-  for i in 1 2 3 4 5 6 7 8 9 10 11 12 13; do
+  for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15; do
     if row$i; then :; else echo "$i"; n=$((n+1)); fi
   done
   [ "$n" -eq 0 ]
@@ -162,6 +162,35 @@ row13() { # log.md over the archive threshold (warn severity; workspace-overrida
   [ "$(wc -l < "$ws/log.md")" -le "$t" ] || { echo "log.md over archive threshold ($t)"; return 1; }
 }
 
+row14() { # done points carry a closure report (gating; Lite workspaces guard-skip)
+  [ -f "$ws/board.md" ] || return 0
+  miss=0
+  for id in $(awk 'BEGIN{FS=sprintf("%c",124)} $2 ~ /P-[0-9]/ && NF>3 {for(i=2;i<=NF;i++){if(index($i,"🟢")){g=$2; gsub(/^ +| +$/,"",g); print g}}}' "$ws/board.md" 2>/dev/null); do
+    [ -f "$ws/reports/$id-report.md" ] || { echo "done point without closure report: $id"; miss=1; }
+  done
+  [ "$miss" -eq 0 ]
+}
+
+row15() { # reference-docs staleness (warn severity; window override in AGENTS.md)
+  [ -d "$ws/reference-docs" ] || return 0
+  t=$(awk '/^Reference staleness window: [0-9]+/{print $NF; exit}' "$ws/AGENTS.md" 2>/dev/null)
+  t=${t:-14}
+  if date -u -d @0 >/dev/null 2>&1; then gdate=1; else gdate=0; fi
+  stale=0
+  for f in "$ws"/reference-docs/*.md; do
+    [ -f "$f" ] || continue
+    d=$(awk '/^captured: 20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]/{print $2; exit}' "$f")
+    [ -n "$d" ] || continue
+    if [ "$gdate" -eq 1 ]; then e=$(date -u -d "$d" +%s 2>/dev/null); else e=$(date -u -j -f %Y-%m-%d "$d" +%s 2>/dev/null); fi
+    [ -n "$e" ] || continue
+    if [ $(( $(date -u +%s) - e )) -gt $((t * 86400)) ]; then
+      echo "stale reference-doc: $f (captured $d, window ${t}d)"
+      stale=1
+    fi
+  done
+  [ "$stale" -eq 0 ]
+}
+
 row7() { # every SEALED: D-xx resolves in decisions.md
   [ -f "$ws/decisions.md" ] || return 0
   ids=$(awk '{while(match($0,/SEALED: D-[0-9]+/)){print substr($0,RSTART+8,RLENGTH-8); $0=substr($0,RSTART+RLENGTH)}}' "$ws"/design-contract.md "$ws"/points/*.md 2>/dev/null)
@@ -195,7 +224,7 @@ row10() { # done/blocked board rows carry an E-grade
 row11() { # done points carry a usage.md row (guard-skip pre-5.2 workspaces without usage.md)
   [ -f "$ws/usage.md" ] || return 0
   miss=0
-  for id in $(awk 'BEGIN{FS=sprintf("%c",124)} $2 ~ /P-[0-9]/ && NF>3 {for(i=2;i<=NF;i++){if(index($i,"🟢")){g=$2; gsub(/^ +| +$/,"",g); print g; break}}}' "$ws/board.md" 2>/dev/null); do
+  for id in $(awk 'BEGIN{FS=sprintf("%c",124)} $2 ~ /P-[0-9]/ && NF>3 {for(i=2;i<=NF;i++){if(index($i,"🟢")){g=$2; gsub(/^ +| +$/,"",g); print g}}}' "$ws/board.md" 2>/dev/null); do
     grep -q "| $id " "$ws/usage.md" || { echo "done point without usage row: $id"; miss=1; }
   done
   [ "$miss" -eq 0 ]

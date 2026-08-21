@@ -11,6 +11,16 @@ These are **READ-ONLY** — never edit them here. If the source evolved and it m
 **re-snapshot** and note it in `../log.md`. Live paths (prefer them when both exist) are in
 `../reference.md`.
 
+## Snapshot header (staleness tracking, lint row 15)
+
+Every snapshot file under `reference-docs/` carries a first-line header:
+
+```
+captured: YYYY-MM-DD
+```
+
+the date the snapshot was taken from the live source. Lint row 15 (`references/guides/lint-spec.md`) flags any file whose `captured:` date is older than the staleness window — default **14 days**, workspace-overridable via `Reference staleness window: N` in the workspace `AGENTS.md` (warn severity). Files without the header are skipped by the check. **Fix path:** re-snapshot from the live source and update `captured:` (the file stays READ-ONLY otherwise — never edit content in place).
+
 ## Index (what's here → who uses it)
 
 | Folder / file | Contents | Used by |
