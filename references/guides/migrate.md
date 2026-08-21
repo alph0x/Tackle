@@ -69,7 +69,7 @@ Run these when migrating a plan created with Tackle 5.2.x:
    changes.
 4. **Note the executor-contract wording** — `AGENTS.tmpl.md` item 4: on drift, re-anchor
    mechanically per the two-phase rule before hand-editing anything.
-5. **Run the sweep once** — `sh tackle-check lint <workspace>`; then `sh tackle-check
+5. **Run the sweep once** — `sh tackle-check lint <workspace>` (bare names resolve to `docs/plans/<name>`); then `sh tackle-check
    ground <workspace>` if any citation is stale.
 6. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a
    `log.md` entry, and bump the plan stamp.
@@ -94,7 +94,7 @@ Run these when migrating a plan created with Tackle 5.1.x:
    defaults). Binds at the next point execution — existing briefings need no rewrite.
 4. **Note lint rows 11–12** — the runner now enforces usage rows for done points (row 11;
    guard-skips until `usage.md` exists — item 1 creates it) and the effort vocabulary
-   (row 12). Run `sh tackle-check lint <workspace>` once after item 1.
+   (row 12). Run `sh tackle-check lint <workspace>` once after item 1 (bare names resolve to `docs/plans/<name>`).
 5. **Note the runner parser change** — `tackle-check done-signal` now extracts both
    `**Run**:` and `**Done-signal**:` labels and FAILS on empty extraction (no silent
    green); review-gate briefings are unaffected.
@@ -116,7 +116,7 @@ Run these when migrating a plan created with Tackle 5.0.x:
 
 Run these when migrating a plan created with Tackle 4.4.x:
 
-1. **Adopt the double gate (5.0)** — the flip now requires `tackle-check done-signal <point>` green AND the independent checker's sign-off (workspace flag `tackle-check-gate: on|off`, default on for new workspaces). Decide the flag: **on** = mechanical gate + sign-off; **off** = 4.x flip semantics preserved. The runner ships with the install artifact (`SKILL.md` + `references/` + `tackle-check`); run `sh tackle-check lint <workspace>` once to confirm the workspace lints clean before flipping anything.
+1. **Adopt the double gate (5.0)** — the flip now requires `tackle-check done-signal <point>` green AND the independent checker's sign-off (workspace flag `tackle-check-gate: on|off`, default on for new workspaces). Decide the flag: **on** = mechanical gate + sign-off; **off** = 4.x flip semantics preserved. The runner ships with the install artifact (`SKILL.md` + `references/` + `tackle-check`); run `sh tackle-check lint <workspace>` once to confirm the workspace lints clean before flipping anything (bare names resolve to `docs/plans/<name>`).
 2. **D-02 revoked** — `guides/lint-spec.md` no longer forbids shipped scripts; the runner composes the lint rows (the runner IS the rows, the table is its spec). Existing hand-run lint flows still work verbatim.
 3. **Record** — write a `D-xx` in `decisions.md` noting the version adopted + the `tackle-check-gate` decision, append a `log.md` entry, and bump the plan stamp.
 

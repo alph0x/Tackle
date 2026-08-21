@@ -31,7 +31,7 @@ run_row() { # run_row <row-label> <row-fn> — run the row, print its diagnostic
   report "$1" "$st"
 }
 
-usage="usage: tackle-check lint <workspace> | catalog | done-signal <briefing> | probe <workspace> | ground <workspace> | sweep"
+usage="usage: tackle-check lint <workspace> | catalog | done-signal <briefing> | probe <workspace> | ground <workspace> | eval prepare <scenario> [--seeds N] | eval diff <scenario> | eval audit <scenario> | eval judge <scenario> | eval verdict <file> | scaffold <ws> [--preset <name>] | scaffold --check <ws> | sweep"
 
 gate1() { # SKILL.md ≤ 1100 words
   [ "$(wc -w < SKILL.md)" -le 1100 ] || { echo "SKILL.md over budget"; return 1; }
@@ -86,7 +86,7 @@ gate7() { # README content claims — every expected value DERIVED, nothing hard
   grep -qF "checklist chain v2.0 → v$mm" README.md || { echo "README migrate-chain head off (v2.0 → v$mm)"; g7fail=1; }
   # 7d runner subcommand coverage: every usage token appears in the mode-table row
   row=$(grep 'Mechanical gate' README.md)
-  for t in lint catalog done-signal ground probe sweep; do
+  for t in lint catalog done-signal ground probe sweep eval scaffold; do
     case "$row" in *"\`$t"*) ;; *) echo "README mode row missing \`$t"; g7fail=1;; esac
   done
   # 7e self-lint gate count from the spec
@@ -95,11 +95,22 @@ gate7() { # README content claims — every expected value DERIVED, nothing hard
   [ "$g7fail" -eq 0 ]
 }
 
+resolve_ws() { # bare names resolve to docs/plans/<name> when that dir exists; else usage to stderr + exit 2
+  if [ -d "$1" ]; then
+    echo "$1"
+  elif [ -d "docs/plans/$1" ]; then
+    echo "docs/plans/$1"
+  else
+    echo "no such workspace: $1 (bare names resolve to docs/plans/<name>)" >&2
+    exit 2
+  fi
+}
+
 lint_rows() { # quiet row collector: echoes failing row numbers; returns 0 iff all pass
   ws="$1"
   n=0
   for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15; do
-    if row$i; then :; else echo "$i"; n=$((n+1)); fi
+    if out=$(row$i 2>/dev/null); then :; else echo "$i"; n=$((n+1)); fi
   done
   [ "$n" -eq 0 ]
 }
@@ -243,7 +254,7 @@ row12() { # **Effort**: declarations use the §3 vocabulary (inherit|low|medium|
 }
 
 lint() {
-  ws="$1"
+  ws=$(resolve_ws "$1") || exit 2
   run_row "row 1 placeholders ($ws)" row1
   run_row "row 2 unresolved Depends-on ($ws)" row2
   run_row "row 3 status vocabulary ($ws)" row3
@@ -352,7 +363,7 @@ ground() { # two-phase drift check + in-place re-anchor (design-contract §Runne
 }
 
 probe() { # stat-only staleness probe: cited-file mtimes vs newest Last-verified (never refreshes)
-  ws="$1"
+  ws=$(resolve_ws "$1") || exit 2
   stamp=$(awk '/^Last-verified: /{s=$2} END{print s}' "$ws/log.md" 2>/dev/null)
   if [ -z "$stamp" ]; then
     echo "probe: unknown (never grounded)"
