@@ -30,11 +30,11 @@ Format: the verdict is the first line; then a claims table (claim, what was obse
 
 ## Suite mode: judge a skill or a model
 
-`/tackle-judge suite <target>` runs the trap suite in `eval/scenarios/` against a target configuration: a newly installed skill, a different model, a modified prompt. There is no runner; the suite is this checklist, executed by hand. The one absolute rule: **the executor never sees `GROUND-TRUTH.md`.**
+`/tackle-judge suite <target>` runs the trap suite in `eval/scenarios/` against a target configuration: a newly installed skill, a different model, a modified prompt. Since 6.0 the shipped `tackle-check eval` runner mechanizes staging, diff, audit, and the judge packet (`eval/README.md` §Runner-assisted); the judgment itself stays this checklist, executed by hand — the runner never scores. The manual steps below remain the fallback for hosts without the runner. The one absolute rule: **the executor never sees `GROUND-TRUTH.md`.**
 
 For each scenario directory `eval/scenarios/<id>/`:
 
-1. **Stage the scratch copies.** For each arm, copy every fixture file except `GROUND-TRUTH.md` into a fresh scratch directory, e.g. `eval/scratch/<id>-control-1/` and `eval/scratch/<id>-method-1/`. The answer sheet must never be visible to the agent under test.
+1. **Stage the scratch copies.** `sh tackle-check eval prepare <id> [--seeds N]` stages `eval/scratch/<id>-<arm>-<seed>/` per arm, excluding the answer sheet; or, by hand, copy every fixture file except `GROUND-TRUTH.md` into a fresh scratch directory. The answer sheet must never be visible to the agent under test.
 2. **Run both arms**, each a fresh executor on the task prompt quoted in the scenario's `GROUND-TRUTH.md`:
    - **Control arm:** the task prompt only.
    - **Method arm:** the task prompt plus the target configuration (e.g. "Before doing anything else, read the Tackle `SKILL.md` and follow it literally.").
