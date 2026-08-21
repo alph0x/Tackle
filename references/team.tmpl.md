@@ -148,6 +148,8 @@ Every Full-gate point closes with one report file in the workspace `reports/` di
 
 Solo points compress to sections 2 + 4 + 5.
 
+A point declaring `Ship-gate: owner-confirms-before-close` adds an **In-scope confirmation** section to its report — the owner's explicit confirmation that the point ships in this release, recorded before the Coordinator sign-off. Without it the point stays 🟡 regardless of evidence grade; a later descope flips it ⚪ with the WAS-line as today (status vocabulary unchanged).
+
 ### Closure handshake
 
 1. Driver → `closure-request` (point id + report pointer) after writing its INTENT + Evidence section.

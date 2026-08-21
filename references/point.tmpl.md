@@ -11,6 +11,7 @@
 - **Touches (write scope)**: {{the files/dirs this point may modify — bounds the blast radius; disjoint Touches ⇒ parallel-safe (isolated worktrees), and keeps the done-signal's diff reviewable. Explicitly flag any touched path that ships to production — a flagged path requires the Rollout / reversibility section below}}.
 - **Autonomy override**: {{inherit (workspace level in AGENTS.md §Autonomy) / L1 / L2 / L3 — L3 requires the AGENTS.md §Autonomy conditions; production-path points cap at L2}}.
 - **Effort**: {{inherit (role default in team.md) / low / medium / high / max}}
+- **Ship-gate:** owner-confirms-before-close  <!-- optional; declare on points that add user-facing surface — "verified working" and "wanted in this release" are separate facts -->
 - **Type** (optional): `Type: standard` (the default when absent — existing plans need no changes), `Type: discovery`, or `Type: experiment`. Loop types declare `Rounds: N` (hard budget, default 5); an experiment additionally declares `Metric:` {{the objective command — a test, benchmark, score}} and `Threshold:` {{the pass value}}.
 
 ### Loop done-signals (only when `Type:` is a loop archetype)
