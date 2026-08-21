@@ -71,6 +71,13 @@ A profile stores hypotheses and directives distilled from retros. It is read dur
 - Judge-role traps where the fixture embeds the destination guide (fixture-as-install): expect control-arm nulls — the control reads the protocol in-repo; the discriminating signal shifts to the guide-owned specific (e.g. the threshold line), never the general behavior · confidence: 0.5 · evidence: 2✓/0✗ (graft-takeaways — s37 null: control also invalidated the contaminated run; s39 partial: control missed only the size line) · status: active · from: graft-takeaways retro, 2026-08-18
 - Timing-sensitive behavioral checks (mtime vs stamp) need ≥1s separation between events — same-second equality is a false clean · confidence: 0.6 · evidence: 1✓/0✗ (graft-takeaways — probe clean/touch check flaked once: stamp == mtime → spuriously `0 stale`) · status: active · from: graft-takeaways retro, 2026-08-18
 
+## Hypotheses (added 2026-08-21)
+
+- A lint gate applying to the initiative shipping it catches real gaps in that same initiative — row 14 flagged missing usage rows at P-02/P-04 close (fix landed before flip) · confidence: 0.6 · evidence: 1✓/0✗ · status: active · from: tackle-session-friction retro, 2026-08-21
+- Write the workspace log under any entry cap the initiative ships, from its first entry — a cap shipped mid-log leaves the shipping log itself over budget (entries 1–3 were 28–36 lines vs the 25-line cap P-06 shipped) · confidence: 0.5 · evidence: 1✓/0✗ · status: active · from: tackle-session-friction retro, 2026-08-21
+- Briefings' `**Done-signal**` lines are runner-extractable only in the `**Done-signal**: \`cmd\`` same-line form; any other layout silently no-ops the double gate (P-01's original multi-line header extracted nothing; P-02/P-04/P-05 needed the same fix) · confidence: 0.7 · evidence: 1✓/0✗ · status: active · from: tackle-session-friction retro, 2026-08-21
+- A spec cell naming a convention location ships with that convention present in the same change — row 15 named `reference-docs-README.tmpl.md` as the home of `captured:`; the template didn't document it until the post-close advisory fix · confidence: 0.6 · evidence: 1✓/0✗ · status: active · from: tackle-session-friction retro, 2026-08-21
+
 ## Directives
 
 - none
