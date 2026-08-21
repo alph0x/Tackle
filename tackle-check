@@ -25,6 +25,12 @@ report() { # report <row-label> <exit-status>
   fi
 }
 
+run_row() { # run_row <row-label> <row-fn> — run the row, print its diagnostics, then PASS/FAIL
+  out=$($2); st=$?
+  [ -z "$out" ] || printf '%s\n' "$out"
+  report "$1" "$st"
+}
+
 usage="usage: tackle-check lint <workspace> | catalog | done-signal <briefing> | probe <workspace> | ground <workspace> | sweep"
 
 gate1() { # SKILL.md ≤ 1100 words
@@ -238,19 +244,21 @@ row12() { # **Effort**: declarations use the §3 vocabulary (inherit|low|medium|
 
 lint() {
   ws="$1"
-  report "row 1 placeholders ($ws)" "$(row1; echo $?)"
-  report "row 2 unresolved Depends-on ($ws)" "$(row2; echo $?)"
-  report "row 3 status vocabulary ($ws)" "$(row3; echo $?)"
-  report "row 4 stale citations ($ws)" "$(row4; echo $?)"
-  report "row 5 status outside board ($ws)" "$(row5; echo $?)"
-  report "row 6 log order ($ws)" "$(row6; echo $?)"
-  report "row 7 SEALED ids ($ws)" "$(row7; echo $?)"
-  report "row 8 Touches collision (warn)" "$(row8; echo $?)"
-  report "row 9 loop budgets ($ws)" "$(row9; echo $?)"
-  report "row 10 grades ($ws)" "$(row10; echo $?)"
-  report "row 11 usage rows ($ws)" "$(row11; echo $?)"
-  report "row 12 effort vocabulary ($ws)" "$(row12; echo $?)"
-  report "row 13 log size ($ws)" "$(row13; echo $?)"
+  run_row "row 1 placeholders ($ws)" row1
+  run_row "row 2 unresolved Depends-on ($ws)" row2
+  run_row "row 3 status vocabulary ($ws)" row3
+  run_row "row 4 stale citations ($ws)" row4
+  run_row "row 5 status outside board ($ws)" row5
+  run_row "row 6 log order ($ws)" row6
+  run_row "row 7 SEALED ids ($ws)" row7
+  run_row "row 8 Touches collision (warn)" row8
+  run_row "row 9 loop budgets ($ws)" row9
+  run_row "row 10 grades ($ws)" row10
+  run_row "row 11 usage rows ($ws)" row11
+  run_row "row 12 effort vocabulary ($ws)" row12
+  run_row "row 13 log size ($ws)" row13
+  run_row "row 14 closure reports ($ws)" row14
+  run_row "row 15 reference-doc staleness (warn) ($ws)" row15
   [ "$fail" -eq 0 ]
 }
 
