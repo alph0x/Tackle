@@ -22,4 +22,7 @@ semantics", "blocks P-06". A question whose answer changes nothing isn't worth t
 found no enablement"; the partial answer you already have. Don't ask others what the codebase
 can tell you.}}
 <!-- On resolve: mark 🟢 and record the outcome as D-xx in `decisions.md`; link the D-id here. -->
+<!-- When an entry accumulates 3+ correction/update blocks, pin a one-line
+     **Current ask (as of session N):** at the top of the entry; the correction history
+     stays below it, append-only. A fresh reader orients from the pin, not from the accretion. -->
 <!-- A point gated on this question is "Deferred" in execution-strategy.md, not 🔴 in an active wave. -->
