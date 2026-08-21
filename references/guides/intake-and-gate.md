@@ -23,7 +23,7 @@ If a profile exists at the relevant scope with `Evolution: enabled`, read it **b
 
 Propose any profile-derived default explicitly tagged `(from your profile)`. These are proposals, never silent decisions — the user may accept or override each one.
 
-Apply active `directive:` entries on top of the template-resolution stack when instantiating templates or briefings; project directives outrank user directives. A directive whose target section no longer exists is flagged **stale** for re-confirm-or-retire at the next retro.
+Apply active `directive:` entries on top of the template-resolution stack when instantiating templates or briefings; project directives outrank user directives. A directive whose target section no longer exists is flagged **stale** for re-confirm-or-retire at the next retro. Directives tagged `applies_to:` are exempt from instantiation-time application — they bind at their action moment.
 
 Record one tally line in the log's `### Intake (context gathered)` section:
 

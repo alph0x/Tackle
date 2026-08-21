@@ -7,7 +7,7 @@ Conventions for any agent (Claude Code, Cursor, GPT, human) that picks up this p
 
 ## Learning intake (session start)
 
-If `.tackle/profile.md` or `~/.tackle/user-profile.md` exists, read the active hypotheses before proposing defaults (tag proposals `(from your profile)`). If the host repo has `docs/seeds/`, check it for pending items when planning. Write paths are exclusive: profiles only via `/tackle-retro`; seeds deliberately, never silently.
+If `.tackle/profile.md` or `~/.tackle/user-profile.md` exists, read the active hypotheses before proposing defaults (tag proposals `(from your profile)`). If the host repo has `docs/seeds/`, check it for pending items when planning. Write paths are exclusive: profiles only via `/tackle-retro`; seeds deliberately, never silently. Mid-session, before performing an action a directive scopes to (`applies_to: <action>`), re-read the matching directives and apply them to that action — intake-time application does not cover actions taken deep in a long session.
 
 ## Context in one line
 

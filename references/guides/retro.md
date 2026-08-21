@@ -17,6 +17,7 @@ Every metric carries a copy-paste recipe; the recipes live in the template's Met
 - **Tokens by phase** — PLAN / EXEC / RETRO token totals from `usage.md`, with the `n/a`-row count so coverage honesty survives aggregation.
 - **Tokens by model** — per-model token totals from `usage.md`: which concrete models actually consumed the budget.
 - **Tokens per point** — per-point token totals from `usage.md`: what each point actually cost to execute.
+- **Log growth** — lines per `log.md` session entry (recipe in `retro.tmpl.md`): resume cost compounds across every future session, unlike execution cost which is paid once per point; a rising trend routes narrative back to `decisions.md`/`reference-docs/`.
 
 **Lite plans** (no `board.md`): the retro still runs — board-derived metrics report `n/a`; log-derived ones stand.
 
@@ -80,7 +81,7 @@ For each confirmed candidate:
 
 ### Directives
 
-Recurring failure evidence may propose a `directive:` entry (C-20). A directive targets a named template or guide section and is applied on top of the resolution stack at instantiation time. Project directives outrank user directives. A directive whose target section no longer exists is flagged **stale** for re-confirm-or-retire.
+Recurring failure evidence may propose a `directive:` entry (C-20). A directive targets a named template or guide section and is applied on top of the resolution stack at instantiation time. Project directives outrank user directives. A directive whose target section no longer exists is flagged **stale** for re-confirm-or-retire. When the failure evidence is a repeatable mid-session action (a commit message, a push, a release step), distil the directive with an `applies_to:` tag naming that action moment — instantiation-time application never reaches an action taken 30 sessions after intake (taptopaykit-integration A1: a commit-format directive written session 23, violated session 35).
 
 ### Opt-out anytime
 

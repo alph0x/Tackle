@@ -23,6 +23,6 @@ A profile stores hypotheses and directives distilled from retros. It is read dur
 
 ## Directives
 
-`directive:` entries amend a named template or guide section. They are applied on top of whatever the template-resolution stack yields at instantiation time. A directive whose target section no longer exists is flagged **stale** at the next retro.
+`directive:` entries amend a named template or guide section. They are applied on top of whatever the template-resolution stack yields at instantiation time. A directive whose target section no longer exists is flagged **stale** at the next retro. A directive tagged `applies_to:` scopes to an action moment (e.g. `commit-message`, `pre-push`, `release`) instead of a template section; it binds when that action is about to happen, not at instantiation.
 
-- directive: {{concise instruction}} · target: {{template/guide §section}} · confidence: {{0.0–1.0}} · evidence: {{N✓/M✗}} · status: {{active|retired}} · from: {{initiative}}, {{YYYY-MM-DD}}
+- directive: {{concise instruction}} · target: {{template/guide §section}} · applies_to: {{action moment — optional}} · confidence: {{0.0–1.0}} · evidence: {{N✓/M✗}} · status: {{active|retired}} · from: {{initiative}}, {{YYYY-MM-DD}}
