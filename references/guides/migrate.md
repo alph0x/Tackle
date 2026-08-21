@@ -25,6 +25,14 @@ A migrated workspace MUST satisfy the full-adoption contract F-1..F-8; each line
 6. Lint + checkpoint.
 7. Record migration `D-xx` + log entry + bump stamp.
 
+## v5.6 → v6.0 checklist
+
+Run these when migrating a plan created with Tackle 5.6.x:
+
+1. **Note the `eval` + `scaffold` subcommands** — the runner grows `eval` (`prepare`/`diff`/`audit`/`judge`/`verdict` — stage, diff, audit, and judge-pack a trap run; never scores) and `scaffold <ws> [--preset]` + `scaffold --check <ws>` (create / verify a workspace; bare workspace names now resolve to `docs/plans/<name>` for `lint`/`probe`/`ground`). Informational — no workspace edit.
+2. **Note the fixture-integrity gate** — `catalog` now also verifies every `eval/scenarios/*/` carries a top-level `GROUND-TRUTH.md` and no answer sheet sits at a scratch arm root. Informational — only affects eval staging hygiene.
+3. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a `log.md` entry, and bump the plan stamp.
+
 ## v5.5 → v5.6 checklist
 
 Run these when migrating a plan created with Tackle 5.5.x:

@@ -2,7 +2,7 @@
 
 A model-agnostic planning and execution skill that turns an initiative into a durable action plan — self-contained points a cold agent can resolve in a fresh session — and executes that plan point-by-point when you ask it to.
 
-**Tackle 5.6.0: closure and directive gates.** Every 🟢 point now closes with a `reports/P-0N-report.md` artifact — lint row 14 (gating) blocks a missing report until written or explicitly waived, and row 15 (warn) flags `reference-docs/` snapshots whose `captured:` header has gone stale (default 14-day window, workspace-overridable). Profile directives may carry `applies_to:` — a commit-message, pre-push, or release scope that binds at the action moment, re-read mid-session instead of only at intake. Points adding user-facing surface can declare `Ship-gate: owner-confirms-before-close`, adding an In-scope confirmation to the closure report. Log entries are capped at 25 lines with a Log-growth retro metric, and long-corrected questions entries pin a Current ask at the top. Two new traps validate the closure and directive rules behaviorally. Anchored citations still re-anchor mechanically when the code they cite moves — `tackle-check ground <workspace>` rewrites drifted line numbers by content match, never by judgment. Fragments should be unique per file; the runner gates workspaces with rows 1–15 and its done-signal executor.
+**Tackle 6.0.0: mechanized eval + scaffold.** The `tackle-check` runner grows `eval` (prepare/diff/audit/judge/verdict — stage, diff, audit, and judge-pack a trap run; the runner never scores) and `scaffold` (create / verify a workspace from the §File map core set). Eight new traps close the unvalidated modes (`s42`–`s49`), `catalog` gains fixture-integrity, and CI runs the sweep on every push. The 5.6 gate still holds: every 🟢 point closes with a `reports/P-0N-report.md` artifact (lint row 14, gating), and the runner gates workspaces with rows 1–15 plus its done-signal executor.
 
 ## What it does
 
@@ -29,7 +29,7 @@ Tackle produces a workspace of grounded markdown artifacts under `docs/plans/<in
 
 ## Release self-lint
 
-7 shipped-skill gates run in the release sweep before every tag (`references/guides/lint-spec.md`): word budget (`SKILL.md` ≤ 1100 words), exactly 11 core conventions, changelog currency, migrate-chain currency, README currency, artifact-manifest currency (the update channel must list exactly the files that ship), and README content claims (row count, scenario count/range, migrate-chain head, runner subcommands, gate count — every expected value derived from the files it describes). Since 5.0 the gates compose into the shipped `tackle-check` runner (POSIX sh, zero deps) — the runner IS the rows, the table is its spec; the rows stay copy-pasteable for hosts without the runner. `tackle-check sweep` runs gates 1–7 plus `catalog` plus the lint rows over every workspace in one command (active workspaces gate the exit code; closed ones report non-gating warnings). No CI infrastructure — the release tag is the gate.
+7 shipped-skill gates run in the release sweep before every tag (`references/guides/lint-spec.md`): word budget (`SKILL.md` ≤ 1100 words), exactly 11 core conventions, changelog currency, migrate-chain currency, README currency, artifact-manifest currency (the update channel must list exactly the files that ship), and README content claims (row count, scenario count/range, migrate-chain head, runner subcommands, gate count — every expected value derived from the files it describes). Since 5.0 the gates compose into the shipped `tackle-check` runner (POSIX sh, zero deps) — the runner IS the rows, the table is its spec; the rows stay copy-pasteable for hosts without the runner. `tackle-check sweep` runs gates 1–7 plus `catalog` plus the lint rows over every workspace in one command (active workspaces gate the exit code; closed ones report non-gating warnings). CI runs `tackle-check sweep` on every push; the release tag stays the gate.
 
 ## Execution discipline
 
@@ -52,7 +52,7 @@ Tackle's execution loop is hardened with rules proven against common agent failu
 
 ## Eval
 
-Tackle ships a manual A/B eval in `eval/`: **40 scenarios** (`s1`–`s41`) — 39 decision traps plus one end-to-end lifecycle smoke (`s25-e2e-lifecycle`, the full intake → plan → execute → close → retro chain), each pitting a mid-tier model following Tackle literally against the same model free-styling at a known agent failure. The registry and workflow live in `eval/README.md`; each scenario carries its own `GROUND-TRUTH.md` answer sheet, and `tackle-check catalog` verifies scenarios ⊆ registry so the list can't drift.
+Tackle ships a runner-assisted A/B eval in `eval/`: **48 scenarios** (`s1`–`s49`) — **47 decision traps** plus one end-to-end lifecycle smoke (`s25-e2e-lifecycle`, the full intake → plan → execute → close → retro chain), each pitting a mid-tier model following Tackle literally against the same model free-styling at a known agent failure. The registry and workflow live in `eval/README.md`; `tackle-check eval` mechanizes staging/diff/audit/judge-packing (the answer sheet never reaches an arm), each scenario carries its own `GROUND-TRUTH.md` answer sheet, and `tackle-check catalog` verifies scenarios ⊆ registry plus fixture-integrity so the list can't drift.
 
 ## Who is it for
 
@@ -124,7 +124,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 
 **Template-resolution stack:** overrides → presets → sdd → core.
 
-\*\*Version:\*\* Tackle 5.6.0. See `references/CHANGELOG.md` for what's new.
+\*\*Version:\*\* Tackle 6.0.0. See `references/CHANGELOG.md` for what's new.
 
 ## What it produces
 
