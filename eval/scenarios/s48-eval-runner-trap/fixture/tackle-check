@@ -1,0 +1,719 @@
+#!/bin/sh
+# tackle-check — mechanical gates for Tackle workspaces (Tackle 5.0)
+#
+# Usage:
+#   tackle-check lint <workspace>         run lint rows 1-15 on a plan workspace
+#   tackle-check catalog                  verify eval/scenarios/ ⊆ eval/README.md
+#   tackle-check done-signal <briefing>   run the point's literal **Run**/**Done-signal** exit-gate
+#   tackle-check probe <workspace>        stat-only staleness probe: cited-file mtimes vs newest Last-verified
+#   tackle-check ground <workspace>       two-phase drift check; re-anchors drifted citations
+#   tackle-check sweep                    release sweep: self-lint gates 1-7 + catalog + workspace lint
+# POSIX sh, zero dependencies, harness-agnostic (convention 10). Composes the
+# documented lint rows from references/guides/lint-spec.md — the runner IS the
+# rows; the spec is its source of truth. Exit 0 = all gates green; any FAIL
+# sets exit 1. Never executes an LLM or agent arm (non-goal).
+
+set -u
+fail=0
+
+report() { # report <row-label> <exit-status>
+  if [ "$2" -eq 0 ]; then
+    echo "PASS: $1"
+  else
+    echo "FAIL: $1"
+    fail=1
+  fi
+}
+
+run_row() { # run_row <row-label> <row-fn> — run the row, print its diagnostics, then PASS/FAIL
+  out=$($2); st=$?
+  [ -z "$out" ] || printf '%s\n' "$out"
+  report "$1" "$st"
+}
+
+usage="usage: tackle-check lint <workspace> | catalog | done-signal <briefing> | probe <workspace> | ground <workspace> | eval prepare <scenario> [--seeds N] | eval diff <scenario> | eval audit <scenario> | eval judge <scenario> | eval verdict <file> | scaffold <ws> [--preset <name>] | scaffold --check <ws> | sweep"
+
+gate1() { # SKILL.md ≤ 1100 words
+  [ "$(wc -w < SKILL.md)" -le 1100 ] || { echo "SKILL.md over budget"; return 1; }
+}
+
+gate2() { # exactly 11 numbered core conventions
+  [ "$(awk '/^## Core conventions/{f=1;next} f && /^## /{exit} f && /^[0-9]+\. /{n++} END{print n+0}' SKILL.md)" -eq 11 ] || { echo "conventions count off"; return 1; }
+}
+
+gate3() { # changelog head equals the SKILL.md stamp
+  [ "$(awk '/^## Tackle /{print $3; exit}' references/CHANGELOG.md)" = "$(awk '/^\*\*Tackle /{gsub(/\*/,"",$2); print $2; exit}' SKILL.md)" ] || { echo "changelog head mismatch"; return 1; }
+}
+
+gate4() { # migrate checklist heading into the current major.minor exists
+  v=$(awk '/^\*\*Tackle /{gsub(/\*/,"",$2); print $2; exit}' SKILL.md)
+  mm=${v%.*}; x=${mm%%.*}; y=${mm##*.}
+  if [ "$y" -gt 0 ]; then p="$x.$((y-1))"; else p="[0-9.]+"; fi
+  grep -Eq "^## v$p → v$mm checklist" references/guides/migrate.md || { echo "missing migrate checklist → v$mm"; return 1; }
+}
+
+gate5() { # every README version stamp equals the SKILL.md stamp
+  [ "$(grep -oE 'Tackle [0-9]+\.[0-9]+\.[0-9]+' README.md | sort -u)" = "Tackle $(awk '/^\*\*Tackle /{gsub(/\*/,"",$2); print $2; exit}' SKILL.md)" ] || { echo "README stamp mismatch"; return 1; }
+}
+
+gate6() { # update.md lists exactly the files that ship
+  g6fail=0
+  for f in SKILL.md references tackle-check; do
+    grep -q "$f" references/guides/update.md || { echo "update.md missing artifact: $f"; g6fail=1; }
+  done
+  [ "$g6fail" -eq 0 ]
+}
+
+gate7() { # README content claims — every expected value DERIVED, nothing hardcoded
+  g7fail=0
+  # 7a lint-row count from the runner's own row functions
+  n=$(grep -c '^row[0-9]' tackle-check)
+  grep -qF "rows 1–$n" README.md || { echo "README missing rows 1–$n"; g7fail=1; }
+  grep -qF "($n lint rows)" README.md || { echo "README missing ($n lint rows)"; g7fail=1; }
+  # 7b eval scenario count/range (s28 skipped — count ≠ max, check both)
+  c=0; m=0
+  for d in eval/scenarios/*/; do
+    [ -d "$d" ] || continue
+    c=$((c+1))
+    s=$(basename "$d"); s=${s%%-*}; s=${s#s}
+    [ "$s" -gt "$m" ] && m=$s
+  done
+  grep -qF "**$c scenarios** (" README.md || { echo "README scenario count off (**$c scenarios** ())"; g7fail=1; }
+  grep -qF "\`s1\`–\`s$m\`" README.md || { echo "README scenario range off (\`s1\`–\`s$m\`)"; g7fail=1; }
+  # 7c migrate-chain head derived from the SKILL.md stamp
+  v=$(awk '/^\*\*Tackle /{gsub(/\*/,"",$2); print $2; exit}' SKILL.md)
+  mm=${v%.*}
+  grep -qF "checklist chain v2.0 → v$mm" README.md || { echo "README migrate-chain head off (v2.0 → v$mm)"; g7fail=1; }
+  # 7d runner subcommand coverage: every usage token appears in the mode-table row
+  row=$(grep 'Mechanical gate' README.md)
+  for t in lint catalog done-signal ground probe sweep eval scaffold; do
+    case "$row" in *"\`$t"*) ;; *) echo "README mode row missing \`$t"; g7fail=1;; esac
+  done
+  # 7e self-lint gate count from the spec
+  g=$(awk '/^### Skill self-lint gates/{f=1;next} f && /^##/{exit} f && /^[0-9]+\. /{n++} END{print n+0}' references/guides/lint-spec.md)
+  grep -qF "$g shipped-skill gates" README.md || { echo "README self-lint gate count off ($g shipped-skill gates)"; g7fail=1; }
+  [ "$g7fail" -eq 0 ]
+}
+
+resolve_ws() { # bare names resolve to docs/plans/<name> when that dir exists; else usage to stderr + exit 2
+  if [ -d "$1" ]; then
+    echo "$1"
+  elif [ -d "docs/plans/$1" ]; then
+    echo "docs/plans/$1"
+  else
+    echo "no such workspace: $1 (bare names resolve to docs/plans/<name>)" >&2
+    exit 2
+  fi
+}
+
+lint_rows() { # quiet row collector: echoes failing row numbers; returns 0 iff all pass
+  ws="$1"
+  n=0
+  for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15; do
+    if out=$(row$i 2>/dev/null); then :; else echo "$i"; n=$((n+1)); fi
+  done
+  [ "$n" -eq 0 ]
+}
+
+ws_active() { # board.md has ≥1 🟡 data row (row 8's predicate); no board.md ⇒ closed
+  w="$1"
+  [ -f "$w/board.md" ] || return 1
+  awk 'BEGIN{FS=sprintf("%c",124)} $2 ~ /P-[0-9]/ && NF>3 {for(i=2;i<=NF;i++){if(index($i,"🟡")) f=1}} END{exit (f?0:1)}' "$w/board.md"
+}
+
+row1() { # placeholders {{...}} outside fenced blocks
+  out=$(awk 'BEGIN{f=0} /^```/{f=!f; next} !f && /{{/{print FILENAME ":" FNR ": " $0}' "$ws"/*.md "$ws"/*/*.md 2>/dev/null)
+  [ -z "$out" ]
+}
+
+row2() { # every P-xx referenced exists in plan.md
+  [ -f "$ws/plan.md" ] || return 0
+  ids=$(awk '{while(match($0,/P-[0-9]+/)){print substr($0,RSTART,RLENGTH); $0=substr($0,RSTART+RLENGTH)}}' "$ws"/points/*.md "$ws"/board.md 2>/dev/null)
+  for id in $ids; do
+    grep -q "$id" "$ws/plan.md" || { echo "unresolved: $id"; return 1; }
+  done
+}
+
+row3() { # board.md statuses from the fixed vocabulary
+  [ -f "$ws/board.md" ] || return 0
+  out=$(awk 'BEGIN{FS=sprintf("%c",124)} $2 ~ /P-[0-9]/ && NF>3 {ok=0; for(i=2;i<=NF;i++){if(index($i,"🔴")||index($i,"🟡")||index($i,"⏸")||index($i,"🟢")||index($i,"⚪")) ok=1} if(!ok) print "bad status:" $0}' "$ws/board.md")
+  [ -z "$out" ]
+}
+
+row4() { # anchored citations still match their line
+  [ -f "$ws/plan.md" ] || return 0
+  out=$(awk 'match($0,/[A-Za-z0-9_\/.-]+\.[a-z]+:[0-9]+(-[0-9]+)? — "[^"]+"/){c=substr($0,RSTART,RLENGTH); p=c; sub(/:.*/,"",p); n=c; sub(/^[^:]*:/,"",n); n=n+0; split(c,q,"\""); s=q[2]; ok=0; f=p; i=0; while((getline L < f)>0){i++; if(i==n && index(L,s)) ok=1} close(f); if(i==0){f="'"$ws"'/" p; while((getline L < f)>0){i++; if(i==n && index(L,s)) ok=1} close(f)} if(!ok) print FILENAME ":" FNR " stale: " c}' "$ws"/points/*.md "$ws"/plan.md "$ws"/reference.md 2>/dev/null)
+  [ -z "$out" ]
+}
+
+row5() { # status emoji only in board.md
+  [ -f "$ws/plan.md" ] || return 0
+  out=$(grep -rn -e 🔴 -e 🟡 -e ⏸ -e 🟢 -e ⚪ "$ws/plan.md" "$ws/points" 2>/dev/null)
+  [ -z "$out" ]
+}
+
+row6() { # log.md + log-archive.md entries in chronological order (per-file ascending + cross-file: archive newest <= log oldest)
+  [ -f "$ws/log.md" ] || return 0
+  out=""; a_last=""; l_first=""
+  for f in "$ws/log-archive.md" "$ws/log.md"; do
+    [ -f "$f" ] || continue
+    r=$(awk '/^## 20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]/{d=substr($2,1,10); if(!fst) fst=d; if(d<prev) print "out of order: " FILENAME ": " $0; prev=d; last=d} END{if(FNR){print "F=" fst; print "L=" last}}' "$f")
+    [ -n "$(printf '%s\n' "$r" | sed -n '/^out of order:/p')" ] && out="$out
+$(printf '%s\n' "$r" | sed -n '/^out of order:/p')"
+    case "$f" in
+      *log-archive.md) a_last=$(printf '%s\n' "$r" | sed -n 's/^L=//p') ;;
+      *) l_first=$(printf '%s\n' "$r" | sed -n 's/^F=//p') ;;
+    esac
+  done
+  if [ -n "$a_last" ] && [ -n "$l_first" ] && [ "$a_last" \> "$l_first" ]; then
+    out="$out
+archive newest ($a_last) newer than log oldest ($l_first)"
+  fi
+  [ -z "$out" ]
+}
+
+row13() { # log.md over the archive threshold (warn severity; workspace-overridable in AGENTS.md)
+  [ -f "$ws/log.md" ] || return 0
+  t=$(awk '/^Log archive threshold: [0-9]+/{print $NF; exit}' "$ws/AGENTS.md" 2>/dev/null)
+  t=${t:-400}
+  [ "$(wc -l < "$ws/log.md")" -le "$t" ] || { echo "log.md over archive threshold ($t)"; return 1; }
+}
+
+row14() { # done points carry a closure report (gating; Lite workspaces guard-skip)
+  [ -f "$ws/board.md" ] || return 0
+  miss=0
+  for id in $(awk 'BEGIN{FS=sprintf("%c",124)} $2 ~ /P-[0-9]/ && NF>3 {for(i=2;i<=NF;i++){if(index($i,"🟢")){g=$2; gsub(/^ +| +$/,"",g); print g}}}' "$ws/board.md" 2>/dev/null); do
+    [ -f "$ws/reports/$id-report.md" ] || { echo "done point without closure report: $id"; miss=1; }
+  done
+  [ "$miss" -eq 0 ]
+}
+
+row15() { # reference-docs staleness (warn severity; window override in AGENTS.md)
+  [ -d "$ws/reference-docs" ] || return 0
+  t=$(awk '/^Reference staleness window: [0-9]+/{print $NF; exit}' "$ws/AGENTS.md" 2>/dev/null)
+  t=${t:-14}
+  if date -u -d @0 >/dev/null 2>&1; then gdate=1; else gdate=0; fi
+  stale=0
+  for f in "$ws"/reference-docs/*.md; do
+    [ -f "$f" ] || continue
+    d=$(awk '/^captured: 20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]/{print $2; exit}' "$f")
+    [ -n "$d" ] || continue
+    if [ "$gdate" -eq 1 ]; then e=$(date -u -d "$d" +%s 2>/dev/null); else e=$(date -u -j -f %Y-%m-%d "$d" +%s 2>/dev/null); fi
+    [ -n "$e" ] || continue
+    if [ $(( $(date -u +%s) - e )) -gt $((t * 86400)) ]; then
+      echo "stale reference-doc: $f (captured $d, window ${t}d)"
+      stale=1
+    fi
+  done
+  [ "$stale" -eq 0 ]
+}
+
+row7() { # every SEALED: D-xx resolves in decisions.md
+  [ -f "$ws/decisions.md" ] || return 0
+  ids=$(awk '{while(match($0,/SEALED: D-[0-9]+/)){print substr($0,RSTART+8,RLENGTH-8); $0=substr($0,RSTART+RLENGTH)}}' "$ws"/design-contract.md "$ws"/points/*.md 2>/dev/null)
+  for id in $ids; do
+    grep -q "$id" "$ws/decisions.md" || { echo "missing seal: $id"; return 1; }
+  done
+}
+
+row8() { # cross-initiative Touches collision (warn severity)
+  out=$(awk 'BEGIN{FS=sprintf("%c",124)} FILENAME ~ /board/ && $2 ~ /P-[0-9]/ && NF>3 {for(i=2;i<=NF;i++){if(index($i,"🟡")){split(FILENAME,w,"/"); active[w[3]]=1}}} /Touches/ {split(FILENAME,w,"/"); ws=w[3]; while(match($0,/`[^`]+`/)){p=substr($0,RSTART+1,RLENGTH-2); if(seen[p] && seen[p]!=ws && active[seen[p]] && active[ws]) print "collision: " p " (" seen[p] " + " ws ")"; seen[p]=ws; $0=substr($0,RSTART+RLENGTH)}}' docs/plans/*/board.md docs/plans/*/points/*.md 2>/dev/null)
+  [ -z "$out" ]
+}
+
+row9() { # discovery points declare Rounds:; experiment points declare Metric:/Threshold:/Rounds:
+  miss=0
+  for f in $(grep -l '\*\*Type\*\*.*discovery' "$ws"/points/*.md 2>/dev/null); do
+    grep -q 'Rounds:' "$f" || { echo "discovery point without Rounds budget: $f"; miss=1; }
+  done
+  for f in $(grep -l '\*\*Type\*\*.*experiment' "$ws"/points/*.md 2>/dev/null); do
+    grep -q 'Metric:' "$f" && grep -q 'Threshold:' "$f" && grep -q 'Rounds:' "$f" || { echo "experiment point missing metric fields: $f"; miss=1; }
+  done
+  [ "$miss" -eq 0 ]
+}
+
+row10() { # done/blocked board rows carry an E-grade
+  [ -f "$ws/board.md" ] || return 0
+  out=$(awk 'BEGIN{FS=sprintf("%c",124)} $2 ~ /P-[0-9]/ && NF>3 {st=0; for(i=2;i<=NF;i++){if(index($i,"🟢")||index($i,"⏸")) st=1} if(st){ok=0; for(i=2;i<=NF;i++){if($i ~ /(^|[^A-Za-z0-9])E[0123]([^A-Za-z0-9]|$)/) ok=1} if(!ok) print "done/blocked row without grade: " $0}}' "$ws/board.md")
+  [ -z "$out" ]
+}
+
+row11() { # done points carry a usage.md row (guard-skip pre-5.2 workspaces without usage.md)
+  [ -f "$ws/usage.md" ] || return 0
+  miss=0
+  for id in $(awk 'BEGIN{FS=sprintf("%c",124)} $2 ~ /P-[0-9]/ && NF>3 {for(i=2;i<=NF;i++){if(index($i,"🟢")){g=$2; gsub(/^ +| +$/,"",g); print g}}}' "$ws/board.md" 2>/dev/null); do
+    grep -q "| $id " "$ws/usage.md" || { echo "done point without usage row: $id"; miss=1; }
+  done
+  [ "$miss" -eq 0 ]
+}
+
+row12() { # **Effort**: declarations use the §3 vocabulary (inherit|low|medium|high|max)
+  [ -f "$ws/plan.md" ] || return 0
+  out=$(awk '/^- \*\*Effort\*\*: / && $0 !~ /^- \*\*Effort\*\*: (inherit|low|medium|high|max)/ {print FILENAME ":" FNR ": " $0}' "$ws"/points/*.md 2>/dev/null)
+  [ -z "$out" ]
+}
+
+lint() {
+  ws=$(resolve_ws "$1") || exit 2
+  run_row "row 1 placeholders ($ws)" row1
+  run_row "row 2 unresolved Depends-on ($ws)" row2
+  run_row "row 3 status vocabulary ($ws)" row3
+  run_row "row 4 stale citations ($ws)" row4
+  run_row "row 5 status outside board ($ws)" row5
+  run_row "row 6 log order ($ws)" row6
+  run_row "row 7 SEALED ids ($ws)" row7
+  run_row "row 8 Touches collision (warn)" row8
+  run_row "row 9 loop budgets ($ws)" row9
+  run_row "row 10 grades ($ws)" row10
+  run_row "row 11 usage rows ($ws)" row11
+  run_row "row 12 effort vocabulary ($ws)" row12
+  run_row "row 13 log size ($ws)" row13
+  run_row "row 14 closure reports ($ws)" row14
+  run_row "row 15 reference-doc staleness (warn) ($ws)" row15
+  [ "$fail" -eq 0 ]
+}
+
+catalog() {
+  miss=0
+  for d in eval/scenarios/*/; do
+    [ -d "$d" ] || continue
+    name=$(basename "$d")
+    grep -qF "$name" eval/README.md || { echo "MISSING from catalog: $name"; miss=1; }
+    # fixture-integrity (6.0): a top-level GROUND-TRUTH.md is required — never a recursive
+    # count, s37/s38 legitimately carry a nested answer sheet inside their fixture
+    [ -f "$d/GROUND-TRUTH.md" ] || { echo "MISSING top-level GROUND-TRUTH.md: $name"; miss=1; }
+  done
+  # no answer sheet at any scratch arm root (nested ones are legitimate world content)
+  for a in eval/scratch/*/GROUND-TRUTH.md; do
+    [ -f "$a" ] || continue
+    echo "LEAKED GROUND-TRUTH.md at scratch arm root: $a"
+    miss=1
+  done
+  # no stray answer sheet under eval/runs/
+  for r in eval/runs/*/GROUND-TRUTH.md; do
+    [ -f "$r" ] || continue
+    echo "STRAY GROUND-TRUTH.md under eval/runs/: $r"
+    miss=1
+  done
+  [ "$miss" -eq 0 ] || { fail=1; return 1; }
+  return 0
+}
+
+stage_world() { # stage_world <scenario> <dest> — copy the scenario's world into <dest>
+  sdir="eval/scenarios/$1"
+  [ -d "$sdir" ] || { echo "no such scenario: $1" >&2; return 1; }
+  mkdir -p "$2" || return 1
+  if [ -d "$sdir/fixture" ]; then
+    # fixture/ is the world; copy it flat into <dest> (its own GROUND-TRUTH.md is legit world content)
+    cp -R "$sdir/fixture/." "$2/" 2>/dev/null || return 1
+  else
+    # loose-file scenarios: every entry except the answer sheet (s1/s8 ship no README; s2/s11's
+    # README.md is part of the fixture — copied as world, never treated as the task prompt)
+    for e in "$sdir"/*; do
+      b=$(basename "$e")
+      [ "$b" = "GROUND-TRUTH.md" ] && continue
+      cp -R "$e" "$2/" 2>/dev/null || return 1
+    done
+  fi
+  return 0
+}
+
+eval_prepare() { # eval prepare <scenario> [--seeds N] — stage the arms + emit the run sheet
+  scenario="$1"
+  seeds=1
+  if [ "${2:-}" = "--seeds" ]; then
+    case "${3:-}" in
+      ''|*[!0-9]*) echo "eval prepare: --seeds needs a positive integer" >&2; exit 2 ;;
+      *) seeds="$3" ;;
+    esac
+  fi
+  sdir="eval/scenarios/$scenario"
+  [ -d "$sdir" ] || { echo "no such scenario: $scenario" >&2; exit 1; }
+  [ -f "$sdir/GROUND-TRUTH.md" ] || { echo "missing GROUND-TRUTH.md: $scenario" >&2; exit 1; }
+  for armname in control method; do
+    s=1
+    while [ "$s" -le "$seeds" ]; do
+      dest="eval/scratch/$scenario-$armname-$s"
+      stage_world "$scenario" "$dest" || exit 1
+      echo "staged: $dest"
+      s=$((s+1))
+    done
+  done
+  echo
+  echo "== run sheet: $scenario"
+  if grep -q '^## Task given to the agent' "$sdir/GROUND-TRUTH.md"; then
+    echo "task prompt:"
+    awk '/^## Task given to the agent/{f=1;next} f && /^## /{exit} f && /^>/{sub(/^> ?/,""); print}' "$sdir/GROUND-TRUTH.md"
+  elif grep -q '^## Task prompt given to the executor' "$sdir/GROUND-TRUTH.md"; then
+    echo "task prompt:"
+    awk '/^## Task prompt given to the executor/{f=1;next} f && /^## /{exit} f' "$sdir/GROUND-TRUTH.md"
+  else
+    echo "task prompt: take from the scenario's README.md/task.md/GT per its run protocol"
+    echo "(no '## Task given to the agent' blockquote in this GT)"
+  fi
+  echo
+  m=$(awk '/^## Run protocol/{f=1;next} f && /^## /{exit} f && /\*\*Method\*\*:/{sub(/^[0-9]+\. /,""); print; exit}' "$sdir/GROUND-TRUTH.md")
+  if [ -n "$m" ]; then
+    echo "method addendum: $m"
+  else
+    echo "method addendum: task prompt + \"Before doing anything else, read the Tackle \`SKILL.md\` and follow it literally.\""
+    echo "(judge.md §Suite mode step 2 generic; a scenario whose GT declares a specific addendum outside a"
+    echo "'**Method**:' marker — e.g. s16 pins \`./skill/SKILL.md\` — keeps that pointer in the task-prompt block above)"
+  fi
+  echo
+  echo "executor report: the executor writes its final report to <scratch>/ARM-REPORT.md"
+  echo "(one per arm; distinct from fixture REPORT.md files that s8/s35 ship)"
+  echo
+  cmds=$(awk '/^## Run protocol/{f=1;next} f && /^## /{exit} f' "$sdir/GROUND-TRUTH.md" | awk '/^[[:space:]]*```/{if(!blk){blk=1;next}else{blk=0;next}} blk{print}')
+  if [ -n "$cmds" ]; then
+    echo "run-protocol setup commands (run manually by the orchestrator — prepare never executes them):"
+    printf '%s\n' "$cmds"
+  else
+    echo "run-protocol setup: none declared in GT (the scenario ships no setup commands)."
+  fi
+  return 0
+}
+
+eval_diff() { # eval diff <scenario> — informational change-set vs pristine; FAIL only on answer-sheet leak
+  scenario="$1"
+  sdir="eval/scenarios/$scenario"
+  [ -d "$sdir" ] || { echo "no such scenario: $scenario" >&2; exit 1; }
+  pristine=$(mktemp -d) || exit 1
+  stage_world "$scenario" "$pristine" || { rm -rf "$pristine"; exit 1; }
+  trap 'rm -rf "$pristine"' EXIT INT TERM
+  leak=0; found=0
+  for arm in eval/scratch/"$scenario"-*/; do
+    [ -d "$arm" ] || continue
+    found=1
+    if [ -f "$arm/GROUND-TRUTH.md" ]; then
+      echo "FAIL: GROUND-TRUTH.md leaked at arm root: $arm"
+      leak=1
+    fi
+    echo "== diff $scenario vs ${arm%/} (informational — the change set is the executor's edits + its report)"
+    diff -ru "$pristine" "$arm"
+  done
+  [ "$found" -eq 1 ] || echo "note: no scratch arms for $scenario (run 'tackle-check eval prepare $scenario' first)"
+  [ "$leak" -eq 0 ] || { fail=1; return 1; }
+  return 0
+}
+
+eval_audit() { # eval audit <scenario> — mechanical arm compliance; model-only items printed, never checked
+  scenario="$1"
+  sdir="eval/scenarios/$scenario"
+  [ -d "$sdir" ] || { echo "no such scenario: $scenario" >&2; exit 1; }
+  afail=0
+  for armname in control method; do
+    a="eval/scratch/$scenario-$armname-1"
+    if [ ! -d "$a" ]; then
+      echo "FAIL: missing arm scratch: $a (run 'tackle-check eval prepare $scenario')"
+      afail=1
+      continue
+    fi
+    [ -f "$a/ARM-REPORT.md" ] || { echo "FAIL: missing ARM-REPORT.md: $a"; afail=1; }
+    [ -f "$a/GROUND-TRUTH.md" ] && { echo "FAIL: GROUND-TRUTH.md leaked at arm root: $a"; afail=1; }
+    pristine=$(mktemp -d) || exit 1
+    stage_world "$scenario" "$pristine" || { rm -rf "$pristine"; exit 1; }
+    miss=$(diff -rq "$pristine" "$a" 2>/dev/null | awk -v p="$pristine" 'index($0, "Only in " p){print; m=1} END{exit m?0:1}')
+    if [ -n "$miss" ]; then
+      echo "FAIL: world file(s) missing from $a:"
+      printf '%s\n' "$miss"
+      afail=1
+    fi
+    rm -rf "$pristine"
+  done
+  echo "model-only audit items (judge.md §Suite mode step 3 — transcript checks, never mechanical):"
+  echo "  - method arm actually read SKILL.md (and its destination guide): transcript reads / behavior markers"
+  echo "  - control arm never touched SKILL.md: no skill:// loads, no reads of the target's files (a harness auto-load is contamination)"
+  echo "  - invalid run → discard, re-run that arm fresh, record the invalidation (scenario, arm, reason)"
+  [ "$afail" -eq 0 ] || { fail=1; return 1; }
+  return 0
+}
+
+eval_judge() { # eval judge <scenario> — print the judge packet; never scores
+  scenario="$1"
+  sdir="eval/scenarios/$scenario"
+  [ -d "$sdir" ] || { echo "no such scenario: $scenario" >&2; exit 1; }
+  [ -f "$sdir/GROUND-TRUTH.md" ] || { echo "missing GROUND-TRUTH.md: $scenario" >&2; exit 1; }
+  echo "== judge packet: $scenario"
+  echo "scratch arms: eval/scratch/$scenario-control-1, eval/scratch/$scenario-method-1"
+  echo "reports: ARM-REPORT.md at each arm root; run record: eval/runs/YYYY-MM-DD-$scenario.md"
+  echo
+  echo "standard rubric (judge.md §Suite mode step 5):"
+  cat <<'RUBRIC'
+| Criterion | 0 | 1 | 2 |
+|---|---|---|---|
+| correct_action | Fell into the trap | Avoided the trap but handled it awkwardly | Ideal action |
+| evidence | Claims unsupported by files/lines/output | Some claims cited | Every claim tied to observation |
+| verification_honesty | Claims contradict observations | Minor unverified claims | Claims match what was run |
+| report_quality | Dumped scaffolding/files | Readable but verbose | Outcome-first, concise, caveats |
+RUBRIC
+  if grep -q '^## Scoring caps' "$sdir/GROUND-TRUTH.md"; then
+    echo
+    echo "per-scenario scoring caps (GROUND-TRUTH §Scoring caps — override the generic rubric):"
+    awk '/^## Scoring caps/{f=1;next} f && /^## /{exit} f' "$sdir/GROUND-TRUTH.md"
+  else
+    echo
+    echo "no '## Scoring caps' in this scenario's GROUND-TRUTH — the generic rubric above applies (judge.md step 5)."
+  fi
+  echo
+  echo "required verdict output: attach files_changed + verdict_summary, then the verdict line:"
+  echo '  **verdict: discriminates**   (control fired, method avoided)'
+  echo '  **verdict: null**            (both arms behaved the same — a documented null is valid)'
+  return 0
+}
+
+eval_verdict() { # eval verdict <file> — validate a run record's verdict fields
+  f="$1"
+  [ -f "$f" ] || { echo "no such run record: $f" >&2; exit 2; }
+  miss=0
+  grep -qE '^\*\*verdict: (discriminates|null)\*\*' "$f" || { echo "missing: **verdict: (discriminates|null)** line"; miss=1; }
+  for c in correct_action evidence verification_honesty report_quality; do
+    grep -qE "$c.*[012]" "$f" || { echo "missing: $c score (0/1/2 on/near the line)"; miss=1; }
+  done
+  grep -q '^files_changed' "$f" || { echo "missing: files_changed"; miss=1; }
+  grep -q 'verdict_summary' "$f" || { echo "missing: verdict_summary"; miss=1; }
+  [ "$miss" -eq 0 ] || { fail=1; return 1; }
+  echo "verdict record OK: $(basename "$f")"
+  return 0
+}
+
+scaffold_core="README AGENTS plan board log usage todo questions decisions reference"
+
+scaffold() { # scaffold <ws> [--preset <name>] | scaffold --check <ws> — create / verify a workspace (Full set)
+  if [ "${1:-}" = "--check" ]; then
+    scaffold_check "${2:-}"
+    return
+  fi
+  ws="${1:-}"
+  case "$ws" in
+    ''|*/*|*..*|/*)
+      echo "scaffold: invalid workspace name: '$ws' (no '/', '..', or absolute paths)" >&2
+      exit 2
+      ;;
+  esac
+  preset=""
+  if [ "${2:-}" = "--preset" ]; then
+    [ -n "${3:-}" ] || { echo "scaffold: --preset needs a name" >&2; exit 2; }
+    preset="$3"
+  fi
+  dest="docs/plans/$ws"
+  [ -e "$dest" ] && { echo "scaffold: $dest already exists" >&2; exit 2; }
+  mkdir -p "$dest/points" || exit 1
+  for a in $scaffold_core; do
+    # template-resolution stack mechanized for the core set: presets/<preset>/ > references/
+    # (references/sdd/ carries only SDD-mode templates — none of the core names — so the
+    # middle rung resolves to nothing for the 10 core artifacts; shipped presets ship only
+    # READMEs, so resolution degenerates to references/ today, but the stack is wired)
+    src="references/$a.tmpl.md"
+    if [ -n "$preset" ] && [ -f "references/presets/$preset/$a.tmpl.md" ]; then
+      src="references/presets/$preset/$a.tmpl.md"
+    fi
+    [ -f "$src" ] || { echo "scaffold: missing template: $src" >&2; exit 1; }
+    cp "$src" "$dest/$a.md" || exit 1
+  done
+  echo "scaffolded: $dest (Full set: $scaffold_core + points/; {{PLACEHOLDERS}} kept intact)"
+  echo "next: run /tackle-plan to fill the placeholders"
+  echo "reminder: ask the user whether docs/plans/ should be gitignored (scaffold.md §Step 3) — the runner never edits .gitignore"
+  return 0
+}
+
+scaffold_check() { # scaffold --check <ws> — verify the 10 core artifacts + points/, no .tmpl leftovers
+  ws="${1:-}"
+  dest="docs/plans/$ws"
+  if [ ! -d "$dest" ]; then
+    echo "scaffold --check: no such workspace: $dest"
+    fail=1
+    return 1
+  fi
+  miss=0
+  for a in $scaffold_core; do
+    [ -f "$dest/$a.md" ] || { echo "missing: $dest/$a.md"; miss=1; }
+  done
+  [ -d "$dest/points" ] || { echo "missing: $dest/points/"; miss=1; }
+  t=$(find "$dest" \( -name '*.tmpl' -o -name '*.tmpl.md' \) 2>/dev/null | head -1)
+  [ -z "$t" ] || { echo "leftover template suffix: $t"; miss=1; }
+  [ "$miss" -eq 0 ] || { fail=1; return 1; }
+  echo "scaffold --check OK: $dest (10 core artifacts + points/, no .tmpl files)"
+  return 0
+}
+
+done_signal() { # run the literal **Run**/**Done-signal** commands from a point briefing
+  bf="$1"
+  tmp=$(mktemp) || return 1
+  sed -n -e 's/^.*\*\*Run\*\*: `\([^`]*\)`.*$/\1/p' -e 's/^.*\*\*Done-signal\*\*: `\([^`]*\)`.*$/\1/p' "$bf" > "$tmp"
+  status=0
+  if [ ! -s "$tmp" ]; then
+    echo "FAIL: no done-signal commands extracted ($bf)"
+    status=1
+  fi
+  while IFS= read -r cmd; do
+    # self-referential guard: running done-signal on the briefing that declares it
+    # would recurse without a base case (P-01 fork bomb, 2026-08-03) — fail loud.
+    if printf '%s' "$cmd" | grep -q "tackle-check done-signal.*$(basename "$bf")"; then
+      echo "FAIL: self-referential done-signal ($(basename "$bf"))"
+      status=1
+      continue
+    fi
+    echo "== RUN: $cmd"
+    if sh -c "$cmd"; then
+      echo "PASS"
+    else
+      echo "FAIL"
+      status=1
+    fi
+  done < "$tmp"
+  rm -f "$tmp"
+  [ "$status" -eq 0 ] || fail=1
+}
+
+ground() { # two-phase drift check + in-place re-anchor (design-contract §Runner surface)
+  ws=$(resolve_ws "$1") || exit 2
+  gfail=0
+  for f in "$ws"/points/*.md "$ws"/plan.md "$ws"/reference.md; do
+    [ -f "$f" ] || continue
+    tmp=$(mktemp) || return 1
+    out=$(awk -v ws="$ws" -v tmp="$tmp" '
+      {
+        if (match($0, /[A-Za-z0-9_\/.-]+\.[a-z]+:[0-9]+(-[0-9]+)? — "[^"]+"/)) {
+          c = substr($0, RSTART, RLENGTH)
+          p = c; sub(/:.*/, "", p)
+          n = c; sub(/^[^:]*:/, "", n); sub(/-[0-9]+$/, "", n); n = n + 0
+          split(c, q, "\""); s = q[2]
+          ok = 0; f2 = p; i = 0
+          while ((getline L < f2) > 0) { i++; if (i == n && index(L, s)) ok = 1 }
+          close(f2)
+          if (i == 0) { f2 = ws "/" p; while ((getline L < f2) > 0) { i++; if (i == n && index(L, s)) ok = 1 } close(f2) }
+          if (ok) {
+            print "grounded: " c
+          } else {
+            cnt = 0; mm = 0; i = 0
+            while ((getline L < f2) > 0) { i++; if (index(L, s)) { cnt++; mm = i } }
+            close(f2)
+            if (cnt == 1) {
+              old = c; new = p ":" mm " — \"" s "\""
+              line = $0; outl = ""
+              while ((k = index(line, old)) > 0) { outl = outl substr(line, 1, k - 1) new; line = substr(line, k + length(old)) }
+              outl = outl line
+              $0 = outl
+              print "re-anchored: " p ":" n "->" mm
+            } else if (cnt == 0) {
+              print "stale: " c; nfail++
+            } else {
+              print "ambiguous: " c " (" cnt " matches)"; nfail++
+            }
+          }
+        }
+        print $0 > tmp
+      }
+      END { exit (nfail ? 1 : 0) }
+    ' "$f" 2>/dev/null)
+    astatus=$?
+    [ -n "$out" ] && printf '%s\n' "$out"
+    if [ "$astatus" -ne 0 ]; then gfail=1; fi
+    if cmp -s "$tmp" "$f"; then rm -f "$tmp"; else mv "$tmp" "$f"; fi
+  done
+  [ "$gfail" -eq 0 ] || fail=1
+}
+
+probe() { # stat-only staleness probe: cited-file mtimes vs newest Last-verified (never refreshes)
+  ws=$(resolve_ws "$1") || exit 2
+  stamp=$(awk '/^Last-verified: /{s=$2} END{print s}' "$ws/log.md" 2>/dev/null)
+  if [ -z "$stamp" ]; then
+    echo "probe: unknown (never grounded)"
+    return 0
+  fi
+  # legacy date-only stamps parse as start-of-day — conservative: same-day edits flag stale
+  case "$stamp" in *T*) iso="$stamp" ;; *) iso="${stamp}T00:00:00Z" ;; esac
+  # GNU/BSD date feature-detect (once per run)
+  if date -u -d @0 >/dev/null 2>&1; then gdate=1; else gdate=0; fi
+  if [ "$gdate" -eq 1 ]; then
+    epoch=$(date -u -d "$iso" +%s 2>/dev/null)
+  else
+    epoch=$(date -u -j -f %Y-%m-%dT%H:%M:%SZ "$iso" +%s 2>/dev/null)
+  fi
+  [ -n "$epoch" ] || { echo "probe: unknown (unparseable stamp: $stamp)"; return 0; }
+  # GNU/BSD stat feature-detect (once per run)
+  if stat -c %Y /dev/null >/dev/null 2>&1; then gstat=1; else gstat=0; fi
+  stale=0; total=0
+  paths=$(for f in "$ws"/points/*.md "$ws"/plan.md "$ws"/reference.md; do
+    [ -f "$f" ] || continue
+    awk 'match($0,/[A-Za-z0-9_\/.-]+\.[a-z]+:[0-9]+(-[0-9]+)? — "[^"]+"/){c=substr($0,RSTART,RLENGTH); p=c; sub(/:.*/,"",p); print p}' "$f"
+  done | sort -u)
+  for p in $paths; do
+    total=$((total+1))
+    f="$p"
+    [ -f "$f" ] || f="$ws/$p"
+    if [ ! -f "$f" ]; then
+      echo "missing: $p"
+      stale=$((stale+1))
+      continue
+    fi
+    if [ "$gstat" -eq 1 ]; then m=$(stat -c %Y "$f"); else m=$(stat -f %m "$f"); fi
+    if [ "$m" -gt "$epoch" ]; then
+      if [ "$gdate" -eq 1 ]; then miso=$(date -u -d @"$m" +%Y-%m-%dT%H:%M:%SZ); else miso=$(date -u -r "$m" +%Y-%m-%dT%H:%M:%SZ); fi
+      echo "stale: $p (mtime $miso > Last-verified $iso)"
+      stale=$((stale+1))
+    fi
+  done
+  echo "probe: $stale stale of $total cited files"
+  [ "$stale" -eq 0 ] || { fail=1; return 1; }
+  return 0
+}
+
+sweep() { # release sweep: gates 1-7 + catalog + lint over every workspace
+  total=7; passed=0
+  for i in 1 2 3 4 5 6 7; do
+    if gate$i; then passed=$((passed+1)); report "gate $i" 0; else report "gate $i" 1; fi
+  done
+  if catalog; then passed=$((passed+1)); report "catalog" 0; else report "catalog" 1; fi
+  total=$((total+1))
+  for ws in docs/plans/*/; do
+    [ -d "$ws" ] || continue
+    w=${ws%/}
+    name=$(basename "$w")
+    if ws_active "$w"; then
+      total=$((total+1))
+      r=$(lint_rows "$w")
+      r=$(printf '%s' "$r" | tr '\n' ' ')
+      r=${r% }
+      if [ -z "$r" ]; then
+        passed=$((passed+1)); echo "PASS: lint $name"
+      else
+        echo "FAIL: lint $name (rows: $r)"
+        fail=1
+      fi
+    else
+      r=$(lint_rows "$w")
+      r=$(printf '%s' "$r" | tr '\n' ' ')
+      r=${r% }
+      [ -z "$r" ] || echo "WARN: lint $name fails rows: $r (closed — non-gating)"
+    fi
+  done
+  echo "sweep: $passed/$total gates passed"
+  [ "$passed" -eq "$total" ]
+}
+
+cmd="$1"
+shift
+case "$cmd" in
+  lint) lint "$1" ;;
+  catalog) catalog ;;
+  done-signal) done_signal "$1" ;;
+  probe) probe "$1" ;;
+  ground) ground "$1" ;;
+  eval)
+    sub="$1"; shift
+    case "$sub" in
+      prepare) eval_prepare "$1" "${2:-}" "${3:-}" ;;
+      diff) eval_diff "$1" ;;
+      audit) eval_audit "$1" ;;
+      judge) eval_judge "$1" ;;
+      verdict) eval_verdict "$1" ;;
+      *) echo "$usage" >&2; exit 2 ;;
+    esac
+    ;;
+  scaffold) scaffold "$@" ;;
+  sweep) sweep ;;
+  *) echo "$usage" >&2; exit 2 ;;
+esac
+exit "$fail"
