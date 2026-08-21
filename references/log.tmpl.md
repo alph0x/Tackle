@@ -3,7 +3,7 @@
 **Append-only** log, ascending chronological order (newest at the bottom). One entry per
 session: `## YYYY-MM-DD · session N · <title>` with **Did / Decisions / Blockers / Next** and,
 at the end of the **newest** entry, a **State snapshot** sufficient to resume without
-re-reading history. Keep entries terse (append-only ≠ verbose). Never rewrite old entries.
+re-reading history. Keep entries terse (append-only ≠ verbose). Never rewrite old entries. Cap: a session entry runs ≤ 25 lines, leading with the compact block — points touched, decisions by D-id, status deltas, verification commands + pass/fail. Reasoning and narrative route to `decisions.md` / `reference-docs/`; the log indexes them, it never re-narrates. (taptopaykit-integration A6: a 2900-line `log.md` made every resume pay a compounding read.)
 Never log secrets. **This is the canonical state source of the plan.**
 
 **Archive protocol** — when `log.md` exceeds ~400 lines, move entries older than the

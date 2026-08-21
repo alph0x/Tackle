@@ -15,6 +15,7 @@ Written at initiative close (or mid-flight as a partial retro — say so here) b
 | **Tokens by phase** | `awk -F'|' '$2 ~ /PLAN|P-[0-9]|RETRO/ {na=($7 ~ /n\/a/ || $8 ~ /n\/a/) ? na+1 : na; if($2 ~ /PLAN/) {pi+=$7; po+=$8} else if($2 ~ /RETRO/) {ri+=$7; ro+=$8} else {ei+=$7; eo+=$8}} END{printf "PLAN %d/%d\nEXEC %d/%d\nRETRO %d/%d\nn/a-rows %d\n", pi,po,ei,eo,ri,ro,na}' usage.md` | {{...}} |
 | **Tokens by model** | `awk -F'|' '$2 ~ /PLAN|P-[0-9]|RETRO/ {m=$5; gsub(/^ +| +$/,"",m); t[m]+=$7+$8; if($7 ~ /n\/a/) na[m]++} END{for(k in t) printf "%s %d (n/a-rows %d)\n", k, t[k], na[k]+0}' usage.md` | {{...}} |
 | **Tokens per point** | `awk -F'|' '$2 ~ /PLAN|P-[0-9]|RETRO/ {p=$2; gsub(/^ +| +$/,"",p); t[p]+=$7+$8; if($7 ~ /n\/a/) na[p]++} END{for(k in t) printf "%s %d (n/a-rows %d)\n", k, t[k], na[k]+0}' usage.md` | {{...}} |
+| Log growth | `awk '/^## 20[0-9][0-9]-/{if(h)print c" lines — "h; h=$0; c=0; next}{c++} END{if(h)print c" lines — "h}' log.md` (lines per session entry; run over `log-archive.md` too when present, plus `wc -l` on both for the total) — rising per-session lines flag narration that belongs in `decisions.md`/`reference-docs/` | {{...}} |
 
 Usage metrics report `n/a` when the workspace has no `usage.md` (same convention as Lite board metrics).
 
