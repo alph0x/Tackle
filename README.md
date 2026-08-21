@@ -110,12 +110,12 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 | `/tackle-trace` | **Trace** — criterion↔point coverage matrix, gaps and drift |
 | `/tackle-handoff` | **Handoff packet** — generate a portable handoff artifact |
 | `stop evolving` | **Evolution opt-out** — pause or purge the learning-loop profile |
-| `tackle-check` | **Mechanical gate** — shipped POSIX-sh runner: `lint <workspace>` (15 lint rows), `catalog` (eval scenarios ⊆ registry), `done-signal <point>` (run the point's exit-gate), `probe <workspace>` (cited-file staleness vs newest `Last-verified`), `ground <workspace>` (re-anchor drifted citations), `sweep` (release sweep: gates 1–7 + catalog + workspace lint); flip requires its green when the workspace flag `tackle-check-gate: on` |
+| `tackle-check` | **Mechanical gate** — shipped POSIX-sh runner: `lint <workspace>` (15 lint rows), `catalog` (eval scenarios ⊆ registry + fixture-integrity), `done-signal <point>` (run the point's exit-gate), `probe <workspace>` (cited-file staleness vs newest `Last-verified`), `ground <workspace>` (re-anchor drifted citations), `eval` (`prepare`/`diff`/`audit`/`judge`/`verdict` — stage, diff, audit, and judge-pack a trap run; never scores), `scaffold <ws> [--preset]` + `scaffold --check` (create / verify a workspace), `sweep` (release sweep: gates 1–7 + catalog + workspace lint); flip requires its green when the workspace flag `tackle-check-gate: on` |
 | "resume / retomá `<x>`" | **Resume** — re-enter a plan |
 | "how is `<x>` going?" / "status" | **Status** — read-only digest |
 | "what plans are there?" | **List** — one line per initiative |
 | "what's next?" / "qué sigue" | **Next** — the next point's pre-attack summary |
-| "migrate / upgrade `<x>`" | **Migrate** — bring an old plan to the current methodology (checklist chain v2.0 → v5.6 in `references/guides/migrate.md`) |
+| "migrate / upgrade `<x>`" | **Migrate** — bring an old plan to the current methodology (checklist chain v2.0 → v6.0 in `references/guides/migrate.md`) |
 | "mejorá este plan" / "improve this plan" | **Improve** — upgrade a Tackle plan or convert an unstructured plan |
 
 **The Create pipeline:** Intake → Gate (None/Lite/Full) → Location & gitignore → Scaffold → Briefing → Architecture → Stabilize contract → Decompose → Lint → Handoff.

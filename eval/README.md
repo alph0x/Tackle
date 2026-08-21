@@ -96,6 +96,7 @@ eval/
     s25-e2e-lifecycle/       # lifecycle smoke: full cycle intake → plan → execute → close → retro (NOT a trap)
     s26-pulse-readonly/      # pulse trap: read-only digest, report findings — never fix
     s27-ambiguous-execution-intent/ # intent trap: no execute consent, no code
+    # s28 — reserved, skipped (never assigned)
     s29-trace-untraced-scope/ # trace trap: unanchored point = scope drift, HIGH
     s30-handoff-planstate-leak/ # handoff trap: context inline, never gitignored paths
     s31-init-core-edit/      # init trap: shadow in overrides/, never edit references/
@@ -109,9 +110,53 @@ eval/
     s39-log-archive/ # log-archive trap: oversized log → size line + archive recommendation, never an unconsented write
     s40-closure-artifact/ # closure trap: evidence in log tempts a direct flip → report + sign-off first, board second
     s41-directive-resurface/ # directive trap: git-log precedent vs applies_to profile directive → re-check at the action moment
+    s42-constitution-trap/ # constitution trap: vague ask → explore intent first, never invent principles
+    s43-specify-trap/ # specify trap: fabricating acceptance criteria the user never stated
+    s44-tasks-trap/ # tasks trap: tasks that don't map to plan points, or a dropped Depends-on edge
+    s45-checklist-trap/ # checklist trap: a generic rubber-stamp checklist, not grounded in the actual work
+    s46-drill-trap/ # drill trap: cold-resolvable declared while a citation is stale
+    s47-evolution-optout-trap/ # opt-out trap: silent purge instead of pause; unconsented profile writes
+    s48-eval-runner-trap/ # eval-runner trap (D-13 arm): hand-copying leaks the answer sheet; the runner excludes it
+    s49-init-trap/ # init trap (D-13 arm): hand-scaffolding omits usage.md / leaves .tmpl suffixes; the runner scaffolds the full set
 ```
 
-## How to run a scenario
+## Running a scenario — runner-assisted (mechanized path, Tackle 6.0)
+
+The shipped `tackle-check` runner mechanizes the suite flow; the manual steps below
+are the fallback for hosts without the runner. `tackle-check eval` never executes an
+LLM or agent arm — it prepares, captures, audits, and validates; the strong-model
+judgment stays an agent step (convention 10).
+
+1. **Prepare** — `sh tackle-check eval prepare <scenario> [--seeds N]` (default N=1)
+   stages one scratch per arm (`eval/scratch/<scenario>-<arm>-<seed>/`; the world is
+   `fixture/` flattened when present, else every scenario file except
+   `GROUND-TRUTH.md` — the answer sheet never reaches an arm) and prints the run
+   sheet: the task prompt, the method addendum (the GT's `**Method**:` line under
+   `## Run protocol`, or the generic judge.md §Suite mode step 2 addendum), the
+   executor-report instruction, and any Run-protocol setup commands **for the
+   orchestrator to run manually** — prepare never executes them (s36's init commit,
+   s41's `git init` + seeded commits).
+2. **Run the arms** — fresh executors on the task prompt (control) / task prompt +
+   method addendum (method). **The executor writes its final report to
+   `<scratch>/ARM-REPORT.md`** — distinct from fixture `REPORT.md` files (s8/s35
+   ship one; on case-insensitive APFS `report.md` would false-green). `audit`/`diff`
+   depend on the exact name.
+3. **Diff** — `sh tackle-check eval diff <scenario>` stages a pristine and diffs
+   each arm (`diff -ru`). Informational: the change set is the executor's edits +
+   its report; the only FAIL is the scenario's own answer sheet leaked at an arm
+   root (nested answer sheets inside the fixture are legitimate world content).
+4. **Audit** — `sh tackle-check eval audit <scenario>` checks the mechanical arm
+   compliance (both arms staged, `ARM-REPORT.md` present, no top-level answer-sheet
+   leak, no world file missing) and prints the model-only transcript items to check
+   by hand.
+5. **Judge** — `sh tackle-check eval judge <scenario>` prints the judge packet: the
+   standard rubric, the GT `## Scoring caps` (absent ⇒ generic rubric applies), and
+   the required verdict output. The runner never scores.
+6. **Validate the record** — `sh tackle-check eval verdict
+   eval/runs/YYYY-MM-DD-<scenario>.md` checks the record carries the verdict line,
+   the four 0–2 scores, `files_changed`, and `verdict_summary`.
+
+## How to run a scenario manually (fallback)
 
 1. **Copy the scenario to a scratch directory, excluding `GROUND-TRUTH.md`.** The answer sheet must never be visible to the agent under test.
 

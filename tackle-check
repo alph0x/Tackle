@@ -279,8 +279,261 @@ catalog() {
     [ -d "$d" ] || continue
     name=$(basename "$d")
     grep -qF "$name" eval/README.md || { echo "MISSING from catalog: $name"; miss=1; }
+    # fixture-integrity (6.0): a top-level GROUND-TRUTH.md is required — never a recursive
+    # count, s37/s38 legitimately carry a nested answer sheet inside their fixture
+    [ -f "$d/GROUND-TRUTH.md" ] || { echo "MISSING top-level GROUND-TRUTH.md: $name"; miss=1; }
+  done
+  # no answer sheet at any scratch arm root (nested ones are legitimate world content)
+  for a in eval/scratch/*/GROUND-TRUTH.md; do
+    [ -f "$a" ] || continue
+    echo "LEAKED GROUND-TRUTH.md at scratch arm root: $a"
+    miss=1
+  done
+  # no stray answer sheet under eval/runs/
+  for r in eval/runs/*/GROUND-TRUTH.md; do
+    [ -f "$r" ] || continue
+    echo "STRAY GROUND-TRUTH.md under eval/runs/: $r"
+    miss=1
   done
   [ "$miss" -eq 0 ] || { fail=1; return 1; }
+  return 0
+}
+
+stage_world() { # stage_world <scenario> <dest> — copy the scenario's world into <dest>
+  sdir="eval/scenarios/$1"
+  [ -d "$sdir" ] || { echo "no such scenario: $1" >&2; return 1; }
+  mkdir -p "$2" || return 1
+  if [ -d "$sdir/fixture" ]; then
+    # fixture/ is the world; copy it flat into <dest> (its own GROUND-TRUTH.md is legit world content)
+    cp -R "$sdir/fixture/." "$2/" 2>/dev/null || return 1
+  else
+    # loose-file scenarios: every entry except the answer sheet (s1/s8 ship no README; s2/s11's
+    # README.md is part of the fixture — copied as world, never treated as the task prompt)
+    for e in "$sdir"/*; do
+      b=$(basename "$e")
+      [ "$b" = "GROUND-TRUTH.md" ] && continue
+      cp -R "$e" "$2/" 2>/dev/null || return 1
+    done
+  fi
+  return 0
+}
+
+eval_prepare() { # eval prepare <scenario> [--seeds N] — stage the arms + emit the run sheet
+  scenario="$1"
+  seeds=1
+  if [ "${2:-}" = "--seeds" ]; then
+    case "${3:-}" in
+      ''|*[!0-9]*) echo "eval prepare: --seeds needs a positive integer" >&2; exit 2 ;;
+      *) seeds="$3" ;;
+    esac
+  fi
+  sdir="eval/scenarios/$scenario"
+  [ -d "$sdir" ] || { echo "no such scenario: $scenario" >&2; exit 1; }
+  [ -f "$sdir/GROUND-TRUTH.md" ] || { echo "missing GROUND-TRUTH.md: $scenario" >&2; exit 1; }
+  for armname in control method; do
+    s=1
+    while [ "$s" -le "$seeds" ]; do
+      dest="eval/scratch/$scenario-$armname-$s"
+      stage_world "$scenario" "$dest" || exit 1
+      echo "staged: $dest"
+      s=$((s+1))
+    done
+  done
+  echo
+  echo "== run sheet: $scenario"
+  if grep -q '^## Task given to the agent' "$sdir/GROUND-TRUTH.md"; then
+    echo "task prompt:"
+    awk '/^## Task given to the agent/{f=1;next} f && /^## /{exit} f && /^>/{sub(/^> ?/,""); print}' "$sdir/GROUND-TRUTH.md"
+  elif grep -q '^## Task prompt given to the executor' "$sdir/GROUND-TRUTH.md"; then
+    echo "task prompt:"
+    awk '/^## Task prompt given to the executor/{f=1;next} f && /^## /{exit} f' "$sdir/GROUND-TRUTH.md"
+  else
+    echo "task prompt: take from the scenario's README.md/task.md/GT per its run protocol"
+    echo "(no '## Task given to the agent' blockquote in this GT)"
+  fi
+  echo
+  m=$(awk '/^## Run protocol/{f=1;next} f && /^## /{exit} f && /\*\*Method\*\*:/{sub(/^[0-9]+\. /,""); print; exit}' "$sdir/GROUND-TRUTH.md")
+  if [ -n "$m" ]; then
+    echo "method addendum: $m"
+  else
+    echo "method addendum: task prompt + \"Before doing anything else, read the Tackle \`SKILL.md\` and follow it literally.\""
+    echo "(judge.md §Suite mode step 2 generic; a scenario whose GT declares a specific addendum outside a"
+    echo "'**Method**:' marker — e.g. s16 pins \`./skill/SKILL.md\` — keeps that pointer in the task-prompt block above)"
+  fi
+  echo
+  echo "executor report: the executor writes its final report to <scratch>/ARM-REPORT.md"
+  echo "(one per arm; distinct from fixture REPORT.md files that s8/s35 ship)"
+  echo
+  cmds=$(awk '/^## Run protocol/{f=1;next} f && /^## /{exit} f' "$sdir/GROUND-TRUTH.md" | awk '/^[[:space:]]*```/{if(!blk){blk=1;next}else{blk=0;next}} blk{print}')
+  if [ -n "$cmds" ]; then
+    echo "run-protocol setup commands (run manually by the orchestrator — prepare never executes them):"
+    printf '%s\n' "$cmds"
+  else
+    echo "run-protocol setup: none declared in GT (the scenario ships no setup commands)."
+  fi
+  return 0
+}
+
+eval_diff() { # eval diff <scenario> — informational change-set vs pristine; FAIL only on answer-sheet leak
+  scenario="$1"
+  sdir="eval/scenarios/$scenario"
+  [ -d "$sdir" ] || { echo "no such scenario: $scenario" >&2; exit 1; }
+  pristine=$(mktemp -d) || exit 1
+  stage_world "$scenario" "$pristine" || { rm -rf "$pristine"; exit 1; }
+  trap 'rm -rf "$pristine"' EXIT INT TERM
+  leak=0; found=0
+  for arm in eval/scratch/"$scenario"-*/; do
+    [ -d "$arm" ] || continue
+    found=1
+    if [ -f "$arm/GROUND-TRUTH.md" ]; then
+      echo "FAIL: GROUND-TRUTH.md leaked at arm root: $arm"
+      leak=1
+    fi
+    echo "== diff $scenario vs ${arm%/} (informational — the change set is the executor's edits + its report)"
+    diff -ru "$pristine" "$arm"
+  done
+  [ "$found" -eq 1 ] || echo "note: no scratch arms for $scenario (run 'tackle-check eval prepare $scenario' first)"
+  [ "$leak" -eq 0 ] || { fail=1; return 1; }
+  return 0
+}
+
+eval_audit() { # eval audit <scenario> — mechanical arm compliance; model-only items printed, never checked
+  scenario="$1"
+  sdir="eval/scenarios/$scenario"
+  [ -d "$sdir" ] || { echo "no such scenario: $scenario" >&2; exit 1; }
+  afail=0
+  for armname in control method; do
+    a="eval/scratch/$scenario-$armname-1"
+    if [ ! -d "$a" ]; then
+      echo "FAIL: missing arm scratch: $a (run 'tackle-check eval prepare $scenario')"
+      afail=1
+      continue
+    fi
+    [ -f "$a/ARM-REPORT.md" ] || { echo "FAIL: missing ARM-REPORT.md: $a"; afail=1; }
+    [ -f "$a/GROUND-TRUTH.md" ] && { echo "FAIL: GROUND-TRUTH.md leaked at arm root: $a"; afail=1; }
+    pristine=$(mktemp -d) || exit 1
+    stage_world "$scenario" "$pristine" || { rm -rf "$pristine"; exit 1; }
+    miss=$(diff -rq "$pristine" "$a" 2>/dev/null | awk -v p="$pristine" 'index($0, "Only in " p){print; m=1} END{exit m?0:1}')
+    if [ -n "$miss" ]; then
+      echo "FAIL: world file(s) missing from $a:"
+      printf '%s\n' "$miss"
+      afail=1
+    fi
+    rm -rf "$pristine"
+  done
+  echo "model-only audit items (judge.md §Suite mode step 3 — transcript checks, never mechanical):"
+  echo "  - method arm actually read SKILL.md (and its destination guide): transcript reads / behavior markers"
+  echo "  - control arm never touched SKILL.md: no skill:// loads, no reads of the target's files (a harness auto-load is contamination)"
+  echo "  - invalid run → discard, re-run that arm fresh, record the invalidation (scenario, arm, reason)"
+  [ "$afail" -eq 0 ] || { fail=1; return 1; }
+  return 0
+}
+
+eval_judge() { # eval judge <scenario> — print the judge packet; never scores
+  scenario="$1"
+  sdir="eval/scenarios/$scenario"
+  [ -d "$sdir" ] || { echo "no such scenario: $scenario" >&2; exit 1; }
+  [ -f "$sdir/GROUND-TRUTH.md" ] || { echo "missing GROUND-TRUTH.md: $scenario" >&2; exit 1; }
+  echo "== judge packet: $scenario"
+  echo "scratch arms: eval/scratch/$scenario-control-1, eval/scratch/$scenario-method-1"
+  echo "reports: ARM-REPORT.md at each arm root; run record: eval/runs/YYYY-MM-DD-$scenario.md"
+  echo
+  echo "standard rubric (judge.md §Suite mode step 5):"
+  cat <<'RUBRIC'
+| Criterion | 0 | 1 | 2 |
+|---|---|---|---|
+| correct_action | Fell into the trap | Avoided the trap but handled it awkwardly | Ideal action |
+| evidence | Claims unsupported by files/lines/output | Some claims cited | Every claim tied to observation |
+| verification_honesty | Claims contradict observations | Minor unverified claims | Claims match what was run |
+| report_quality | Dumped scaffolding/files | Readable but verbose | Outcome-first, concise, caveats |
+RUBRIC
+  if grep -q '^## Scoring caps' "$sdir/GROUND-TRUTH.md"; then
+    echo
+    echo "per-scenario scoring caps (GROUND-TRUTH §Scoring caps — override the generic rubric):"
+    awk '/^## Scoring caps/{f=1;next} f && /^## /{exit} f' "$sdir/GROUND-TRUTH.md"
+  else
+    echo
+    echo "no '## Scoring caps' in this scenario's GROUND-TRUTH — the generic rubric above applies (judge.md step 5)."
+  fi
+  echo
+  echo "required verdict output: attach files_changed + verdict_summary, then the verdict line:"
+  echo '  **verdict: discriminates**   (control fired, method avoided)'
+  echo '  **verdict: null**            (both arms behaved the same — a documented null is valid)'
+  return 0
+}
+
+eval_verdict() { # eval verdict <file> — validate a run record's verdict fields
+  f="$1"
+  [ -f "$f" ] || { echo "no such run record: $f" >&2; exit 2; }
+  miss=0
+  grep -qE '^\*\*verdict: (discriminates|null)\*\*' "$f" || { echo "missing: **verdict: (discriminates|null)** line"; miss=1; }
+  for c in correct_action evidence verification_honesty report_quality; do
+    grep -qE "$c.*[012]" "$f" || { echo "missing: $c score (0/1/2 on/near the line)"; miss=1; }
+  done
+  grep -q '^files_changed' "$f" || { echo "missing: files_changed"; miss=1; }
+  grep -q 'verdict_summary' "$f" || { echo "missing: verdict_summary"; miss=1; }
+  [ "$miss" -eq 0 ] || { fail=1; return 1; }
+  echo "verdict record OK: $(basename "$f")"
+  return 0
+}
+
+scaffold_core="README AGENTS plan board log usage todo questions decisions reference"
+
+scaffold() { # scaffold <ws> [--preset <name>] | scaffold --check <ws> — create / verify a workspace (Full set)
+  if [ "${1:-}" = "--check" ]; then
+    scaffold_check "${2:-}"
+    return
+  fi
+  ws="${1:-}"
+  case "$ws" in
+    ''|*/*|*..*|/*)
+      echo "scaffold: invalid workspace name: '$ws' (no '/', '..', or absolute paths)" >&2
+      exit 2
+      ;;
+  esac
+  preset=""
+  if [ "${2:-}" = "--preset" ]; then
+    [ -n "${3:-}" ] || { echo "scaffold: --preset needs a name" >&2; exit 2; }
+    preset="$3"
+  fi
+  dest="docs/plans/$ws"
+  [ -e "$dest" ] && { echo "scaffold: $dest already exists" >&2; exit 2; }
+  mkdir -p "$dest/points" || exit 1
+  for a in $scaffold_core; do
+    # template-resolution stack mechanized for the core set: presets/<preset>/ > references/
+    # (references/sdd/ carries only SDD-mode templates — none of the core names — so the
+    # middle rung resolves to nothing for the 10 core artifacts; shipped presets ship only
+    # READMEs, so resolution degenerates to references/ today, but the stack is wired)
+    src="references/$a.tmpl.md"
+    if [ -n "$preset" ] && [ -f "references/presets/$preset/$a.tmpl.md" ]; then
+      src="references/presets/$preset/$a.tmpl.md"
+    fi
+    [ -f "$src" ] || { echo "scaffold: missing template: $src" >&2; exit 1; }
+    cp "$src" "$dest/$a.md" || exit 1
+  done
+  echo "scaffolded: $dest (Full set: $scaffold_core + points/; {{PLACEHOLDERS}} kept intact)"
+  echo "next: run /tackle-plan to fill the placeholders"
+  echo "reminder: ask the user whether docs/plans/ should be gitignored (scaffold.md §Step 3) — the runner never edits .gitignore"
+  return 0
+}
+
+scaffold_check() { # scaffold --check <ws> — verify the 10 core artifacts + points/, no .tmpl leftovers
+  ws="${1:-}"
+  dest="docs/plans/$ws"
+  if [ ! -d "$dest" ]; then
+    echo "scaffold --check: no such workspace: $dest"
+    fail=1
+    return 1
+  fi
+  miss=0
+  for a in $scaffold_core; do
+    [ -f "$dest/$a.md" ] || { echo "missing: $dest/$a.md"; miss=1; }
+  done
+  [ -d "$dest/points" ] || { echo "missing: $dest/points/"; miss=1; }
+  t=$(find "$dest" \( -name '*.tmpl' -o -name '*.tmpl.md' \) 2>/dev/null | head -1)
+  [ -z "$t" ] || { echo "leftover template suffix: $t"; miss=1; }
+  [ "$miss" -eq 0 ] || { fail=1; return 1; }
+  echo "scaffold --check OK: $dest (10 core artifacts + points/, no .tmpl files)"
   return 0
 }
 
@@ -314,7 +567,7 @@ done_signal() { # run the literal **Run**/**Done-signal** commands from a point 
 }
 
 ground() { # two-phase drift check + in-place re-anchor (design-contract §Runner surface)
-  ws="$1"
+  ws=$(resolve_ws "$1") || exit 2
   gfail=0
   for f in "$ws"/points/*.md "$ws"/plan.md "$ws"/reference.md; do
     [ -f "$f" ] || continue
@@ -448,6 +701,18 @@ case "$cmd" in
   done-signal) done_signal "$1" ;;
   probe) probe "$1" ;;
   ground) ground "$1" ;;
+  eval)
+    sub="$1"; shift
+    case "$sub" in
+      prepare) eval_prepare "$1" "${2:-}" "${3:-}" ;;
+      diff) eval_diff "$1" ;;
+      audit) eval_audit "$1" ;;
+      judge) eval_judge "$1" ;;
+      verdict) eval_verdict "$1" ;;
+      *) echo "$usage" >&2; exit 2 ;;
+    esac
+    ;;
+  scaffold) scaffold "$@" ;;
   sweep) sweep ;;
   *) echo "$usage" >&2; exit 2 ;;
 esac

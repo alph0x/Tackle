@@ -16,6 +16,8 @@ Never silently skip this question.
 
 Copy templates from `references/` and fill `{{PLACEHOLDERS}}`. Delete unused sections. Never leave empty slots you won't fill.
 
+**Mechanized path (6.0):** `tackle-check scaffold <ws> [--preset <name>]` creates the Full core set (the §File map's 10 artifacts from `AGENTS.tmpl.md` + an empty `points/`) with `.tmpl` stripped and `{{PLACEHOLDERS}}` intact; `tackle-check scaffold --check <ws>` verifies the set. Hand-copying stays valid — the §File map is the spec — but the runner is the zero-miss path.
+
 Core copies include `usage.md` from `usage.tmpl.md` (every workspace born ≥ 5.2).
 
 ## Depth artifacts
@@ -25,10 +27,11 @@ Create only when their trigger fires:
 - `design-contract.md` — authoritative public surface points implement.
 - `execution-strategy.md` — waves + quality gate + deferral.
 - `team.md` — execution team roles and protocol.
-- `board.md` — canonical status board for execution.
 - `coordinator.md` — Coordinator continuity projection (multi-agent execution).
 - `reports/` — point closure reports (created at first point close, Full gate).
 - `reference-docs/` — read-only external snapshots.
+
+(`board.md` is a core artifact, not depth — it is copied by the scaffold, per the §File map in `AGENTS.tmpl.md`.)
 
 ## /tackle-init — plan-local customization
 
