@@ -25,6 +25,15 @@ A migrated workspace MUST satisfy the full-adoption contract F-1..F-8; each line
 6. Lint + checkpoint.
 7. Record migration `D-xx` + log entry + bump stamp.
 
+## v5.5 → v5.6 checklist
+
+Run these when migrating a plan created with Tackle 5.5.x:
+
+1. **Close done points with a closure report** — lint row 14 (gating) requires `reports/P-0N-report.md` for every 🟢 `board.md` row (a stub naming its reviewer suffices). Write the report before flipping the board, then a one-line `log.md` pointer. This binds at the next point close — already-closed points are only flagged, never retro-repaired.
+2. **Stamp reference-doc snapshots** — every `reference-docs/*.md` gains a first-line `captured: YYYY-MM-DD` header (the lint row 15 check skips undated files). Re-snapshot from the live source and update the header when a file is flagged. Workspaces without `reference-docs/` are untouched.
+3. **Note `applies_to:` directive scoping** — directives may now scope to an action moment (`commit-message`, `pre-push`, `release`) and bind mid-session at that action, not at instantiation. Informational for migration; relevant when a profile directive must survive a long session.
+4. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a `log.md` entry, and bump the plan stamp.
+
 ## v5.4 → v5.5 checklist
 
 Run these when migrating a plan created with Tackle 5.4.x:

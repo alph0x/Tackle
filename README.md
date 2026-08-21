@@ -2,7 +2,7 @@
 
 A model-agnostic planning and execution skill that turns an initiative into a durable action plan — self-contained points a cold agent can resolve in a fresh session — and executes that plan point-by-point when you ask it to.
 
-**Tackle 5.5.0: graft-validated suite gates.** The judge suite now audits arm compliance before scoring anything (a `skill://` auto-load is contamination — s31 R1 precedent), captures efficiency exactly as the harness exposes it (`n/a`, never estimate) with like-for-like aggregation and cache-aware weighted tokens, and `tackle-check probe <workspace>` reports cited-file staleness against the newest `Last-verified:` stamp. The dormant log-archive protocol is wired: lint row 13 flags `log.md` over its threshold, row 6 covers the archive pair, pulses read bounded and never archive. Anchored citations still re-anchor mechanically when the code they cite moves — `tackle-check ground <workspace>` rewrites drifted line numbers by content match, never by judgment. Fragments should be unique per file; the runner gates workspaces with rows 1–13 and its done-signal executor.
+**Tackle 5.6.0: closure and directive gates.** Every 🟢 point now closes with a `reports/P-0N-report.md` artifact — lint row 14 (gating) blocks a missing report until written or explicitly waived, and row 15 (warn) flags `reference-docs/` snapshots whose `captured:` header has gone stale (default 14-day window, workspace-overridable). Profile directives may carry `applies_to:` — a commit-message, pre-push, or release scope that binds at the action moment, re-read mid-session instead of only at intake. Points adding user-facing surface can declare `Ship-gate: owner-confirms-before-close`, adding an In-scope confirmation to the closure report. Log entries are capped at 25 lines with a Log-growth retro metric, and long-corrected questions entries pin a Current ask at the top. Two new traps validate the closure and directive rules behaviorally. Anchored citations still re-anchor mechanically when the code they cite moves — `tackle-check ground <workspace>` rewrites drifted line numbers by content match, never by judgment. Fragments should be unique per file; the runner gates workspaces with rows 1–15 and its done-signal executor.
 
 ## What it does
 
@@ -52,7 +52,7 @@ Tackle's execution loop is hardened with rules proven against common agent failu
 
 ## Eval
 
-Tackle ships a manual A/B eval in `eval/`: **38 scenarios** (`s1`–`s39`) — 37 decision traps plus one end-to-end lifecycle smoke (`s25-e2e-lifecycle`, the full intake → plan → execute → close → retro chain), each pitting a mid-tier model following Tackle literally against the same model free-styling at a known agent failure. The registry and workflow live in `eval/README.md`; each scenario carries its own `GROUND-TRUTH.md` answer sheet, and `tackle-check catalog` verifies scenarios ⊆ registry so the list can't drift.
+Tackle ships a manual A/B eval in `eval/`: **40 scenarios** (`s1`–`s41`) — 39 decision traps plus one end-to-end lifecycle smoke (`s25-e2e-lifecycle`, the full intake → plan → execute → close → retro chain), each pitting a mid-tier model following Tackle literally against the same model free-styling at a known agent failure. The registry and workflow live in `eval/README.md`; each scenario carries its own `GROUND-TRUTH.md` answer sheet, and `tackle-check catalog` verifies scenarios ⊆ registry so the list can't drift.
 
 ## Who is it for
 
@@ -110,12 +110,12 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 | `/tackle-trace` | **Trace** — criterion↔point coverage matrix, gaps and drift |
 | `/tackle-handoff` | **Handoff packet** — generate a portable handoff artifact |
 | `stop evolving` | **Evolution opt-out** — pause or purge the learning-loop profile |
-| `tackle-check` | **Mechanical gate** — shipped POSIX-sh runner: `lint <workspace>` (13 lint rows), `catalog` (eval scenarios ⊆ registry), `done-signal <point>` (run the point's exit-gate), `probe <workspace>` (cited-file staleness vs newest `Last-verified`), `ground <workspace>` (re-anchor drifted citations), `sweep` (release sweep: gates 1–7 + catalog + workspace lint); flip requires its green when the workspace flag `tackle-check-gate: on` |
+| `tackle-check` | **Mechanical gate** — shipped POSIX-sh runner: `lint <workspace>` (15 lint rows), `catalog` (eval scenarios ⊆ registry), `done-signal <point>` (run the point's exit-gate), `probe <workspace>` (cited-file staleness vs newest `Last-verified`), `ground <workspace>` (re-anchor drifted citations), `sweep` (release sweep: gates 1–7 + catalog + workspace lint); flip requires its green when the workspace flag `tackle-check-gate: on` |
 | "resume / retomá `<x>`" | **Resume** — re-enter a plan |
 | "how is `<x>` going?" / "status" | **Status** — read-only digest |
 | "what plans are there?" | **List** — one line per initiative |
 | "what's next?" / "qué sigue" | **Next** — the next point's pre-attack summary |
-| "migrate / upgrade `<x>`" | **Migrate** — bring an old plan to the current methodology (checklist chain v2.0 → v5.5 in `references/guides/migrate.md`) |
+| "migrate / upgrade `<x>`" | **Migrate** — bring an old plan to the current methodology (checklist chain v2.0 → v5.6 in `references/guides/migrate.md`) |
 | "mejorá este plan" / "improve this plan" | **Improve** — upgrade a Tackle plan or convert an unstructured plan |
 
 **The Create pipeline:** Intake → Gate (None/Lite/Full) → Location & gitignore → Scaffold → Briefing → Architecture → Stabilize contract → Decompose → Lint → Handoff.
@@ -124,7 +124,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 
 **Template-resolution stack:** overrides → presets → sdd → core.
 
-**Version:** Tackle 5.5.0. See `references/CHANGELOG.md` for what's new.
+\*\*Version:\*\* Tackle 5.6.0. See `references/CHANGELOG.md` for what's new.
 
 ## What it produces
 
