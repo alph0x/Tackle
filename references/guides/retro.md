@@ -23,17 +23,19 @@ Every metric carries a copy-paste recipe; the recipes live in the template's Met
 
 ## Cost analysis
 
-Mined from the three token recipes (Tokens by phase / Tokens by model / Tokens per point), never remembered; report the `n/a`-row counts alongside the totals. Report `n/a` for the whole section when the workspace has no `usage.md`.
+Mined from the three token recipes (Tokens by phase / Tokens by model / Tokens per point), never remembered; report the `n/a`-row counts alongside the totals. Report `n/a` for the whole section when the workspace has no `usage.md`. From 6.1, the contract's cache/requests/context dimensions are mined from `docs/plans/<slug>/usage-events.jsonl` (the `tackle-usage/1` ingest artifact — D-09), never from `usage.md` columns; `n/a`-row counts are reported alongside every total so coverage honesty survives aggregation.
 
 ### Conclusions
 
 - **Top-consuming points vs their bindings** — rank points by Tokens per point and compare each against its bound tier/effort: did the binding match the actual cost, or did a high-tier binding sit on a low-token point (and vice versa)?
 - **Phase shares** — the PLAN / EXEC / RETRO split from Tokens by phase: which phase consumed the budget, and does that match where the plan's difficulty actually lived?
+- **Cache-write-weighted cost** — where the harness exposed cache splits, a point heavy on `cache_write` vs `cache_read` cost more under the billing split (writes ≈ 1.25× reads); rank by `cache_read`/`cache_write` parity, not by input+output throughput alone.
 
 ### Recommendations
 
 - **Downgrade candidates** — points whose actual work matched a lower tier/effort than bound (few tokens on an expensive binding): propose the cheaper binding for the next plan of that shape.
 - **Recurring shapes worth re-defaulting** — shapes that consistently consume above or below their role default effort: candidates for the role→effort defaults in `team.md`.
+- **Duration outliers vs bound effort** — points whose `duration_ms` sits well above their bound effort's norm (or `compactions`/`context` spikes) are candidates for re-binding or re-decomposition; a long, compacting point bound `low` signals under-scoped work.
 
 ## What worked / what didn't / lessons
 
