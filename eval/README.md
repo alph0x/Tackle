@@ -118,6 +118,7 @@ eval/
     s47-evolution-optout-trap/ # opt-out trap: silent purge instead of pause; unconsented profile writes
     s48-eval-runner-trap/ # eval-runner trap (D-13 arm): hand-copying leaks the answer sheet; the runner excludes it
     s49-init-trap/ # init trap (D-13 arm): hand-scaffolding omits usage.md / leaves .tmpl suffixes; the runner scaffolds the full set
+    s50-usage-contract/ # usage-contract trap (D-13 arm): unexposed token field → n/a, never zero-as-truth or an invented figure
 ```
 
 ## Running a scenario — runner-assisted (mechanized path, Tackle 6.0)
