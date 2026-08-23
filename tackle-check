@@ -31,7 +31,7 @@ run_row() { # run_row <row-label> <row-fn> — run the row, print its diagnostic
   report "$1" "$st"
 }
 
-usage="usage: tackle-check lint <workspace> | catalog | done-signal <briefing> | probe <workspace> | ground <workspace> | eval prepare <scenario> [--seeds N] | eval diff <scenario> | eval audit <scenario> | eval judge <scenario> | eval verdict <file> | scaffold <ws> [--preset <name>] | scaffold --check <ws> | sweep"
+usage="usage: tackle-check lint <workspace> | catalog | done-signal <briefing> | usage <file|workspace> | probe <workspace> | ground <workspace> | eval prepare <scenario> [--seeds N] | eval diff <scenario> | eval audit <scenario> | eval judge <scenario> | eval verdict <file> | scaffold <ws> [--preset <name>] | scaffold --check <ws> | sweep"
 
 gate1() { # SKILL.md ≤ 1100 words
   [ "$(wc -w < SKILL.md)" -le 1100 ] || { echo "SKILL.md over budget"; return 1; }
@@ -86,7 +86,7 @@ gate7() { # README content claims — every expected value DERIVED, nothing hard
   grep -qF "checklist chain v2.0 → v$mm" README.md || { echo "README migrate-chain head off (v2.0 → v$mm)"; g7fail=1; }
   # 7d runner subcommand coverage: every usage token appears in the mode-table row
   row=$(grep 'Mechanical gate' README.md)
-  for t in lint catalog done-signal ground probe sweep eval scaffold; do
+  for t in lint catalog done-signal usage ground probe sweep eval scaffold; do
     case "$row" in *"\`$t"*) ;; *) echo "README mode row missing \`$t"; g7fail=1;; esac
   done
   # 7e self-lint gate count from the spec
@@ -477,7 +477,32 @@ eval_verdict() { # eval verdict <file> — validate a run record's verdict field
   return 0
 }
 
-scaffold_core="README AGENTS plan board log usage todo questions decisions reference"
+
+usage_validate() { # usage <file> — validate a tackle-usage/1 document; exit 0 valid / 1 invalid / 2 usage
+  f="${1:-}"
+  [ -n "$f" ] || { echo "usage: tackle-check usage <file|workspace>" >&2; return 2; }
+  [ -f "$f" ] || { echo "usage: no such file: $f" >&2; return 2; }
+  # schema marker (the only hard-required field) — contract versioned tackle-usage/1
+  if ! grep -q '"schema"[[:space:]]*:[[:space:]]*"tackle-usage/1"' "$f"; then
+    echo "invalid: missing schema tackle-usage/1 ($f)" >&2
+    return 1
+  fi
+  # tokens block with input/output/cache_read/cache_write keys present (n/a is legal)
+  for k in '"input"' '"output"' '"cache_read"' '"cache_write"'; do
+    if ! grep -q "$k[[:space:]]*:" "$f"; then
+      echo "invalid: tokens block missing $k ($f)" >&2
+      return 1
+    fi
+  done
+  # token values are an integer or the n/a honesty literal — never null (a value the harness did not report)
+  for k in '"input"' '"output"' '"cache_read"' '"cache_write"'; do
+    if grep -qE "$k[[:space:]]*:[[:space:]]*null([[:space:]]*[,}])" "$f"; then
+      echo "invalid: token value is null, not integer or n/a ($f)" >&2
+      return 1
+    fi
+  done
+  return 0
+}
 
 scaffold() { # scaffold <ws> [--preset <name>] | scaffold --check <ws> — create / verify a workspace (Full set)
   if [ "${1:-}" = "--check" ]; then
@@ -713,6 +738,7 @@ case "$cmd" in
     esac
     ;;
   scaffold) scaffold "$@" ;;
+  usage) usage_validate "${1:-}"; st=$?; [ "$st" -eq 0 ] || exit "$st" ;;
   sweep) sweep ;;
   *) echo "$usage" >&2; exit 2 ;;
 esac
