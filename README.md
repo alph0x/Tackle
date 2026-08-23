@@ -2,7 +2,7 @@
 
 A model-agnostic planning and execution skill that turns an initiative into a durable action plan — self-contained points a cold agent can resolve in a fresh session — and executes that plan point-by-point when you ask it to.
 
-**Tackle 6.0.0: mechanized eval + scaffold.** The `tackle-check` runner grows `eval` (prepare/diff/audit/judge/verdict — stage, diff, audit, and judge-pack a trap run; the runner never scores) and `scaffold` (create / verify a workspace from the §File map core set). Eight new traps close the unvalidated modes (`s42`–`s49`), `catalog` gains fixture-integrity, and CI runs the sweep on every push. The 5.6 gate still holds: every 🟢 point closes with a `reports/P-0N-report.md` artifact (lint row 14, gating), and the runner gates workspaces with rows 1–15 plus its done-signal executor.
+**Tackle 6.1.0: portable usage contract.** Tackle ships a versioned, harness-agnostic usage-telemetry format (`tackle-usage/1`), a `tackle-check usage` validator for it (exit 0/1/2, 13 fixtures), ledger-ingestion documentation, retro aggregation recipes, and a new D-13 trap (`s50-usage-contract`). The contract is an additional ingest source for the `usage.md` ledger — never a replacement, never a gating signal; a field the harness does not expose is `n/a`, never zero-as-truth and never estimated. The 6.0 gate still holds: every 🟢 point closes with a `reports/P-0N-report.md` artifact (lint row 14, gating), and the runner gates workspaces with rows 1–15 plus its done-signal executor.
 
 ## What it does
 
@@ -52,7 +52,7 @@ Tackle's execution loop is hardened with rules proven against common agent failu
 
 ## Eval
 
-Tackle ships a runner-assisted A/B eval in `eval/`: **48 scenarios** (`s1`–`s49`) — **47 decision traps** plus one end-to-end lifecycle smoke (`s25-e2e-lifecycle`, the full intake → plan → execute → close → retro chain), each pitting a mid-tier model following Tackle literally against the same model free-styling at a known agent failure. The registry and workflow live in `eval/README.md`; `tackle-check eval` mechanizes staging/diff/audit/judge-packing (the answer sheet never reaches an arm), each scenario carries its own `GROUND-TRUTH.md` answer sheet, and `tackle-check catalog` verifies scenarios ⊆ registry plus fixture-integrity so the list can't drift.
+Tackle ships a runner-assisted A/B eval in `eval/`: **49 scenarios** (`s1`–`s50`) — **48 decision traps** plus one end-to-end lifecycle smoke (`s25-e2e-lifecycle`, the full intake → plan → execute → close → retro chain), each pitting a mid-tier model following Tackle literally against the same model free-styling at a known agent failure. The registry and workflow live in `eval/README.md`; `tackle-check eval` mechanizes staging/diff/audit/judge-packing (the answer sheet never reaches an arm), each scenario carries its own `GROUND-TRUTH.md` answer sheet, and `tackle-check catalog` verifies scenarios ⊆ registry plus fixture-integrity so the list can't drift.
 
 ## Who is it for
 
@@ -110,12 +110,12 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 | `/tackle-trace` | **Trace** — criterion↔point coverage matrix, gaps and drift |
 | `/tackle-handoff` | **Handoff packet** — generate a portable handoff artifact |
 | `stop evolving` | **Evolution opt-out** — pause or purge the learning-loop profile |
-| `tackle-check` | **Mechanical gate** — shipped POSIX-sh runner: `lint <workspace>` (15 lint rows), `catalog` (eval scenarios ⊆ registry + fixture-integrity), `done-signal <point>` (run the point's exit-gate), `probe <workspace>` (cited-file staleness vs newest `Last-verified`), `ground <workspace>` (re-anchor drifted citations), `eval` (`prepare`/`diff`/`audit`/`judge`/`verdict` — stage, diff, audit, and judge-pack a trap run; never scores), `scaffold <ws> [--preset]` + `scaffold --check` (create / verify a workspace), `sweep` (release sweep: gates 1–7 + catalog + workspace lint); flip requires its green when the workspace flag `tackle-check-gate: on` |
+| `tackle-check` | **Mechanical gate** — shipped POSIX-sh runner: `lint <workspace>` (15 lint rows), `catalog` (eval scenarios ⊆ registry + fixture-integrity), `done-signal <point>` (run the point's exit-gate), `usage <file|workspace>` (validate a `tackle-usage/1` document), `probe <workspace>` (cited-file staleness vs newest `Last-verified`), `ground <workspace>` (re-anchor drifted citations), `eval` (`prepare`/`diff`/`audit`/`judge`/`verdict` — stage, diff, audit, and judge-pack a trap run; never scores), `scaffold <ws> [--preset]` + `scaffold --check` (create / verify a workspace), `sweep` (release sweep: gates 1–7 + catalog + workspace lint); flip requires its green when the workspace flag `tackle-check-gate: on` |
 | "resume / retomá `<x>`" | **Resume** — re-enter a plan |
 | "how is `<x>` going?" / "status" | **Status** — read-only digest |
 | "what plans are there?" | **List** — one line per initiative |
 | "what's next?" / "qué sigue" | **Next** — the next point's pre-attack summary |
-| "migrate / upgrade `<x>`" | **Migrate** — bring an old plan to the current methodology (checklist chain v2.0 → v6.0 in `references/guides/migrate.md`) |
+| "migrate / upgrade `<x>`" | **Migrate** — bring an old plan to the current methodology (checklist chain v2.0 → v6.1 in `references/guides/migrate.md`) |
 | "mejorá este plan" / "improve this plan" | **Improve** — upgrade a Tackle plan or convert an unstructured plan |
 
 **The Create pipeline:** Intake → Gate (None/Lite/Full) → Location & gitignore → Scaffold → Briefing → Architecture → Stabilize contract → Decompose → Lint → Handoff.
@@ -124,7 +124,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 
 **Template-resolution stack:** overrides → presets → sdd → core.
 
-\*\*Version:\*\* Tackle 6.0.0. See `references/CHANGELOG.md` for what's new.
+\*\*Version:\*\* Tackle 6.1.0. See `references/CHANGELOG.md` for what's new.
 
 ## What it produces
 

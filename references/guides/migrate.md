@@ -25,6 +25,14 @@ A migrated workspace MUST satisfy the full-adoption contract F-1..F-8; each line
 6. Lint + checkpoint.
 7. Record migration `D-xx` + log entry + bump stamp.
 
+## v6.0 → v6.1 checklist
+
+Run these when migrating a plan created with Tackle 6.0.x:
+
+1. **Note the `usage` subcommand** — the runner grows `usage <file|workspace>` (validate a `tackle-usage/1` document; exit 0 valid / 1 invalid / 2 usage error). Informational — no workspace edit.
+2. **Note the portable usage contract** — harnesses may emit `tackle-usage/1` events into `docs/plans/<slug>/usage-events.jsonl` as an additional ingest source for the `usage.md` ledger; the 8-column ledger schema is unchanged. Informational — the ledger still takes one row per role run.
+3. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a `log.md` entry, and bump the plan stamp.
+
 ## v5.6 → v6.0 checklist
 
 Run these when migrating a plan created with Tackle 5.6.x:
