@@ -67,7 +67,16 @@ A task is **trivial** only if **all** of these are true:
 
 If a task later fails any criterion, announce the gate failure and enter the full loop (Lite or Full, depending on the other signals). Do not silently upgrade a trivial task; state why the gate failed.
 
-A **Lite** task is the smallest non-trivial plan: it still needs a `plan.md`, `log.md`, and `todo.md`. Trivial tasks skip the plan workspace entirely.
+A **Lite** task is the smallest non-trivial plan: it still needs a `plan.md` and `log.md`. Trivial tasks skip the plan workspace entirely.
+
+## Optional intake artifacts
+
+When the user brings formal material at intake — a written product spec, or explicit project principles — `plan` instantiates it in the workspace from the intake templates:
+
+- `specify.tmpl.md` → `spec.md` — the user's spec, captured verbatim plus scope interpretation; never invents acceptance criteria the user didn't state.
+- `constitution.tmpl.md` → `constitution.md` — project principles the user actually holds; never fabricated from a vague ask (explore intent first).
+
+Both are **optional** — only created when the user supplies the material; a vague ask is explored, not templated. Points trace to them (`point.tmpl.md` §Traces to) instead of a ticket line when they exist.
 
 ## Commands are entry points, not boundaries
 
