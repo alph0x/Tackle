@@ -4,6 +4,8 @@ Bring an old plan to the current methodology — a single **full-adoption** trac
 
 Generic step 3's forward-looking scope applies to EXECUTION work only: closed points are never re-executed, historical log entries stay untouched (append-only), and execution protocols (INTENT gate, maker/checker, closure reports) bind at the next point execution. The workspace itself — closed work included — conforms structurally in full.
 
+`improve this plan` now routes here: an old Tackle / pre-Tackle plan runs this migrate track (Mode A/A'); an unstructured source is ingested fresh through `/tackle-plan` (Mode B) instead.
+
 A migrated workspace MUST satisfy the full-adoption contract F-1..F-8; each line names the checklist item that verifies it:
 
 - **F-1 · Agent contract** — `AGENTS.md` carries the Autonomy level, harness map, §Model map with capability line, `agent-messaging` capability row, and current Methodology stamp → v3.2 → v3.3 items 1, 3 and v2.1 → v3.0 items 6, 8.
@@ -23,7 +25,15 @@ A migrated workspace MUST satisfy the full-adoption contract F-1..F-8; each line
 4. Re-ground remaining points.
 5. Add missing artifacts.
 6. Lint + checkpoint.
-7. Record migration `D-xx` + log entry + bump stamp.
+## v6.1 → v7.0 checklist
+
+Run these when migrating a plan created with Tackle 6.1.x (the 7.0 surface consolidation — hard rename, no aliases):
+
+1. **Rename commands in workspace files** — `/tackle-implement` → `/tackle-run` (execute all ready points; `run --one` / `run <P-id>` = one point), `/tackle-next` semantics now select/prepare only (read-only pre-attack summary — it never executes), `/tackle-ground`/`/tackle-trace`/`/tackle-drill` → `/tackle-verify` (step 0 mechanical grounding + coverage matrix + cold-resolvability probe), `/tackle-pulse` → `/tackle-status <ws>`, `/tackle-handoff` → `/tackle-status <ws> --handoff`, `/tackle-constitution`/`/tackle-specify` → optional intake artifacts of `/tackle-plan`. Update `AGENTS.md` rule 9 and any briefing/guide pointers. The workspace flag `tackle-check-gate` → `tackle-gate`.
+2. **Delete removed artifacts if present** — `todo.md`, `tasks.md`, `checklist.md`, `execution-strategy.md` (its wave gates now live in `team.md` §Wave gates). `board.md` stops copying the dependency graph: replace the pasted graph block with "Dependency graph: `plan.md` §5 (single source)".
+3. **Note the runner change** — the repository-local `tackle-check` runner is renamed `tackle`; `usage` subcommand removed (the `tackle-usage/1` contract is gone; the `usage.md` markdown ledger is unchanged); `scaffold` → `init` (`tackle init <ws>` / `tackle init --check <ws>`). No workspace edit beyond step 1's references.
+4. **Record** — write a `D-xx` in `decisions.md` noting the 7.0 adoption + the `tackle-gate` decision, append a `log.md` entry, and bump the stamp to **Methodology: Tackle 7.0**.
+5. **Verify** — `sh tackle lint <workspace>` (bare names resolve to `docs/plans/<name>`) green before any flip.
 
 ## v6.0 → v6.1 checklist
 
@@ -54,27 +64,27 @@ Run these when migrating a plan created with Tackle 5.5.x:
 
 Run these when migrating a plan created with Tackle 5.4.x:
 
-1. **Check `log.md` size against the archive threshold** — lint row 13 flags `log.md` over 400 lines (workspace-overridable via `Log archive threshold: N` in the workspace `AGENTS.md`). If flagged, run the archive protocol (`status-list-next.md` §Archive): move entries older than the last 5 sessions verbatim to `log-archive.md`, append ascending, never edit moved entries, confirm the newest entry still carries its State snapshot, and record a one-line `log.md` entry. Row 6 now covers the archive pair's ordering.
-2. **Ground stamps are now ISO-with-time** — `Last-verified:` is `YYYY-MM-DDTHH:MM:SSZ` (UTC); legacy date-only stamps still parse (start-of-day, conservative) and self-heal on the next ground entry. No edit needed; `tackle-check probe <workspace>` reports staleness either way.
+1. **Check `log.md` size against the archive threshold** — lint row 13 flags `log.md` over 400 lines (workspace-overridable via `Log archive threshold: N` in the workspace `AGENTS.md`). If flagged, run the archive protocol (`status.md` §Archive): move entries older than the last 5 sessions verbatim to `log-archive.md`, append ascending, never edit moved entries, confirm the newest entry still carries its State snapshot, and record a one-line `log.md` entry. Row 6 now covers the archive pair's ordering.
+2. **Ground stamps are now ISO-with-time** — `Last-verified:` is `YYYY-MM-DDTHH:MM:SSZ` (UTC); legacy date-only stamps still parse (start-of-day, conservative) and self-heal on the next ground entry. No edit needed; `tackle probe <workspace>` reports staleness either way.
 3. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a `log.md` entry, and bump the plan stamp.
 
 ## v5.3 → v5.4 checklist
 
 Run these when migrating a plan created with Tackle 5.3.x:
 
-1. **Note `tackle-check sweep`** — the release sweep now composes into one command: self-lint gates 1–7 + `catalog` + lint over every workspace (active workspaces gate the exit code; closed ones report non-gating `WARN`). Informational — no workspace edit.
+1. **Note `tackle sweep`** — the release sweep now composes into one command: self-lint gates 1–7 + `catalog` + lint over every workspace (active workspaces gate the exit code; closed ones report non-gating `WARN`). Informational — no workspace edit.
 2. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a `log.md` entry, and bump the plan stamp.
 
 ## v5.2 → v5.3 checklist
 
 Run these when migrating a plan created with Tackle 5.2.x:
 
-1. **Note the two-phase drift check** — `ground.md` step 2 is now two-phase: the line
+1. **Note the two-phase drift check** — `verify.md` step 0 is now two-phase: the line
    check first; on failure, a whole-file fallback counts matches — exactly one ⇒ the
    citation is **re-anchored** mechanically (`path:NN` → `path:MM`, literal rewrite, zero
    model judgment); zero ⇒ stale (unchanged behavior); more than one ⇒ ambiguous, flagged
    with the match count. Staleness is decided by content, never session memory.
-2. **Note `tackle-check ground <workspace>`** — the runner's first writing gate: scans
+2. **Note `tackle ground <workspace>`** — the runner's first writing gate: scans
    `plan.md`/`reference.md`/`points/*.md`, re-anchors drifted citations in place (staged,
    `cmp -s`-gated), prints one line per citation, exit 0 iff zero stale and zero
    ambiguous. Lint row 4 stays read-only and names it as the fix path. Existing
@@ -85,7 +95,7 @@ Run these when migrating a plan created with Tackle 5.2.x:
    changes.
 4. **Note the executor-contract wording** — `AGENTS.tmpl.md` item 4: on drift, re-anchor
    mechanically per the two-phase rule before hand-editing anything.
-5. **Run the sweep once** — `sh tackle-check lint <workspace>` (bare names resolve to `docs/plans/<name>`); then `sh tackle-check
+5. **Run the sweep once** — `sh tackle lint <workspace>` (bare names resolve to `docs/plans/<name>`); then `sh tackle
    ground <workspace>` if any citation is stale.
 6. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a
    `log.md` entry, and bump the plan stamp.
@@ -110,8 +120,8 @@ Run these when migrating a plan created with Tackle 5.1.x:
    defaults). Binds at the next point execution — existing briefings need no rewrite.
 4. **Note lint rows 11–12** — the runner now enforces usage rows for done points (row 11;
    guard-skips until `usage.md` exists — item 1 creates it) and the effort vocabulary
-   (row 12). Run `sh tackle-check lint <workspace>` once after item 1 (bare names resolve to `docs/plans/<name>`).
-5. **Note the runner parser change** — `tackle-check done-signal` now extracts both
+   (row 12). Run `sh tackle lint <workspace>` once after item 1 (bare names resolve to `docs/plans/<name>`).
+5. **Note the runner parser change** — `tackle done-signal` now extracts both
    `**Run**:` and `**Done-signal**:` labels and FAILS on empty extraction (no silent
    green); review-gate briefings are unaffected.
 6. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a
@@ -132,9 +142,9 @@ Run these when migrating a plan created with Tackle 5.0.x:
 
 Run these when migrating a plan created with Tackle 4.4.x:
 
-1. **Adopt the double gate (5.0)** — the flip now requires `tackle-check done-signal <point>` green AND the independent checker's sign-off (workspace flag `tackle-check-gate: on|off`, default on for new workspaces). Decide the flag: **on** = mechanical gate + sign-off; **off** = 4.x flip semantics preserved. The runner ships with the install artifact (`SKILL.md` + `references/` + `tackle-check`); run `sh tackle-check lint <workspace>` once to confirm the workspace lints clean before flipping anything (bare names resolve to `docs/plans/<name>`).
+1. **Adopt the double gate (5.0)** — the flip now requires `tackle done-signal <point>` green AND the independent checker's sign-off (workspace flag `tackle-gate: on|off`, default on for new workspaces). Decide the flag: **on** = mechanical gate + sign-off; **off** = 4.x flip semantics preserved. The runner ships with the install artifact (`SKILL.md` + `references/` + `tackle`); run `sh tackle lint <workspace>` once to confirm the workspace lints clean before flipping anything (bare names resolve to `docs/plans/<name>`).
 2. **D-02 revoked** — `guides/lint-spec.md` no longer forbids shipped scripts; the runner composes the lint rows (the runner IS the rows, the table is its spec). Existing hand-run lint flows still work verbatim.
-3. **Record** — write a `D-xx` in `decisions.md` noting the version adopted + the `tackle-check-gate` decision, append a `log.md` entry, and bump the plan stamp.
+3. **Record** — write a `D-xx` in `decisions.md` noting the version adopted + the `tackle-gate` decision, append a `log.md` entry, and bump the plan stamp.
 
 ## v4.3 → v4.4 checklist
 
