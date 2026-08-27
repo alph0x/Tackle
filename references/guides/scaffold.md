@@ -14,9 +14,13 @@ Never silently skip this question.
 
 # Step 4 — Scaffold the core
 
-Copy templates from `references/` and fill `{{PLACEHOLDERS}}`. Delete unused sections. Never leave empty slots you won't fill.
+Create the workspace with the runner:
 
-**Mechanized path (6.0):** `tackle-check scaffold <ws> [--preset <name>]` creates the Full core set (the §File map's 10 artifacts from `AGENTS.tmpl.md` + an empty `points/`) with `.tmpl` stripped and `{{PLACEHOLDERS}}` intact; `tackle-check scaffold --check <ws>` verifies the set. Hand-copying stays valid — the §File map is the spec — but the runner is the zero-miss path.
+```
+tackle init <ws>
+```
+
+`tackle init <ws>` creates the core set (the §File map's 9 artifacts from `AGENTS.tmpl.md` + an empty `points/`) with `.tmpl` stripped and `{{PLACEHOLDERS}}` intact; `tackle init --check <ws>` verifies the set (bare names or paths resolve to `docs/plans/<name>`; a missing workspace exits 2). Hand-copying stays valid — the §File map is the spec — but the repository's `references/` template library is read-only during init; initiative-specific edits belong in the workspace copy. The runner is the zero-miss path.
 
 Core copies include `usage.md` from `usage.tmpl.md` (every workspace born ≥ 5.2).
 
@@ -25,19 +29,9 @@ Core copies include `usage.md` from `usage.tmpl.md` (every workspace born ≥ 5.
 Create only when their trigger fires:
 - `foundations.md` — grounding table (decision → principle → source).
 - `design-contract.md` — authoritative public surface points implement.
-- `execution-strategy.md` — waves + quality gate + deferral.
-- `team.md` — execution team roles and protocol.
+- `team.md` — execution team roles and protocol (includes §Wave gates).
 - `coordinator.md` — Coordinator continuity projection (multi-agent execution).
 - `reports/` — point closure reports (created at first point close, Full gate).
 - `reference-docs/` — read-only external snapshots.
 
 (`board.md` is a core artifact, not depth — it is copied by the scaffold, per the §File map in `AGENTS.tmpl.md`.)
-
-## /tackle-init — plan-local customization
-
-Triggered by `/tackle-init [preset]` (optionally with a preset name). Creates the plan-local customization tree inside `docs/plans/<initiative>/`:
-
-- `presets/<preset>/` — seeded by copying `references/presets/<preset>/` (ships empty by design; the user adds `*.tmpl.md` files there to shadow core templates for this initiative).
-- `overrides/` — starts empty; any `*.tmpl.md` here shadows both presets and core for this initiative.
-
-Resolution order at instantiation time: `overrides/ > presets/<preset>/ > references/sdd/ > references/` (SKILL.md §Template-resolution stack). Record the chosen preset in `decisions.md`; never modify `references/` from an init.
