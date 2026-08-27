@@ -1,13 +1,13 @@
-#!/bin/sh
-# tackle-check — mechanical gates for Tackle workspaces (Tackle 5.0)
+# tackle — mechanical gates for Tackle workspaces (Tackle 7.0)
 #
 # Usage:
-#   tackle-check lint <workspace>         run lint rows 1-15 on a plan workspace
-#   tackle-check catalog                  verify eval/scenarios/ ⊆ eval/README.md
-#   tackle-check done-signal <briefing>   run the point's literal **Run**/**Done-signal** exit-gate
-#   tackle-check probe <workspace>        stat-only staleness probe: cited-file mtimes vs newest Last-verified
-#   tackle-check ground <workspace>       two-phase drift check; re-anchors drifted citations
-#   tackle-check sweep                    release sweep: self-lint gates 1-7 + catalog + workspace lint
+#   tackle lint <workspace>         run lint rows 1-15 on a plan workspace
+#   tackle catalog                  verify eval/scenarios/ ⊆ eval/README.md
+#   tackle done-signal <briefing>   run the point's literal **Run**/**Done-signal** exit-gate
+#   tackle probe <workspace>        stat-only staleness probe: cited-file mtimes vs newest Last-verified
+#   tackle ground <workspace>       two-phase drift check; re-anchors drifted citations
+#   tackle init <ws> [--check <ws>] create / verify a workspace (core set + points/)
+#   tackle sweep                    release sweep: self-lint gates 1-7 + catalog + workspace lint
 # POSIX sh, zero dependencies, harness-agnostic (convention 10). Composes the
 # documented lint rows from references/guides/lint-spec.md — the runner IS the
 # rows; the spec is its source of truth. Exit 0 = all gates green; any FAIL
@@ -15,6 +15,16 @@
 
 set -u
 fail=0
+
+scaffold_core="README AGENTS plan board log usage questions decisions reference"
+
+# shared citation regex — one source for the anchored-citation parser (row4, ground, probe)
+cit_re='[A-Za-z0-9_\/.-]+\.[a-z]+:[0-9]+(-[0-9]+)? — "[^"]+"'
+
+# green_ids <board.md> — echo the P-xx ids of 🟢 data rows (row11/row14 predicate)
+green_ids() {
+  awk 'BEGIN{FS=sprintf("%c",124)} $2 ~ /P-[0-9]/ && NF>3 {for(i=2;i<=NF;i++){if(index($i,"🟢")){g=$2; gsub(/^ +| +$/,"",g); print g}}}' "$1" 2>/dev/null
+}
 
 report() { # report <row-label> <exit-status>
   if [ "$2" -eq 0 ]; then
@@ -31,7 +41,7 @@ run_row() { # run_row <row-label> <row-fn> — run the row, print its diagnostic
   report "$1" "$st"
 }
 
-usage="usage: tackle-check lint <workspace> | catalog | done-signal <briefing> | probe <workspace> | ground <workspace> | eval prepare <scenario> [--seeds N] | eval diff <scenario> | eval audit <scenario> | eval judge <scenario> | eval verdict <file> | scaffold <ws> [--preset <name>] | scaffold --check <ws> | sweep"
+usage="usage: tackle lint <workspace> | catalog | done-signal <briefing> | probe <workspace> | ground <workspace> | eval prepare <scenario> [--seeds N] | eval diff <scenario> | eval audit <scenario> | eval judge <scenario> | eval verdict <file> | init <ws> | init --check <ws> | sweep"
 
 gate1() { # SKILL.md ≤ 1100 words
   [ "$(wc -w < SKILL.md)" -le 1100 ] || { echo "SKILL.md over budget"; return 1; }
@@ -55,10 +65,9 @@ gate4() { # migrate checklist heading into the current major.minor exists
 gate5() { # every README version stamp equals the SKILL.md stamp
   [ "$(grep -oE 'Tackle [0-9]+\.[0-9]+\.[0-9]+' README.md | sort -u)" = "Tackle $(awk '/^\*\*Tackle /{gsub(/\*/,"",$2); print $2; exit}' SKILL.md)" ] || { echo "README stamp mismatch"; return 1; }
 }
-
 gate6() { # update.md lists exactly the files that ship
   g6fail=0
-  for f in SKILL.md references tackle-check; do
+  for f in SKILL.md references tackle; do
     grep -q "$f" references/guides/update.md || { echo "update.md missing artifact: $f"; g6fail=1; }
   done
   [ "$g6fail" -eq 0 ]
@@ -67,7 +76,7 @@ gate6() { # update.md lists exactly the files that ship
 gate7() { # README content claims — every expected value DERIVED, nothing hardcoded
   g7fail=0
   # 7a lint-row count from the runner's own row functions
-  n=$(grep -c '^row[0-9]' tackle-check)
+  n=$(grep -c '^row[0-9]' tackle)
   grep -qF "rows 1–$n" README.md || { echo "README missing rows 1–$n"; g7fail=1; }
   grep -qF "($n lint rows)" README.md || { echo "README missing ($n lint rows)"; g7fail=1; }
   # 7b eval scenario count/range (s28 skipped — count ≠ max, check both)
@@ -84,9 +93,8 @@ gate7() { # README content claims — every expected value DERIVED, nothing hard
   v=$(awk '/^\*\*Tackle /{gsub(/\*/,"",$2); print $2; exit}' SKILL.md)
   mm=${v%.*}
   grep -qF "checklist chain v2.0 → v$mm" README.md || { echo "README migrate-chain head off (v2.0 → v$mm)"; g7fail=1; }
-  # 7d runner subcommand coverage: every usage token appears in the mode-table row
   row=$(grep 'Mechanical gate' README.md)
-  for t in lint catalog done-signal ground probe sweep eval scaffold; do
+  for t in lint catalog done-signal ground probe sweep eval init; do
     case "$row" in *"\`$t"*) ;; *) echo "README mode row missing \`$t"; g7fail=1;; esac
   done
   # 7e self-lint gate count from the spec
@@ -142,7 +150,7 @@ row3() { # board.md statuses from the fixed vocabulary
 
 row4() { # anchored citations still match their line
   [ -f "$ws/plan.md" ] || return 0
-  out=$(awk 'match($0,/[A-Za-z0-9_\/.-]+\.[a-z]+:[0-9]+(-[0-9]+)? — "[^"]+"/){c=substr($0,RSTART,RLENGTH); p=c; sub(/:.*/,"",p); n=c; sub(/^[^:]*:/,"",n); n=n+0; split(c,q,"\""); s=q[2]; ok=0; f=p; i=0; while((getline L < f)>0){i++; if(i==n && index(L,s)) ok=1} close(f); if(i==0){f="'"$ws"'/" p; while((getline L < f)>0){i++; if(i==n && index(L,s)) ok=1} close(f)} if(!ok) print FILENAME ":" FNR " stale: " c}' "$ws"/points/*.md "$ws"/plan.md "$ws"/reference.md 2>/dev/null)
+  out=$(cit_re="$cit_re" awk 'match($0,ENVIRON["cit_re"]){c=substr($0,RSTART,RLENGTH); p=c; sub(/:.*/,"",p); n=c; sub(/^[^:]*:/,"",n); n=n+0; split(c,q,"\""); s=q[2]; ok=0; f=p; i=0; while((getline L < f)>0){i++; if(i==n && index(L,s)) ok=1} close(f); if(i==0){f="'"$ws"'/" p; while((getline L < f)>0){i++; if(i==n && index(L,s)) ok=1} close(f)} if(!ok) print FILENAME ":" FNR " stale: " c}' "$ws"/points/*.md "$ws"/plan.md "$ws"/reference.md 2>/dev/null)
   [ -z "$out" ]
 }
 
@@ -182,7 +190,7 @@ row13() { # log.md over the archive threshold (warn severity; workspace-overrida
 row14() { # done points carry a closure report (gating; Lite workspaces guard-skip)
   [ -f "$ws/board.md" ] || return 0
   miss=0
-  for id in $(awk 'BEGIN{FS=sprintf("%c",124)} $2 ~ /P-[0-9]/ && NF>3 {for(i=2;i<=NF;i++){if(index($i,"🟢")){g=$2; gsub(/^ +| +$/,"",g); print g}}}' "$ws/board.md" 2>/dev/null); do
+  for id in $(green_ids "$ws/board.md"); do
     [ -f "$ws/reports/$id-report.md" ] || { echo "done point without closure report: $id"; miss=1; }
   done
   [ "$miss" -eq 0 ]
@@ -217,7 +225,14 @@ row7() { # every SEALED: D-xx resolves in decisions.md
 }
 
 row8() { # cross-initiative Touches collision (warn severity)
-  out=$(awk 'BEGIN{FS=sprintf("%c",124)} FILENAME ~ /board/ && $2 ~ /P-[0-9]/ && NF>3 {for(i=2;i<=NF;i++){if(index($i,"🟡")){split(FILENAME,w,"/"); active[w[3]]=1}}} /Touches/ {split(FILENAME,w,"/"); ws=w[3]; while(match($0,/`[^`]+`/)){p=substr($0,RSTART+1,RLENGTH-2); if(seen[p] && seen[p]!=ws && active[seen[p]] && active[ws]) print "collision: " p " (" seen[p] " + " ws ")"; seen[p]=ws; $0=substr($0,RSTART+RLENGTH)}}' docs/plans/*/board.md docs/plans/*/points/*.md 2>/dev/null)
+  act=""
+  for b in docs/plans/*/board.md; do
+    [ -f "$b" ] || continue
+    w=${b%/board.md}
+    ws_active "$w" && act="$act ${w#docs/plans/}"
+  done
+  [ -n "$act" ] || return 0
+  out=$(awk -v act="$act" 'BEGIN{FS=sprintf("%c",124); split(act,a," "); for(i in a) active[a[i]]=1} /Touches/ {split(FILENAME,w,"/"); ws=w[3]; if(!active[ws]) next; while(match($0,/`[^`]+`/)){p=substr($0,RSTART+1,RLENGTH-2); if(seen[p] && seen[p]!=ws && active[seen[p]]) print "collision: " p " (" seen[p] " + " ws ")"; seen[p]=ws; $0=substr($0,RSTART+RLENGTH)}}' docs/plans/*/board.md docs/plans/*/points/*.md 2>/dev/null)
   [ -z "$out" ]
 }
 
@@ -241,7 +256,7 @@ row10() { # done/blocked board rows carry an E-grade
 row11() { # done points carry a usage.md row (guard-skip pre-5.2 workspaces without usage.md)
   [ -f "$ws/usage.md" ] || return 0
   miss=0
-  for id in $(awk 'BEGIN{FS=sprintf("%c",124)} $2 ~ /P-[0-9]/ && NF>3 {for(i=2;i<=NF;i++){if(index($i,"🟢")){g=$2; gsub(/^ +| +$/,"",g); print g}}}' "$ws/board.md" 2>/dev/null); do
+  for id in $(green_ids "$ws/board.md"); do
     grep -q "| $id " "$ws/usage.md" || { echo "done point without usage row: $id"; miss=1; }
   done
   [ "$miss" -eq 0 ]
@@ -392,7 +407,7 @@ eval_diff() { # eval diff <scenario> — informational change-set vs pristine; F
     echo "== diff $scenario vs ${arm%/} (informational — the change set is the executor's edits + its report)"
     diff -ru "$pristine" "$arm"
   done
-  [ "$found" -eq 1 ] || echo "note: no scratch arms for $scenario (run 'tackle-check eval prepare $scenario' first)"
+  [ "$found" -eq 1 ] || echo "note: no scratch arms for $scenario (run 'tackle eval prepare $scenario' first)"
   [ "$leak" -eq 0 ] || { fail=1; return 1; }
   return 0
 }
@@ -405,7 +420,7 @@ eval_audit() { # eval audit <scenario> — mechanical arm compliance; model-only
   for armname in control method; do
     a="eval/scratch/$scenario-$armname-1"
     if [ ! -d "$a" ]; then
-      echo "FAIL: missing arm scratch: $a (run 'tackle-check eval prepare $scenario')"
+      echo "FAIL: missing arm scratch: $a (run 'tackle eval prepare $scenario')"
       afail=1
       continue
     fi
@@ -477,54 +492,31 @@ eval_verdict() { # eval verdict <file> — validate a run record's verdict field
   return 0
 }
 
-scaffold_core="README AGENTS plan board log usage todo questions decisions reference"
 
-scaffold() { # scaffold <ws> [--preset <name>] | scaffold --check <ws> — create / verify a workspace (Full set)
-  if [ "${1:-}" = "--check" ]; then
-    scaffold_check "${2:-}"
-    return
-  fi
+init() { # init <ws> — create a workspace (core set + points/)
   ws="${1:-}"
   case "$ws" in
     ''|*/*|*..*|/*)
-      echo "scaffold: invalid workspace name: '$ws' (no '/', '..', or absolute paths)" >&2
+      echo "init: invalid workspace name: '$ws' (no '/', '..', or absolute paths)" >&2
       exit 2
       ;;
   esac
-  preset=""
-  if [ "${2:-}" = "--preset" ]; then
-    [ -n "${3:-}" ] || { echo "scaffold: --preset needs a name" >&2; exit 2; }
-    preset="$3"
-  fi
   dest="docs/plans/$ws"
-  [ -e "$dest" ] && { echo "scaffold: $dest already exists" >&2; exit 2; }
+  [ -e "$dest" ] && { echo "init: $dest already exists" >&2; exit 2; }
   mkdir -p "$dest/points" || exit 1
   for a in $scaffold_core; do
-    # template-resolution stack mechanized for the core set: presets/<preset>/ > references/
-    # (references/sdd/ carries only SDD-mode templates — none of the core names — so the
-    # middle rung resolves to nothing for the 10 core artifacts; shipped presets ship only
-    # READMEs, so resolution degenerates to references/ today, but the stack is wired)
     src="references/$a.tmpl.md"
-    if [ -n "$preset" ] && [ -f "references/presets/$preset/$a.tmpl.md" ]; then
-      src="references/presets/$preset/$a.tmpl.md"
-    fi
-    [ -f "$src" ] || { echo "scaffold: missing template: $src" >&2; exit 1; }
+    [ -f "$src" ] || { echo "init: missing template: $src" >&2; exit 1; }
     cp "$src" "$dest/$a.md" || exit 1
   done
-  echo "scaffolded: $dest (Full set: $scaffold_core + points/; {{PLACEHOLDERS}} kept intact)"
+  echo "scaffolded: $dest (core set: $scaffold_core + points/; {{PLACEHOLDERS}} kept intact)"
   echo "next: run /tackle-plan to fill the placeholders"
   echo "reminder: ask the user whether docs/plans/ should be gitignored (scaffold.md §Step 3) — the runner never edits .gitignore"
   return 0
 }
 
-scaffold_check() { # scaffold --check <ws> — verify the 10 core artifacts + points/, no .tmpl leftovers
-  ws="${1:-}"
-  dest="docs/plans/$ws"
-  if [ ! -d "$dest" ]; then
-    echo "scaffold --check: no such workspace: $dest"
-    fail=1
-    return 1
-  fi
+init_check() { # init --check <ws> — verify core artifacts + points/, no .tmpl leftovers (bare names or paths resolve via resolve_ws; missing ⇒ exit 2)
+  dest=$(resolve_ws "${1:-}") || exit 2
   miss=0
   for a in $scaffold_core; do
     [ -f "$dest/$a.md" ] || { echo "missing: $dest/$a.md"; miss=1; }
@@ -533,7 +525,7 @@ scaffold_check() { # scaffold --check <ws> — verify the 10 core artifacts + po
   t=$(find "$dest" \( -name '*.tmpl' -o -name '*.tmpl.md' \) 2>/dev/null | head -1)
   [ -z "$t" ] || { echo "leftover template suffix: $t"; miss=1; }
   [ "$miss" -eq 0 ] || { fail=1; return 1; }
-  echo "scaffold --check OK: $dest (10 core artifacts + points/, no .tmpl files)"
+  echo "init --check OK: $dest (core artifacts + points/, no .tmpl files)"
   return 0
 }
 
@@ -549,7 +541,7 @@ done_signal() { # run the literal **Run**/**Done-signal** commands from a point 
   while IFS= read -r cmd; do
     # self-referential guard: running done-signal on the briefing that declares it
     # would recurse without a base case (P-01 fork bomb, 2026-08-03) — fail loud.
-    if printf '%s' "$cmd" | grep -q "tackle-check done-signal.*$(basename "$bf")"; then
+    if printf '%s' "$cmd" | grep -q "tackle done-signal.*$(basename "$bf")"; then
       echo "FAIL: self-referential done-signal ($(basename "$bf"))"
       status=1
       continue
@@ -572,9 +564,9 @@ ground() { # two-phase drift check + in-place re-anchor (design-contract §Runne
   for f in "$ws"/points/*.md "$ws"/plan.md "$ws"/reference.md; do
     [ -f "$f" ] || continue
     tmp=$(mktemp) || return 1
-    out=$(awk -v ws="$ws" -v tmp="$tmp" '
+    out=$(cit_re="$cit_re" awk -v ws="$ws" -v tmp="$tmp" '
       {
-        if (match($0, /[A-Za-z0-9_\/.-]+\.[a-z]+:[0-9]+(-[0-9]+)? — "[^"]+"/)) {
+        if (match($0, ENVIRON["cit_re"])) {
           c = substr($0, RSTART, RLENGTH)
           p = c; sub(/:.*/, "", p)
           n = c; sub(/^[^:]*:/, "", n); sub(/-[0-9]+$/, "", n); n = n + 0
@@ -637,7 +629,7 @@ probe() { # stat-only staleness probe: cited-file mtimes vs newest Last-verified
   stale=0; total=0
   paths=$(for f in "$ws"/points/*.md "$ws"/plan.md "$ws"/reference.md; do
     [ -f "$f" ] || continue
-    awk 'match($0,/[A-Za-z0-9_\/.-]+\.[a-z]+:[0-9]+(-[0-9]+)? — "[^"]+"/){c=substr($0,RSTART,RLENGTH); p=c; sub(/:.*/,"",p); print p}' "$f"
+    cit_re="$cit_re" awk 'match($0,ENVIRON["cit_re"]){c=substr($0,RSTART,RLENGTH); p=c; sub(/:.*/,"",p); print p}' "$f"
   done | sort -u)
   for p in $paths; do
     total=$((total+1))
@@ -712,7 +704,9 @@ case "$cmd" in
       *) echo "$usage" >&2; exit 2 ;;
     esac
     ;;
-  scaffold) scaffold "$@" ;;
+  init)
+    if [ "${1:-}" = "--check" ]; then init_check "${2:-}"; else init "$1"; fi
+    ;;
   sweep) sweep ;;
   *) echo "$usage" >&2; exit 2 ;;
 esac

@@ -10,4 +10,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Run the mechanical release sweep
-        run: sh tackle-check sweep
+        run: sh tackle sweep
