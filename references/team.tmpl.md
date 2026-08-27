@@ -23,6 +23,14 @@ Role→tier defaults (a point briefing may override):
 
 Grounding reads, lint, drill mechanics: `fast`, effort `low`.
 
+**Default tier by point shape** — `plan` proposes these in decompose; the user confirms in the intake batch (the per-point declared binding stays the honesty invariant, never auto-switched at runtime):
+
+| Point shape | Default tier |
+|---|---|
+| Mechanical / docs / simple tests | `fast` |
+| Default (implementation, coordination, review) | `standard` |
+| Architecture / hard decomposition / high risk / judge | `frontier` |
+
 Agents are spawned **per role at point execution**, each on its role's bound tier — there are no predetermined agents. The workspace `AGENTS.md` §Model map binds tiers to the concrete models the harness offers; core templates never name vendor models.
 
 Effort levels are abstract like tiers — `low / medium / high / max` — never harness-specific setting names; they are bound per workspace in `AGENTS.md` §Model map. `effort-binding: supported | unsupported` — `unsupported` ⇒ effort levels are advisory only, deviations noted in `log.md`, never blocking. A point briefing may override a role default via its `**Effort**:` field.
@@ -80,7 +88,6 @@ The Security Reviewer runs this checklist on anything touching auth, input, secr
 
 - **`board.md`** is the only place that records point status (🔴 🟡 ⏸ 🟢 · ⚪ skipped (optional slice not executed, with one-line reason)). `plan.md` §5 never carries status columns.
 - **`log.md`** is append-only history. It records what happened, not the current state.
-- **`todo.md`** is for planning-readiness; it is not updated during execution.
 - **No status payloads over the agent messaging channel.** Coordination messages are plain prose; the board is where status lives.
 
 ## Roles (when used)
@@ -123,7 +130,27 @@ The Security Reviewer runs this checklist on anything touching auth, input, secr
 2. Driver writes smallest change + runs done-signal.
 3. Reviewer/Spec Reader + Quality Guardian review (if multi-agent).
 4. Specialist auditors review (if Squad).
-5. Coordinator/Reviewer marks `board.md` 🟢 and appends the `log.md` entry — Full gate only after the Coordinator sign-off section in `reports/P-0N-report.md`; Lite gate after the evidence block in `log.md`.
+## Wave gates (multi-wave execution)
+
+When the plan decomposes into waves (dependency graph, `plan.md` §5), two gates bound every wave — the wave-strategy artifact's content (removed in 7.0) lives here:
+
+### Pre-wave verification gate (BLOCKING)
+
+Before any wave starts, run `/tackle-verify` on every point in the wave. A point with HIGH findings is removed from the wave and returned to planning. MEDIUM findings require explicit user acceptance; LOW findings become notes for the Driver.
+
+This gate runs once per wave, not per point, so parallel-ready points are verified in batch.
+
+### Inter-wave quality gate (BLOCKING)
+
+After a wave's points merge and before the next wave starts, run ONE gate over the **merged** tree (per-point reviewers see one point; the gate sees the whole, where drift and races live):
+
+0. **Verification re-check** — re-run `/tackle-verify` on the merged diff; new drift or broken claims block the next wave.
+1. **Run the checks, don't read them** — the suite is green; stability holds (repeat ×N under a hard timeout; a hang = fail); concurrency is race-clean if the env has a checker.
+2. **Fundamentals** — DRY, no smells, the dependency rule holds, naming per the project's guidelines, public surface documented.
+3. **Grounding** (if `foundations.md` exists) — every new abstraction in the wave's diff has its decision→principle→source row.
+4. **Contract & hygiene** (if `design-contract.md` exists) — implemented surface matches it, or the spec was superseded first; the board + log are current.
+
+**Verdict** → `PASS` (next wave launches) · `PASS-WITH-NOTES` (launches; notes become TODOs on the next wave) · `FAIL` (next wave blocked; findings route back to the owning point).
 
 ## When a point is done
 
@@ -137,14 +164,14 @@ Every Full-gate point closes with one report file in the workspace `reports/` di
 2. **INTENT + Evidence** — Driver: INTENT gate lines, attempt journal, done-signal run with its **Evidence** block (command, trimmed output, exit line).
 3. **Reviews** — Reviewer/Spec Reader, Quality Guardian, specialists: PASS or findings. Reviewers verify the work, they don't trust the Driver's report.
 4. **Checker re-run** — independent checker (maker/checker, condition 1 below): done-signal re-run evidence, its **tier** per §Model binding, the reward-hacking guard result, and a `model-binding: unavailable` note when checker ≠ maker could not be honored. When the briefing declares `Lenses:`, it also records the lens list, each lens's verdict, and the vote count.
-   **Double gate (5.0, flag `tackle-check-gate`)**: the section also records the `tackle-check done-signal <point>` output — green is a precondition of the Coordinator's sign-off below; no mechanical green, no flip.
+   **Double gate (5.0, flag `tackle-gate`)**: the section also records the `tackle done-signal <point>` output — green is a precondition of the Coordinator's sign-off below; no mechanical green, no flip.
    It also records the point's **evidence grade**, derived mechanically from the evidence block (never self-declared):
    - **E1 command-verified** ⇔ this section (Lite gate: the `log.md` evidence block) carries command + output + exit line from the independent checker.
    - **E2 review-gated** ⇔ a review-gate marker with rubric + named reviewer (no honest command exists).
    - **E0 UNVERIFIABLE** ⇔ an explicit UNVERIFIABLE label.
    - **E3 asserted** ⇔ anything else.
    Grades are DERIVED, never self-declared; any later re-derivation that disagrees is a grade-inflation finding.
-5. **Coordinator sign-off** — verdict (`closed` / `rework` + reason) + regression sweep result. **Solo assisted (L2) points: the human checker writes this section (D-09).** The 🟢 flip requires this section AND, when the workspace flag `tackle-check-gate: on` (absent = off, 4.x flip preserved), the mechanical green from section 4's `tackle-check done-signal` block: no sign-off, no flip; no mechanical green, no flip.
+5. **Coordinator sign-off** — verdict (`closed` / `rework` + reason) + regression sweep result. **Solo assisted (L2) points: the human checker writes this section (D-09).** The 🟢 flip requires this section AND, when the workspace flag `tackle-gate: on` (absent = off, 4.x flip preserved), the mechanical green from section 4's `tackle done-signal` block: no sign-off, no flip; no mechanical green, no flip.
 
 Solo points compress to sections 2 + 4 + 5.
 
