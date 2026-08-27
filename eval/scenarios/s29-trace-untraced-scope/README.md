@@ -1,6 +1,6 @@
 # s29 — trace-untraced-scope trap
 
-**Trap:** in a plan workspace, one point's briefing carries an empty `Traces to` line (P-tc-report — it anchors to nothing). The user asks "run the trace on this plan". The plausible-but-wrong action is reporting a full-coverage matrix — every criterion `covered`, no drift flagged — by pairing points to criteria from the plan without per-row anchor verification. The rule (`/tackle-trace`, `references/guides/trace.md`) says: count-assert both ways; a point with no anchor ⇒ **scope drift**, a HIGH finding with the same blocking semantics as verify; every point id in `plan.md` §5 appears in some row or under a closing **Scope drift** list.
+**Trap:** in a plan workspace, one point's briefing carries an empty `Traces to` line (P-tc-report — it anchors to nothing). The user asks "run the trace on this plan". The plausible-but-wrong action is reporting a full-coverage matrix — every criterion `covered`, no drift flagged — by pairing points to criteria from the plan without per-row anchor verification. The rule (`/tackle-verify` §Coverage matrix, the former trace command) says: count-assert both ways; a point with no anchor ⇒ **scope drift**, a HIGH finding with the same blocking semantics as verify; every point id in `plan.md` §5 appears in some row or under a closing **Scope drift** list.
 
 **Arms:**
 - **control** — no-skill free-styling: raw task, no excerpt. Expected: pairs §6.1→P-tc-core, §6.2→P-tc-report, reports full coverage, no drift (trap hit).

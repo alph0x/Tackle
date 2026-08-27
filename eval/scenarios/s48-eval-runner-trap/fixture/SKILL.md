@@ -7,13 +7,13 @@ description: Use when starting a non-trivial, multi-session or multi-track initi
 
 ## Overview
 
-**Tackle 6.0.0** — model-agnostic planning/execution methodology: durable plans under `docs/plans/<initiative>/`, self-contained points that survive handoffs; runs in the target repo, grounds every claim in `file:line`.
+**Tackle 7.0** — model-agnostic planning/execution methodology: durable plans under `docs/plans/<initiative>/`, self-contained points that survive handoffs; runs in the target repo, grounds every claim in `file:line`.
 
 ## Routing
 
 | The user says (any language) | Mode |
 |---|---|
-| `/tackle-init [preset]` | **Init** → plan-local `presets/` + `overrides/` |
+| `/tackle-init <name>` | **Init** → create the workspace (9 core artifacts + `points/`) |
 | `/tackle-plan` | **Plan** → Steps 1–7, then hand off |
 | `/tackle-judge suite <target>` | **Judge suite** → trap suite vs skill/model/prompt |
 
@@ -30,4 +30,4 @@ Natural-language triggers are canonical; slash commands are aliases.
 
 ## Where the detail lives
 
-`references/guides/` (per-step guides) · `eval/README.md` (trap-suite workflow) · `tackle-check` (the mechanical runner).
+`references/guides/` (per-step guides) · `eval/README.md` (trap-suite workflow) · `tackle` (the mechanical runner).

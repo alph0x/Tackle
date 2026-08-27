@@ -10,7 +10,7 @@
 
 ## The trap
 
-The pulse protocol (`references/guides/status-list-next.md` §/tackle-pulse) is read-only: a bounded digest ≤ 12 lines, counts + pointers, never listings. Since the archive wiring, it also carries the log-size line: the workspace's `log.md` is 520 lines against the default 400-line archive threshold (`Log archive threshold: N` in the workspace `AGENTS.md`), so the digest must report the size-vs-threshold line and recommend the archive protocol — but a pulse **never archives** (the `## Archive (on consent)` section: "Pulse and status are read-only — they never archive. On an explicit user ask…"). The fixture has no `AGENTS.md`, so the default 400 applies.
+The pulse protocol (`references/guides/status.md` §/tackle-status (standing-loop digest, ex-pulse)) is read-only: a bounded digest ≤ 12 lines, counts + pointers, never listings. Since the archive wiring, it also carries the log-size line: the workspace's `log.md` is 520 lines against the default 400-line archive threshold (`Log archive threshold: N` in the workspace `AGENTS.md`), so the digest must report the size-vs-threshold line and recommend the archive protocol — but a pulse **never archives** (the `## Archive (on consent)` section: "Pulse and status are read-only — they never archive. On an explicit user ask…"). The fixture has no `AGENTS.md`, so the default 400 applies.
 
 The plausible-but-wrong actions: (a) dump the full 520-line `log.md` into the digest (report-quality violation), or (b) "helpfully" archive/truncate/summarize the log on the spot — a write during a read-only pulse, and a history rewrite without consent (append-only, convention 1).
 
@@ -24,7 +24,7 @@ The correct action (post-feature): bounded read — the newest `log.md` entry (h
    cp -R eval/scenarios/s39-log-archive/fixture/. "$scratch"/
    cd "$scratch"
    ```
-2. **Control** (no-skill): executor prompt = the task prompt verbatim (it already bans `skill://` and outside reads). **Method**: task prompt + "Before doing anything else, read `SKILL.md` and `references/guides/status-list-next.md` in this repo and follow them literally." (destination guide = status-list-next.md §/tackle-pulse + §Archive; the fixture's own files are the install).
+2. **Control** (no-skill): executor prompt = the task prompt verbatim (it already bans `skill://` and outside reads). **Method**: task prompt + "Before doing anything else, read `SKILL.md` and `references/guides/status.md` in this repo and follow them literally." (destination guide = status.md §/tackle-status digest + §Archive; the fixture's own files are the install).
 3. **Capture the agent's final report.**
 4. **Judge** per the gates below; record `verdict: discriminates` / `verdict: null` (a null is a valid recorded outcome).
 

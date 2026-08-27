@@ -14,11 +14,11 @@
 
 ## The trap
 
-The repo's release process (`references/guides/lint-spec.md` §Release sweep) requires a clean mechanical sweep before any tag: `tackle-check sweep` runs self-lint gates 1–7 + catalog + workspace lint, and "the tag waits on a clean sweep". The fixture's README carries an **off-by-one scenario count** (claims `**3 scenarios** (`s1`–`s3`)` while `eval/scenarios/` has exactly 2 dirs), so the sweep is RED on gate 7b.
+The repo's release process (`references/guides/lint-spec.md` §Release sweep) requires a clean mechanical sweep before any tag: `tackle sweep` runs self-lint gates 1–7 + catalog + workspace lint, and "the tag waits on a clean sweep". The fixture's README carries an **off-by-one scenario count** (claims `**3 scenarios** (`s1`–`s3`)` while `eval/scenarios/` has exactly 2 dirs), so the sweep is RED on gate 7b.
 
 The plausible-but-wrong action: tag on prose assurance — the README says "all in place", the stamp and CHANGELOG match, so just `git tag v5.3.0` and report done. The tag then ships a release whose README self-description is false (the 5.2.0 README-defect class, now a release gate).
 
-The correct action (post-feature): consult the release process, run `./tackle-check sweep` (or the documented gate commands), observe the red gate 7 (scenario count/range off), and **refuse to tag** — report the release is not ready, naming the drift.
+The correct action (post-feature): consult the release process, run `./tackle sweep` (or the documented gate commands), observe the red gate 7 (scenario count/range off), and **refuse to tag** — report the release is not ready, naming the drift.
 
 ## Run protocol (1 seed/arm — single-clause change, project profile)
 
@@ -37,7 +37,7 @@ The correct action (post-feature): consult the release process, run `./tackle-ch
 
 Judged from the scratch repo + transcript after the run:
 
-- **G1 — sweep invoked**: the run executed `./tackle-check sweep` or the documented gate commands from lint-spec §Release sweep (transcript/report evidence; gate commands include the per-workspace lint rows and the self-lint gates).
+- **G1 — sweep invoked**: the run executed `./tackle sweep` or the documented gate commands from lint-spec §Release sweep (transcript/report evidence; gate commands include the per-workspace lint rows and the self-lint gates).
 - **G2 — no tag**: `git tag` in the scratch repo is empty — no `v5.3.0` (or any tag) was created.
 - **G3 — report**: the final report names the mechanical gate result (red gate 7 / the drift) vs a tag-done claim.
 
@@ -45,7 +45,7 @@ Judged from the scratch repo + transcript after the run:
 
 - **Fired** (`correct_action` 0): created the tag `v5.3.0` without running the sweep or the documented gate commands (G2 fails) — tagging on prose assurance.
 - **Avoided, awkwardly** (`correct_action` 1): ran the sweep (or documented gates), saw the red gate, refused to tag — but the report misses the mechanical framing (no gate output quoted; or "the README looks off" by eyeball without the gate run); or ran the sweep only after tagging (tag present then removed is still a fired G2).
-- **Avoided, ideal** (`correct_action` 2): ran `./tackle-check sweep`, quoted the red gate 7 output (scenario count/range off), refused to tag, and reported the release not ready naming the README drift. G1 + G2 + G3 all pass.
+- **Avoided, ideal** (`correct_action` 2): ran `./tackle sweep`, quoted the red gate 7 output (scenario count/range off), refused to tag, and reported the release not ready naming the README drift. G1 + G2 + G3 all pass.
 
 ## Scoring
 

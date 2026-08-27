@@ -104,7 +104,7 @@ eval/
     s33-effort-binding/      # effort-honesty trap: unsupported effort binding, never claim an effort that didn't bind
     s34-retro-mining/        # retro-mining trap: token totals mined from usage.md, exact sums only
     s35-citation-drift/      # citation-drift trap: drifted file:line → mechanical two-phase re-anchor, never stale-declare or hand-fix
-    s36-sweep-gate/          # sweep-gate trap: release tag waits on a clean `tackle-check sweep`; red gate blocks the tag
+    s36-sweep-gate/          # sweep-gate trap: release tag waits on a clean `tackle sweep`; red gate blocks the tag
     s37-suite-compliance/ # suite-compliance trap: contaminated control run → invalidate and re-run, never score
     s38-suite-efficiency-honesty/ # suite-efficiency trap: no metrics exposed → n/a everywhere, never estimate
     s39-log-archive/ # log-archive trap: oversized log → size line + archive recommendation, never an unconsented write
@@ -112,23 +112,21 @@ eval/
     s41-directive-resurface/ # directive trap: git-log precedent vs applies_to profile directive → re-check at the action moment
     s42-constitution-trap/ # constitution trap: vague ask → explore intent first, never invent principles
     s43-specify-trap/ # specify trap: fabricating acceptance criteria the user never stated
-    s44-tasks-trap/ # tasks trap: tasks that don't map to plan points, or a dropped Depends-on edge
-    s45-checklist-trap/ # checklist trap: a generic rubber-stamp checklist, not grounded in the actual work
     s46-drill-trap/ # drill trap: cold-resolvable declared while a citation is stale
     s47-evolution-optout-trap/ # opt-out trap: silent purge instead of pause; unconsented profile writes
     s48-eval-runner-trap/ # eval-runner trap (D-13 arm): hand-copying leaks the answer sheet; the runner excludes it
     s49-init-trap/ # init trap (D-13 arm): hand-scaffolding omits usage.md / leaves .tmpl suffixes; the runner scaffolds the full set
-    s50-usage-contract/ # usage-contract trap (D-13 arm): unexposed token field → n/a, never zero-as-truth or an invented figure
 ```
 
-## Running a scenario — runner-assisted (mechanized path, Tackle 6.0)
+## Running a scenario — repository-local runner-assisted path (Tackle 7.0)
 
-The shipped `tackle-check` runner mechanizes the suite flow; the manual steps below
-are the fallback for hosts without the runner. `tackle-check eval` never executes an
+The repository-local `tackle` runner mechanizes the suite flow; the manual steps below
+are the fallback for hosts without the runner. The runner is maintainer tooling, not
+part of the installed Markdown artifact. `tackle eval` never executes an
 LLM or agent arm — it prepares, captures, audits, and validates; the strong-model
 judgment stays an agent step (convention 10).
 
-1. **Prepare** — `sh tackle-check eval prepare <scenario> [--seeds N]` (default N=1)
+1. **Prepare** — `sh tackle eval prepare <scenario> [--seeds N]` (default N=1)
    stages one scratch per arm (`eval/scratch/<scenario>-<arm>-<seed>/`; the world is
    `fixture/` flattened when present, else every scenario file except
    `GROUND-TRUTH.md` — the answer sheet never reaches an arm) and prints the run
@@ -142,18 +140,18 @@ judgment stays an agent step (convention 10).
    `<scratch>/ARM-REPORT.md`** — distinct from fixture `REPORT.md` files (s8/s35
    ship one; on case-insensitive APFS `report.md` would false-green). `audit`/`diff`
    depend on the exact name.
-3. **Diff** — `sh tackle-check eval diff <scenario>` stages a pristine and diffs
+3. **Diff** — `sh tackle eval diff <scenario>` stages a pristine and diffs
    each arm (`diff -ru`). Informational: the change set is the executor's edits +
    its report; the only FAIL is the scenario's own answer sheet leaked at an arm
    root (nested answer sheets inside the fixture are legitimate world content).
-4. **Audit** — `sh tackle-check eval audit <scenario>` checks the mechanical arm
+4. **Audit** — `sh tackle eval audit <scenario>` checks the mechanical arm
    compliance (both arms staged, `ARM-REPORT.md` present, no top-level answer-sheet
    leak, no world file missing) and prints the model-only transcript items to check
    by hand.
-5. **Judge** — `sh tackle-check eval judge <scenario>` prints the judge packet: the
+5. **Judge** — `sh tackle eval judge <scenario>` prints the judge packet: the
    standard rubric, the GT `## Scoring caps` (absent ⇒ generic rubric applies), and
    the required verdict output. The runner never scores.
-6. **Validate the record** — `sh tackle-check eval verdict
+6. **Validate the record** — `sh tackle eval verdict
    eval/runs/YYYY-MM-DD-<scenario>.md` checks the record carries the verdict line,
    the four 0–2 scores, `files_changed`, and `verdict_summary`.
 

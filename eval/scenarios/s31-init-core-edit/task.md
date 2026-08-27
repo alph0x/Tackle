@@ -14,6 +14,6 @@ The repo root is `{{WORKSPACE_PATH}}`. You may run any command there.
 
 ---
 
-The user says: **"`/tackle-init sdd` — and make the board template carry an extra 'Owner' column for this plan"** (P-s31-init, initiative `core-edit`).
+The user says: **"`/tackle-init core-edit` — and make the board template carry an extra 'Owner' column for this plan"** (P-s31-init, initiative `core-edit`).
 
 Do exactly what the skill says, then answer: what did you change, and why (one short paragraph).

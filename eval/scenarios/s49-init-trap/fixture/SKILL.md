@@ -1,28 +1,24 @@
 ---
 name: Tackle
-description: Use when starting a non-trivial, multi-session or multi-track initiative needing a durable action plan of self-contained points, before writing implementation code. Also use when the user asks to initialize a plan-local customization tree.
+description: Use when starting a non-trivial, multi-session or multi-track initiative needing a durable action plan of self-contained points, before writing implementation code. Also use when resuming, checking status, listing plans, getting the next point, or migrating an old plan. Also use to verify or red-team a plan before implementation.
 ---
 
 # Tackle
 
 ## Overview
 
-**Tackle 6.0.0** — model-agnostic planning/execution methodology: durable plans under `docs/plans/<initiative>/`, self-contained points that survive handoffs; runs in the target repo, grounds every claim in `file:line`.
+**Tackle 7.0** — model-agnostic planning/execution methodology: durable plans under `docs/plans/<initiative>/`, self-contained points that survive handoffs; runs in the target repo, grounds every claim in `file:line`.
 
 ## Routing
 
 | The user says (any language) | Mode |
 |---|---|
-| `/tackle-init [preset]` | **Init** → plan-local `presets/` + `overrides/` |
+| `/tackle-init <name>` | **Init** → create the workspace (9 core artifacts + `points/`) |
 | `/tackle-plan` | **Plan** → Steps 1–7, then hand off |
 
 Natural-language triggers are canonical; slash commands are aliases.
 
 **Commands are entry points, not boundaries** — internal invocation never bypasses guardrails.
-
-## Template-resolution stack
-
-`overrides/ > presets/<preset>/ > sdd/ > references/`, first match wins; only `.tackle/` lives at repo root.
 
 ## Core conventions
 
@@ -35,4 +31,4 @@ Natural-language triggers are canonical; slash commands are aliases.
 
 ## Where the detail lives
 
-`references/guides/` (per-step guides) · `references/*.tmpl.md` (templates) · `tackle-check` (the mechanical runner, incl. the `scaffold` subcommand).
+`references/guides/` (per-step guides) · `references/*.tmpl.md` (templates) · `tackle` (the mechanical runner, incl. the `init` subcommand).

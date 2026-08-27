@@ -17,9 +17,6 @@
 
 {{What the SDK exposes/delivers to the integrator or user — observable.}}
 
-## Status
-
-Canonical source: **last entry in `log.md`**. One-line summary: `{{PLAN — DRAFT}}`.
 
 ## Index
 
@@ -27,7 +24,6 @@ Canonical source: **last entry in `log.md`**. One-line summary: `{{PLAN — DRAF
 |---|---|
 | `plan.md` | Objective, non-goals, point decomposition, acceptance criteria, risks |
 | `log.md` | Append-only session log (canonical state) |
-| `todo.md` | Planning-readiness checklist per point |
 | `questions.md` | Open questions (single source) |
 | `decisions.md` | Closed decisions register (`D-01`…, don't revisit without cause) |
 | `reference.md` | Current code state with `file:line` |
@@ -36,7 +32,6 @@ Canonical source: **last entry in `log.md`**. One-line summary: `{{PLAN — DRAF
 <!-- Add the lines below only for the artifacts you actually created (delete the rest):
 | `design-contract.md` | Authoritative API/state/error surface points implement |
 | `foundations.md` | Grounding: decision → principle → source |
-| `execution-strategy.md` | Waves + quality gate + deferral |
 | `reference-docs/` | Read-only snapshots of external material (+ provenance) |
 | `external-questions/` | Packets sent to other teams |
 Add appendices here too (descriptive name, not numbered). -->

@@ -25,4 +25,4 @@ can tell you.}}
 <!-- When an entry accumulates 3+ correction/update blocks, pin a one-line
      **Current ask (as of session N):** at the top of the entry; the correction history
      stays below it, append-only. A fresh reader orients from the pin, not from the accretion. -->
-<!-- A point gated on this question is "Deferred" in execution-strategy.md, not 🔴 in an active wave. -->
+<!-- A point gated on this question is "Deferred" in the wave plan, not 🔴 in an active wave. -->

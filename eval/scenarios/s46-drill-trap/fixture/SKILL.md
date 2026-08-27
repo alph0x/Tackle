@@ -1,25 +1,21 @@
 ---
 name: Tackle
-description: Use when starting a non-trivial, multi-session or multi-track initiative needing a durable action plan of self-contained points, before writing implementation code. Also use when the user asks to establish project principles (constitution), specify a product, flatten a plan into tasks, generate a quality checklist, or drill a point briefing cold.
+description: Use when starting a non-trivial, multi-session or multi-track initiative needing a durable action plan of self-contained points, before writing implementation code. Also use when resuming, checking status, listing plans, getting the next point, or migrating an old plan. Also use to verify or red-team a plan before implementation.
 ---
 
 # Tackle
 
 ## Overview
 
-**Tackle 6.0.0** — model-agnostic planning/execution methodology: durable plans under `docs/plans/<initiative>/`, self-contained points that survive handoffs; runs in the target repo, grounds every claim in `file:line`.
+**Tackle 7.0** — model-agnostic planning/execution methodology: durable plans under `docs/plans/<initiative>/`, self-contained points that survive handoffs; runs in the target repo, grounds every claim in `file:line`.
 
 ## Routing
 
 | The user says (any language) | Mode |
 |---|---|
-| `/tackle-constitution` | **Constitution** → `constitution.md` |
-| `/tackle-specify` | **Specify** → `spec.md` |
-| `/tackle-plan` | **Plan** → Steps 1–7, then hand off |
-| `/tackle-tasks` | **Tasks** → `tasks.md` |
-| `/tackle-checklist` | **Checklist** → `checklist.md` |
-| `/tackle-drill` | **Drill** → cold-start drill on one point briefing |
-| `stop evolving` | **Evolution opt-out** → pause/purge learning-loop profile, per scope |
+| `/tackle-plan` | **Plan** → Steps 1–7; intake may instantiate optional `spec.md`/`constitution.md` |
+| `/tackle-verify` | **Verify** → grounding (step 0), coverage matrix, red-team pass; includes the cold-resolvability probe |
+| `stop evolving` | **Evolution opt-out** → pause/purge learning-loop profile, per scope (inside retro) |
 
 Natural-language triggers are canonical; slash commands are aliases.
 
@@ -35,4 +31,4 @@ Natural-language triggers are canonical; slash commands are aliases.
 
 ## Where the detail lives
 
-`references/guides/` (per-step guides) · `*.tmpl.md` + `sdd/` (templates).
+`references/guides/` (per-step guides) · `AGENTS.tmpl.md` (workspace contract) · `team.tmpl.md` (teams) · `*.tmpl.md` (templates).

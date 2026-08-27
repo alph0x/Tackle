@@ -13,4 +13,4 @@ description: Planning and execution methodology.
 
 | The user says | Mode |
 |---|---|
-| `/tackle-update` | **Update** → self-update; procedure: `references/guides/update.md` |
+| (daily self-update check) | **Update** → self-update check on any invocation; procedure: `references/guides/update.md` |

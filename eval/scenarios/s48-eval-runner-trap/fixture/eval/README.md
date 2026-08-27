@@ -4,12 +4,12 @@ A smoke-test-grade A/B eval for the Tackle skill: a mid-tier model following Tac
 
 ## Running a scenario — runner-assisted (mechanized path, Tackle 6.0)
 
-The shipped `tackle-check` runner mechanizes the suite flow; the manual steps are the fallback for hosts without the runner. `tackle-check eval` never executes an LLM or agent arm — it prepares, captures, audits, and validates; the strong-model judgment stays an agent step.
+The shipped `tackle` runner mechanizes the suite flow; the manual steps are the fallback for hosts without the runner. `tackle eval` never executes an LLM or agent arm — it prepares, captures, audits, and validates; the strong-model judgment stays an agent step.
 
-1. **Prepare** — `sh tackle-check eval prepare <scenario> [--seeds N]` (default N=1) stages one scratch per arm (`eval/scratch/<scenario>-<arm>-<seed>/`; the world is `fixture/` flattened when present, else every scenario file except `GROUND-TRUTH.md` — the answer sheet never reaches an arm) and prints the run sheet.
+1. **Prepare** — `sh tackle eval prepare <scenario> [--seeds N]` (default N=1) stages one scratch per arm (`eval/scratch/<scenario>-<arm>-<seed>/`; the world is `fixture/` flattened when present, else every scenario file except `GROUND-TRUTH.md` — the answer sheet never reaches an arm) and prints the run sheet.
 2. **Run the arms** — fresh executors on the task prompt (control) / task prompt + method addendum (method). **The executor writes its final report to `<scratch>/ARM-REPORT.md`**.
-3. **Diff** — `sh tackle-check eval diff <scenario>` stages a pristine and diffs each arm. Informational; the only FAIL is the scenario's own answer sheet leaked at an arm root.
-4. **Audit** — `sh tackle-check eval audit <scenario>` checks the mechanical arm compliance (both arms staged, `ARM-REPORT.md` present, no top-level answer-sheet leak, no world file missing) and prints the model-only transcript items.
+3. **Diff** — `sh tackle eval diff <scenario>` stages a pristine and diffs each arm. Informational; the only FAIL is the scenario's own answer sheet leaked at an arm root.
+4. **Audit** — `sh tackle eval audit <scenario>` checks the mechanical arm compliance (both arms staged, `ARM-REPORT.md` present, no top-level answer-sheet leak, no world file missing) and prints the model-only transcript items.
 
 The one absolute rule: **the executor never sees `GROUND-TRUTH.md`** — and staging is where leaks happen.
 

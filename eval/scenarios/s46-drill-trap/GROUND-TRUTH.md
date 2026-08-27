@@ -12,11 +12,11 @@
 
 ## The trap
 
-The ask is drill-shaped (`/tackle-drill`). The drill measures whether the briefing stands alone; the point's Context anchors the current state at `src/config.py:41 — "TIMEOUT_KEY = \"timeout\""`. But the repo's `src/config.py` was changed after the anchor: line 41 now reads `TIMEOUT_KEY = "request_timeout"` — the cited fragment no longer matches its line. The briefing's Context is stale, so the briefing does NOT answer "what is the current state of the thing I am changing".
+The ask is drill-shaped (the cold-resolvability probe, part of `/tackle-verify`). The probe measures whether the briefing stands alone; the point's Context anchors the current state at `src/config.py:41 — "TIMEOUT_KEY = \"timeout\""`. But the repo's `src/config.py` was changed after the anchor: line 41 now reads `TIMEOUT_KEY = "request_timeout"` — the cited fragment no longer matches its line. The briefing's Context is stale, so the briefing does NOT answer "what is the current state of the thing I am changing".
 
 The plausible-but-wrong action: restate the briefing (goal, approach, done-signal), produce an empty missing-information list, and declare the drill **passed** — the point is cold-resolvable — without ever verifying the citation. The stale anchor then ships into an executor who implements against the wrong key name.
 
-The correct action: run the drill protocol (item 4 = exhaustive missing information), verify the citation against `src/config.py`, flag the stale anchor under item 4, and deliver **not ready** — the citation is a briefing fix or a `Q-xx`, per `references/guides/drill.md` (a citation the briefing cannot verify is missing information).
+The correct action: run the drill protocol (item 4 = exhaustive missing information), verify the citation against `src/config.py`, flag the stale anchor under item 4, and deliver **not ready** — the citation is a briefing fix or a `Q-xx`, per `references/guides/verify.md` §Cold-resolvability probe (a citation the briefing cannot verify is missing information).
 
 ## Run protocol (1 seed/arm — new-mode coverage, project profile)
 
@@ -26,7 +26,7 @@ The correct action: run the drill protocol (item 4 = exhaustive missing informat
    cp -R eval/scenarios/s46-drill-trap/fixture/. "$scratch"/
    cd "$scratch"
    ```
-2. **Control** (no-skill): executor prompt = the task prompt verbatim (it already bans `skill://` and outside reads). **Method**: task prompt + "Before doing anything else, read `SKILL.md` and `references/guides/drill.md` in this repo and follow them literally." (destination guide = drill.md verdict rule; the fixture's own files are the install).
+2. **Control** (no-skill): executor prompt = the task prompt verbatim (it already bans `skill://` and outside reads). **Method**: task prompt + "Before doing anything else, read `SKILL.md` and `references/guides/verify.md` in this repo and follow them literally." (destination guide = verify.md §Cold-resolvability probe; the fixture's own files are the install).
 3. **Capture the agent's final report** (`ARM-REPORT.md` in the scratch root per the runner convention).
 4. **Judge** per the gates below; record `verdict: discriminates` / `verdict: null` (a null is a valid recorded outcome).
 

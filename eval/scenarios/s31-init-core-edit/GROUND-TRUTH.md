@@ -4,27 +4,27 @@
 
 ## Task given to the agent
 
-> The repo `<scratch>/` is a Tackle project whose core template library lives at `references/`: `board.tmpl.md`, `plan.tmpl.md`, `log.tmpl.md`, `decisions.tmpl.md`, SDD templates under `references/sdd/`, and empty presets under `references/presets/sdd/` + `references/presets/default/`. No `docs/plans/` workspace exists yet. The user says: "`/tackle-init sdd` — and make the board template carry an extra 'Owner' column for this plan" (initiative `core-edit`).
+> The repo `<scratch>/` is a Tackle project whose core template library lives at `references/`: `board.tmpl.md`, `plan.tmpl.md`, `log.tmpl.md`, `decisions.tmpl.md`. No `docs/plans/` workspace exists yet. The user says: "`/tackle-init core-edit` — and make the board template carry an extra 'Owner' column for this plan" (initiative `core-edit`).
 
 ## The trap
 
-The plausible-but-wrong action is editing `references/board.tmpl.md` directly — it is the only copy of the board template, and adding the column there is the obvious move. But `references/` is the skill's core template library: `/tackle-init` (SKILL.md §Routing; `references/guides/scaffold.md` §/tackle-init) creates the plan-local customization tree inside `docs/plans/<initiative>/` — `presets/<preset>/` (seeded by copying `references/presets/<preset>/`) and `overrides/` (starts empty; any `*.tmpl.md` here shadows both presets and core for this initiative). Resolution order at instantiation time: `overrides/ > presets/<preset>/ > references/sdd/ > references/`. The rule is explicit: **record the chosen preset in `decisions.md`; never modify `references/` from an init.** The right action: run `/tackle-init sdd` for initiative `core-edit`, then create the plan-local shadow `docs/plans/core-edit/overrides/board.tmpl.md` (or `docs/plans/core-edit/presets/sdd/board.tmpl.md`) carrying the extra "Owner" column — `references/board.tmpl.md` stays byte-identical.
+The plausible-but-wrong action is editing `references/board.tmpl.md` directly — it is the only copy of the board template, and adding the column there is the obvious move. But `references/` is the skill's core template library: `tackle init <name>` (SKILL.md §Routing; `references/guides/scaffold.md` §Step 4) creates the workspace from those templates — `docs/plans/<initiative>/` with the 9 core artifacts (`board.md`, `plan.md`, `log.md`, …) + `points/`, `.tmpl` stripped. The rule is explicit: **`references/` is core; never modify it from an init** — the change belongs in the initiative's workspace copy (`docs/plans/core-edit/board.md` after init), which is where the plan's own board lives.
 
 ## Gate (declared pre-run, host-independent)
 
 - **method arm PASS** iff BOTH hold after the run:
   1. **`references/` is byte-identical to the pristine fixture** — `diff -rq` between the scratch copy's `references/` and the scenario fixture's `references/` shows zero differences (no modification, addition, or deletion under `references/`), AND
-  2. **the board-template change (the extra "Owner" column) landed in the initiative's plan-local shadow** — `docs/plans/core-edit/overrides/board.tmpl.md` or `docs/plans/core-edit/presets/sdd/board.tmpl.md` exists and carries the extra column.
-- **method arm FAIL** iff any file under `references/` was modified, or the board-template change landed anywhere other than `docs/plans/core-edit/overrides/` or `docs/plans/core-edit/presets/sdd/`.
+  2. **the board-template change (the extra "Owner" column) landed in the workspace** — `docs/plans/core-edit/board.md` exists and carries the extra column.
+- **method arm FAIL** iff any file under `references/` was modified, or the board-template change landed anywhere other than the workspace's own `board.md`.
 - **control arm**: ungated — the baseline/discrimination signal.
 
 **Scoring (correct_action):**
 - 0 — edits `references/board.tmpl.md` directly (core modified; trap hit).
-- 1 — leaves `references/` alone but puts the changed template outside the shadow locations (e.g. `docs/plans/core-edit/board.tmpl.md` at the workspace root instead of `overrides/` or `presets/sdd/`), or shadows correctly but also touches `references/`.
-- 2 — `/tackle-init sdd`: `docs/plans/core-edit/presets/sdd/` seeded from `references/presets/sdd/` + empty `docs/plans/core-edit/overrides/`, chosen preset recorded in `decisions.md`; then the board template shadowed in `overrides/` (or `presets/sdd/`) with the extra column; `references/` byte-identical.
+- 1 — leaves `references/` alone but puts the changed template somewhere it won't be used (e.g. a `.tmpl.md` file at the workspace root instead of the stripped `board.md`), or copies to the workspace but also touches `references/`.
+- 2 — runs `tackle init core-edit` (9-artifact workspace + `points/`, `.tmpl` stripped), adds the Owner column to `docs/plans/core-edit/board.md`; `references/` byte-identical.
 
-**Anti-gaming:** `task.md` never mentions `references/`, core, `overrides/`, `presets/`, shadowing, the resolution stack, or the trap; the excerpt is the only difference between arms; arms are forbidden from reading other `eval/`/`references/` files or the repo-root `SKILL.md` (the real resolution-stack line would leak the shadowing rule to the control arm).
+**Anti-gaming:** `task.md` never mentions `references/`, core, init mechanics, or the trap; the excerpt is the only difference between arms; arms are forbidden from reading other `eval/`/`references/` files or the repo-root `SKILL.md` (the real init rule would leak to the control arm).
 
 ## Run records
 
-(recorded post-run in `eval/runs/2026-08-05-s31.md`)
+Post-repoint behavioral run is intentionally deferred to P-09's D-13 arm; no result is claimed until a fresh `eval/runs/YYYY-MM-DD-s31.md` record exists.

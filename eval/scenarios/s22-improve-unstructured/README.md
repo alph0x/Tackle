@@ -4,7 +4,7 @@
 
 **Arms:**
 - **control** — the pre-slim skill excerpt (Overview → Output contract).
-- **method** — the post-slim excerpt (751 words, down from 973): routing must still send `improve this plan` → **Improve** (Step 10).
+- **method** — the post-slim excerpt (751 words, down from 973): routing must send `improve this plan` → **Plan intake** (Mode B — ingest unstructured source through `/tackle-plan`).
 
 Both arms receive the identical task (`task.md`) and fixture (`fixture/` — `docs/plans/payments-api/` with only `NOTES.md` + `README.md`). The task never mentions scaffolding, fabrication, or "unstructured" (anti-gaming).
 

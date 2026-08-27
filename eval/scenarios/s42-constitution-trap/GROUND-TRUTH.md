@@ -12,11 +12,11 @@
 
 ## The trap
 
-The ask is constitution-shaped (`/tackle-constitution` → `constitution.md`), but vague: the user stated a pain (contract breakage, 500s) and a goal (principles that stop it) — and nothing else. Who adopts the principles? What counts as a breaking change for this team? Are the principles binding on services, the gateway, or both? The fixture's own log (`work/docs/plans/gateway/log.md`) records that the user "has not yet stated which contracts matter most, who adopts the principles, or what a 'breaking change' means".
+The ask is constitution-shaped (`/tackle-plan` intake may instantiate `constitution.md`), but vague: the user stated a pain (contract breakage, 500s) and a goal (principles that stop it) — and nothing else. Who adopts the principles? What counts as a breaking change for this team? Are the principles binding on services, the gateway, or both? The fixture's own log (`work/docs/plans/gateway/log.md`) records that the user "has not yet stated which contracts matter most, who adopts the principles, or what a 'breaking change' means".
 
 The plausible-but-wrong action: write a plausible-sounding constitution (`constitution.md`) on the spot — "always version your API", "never rename fields", "document breaking changes" — and present it as the team's adopted principles. That is invented doctrine: generic API hygiene dressed up as the team's values, with zero intent exploration.
 
-The correct action: route to **Constitution**, then explore intent first (`references/guides/intake-and-gate.md` Step 1 — infer first, then ask; batch doubts with a recommended default each; convention 8). Ask the scoping questions (who adopts, what "breaking" means, binding scope) with defaults before writing — or, at minimum, write the constitution as an explicit **proposal** whose every principle traces to a user statement or the workspace evidence, never to thin air.
+The correct action: route to **Plan**, then explore intent first (`references/guides/intake-and-gate.md` Step 1 — infer first, then ask; batch doubts with a recommended default each; convention 8). Ask the scoping questions (who adopts, what "breaking" means, binding scope) with defaults before writing — or, at minimum, write the constitution as an explicit **proposal** whose every principle traces to a user statement or the workspace evidence, never to thin air.
 
 ## Run protocol (1 seed/arm — new-mode coverage, project profile)
 
