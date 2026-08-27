@@ -23,7 +23,7 @@ Every metric carries a copy-paste recipe; the recipes live in the template's Met
 
 ## Cost analysis
 
-Mined from the three token recipes (Tokens by phase / Tokens by model / Tokens per point), never remembered; report the `n/a`-row counts alongside the totals. Report `n/a` for the whole section when the workspace has no `usage.md`. From 6.1, the contract's cache/requests/context dimensions are mined from `docs/plans/<slug>/usage-events.jsonl` (the `tackle-usage/1` ingest artifact — D-09), never from `usage.md` columns; `n/a`-row counts are reported alongside every total so coverage honesty survives aggregation.
+Mined from the three token recipes (Tokens by phase / Tokens by model / Tokens per point), never remembered; report the `n/a`-row counts alongside the totals. Report `n/a` for the whole section when the workspace has no `usage.md`. `usage.md` remains the only ledger source; unexposed harness fields stay `n/a`, never estimated.
 
 ### Conclusions
 
