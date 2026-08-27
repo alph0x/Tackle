@@ -9,3 +9,12 @@
 
 docs/plans/
 docs/seeds/
+
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+/graft/
+
+# Local agent-harness configuration — not release artifact.
+/.claude/
+/.mcp.json
+/opencode.json
+/.ignore
