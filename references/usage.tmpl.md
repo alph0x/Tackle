@@ -14,7 +14,3 @@ missing value is `n/a`, not a missing row.
 
 | Point | Role | Tier | Model | Effort | Tokens in | Tokens out | Session |
 |---|---|---|---|---|---|---|---|
-
-## Ingesting the tackle-usage/1 contract
-
-The `tackle-usage/1` contract (`references/tackle-usage-contract.md`) is an **additional ingest source** for this ledger, never a replacement. Contract events arrive one JSON object per line at `docs/plans/<slug>/usage-events.jsonl`; correlate them into a row only where a column exists (`tokens.input` → Tokens in, `tokens.output` → Tokens out, `model` → Model, `tier` → Tier, `effort` → Effort, `point` → Point). `cache_read`, `cache_write`, `requests`, `tool_calls`, `compactions`, `context` and `duration_ms` have no ledger column — the retro recipes mine them from `usage-events.jsonl`, never force-fitted here. Safety rule: append/correlate, **never fabricate**, never silently replace an existing row; an unexposed field stays `n/a` (P-01's honesty rule).

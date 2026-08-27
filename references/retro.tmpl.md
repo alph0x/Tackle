@@ -16,8 +16,6 @@ Written at initiative close (or mid-flight as a partial retro — say so here) b
 | **Tokens by model** | `awk -F'|' '$2 ~ /PLAN|P-[0-9]|RETRO/ {m=$5; gsub(/^ +| +$/,"",m); t[m]+=$7+$8; if($7 ~ /n\/a/) na[m]++} END{for(k in t) printf "%s %d (n/a-rows %d)\n", k, t[k], na[k]+0}' usage.md` | {{...}} |
 | **Tokens per point** | `awk -F'|' '$2 ~ /PLAN|P-[0-9]|RETRO/ {p=$2; gsub(/^ +| +$/,"",p); t[p]+=$7+$8; if($7 ~ /n\/a/) na[p]++} END{for(k in t) printf "%s %d (n/a-rows %d)\n", k, t[k], na[k]+0}' usage.md` | {{...}} |
 
-| **Contract cache + requests/tool_calls/compactions** | `awk -F'"' '/"tackle-usage\/1"/{for(i=1;i<=NF;i++){if($i=="cache_read"||$i=="cache_write"||$i=="requests"||$i=="tool_calls"||$i=="compactions"){v=$(i+1); if(v=="n/a")na++; else{gsub(/[^0-9]/,"",v); s[$i]+=v}}}} END{printf "cache_read %d\ncache_write %d\nrequests %d\ntool_calls %d\ncompactions %d\nn/a-rows %d\n",s["cache_read"]+0,s["cache_write"]+0,s["requests"]+0,s["tool_calls"]+0,s["compactions"]+0,na}' usage-events.jsonl` | {{...}} |
-| **Contract context + duration** | `awk -F'"' '/"tackle-usage\/1"/{for(i=1;i<=NF;i++){if($i=="duration_ms"){v=$(i+1); if(v=="n/a")na++; else{gsub(/[^0-9]/,"",v); d+=v; dn++}} if($i=="context"){v=$(i+1); if(v=="n/a")na++; else{gsub(/[^0-9]/,"",v); c+=v; cn++}}}} END{printf "duration_ms avg %d over %d events\ncontext avg %d over %d events\nn/a-rows %d\n",(dn?d/dn:0),dn,(cn?c/cn:0),cn,na}' usage-events.jsonl` | {{...}} |
 
 Usage metrics report `n/a` when the workspace has no `usage.md` (same convention as Lite board metrics).
 
