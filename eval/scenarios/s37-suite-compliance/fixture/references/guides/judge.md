@@ -30,7 +30,7 @@ Format: the verdict is the first line; then a claims table (claim, what was obse
 
 ## Suite mode: judge a skill or a model
 
-`/tackle-judge suite <target>` runs the trap suite in `eval/scenarios/` against a target configuration: a newly installed skill, a different model, a modified prompt. There is no runner; the suite is this checklist, executed by hand. The one absolute rule: **the executor never sees `GROUND-TRUTH.md`.**
+`/tackle-judge suite <target>` runs the trap suite in `eval/scenarios/` against a target configuration: a newly installed skill, a different model, a modified prompt. The suite is this checklist, executed by hand. The one absolute rule: **the executor never sees `GROUND-TRUTH.md`.**
 
 For each scenario directory `eval/scenarios/<id>/`:
 

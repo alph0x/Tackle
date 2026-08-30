@@ -2,14 +2,14 @@
 
 A smoke-test-grade A/B eval for the Tackle skill: a mid-tier model following Tackle literally should beat the same model free-styling at **traps**, situations where the plausible action is the wrong one.
 
-## Running a scenario — runner-assisted (mechanized path, Tackle 6.0)
+## Running a scenario — manual staging and review
 
-The shipped `tackle` runner mechanizes the suite flow; the manual steps are the fallback for hosts without the runner. `tackle eval` never executes an LLM or agent arm — it prepares, captures, audits, and validates; the strong-model judgment stays an agent step.
+The suite is a Markdown checklist. Manual staging never executes an LLM or agent arm — it prepares, captures, audits, and validates; the strong-model judgment stays an agent step.
 
-1. **Prepare** — `sh tackle eval prepare <scenario> [--seeds N]` (default N=1) stages one scratch per arm (`eval/scratch/<scenario>-<arm>-<seed>/`; the world is `fixture/` flattened when present, else every scenario file except `GROUND-TRUTH.md` — the answer sheet never reaches an arm) and prints the run sheet.
+1. **Prepare** — create one scratch directory per arm (`eval/scratch/<scenario>-<arm>-<seed>/`; copy the fixture world or every scenario file except `GROUND-TRUTH.md` — the answer sheet never reaches an arm).
 2. **Run the arms** — fresh executors on the task prompt (control) / task prompt + method addendum (method). **The executor writes its final report to `<scratch>/ARM-REPORT.md`**.
-3. **Diff** — `sh tackle eval diff <scenario>` stages a pristine and diffs each arm. Informational; the only FAIL is the scenario's own answer sheet leaked at an arm root.
-4. **Audit** — `sh tackle eval audit <scenario>` checks the mechanical arm compliance (both arms staged, `ARM-REPORT.md` present, no top-level answer-sheet leak, no world file missing) and prints the model-only transcript items.
+3. **Diff** — compare each arm with a pristine copy. Informational; the only FAIL is the scenario's own answer sheet leaked at an arm root.
+4. **Audit** — check arm compliance (both arms staged, `ARM-REPORT.md` present, no top-level answer-sheet leak, no world file missing) and record the model-only transcript items.
 
 The one absolute rule: **the executor never sees `GROUND-TRUTH.md`** — and staging is where leaks happen.
 

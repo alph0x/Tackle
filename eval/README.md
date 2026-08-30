@@ -104,7 +104,7 @@ eval/
     s33-effort-binding/      # effort-honesty trap: unsupported effort binding, never claim an effort that didn't bind
     s34-retro-mining/        # retro-mining trap: token totals mined from usage.md, exact sums only
     s35-citation-drift/      # citation-drift trap: drifted file:line → mechanical two-phase re-anchor, never stale-declare or hand-fix
-    s36-sweep-gate/          # sweep-gate trap: release tag waits on a clean `tackle sweep`; red gate blocks the tag
+    s36-sweep-gate/          # sweep-gate trap: release tag waits on a clean direct sweep; red gate blocks the tag
     s37-suite-compliance/ # suite-compliance trap: contaminated control run → invalidate and re-run, never score
     s38-suite-efficiency-honesty/ # suite-efficiency trap: no metrics exposed → n/a everywhere, never estimate
     s39-log-archive/ # log-archive trap: oversized log → size line + archive recommendation, never an unconsented write
@@ -114,46 +114,40 @@ eval/
     s43-specify-trap/ # specify trap: fabricating acceptance criteria the user never stated
     s46-drill-trap/ # drill trap: cold-resolvable declared while a citation is stale
     s47-evolution-optout-trap/ # opt-out trap: silent purge instead of pause; unconsented profile writes
-    s48-eval-runner-trap/ # eval-runner trap (D-13 arm): hand-copying leaks the answer sheet; the runner excludes it
-    s49-init-trap/ # init trap (D-13 arm): hand-scaffolding omits usage.md / leaves .tmpl suffixes; the runner scaffolds the full set
+    s48-eval-runner-trap/ # staging trap (D-13 arm): hand-copying leaks the answer sheet; manual staging must exclude it
+    s49-init-trap/ # init trap (D-13 arm): hand-scaffolding omits usage.md / leaves .tmpl suffixes; the file map requires the full set
 ```
 
-## Running a scenario — repository-local runner-assisted path (Tackle 7.0)
+## Running a scenario — manual path (Tackle 7.1.0)
 
-The repository-local `tackle` runner mechanizes the suite flow; the manual steps below
-are the fallback for hosts without the runner. The runner is maintainer tooling, not
-part of the installed Markdown artifact. `tackle eval` never executes an
-LLM or agent arm — it prepares, captures, audits, and validates; the strong-model
-judgment stays an agent step (convention 10).
+The suite flow is manual by design: stage, run, diff, audit, judge, and validate
+each arm without executing an LLM or agent from a repository helper. The strong-model
+judgment stays an agent step (convention 10), and the installed artifact remains
+Markdown-only.
 
-1. **Prepare** — `sh tackle eval prepare <scenario> [--seeds N]` (default N=1)
-   stages one scratch per arm (`eval/scratch/<scenario>-<arm>-<seed>/`; the world is
-   `fixture/` flattened when present, else every scenario file except
-   `GROUND-TRUTH.md` — the answer sheet never reaches an arm) and prints the run
-   sheet: the task prompt, the method addendum (the GT's `**Method**:` line under
-   `## Run protocol`, or the generic judge.md §Suite mode step 2 addendum), the
-   executor-report instruction, and any Run-protocol setup commands **for the
-   orchestrator to run manually** — prepare never executes them (s36's init commit,
-   s41's `git init` + seeded commits).
+1. **Prepare** — create one fresh scratch directory per arm
+   (`eval/scratch/<scenario>-<arm>-<seed>/`, default seed `1`). Copy the fixture
+   world while excluding `GROUND-TRUTH.md`; flatten `fixture/` when present. Record
+   the task prompt, method addendum, report path, and any setup commands for the
+   orchestrator to run manually (s36's init commit, s41's `git init` + seeded commits).
 2. **Run the arms** — fresh executors on the task prompt (control) / task prompt +
    method addendum (method). **The executor writes its final report to
    `<scratch>/ARM-REPORT.md`** — distinct from fixture `REPORT.md` files (s8/s35
    ship one; on case-insensitive APFS `report.md` would false-green). `audit`/`diff`
    depend on the exact name.
-3. **Diff** — `sh tackle eval diff <scenario>` stages a pristine and diffs
-   each arm (`diff -ru`). Informational: the change set is the executor's edits +
+3. **Diff** — stage a pristine copy and run `diff -ru` for each arm. Informational:
+   the change set is the executor's edits +
    its report; the only FAIL is the scenario's own answer sheet leaked at an arm
    root (nested answer sheets inside the fixture are legitimate world content).
-4. **Audit** — `sh tackle eval audit <scenario>` checks the mechanical arm
-   compliance (both arms staged, `ARM-REPORT.md` present, no top-level answer-sheet
+4. **Audit** — check mechanical arm compliance (both arms staged, `ARM-REPORT.md`
+   present, no top-level answer-sheet
    leak, no world file missing) and prints the model-only transcript items to check
    by hand.
-5. **Judge** — `sh tackle eval judge <scenario>` prints the judge packet: the
-   standard rubric, the GT `## Scoring caps` (absent ⇒ generic rubric applies), and
-   the required verdict output. The runner never scores.
-6. **Validate the record** — `sh tackle eval verdict
-   eval/runs/YYYY-MM-DD-<scenario>.md` checks the record carries the verdict line,
-   the four 0–2 scores, `files_changed`, and `verdict_summary`.
+5. **Judge** — use the standard rubric, the GT `## Scoring caps` (absent ⇒ generic
+   rubric applies), and the required verdict output. The judge never scores from
+   an unobserved report.
+6. **Validate the record** — check that `eval/runs/YYYY-MM-DD-<scenario>.md` carries
+   the verdict line, the four 0–2 scores, `files_changed`, and `verdict_summary`.
 
 ## How to run a scenario manually (fallback)
 

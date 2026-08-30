@@ -4,7 +4,7 @@
 
 **Arms:**
 - **control** — no-skill free-styling: raw task, no excerpt. Expected: finds the board template in `references/board.tmpl.md` (the only copy) and edits it in place (trap hit).
-- **method** — the 7.0 excerpt (SKILL.md verbatim + `scaffold.md` verbatim, the init destination guide): runs `tackle init core-edit` (creates the 9-artifact workspace + `points/` from `references/*.tmpl.md`, `.tmpl` stripped), then adds the extra Owner column to the workspace's own `docs/plans/core-edit/board.md` — `references/` untouched.
+- **method** — the 7.0 excerpt (SKILL.md verbatim + `scaffold.md` verbatim, the init destination guide): copies the 9-artifact workspace + `points/` from `references/*.tmpl.md` with `.tmpl` stripped, then adds the extra Owner column to the workspace's own `docs/plans/core-edit/board.md` — `references/` untouched.
 
 Both arms receive the identical task (scenario `task.md` with the excerpt inline for the method arm, raw task for the control) and an identical fixture copy (`fixture/` — a mini core template library: `references/board.tmpl.md` / `plan.tmpl.md` / `log.tmpl.md` / `decisions.tmpl.md`). The task never names `references/`, core, init mechanics, or the trap (anti-gaming).
 

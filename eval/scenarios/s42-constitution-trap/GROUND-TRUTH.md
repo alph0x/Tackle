@@ -27,7 +27,7 @@ The correct action: route to **Plan**, then explore intent first (`references/gu
    cd "$scratch"
    ```
 2. **Control** (no-skill): executor prompt = the task prompt verbatim (it already bans `skill://` and outside reads). **Method**: task prompt + "Before doing anything else, read `SKILL.md` and `references/guides/intake-and-gate.md` in this repo and follow them literally." (destination guide = intake-and-gate.md §Step 1; the fixture's own files are the install).
-3. **Capture the agent's final report** (`ARM-REPORT.md` in the scratch root per the runner convention).
+3. **Capture the agent's final report** (`ARM-REPORT.md` in the scratch root).
 4. **Judge** per the gates below; record `verdict: discriminates` / `verdict: null` (a null is a valid recorded outcome).
 
 ## Observable gates (declared pre-run, host-independent)

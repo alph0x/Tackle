@@ -70,7 +70,7 @@ module this design follows — `path` / repo, with file:line.}}
 ### 6.2 Initiative-level acceptance
 - [ ] {{observable, verifiable end-state for the whole initiative}}
 <!-- Verification = each point's done-signal command + this §6.1 bar. Shared tooling (test
-     runner, local mock/stub) is named once in `reference.md`/`AGENTS.md`, not a separate section. -->
+     project command or local mock/stub) is named once in `reference.md`/`AGENTS.md`, not a separate section. -->
 
 ## 7. Risks / dependencies
 

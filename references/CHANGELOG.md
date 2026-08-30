@@ -1,5 +1,29 @@
 # Tackle changelog
 
+## Tackle 7.1.0
+
+- **Markdown-only runtime.** The shipped artifact is exactly `SKILL.md` plus
+  `references/`; the repository-local executable and fixture copies are gone.
+  CI and release checks use copy-pasteable Markdown procedures, while ordinary
+  project commands such as `grep`, `awk`, tests, and linters remain valid.
+- **Verification contract preserved.** Direct two-phase citation/mtime
+  grounding, seven self-lint gates, 15 lint rows, the double gate, maker/checker
+  sign-off, catalog integrity, and release evidence remain required. No internal
+  runner or wrapper replaces those procedures.
+- **Eval suite realigned.** Active scenarios stage manually with
+  `GROUND-TRUTH.md` outside every arm. Fresh acceptance evidence covers 46/46
+  scenarios, 8/8 public command families, and 5/5 lifecycle stages; the
+  dedicated removal comparison records zero runner invocations and the
+  end-to-end lifecycle smoke remains covered.
+- **Migration.** `references/guides/migrate.md` now carries the
+  `v7.0 → v7.1` checklist: remove obsolete helper artifacts, translate helper
+  calls to direct procedures, preserve the eight public workflows, retain the
+  `docs/plans/` and `docs/seeds/` local boundary, realign evals, and complete
+  D-13 inventory plus behavioral evidence.
+- **Release preparation only.** The packet records the version stamp, migration
+  path, acceptance reports, and rule-inventory evidence. Commit, tag, push, and
+  GitHub-release mechanics remain an explicit owner action after review.
+
 ## Tackle 7.0.0
 
 - **Surface consolidation — 8 public commands.** Tackle cuts its routed surface from 26 commands to eight — **init, plan, verify, next, run, judge, status, retro** — each with its canonical natural-language trigger. Hard rename, no aliases: the 29 eval scenarios affected are regenerated (P-07). The execution loop splits cleanly: `/tackle-next` selects and prepares the next ready point (pre-attack summary + starting prompt; read-only — it never executes); `/tackle-run` executes (`run` = all ready points in dependency order; `run --one` / `run <P-id>` = one point). L2 consent unchanged.

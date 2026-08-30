@@ -31,4 +31,4 @@ Natural-language triggers are canonical; slash commands are aliases.
 
 ## Where the detail lives
 
-`references/guides/` (per-step guides) · `references/*.tmpl.md` (templates) · `tackle` (the mechanical runner, incl. the `init` subcommand).
+`references/guides/` (per-step guides) · `references/*.tmpl.md` (templates and file-map source).

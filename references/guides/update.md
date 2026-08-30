@@ -1,6 +1,6 @@
 # Update — skill self-update
 
-Triggered by the daily Self-update check that opens **any Tackle invocation** (a forced check deletes `~/.tackle/last-update-check`) — every mode: plan, resume, status, execute, new plan or in-progress (hooked from the `SKILL.md` Overview). The agent performs every step; the installed skill artifact is Markdown-only: `SKILL.md` + `references/`, copied in place but never executed against fetched content. The repository-local `tackle` runner is maintainer tooling and is not installed or updated by this flow. Every fetch is pinned to `https://github.com/alph0x/Tackle` — never another source — and nothing downloaded is ever executed.
+Triggered by the daily Self-update check that opens **any Tackle invocation** (a forced check deletes `~/.tackle/last-update-check`) — every mode: plan, resume, status, execute, new plan or in-progress (hooked from the `SKILL.md` Overview). The agent performs every step; the installed skill artifact is Markdown-only: `SKILL.md` + `references/`, copied in place but never executed against fetched content. Every fetch is pinned to `https://github.com/alph0x/Tackle` — never another source — and nothing downloaded is ever executed.
 
 ## Check
 

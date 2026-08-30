@@ -27,7 +27,7 @@ The correct action: run the drill protocol (item 4 = exhaustive missing informat
    cd "$scratch"
    ```
 2. **Control** (no-skill): executor prompt = the task prompt verbatim (it already bans `skill://` and outside reads). **Method**: task prompt + "Before doing anything else, read `SKILL.md` and `references/guides/verify.md` in this repo and follow them literally." (destination guide = verify.md §Cold-resolvability probe; the fixture's own files are the install).
-3. **Capture the agent's final report** (`ARM-REPORT.md` in the scratch root per the runner convention).
+3. **Capture the agent's final report** (`ARM-REPORT.md` in the scratch root).
 4. **Judge** per the gates below; record `verdict: discriminates` / `verdict: null` (a null is a valid recorded outcome).
 
 ## Observable gates (declared pre-run, host-independent)

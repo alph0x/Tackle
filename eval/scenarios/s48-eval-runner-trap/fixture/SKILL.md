@@ -30,4 +30,4 @@ Natural-language triggers are canonical; slash commands are aliases.
 
 ## Where the detail lives
 
-`references/guides/` (per-step guides) · `eval/README.md` (trap-suite workflow) · `tackle` (the mechanical runner).
+`references/guides/` (per-step guides) · `eval/README.md` (trap-suite workflow and manual staging checklist).

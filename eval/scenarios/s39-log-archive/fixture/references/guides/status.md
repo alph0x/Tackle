@@ -12,7 +12,7 @@ One command family: `/tackle-status` (digest/list/resume/handoff), read-only exc
 
 Read in order: `AGENTS.md` → last `log.md` entry → `decisions.md` → `questions.md` → relevant `points/P-0N.md` → depth artifacts if they exist.
 
-Open with a digest and re-ask user-owned open `Q-xx` directly in chat. Report grounding age from the newest ground `Last-verified:` in `log.md` — older than the window (default 14 days, workspace-overridable in `AGENTS.md`) ⇒ recommend re-ground before execution. The log stamp never substitutes for a this-session read: run `tackle probe <workspace>` — it compares every cited file's mtime against the newest `Last-verified:` stamp and lists stale files; any stale ⇒ re-ground before the point can be ready.
+Open with a digest and re-ask user-owned open `Q-xx` directly in chat. Report grounding age from the newest ground `Last-verified:` in `log.md` — older than the window (default 14 days, workspace-overridable in `AGENTS.md`) ⇒ recommend re-ground before execution. The log stamp never substitutes for a this-session read: perform the direct two-phase citation/mtime check — compare every cited file's mtime against the newest `Last-verified:` stamp and list stale files; any stale ⇒ re-ground before the point can be ready.
 
 ## /tackle-status — standing-loop digest (ex-pulse)
 
@@ -22,7 +22,7 @@ Triggered by `/tackle-status <ws>` or "status" — typically by a scheduler: cro
 
 **One digest, ≤ 12 lines**, one line per item:
 
-1. Stale citations (`tackle probe` result, plus grounding age vs the workspace window).
+1. Stale citations (direct citation/mtime result, plus grounding age vs the workspace window).
 2. The `lint: N/M checks passed` score line.
 3. Regression-sweep result.
 4. Cross-initiative collisions.

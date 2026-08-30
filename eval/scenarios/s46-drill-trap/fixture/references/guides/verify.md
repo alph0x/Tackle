@@ -39,19 +39,19 @@ Use these examples to calibrate: if you are not sure whether a finding is HIGH, 
 
 Output: append findings to `log.md`; update `board.md` to mark verified points. Any HIGH finding, or an ungrounded point, blocks execution until fixed or explicitly waived by the user. MEDIUM findings block unless the user explicitly accepts the risk; LOW findings are advisory.
 
-## Step 0 — Mechanical grounding (tackle probe + tackle ground)
+## Step 0 — Mechanical grounding (direct two-phase check)
 
-Triggered by `/tackle-verify` (step 0) or directly via `tackle probe <workspace>` / `tackle ground <workspace>`. Run before the red-team pass to remove the mental load of remembering which `file:line` citations have been read.
+Triggered by `/tackle-verify` (step 0). Run the direct two-phase check before the red-team pass to remove the mental load of remembering which `file:line` citations have been read.
 
 **Principle: outsource the memory.** The agent should not rely on its session transcript to know what is grounded; the commands produce an explicit, inspectable record.
 
-1. **Probe** — `tackle probe <workspace>`: stat-only staleness probe comparing every cited file's mtime against the newest `Last-verified:` stamp in `log.md`; any stale file blocks the pass until re-grounded.
-2. **Ground** — `tackle ground <workspace>`: two-phase drift check with zero model judgment:
+1. **Probe** — compare every cited file's mtime against the newest `Last-verified:` stamp in `log.md`; any stale file blocks the pass until re-grounded.
+2. **Ground** — run the two-phase drift check with zero model judgment:
    - **Phase 1 — line check**: `sed -n 'NNp' path | grep -Fq "fragment"` → exit 0 = **grounded**.
    - **Phase 2 — whole-file fallback** (only on phase-1 failure): count the lines in `path` containing the fragment. Exactly 1, at line MM ⇒ **drifted → re-anchor** (rewrite `path:NN` → `path:MM` in place, literal replacement, zero model judgment). 0 ⇒ **stale** ⇒ the point is **ungrounded**. More than 1 ⇒ **ambiguous** ⇒ flagged; the point is ungrounded until a more specific fragment is chosen.
 3. **Record** in `log.md` — list every citation read, flag unresolvable ones, and stamp `Last-verified: {{YYYY-MM-DDTHH:MM:SSZ}}` (legacy date-only stamps read as start-of-day and self-heal on the next ground). Grounding is recorded only here — never copied into the board or the point file; staleness is derived from the newest entry that lists a point, never copied.
 
-Any **ungrounded** point blocks execution until fixed or explicitly waived by the user. Run step 0 right after `/tackle-plan`, before any red-team pass, and on any cold session where `tackle probe` reports stale.
+Any **ungrounded** point blocks execution until fixed or explicitly waived by the user. Run step 0 right after `/tackle-plan`, before any red-team pass, and on any cold session where the mtime comparison reports stale.
 
 ## Coverage matrix (ex-trace)
 

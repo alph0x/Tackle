@@ -29,7 +29,7 @@ Last-verified: {{YYYY-MM-DD}}
      these. Note a MISSING mechanism explicitly — that absence is a finding, not a blank.
      Delete rows no point in this initiative fires. -->
 
-- **Tests**: {{runner + invocation — e.g. `npm test`, `swift test --filter <Suite>`}}.
+- **Tests**: {{command + invocation — e.g. `npm test`, `swift test --filter <Suite>`}}.
 - **Lint / format / style**: {{linter/formatter + how to run it; the self-documenting check}}.
 - **Concurrency**: {{strict-mode/race flag or detector — e.g. `-strict-concurrency=complete`, `-race`; or "none — flag"}}.
 - **Security**: {{secret-scan / SAST / authz-test harness; or "none — flag"}}.

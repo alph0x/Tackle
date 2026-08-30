@@ -2,7 +2,7 @@
 
 A model-agnostic planning and execution skill that turns an initiative into a durable action plan — self-contained points a cold agent can resolve in a fresh session — and executes that plan point-by-point when you ask it to.
 
-**Tackle 7.0: surface consolidation.** Tackle cuts its public surface to eight commands — **init, plan, verify, next, run, judge, status, retro** — and its workspace core to nine artifacts, with a hard rename (no aliases), a v6.1→v7.0 migration, a realigned eval suite (46 scenarios), and two live runner defects fixed (`scaffold_core` unbound variable; `init --check` false-green on a missing workspace). The repository-local runner gates workspaces with rows 1–15 plus its done-signal executor; the install artifact remains Markdown-only.
+**Tackle 7.1.0: Markdown-only runtime.** Tackle keeps its public surface at eight commands — **init, plan, verify, next, run, judge, status, retro** — and its workspace core at nine artifacts, with direct verification procedures and a realigned eval suite (46 scenarios). The install artifact remains Markdown-only; mechanical verification is documented as direct POSIX checks.
 
 ## What it does
 
@@ -29,7 +29,7 @@ Tackle produces a workspace of grounded markdown artifacts under `docs/plans/<in
 
 ## Release self-lint
 
-7 shipped-skill gates run in the release sweep before every tag (`references/guides/lint-spec.md`): word budget (`SKILL.md` ≤ 1100 words), exactly 11 core conventions, changelog currency, migrate-chain currency, README currency, artifact-manifest currency (the update channel must list exactly the files that ship), and README content claims (row count, scenario count/range, migrate-chain head, runner subcommands, gate count — every expected value derived from the files it describes). Since 5.0 the gates compose into the repository-local `tackle` runner (POSIX sh, zero deps) — the runner is not part of the installed artifact; the rows stay copy-pasteable for hosts without the runner. `tackle sweep` runs gates 1–7 plus `catalog` plus the lint rows over every workspace in one local check.
+7 shipped-skill gates run in the release sweep before every tag (`references/guides/lint-spec.md`): word budget (`SKILL.md` ≤ 1100 words), exactly 11 core conventions, changelog currency, migrate-chain currency, README currency, artifact-manifest currency (the update channel must list exactly the files that ship), and README content claims (row count, scenario count/range, migrate-chain head, command coverage, gate count — every expected value derived from the files it describes). The lint table covers rows 1–15 (15 lint rows) and 7 shipped-skill gates; all stay copy-pasteable direct checks while the release sweep composes them in an ordered POSIX checklist.
 
 ## Execution discipline
 
@@ -42,11 +42,11 @@ Tackle's execution loop is hardened with rules proven against common agent failu
 - **Authority order** — user > spec > tests > current code, at every gate including None; a check that contradicts the spec is surfaced, never silently satisfied.
 - **Failure-modes catalog** — `references/failure-modes.md` maps common failures to the Tackle rule that prevents them.
 - **Model-bound teams** — point teams bind roles to abstract model tiers resolved by the workspace §Model map (`plan` proposes default tiers by complexity/risk in decompose; the user confirms in the intake batch); Full-gate points close with closure reports and sign-off, and one persistent Coordinator carries continuity.
-- **Double-gate flip** — a point flips only after `tackle done-signal <point>` is green AND the independent checker signs off (workspace flag `tackle-gate`; absent = off preserves the 4.x flip, `on` = default for new workspaces).
+- **Double-gate flip** — a point flips only after its direct done-signal is green AND the independent checker signs off (workspace flag `tackle-gate`; absent = off preserves the 4.x flip, `on` = default for new workspaces).
 
 ## Verification and judge
 
-- `/tackle-verify` is a pre-execution red-team pass over the plan — including the edge audit above, the mechanical grounding step 0 (`tackle probe` + `tackle ground`), the criterion↔point coverage matrix, and an optional cold-resolvability probe.
+- `/tackle-verify` is a pre-execution red-team pass over the plan — including the edge audit above, the two-phase mechanical grounding step 0, the criterion↔point coverage matrix, and an optional cold-resolvability probe.
 - `/tackle-judge` is a post-completion adversarial audit: it treats the agent's report as claims, diffs what actually changed, re-runs claimed verifications, hunts weakened tests and false completion, and delivers a verdict of **VERIFIED**, **VERIFIED WITH CAVEATS**, or **REFUTED**.
 - `/tackle-judge suite <target>` runs the trap suite in `eval/scenarios/` against a skill, model, or prompt.
 
@@ -60,7 +60,7 @@ INIT → PLAN → VERIFY → (NEXT | RUN) → JUDGE → STATUS → RETRO
 
 ## Eval
 
-Tackle uses a repository-local runner-assisted A/B eval in `eval/`: **46 scenarios** (`s1`–`s49`) — decision traps pitting a mid-tier model following Tackle literally against the same model free-styling at a known agent failure, plus one end-to-end lifecycle smoke (`s25-e2e-lifecycle`, the full intake → plan → execute → close → retro chain). The registry and workflow live in `eval/README.md`; `tackle eval` mechanizes staging/diff/audit/judge-packing (the answer sheet never reaches an arm), each scenario carries its own `GROUND-TRUTH.md` answer sheet, and `tackle catalog` verifies scenarios ⊆ registry plus fixture-integrity so the list can't drift.
+Tackle uses a manual A/B eval in `eval/`: **46 scenarios** (`s1`–`s49`) — decision traps pitting a mid-tier model following Tackle literally against the same model free-styling at a known agent failure, plus one end-to-end lifecycle smoke (`s25-e2e-lifecycle`, the full intake → plan → execute → close → retro chain). The registry and manual workflow live in `eval/README.md`; stage/diff/audit/judge-packing keep the answer sheet out of every arm, each scenario carries its own `GROUND-TRUTH.md`, and the catalog checks scenarios ⊆ registry plus fixture integrity.
 
 ## Who is it for
 
@@ -90,11 +90,11 @@ cp -r references ~/.cursor/skills/tackle/
 ```
 
 **Any model / IDE:**
-Copy only `SKILL.md` and the `references/` directory into your agent's skill directory. The repository-local `tackle` runner is not installed with the skill.
+Copy only `SKILL.md` and the `references/` directory into your agent's skill directory.
 
 **Updates:** the installed Markdown artifact self-checks for a new release once a day on any invocation and self-updates (`SKILL.md` + `references/` are replaced); to force a check, delete `~/.tackle/last-update-check` and invoke Tackle again. If your harness can't reload skills, restart the session after an update.
 
-The install artifact is `SKILL.md` + `references/` only. The repository-local `tackle` runner remains available for maintainers' release checks; `docs/plans/` (workspaces) and `docs/seeds/` (this project's backlog) are local to this repo and never ship with the skill; your own plans and seeds get the same gitignore treatment in your repo.
+The install artifact is `SKILL.md` + `references/` only. `docs/plans/` (workspaces) and `docs/seeds/` (this project's backlog) are local to this repo and never ship with the skill; your own plans and seeds get the same gitignore treatment in your repo.
 
 ## How to use
 
@@ -114,16 +114,16 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 | `status / how is <x> going?` or `/tackle-status [<ws>]` | **Status** — read-only digest; `--handoff` writes a portable `HANDOFF.md`; detects an old Methodology stamp and offers migrate |
 | `what plans are there?` | **List** — one line per initiative |
 | `resume / retomá <x>` | **Resume** — re-enter a plan (read-first) |
-| `migrate / upgrade <x>` | **Migrate** — bring an old plan to the current methodology (checklist chain v2.0 → v7.0 in `references/guides/migrate.md`) |
+| `migrate / upgrade <x>` | **Migrate** — bring an old plan to the current methodology (checklist chain v2.0 → v7.1 in `references/guides/migrate.md`) |
 | `stop evolving` | **Evolution opt-out** — pause/purge the learning-loop profile, per scope (inside retro) |
 | `/tackle-retro` | **Retro** — mine board + log into the retro artifact; batch-confirmed profile writes and plan-archetype extraction |
-| `tackle` (repository-local) | **Mechanical gate** — POSIX-sh runner for maintainers: `lint <workspace>` (15 lint rows), `catalog` (eval scenarios ⊆ registry + fixture-integrity), `done-signal <point>` (run the point's exit-gate), `probe <workspace>` (cited-file staleness vs newest `Last-verified`), `ground <workspace>` (re-anchor drifted citations), `eval` (`prepare`/`diff`/`audit`/`judge`/`verdict` — stage, diff, audit, and judge-pack a trap run; never scores), `init <ws>` + `init --check` (create / verify a workspace), `sweep` (release sweep: gates 1–7 + catalog + workspace lint); flip requires its green when the workspace flag `tackle-gate: on` |
+| Direct checks | **Mechanical gate** — run the `lint` rows, `catalog` integrity checks, each `done-signal`, the two-phase `ground` check, `eval` method arms, and `init` artifact completeness from the documented Markdown procedures; a point flips only after mechanical green and checker sign-off |
 
 **The Create pipeline:** Intake → Gate (None/Lite/Full) → Location & gitignore → Scaffold → Briefing → Architecture → Stabilize contract → Decompose → Lint → Handoff.
 
 **Execution:** `/tackle-run` reads the board, picks the next ready point in dependency order, runs its done-signal, and updates board + log. Team sizing is Solo/Pair/Pod/Squad, with roles bound to model tiers (`fast`/`standard`/`frontier`) resolved by the workspace §Model map (`plan` proposes defaults by complexity/risk, user confirms in intake); Full-gate points close with a closure report under `reports/` plus sign-off; one persistent Coordinator keeps continuity.
 
-**Version:** Tackle 7.0.0. See `references/CHANGELOG.md` for what's new.
+**Version:** Tackle 7.1.0. See `references/CHANGELOG.md` for what's new.
 
 ## What it produces
 

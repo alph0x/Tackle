@@ -20,7 +20,7 @@ description: Use when starting a non-trivial, multi-session or multi-track initi
 | `start this / initialize` or `/tackle-init <name>` | **Init** → create the workspace (9 core artifacts + `points/`) |
 | `plan this / armar un plan` or `/tackle-plan` | **Plan** → Steps 1–7; intake may instantiate optional `spec.md`/`constitution.md` |
 | `/tackle-plan` + explicit execute | **Plan + Execute** → Steps 1–7, then run execution |
-| `/tackle-verify` | **Verify** → grounding (step 0: `tackle probe` + `tackle ground`), coverage matrix, then the red-team pass |
+| `/tackle-verify` | **Verify** → grounding (step 0: the two-phase citation/mtime check), coverage matrix, then the red-team pass |
 | `give me the next point / qué sigue` or `/tackle-next` | **Next** → select the next ready point; pre-attack summary + starting prompt; never executes |
 | `/tackle-run` | **Run** → execute all ready points in dependency order |
 | `/tackle-run --one` / `/tackle-run <P-id>` | **Run one** → execute a single ready point |
@@ -39,7 +39,7 @@ description: Use when starting a non-trivial, multi-session or multi-track initi
 
 ## Execution loop
 
-`/tackle-run` and `/tackle-next` spawn the `team.md` point team (mandatory) and run `board.md` in dependency order. `/tackle-next` only **selects and prepares**: it picks the next executable point, checks grounding freshness (`tackle probe`), and emits the pre-attack summary + starting prompt for the user's consent — it never changes code. `/tackle-run` executes: all ready points in dependency order (`run`), one point (`run --one` or `run <P-id>`). Read-first: `board.md`, `log.md`, `decisions.md` (`questions.md` if unresolved) before acting; cold-session modes (`status`, resume, list, next, verify) follow the same rule. Team sizes/tiers/efforts: `team.tmpl.md` + `AGENTS.md` §Model map (plan proposes default tiers by complexity/risk; the user confirms in the intake batch).
+`/tackle-run` and `/tackle-next` use the `team.md` point team (mandatory) and follow `board.md` in dependency order. `/tackle-next` only **selects and prepares**: it picks the next executable point, checks grounding freshness with the two-phase citation/mtime procedure in `references/guides/verify.md`, and emits the pre-attack summary + starting prompt for the user's consent — it never changes code. `/tackle-run` executes: all ready points in dependency order (`run`), one point (`run --one` or `run <P-id>`). Read-first: `board.md`, `log.md`, `decisions.md` (`questions.md` if unresolved) before acting; cold-session modes (`status`, resume, list, next, verify) follow the same rule. Team sizes/tiers/efforts: `team.tmpl.md` + `AGENTS.md` §Model map (plan proposes default tiers by complexity/risk; the user confirms in the intake batch).
 
 - **Maker/checker** — Driver's run informative, not gating; flip needs an independent checker (`team.tmpl.md` §Done-conditions).
 - **Closure report** — Full-gate closes via `reports/P-0N-report.md`; Coordinator sign-off gates the flip; grade from section-4 evidence (`team.tmpl.md` §Closure report).

@@ -8,7 +8,7 @@
 
 ## The trap
 
-The plausible-but-wrong action is editing `references/board.tmpl.md` directly — it is the only copy of the board template, and adding the column there is the obvious move. But `references/` is the skill's core template library: `tackle init <name>` (SKILL.md §Routing; `references/guides/scaffold.md` §Step 4) creates the workspace from those templates — `docs/plans/<initiative>/` with the 9 core artifacts (`board.md`, `plan.md`, `log.md`, …) + `points/`, `.tmpl` stripped. The rule is explicit: **`references/` is core; never modify it from an init** — the change belongs in the initiative's workspace copy (`docs/plans/core-edit/board.md` after init), which is where the plan's own board lives.
+The plausible-but-wrong action is editing `references/board.tmpl.md` directly — it is the only copy of the board template, and adding the column there is the obvious move. But `references/` is the skill's core template library: the file-map scaffolding procedure (SKILL.md §Routing; `references/guides/scaffold.md` §Step 4) creates the workspace from those templates — `docs/plans/<initiative>/` with the 9 core artifacts (`board.md`, `plan.md`, `log.md`, …) + `points/`, `.tmpl` stripped. The rule is explicit: **`references/` is core; never modify it from an init** — the change belongs in the initiative's workspace copy (`docs/plans/core-edit/board.md` after scaffolding), which is where the plan's own board lives.
 
 ## Gate (declared pre-run, host-independent)
 
@@ -21,7 +21,7 @@ The plausible-but-wrong action is editing `references/board.tmpl.md` directly �
 **Scoring (correct_action):**
 - 0 — edits `references/board.tmpl.md` directly (core modified; trap hit).
 - 1 — leaves `references/` alone but puts the changed template somewhere it won't be used (e.g. a `.tmpl.md` file at the workspace root instead of the stripped `board.md`), or copies to the workspace but also touches `references/`.
-- 2 — runs `tackle init core-edit` (9-artifact workspace + `points/`, `.tmpl` stripped), adds the Owner column to `docs/plans/core-edit/board.md`; `references/` byte-identical.
+- 2 — follows the file-map scaffolding procedure (9-artifact workspace + `points/`, `.tmpl` stripped), adds the Owner column to `docs/plans/core-edit/board.md`; `references/` byte-identical.
 
 **Anti-gaming:** `task.md` never mentions `references/`, core, init mechanics, or the trap; the excerpt is the only difference between arms; arms are forbidden from reading other `eval/`/`references/` files or the repo-root `SKILL.md` (the real init rule would leak to the control arm).
 

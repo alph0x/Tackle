@@ -1,6 +1,6 @@
 # Update — skill self-update
 
-Triggered by the daily Self-update check that opens **any Tackle invocation** (a forced check deletes `~/.tackle/last-update-check`) — every mode: plan, resume, status, execute, new plan or in-progress (hooked from the `SKILL.md` Overview). The agent performs every step; the skill ships no LLM code — since 5.0 the artifact includes the `tackle` shell runner (POSIX sh, zero deps), which is copied in place but never executed against fetched content. Every fetch is pinned to `https://github.com/alph0x/Tackle` — never another source — and nothing downloaded is ever executed (the artifact is markdown plus the `tackle` runner).
+Triggered by the daily Self-update check that opens **any Tackle invocation** (a forced check deletes `~/.tackle/last-update-check`) — every mode: plan, resume, status, execute, new plan or in-progress (hooked from the `SKILL.md` Overview). The agent performs every step; the skill ships no LLM code and its install artifact is Markdown only (`SKILL.md` + `references/`). Every fetch is pinned to `https://github.com/alph0x/Tackle` — never another source — and nothing downloaded is ever executed.
 
 ## Check
 
@@ -17,8 +17,8 @@ Triggered by the daily Self-update check that opens **any Tackle invocation** (a
 1. **Download the tag tarball**, following redirects:
    `curl -sL --max-time 60 -o <tmpdir>/tackle.tar.gz https://github.com/alph0x/Tackle/archive/refs/tags/v<X.Y.Z>.tar.gz`
 2. **Extract** into a fresh temp dir (`tar -xzf`) — the root is the single directory the extraction produces (`Tackle-<version>` from a tag archive); locate it by listing the temp dir, never by an assumed name pattern.
-3. **Verify the stamp and the runner** — the extracted `SKILL.md` must carry `**Tackle X.Y.Z**` matching the tag, and a 5.x tag must ship a `tackle` file in the extracted tree. Either mismatch → abort to Fallback.
-4. **Replace only the install artifact** in the skill directory (the directory containing the loaded `SKILL.md`): remove the old `references/` and copy the extracted `SKILL.md` + `references/` + `tackle` into place, then `chmod +x tackle`. Touch nothing else in that directory. If the extracted tree has no `tackle` (a pre-5.0 tag) and the installed version is 5.x, keep the local runner and note it.
+3. **Verify the stamp and artifact shape** — the extracted `SKILL.md` must carry `**Tackle X.Y.Z**` matching the tag, and the extracted tree must contain only the Markdown install artifact (`SKILL.md` + `references/`). Either mismatch → abort to Fallback.
+4. **Replace only the install artifact** in the skill directory (the directory containing the loaded `SKILL.md`): remove the old `references/` and copy the extracted `SKILL.md` + `references/` into place. Touch nothing else in that directory.
 5. **Record the check** — write today's date to `~/.tackle/last-update-check`.
 
 ## Reload
@@ -27,4 +27,4 @@ If the harness exposes a documented skill-reload mechanism, run it. Otherwise te
 
 ## Fallback
 
-On any failure — read-only skill directory, missing `curl`/`tar`, stamp mismatch, interrupted download — leave the current install untouched and hand the user the manual path: re-copy `SKILL.md` + `references/` + `tackle` (chmod +x) from a fresh clone or download of `https://github.com/alph0x/Tackle` into the skill directory, then restart or reload. State what failed in one line.
+On any failure — read-only skill directory, missing `curl`/`tar`, stamp mismatch, interrupted download — leave the current install untouched and hand the user the manual path: re-copy `SKILL.md` + `references/` from a fresh clone or download of `https://github.com/alph0x/Tackle` into the skill directory, then restart or reload. State what failed in one line.

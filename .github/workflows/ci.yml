@@ -9,5 +9,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run the mechanical release sweep
-        run: sh tackle sweep
+      - name: Run the documented mechanical release checks
+        run: |
+          set -eu
+          test "$(wc -w < SKILL.md)" -le 1100
+          test "$(awk '/^## Core conventions/{f=1;next} f && /^## /{exit} f && /^[0-9]+\. /{n++} END{print n+0}' SKILL.md)" -eq 11
+          test "$(awk '/^## Tackle /{print $3; exit}' references/CHANGELOG.md)" = "$(awk '/^\*\*Tackle /{gsub(/\*/,"",$2); print $2; exit}' SKILL.md)"
+          v=$(awk '/^\*\*Tackle /{gsub(/\*/,"",$2); print $2; exit}' SKILL.md); mm=${v%.*}; x=${mm%%.*}; y=${mm##*.}; if [ "$y" -gt 0 ]; then p="$x.$((y-1))"; else p="[0-9.]+"; fi; grep -Eq "^## v$p → v$mm checklist" references/guides/migrate.md
+          test "$(grep -oE 'Tackle [0-9]+\.[0-9]+\.[0-9]+' README.md | sort -u)" = "Tackle $(awk '/^\*\*Tackle /{gsub(/\*/,"",$2); print $2; exit}' SKILL.md)"
+          grep -q 'SKILL.md' references/guides/update.md
+          grep -q 'references/' references/guides/update.md
+          n=$(grep -Ec '^\| [0-9]+ ·' references/guides/lint-spec.md); grep -qF "rows 1–$n" README.md; grep -qF "($n lint rows)" README.md
+          c=0; m=0; for d in eval/scenarios/*/; do [ -d "$d" ] || continue; c=$((c+1)); s=$(basename "$d"); s=${s%%-*}; s=${s#s}; [ "$s" -gt "$m" ] && m=$s; done; grep -qF "**$c scenarios** (" README.md; grep -qF "\`s1\`–\`s$m\`" README.md
+          grep -qF "checklist chain v2.0 → v$mm" README.md
+          row=$(grep 'Mechanical gate' README.md); for t in lint catalog done-signal ground eval init; do case "$row" in *"\`$t"*) ;; *) exit 1;; esac; done
+          g=$(awk '/^### Skill self-lint gates/{f=1;next} f && /^##/{exit} f && /^[0-9]+\. /{n++} END{print n+0}' references/guides/lint-spec.md); grep -qF "$g shipped-skill gates" README.md
+          for d in eval/scenarios/*/; do [ -d "$d" ] || continue; name=$(basename "$d"); grep -qF "$name" eval/README.md; test -f "$d/GROUND-TRUTH.md"; done
+          for f in eval/scratch/*/GROUND-TRUTH.md eval/runs/*/GROUND-TRUTH.md; do [ -f "$f" ] && exit 1 || true; done
+          for w in docs/plans/*/; do [ -d "$w" ] || continue; [ -f "$w/board.md" ] || continue; done

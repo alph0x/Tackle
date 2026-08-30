@@ -14,13 +14,11 @@ Never silently skip this question.
 
 # Step 4 — Scaffold the core
 
-Create the workspace with the runner:
+Create the workspace from the file map:
 
-```
-tackle init <ws>
-```
+Copy the nine core templates into `docs/plans/<ws>/`, strip each `.tmpl` suffix, and create an empty `points/` directory.
 
-`tackle init <ws>` creates the core set (the §File map's 9 artifacts from `AGENTS.tmpl.md` + an empty `points/`) with `.tmpl` stripped and `{{PLACEHOLDERS}}` intact; `tackle init --check <ws>` verifies the set (bare names or paths resolve to `docs/plans/<name>`; a missing workspace exits 2). Hand-copying stays valid — the §File map is the spec — but the repository's `references/` template library is read-only during init; initiative-specific edits belong in the workspace copy. The runner is the zero-miss path.
+The §File map's 9 artifacts from `AGENTS.tmpl.md` must be copied with `.tmpl` stripped and `{{PLACEHOLDERS}}` intact. Verify with an exhaustive listing of the expected paths and confirm no template suffix remains. The repository's `references/` template library is read-only during scaffolding; initiative-specific edits belong in the workspace copy.
 
 Core copies include `usage.md` from `usage.tmpl.md` (every workspace born ≥ 5.2).
 
