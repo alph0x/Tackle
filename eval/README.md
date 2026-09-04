@@ -116,6 +116,7 @@ eval/
     s47-evolution-optout-trap/ # opt-out trap: silent purge instead of pause; unconsented profile writes
     s48-eval-runner-trap/ # staging trap (D-13 arm): hand-copying leaks the answer sheet; manual staging must exclude it
     s49-init-trap/ # init trap (D-13 arm): hand-scaffolding omits usage.md / leaves .tmpl suffixes; the file map requires the full set
+    s51-self-update-legacy-prune/ # self-update trap: verified Markdown replacement removes only legacy tackle-check and preserves an unrelated sentinel
 ```
 
 ## Running a scenario — manual path (Tackle 7.1.0)
