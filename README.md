@@ -2,7 +2,7 @@
 
 A model-agnostic planning and execution skill that turns an initiative into a durable action plan — self-contained points a cold agent can resolve in a fresh session — and executes that plan point-by-point when you ask it to.
 
-**Tackle 7.1.0: Markdown-only runtime.** Tackle keeps its public surface at eight commands — **init, plan, verify, next, run, judge, status, retro** — and its workspace core at nine artifacts, with direct verification procedures and a realigned eval suite (46 scenarios). The install artifact remains Markdown-only; mechanical verification is documented as direct POSIX checks.
+**Tackle 7.1.1: Markdown-only runtime.** Tackle keeps its public surface at eight commands — **init, plan, verify, next, run, judge, status, retro** — and its workspace core at nine artifacts, with direct verification procedures and a realigned eval suite (47 scenarios). The install artifact remains Markdown-only; mechanical verification is documented as direct POSIX checks.
 
 ## What it does
 
@@ -29,7 +29,7 @@ Tackle produces a workspace of grounded markdown artifacts under `docs/plans/<in
 
 ## Release self-lint
 
-7 shipped-skill gates run in the release sweep before every tag (`references/guides/lint-spec.md`): word budget (`SKILL.md` ≤ 1100 words), exactly 11 core conventions, changelog currency, migrate-chain currency, README currency, artifact-manifest currency (the update channel must list exactly the files that ship), and README content claims (row count, scenario count/range, migrate-chain head, command coverage, gate count — every expected value derived from the files it describes). The lint table covers rows 1–15 (15 lint rows) and 7 shipped-skill gates; all stay copy-pasteable direct checks while the release sweep composes them in an ordered POSIX checklist.
+7 shipped-skill gates run in the release sweep before every tag (`references/guides/lint-spec.md`): word budget (`SKILL.md` ≤ 1100 words), exactly 11 core conventions, changelog currency, migrate-chain currency, README currency, artifact-manifest currency (the update channel must list exactly the files that ship), and README content claims (row count, scenario count/range, migrate-chain head, direct-procedure coverage, gate count — every expected value derived from the files it describes). The lint table covers rows 1–15 (15 lint rows) and 7 shipped-skill gates; all stay copy-pasteable direct checks while the release sweep runs them in an ordered POSIX procedure.
 
 ## Execution discipline
 
@@ -60,7 +60,7 @@ INIT → PLAN → VERIFY → (NEXT | RUN) → JUDGE → STATUS → RETRO
 
 ## Eval
 
-Tackle uses a manual A/B eval in `eval/`: **46 scenarios** (`s1`–`s49`) — decision traps pitting a mid-tier model following Tackle literally against the same model free-styling at a known agent failure, plus one end-to-end lifecycle smoke (`s25-e2e-lifecycle`, the full intake → plan → execute → close → retro chain). The registry and manual workflow live in `eval/README.md`; stage/diff/audit/judge-packing keep the answer sheet out of every arm, each scenario carries its own `GROUND-TRUTH.md`, and the catalog checks scenarios ⊆ registry plus fixture integrity.
+Tackle uses a manual A/B eval in `eval/`: **47 scenarios** (`s1`–`s51`) — decision traps pitting a mid-tier model following Tackle literally against the same model free-styling at a known agent failure, plus one end-to-end lifecycle smoke (`s25-e2e-lifecycle`, the full intake → plan → execute → close → retro chain). The registry and manual workflow live in `eval/README.md`; stage/diff/audit/judge-packing keep the answer sheet out of every arm, each scenario carries its own `GROUND-TRUTH.md`, and the catalog checks scenarios ⊆ registry plus fixture integrity.
 
 ## Who is it for
 
@@ -117,13 +117,13 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 | `migrate / upgrade <x>` | **Migrate** — bring an old plan to the current methodology (checklist chain v2.0 → v7.1 in `references/guides/migrate.md`) |
 | `stop evolving` | **Evolution opt-out** — pause/purge the learning-loop profile, per scope (inside retro) |
 | `/tackle-retro` | **Retro** — mine board + log into the retro artifact; batch-confirmed profile writes and plan-archetype extraction |
-| Direct checks | **Mechanical gate** — run the `lint` rows, `catalog` integrity checks, each `done-signal`, the two-phase `ground` check, `eval` method arms, and `init` artifact completeness from the documented Markdown procedures; a point flips only after mechanical green and checker sign-off |
+| Direct checks | **Mechanical gate** — direct-procedure coverage runs the `lint` rows, `catalog` integrity checks, each `done-signal`, the two-phase `ground` check, `eval` method arms, and `init` artifact completeness from the documented Markdown procedures; a point flips only after mechanical green and checker sign-off |
 
 **The Create pipeline:** Intake → Gate (None/Lite/Full) → Location & gitignore → Scaffold → Briefing → Architecture → Stabilize contract → Decompose → Lint → Handoff.
 
 **Execution:** `/tackle-run` reads the board, picks the next ready point in dependency order, runs its done-signal, and updates board + log. Team sizing is Solo/Pair/Pod/Squad, with roles bound to model tiers (`fast`/`standard`/`frontier`) resolved by the workspace §Model map (`plan` proposes defaults by complexity/risk, user confirms in intake); Full-gate points close with a closure report under `reports/` plus sign-off; one persistent Coordinator keeps continuity.
 
-**Version:** Tackle 7.1.0. See `references/CHANGELOG.md` for what's new.
+**Version:** Tackle 7.1.1. See `references/CHANGELOG.md` for what's new.
 
 ## What it produces
 
