@@ -18,7 +18,7 @@ Triggered by the daily Self-update check that opens **any Tackle invocation** (a
    `curl -sL --max-time 60 -o <tmpdir>/tackle.tar.gz https://github.com/alph0x/Tackle/archive/refs/tags/v<X.Y.Z>.tar.gz`
 2. **Extract** into a fresh temp dir (`tar -xzf`) — the root is the single directory the extraction produces (`Tackle-<version>` from a tag archive); locate it by listing the temp dir, never by an assumed name pattern.
 3. **Verify the stamp** — the extracted `SKILL.md` must carry `**Tackle X.Y.Z**` matching the tag. A mismatch → abort to Fallback.
-4. **Replace only the install artifact** in the skill directory (the directory containing the loaded `SKILL.md`): remove the old `references/` and copy the extracted `SKILL.md` + `references/` into place. Touch nothing else in that directory.
+4. **Replace only the install artifact** in the skill directory (the directory containing the loaded `SKILL.md`): remove the old `references/` and copy the extracted `SKILL.md` + `references/` into place. Only after that verified replacement succeeds, remove the exact legacy basename `tackle-check` from that directory if it is present. Do not remove a file named `tackle`, use recursive or prefix/glob cleanup, or copy any executable; unrelated neighboring files remain untouched.
 5. **Record the check** — write today's date to `~/.tackle/last-update-check`.
 
 ## Reload
@@ -27,4 +27,4 @@ If the harness exposes a documented skill-reload mechanism, run it. Otherwise te
 
 ## Fallback
 
-On any failure — read-only skill directory, missing `curl`/`tar`, stamp mismatch, interrupted download — leave the current install untouched and hand the user the manual path: re-copy `SKILL.md` + `references/` from a fresh clone or download of `https://github.com/alph0x/Tackle` into the skill directory, then restart or reload. State what failed in one line.
+On any failure — read-only skill directory, missing `curl`/`tar`, stamp mismatch, interrupted download — leave the current install untouched and state what failed in one line. Once a valid replacement is available, the manual path is to re-copy `SKILL.md` + `references/` from a fresh clone or download of `https://github.com/alph0x/Tackle` into the skill directory, then remove only the exact legacy basename `tackle-check` (never `tackle`, a glob, or an unrelated neighbor), and restart or reload.

@@ -20,7 +20,7 @@ When worthy, pick the archetype:
 
 # Step 6.5 — Lint the wired plan
 
-Mechanical first: run every row of `guides/lint-spec.md` (copy-paste commands, from the repo root) and report its score line — `lint: N/M checks passed`. Wiring, grounding, statuses, citations, log order, seals, and collisions are all decided there, not re-judged here.
+Mechanical first: the agent runs every row of `guides/lint-spec.md` (copy-paste commands, from the repo root), computes the **agent-computed summary** from the observed row results, and reports `lint: N/M checks passed`. Wiring, grounding, statuses, citations, log order, seals, and collisions are all decided there, not re-judged here.
 
 Then judge — the checks no command can decide:
 - Contract churn guard (contract sections changed → citing points reconciled).
