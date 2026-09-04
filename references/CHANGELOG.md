@@ -1,5 +1,21 @@
 # Tackle changelog
 
+## Tackle 7.1.1
+
+- **Markdown-only transition closure.** Active guides and release checks now describe direct
+  POSIX procedures and agent-computed summaries without introducing a replacement runner.
+- **Safe legacy self-update pruning.** A verified Markdown replacement removes only the exact
+  `tackle-check` tombstone, preserves unrelated neighbors, and leaves failed verification
+  untouched.
+- **Dedicated behavioral evidence.** New trap `s51-self-update-legacy-prune` records one-seed
+  control/method evidence: the control leaves the stale artifact while the method preserves the
+  sentinel and removes only the exact legacy basename; the answer sheet stays out of both arms.
+- **D-13 and dogfood acceptance.** The packet retains 13 changed normative clauses with
+  `missing=0`, passes valid/invalid transition fixtures, runs all 15 lint rows (`15/15`), and
+  confirms catalog integrity for 47 scenarios.
+- **Release preparation only.** Version surfaces and derived README claims are current. Commit,
+  tag, push, and GitHub-release mechanics remain an explicit owner action after review.
+
 ## Tackle 7.1.0
 
 - **Markdown-only runtime.** The shipped artifact is exactly `SKILL.md` plus
