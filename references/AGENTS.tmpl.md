@@ -113,6 +113,7 @@ tracking alive, when you pick up, finish, pause, or abandon a point you MUST:
 3. Record questions answered along the way as `D-xx` in `decisions.md`; mark the `Q-xx` resolved.
 4. If the code drifted from the point's `file:line` claims, re-anchor the citations mechanically per the two-phase rule (`ground.md` step 2) before anything else; hand-edit only stale or ambiguous citations.
 5. When you close a role run (point role, planning session, retro), append one row to `usage.md` per §1. Record only values the harness exposes; anything else is `n/a`, never estimated. Recording is **informative, never gating** — no 🟢 flip waits on token data (missing data ⇒ `n/a` fields, not a missing row).
+6. Append the v2 lifecycle `start` before substantive role work and one terminal `finish` at close; after an interruption, append `observe-incomplete` with observation time and leave the end time and duration `n/a`.
 
 A merged PR with a stale status board is a broken handoff — the board is part of the work.
 

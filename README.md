@@ -2,7 +2,7 @@
 
 A model-agnostic planning and execution skill that turns an initiative into a durable action plan — self-contained points a cold agent can resolve in a fresh session — and executes that plan point-by-point when you ask it to.
 
-**Tackle 7.1.1: Markdown-only runtime.** Tackle keeps its public surface at eight commands — **init, plan, verify, next, run, judge, status, retro** — and its workspace core at nine artifacts, with direct verification procedures and a realigned eval suite (47 scenarios). The install artifact remains Markdown-only; mechanical verification is documented as direct POSIX checks.
+**Tackle 7.2.0: Markdown-only runtime.** Tackle keeps its public surface at eight commands — **init, plan, verify, next, run, judge, status, retro** — and its workspace core at nine artifacts, with direct verification procedures and a realigned eval suite (50 scenarios). The install artifact remains Markdown-only; mechanical verification is documented as direct POSIX checks.
 
 ## What it does
 
@@ -29,7 +29,7 @@ Tackle produces a workspace of grounded markdown artifacts under `docs/plans/<in
 
 ## Release self-lint
 
-7 shipped-skill gates run in the release sweep before every tag (`references/guides/lint-spec.md`): word budget (`SKILL.md` ≤ 1100 words), exactly 11 core conventions, changelog currency, migrate-chain currency, README currency, artifact-manifest currency (the update channel must list exactly the files that ship), and README content claims (row count, scenario count/range, migrate-chain head, direct-procedure coverage, gate count — every expected value derived from the files it describes). The lint table covers rows 1–15 (15 lint rows) and 7 shipped-skill gates; all stay copy-pasteable direct checks while the release sweep runs them in an ordered POSIX procedure.
+7 shipped-skill gates run in the release sweep before every tag (`references/guides/lint-spec.md`): word budget (`SKILL.md` ≤ 1100 words), exactly 11 core conventions, changelog currency, migrate-chain currency, README currency, artifact-manifest currency (the update channel must list exactly the files that ship), and README content claims (row count, scenario count/range, migrate-chain head, direct-procedure coverage, gate count — every expected value derived from the files it describes). The lint table covers rows 1–16 (16 lint rows) and 7 shipped-skill gates; all stay copy-pasteable direct checks while the release sweep runs them in an ordered POSIX procedure.
 
 ## Execution discipline
 
@@ -58,9 +58,37 @@ INIT → PLAN → VERIFY → (NEXT | RUN) → JUDGE → STATUS → RETRO
 
 `INIT` creates the workspace; `PLAN` decomposes (intake may instantiate optional `spec.md`/`constitution.md`); `VERIFY` red-teams + grounds; `NEXT` selects/prepares the next point (read-only); `RUN` executes; `JUDGE` adversarially audits; `STATUS` is the read-only digest (list/resume/handoff); `RETRO` mines the loop and the opt-out.
 
+### Usage observability
+
+Execution is lifecycle-first: the universal `usage.md` ledger records observed role `start`,
+`finish`, or `observe-incomplete` events even when a harness exposes no token telemetry. An
+optional `usage.telemetry.jsonl` sidecar (`tackle-observability-telemetry/1`) can enrich those
+rows with exact provider observations; it is additive, never required for a point to close.
+Retro reads the universal ledger first, then reports `measured/eligible` coverage per metric and
+comparable cohort. Missing or `n/a` values are unknown, never zero: 0% coverage still supports
+duration, attempts, rework, incomplete runs, verification, and time-to-green; partial coverage
+does not support totals, shares, rankings, or recommendations. Totals/rankings require 100%
+comparable coverage, and tier/effort recommendations additionally require three completed,
+like-for-like runs.
+
+Optional collector capability profiles are deliberately narrow and access-dependent:
+[Claude Code](docs/plans/tackle-usage-observability-v2/reference-docs/claude-code.md),
+[Oh My Pi](docs/plans/tackle-usage-observability-v2/reference-docs/oh-my-pi.md),
+[OpenAI Responses](docs/plans/tackle-usage-observability-v2/reference-docs/openai-responses.md),
+and [Antigravity CLI](docs/plans/tackle-usage-observability-v2/reference-docs/antigravity-cli.md).
+They describe observed surfaces, not installed integrations or automatic collection. A role join
+requires an exact `run_id`; session/account observations stay native and unjoined, and
+API-equivalent or subscription values remain separately labeled rather than canonical cost.
+For adoption and rollback, see the [v7.1 → v7.2 migration checklist](references/guides/migrate.md#v71--v72-checklist);
+the legacy eight-column ledger remains readable and its unknowns are never backfilled.
+
+The optional profile catalog also covers [OpenCode](references/collectors/opencode.md),
+[Kimi Code](references/collectors/kimi-code.md), and [Cursor](references/collectors/cursor.md);
+all profiles are declarative and preserve native scope.
+
 ## Eval
 
-Tackle uses a manual A/B eval in `eval/`: **47 scenarios** (`s1`–`s51`) — decision traps pitting a mid-tier model following Tackle literally against the same model free-styling at a known agent failure, plus one end-to-end lifecycle smoke (`s25-e2e-lifecycle`, the full intake → plan → execute → close → retro chain). The registry and manual workflow live in `eval/README.md`; stage/diff/audit/judge-packing keep the answer sheet out of every arm, each scenario carries its own `GROUND-TRUTH.md`, and the catalog checks scenarios ⊆ registry plus fixture integrity.
+Tackle uses a manual A/B eval in `eval/`: **50 scenarios** (`s1`–`s54`) — decision traps pitting a mid-tier model following Tackle literally against the same model free-styling at a known agent failure, plus one end-to-end lifecycle smoke (`s25-e2e-lifecycle`, the full intake → plan → execute → close → retro chain). The registry and manual workflow live in `eval/README.md`; stage/diff/audit/judge-packing keep the answer sheet out of every arm, each scenario carries its own `GROUND-TRUTH.md`, and the catalog checks scenarios ⊆ registry plus fixture integrity.
 
 ## Who is it for
 
@@ -92,6 +120,12 @@ cp -r references ~/.cursor/skills/tackle/
 **Any model / IDE:**
 Copy only `SKILL.md` and the `references/` directory into your agent's skill directory.
 
+**skills.sh discovery:** Tackle is discoverable from the public
+[alph0x/Tackle repository](https://github.com/alph0x/Tackle). Install the `tackle` skill with
+`npx skills add alph0x/Tackle --skill tackle`; no separate Vercel registry submission is needed.
+For compatibility evidence, use the supported agent aliases `opencode`, `kimi-code-cli`,
+`cursor`, and `antigravity-cli`.
+
 **Updates:** the installed Markdown artifact self-checks for a new release once a day on any invocation and self-updates (`SKILL.md` + `references/` are replaced); to force a check, delete `~/.tackle/last-update-check` and invoke Tackle again. If your harness can't reload skills, restart the session after an update.
 
 The install artifact is `SKILL.md` + `references/` only. `docs/plans/` (workspaces) and `docs/seeds/` (this project's backlog) are local to this repo and never ship with the skill; your own plans and seeds get the same gitignore treatment in your repo.
@@ -114,7 +148,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 | `status / how is <x> going?` or `/tackle-status [<ws>]` | **Status** — read-only digest; `--handoff` writes a portable `HANDOFF.md`; detects an old Methodology stamp and offers migrate |
 | `what plans are there?` | **List** — one line per initiative |
 | `resume / retomá <x>` | **Resume** — re-enter a plan (read-first) |
-| `migrate / upgrade <x>` | **Migrate** — bring an old plan to the current methodology (checklist chain v2.0 → v7.1 in `references/guides/migrate.md`) |
+| `migrate / upgrade <x>` | **Migrate** — bring an old plan to the current methodology (checklist chain v2.0 → v7.2 in `references/guides/migrate.md`) |
 | `stop evolving` | **Evolution opt-out** — pause/purge the learning-loop profile, per scope (inside retro) |
 | `/tackle-retro` | **Retro** — mine board + log into the retro artifact; batch-confirmed profile writes and plan-archetype extraction |
 | Direct checks | **Mechanical gate** — direct-procedure coverage runs the `lint` rows, `catalog` integrity checks, each `done-signal`, the two-phase `ground` check, `eval` method arms, and `init` artifact completeness from the documented Markdown procedures; a point flips only after mechanical green and checker sign-off |
@@ -123,7 +157,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 
 **Execution:** `/tackle-run` reads the board, picks the next ready point in dependency order, runs its done-signal, and updates board + log. Team sizing is Solo/Pair/Pod/Squad, with roles bound to model tiers (`fast`/`standard`/`frontier`) resolved by the workspace §Model map (`plan` proposes defaults by complexity/risk, user confirms in intake); Full-gate points close with a closure report under `reports/` plus sign-off; one persistent Coordinator keeps continuity.
 
-**Version:** Tackle 7.1.1. See `references/CHANGELOG.md` for what's new.
+**Version:** Tackle 7.2.0. See `references/CHANGELOG.md` for what's new.
 
 ## What it produces
 
@@ -136,7 +170,7 @@ All artifacts are `.md` files under `docs/plans/<initiative>/`:
 | `plan` | Objective, non-goals, point decomposition + dependency graph |
 | `board` | Canonical status board for execution (🔴🟡⏸🟢⚪ plus a trailing **Confidence** column carrying the derived evidence grade; references `plan.md` §5 for the graph — never copies it) |
 | `log` | Append-only session log (canonical state) |
-| `usage` | Token/model/effort ledger — one row per role run, as the harness exposes them (`n/a`, never estimated); mined by the retro's cost analysis (born ≥ 5.2) |
+| `usage` | Lifecycle-first ledger — one row per observed role event; optional exact `usage.telemetry.jsonl` enrichment, with unknowns `n/a` and never estimated |
 | `questions` | Single source of open questions |
 | `decisions` | Closed decisions register |
 | `retro` | Initiative retrospective artifact (created by `/tackle-retro`) |

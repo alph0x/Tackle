@@ -36,6 +36,40 @@ Run these when migrating a plan created with Tackle 7.0.x (the Markdown-only run
 4. **Preserve local boundaries** — keep both `docs/plans/` and `docs/seeds/` gitignored; neither ships in the install artifact.
 5. **Re-align evals** — stage scenarios manually, keep `GROUND-TRUTH.md` out of arms, and record the dedicated removal comparison plus lifecycle smoke in the acceptance report.
 6. **Record and verify** — append a `D-xx` decision and `log.md` entry, update the workspace Methodology stamp to Tackle 7.1, run the direct lint/release checklist, and complete the D-13 rule-inventory plus behavioral evidence before any release.
+
+## v7.1 → v7.2 checklist
+
+Run these when adopting the usage-observability v2 contract in a workspace with a v7.1
+eight-column ledger. This is a reversible, copy-first migration; it never rewrites a live
+workspace in place without an owner-approved backup and checkpoint.
+
+1. **Snapshot the legacy bytes** — copy `usage.md` to a disposable migration workspace and
+   hash the exact legacy section, including whitespace and the eight-column header. Keep the
+   original untouched; a legacy row without an exact `run_id` remains legacy-scoped.
+2. **Adopt append-only** — append `Schema: tackle-observability/2` and the v2 lifecycle table
+   below the preserved legacy table. Write only `start`, `finish`, or `observe-incomplete`
+   v2 events after the marker; do not rewrite or backfill historical rows.
+3. **Read compatibly first** — mine the legacy table separately and report
+   `measured/eligible` coverage. `n/a` and missing cells are unknown, never zero; do not join
+   legacy rows to sidecar data without an explicit reviewed mapping.
+4. **Check provenance** — join role telemetry only on an exact `run_id`. Keep session and
+   account observations native and unjoined. Timestamp proximity, a provider conversation id,
+   or a limit delta is not an exact role correlation.
+5. **Keep cost bases distinct** — preserve provider cost as canonical only when observed from
+   an authoritative source. Retain local or API-equivalent calculations under their own
+   labeled basis; never promote them to canonical `cost`.
+6. **Verify before checkpoint** — on the copy, compare the legacy hash/byte sequence before
+   and after adoption, run compatibility reads, and run the current lint. Record the commands,
+   outputs, and exit statuses before treating adoption as complete.
+7. **Rollback narrowly** — on the copy, remove only the newly appended v2 marker/table/events;
+   leave every legacy byte and neighboring file unchanged. Re-hash and byte-compare against the
+   pre-adoption snapshot, then discard the disposable workspace. If comparison fails, stop and
+   restore from the verified snapshot rather than repairing history in place.
+
+This checklist supersedes the old v6.0→v6.1 `tackle-usage/1` sidecar note for usage
+observability: the current optional sidecar is `tackle-observability-telemetry/1`, while the
+Markdown ledger remains the universal source and point closure never depends on migration.
+
 ## v6.1 → v7.0 checklist
 
 Run these when migrating a plan created with Tackle 6.1.x (the 7.0 surface consolidation — hard rename, no aliases):

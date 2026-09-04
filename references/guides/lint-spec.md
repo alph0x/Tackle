@@ -15,6 +15,7 @@ Every check is a literal copy-paste command: run from the **repo root**, in any 
 - Row 6 covers `log-archive.md` when present; the archive's newest entry must not be younger than `log.md`'s oldest. The cross-file comparison is composed in the same direct shell loop (cells stay single-purpose).
 - Judgment-only checks (contract churn, quality dimensions, Q-guard…) stay in `decompose-and-lint.md` Step 6.5 — this table holds only what a command can decide.
 
+Lifecycle validity semantics include duplicate starts, duplicate terminals, orphan terminal without start, mismatched Point/Role, and negative counts as invalid; an interrupted run with one `observe-incomplete` terminal is valid.
 | Check | Command (copy-paste) | Pass condition |
 |---|---|---|
 | 1 · Unfilled placeholders — no `{{…}}` left outside fenced code blocks in shipped workspace files | ```` awk 'BEGIN{f=0} /^```/{f=!f; next} !f && /{{/{print FILENAME ":" FNR ": " $0}' docs/plans/<slug>/*.md docs/plans/<slug>/*/*.md ```` | 0 lines of output |
@@ -32,6 +33,7 @@ Every check is a literal copy-paste command: run from the **repo root**, in any 
 | 13 · Log over archive threshold — `log.md` exceeds the archive threshold (default 400 lines; workspace-overridable via `Log archive threshold: N` in the workspace `AGENTS.md`); fix path: the archive protocol (`status.md` §Archive) | `t=$(awk '/^Log archive threshold: [0-9]+/{print $NF; exit}' docs/plans/<slug>/AGENTS.md); t=${t:-400}; [ "$(wc -l < docs/plans/<slug>/log.md)" -le "$t" ] || echo "log.md over archive threshold ($t)"` | 0 lines of output — any line is a **warn** |
 | 14 · Closure reports for done points — every `board.md` row whose status is 🟢 has `reports/P-0N-report.md` (the report may be a stub naming its reviewer, per `team.tmpl.md` §Closure report); Lite workspaces (no `board.md`) guard-skip | `for id in $(awk 'BEGIN{FS=sprintf("%c",124)} $2 ~ /P-[0-9]/ && NF>3 {for(i=2;i<=NF;i++){if(index($i,"🟢")){g=$2; gsub(/^ +| +$/,"",g); print g}}}' docs/plans/<slug>/board.md); do [ -f "docs/plans/<slug>/reports/$id-report.md" ] || echo "done point without closure report: $id"; done` | 0 lines of output |
 | 15 · Reference-doc staleness — every `reference-docs/*.md` carrying a `captured: YYYY-MM-DD` first-line header is younger than the staleness window (default 14 days; workspace-overridable via `Reference staleness window: N` in the workspace `AGENTS.md`); undated files skip (the header convention lands in `reference-docs-README.tmpl.md`); fix path: re-snapshot from the live source and update `captured:` | `w=$(awk '/^Reference staleness window: [0-9]+/{print $NF; exit}' docs/plans/<slug>/AGENTS.md); w=${w:-14}; for f in docs/plans/<slug>/reference-docs/*.md; do [ -f "$f" ] || continue; d=$(awk '/^captured: 20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]/{print $2; exit}' "$f"); [ -n "$d" ] || continue; if date -u -d @0 >/dev/null 2>&1; then e=$(date -u -d "$d" +%s); else e=$(date -u -j -f %Y-%m-%d "$d" +%s 2>/dev/null); fi; [ -n "$e" ] || continue; [ $(( $(date -u +%s) - e )) -gt $((w * 86400)) ] && echo "stale reference-doc: $f (captured $d, window ${w}d)"; done` | 0 lines of output — any line is a **warn** |
+| 16 · Lifecycle validity — every run has exactly one `start`, at most one terminal event, a terminal only after `start`, consistent Point/Role, and non-negative `Attempts`/`Rework`; incomplete observations remain valid | `for f in eval/fixtures/usage-observability/lifecycle-valid.md eval/fixtures/usage-observability/lifecycle-incomplete.md eval/fixtures/usage-observability/lifecycle-invalid.md; do awk -F "$(printf '\\174')" 'NF < 5 {next} NR==1 || $2 == " Run ID " || $2 ~ /^-+$/ {next} {gsub(/^ +| +$/, "", $2); gsub(/^ +| +$/, "", $3); gsub(/^ +| +$/, "", $4); gsub(/^ +| +$/, "", $5); gsub(/^ +| +$/, "", $12); gsub(/^ +| +$/, "", $13); id=$2; ev=$3; if (ev == "start") starts[id]++; if (ev == "finish" || ev == "observe-incomplete") terminals[id]++; if (ev == "finish" && ($12 !~ /^[0-9]+$/ || $13 !~ /^[0-9]+$/ || $12 < 0 || $13 < 0)) bad[id]=1; if ((ev == "finish" || ev == "observe-incomplete") && starts[id] == 0) bad[id]=1; if (starts[id] > 1 || terminals[id] > 1) bad[id]=1; if (seen[id] && (point[id] != $4 || role[id] != $5)) bad[id]=1; if (!seen[id]) {point[id]=$4; role[id]=$5; seen[id]=1}} END {for (id in seen) if (starts[id] == 0) bad[id]=1; for (id in bad) print FILENAME ":" id}' "$f"; done` | valid and incomplete fixtures silent; invalid fixture names every planted id |
 
 Per-citation, row 4 is equivalent to the canonical anchored-citation check (`sed -n 'NNp' path` piped to `grep -Fq "fragment"`), composed into one throwaway loop over every citation — documented commands may be composed into throwaway runtime loops, and this one is pipe-free so the cell stays copy-pasteable.
 
@@ -41,7 +43,7 @@ Before any version tag, the agent runs every lint row on every active workspace 
 
 The release sweep is a direct, ordered procedure: (1) run self-lint gates 1–7 below;
 (2) run catalog integrity checks over `eval/scenarios/` and answer-sheet roots;
-(3) run rows 1–15 over every workspace; (4) run each initiative's done-signal;
+(3) run rows 1–16 over every workspace; (4) run each initiative's done-signal;
 (5) apply the active-workspace rule (boards with a 🟡 data row gate the exit code;
 closed workspaces report WARN, non-gating); and (6) compute and report
 `sweep: N/M gates passed` from those observed results. The documented rows and gates are the only canonical contract.
@@ -73,12 +75,12 @@ Gate 4 derives the immediately previous version from the stamp: a minor bump req
 
 ## Score line
 
-Run all 15 rows. The agent computes the numerator and denominator from the observed row
+Run all 16 rows. The agent computes the numerator and denominator from the observed row
 results; this **agent-computed summary** closes the lint digest with exactly:
 
 `lint: N/M checks passed`
 
-- **M** = rows run (15 for this table; more if the workspace adds rows).
+- **M** = rows run (16 for this table; more if the workspace adds rows).
 - **N** = rows whose pass condition held.
 
 The agent computes the sweep numerator and denominator from the observed gate and workspace

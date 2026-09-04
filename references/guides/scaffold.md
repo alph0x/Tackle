@@ -22,6 +22,7 @@ template library is read-only during scaffolding, and initiative-specific edits
 belong in the workspace copy.
 
 Core copies include `usage.md` from `usage.tmpl.md` (every workspace born ≥ 5.2).
+New workspaces declare `Schema: tackle-observability/2`; lifecycle rows start before substantive work, finish at close, or use `observe-incomplete` after interruption. Usage remains informative and never gates point closure.
 
 ## Depth artifacts
 

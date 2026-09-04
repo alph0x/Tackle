@@ -14,21 +14,44 @@ Every metric carries a copy-paste recipe; the recipes live in the template's Met
 - **Reopened points** — `🟢 → 🟡` transitions in `log.md` (regression-sweep reopenings included).
 - **Comprehension debt** — points that flipped 🟢 with no human review recorded in the log: mechanically done, humanly unread. High comprehension debt is a warning even when the board is all green.
 - **Gate accuracy** — the gate recorded at intake vs actual effort (points executed, sessions spent): Full-gate initiatives closed in ≤ 2 sessions are over-planning candidates; Lite-gate ones spanning 3+ sessions are under-planning candidates.
-- **Tokens by phase** — PLAN / EXEC / RETRO token totals from `usage.md`, with the `n/a`-row count so coverage honesty survives aggregation.
-- **Tokens by model** — per-model token totals from `usage.md`: which concrete models actually consumed the budget.
-- **Tokens per point** — per-point token totals from `usage.md`: what each point actually cost to execute.
+- **Exact-token coverage** — measured/eligible by metric and comparable scope, with `n/a` rows visible before any arithmetic.
+- **Coverage-gated totals** — cohort totals and rankings only after 100% comparable coverage; otherwise report labeled observations and suppress the aggregate.
+- **Coverage-gated recommendations** — tier/effort recommendations only after 100% coverage plus at least three like-for-like completed runs.
 - **Log growth** — lines per `log.md` session entry (recipe in `retro.tmpl.md`): resume cost compounds across every future session, unlike execution cost which is paid once per point; a rising trend routes narrative back to `decisions.md`/`reference-docs/`.
+
+## Lifecycle-first coverage
+
+Read the v2 ledger before any token arithmetic. For every metric and comparable scope, print
+`measured/eligible` plus a percentage; no eligible rows are shown as `0/N (0%)`, never as a
+zero-over-zero denominator. Duration, attempts, rework, incomplete runs, verification outcomes,
+and point time-to-green remain useful when exact telemetry coverage is 0%.
+
+- At 0% exact-token coverage, report `0/N (0%)` and suppress token totals, shares, rankings, and
+  recommendations.
+- Partial exact coverage may list labeled observations, but totals and rankings require 100%
+  comparable coverage; mixed role/session scopes remain separate and unjoined.
+- Tier/effort recommendations require 100% coverage, identical scope/source/semantics, and at
+  least three completed like-for-like runs; otherwise label the result a hypothesis.
+
+### Fixture recipe
+
+Run `awk -F'|' '/^\\| (duration|attempts|rework|verification|tokens)/ {m=$2; gsub(/^ +| +$/,"",m); printf "%s %s/%s (%s)\\n", m,$4,$5,$6}' usage.md` from a fixture workspace. The four fixtures under
+`eval/fixtures/usage-observability/` are the reference cases: zero prints `0/N`, partial and
+mixed suppress aggregates, and full alone permits expected totals and recommendations.
 
 **Lite plans** (no `board.md`): the retro still runs — board-derived metrics report `n/a`; log-derived ones stand.
 
 ## Cost analysis
 
-Mined from the three token recipes (Tokens by phase / Tokens by model / Tokens per point), never remembered; report the `n/a`-row counts alongside the totals. Report `n/a` for the whole section when the workspace has no `usage.md`. `usage.md` remains the only ledger source; unexposed harness fields stay `n/a`, never estimated.
+Mined from the exact-token recipe only after the coverage gate, never remembered; report the
+`n/a`-row counts alongside any permitted totals. Report `n/a` for the whole section when the
+workspace has no `usage.md`. `usage.md` remains the only ledger source; unexposed harness fields
+stay `n/a`, never estimated.
 
 ### Conclusions
 
-- **Top-consuming points vs their bindings** — rank points by Tokens per point and compare each against its bound tier/effort: did the binding match the actual cost, or did a high-tier binding sit on a low-token point (and vice versa)?
-- **Phase shares** — the PLAN / EXEC / RETRO split from Tokens by phase: which phase consumed the budget, and does that match where the plan's difficulty actually lived?
+- **Top-consuming points vs their bindings** — only within a 100%-covered comparable cohort, rank permitted exact totals by point and compare each against its bound tier/effort.
+- **Phase shares** — only within a 100%-covered comparable cohort, compare permitted PLAN / EXEC / RETRO totals; otherwise report the coverage gap instead of a share.
 - **Cache-write-weighted cost** — where the harness exposed cache splits, a point heavy on `cache_write` vs `cache_read` cost more under the billing split (writes ≈ 1.25× reads); rank by `cache_read`/`cache_write` parity, not by input+output throughput alone.
 
 ### Recommendations

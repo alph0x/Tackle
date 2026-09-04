@@ -7,7 +7,7 @@ description: Use when starting a non-trivial, multi-session or multi-track initi
 
 ## Overview
 
-**Tackle 7.1.1** — model-agnostic planning/execution methodology: durable plans under `docs/plans/<initiative>/`, self-contained points that survive handoffs; runs in the target repo, grounds every claim in `file:line`. Eight public commands — **init, plan, verify, next, run, judge, status, retro** — each also reachable by its canonical natural-language trigger.
+**Tackle 7.2.0** — model-agnostic planning/execution methodology: durable plans under `docs/plans/<initiative>/`, self-contained points that survive handoffs; runs in the target repo, grounds every claim in `file:line`. Eight public commands — **init, plan, verify, next, run, judge, status, retro** — each also reachable by its canonical natural-language trigger.
 
 - On any invocation, first run the daily self-update check (`references/guides/update.md` Check phase; cache-gated, non-blocking).
 - Plans by default; executes only when explicitly asked.
@@ -29,7 +29,7 @@ description: Use when starting a non-trivial, multi-session or multi-track initi
 | `status / how is <x> going?` or `/tackle-status [<ws>]` | **Status** → read-only digest (Step 9); `--handoff` writes `HANDOFF.md` |
 | `what plans are there?` | **List** → one line per initiative |
 | `resume / retomá <x>` | **Resume** → re-enter a plan (read-first) |
-| `migrate / upgrade <x>` | **Migrate** → bring an old plan to the current methodology (checklist chain v2.0 → v7.1 in `references/guides/migrate.md`) |
+| `migrate / upgrade <x>` | **Migrate** → bring an old plan to the current methodology (checklist chain v2.0 → v7.2 in `references/guides/migrate.md`) |
 | `stop evolving` | **Evolution opt-out** → pause/purge learning-loop profile, per scope (inside retro) |
 | `/tackle-retro` | **Retro** → mine `board.md` + `log.md` into `retro.md` |
 
@@ -46,6 +46,7 @@ description: Use when starting a non-trivial, multi-session or multi-track initi
 - **Regression sweep** — re-run done-signals of 🟢 points with intersecting Touches before a flip; failure reopens and blocks (`team.tmpl.md` step 9).
 - **Explicit intent** — no upfront plan+execute ask → pre-attack summary + ask before changing code; silence/ambiguity means stop; default L2 (`AGENTS.md` §Autonomy).
 - **Usage ledger** — every role run appends one `usage.md` row (model, tier, effort, tokens as the harness exposes them; `n/a`, never estimated); retro mines it for cost; recording is informative, never gating.
+- **Lifecycle ledger** — append `start` before substantive role work and one honest `finish` or `observe-incomplete` observation at close; never infer a successful end or duration from a missing close. Usage never gates point closure.
 
 Subagents are optional in planning for grounding/verify/drill; intake, doubts, decisions never delegate.
 

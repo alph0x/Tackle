@@ -94,6 +94,7 @@ The Security Reviewer runs this checklist on anything touching auth, input, secr
 
 ### Driver
 - Owns code changes, writes files, runs tests, makes the done-signal pass.
+- Appends a v2 lifecycle `start` before substantive work and exactly one `finish` observation at close; an interrupted run receives `observe-incomplete`, never an invented finish.
 - Before any behavior-changing edit, writes the INTENT gate line per the point briefing: `INTENT: current code does <X>; done-signal expects <Y>; <source> says <Z>.` If X, Y, and Z do not agree, surfaces the contradiction and stops.
 - Self-corrects up to **3 failed fix-verify cycles on the same issue**; after that, stops, reports the actual output and current hypothesis, and escalates.
 - Reports result and changed files, with its **Evidence** block (command, trimmed output, exit line).
@@ -113,6 +114,7 @@ The Security Reviewer runs this checklist on anything touching auth, input, secr
 
 ### Coordinator (Pod/Squad mode)
 - Owns flow and workspace hygiene; updates `board.md` and `log.md`.
+- Observes every Driver, Reviewer, Checker, Coordinator, and Retro role boundary in `usage.md`; appends `finish` or `observe-incomplete` without gating point closure.
 - **Continuity:** ONE logical Coordinator owns the whole execution. It is long-lived across points and waves where the harness supports persistent agents; where it does not (or across sessions), it re-spawns per point and MUST read `coordinator.md` + `board.md` + `log.md` before its first action. It refreshes `coordinator.md` at every point close — a projection, never canonical; canonical state stays in `board.md`/`log.md`.
 - Collects PASS from reviewers; flips 🟢 only after sign-off — Full gate: the Coordinator sign-off section in `reports/P-0N-report.md`; Lite gate: the evidence block recorded in `log.md`.
 - On budget exhaustion or no-progress, flips the point ⏸ and files the escalation packet.

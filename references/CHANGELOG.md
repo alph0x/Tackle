@@ -1,5 +1,25 @@
 # Tackle changelog
 
+## Tackle 7.2.0
+
+- **Lifecycle-first usage observability.** New workspaces append `start`, `finish`, and
+  `observe-incomplete` events to the universal Markdown ledger; optional exact telemetry remains
+  additive, with `n/a` unknowns never coerced or estimated.
+- **Coverage, provenance, and migration.** Retro now reports `measured/eligible` coverage before
+  arithmetic, gates totals/rankings and tier recommendations, preserves native provider scope,
+  and ships the reversible v7.1 → v7.2 legacy-ledger checklist with byte-preservation evidence.
+- **Capability profiles.** Declarative profiles cover Claude Code, Oh My Pi, OpenAI Responses,
+  Antigravity CLI, OpenCode, Kimi Code, and Cursor; no collector, live integration, or billing
+  claim is required.
+- **Manual eval evidence.** The catalog contains 50 scenarios (`s1`–`s54`) and the direct lint
+  table contains 16 rows, with dedicated coverage/provenance/migration fixtures and honest null
+  verdicts where no independent executor was available.
+- **skills.sh distribution.** The public `alph0x/Tackle` repository is the discovery/install
+  source; compatibility labels are `opencode`, `kimi-code-cli`, `cursor`, and
+  `antigravity-cli`. No separate Vercel registry submission is required.
+- **Release preparation only.** This candidate is prepared through the technical ship-gate;
+  commit, tag, push, and GitHub-release mechanics remain an explicit owner action.
+
 ## Tackle 7.1.1
 
 - **Markdown-only transition closure.** Active guides and release checks now describe direct

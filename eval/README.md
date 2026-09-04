@@ -117,6 +117,9 @@ eval/
     s48-eval-runner-trap/ # staging trap (D-13 arm): hand-copying leaks the answer sheet; manual staging must exclude it
     s49-init-trap/ # init trap (D-13 arm): hand-scaffolding omits usage.md / leaves .tmpl suffixes; the file map requires the full set
     s51-self-update-legacy-prune/ # self-update trap: verified Markdown replacement removes only legacy tackle-check and preserves an unrelated sentinel
+    s52-usage-coverage/ # coverage trap: unknowns are not zero; partial/incomparable cohorts and two-run recommendations stay gated
+    s53-usage-provenance/ # provenance trap: exact Antigravity mapping only; native session/account scope and estimates stay unjoined/noncanonical
+    s54-usage-v2-migration/ # migration trap: append-only adoption and byte-preserving rollback keep legacy unknowns readable
 ```
 
 ## Running a scenario — manual path (Tackle 7.1.0)
