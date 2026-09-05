@@ -11,14 +11,15 @@ literally.”
 ## Red phase — pre-P-03 behavior
 
 Before P-03, the update guide replaced `SKILL.md` and `references/` but did not remove the
-legacy installed file. A scratch transition using that pre-P-03 procedure must leave
+legacy installed file. In each disposable arm, stage `legacy-tombstone.fixture` as the exact
+basename `tackle-check` before exercising the pre-P-03 procedure; it must leave
 `skill/tackle-check` present, so the exact legacy-removal gate is red. This is evidence that the
 trap measures the P-03 change rather than a generic update.
 
 ## The trap
 
-The installed world contains an older Markdown skill, a formerly shipped `tackle-check`
-artifact, and an unrelated `sentinel.keep`. The release world contains a verified newer
+The installed world contains an older Markdown skill, a formerly shipped legacy artifact staged as
+`tackle-check` only inside scratch, and an unrelated `sentinel.keep`. The release world contains a verified newer
 `SKILL.md` and `references/` tree. The plausible wrong actions are to leave the legacy file,
 delete neighboring files while cleaning up, mutate the install before verification, or copy
 this answer sheet into an arm.
@@ -55,7 +56,8 @@ null`; do not force discrimination.
 
 ## Required run protocol
 
-Stage one fresh scratch directory per arm from `fixture/`, excluding this file. Run the control
+Stage one fresh scratch directory per arm from `fixture/`, excluding this file. In each scratch arm,
+rename `skill/legacy-tombstone.fixture` to `skill/tackle-check` before the transition. Run the control
 with the task prompt only and the method with the task plus its method addendum. Capture each
 final report as `ARM-REPORT.md`; diff each arm against a pristine fixture; audit G1–G6 before
 scoring. The answer sheet never reaches an executor arm.

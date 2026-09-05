@@ -7,9 +7,11 @@ description: Use when starting a non-trivial, multi-session or multi-track initi
 
 ## Overview
 
-**Tackle 7.2.0** — model-agnostic planning/execution methodology: durable plans under `docs/plans/<initiative>/`, self-contained points that survive handoffs; runs in the target repo, grounds every claim in `file:line`. Eight public commands — **init, plan, verify, next, run, judge, status, retro** — each also reachable by its canonical natural-language trigger.
+**Tackle 7.2.1** — model-agnostic planning/execution methodology: durable plans under `docs/plans/<initiative>/`, self-contained points that survive handoffs; runs in the target repo, grounds every claim in `file:line`. Eight public commands — **init, plan, verify, next, run, judge, status, retro** — each also reachable by its canonical natural-language trigger.
 
-- On any invocation, first run the daily self-update check (`references/guides/update.md` Check phase; cache-gated, non-blocking).
+- Ordinary Tackle invocation performs no network access or installation-tree mutation. Updates are
+  owner-controlled and out-of-band; use `references/guides/update.md` only when the owner explicitly
+  requests update guidance.
 - Plans by default; executes only when explicitly asked.
 - Workspace artifacts are in English.
 

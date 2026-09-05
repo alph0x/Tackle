@@ -24,6 +24,9 @@ jobs:
           grep -qF "checklist chain v2.0 → v$mm" README.md
           row=$(grep 'Mechanical gate' README.md); for t in lint catalog done-signal ground eval init; do case "$row" in *"\`$t"*) ;; *) exit 1;; esac; done
           g=$(awk '/^### Skill self-lint gates/{f=1;next} f && /^##/{exit} f && /^[0-9]+\. /{n++} END{print n+0}' references/guides/lint-spec.md); grep -qF "$g shipped-skill gates" README.md
+          u=$(grep -Ehc 'On any invocation.*self-update|Run the Check phase.*every Tackle invocation|Remote > local.*run Update|Download the tag tarball|Replace only the install artifact' SKILL.md references/guides/intake-and-gate.md references/guides/update.md eval/scenarios/s16-self-update-trap/skill/SKILL.md eval/scenarios/s16-self-update-trap/skill/references/guides/update.md 2>/dev/null | awk '{s+=$1} END{print s+0}'); test "$u" -eq 0
+          h=$(git grep -nE 'https://(api\.)?github\.com/(repos/)?tackle-fan/Tackle' -- eval/scenarios 2>/dev/null | wc -l | tr -d ' '); test "$h" -eq 0
+          r=$(git ls-files | awk '/(^|\/)(tackle|tackle-check)$/ {print}' | while IFS= read -r p; do [ -e "$p" ] && printf '%s\n' "$p"; done | awk 'END{print NR+0}'); test "$r" -eq 0
           for d in eval/scenarios/*/; do [ -d "$d" ] || continue; name=$(basename "$d"); grep -qF "$name" eval/README.md; test -f "$d/GROUND-TRUTH.md"; done
           for f in eval/scratch/*/GROUND-TRUTH.md eval/runs/*/GROUND-TRUTH.md; do [ -f "$f" ] && exit 1 || true; done
           for w in docs/plans/*/; do [ -d "$w" ] || continue; [ -f "$w/board.md" ] || continue; done

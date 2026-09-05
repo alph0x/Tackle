@@ -1,6 +1,8 @@
-## Self-update check (every invocation, non-blocking)
+## Update boundary (explicit user control)
 
-Run the Check phase of `references/guides/update.md` on **every Tackle invocation** — any mode, new plan or in-progress (network cache-gated to once per day). On a newer release, follow its Update + Reload phases. Any failure → skip silently and continue; the check never blocks.
+Ordinary Tackle invocation performs no network access or installation-tree mutation. Updating is
+never initiated by planning or execution; an owner may use the documented external/manual workflow
+only after explicitly requesting it. Tackle provides guidance but does not perform that workflow.
 
 # Step 1 — Intake (infer first, then ask)
 

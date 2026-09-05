@@ -1,5 +1,20 @@
 # Tackle changelog
 
+## Tackle 7.2.1
+
+- **Runtime update trust boundary.** Ordinary invocation no longer performs release checks,
+  downloads, extraction, or installation-tree mutation. Updates are explicitly owner-controlled and
+  out-of-band.
+- **Scanner-safe security fixtures.** The s16 provenance trap uses inert structured identifiers and
+  the s51 legacy tombstone is materialized only in disposable scratch, preserving sentinel and
+  answer-sheet isolation.
+- **Security regression gate.** The release sweep and CI now reject automatic update clauses,
+  unexpected-owner archive URLs, and present tracked `tackle`/`tackle-check` basenames.
+- **D-13 evidence.** The dedicated s16 method record, integrated acceptance packet, and guarded
+  release preparation are complete; behavioral executor evidence remains an honest documented null.
+- **Release preparation only.** Commit, tag, push, GitHub-release publication, and fresh skills.sh
+  audit remain explicit owner-gated actions.
+
 ## Tackle 7.2.0
 
 - **Lifecycle-first usage observability.** New workspaces append `start`, `finish`, and

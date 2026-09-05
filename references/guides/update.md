@@ -1,30 +1,26 @@
-# Update — skill self-update
+# Update — owner-controlled manual workflow
 
-Triggered by the daily Self-update check that opens **any Tackle invocation** (a forced check deletes `~/.tackle/last-update-check`) — every mode: plan, resume, status, execute, new plan or in-progress (hooked from the `SKILL.md` Overview). The agent performs every step; the installed skill artifact is Markdown-only: `SKILL.md` + `references/`, copied in place but never executed against fetched content. Every fetch is pinned to `https://github.com/alph0x/Tackle` — never another source — and nothing downloaded is ever executed.
+## Boundary
 
-## Check
+Ordinary Tackle invocation performs no network access or installation-tree mutation. Tackle never
+performs release checks, downloads, extraction, or installation-tree replacement, even when a newer
+release may exist. This guide is reference material for a user-controlled, out-of-band workflow
+only. In this document, ordinary invocation performs no network access or installation-tree mutation.
 
-1. **Cache gate** — read `~/.tackle/last-update-check`: if it contains today's date (`YYYY-MM-DD`), stop; already checked. The file may not exist — absence means run the check; never assert the gate state without reading it. To force a check, delete `~/.tackle/last-update-check` and invoke Tackle again.
-2. **Fetch the latest release tag**:
-   `curl -s --max-time 10 https://api.github.com/repos/alph0x/Tackle/releases/latest`
-   and extract `tag_name` (e.g. `"tag_name": "v4.1.0"`).
-3. **Read the local stamp** `**Tackle X.Y.Z**` from the installed `SKILL.md` (the file this skill was loaded from).
-4. **Compare as semver** (4.10.0 > 4.9.0 — never string-compare). Remote ≤ local → write today's date to `~/.tackle/last-update-check` and stop. Remote > local → run Update.
-5. **Degrade silently** — no network, no `curl`, or an API error: stop without a word on the daily path. The check never blocks the user's work.
+## Owner-controlled workflow
 
-## Update
+1. Select an approved release through the owner's normal distribution process and verify its source,
+   version, and integrity before touching the installed skill.
+2. Confirm that the candidate artifact contains only the Markdown install artifact: `SKILL.md` and
+   `references/`. Do not execute fetched content.
+3. The owner-controlled installer may copy only `SKILL.md` and `references/` into the skill directory
+   after verification. Once that replacement succeeds, remove the exact legacy basename `tackle-check`
+   if present. Never remove a file named `tackle`, use recursive or prefix cleanup. Unrelated neighboring files remain untouched, including sentinels.
+4. Reload the skill through the harness's documented mechanism, or restart the session when reload is
+   unavailable.
 
-1. **Download the tag tarball**, following redirects:
-   `curl -sL --max-time 60 -o <tmpdir>/tackle.tar.gz https://github.com/alph0x/Tackle/archive/refs/tags/v<X.Y.Z>.tar.gz`
-2. **Extract** into a fresh temp dir (`tar -xzf`) — the root is the single directory the extraction produces (`Tackle-<version>` from a tag archive); locate it by listing the temp dir, never by an assumed name pattern.
-3. **Verify the stamp** — the extracted `SKILL.md` must carry `**Tackle X.Y.Z**` matching the tag. A mismatch → abort to Fallback.
-4. **Replace only the install artifact** in the skill directory (the directory containing the loaded `SKILL.md`): remove the old `references/` and copy the extracted `SKILL.md` + `references/` into place. Only after that verified replacement succeeds, remove the exact legacy basename `tackle-check` from that directory if it is present. Do not remove a file named `tackle`, use recursive or prefix/glob cleanup, or copy any executable; unrelated neighboring files remain untouched.
-5. **Record the check** — write today's date to `~/.tackle/last-update-check`.
+## Failure and rollback
 
-## Reload
-
-If the harness exposes a documented skill-reload mechanism, run it. Otherwise tell the user: "Tackle updated <old> → <new> — restart the session (or reload skills) to pick it up." The current session keeps running the old version; that is expected, not an error.
-
-## Fallback
-
-On any failure — read-only skill directory, missing `curl`/`tar`, stamp mismatch, interrupted download — leave the current install untouched and state what failed in one line. Once a valid replacement is available, the manual path is to re-copy `SKILL.md` + `references/` from a fresh clone or download of `https://github.com/alph0x/Tackle` into the skill directory, then remove only the exact legacy basename `tackle-check` (never `tackle`, a glob, or an unrelated neighbor), and restart or reload.
+Any failed source, version, integrity, or artifact check leaves the current install untouched. The
+owner must resolve the failure through the approved distribution process; Tackle does not retry,
+download, extract, or mutate the installation tree.

@@ -9,8 +9,5 @@ description: Planning and execution methodology.
 
 **Tackle 4.1.0** — model-agnostic planning and execution methodology.
 
-## Routing
-
-| The user says | Mode |
-|---|---|
-| (daily self-update check) | **Update** → self-update check on any invocation; procedure: `references/guides/update.md` |
+Ordinary invocation performs no network access or installation-tree mutation. Update guidance is
+owner-controlled and out-of-band.
