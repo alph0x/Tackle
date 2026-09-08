@@ -7,6 +7,8 @@
 
 ## Status & wiring
 **Depends on**: {{none / P-0X — and what it needs from it, e.g. "P-01 (its `XPort` protocol)"}} · execution status in `board.md` (single board — don't duplicate here). Parallelism is read off the graph + Touches, not re-listed here.
+Report ownership: Driver writes only section 2 (Driver evidence); Checker writes sections 1, 3, and 4; Coordinator writes section 5 and owns sign-off. Each shared report section has one writer.
+Raw command output belongs in the point report or named artifact; log, status, and retro keep bounded pointers and derived conclusions.
 - **Traces to**: {{spec/ticket line this point implements — e.g. `spec.md:NN` or `ticket-123` acceptance #2}}.
 - **Touches (write scope)**: {{the files/dirs this point may modify — bounds the blast radius; disjoint Touches ⇒ parallel-safe (isolated worktrees), and keeps the done-signal's diff reviewable. Explicitly flag any touched path that ships to production — a flagged path requires the Rollout / reversibility section below}}.
 - **Autonomy override**: {{inherit (workspace level in AGENTS.md §Autonomy) / L1 / L2 / L3 — L3 requires the AGENTS.md §Autonomy conditions; production-path points cap at L2}}.
@@ -76,10 +78,16 @@ Loop until green: {{the done-signal command}}.
      `SEALED: D-xx` as an HTML comment on the heading line (D-xx = the decision that marked it ready).
      Editing anything in a sealed section afterwards requires a superseding `D-yy` recorded in
      `decisions.md` FIRST; the marker then becomes `SEALED: D-yy supersedes D-xx`. -->
-- **Done-signal**: `{{the exact command (or a short combo of mechanical checks) — e.g. cd <pkg> && swift test --filter <Suite>}}` → pass = {{exit 0, N tests, 0 failures}}.
+**Done-signal**: state the exact command, cwd, prerequisites, exit requirement, literal PASS output, and expected count/content.
+For executable gates, provide one copy-pasteable fenced command block, including all artifact/content/count assertions; an invocation followed by prose checks is incomplete. Declare the shell and runtime prerequisites, use quoting valid for that shell, exit nonzero on any failed condition, and print the literal PASS only after all checks succeed. Use the REVIEW-gate exception below when no honest executable check exists.
+Propagate every failure explicitly: use a checked validator or an AND-chain; independent commands followed by an unconditional PASS can hide failures. Compare exact file bytes directly, not through shell command substitution that strips newlines. Before accepting the gate, run it on disposable valid and invalid fixtures: valid must exit zero with PASS; each invalid fixture must exit nonzero without the gate's PASS. Preserve these results; a failed negative check blocks closure.
+Negative fixtures test the validator: mutate captured output/status evidence or substitute a disposable faulty implementation, keeping the task's specified input contract. Never invent product requirements such as rejecting malformed inputs unless the task requires them. Run these gate tests separately from the product's acceptance command; an implementation satisfying the stated task must pass that command.
+When authoring these checks, adapt the minimal pattern in `references/guides/validator-example.md`: a read-only evidence validator, isolated synthetic tests, then product validation and the final PASS. Preserve task outputs during negative tests.
+For wrappers, record wrapper exit, child exit, timeout, and signal meanings separately; wrapper success never substitutes for child success.
+Also validate wrapper metadata and the generated artifact together using one read-only validator.
 - The 🟢-flipping run of this command is the **checker's**, not the Driver's (maker/checker).
   <!-- Judgment/investigation point (research, copy/UX, design spike) with no honest command? Make this a REVIEW-gate instead: "exit = artifact + rubric, reviewed" (e.g. `decisions.md` D-xx chosen with the matrix filled). Never a fake `test -f` green. -->
-- [ ] Meets the **universal per-point acceptance** in `plan.md` §6.1 (don't restate it here).
+- [ ] Self-contained acceptance checklist: completes **preflight and the exact runnable done-signal**; includes **grounded citations**; gets an **independent Checker rerun and semantic review**; proves **protected source integrity**; follows **bounded failure/rework escalation**; obtains **Coordinator sign-off** before the board flips; copies **required facts from linked files inline**; and states that `plan.md`, `board.md`, `AGENTS.md`, and other plan-local files are not prerequisites.
 - [ ] Covers **both halves of verification**: target criterion observed, and surrounding system still healthy (build / tests / lint for the touched area).
 - [ ] {{quality-dimension checks this point's **Touches** fire — Security / Performance / Concurrency / Correctness / … per the catalog (`references/guides/quality-dimensions.md`) — each **folded into the done-signal above** as a runnable fragment using this repo's tooling (e.g. "authz test in the suite asserts unauthenticated/cross-tenant → 401/403"), or a **review-gated** criterion only if no honest command exists. Omit axes that don't fire; don't restate the §6.1 universal ones}}.
 - [ ] {{point-specific condition — exhaustive over its case set (assert the count), verifiable by test/grep}}.
