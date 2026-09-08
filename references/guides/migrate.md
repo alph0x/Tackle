@@ -70,6 +70,28 @@ This checklist supersedes the old v6.0→v6.1 `tackle-usage/1` sidecar note for 
 observability: the current optional sidecar is `tackle-observability-telemetry/1`, while the
 Markdown ledger remains the universal source and point closure never depends on migration.
 
+## v7.2 → v7.3 checklist
+
+Run these when adopting the self-contained briefing and executable-validator contract in a
+workspace created with Tackle 7.2.x. This migration is forward-only for active work; closed
+points retain their historical evidence unless reopened.
+
+1. **Self-contain active points** — copy every prerequisite fact needed to resolve an active
+   point into its briefing. Links remain depth references; `plan.md`, `board.md`, workspace
+   `AGENTS.md`, and other plan-local files are not hidden prerequisites.
+2. **Make acceptance runnable** — state cwd, prerequisites, exit condition, literal `PASS`,
+   expected counts/content, and one copy-pasteable shell block. Use checked failure propagation
+   and run valid plus invalid disposable fixtures before flipping the point.
+3. **Preserve evidence boundaries** — keep product outputs untouched during validation; for
+   wrappers record wrapper exit, child exit, timeout, and signal separately, and validate wrapper
+   metadata with the generated artifact.
+4. **Choose the JSON contract explicitly** — validate parsed keys/types/values when formatting
+   is irrelevant; compare bytes or whitespace only when the task declares an exact byte contract.
+   Do not invent newline or formatting requirements.
+5. **Record and verify** — append a decision and log entry, re-ground citations after edits,
+   run the current lint rows and done-signals, and require independent Checker review before
+   marking the board green. No migration is needed for a closed point that remains untouched.
+
 ## v6.1 → v7.0 checklist
 
 Run these when migrating a plan created with Tackle 6.1.x (the 7.0 surface consolidation — hard rename, no aliases):

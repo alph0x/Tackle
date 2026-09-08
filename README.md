@@ -2,7 +2,7 @@
 
 A model-agnostic planning and execution skill that turns an initiative into a durable action plan — self-contained points a cold agent can resolve in a fresh session — and executes that plan point-by-point when you ask it to.
 
-**Tackle 7.2.1: Markdown-only runtime.** Tackle keeps its public surface at eight commands — **init, plan, verify, next, run, judge, status, retro** — and its workspace core at nine artifacts, with direct verification procedures and a realigned eval suite (50 scenarios). The install artifact remains Markdown-only; mechanical verification is documented as direct POSIX checks.
+**Tackle 7.3.0: Markdown-only runtime.** Tackle keeps its public surface at eight commands — **init, plan, verify, next, run, judge, status, retro** — and its workspace core at nine artifacts, with direct verification procedures and a realigned eval suite (50 scenarios). The install artifact remains Markdown-only; mechanical verification is documented as direct POSIX checks.
 
 ## What it does
 
@@ -151,7 +151,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 | `status / how is <x> going?` or `/tackle-status [<ws>]` | **Status** — read-only digest; `--handoff` writes a portable `HANDOFF.md`; detects an old Methodology stamp and offers migrate |
 | `what plans are there?` | **List** — one line per initiative |
 | `resume / retomá <x>` | **Resume** — re-enter a plan (read-first) |
-| `migrate / upgrade <x>` | **Migrate** — bring an old plan to the current methodology (checklist chain v2.0 → v7.2 in `references/guides/migrate.md`) |
+| `migrate / upgrade <x>` | **Migrate** — bring an old plan to the current methodology (checklist chain v2.0 → v7.3 in `references/guides/migrate.md`) |
 | `stop evolving` | **Evolution opt-out** — pause/purge the learning-loop profile, per scope (inside retro) |
 | `/tackle-retro` | **Retro** — mine board + log into the retro artifact; batch-confirmed profile writes and plan-archetype extraction |
 | Direct checks | **Mechanical gate** — direct-procedure coverage runs the `lint` rows, `catalog` integrity checks, each `done-signal`, the two-phase `ground` check, `eval` method arms, and `init` artifact completeness from the documented Markdown procedures; a point flips only after mechanical green and checker sign-off |
@@ -160,7 +160,7 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 
 **Execution:** `/tackle-run` reads the board, picks the next ready point in dependency order, runs its done-signal, and updates board + log. Team sizing is Solo/Pair/Pod/Squad, with roles bound to model tiers (`fast`/`standard`/`frontier`) resolved by the workspace §Model map (`plan` proposes defaults by complexity/risk, user confirms in intake); Full-gate points close with a closure report under `reports/` plus sign-off; one persistent Coordinator keeps continuity.
 
-**Version:** Tackle 7.2.1. See `references/CHANGELOG.md` for what's new.
+**Version:** Tackle 7.3.0. See `references/CHANGELOG.md` for what's new.
 
 ## What it produces
 

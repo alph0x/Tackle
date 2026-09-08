@@ -7,7 +7,7 @@ description: Use when starting a non-trivial, multi-session or multi-track initi
 
 ## Overview
 
-**Tackle 7.2.1** — model-agnostic planning/execution methodology: durable plans under `docs/plans/<initiative>/`, self-contained points that survive handoffs; runs in the target repo, grounds every claim in `file:line`. Eight public commands — **init, plan, verify, next, run, judge, status, retro** — each also reachable by its canonical natural-language trigger.
+**Tackle 7.3.0** — model-agnostic planning/execution methodology: durable plans under `docs/plans/<initiative>/`, self-contained points that survive handoffs; runs in the target repo, grounds every claim in `file:line`. Eight public commands — **init, plan, verify, next, run, judge, status, retro** — each also reachable by its canonical natural-language trigger.
 
 - Ordinary Tackle invocation performs no network access or installation-tree mutation. Updates are
   owner-controlled and out-of-band; use `references/guides/update.md` only when the owner explicitly
@@ -31,7 +31,7 @@ description: Use when starting a non-trivial, multi-session or multi-track initi
 | `status / how is <x> going?` or `/tackle-status [<ws>]` | **Status** → read-only digest (Step 9); `--handoff` writes `HANDOFF.md` |
 | `what plans are there?` | **List** → one line per initiative |
 | `resume / retomá <x>` | **Resume** → re-enter a plan (read-first) |
-| `migrate / upgrade <x>` | **Migrate** → bring an old plan to the current methodology (checklist chain v2.0 → v7.2 in `references/guides/migrate.md`) |
+| `migrate / upgrade <x>` | **Migrate** → bring an old plan to the current methodology (checklist chain v2.0 → v7.3 in `references/guides/migrate.md`) |
 | `stop evolving` | **Evolution opt-out** → pause/purge learning-loop profile, per scope (inside retro) |
 | `/tackle-retro` | **Retro** → mine `board.md` + `log.md` into `retro.md` |
 

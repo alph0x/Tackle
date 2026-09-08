@@ -1,5 +1,22 @@
 # Tackle changelog
 
+## Tackle 7.3.0
+
+- **Self-contained point briefings.** Every generated point now carries the facts, constraints,
+  acceptance checklist, and no-hidden-prerequisite statement a cold agent needs to act without
+  reopening plan-local files.
+- **Executable acceptance hardening.** Done-signals declare cwd, prerequisites, exit semantics,
+  literal `PASS`, expected counts/content, checked failure propagation, and disposable valid and
+  invalid fixtures. Wrapper briefings keep wrapper and child outcomes separate and validate metadata
+  together with the produced artifact.
+- **JSON contract clarity.** Validators check parsed keys, types, and values when formatting is
+  irrelevant, while byte or whitespace comparisons remain available for tasks that explicitly
+  require exact bytes. Invented newline requirements are rejected.
+- **Behavioral evidence.** Two fresh low-effort Luna sessions covered five briefing shapes and
+  passed 58/58 fixture outcomes, including negative evidence and input/sentinel preservation.
+- **Release preparation only.** Commit, tag, push, GitHub-release publication, and distribution
+  freshness checks remain explicit owner-gated actions after review.
+
 ## Tackle 7.2.1
 
 - **Runtime update trust boundary.** Ordinary invocation no longer performs release checks,
