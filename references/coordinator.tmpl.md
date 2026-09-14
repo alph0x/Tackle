@@ -1,33 +1,36 @@
 # Coordinator — {{TITLE}}
 
-**Generated projection, never canonical.** The Coordinator rewrites this file at every
-point close; regenerating overwrites it (HANDOFF.md precedent). Canonical state lives in
-`board.md` and `log.md` — this file exists so a re-spawned Coordinator re-contextualizes
-before its first action. Never hand-edit; never log secrets.
+**Generated projection, never canonical.** The Coordinator refreshes this file at a Point close so
+a resumed coordinator can re-contextualize. Canonical current state remains `board.md`; append-only
+history remains `log.md`; the execution procedure is `references/guides/run.md`. Never put secrets or
+unobserved outcomes here.
 
-## Current point / wave
+## Current Point / wave
 
 - Point: {{P-0N — title}}
-- Wave: {{wave id / parallel set, or "none"}}
-- Team size: {{Solo | Pair | Pod | Squad}} · gate: {{Full | Lite}}
+- Wave: {{wave id / parallel set, or none}}
+- Team: {{Solo | Pair | Pod | Squad}}
+- Run state: {{preflight | implementing | validating | integrating | accepting | complete | blocked}}
 
-## Active team roster
+## Active capabilities
 
-| Role | Agent | Tier |
+| Capability | Actor | Binding / isolation |
 |---|---|---|
-| Driver | {{agent id}} | {{standard}} |
-| {{role}} | {{agent id}} | {{fast | standard | frontier}} |
-<!-- one row per active role, tiers per AGENTS.md §Model map -->
+| Implementation | {{agent id}} | {{tier/model/effort or n/a}} |
+| Mechanical observation | {{agent id}} | {{context and runtime}} |
+| Semantic review (if required) | {{agent id or human}} | {{independence evidence or unavailable}} |
 
-## Open findings
+## Open findings and budgets
 
-- {{finding — owner — severity HIGH/MEDIUM/LOW, or "none"}}
+- Findings: {{owner, cause, severity, and raw-evidence pointer; or none}}
+- Point correction cycles: {{spent}} / 3; identical no-progress observations: {{count}}
+- Initiative unowned-integration cycles: {{spent}} / 2
 
-## Recent closures
+## Recent closures / next ready
 
-- {{P-0N: one-line verdict — closed | rework + reason}}
-<!-- one line per recently closed point, newest first -->
+- {{P-0N: complete | blocked | skipped | unverifiable — report/raw evidence pointer}}
+- {{P-0N — title (dependencies and Ready fingerprints satisfied)}}
 
-## Next ready points
-
-- {{P-0N — title (dependencies satisfied)}}
+The projection does not authorize a retry, status flip, replan, model upgrade, or initiative close.
+Those decisions and observations follow the Run guide and are recorded in the report, board, log,
+and usage ledger.

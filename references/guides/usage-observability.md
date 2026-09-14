@@ -5,6 +5,11 @@ sidecar. It is a documentation contract, not a collector or executable.
 
 ## Lifecycle records
 
+Full and Lite workspaces require `usage.md`; None creates no workspace or ledger. A None task
+resumed inside an existing workspace preserves its existing lifecycle contract. Read this guide
+only when a ledger is applicable. Use observed clock and launch metadata or `n/a`; never fabricate
+midnight start times, infer model/effort from a role label, or duplicate rows to appear compliant.
+
 New workspaces declare `Schema: tackle-observability/2` in `usage.md` and use this exact table:
 
 | Run ID | Event | Point | Role | Harness | Tier | Model | Effort | At | Outcome | Attempts | Rework | Verification | Source |
@@ -25,7 +30,25 @@ absent -> start(running) -> finish(success|failed|blocked|aborted)
 
 Exactly one start and at most one terminal event are valid. An orphan terminal, duplicate start,
 duplicate terminal, negative count, or mismatched Point/Role is invalid. Missing values are `n/a`,
-never zero and never estimated. Lifecycle recording is informative and never gates point closure.
+never zero and never estimated. Unexposed clock or runtime metadata does not block otherwise
+observable work: record metadata as `n/a` and preserve the command result. An unavailable required
+execution environment is an acceptance gap, not missing telemetry, and blocks its owning scope.
+Tier records an observed fast/standard/frontier model binding, never the Lite/Full route.
+Attempts records shared failed implementation correction-validation cycles; initial validation,
+dispatch and repeated tests do not count. Rework uses a separately defined observed rework counter,
+otherwise `n/a`. Preserve counters across actors/resumptions; zero requires observed absence.
+A role outcome describes that role: a reviewer may finish successfully while reporting a blocked
+product. Verification/Source identifies that scope; it cannot imply initiative completion.
+Lifecycle recording is informative and never
+gates point closure. The execution sequence and correction limits are owned by
+`references/guides/run.md`.
+
+Validation clocks describe the validation child, not the enclosing role. An executor cannot observe
+its own future process termination. Its finish timestamp is `n/a` unless an actual terminal event
+is supplied by an external observer; Source names the limitation. Do not copy a test end or take a
+later reconstruction clock. Product outcome and terminal-time availability are separate facts.
+New Lite ledgers use the v2-only body in `../lite-plan.tmpl.md`; legacy rows are preserved only when
+already present. Verification and Source index captured receipts rather than restating raw metadata.
 
 ## Optional sidecar
 

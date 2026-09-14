@@ -1,228 +1,94 @@
-# Team protocol — {{TITLE}}
+# Team capabilities — {{TITLE}}
 
-When a point enters execution, the orchestrator spawns a **point team** sized to the point's complexity and risk. In execution this protocol is **mandatory** — every point gets its team, and the checker role (see §When a point is done) is filled by an agent independent from the Driver, using whatever subagent or parallel facility the harness provides. The workspace (`board.md`, `log.md`, the point file, and the touched files) is the single source of truth; the agent messaging channel is only for coordination.
+This template binds role capabilities and state ownership. The sole execution lifecycle, correction
+budget, evidence contract, integration checks, and closure rules live in
+`references/guides/run.md`; do not copy an execution protocol into this file. The workspace
+(`board.md`, `log.md`, the Point file, and touched files) is the source of truth; messaging is only
+coordination.
 
 ## Model binding
 
-Teams bind roles to **model tiers**, never to vendor models. Three tiers, abstract and harness-agnostic:
+Teams bind roles to abstract, harness-agnostic tiers, never vendor models:
 
-- **`fast`** — mechanical work: grounding reads, greps, lint rows, drift checks.
-- **`standard`** — implementation, coordination, review.
-- **`frontier`** — adversarial verification, red-team, architecture judgment.
-
-Role→tier defaults (a point briefing may override):
+- **`fast`** — grounding reads, searches, lint and drift checks.
+- **`standard`** — implementation, coordination and ordinary review.
+- **`frontier`** — adversarial verification or architecture judgment when the risk requires it.
 
 | Role | Tier | Effort |
 |---|---|---|
 | Driver | standard | medium |
-| Reviewer / Quality Guardian / Coordinator | standard | medium |
+| Reviewer / Coordinator | standard | medium |
 | Spec Reader | fast | low |
 | Verifier / Red-Teamer | frontier | high |
-| Checker (maker/checker) | frontier attempted — see below | high |
-| Specialists (Squad) | standard | medium |
+| Specialists | standard | medium |
 
-Grounding reads, lint, drill mechanics: `fast`, effort `low`.
-
-**Default tier by point shape** — `plan` proposes these in decompose; the user confirms in the intake batch (the per-point declared binding stays the honesty invariant, never auto-switched at runtime):
-
-| Point shape | Default tier |
-|---|---|
-| Mechanical / docs / simple tests | `fast` |
-| Default (implementation, coordination, review) | `standard` |
-| Architecture / hard decomposition / high risk / judge | `frontier` |
-
-Agents are spawned **per role at point execution**, each on its role's bound tier — there are no predetermined agents. The workspace `AGENTS.md` §Model map binds tiers to the concrete models the harness offers; core templates never name vendor models.
-
-Effort levels are abstract like tiers — `low / medium / high / max` — never harness-specific setting names; they are bound per workspace in `AGENTS.md` §Model map. `effort-binding: supported | unsupported` — `unsupported` ⇒ effort levels are advisory only, deviations noted in `log.md`, never blocking. A point briefing may override a role default via its `**Effort**:` field.
-
-**Checker ≠ maker (best-effort, never blocks):** the checker SHOULD run on a different tier than the maker. If the harness cannot bind or isolate tiers, the checker runs on whatever is available and its evidence line in `log.md` records `model-binding: unavailable`. Compliance is recorded, never enforced.
+The Point briefing may override a default. The workspace `AGENTS.md` model map binds tiers to the
+concrete models available in that harness. Effort is `low / medium / high / max`; when effort or
+model binding is unsupported, record the actual binding and `n/a` values honestly. Never silently
+upgrade a role to resolve a Run failure. An independent session or human fallback is selected only
+when the Run risk requires semantic independence; a renamed role or tier does not itself establish
+independence.
 
 ## Team sizing
 
 | Size | Roles | Use for |
 |---|---|---|
-| **Solo** | Driver only | Simple template creation, single-file additive changes, clear done-signal. |
-| **Pair** | Driver + Reviewer | Routing changes, multi-file changes, or when a second pair of eyes reduces risk. |
-| **Pod** | Driver + Spec Reader + Quality Guardian + Coordinator | Complex changes (execution engine, contract rewrite, architecture) or high-risk points. |
-| **Squad** | Pod + Specialist(s) | Very complex or high-risk points (security, cross-cutting refactor, new subsystem). Add specialists as needed. |
+| **Solo** | Driver | A simple, single-file change with a clear check. |
+| **Pair** | Driver + Reviewer | Routing, multi-file, or review-sensitive work. |
+| **Pod** | Driver + Spec Reader + Quality Guardian + Coordinator | Complex or high-risk contract work. |
+| **Squad** | Pod + risk-specific Specialist | Security, performance, or other demonstrated specialist risk. |
 
-Default: **Solo** unless the point briefing explicitly requests a larger team.
+Default to Solo unless the Point briefing requests a larger team. Add only the capability needed:
+Simplicity, Architecture, Security, Performance & Concurrency, or Regression. Specialists review the
+relevant risk; they do not create a second lifecycle or budget.
 
-### Specialist roles (Squad only)
+## Wave gates
 
-Add specialists when the point's risk justifies it; default Squad = Driver + Reviewer + Quality Guardian + Coordinator + one or more of:
+When a plan has waves, this heading is the compatibility pointer for generated workspaces. The Run
+guide owns the actual gates: before a wave, check authorization, Ready fingerprints, dependencies,
+and environment; after a merge, run affected integration checks on the merged tree. There is no
+separate pre-wave Verify loop or inter-wave closure protocol.
 
-| Specialist | When to add | Responsibility |
+### Risk capability checks
+
+Select only checks justified by the Point's risk; these checks supplement the Run protocol and never
+create an independent closure loop.
+
+- **Simplicity** — understand the real flow first, fix the root cause and inspect callers; reuse an
+  existing function or standard-library facility before adding an abstraction or dependency.
+- **Security** — validate inputs at command/query/path boundaries, keep secrets out of logs/errors/
+  diffs, check authorization on every path including cross-tenant paths, and justify dependencies.
+  Do not simplify away validation, data-loss protection, security, accessibility, or an explicit
+  requirement. Non-trivial logic has a runnable check.
+- **Correctness / repro** — check boundary behavior and ensure valid and invalid evidence can be
+  distinguished; a keyword or test count is not semantic proof.
+- **Performance** — inspect complexity, allocations, and concurrency only when the changed path or
+  data volume makes that risk relevant.
+- **Polish / regression** — inspect stale documentation, dead leftovers, and affected existing
+  callers when the Point changes a user-facing or shared surface.
+
+## State ownership
+
+- `board.md` records the current Point status and confidence.
+- `log.md` records append-only history and bounded state snapshots.
+- `usage.md` records observed lifecycle events and exposed telemetry; unknowns are `n/a`.
+- `coordinator.md` is a generated re-contextualization projection, never canonical.
+
+The Coordinator owns board/log hygiene and records role boundaries. The Driver owns scoped source
+changes and observations. Reviewers verify against the Point and current contract. The Run guide
+defines when any of these observations permit completion; no role may flip a status by assertion.
+
+## Capability map
+
+| Capability | Responsibility | Run reference |
 |---|---|---|
-| **Simplicity Auditor** | Adds code, deps, or abstractions. | Runs the simplicity ladder; cuts speculative flexibility. |
-| **Architecture Reviewer** | Changes core structure or new abstractions. | Validates against `foundations.md`, SOLID, long-term shape. |
-| **Security Reviewer** | Touches auth, input validation, secrets, or trust boundaries. | Runs the security checklist. |
-| **Performance & Concurrency Auditor** | Touches hot paths, parallelism, async/await, locks, or large-N structures. | Measures Big-O and wall-clock impact; checks races, lock ordering, async safety. |
-| **Regression Auditor** | Touches `SKILL.md`, routing, or existing templates. | Verifies old triggers and templates still work. |
+| Authorization / preflight | Check intent, Ready fingerprints, dependencies, contract and environment. | `run.md` §Authorization and preflight |
+| Implementation | Work inside Touches and preserve protected expectations. | `run.md` §State transitions |
+| Mechanical observation | Capture real command, process, artifact and revision evidence. | `run.md` §Evidence and recovery |
+| Semantic review | Review only where risk requires independent meaning judgment. | `run.md` §Independence and evidence grades |
+| Integration / acceptance | Test the merged tree, semantic consumers and global obligations. | `run.md` §Integration, global acceptance, and close |
+| Recovery | Preserve counters/history; classify failures and emit packets. | `run.md` §Failure classification and correction |
 
-#### Simplicity ladder
-
-The Simplicity Auditor runs the simplicity ladder before accepting any code, dependency, or abstraction — and only after understanding the problem first: read the task and trace the real flow, because the shortest diff in the wrong place is a second bug.
-
-Rungs, in order:
-1. Does this need to exist at all? Speculative need is skipped — YAGNI — and the skip is said out loud.
-2. Does it already exist in this codebase? Reuse before rewrite; the shared function is fixed once, not copied and patched.
-3. Does the standard library or a native platform feature cover it? stdlib first.
-4. Does an already-installed dependency cover it? Never add a new one for what a few lines do.
-5. Can it be one line? One line.
-6. Only then, the minimum code that works.
-
-Operating rules: fix the root cause, not the symptom — grep every caller and fix the shared function once. Deletion over addition, boring over clever, fewest files, no unrequested abstractions; among equal-size stdlib options, take the one that is correct on edge cases. A deliberate simplification that cuts a real corner carries a marker naming the ceiling and the upgrade path — a decision record, not an explanatory comment; reviewers do not flag the marker as a comment violation.
-
-Boundaries — never simplify away: input validation at trust boundaries, error handling that prevents data loss, security, accessibility, or anything explicitly requested. Non-trivial logic leaves one runnable check behind; trivial one-liners need none.
-
-#### Security checklist
-
-The Security Reviewer runs this checklist on anything touching auth, input, secrets, or trust boundaries:
-- Inputs are validated at the trust boundary; nothing unescaped reaches a command, query, or path (injection).
-- Secrets never land in logs, errors, or diffs.
-- authz is checked on every path: unauthenticated or cross-tenant access returns 401/403, not a rendered resource.
-- No new dependency unless the simplicity ladder above justifies it.
-
-## Single source of truth for state
-
-- **`board.md`** is the only place that records point status (🔴 🟡 ⏸ 🟢 · ⚪ skipped (optional slice not executed, with one-line reason)). `plan.md` §5 never carries status columns.
-- **`log.md`** is append-only history. It records what happened, not the current state.
-- **No status payloads over the agent messaging channel.** Coordination messages are plain prose; the board is where status lives.
-
-## Roles (when used)
-
-### Driver
-- Owns code changes, writes files, runs tests, makes the done-signal pass.
-- Appends a v2 lifecycle `start` before substantive work and exactly one `finish` observation at close; an interrupted run receives `observe-incomplete`, never an invented finish.
-- Before any behavior-changing edit, writes the INTENT gate line per the point briefing: `INTENT: current code does <X>; done-signal expects <Y>; <source> says <Z>.` If X, Y, and Z do not agree, surfaces the contradiction and stops.
-- Self-corrects up to **3 failed fix-verify cycles on the same issue**; after that, stops, reports the actual output and current hypothesis, and escalates.
-- Reports result and changed files, with its **Evidence** block (command, trimmed output, exit line).
-- Owns the attempt journal: appends one line per failed attempt, re-reads prior lines before retrying.
-
-### Reviewer (Pair mode)
-- Verifies output matches the point briefing and `design-contract.md`.
-- Reviews for Clean Code, SOLID, conventions, naming.
-- Reports PASS or findings.
-
-### Spec Reader (Pod/Squad mode)
-- Summarizes must-produce / must-not-touch before the Driver writes.
-- Verifies output after the Driver reports done.
-
-### Quality Guardian (Pod/Squad mode)
-- Reviews diff for smells, redundancy, SOLID, naming, self-documenting code.
-
-### Coordinator (Pod/Squad mode)
-- Owns flow and workspace hygiene; updates `board.md` and `log.md`.
-- Observes every Driver, Reviewer, Checker, Coordinator, and Retro role boundary in `usage.md`; appends `finish` or `observe-incomplete` without gating point closure.
-- **Continuity:** ONE logical Coordinator owns the whole execution. It is long-lived across points and waves where the harness supports persistent agents; where it does not (or across sessions), it re-spawns per point and MUST read `coordinator.md` + `board.md` + `log.md` before its first action. It refreshes `coordinator.md` at every point close — a projection, never canonical; canonical state stays in `board.md`/`log.md`.
-- Collects PASS from reviewers; flips 🟢 only after sign-off — Full gate: the Coordinator sign-off section in `reports/P-0N-report.md`; Lite gate: the evidence block recorded in `log.md`.
-- On budget exhaustion or no-progress, flips the point ⏸ and files the escalation packet.
-
-### Verifier / Red-Teamer
-- Runs `/tackle-verify` on the point before it is handed to the Driver.
-- Produces a findings list with certainty levels (HIGH/MEDIUM/LOW).
-- Uses `references/failure-modes.md` as a checklist to name the risk created by skipped or faked execution steps.
-- A HIGH finding blocks execution; MEDIUM blocks unless the user accepts the risk; LOW is advisory.
-- Independent from the Driver and Reviewer; can be the same agent as the Coordinator only on trivial Solo points.
-
-## Lifecycle
-
-1. Reviewer/Spec Reader summarizes scope (skip in Solo).
-2. Driver writes smallest change + runs done-signal.
-3. Reviewer/Spec Reader + Quality Guardian review (if multi-agent).
-4. Specialist auditors review (if Squad).
-## Wave gates (multi-wave execution)
-
-When the plan decomposes into waves (dependency graph, `plan.md` §5), two gates bound every wave — the wave-strategy artifact's content (removed in 7.0) lives here:
-
-### Pre-wave verification gate (BLOCKING)
-
-Before any wave starts, run `/tackle-verify` on every point in the wave. A point with HIGH findings is removed from the wave and returned to planning. MEDIUM findings require explicit user acceptance; LOW findings become notes for the Driver.
-
-This gate runs once per wave, not per point, so parallel-ready points are verified in batch.
-
-### Inter-wave quality gate (BLOCKING)
-
-After a wave's points merge and before the next wave starts, run ONE gate over the **merged** tree (per-point reviewers see one point; the gate sees the whole, where drift and races live):
-
-0. **Verification re-check** — re-run `/tackle-verify` on the merged diff; new drift or broken claims block the next wave.
-1. **Run the checks, don't read them** — the suite is green; stability holds (repeat ×N under a hard timeout; a hang = fail); concurrency is race-clean if the env has a checker.
-2. **Fundamentals** — DRY, no smells, the dependency rule holds, naming per the project's guidelines, public surface documented.
-3. **Grounding** (if `foundations.md` exists) — every new abstraction in the wave's diff has its decision→principle→source row.
-4. **Contract & hygiene** (if `design-contract.md` exists) — implemented surface matches it, or the spec was superseded first; the board + log are current.
-
-**Verdict** → `PASS` (next wave launches) · `PASS-WITH-NOTES` (launches; notes become TODOs on the next wave) · `FAIL` (next wave blocked; findings route back to the owning point).
-
-## When a point is done
-
-Point closure is one protocol: the report file is the communication channel, the named handshake runs through its sections, and the Coordinator sign-off gates the flip.
-
-### Closure report — `reports/P-0N-report.md` (Full gate only)
-
-Every Full-gate point closes with one report file in the workspace `reports/` directory. **Lite-gate points keep their evidence in `log.md` as today (D-11).** `log.md` stays canonical: it keeps a one-line summary + pointer to the report, never the full evidence. Sections, in order, each appended by its owner:
-
-1. **Scope** — Reviewer/Spec Reader: must-produce / must-not-touch summary (skipped in Solo).
-2. **INTENT + Evidence** — Driver: INTENT gate lines, attempt journal, done-signal run with its **Evidence** block (command, trimmed output, exit line).
-3. **Reviews** — Reviewer/Spec Reader, Quality Guardian, specialists: PASS or findings. Reviewers verify the work, they don't trust the Driver's report.
-4. **Checker re-run** — independent checker (maker/checker, condition 1 below): done-signal re-run evidence, its **tier** per §Model binding, the reward-hacking guard result, and a `model-binding: unavailable` note when checker ≠ maker could not be honored. When the briefing declares `Lenses:`, it also records the lens list, each lens's verdict, and the vote count.
-   **Double gate (5.0, flag `tackle-gate`)**: the section also records the direct done-signal command's output — green is a precondition of the Coordinator's sign-off below; no mechanical green, no flip.
-   It also records the point's **evidence grade**, derived mechanically from the evidence block (never self-declared):
-   - **E1 command-verified** ⇔ this section (Lite gate: the `log.md` evidence block) carries command + output + exit line from the independent checker.
-   - **E2 review-gated** ⇔ a review-gate marker with rubric + named reviewer (no honest command exists).
-   - **E0 UNVERIFIABLE** ⇔ an explicit UNVERIFIABLE label.
-   - **E3 asserted** ⇔ anything else.
-   Grades are DERIVED, never self-declared; any later re-derivation that disagrees is a grade-inflation finding.
-5. **Coordinator sign-off** — verdict (`closed` / `rework` + reason) + regression sweep result. **Solo assisted (L2) points: the human checker writes this section (D-09).** The 🟢 flip requires this section AND, when the workspace flag `tackle-gate: on` (absent = off, 4.x flip preserved), the mechanical green from section 4's direct done-signal block: no sign-off, no flip; no mechanical green, no flip.
-
-Solo points compress to sections 2 + 4 + 5.
-
-A point declaring `Ship-gate: owner-confirms-before-close` adds an **In-scope confirmation** section to its report — the owner's explicit confirmation that the point ships in this release, recorded before the Coordinator sign-off. Without it the point stays 🟡 regardless of evidence grade; a later descope flips it ⚪ with the WAS-line as today (status vocabulary unchanged).
-
-### Closure handshake
-
-1. Driver → `closure-request` (point id + report pointer) after writing its INTENT + Evidence section.
-2. Checker → `closure-verdict` (re-run result + reward-hacking guard result) via the Checker re-run section.
-3. Coordinator → `sign-off` (flip authorized) or `rework` (finding + owner) via the Coordinator sign-off section.
-
-The report file is the record — each agent appends its section. Where the workspace harness map records `agent-messaging: supported`, the same messages MAY also travel over the agent messaging channel for rework speed; the file remains the record either way.
-
-**Rework bound (D-10):** at most **2 closure-rework cycles** per point, separate from the Driver's budget of 3 failed fix-verify cycles. Exhaustion ⇒ the point is marked blocked (⏸) and the Coordinator files the escalation packet.
-
-### Communication rules
-
-- Technical discussion in the agent messaging channel or file comments.
-- Driver acts on concrete next steps only.
-- Disagreements: spec → Spec Reader; quality → Quality Guardian; simplicity → Simplicity Auditor; performance → Performance & Concurrency Auditor; priority/flow → Coordinator.
-- Deadlock → Coordinator escalates to user.
-
-### Opt-in `Lenses:` field (multi-lens checker)
-
-A point briefing MAY declare **`Lenses:`** — a list of distinct verification lenses (e.g. `correctness, security, repro`). Absent ⇒ today's single checker, unchanged. When declared, done-condition 1 runs as N independent skeptic checks decided by majority vote (see below), and closure report section 4 records the lens evidence.
-
-### Standard lens catalog
-
-Reusable lenses for `Lenses:` — pick per point risk; blanket-applying all of them wastes the vote.
-
-| Lens | Skeptic question | Declare when |
-|---|---|---|
-| `correctness` | Does it do what the point's Goal says, at the boundaries? | default for logic changes |
-| `security` | Trust boundaries: injection, secrets, unsafe input handling? | touches auth, user input, network, filesystem |
-| `repro` | Does the done-signal actually fail when the behavior is broken? | new or changed done-signals |
-| `performance` | Obvious complexity or allocation regressions on the hot path? | hot path or data-volume change |
-| `simplicity` | Is there a smaller shape that passes the same done-signal? | new abstraction or >1 file touched |
-| `polish` | Dead code, stale docs/comments, leftovers in the diff? | closure pass on user-facing surfaces |
-
-### Done-conditions
-
-A point flips to 🟢 only when every condition holds; each maps to a report section (Lite gate: same conditions, evidence in `log.md`):
-
-1. **maker/checker**: the Driver's own done-signal run is informative, never gating. The 🟢-flipping run and its evidence come from an **independent checker** — tiered by autonomy: Pair/Pod/Squad: the Verifier or Coordinator; Solo assisted (L2): the human confirms after seeing the evidence; Solo unattended (L3) or any production-path point: an independent fresh session/subagent reading only the point file and workspace state. If the harness cannot isolate a fresh session, fall back to the human checker and record that fallback in `log.md`. (Report section 4 names the checker's tier.) When the briefing declares `Lenses:`, the checker runs N independent skeptic checks, one per lens — N ≥ 2, lenses distinct in kind, not rewordings — and a finding survives only under majority vote (⌈N/2⌉ lenses pass it); skeptic lenses inherit the checker's tier binding (frontier attempted, `model-binding: unavailable` recorded when unbindable), and the reward-hacking guard (condition 2) still reopens on loosened checks regardless of the vote.
-2. **Reward-hacking guard**: the checker greps the diff for removed, disabled, or loosened tests, assertions, or done-signals unless the point's Goal explicitly requires it. Any such change reopens the point (🟢 → 🟡) and blocks the current one. (Report section 4 records the result.)
-3. **Verifier / Red-Teamer**: `/tackle-verify` passed with no HIGH findings and no unresolved MEDIUM findings.
-4. Driver: done-signal passes **with its Evidence block recorded** — in the report (Full) or in `log.md` (Lite).
-5. Reviewer/Spec Reader: output matches briefing and `design-contract.md`.
-6. Quality Guardian: no quality findings (if Pod/Squad).
-7. Simplicity/Regression/Performance & Concurrency Auditor: no findings (if Squad and triggered).
-8. Coordinator: `board.md` flipped 🟢 and `log.md` appended — one-line summary + pointer (Full) or the evidence entry (Lite).
-9. **Regression sweep**: done-signals of every 🟢 point with intersecting Touches re-ran green; any failure reopens that point (🟢 → 🟡) and blocks this one. (Report section 5 records the result.) If the repo already carries a code-graph tool (e.g. graft, or a language server), the checker MAY tighten the Touches intersection to symbol-level callers before re-running; absence of such a tool changes nothing — file-level intersection remains the default and is never a finding.
+For grounding, quality, and migration concerns, use the linked shared guides. Those guides may
+describe their own PLAN, audit, or historical procedures, but they do not authorize source
+execution; `run.md` does.

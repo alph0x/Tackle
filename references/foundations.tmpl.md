@@ -1,30 +1,29 @@
-# Foundations — why each structural choice is the way it is
+# Foundations — structural decisions and evidence
 
-> **Full-gate depth artifact.** Create this for any Full initiative that introduces or shapes
-> architecture (a new subsystem, a layering, a set of patterns). For a bounded change that
-> only follows existing structure, skip it — the per-point "Recommended approach" is enough.
+> **Full-gate depth artifact.** Use this file when a Full initiative introduces architecture,
+> a subsystem, a boundary, or a reusable pattern. A bounded change that follows existing
+> structure can justify the choice in its Point instead.
 
-**The backbone is Clean Code + SOLID, grounded in the best referents of software design.**
-Grounding rule (binding when this file exists): **every pattern or abstraction the plan
-introduces gets a row here BEFORE it ships** — decision → principle → source. *"It felt
-cleaner"* is not a justification. Reviewers verify a row exists and that the cited principle
-actually fits; superseding a row requires superseding its decision (`D-xx`).
+Foundations records decisions that affect more than one Point. The standard is observable
+responsibility, relevant constraints, and integration fit. A design is justified by the need
+it serves and the evidence that checks it; generic style slogans do not substitute for either.
 
-Architecture recommendations are evaluated against the checklist in Step 5.5 of `design-and-contract.md`.
+## Decision → responsibility → evidence
 
-## Decision → principle → source (the standing choices)
+Every new abstraction or boundary gets a row before it ships. Explain the responsibility it
+owns, why that boundary is useful here, and the test or inspection that would expose a wrong
+shape. Record a superseding decision before changing a sealed row or replacing its rationale;
+the new row names the earlier decision and the retained safety obligation.
 
-Backbone: Clean Code + SOLID. Cite the *specific* referent per row (Martin/Beck/Fowler/GoF,
-Cockburn/Evans/Parnas/Liskov/Meyer/Nygard, an RFC, the spec, the in-house module you mirror) —
-the citation is the row's `Source`, so no separate canon table is needed.
-
-| Choice (where it shows up) | Grounding (the principle) | Source (the referent) |
+| Choice and location | Responsibility / constraint | Evidence and source |
 |---|---|---|
-| {{the abstraction/pattern, + where in the code/spec}} | {{the principle it satisfies}} | {{the specific referent — e.g. Martin, Dependency Rule; or `Libraries/X`}} |
+| {{abstraction or boundary}} | {{single observable responsibility; relevant correctness, security, performance, or dependency constraint}} | {{test, contract clause, local precedent, or external source}} |
 
-## How to use this file during execution
+## Applying the foundations
 
-1. Reaching for a pattern not listed here → STOP, add the row (choice, grounding, source);
-   if it changes structure, record a `D-xx` first.
-2. Reviewer check: for each new abstraction in the diff, find its row; missing row = finding.
-3. Disagreement about a choice → argue against the cited principle, not against taste.
+1. Prefer the smallest coherent shape that satisfies the contract and its consumers.
+2. Keep each boundary's inputs, outputs, errors, and effects visible in the contract or Point.
+3. Add a row when a new abstraction appears; missing evidence is a review finding.
+4. Keep local freedom for equivalent implementations and formatting where consumers do not
+   observe them. A reviewer evaluates the stated responsibility and evidence, not a preferred
+   pattern name.

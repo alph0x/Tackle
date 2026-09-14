@@ -1,23 +1,37 @@
 # Step 8.5 — Migrate
 
-Bring an old plan to the current methodology — a single **full-adoption** track with no archival shortcuts: migration ends when the workspace is fully featured (structurally conformant plus carrying every workspace-level feature), never at a reduced "archival" state, even when the plan's work is all closed.
+Migration is a **copy-first, selected-active-work** operation. It never structurally rewrites a live
+workspace or its history during the migration trial,
+automatically migrates unrelated or closed work, upgrades historical evidence, or turns a query into
+execution. The 7.3 → 8.0 checklist below is the current protocol; older checklists remain readable
+historical context and cannot bypass its selection, pinning, history or rollback guards.
 
-Generic step 3's forward-looking scope applies to EXECUTION work only: closed points are never re-executed, historical log entries stay untouched (append-only), and execution protocols (INTENT gate, maker/checker, closure reports) bind at the next point execution. The workspace itself — closed work included — conforms structurally in full.
+Only a selected active workspace is migrated, and only on a disposable copy. Closed points retain
+their recorded state and evidence; future execution uses the RUN protocol at a Point boundary.
 
-`improve this plan` now routes here: an old Tackle / pre-Tackle plan runs this migrate track (Mode A/A'); an unstructured source is ingested fresh through `/tackle-plan` (Mode B) instead.
+`improve this plan`, `migrate`, and `upgrade` route to PLAN's migration preparation. An unstructured
+source is ingested fresh through PLAN.
 
-A migrated workspace MUST satisfy the full-adoption contract F-1..F-8; each line names the checklist item that verifies it:
+For historical interpretation only, older migration records may use the following F-1–F-8 labels;
+they are not current obligations outside the v7.3 → v8.0 checklist:
 
 - **F-1 · Agent contract** — `AGENTS.md` carries the Autonomy level, harness map, §Model map with capability line, `agent-messaging` capability row, and current Methodology stamp → v3.2 → v3.3 items 1, 3 and v2.1 → v3.0 items 6, 8.
 - **F-2 · Artifact names** — current artifact names only; every rename reference-updated workspace-wide and recorded in `decisions.md` → Artifact renames checklist.
 - **F-3 · Status conformance** — `plan.md` lists every P-xx id; `board.md` is the ONLY status source (vocabulary 🔴🟡⏸🟢⚪) → Structural conformance items 1–3.
 - **F-4 · Citations** — every `file:line` citation anchored or git-historical; no bare `file lines X–Y` remains → Citations item.
-- **F-5 · Point fields** — points with remaining work carry the full current field set (Traces-to, INTENT gate, Autonomy override, anchored Context); done points carry Traces-to minimum → v3.0 → v3.1 items 1–3 and Structural conformance item 4.
+- **F-5 · Point fields** — points with remaining work carry the current self-contained fields;
+  completed, blocked and skipped points retain their historical fields and evidence unchanged.
 - **F-6 · Evidence discipline** — log entries written after migration carry evidence blocks; historical entries stay untouched → v2.1 → v3.0 item 2, applied forward-looking.
-- **F-7 · Execution protocols** — `AGENTS.md` names maker/checker, closure report + sign-off, one logical Coordinator with `coordinator.md`, the closure handshake, and the rework bound as binding for any future point execution → v2.1 → v3.0 item 7, v3.0 → v3.1 items 1–2, v3.2 → v3.3 item 2.
+- **F-7 · Execution protocol** — future work follows the single RUN procedure for explicit intent,
+  scoped writes, evidence, correction limits, integration and close/block; any review obligation is
+  the one named by that Point, with no second closure loop.
 - **F-8 · Verification** — `lint: N/N checks passed` on the migrated workspace and the Methodology stamp is current → generic step 6 plus each checklist's record item.
 
-## Generic migration
+## Historical migration shape
+
+The following generic sequence and versioned checklists document older releases. They are retained
+for interpretation of old workspaces only; the current 7.3 → 8.0 selection, pinning, preservation
+and rollback guards always take precedence.
 
 1. Detect the gap (trust structure, not just the stamp).
 2. Preserve what's settled.
@@ -25,6 +39,50 @@ A migrated workspace MUST satisfy the full-adoption contract F-1..F-8; each line
 4. Re-ground remaining points.
 5. Add missing artifacts.
 6. Lint + checkpoint.
+
+## v7.3 → v8.0 checklist
+
+- Full execution uses the optional `full-checks.md` capture/extraction recipe: record actual confinement, script/input snapshots and selector membership; reuse only current affected observations. Existing open workspaces adopt the changed procedure by explicit decision. Prior evidence and closed workspaces are not rewritten.
+
+
+Run these steps only for a selected active workspace and only on a disposable copy:
+
+1. **Select and checkpoint** — record the exact workspace path, selection rationale, source and
+   contract revisions, and a checkpoint manifest. Copy the selected workspace and create a rollback
+   sentinel beside it. Leave every unrelated workspace and neighbor untouched.
+2. **Snapshot history** — hash the original `log.md` and `usage.md` bytes (when present), including
+   whitespace and headers. Preserve contracts, evidence artifacts, statuses, and legacy
+   completed/blocked/skipped evidence. Do not rewrite, backfill, re-grade, or reorder history.
+3. **Compile remaining work** — inspect legacy Points and compile only remaining unstarted work into
+   current Point fields. Mark readiness `pending` or unverified until the current checks actually
+   pass. A completed, blocked, skipped or unverifiable Point stays in that state and is not
+   re-executed.
+4. **Pin interrupted work** — an in-progress or interrupted Point continues under its pinned old
+   procedure until its Point boundary. Record an `observe-incomplete` continuation when end data is
+   unknown; do not silently restart its side effect under RUN.
+5. **Adopt at a boundary** — after the selected Point completes or reaches a deliberate boundary,
+   use STATUS for inspection and RUN for explicit execution. Verify the new contract, routes,
+   status read-only behavior, evidence handling and compatibility aliases on the copy. For future
+   Lite/Full closures, require accessible current evidence and let unavailable mandatory coverage
+   block its owning scope; optional coverage and unknown telemetry remain non-gating. Future Lite
+   workspaces use docs/plans/<initiative>/; preserve existing historical paths and counters without
+   guessing or rewriting them. Verify role outcomes are distinct from initiative completion.
+6. **Prove rollback** — restore a separate rollback copy from its checkpoint, compare `log.md` and
+   `usage.md` hashes byte-for-byte, and confirm the neighboring sentinel and every unrelated
+   workspace remain present and unchanged. Discard disposable copies after the observation; never
+   repair history in the live workspace.
+7. **Record adoption** — after the copy passes and the owner adopts it at a Point boundary, promote
+   only the validated candidate copy's future artifacts and Point fields selectively; retain the
+   original snapshots, contracts, evidence and history. If rollback discarded that candidate,
+   recreate and revalidate the same candidate before promotion. Append an adoption record to the
+   selected workspace naming the copy, checks, revisions and rollback result. This append-only
+   boundary record and selective promotion are the sole live-workspace actions; they never rewrite
+   history or claim a release. Publishing a Tackle release requires a separate owner order.
+
+The migration test must exercise a selected active workspace plus completed, blocked and skipped
+legacy rows, an interrupted pinned Point, changed contract, byte hashes, rollback sentinel and an
+old alias request. A boolean result is insufficient: retain disposable fixtures, hashes,
+read-only query output, and the rollback observation.
 
 ## v7.0 → v7.1 checklist
 
@@ -293,18 +351,20 @@ Run these when the workspace still carries pre-3.0 artifact names (typical for p
 3. **Handle historical-only files** — files with no current counterpart (`context.md`, `reference.md`) either map to the current artifact they belong to, or are kept as-is with a recorded `D-xx` marking them historical (never silently deleted).
 4. **Record the renames** — list every rename performed in a `D-xx` in `decisions.md`.
 
-## Structural conformance
+## Historical structural conformance
 
-Run these on every migrated plan — old structures fail lint rows 2 and 5 otherwise:
+These are historical checks for interpreting older records; the current selected-copy protocol above
+supplies the governing selection, preservation and readiness checks.
 
 1. **plan.md lists every point id** — if `plan.md` §5 has no point table (2.0-era plans), add a table or list naming every `P-xx` id with its Traces-to and briefing path.
 2. **Remove per-point Status fields** — delete every `**Status**:` field inside point files; `board.md` is the ONLY status source. Move any status the field carried into `board.md` first.
 3. **Board status vocabulary** — board statuses use 🔴🟡⏸🟢⚪ only (⚪ = skipped/won't-do, board-only, with a one-line reason); map a deliberate skip to ⚪, never to 🟢 — a skip is not done work.
 4. **Traces-to wiring** — every point file carries a `Traces to:` line; on 2.0-era formats with no "Status & wiring" block, place it in the header directly under the title.
 
-## Citations
+## Historical citations
 
-Run this on every migrated plan; it extends the anchoring rule (v2.1 → v3.0 item 1) with the git-historical form for targets that moved:
+This is historical guidance for older records; current grounding follows the active PLAN and RUN
+guides and the selected-copy protocol above:
 
 1. **Anchor or convert to git-historical** — every `file:line` citation is either (a) anchored and drift-checked as `path:NN — "literal fragment"` (re-verify with `/tackle-ground`), or (b) converted to the git-historical form when the target moved or drifted beyond re-anchoring: `git show <ref>:path`, noted inline — re-anchoring against the wrong content is worse than a historical-but-verifiable citation. Bare `file lines X–Y` citations must not remain.
 

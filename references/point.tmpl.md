@@ -1,106 +1,165 @@
 # Point P-0N — {{title}}
 
-> **Self-contained briefing.** A fresh agent in a new session must be able to resolve THIS
-> point from this file alone. Links are for depth, not prerequisites — EXCEPT a named
-> `design-contract.md` section the point implements, which IS required reading (name it in
-> Context). Tackle plans this point; it does not implement it here.
+> **Self-contained briefing.** A new worker must be able to implement this Point from this
+> file alone. Links provide depth only; they are never prerequisites for resolving the work.
+> The Point is the worker's executable contract, while the plan coordinates Points.
 
-## Status & wiring
-**Depends on**: {{none / P-0X — and what it needs from it, e.g. "P-01 (its `XPort` protocol)"}} · execution status in `board.md` (single board — don't duplicate here). Parallelism is read off the graph + Touches, not re-listed here.
-Report ownership: Driver writes only section 2 (Driver evidence); Checker writes sections 1, 3, and 4; Coordinator writes section 5 and owns sign-off. Each shared report section has one writer.
-Raw command output belongs in the point report or named artifact; log, status, and retro keep bounded pointers and derived conclusions.
-- **Traces to**: {{spec/ticket line this point implements — e.g. `spec.md:NN` or `ticket-123` acceptance #2}}.
-- **Touches (write scope)**: {{the files/dirs this point may modify — bounds the blast radius; disjoint Touches ⇒ parallel-safe (isolated worktrees), and keeps the done-signal's diff reviewable. Explicitly flag any touched path that ships to production — a flagged path requires the Rollout / reversibility section below}}.
-- **Autonomy override**: {{inherit (workspace level in AGENTS.md §Autonomy) / L1 / L2 / L3 — L3 requires the AGENTS.md §Autonomy conditions; production-path points cap at L2}}.
-- **Effort**: {{inherit (role default in team.md) / low / medium / high / max}}
-- **Ship-gate:** owner-confirms-before-close  <!-- optional; declare on points that add user-facing surface — "verified working" and "wanted in this release" are separate facts -->
-- **Type** (optional): `Type: standard` (the default when absent — existing plans need no changes), `Type: discovery`, or `Type: experiment`. Loop types declare `Rounds: N` (hard budget, default 5); an experiment additionally declares `Metric:` {{the objective command — a test, benchmark, score}} and `Threshold:` {{the pass value}}.
+## Purpose and scope
 
-### Loop done-signals (only when `Type:` is a loop archetype)
-- **Discovery** (`Type: discovery`): the done-signal is **convergence**, not a checklist — `K` consecutive rounds surfacing zero new findings (K=2 default); the round-counter check IS the runnable signal. Dedupe findings against **everything seen**, not just confirmed results.
-- **Experiment** (`Type: experiment`): the done-signal is the `Metric:` reaching `Threshold:` — each round proposes one change, runs the metric, keeps it on improvement, rolls back otherwise (keep/rollback; the attempt journal is the loop's state). Touches MUST exclude the metric/evaluator files.
-- **Both**: `Rounds:` budget exhaustion ⇒ ⏸ blocked + escalation packet, never a fake 🟢; findings that outgrow the point become new points or seeds — the loop never silently expands scope.
+- **Depends on**: {{none / P-0X — name the concrete artifact consumed}}.
+- **Traces to**: {{spec, ticket, or constitution anchor}}.
+- **Touches**: {{complete file and directory write set; flag shipped paths}}.
+- **Autonomy**: {{resolved concrete value; production paths cap at L2}}.
+- **Effort**: {{resolved concrete value}}.
+- **Budget**: {{resolved correction, round, timeout, or tool limits, when applicable}}.
+- **Inputs**: {{resolved source, config, dependency, and contract revisions/hashes; values are
+  compiled here so the worker does not need a plan lookup}}.
+- **Goal**: {{one observable, coherent change with a single done-signal.}}
+- **Non-goals**: {{explicit exclusions and preserved behavior}}.
+- **Type**: {{standard, discovery, or experiment; omit when standard}}.
+- **Ship-gate**: {{owner confirmation before close, only when this Point adds a user-facing
+  surface; omit otherwise}}.
 
-## Goal (single responsibility — one loop-completable change)
-{{What "done" means — observable, testable, ONE coherent change. If stating "done" needs an "and", split the point.}}
+Ground the current state with exact citations:
 
-## Context (grounded)
-- {{Why this point exists; what part of the system it touches.}}
-- `{{path/File.ext:NN}} — "{{literal fragment}}"` — {{relevant current code/behavior}}.
-  <!-- Anchored citation: fragment = verbatim substring of line NN, ≤ 60 chars, no double quotes, and SHOULD be unique in the file (the re-anchor check needs exactly one match; pick another fragment if unavoidable); a range `NN-MM` anchors to NN. -->
-- Deeper refs: {{`reference.md` §x · `specs/...md` · diagram}}.
+- `{{path/File.ext:NN}} — "{{literal fragment}}"` — {{what it proves}}.
+  <!-- The fragment is verbatim text from line NN (or range NN-MM), ≤60 chars, no double quotes,
+       and unique in the file; cite a first-line anchor when the rule is defined there. -->
+- {{additional citation or input surface, if needed}}.
 
-## Non-goals
-- {{What NOT to do in this point — keep it surgical.}}
+This file includes all worker obligations. `plan.md`, `board.md`, `AGENTS.md`, conversation
+history, and other plan-local files are not prerequisites.
 
-## Recommended approach
-1. {{concrete step, grounded in real files}}
-2. {{...}}
-3. Tests: {{what to cover and where}}
+The compiler substitutes concrete autonomy and effort tokens before handing off the Point (for
+example, `- **Autonomy**: L2` and `- **Effort**: high`); an unresolved `inherit` token is not a
+valid worker input.
 
-## Intent gate (before any behavior-changing edit)
+For a discovery Point, declare a finite `Rounds:` budget and finish only after the stated
+consecutive rounds converge with no new findings; deduplicate against everything seen. For an
+experiment, declare `Metric:`, `Threshold:`, and `Rounds:` plus an attempt journal recording the
+proposal, metric result, and keep/rollback decision; retain a change only when the metric
+improves, and protect the evaluator from the Point's Touches. Budget exhaustion blocks the Point
+with an escalation packet. Findings that exceed scope become a separately authorized Point or
+seed. If a touched path ships, declare its rollback/coexistence and flag-off or parity check in
+the optional Rollout section below; unflagged Markdown may use a documented revert without an
+invented feature flag.
 
-Before editing behavior, write one literal line:
+## Contract and cases
+
+### Shared clauses (compiled)
+
+Record each selected clause's id, revision, and hash when this Point is compiled. Inline only
+the clauses that apply; do not copy a whole guide or edit a compiled clause independently.
+
+- **{{clause id}} · {{revision}} · sha256 `{{hash of the exact clause bytes}}`**: {{the
+  canonical clause, copied byte-for-byte from its authoritative contract}}.
+
+The compiler hashes the exact UTF-8 clause bytes after selecting them, records the source path
+and hash beside the Point, and checks the digest before execution. A changed authoritative
+clause is superseded and regenerated by the compiler; a worker never repairs a hash or clause
+locally. The shared contract should cover observable purpose and stable requirement ids,
+grounded inputs and write limits, interfaces/errors/invariants/dependencies, normal and boundary
+cases, mandatory constraints and local freedoms, target/surrounding checks, and drift/blocking
+behavior. Exact bytes, order, paths, stdio, and exits apply only when specified; otherwise
+valid semantic equivalents are accepted.
+
+### Interface and invariants
+
+- **Consumes**: {{named inputs, revisions/hashes, and allowed forms}}.
+- **Produces**: {{named files, values, diagnostics, and their semantic or exact contracts}}.
+- **Errors**: {{recoverable, terminal, and unknown-input behavior}}.
+- **Invariants**: {{properties a test can observe; include mutation/effect boundaries}}.
+- **Dependencies**: {{crossing artifacts and why each is needed; ordering alone is labelled}}.
+
+### Case matrix
+
+| Case | Input | Expected observable result | Check |
+|---|---|---|---|
+| {{normal}} | {{...}} | {{...}} | {{test/artifact}} |
+| {{boundary}} | {{...}} | {{...}} | {{test/artifact}} |
+| {{invalid}} | {{...}} | {{diagnostic/exit/error}} | {{negative fixture}} |
+
+State exact output requirements separately from valid semantic alternatives. Include at least
+one valid alternative where formatting is intentionally irrelevant and a negative case that
+would expose an implementation satisfying only a keyword or count check.
+
+Distinguish adversarial but valid domain values from invalid inputs. At format/unit boundaries,
+derive cases from the consumer: escaping/round trips for strings, signs/precision for numbers.
+Nominal examples do not exhaust the declared domain; unspecified invalid-input policy is not
+invented. Expected values come from the contract, before reading candidate output.
+
+## Approach
+
+1. {{grounded implementation step and conditional alternative}}.
+2. {{integration step; preserve protected inputs and expectations}}.
+3. Add or update tests over the complete case matrix. For non-trivial executable behavior,
+   test-first is the default: record the failing red phase, then implement and refactor green.
+   A test count alone is not evidence of useful coverage.
+
+### Intent gate
+
+Before any behavior-changing edit, record one literal line in the report:
 
 ```text
 INTENT: current code does <X>; done-signal expects <Y>; <source> says <Z>.
 ```
 
-- `<X>` = current behavior at the touch point, grounded in `file:line`.
-- `<Y>` = what the point's verification expects.
-- `<Z>` = the stated intent from the authoritative source (`design-contract.md`, `spec.md`, `README.md`, docstring, or explicit user statement).
+If current behavior, the done-signal, and the authoritative source disagree, record the
+contradiction with expected/observed behavior, reproducer, affected consumers, attempts, and
+the smallest unresolved decision. Resolve it under explicit user statement > spec/README/
+docstring > tests > current code; do not silently rewrite protected expectations.
 
-Authority order when they disagree: explicit user statement > spec/README/docstring > tests > current code behavior.
+## Acceptance and recovery <!-- SEALED: {{D-xx}} -->
 
-If `<X>`, `<Y>`, and `<Z>` do not agree, the disagreement is the finding. Do not silently edit to make one match another; surface the contradiction and wait for direction, or document the assumption and proceed only if the disagreement is resolved.
+The done-signal is one copy-pasteable command from the declared cwd, covering the contract cases
+and propagating every required failure. An ordinary test suite uses its native result and exit;
+do not wrap it just to manufacture a count or PASS. Exact counts, content and literal PASS are
+required only when the consumer contract requires them; emit PASS only after all required checks.
+Validate any new validator and contract boundary on disposable positive and negative fixtures:
+valid semantic alternatives are accepted; invalid evidence/results and faulty implementations on
+valid domain inputs are rejected. Unspecified out-of-domain inputs need no invented rejection.
+Use the specified result/exit. Validators read evidence and never repair product outputs. Wrappers record
+wrapper exit, child exit, timeout, signal and stdout independently; wrapper success cannot hide
+a child failure. Before running a compound check, save its complete script and hash it with its
+inputs so its portable evidence retains the executed logic, not a prose command label.
 
-## Alternatives / fallbacks
-- **If {{condition / the recommended approach doesn't fit}}** → {{alternative approach + tradeoff}}.
-- **If blocked by {{X}}** → {{what to do; which question in `questions.md` it maps to}}.
+Once this heading is sealed at Ready, a protected acceptance edit requires a prior superseding
+`D-yy` decision; update the marker to `SEALED: D-yy supersedes D-xx`, regenerate compiled
+clauses, and rerun the affected checks before proceeding.
 
-## Recommended starting prompt
-<!-- Ready to paste into a fresh session to attack this point. Keep it grounded and bounded. -->
-```text
-Resolve Point {{ID}} ({{title}}) of the "{{initiative}}" plan.
-Repo: {{repo path}}. Read points/{{this-file}}.md first; it is self-contained.
-Do: {{the recommended approach, summarized}}.
-Constraints: {{non-goals / no-regression / surgical}}.
-Acceptance: {{acceptance criteria}}.
-Loop until green: {{the done-signal command}}.
+```sh
+{{direct command or checked script; prerequisites, contract cases and native pass condition}}
 ```
 
-## Rollout / reversibility (only if Touches include a production path)
-- {{revert procedure · flag default-off · no-op-when-off proof; delete this section if no touched path ships to production}}
+### Rollout and reversibility (only for a shipped path)
 
-## Acceptance — the loop's exit gate
-<!-- One home for "how the loop knows it's done". The command must be a literal runnable command (or a short pipe/combo) with an explicit pass condition. EXHAUSTIVE + MECHANICALLY verifiable: where a finite set exists, assert the COUNT. No prose gates, no `test -f`, no "document exists". -->
-<!-- Seal at ready: when the point is marked ready, seal this heading by appending the marker
-     `SEALED: D-xx` as an HTML comment on the heading line (D-xx = the decision that marked it ready).
-     Editing anything in a sealed section afterwards requires a superseding `D-yy` recorded in
-     `decisions.md` FIRST; the marker then becomes `SEALED: D-yy supersedes D-xx`. -->
-**Done-signal**: state the exact command, cwd, prerequisites, exit requirement, literal PASS output, and expected count/content.
-For executable gates, provide one copy-pasteable fenced command block, including all artifact/content/count assertions; an invocation followed by prose checks is incomplete. Declare the shell and runtime prerequisites, use quoting valid for that shell, exit nonzero on any failed condition, and print the literal PASS only after all checks succeed. Use the REVIEW-gate exception below when no honest executable check exists.
-Propagate every failure explicitly: use a checked validator or an AND-chain; independent commands followed by an unconditional PASS can hide failures. Compare exact file bytes directly, not through shell command substitution that strips newlines. Before accepting the gate, run it on disposable valid and invalid fixtures: valid must exit zero with PASS; each invalid fixture must exit nonzero without the gate's PASS. Preserve these results; a failed negative check blocks closure.
-Negative fixtures test the validator: mutate captured output/status evidence or substitute a disposable faulty implementation, keeping the task's specified input contract. Never invent product requirements such as rejecting malformed inputs unless the task requires them. Run these gate tests separately from the product's acceptance command; an implementation satisfying the stated task must pass that command.
-When authoring these checks, adapt the minimal pattern in `references/guides/validator-example.md`: a read-only evidence validator, isolated synthetic tests, then product validation and the final PASS. Preserve task outputs during negative tests.
-For wrappers, record wrapper exit, child exit, timeout, and signal meanings separately; wrapper success never substitutes for child success.
-Also validate wrapper metadata and the generated artifact together using one read-only validator.
-- The 🟢-flipping run of this command is the **checker's**, not the Driver's (maker/checker).
-  <!-- Judgment/investigation point (research, copy/UX, design spike) with no honest command? Make this a REVIEW-gate instead: "exit = artifact + rubric, reviewed" (e.g. `decisions.md` D-xx chosen with the matrix filled). Never a fake `test -f` green. -->
-- [ ] Self-contained acceptance checklist: completes **preflight and the exact runnable done-signal**; includes **grounded citations**; gets an **independent Checker rerun and semantic review**; proves **protected source integrity**; follows **bounded failure/rework escalation**; obtains **Coordinator sign-off** before the board flips; copies **required facts from linked files inline**; and states that `plan.md`, `board.md`, `AGENTS.md`, and other plan-local files are not prerequisites.
-- [ ] Covers **both halves of verification**: target criterion observed, and surrounding system still healthy (build / tests / lint for the touched area).
-- [ ] {{quality-dimension checks this point's **Touches** fire — Security / Performance / Concurrency / Correctness / … per the catalog (`references/guides/quality-dimensions.md`) — each **folded into the done-signal above** as a runnable fragment using this repo's tooling (e.g. "authz test in the suite asserts unauthenticated/cross-tenant → 401/403"), or a **review-gated** criterion only if no honest command exists. Omit axes that don't fire; don't restate the §6.1 universal ones}}.
-- [ ] {{point-specific condition — exhaustive over its case set (assert the count), verifiable by test/grep}}.
-- **If it fails →** {{likely failure → concrete fix}}. Self-correct up to **3 failed fix-verify cycles on the same issue** (or the workspace iteration budget, whichever comes first), then STOP + escalate (set a per-point budget here only if it differs).
+{{Revert procedure, enablement default, coexistence, and the check proving disabled behavior is
+unchanged. Omit this section when the Touches have no shipped path.}}
 
-## Open questions for this point
-- {{Q-0x in `questions.md` — if any is user-owned and unresolved, this point is Deferred, not loop-ready}}
+- **Target check**: {{the Point-specific observable and expected result}}.
+- **Surround check**: {{affected suite/build/lint and protected-source check}}.
+- **Quality axes**: {{only axes fired by Touches; each is a runnable fragment or review gate}}.
+- **Evidence ownership**: {{report writer for raw commands/artifacts; independent reviewer for
+  semantic verdict; coordinator for board/sign-off where the workspace uses those roles}}.
+- **Review**: apply the Point's risk-appropriate semantic rubric independently from mechanical
+  execution. If no honest executable check exists (for example, research, design, or Markdown
+  judgment), use a REVIEW gate containing the artifact, completed rubric, named reviewer,
+  observed verdict, and unresolved findings. Never substitute file existence, keywords, or
+  counts. If required review capability or isolation is unavailable, mark that evidence
+  obligation blocked rather than assigning a grade.
+- **Recovery**: follow the declared bounded correction budget. If it is exhausted or produces
+  repeated no-progress observations, stop and report expected/observed behavior, reproducer,
+  affected consumers, attempts, and the smallest unresolved decision.
 
-## Definition of Ready (the gates that can FAIL — if the rest of the briefing is filled, these are what's left to check)
-<!-- Only the checks not already visible by reading the sections above. Don't re-checklist the doc. -->
-- [ ] **Grounded**: every Context citation passes the drift check recorded by the newest ground entry in `log.md` (`sed -n 'NNp' file | grep -Fq "fragment"` → exit 0) — not "read in this session"; any stale citation makes the point **ungrounded** and not ready.
-- [ ] **Anchored**: it traces to a line in the spec, ticket, or `constitution.md`; untraced scope is flagged as drift.
-- [ ] **Single responsibility**: stating "done" needs no "and" (if it does → split; one point = smallest change with ONE runnable done-signal, per `references/guides/decompose-and-lint.md`).
-- [ ] **No open decisions inside it**: zero unresolved user-owned questions (if any → it's Deferred, not ready — Decision ownership).
-- [ ] **Loop-ready**: the Acceptance done-signal is a literal runnable command with an explicit pass condition (exit code / count / grep match); count-asserted where a finite set exists.
-- [ ] **Cold-agent-resolvable from this file alone** — the one true test of every section above.
+### Definition of ready
+
+- [ ] Citations are grounded and still match their cited lines.
+- [ ] Every requirement maps to a case, artifact, check, or specific review observation;
+      omitted requirements are rejected by semantic review even when ids remain.
+- [ ] Dependencies and interfaces name crossing artifacts and relevant invalidation.
+- [ ] The command is runnable with an explicit native pass condition exercised on applicable fixtures;
+      product execution is not required to pass before implementation. Applicable validator and
+      contract-boundary positive/negative fixtures pass, including any required count/content rule.
+- [ ] Unresolved user-owned questions defer this Point; ordinary technical choices remain local
+      freedom within the contract.
+- [ ] Protected source, sealed sections, and unrelated work are preserved.

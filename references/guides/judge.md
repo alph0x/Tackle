@@ -1,6 +1,7 @@
 # Judge — adversarial verification of finished work
 
-Triggered by `/tackle-judge` or when the user asks "did that actually work?" / "verify what it did".
+Triggered only by explicit `/tackle-judge` (or an equivalent explicit audit request). Judge is
+outside normal RUN; a diagnostic question or status query never authorizes a fix.
 
 **Stance:** A report is a set of claims, not evidence. The judge believes nothing it did not observe. The diff is ground truth; the report is not.
 

@@ -15,11 +15,15 @@ A short catalog of common execution failures, what each looks like from the outs
 | 9 | **Plowing through surprises** | Evidence contradicted the plan; agent forced the plan anyway | INTENT gate: state the contradiction and re-route the loop |
 | 10 | **Scope creep** | Drive-by refactors, style rewrites, "improvements" nobody asked for | INTENT gate + smallest correct change |
 | 11 | **Silent step-dropping** | Item 7 of 9 quietly never happened | Written checklist audited against the ask before reporting |
-| 12 | **Retry thrash** | Same failing fix attempted with small variations, forever | 3-cycle retry bound (team.md Driver / AGENTS.md rule 5) |
-| 13 | **Verification theater** | "This should work now" with nothing run; target passes but build breaks | Two-halves verification (point briefing acceptance) |
+| 12 | **Retry thrash** | Same failing fix attempted with small variations, forever | Shared persistent three-cycle correction budget and two-identical-observation stop (`guides/run.md`) |
+| 13 | **Verification theater** | "This should work now" with nothing run; target passes but build breaks | Target/surround and merged-tree integration observations (`guides/run.md`) |
 | 14 | **Spec betrayal** | Code changed to satisfy a check that contradicts the spec/README | INTENT-gate authority order: user > spec > tests > current code |
-| 15 | **Compliance theater** | INTENT lines and evidence blocks written plausibly without running anything; maker and checker share the same model's blind spots | Partially mitigated: re-runnable-output evidence + reward-hacking guard + independent checker + checker≠maker tier (best-effort). **Residual risk accepted**: fabricated text is caught only by `/tackle-judge` re-running claims — no mechanical detection exists today |
+| 15 | **Compliance theater** | INTENT lines and evidence blocks written plausibly without running anything; maker and checker share the same model's blind spots | Actual command/process/artifact observations with provenance; semantic review is independent only when its required isolation exists. Same-agent observations remain honestly labeled, and missing capability blocks that evidence. |
 | 16 | **Fake edge** | A point claims `Depends-on` for position in the graph, but nothing actually crosses the edge | Verify check 5 (edge audit): every `Depends-on` names its crossing artifact; a legitimate ordering-only edge is recorded as a `D-xx` waiver, never silently waived |
+| 17 | **Currency mismatch** | Producer emits cents while a consumer expects dollars; local unit suites are green | Global acceptance exercises integrated producers and consumers on the merged tree; unit green is insufficient |
+| 18 | **Hidden child failure** | Wrapper prints PASS while its child exits nonzero, times out, or receives a signal | Capture wrapper and child status independently; the real child return code is part of acceptance |
+| 19 | **Interrupted side effect** | Session ends after an irreversible action with no terminal message; rerun duplicates it | Inspect tree, process result, and raw evidence before repeating; append `observe-incomplete` when occurrence is unknown |
+| 20 | **Silent escalation** | A failed contract, validator, environment, or capability causes an unrecorded replan or stronger model | Emit the expected/observed/reproducer/consumers/attempts/decision packet; no hidden replan or model/effort upgrade |
 
 ## Reading an audit
 

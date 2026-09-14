@@ -2,79 +2,130 @@
 
 ## 1. Objective
 
-{{What is achieved, in terms of the result for the integrator/user.}}
+{{The observable result for the user or integrator, including stable requirement ids.}}
 
 ## 2. Expected result
 
-- {{observable 1}}
-- {{observable 2}}
+- {{observable result and its acceptance evidence}}
+- {{integration result and its acceptance evidence}}
 
-## 3. Non-goals (out of scope)
+### Behavior and outputs
 
-- {{What this initiative explicitly does NOT do.}}
+List every stable requirement as a row. The observable and boundary columns are semantic; state
+exact bytes, order, paths, stdio, or exits only when required by a consumer. A Point must carry
+the behavior behind an id, not merely repeat the id.
 
-## 4. Current state (detail in `reference.md`)
+| Criterion | Required behavior | Observable output/effect | Boundary cases | Valid alternatives |
+|---|---|---|---|---|
+| `{{R01}}` | {{...}} | {{...}} | {{...}} | {{...}} |
 
-<!-- Lead with the de-risking finding (Step 5): the ONE verified fact that reshapes the risk
-     profile — what makes this safer/smaller/different than it first looked. Then anchor the
-     approach to precedent: the in-repo house pattern and/or proven reference architecture
-     this should mirror, cited with file:line. Both before the generic state summary. -->
+### Acceptance and test strategy
 
-**Key finding (verified):** {{the fact that changes the shape of the work — e.g. "X is
-dormant, so this is an adoption not a hot replacement → low regression risk by construction".}}
+Map every criterion to a target check, surrounding check, and evidence slot. Include positive and
+negative fixtures for each validator boundary and state the plan-only boundary: preparation stops
+before source execution and cannot claim product PASS.
 
-**Precedent we mirror:** {{the established pattern in this repo / the proven reference
-module this design follows — `path` / repo, with file:line.}}
+| Criterion / obligation | Point | Target check | Surround check | Evidence slot |
+|---|---|---|---|---|
+| `{{R01}}` | `{{P-01}}` | {{command and pass condition}} | {{command and pass condition}} | `{{...}}` |
 
-{{Summary of the relevant code state, with `file:line` for the key points.}}
+## 3. Non-goals
+
+- {{preserved behavior and explicit exclusions}}
+
+## 4. Current state (grounded)
+
+**Key finding (verified):** {{one fact that changes the risk or scope}}.
+
+**Precedent we mirror:** {{local pattern or source with `file:line` citation}}.
+
+{{Relevant current code, inputs, and constraints with anchored citations.}}
 
 ## 5. Point decomposition
-<!-- Right-size check: if this table has ≤4 rows and no cross-track work, consider collapsing to `lite-plan.tmpl.md`. -->
-<!-- One row per point. Each point has a self-contained briefing in points/<id>-<slug>.md.
-     A point may map 1:1 to a phase. Delete the Spec/Plan cols if this plan doesn't use per-point depth artifacts. -->
 
-| Point | What | Traces to | Briefing | Depth (optional) | Depends on |
-|---|---|---|---|---|---|
-| **P-01 · {{...}}** | {{...}} | `spec.md:NN` / ticket line | `points/P-01-{{slug}}.md` | `specs/{{date}}-P-01.md` · `plans/{{date}}-P-01.md` | {{none}} |
+Each Point is a self-contained worker briefing. The plan compiles shared clauses into Points;
+workers do not need to discover obligations by reading this plan or another planning document.
+
+| Point | Responsibility | Traces to | Briefing | Depends on |
+|---|---|---|---|---|
+| **P-01 · {{...}}** | {{one coherent change}} | `{{spec:NN}}` | `points/P-01-{{slug}}.md` | {{none / artifact}} |
 
 ### Dependency graph
-```
-{{P-01 ──► P-02   (P-01 blocks P-02)}}
-{{P-03            (independent)}}
-```
-<!-- Parallelism is read off the graph; **status lives only in `board.md`** -->
 
-## 6. Acceptance criteria
+```text
+{{P-01 ──► P-02 (P-02 consumes the named artifact)}}
+{{P-03 (independent)}}
+```
 
-### 6.1 Universal per-point acceptance (binding for EVERY point — points reference this, don't duplicate it)
-<!-- The bar every point must clear before it flips 🟢. Define it ONCE here; each point's
-     "Acceptance" links to this block and adds only its point-specific criteria. Keep these
-     verifiable (a command or an inspection), not aspirational. Trim to what this initiative
-     actually needs. PROMOTE the load-bearing structural invariants from design-contract.md /
-     Step 5 up into this block — they're the gates that actually catch drift. This block is the
-     always-on BACKBONE (Architecture + Conventions & Style) plus the quality-dimension axes that
-     fire initiative-wide; per-point axes live in each point's Acceptance, not here. -->
-- [ ] {{tests cover the change — test-first by default for code points (red phase seen failing before implementation; opting out requires a D-xx — doctrine: `references/guides/testing.md`); the suite is green; each point's done-signal is a literal command with a pass condition}}
-- [ ] {{structural invariant 1, promoted from the contract — e.g. "core compiles with zero deps"}}
-<!-- Quality-dimension axes (catalog: `references/guides/quality-dimensions.md`): keep an axis HERE only if it fires for EVERY point.
-     An axis that fires for only SOME points lives in those points' Acceptance, not here. -->
-- [ ] {{concurrency axis, if it fires initiative-wide — e.g. "clean under the language's strict concurrency mode"}}
-- [ ] {{security axis, if it fires initiative-wide — e.g. "no unauthenticated path reaches X; inputs validated at the boundary; no secret in logs/errors"}}
-- [ ] {{performance axis, if it fires initiative-wide — e.g. "stays within the p99 budget; no N+1 on the hot path"}}
-- [ ] **Self-documenting code**: no explanatory inline comments; doc-comments on the public surface only; the *why* in commits/docs (an internal comment is a review finding — its fix is to clarify the code, not reword the comment).
-- [ ] {{grounded: any new abstraction has its row in `foundations.md` (if that file exists)}}
-- [ ] {{contract conformance: matches `design-contract.md`, or the spec was superseded first (if that file exists)}}
-- [ ] {{no regression on shared code; no new warnings}}
-- [ ] {{board hygiene: `board.md` + `log.md` updated; resolved Q-xx → D-xx}}
+Parallelism follows crossing artifacts and Touches; an ordering-only edge is recorded as a
+decision rather than disguised as data dependency.
+
+## 6. Readiness and acceptance
+
+### 6.0 Definition of Ready
+
+PLAN sets Ready only after structural checks, semantic counterexample review, two-way coverage,
+dependency/interface coherence, relevant positive and negative fixtures, and the relevant
+clause/code/config/dependency/input fingerprints pass. Include the reverse-direction scope-drift
+list and global obligations here; every global obligation needs an owner, check, and evidence slot.
+
+Record this literal preparation boundary in the report:
+
+`INTENT: PLAN prepares Points and stops before source execution.`
+
+Optional cold probes are risk-triggered and measurable: at most one initial probe plus one
+correction recheck. An empty doubts list does not pass a probe whose reconstructed output is wrong.
+
+### 6.1 Universal per-point acceptance
+
+Every Point's own Acceptance names its literal command and case set. This shared bar adds the
+integration obligations that apply to every Point:
+
+- [ ] Tests cover the stated normal and boundary cases; the suite and each Point done-signal
+      pass with checked native results/exits and any contract-required counts. Test-first is the default for non-trivial code;
+      an opt-out is an explicit decision.
+- [ ] Contract clauses, interfaces, invariants, and relevant quality constraints are reflected
+      in an observable check; equivalent valid implementations remain acceptable.
+- [ ] Protected inputs/source and unrelated files remain unchanged; warnings and regressions
+      in the touched area are absent.
+- [ ] Point dependencies name consumed/produced artifacts; relevant changes invalidate only the
+      affected consumers, and the compiler regenerates changed clauses before checks rerun.
+- [ ] The board and append-only log are updated by the coordinator after the checker review.
 
 ### 6.2 Initiative-level acceptance
-- [ ] {{observable, verifiable end-state for the whole initiative}}
-<!-- Verification = each point's done-signal command + this §6.1 bar. Shared tooling (test
-     runner, local mock/stub) is named once in `reference.md`/`AGENTS.md`, not a separate section. -->
 
-## 7. Risks / dependencies
+- [ ] Integrated flows, final outputs, packaging, and reproducibility pass their declared gates.
+- [ ] Every requirement is covered by a Point and every Point has a traceable requirement.
 
-- {{risk + mitigation; external dependency + who}}
-- **Rollout / reversibility** (if this touches a production path): {{how it ships safely —
-  enablement flag default-off, canary target, coexistence with the old path, and the
-  no-op/parity check that proves flag-off changes nothing. Omit if not production-facing.}}
+## 7. Risks and dependencies
+
+- {{risk, observable consequence, mitigation, and owner}}
+
+### Rollout and reversibility (only for a shipped path)
+
+{{Document the revert or coexistence procedure, migration/parity check, and enablement default
+when a flag exists. For an unflagged Markdown or documentation change, name the bounded revert
+procedure and omit invented flag or canary requirements.}}
+
+## 8. Decisions and questions
+
+- {{resolved `D-xx` or user-owned `Q-xx`; unresolved questions defer affected work}}
+
+## 9. Compiler and handoff procedure
+
+1. Resolve the anchors, behavior/output criteria, and requirement ids from the specification and
+   named inputs.
+2. Compile acceptance/test strategy, contracts/decisions, and each Point with only the shared
+   clauses it implements, preserving clause id, revision, and hash plus its interfaces, cases,
+   approach, and done-signal.
+3. Scaffold inside PLAN using the authorized gitignore decision; there is no second-session wait.
+4. Check criterion↔Point coverage in both directions, assign global delivery obligations, and
+   inspect crossing artifacts and configuration consumers. Run structural checks and one bounded
+   semantic counterexample review. Preparation uses fixture/readiness evidence only; it does not
+   execute source or claim product PASS.
+5. Record relevant fingerprints and optional risk-triggered probe evidence in the handoff. If a
+   contract, code, config, dependency, or input changes, invalidate only affected consumers,
+   regenerate changed clauses, re-ground, and rerun their checks.
+
+Workers receive their Point and explicitly named source/input artifacts. Conversation history,
+board state, and other plan-local documents support coordination but are not worker prerequisites.

@@ -1,5 +1,9 @@
 # Usage ledger — {{TITLE}}
 
+For a new Lite workspace, use the v2-only body in `lite-plan.tmpl.md`. This compatibility template
+is not a Lite prerequisite. A validation end must never be copied as a role end; use `At=n/a` for
+an unobserved role termination and record the reason in Source.
+
 ## Legacy compatibility ledger
 
 One markdown table, one row per **role run**, appended at role close. `Point` is `PLAN`
@@ -31,7 +35,8 @@ one terminal `finish` at role close. If a role ends abruptly, append `observe-in
 observed; never invent an end time or duration. `Run ID` defaults to
 `<YYYY-MM-DD-sN>/<point>/<role>/<ordinal>` and is unique within the workspace. Unavailable
 Harness, Model, Effort, Attempts, Rework, and Verification values are `n/a`, never estimated.
-Lifecycle recording is informative and never gates point closure.
+Attempts and rework retain the shared Run counters across actors and resumptions; they never reset
+for a new role or session. Lifecycle recording is informative and never gates point closure.
 
 Optional exact telemetry is an additive `usage.telemetry.jsonl` sidecar described in
 `references/guides/usage-observability.md`; the lifecycle table remains useful when the sidecar is

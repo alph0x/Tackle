@@ -1,6 +1,6 @@
 # {{TITLE}} — {{one line: what this is}}
 
-> **Methodology: Tackle 4.0.0.** See `AGENTS.md` for the workspace contract.
+> **Methodology: Tackle 8.0.0.** See `AGENTS.md` for the workspace contract.
 
 {{2-3 line description: what this initiative solves.}}
 
@@ -46,4 +46,4 @@ Add appendices here too (descriptive name, not numbered). -->
 
 ## Next step
 
-{{What to do when resuming — point to the last log entry / blocking questions.}}
+{{Use STATUS for a read-only digest or next selection. Use RUN only after explicit execution intent.}}

@@ -7,7 +7,7 @@
 - **core** — edit the template/guide that introduces the feature (the field, clause, or section). One responsibility, grep-able done-signal.
 - **lint-support** — add the mechanical row that enforces the feature's structural invariant (pipe-free, copy-paste, 0-lines-of-output pass).
 - **eval-scenario** — a trap fixture (README + GROUND-TRUTH + fixtures) proving the feature behaviorally; run a control arm against the pre-feature baseline to confirm it discriminates.
-- **migrate-checklist** — the version→version adoption checklist, executed (dogfood) against a copy of a real old workspace with a clean lint post-migration.
+- **migrate-checklist** — the version→version adoption checklist, executed (dogfood) against a disposable copy of a selected active workspace with a clean lint post-migration.
 - **release** — stamps + changelog + release sweep + D-13 gate (rule-inventory diff + method-arm eval).
 
 ## Edge pattern
@@ -36,4 +36,4 @@ The skeleton scales down to a 3-point Lite plan when the feature adds no mechani
 
 ## Provenance
 
-tackle-graph-execution (Tackle 4.0.0), 2026-07-20. Retro: `docs/plans/tackle-graph-execution/retro.md`. Eligibility caveat: the source graph was re-shaped post-seal (scope grew CI hook + 4.0.0 + single-release renumber); the FINAL shape distilled here is what proved stable through execution. Re-confirmed 6×: tackle-model-teams, tackle-testing-doctrine (Lite scaling), tackle-universal-update-check (Lite), tackle-slim-and-traps (Lite), tackle-5.0-self-verify (Full, 2026-08-03 — s23-flip-gate as the D-13 behavioral arm, double-gate contract change), graft-takeaways (Full, 2026-08-18 — three traps as the D-13 behavioral arms; 5 independent adoptions fanned as P-01→P-02 / P-03→P-04 sequenced on shared Touches, P-06 ∥).
+tackle-graph-execution (Tackle 4.0.0), 2026-07-20. Retro: the closed initiative's local retro artifact. Eligibility caveat: the source graph was re-shaped post-seal (scope grew CI hook + 4.0.0 + single-release renumber); the FINAL shape distilled here is what proved stable through execution. Re-confirmed 6×: tackle-model-teams, tackle-testing-doctrine (Lite scaling), tackle-universal-update-check (Lite), tackle-slim-and-traps (Lite), tackle-5.0-self-verify (Full, 2026-08-03 — s23-flip-gate as the D-13 behavioral arm, double-gate contract change), graft-takeaways (Full, 2026-08-18 — three traps as the D-13 behavioral arms; 5 independent adoptions fanned as P-01→P-02 / P-03→P-04 sequenced on shared Touches, P-06 ∥).

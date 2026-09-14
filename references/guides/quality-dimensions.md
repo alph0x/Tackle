@@ -1,13 +1,16 @@
 # Quality-dimensions catalog
 
-Each fired axis becomes a runnable done-signal fragment folded into the point's Acceptance, or a review-gated criterion only if no honest command exists. An axis fires when the point's **Touches** match its heuristic; omit axes that don't fire.
+Each fired axis becomes a runnable done-signal fragment folded into the Point's Acceptance, or a
+review-gated criterion only if no honest command exists. An axis fires when the Point's Touches
+match its heuristic; omit axes that do not fire. Quality asks whether the implementation owns a
+coherent observable responsibility and satisfies constraints relevant to its consumers.
 
 | Axis | Fires when (Touches heuristic) | Done-signal fragment (example shape) | If no honest command |
 |---|---|---|---|
 | Security | Touches auth, input validation, secrets, or a trust boundary. | Test asserts unauthenticated/cross-tenant access → 401/403; grep confirms no secret literals in the diff. | Review-gate: security checklist filled and reviewed. |
 | Performance | Touches a hot path, large-N structure, or tight loop. | Timing assertion under a hard budget (e.g. fixture run completes < N ms). | Review-gate: Big-O reasoning recorded and reviewed. |
 | Concurrency | Touches parallelism, async flows, locks, or shared mutable state. | Suite repeats ×N under a hard timeout; race checker clean if the environment has one. | Review-gate: lock-ordering / async-safety walkthrough. |
-| Correctness | Every point — fires by default. | The done-signal itself: tests over the case set, count-asserted where the set is finite. | Review-gate: worked examples reviewed against the spec. |
+| Correctness | Every point — fires by default. | The done-signal itself: tests over the complete case set, count-asserted where the set is finite, with required outputs and invalid cases. | Review-gate: worked examples reviewed against the spec. |
 | Test depth | Every code point; escalates with risk — acceptance on public-behavior changes, property on parsers/transforms/money, fuzz on untrusted input/concurrency, mutation on money/security invariants (tiers: `references/guides/testing.md`). | Each fired tier folded as a runnable fragment per `testing.md` — e.g. property runner ≥ N cases with recorded seed; one deliberate break → done-signal fails. | Review-gate: tier ladder reviewed with the reason each non-fired tier doesn't fire. |
 | Data integrity | Touches persistence, migrations, serialization, or schemas. | Round-trip test (write → read → compare); migration up + down leaves data intact. | Review-gate: migration plan reviewed with a rollback path. |
 | Accessibility (a11y) | Touches UI, markup, or user-facing flows. | Automated a11y linter passes; labels/roles asserted in component tests. | Review-gate: manual checklist (contrast, focus order, screen reader). |

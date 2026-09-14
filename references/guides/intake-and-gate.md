@@ -6,6 +6,10 @@ only after explicitly requesting it. Tackle provides guidance but does not perfo
 
 # Step 1 — Intake (infer first, then ask)
 
+Read this guide through sizing before creating artifacts or loading further guides. Intake anchors
+apply to every gate, but logging, scaffolding, compiled Points and handoff below apply only to
+durable Lite/Full workspaces. None records relevant profile-derived choices in its direct receipt.
+
 Extract or confirm:
 - Problem
 - Observable result expected
@@ -43,33 +47,78 @@ If no archetype matches, skip without offering. There is no scoring engine — r
 
 ## Decision ownership
 
-The user decides every doubt. Batch doubts with a recommended default each; don't drip-feed. Tag each 🔴 blocking or 🟡 proceed-on-default. Under delegation, every mandatory choice becomes a provisional `Q-xx` with your default.
+The user decides every product doubt. Batch doubts with a recommended default each; don't drip-feed.
+Tag each 🔴 blocking or 🟡 proceed-on-default. Under delegation, every mandatory product choice
+becomes a provisional `Q-xx` with your default. Reversible technical choices inside an explicitly
+authorized Point are local freedom when their decision and evidence are recorded.
 
 # Step 1.5 — Anchor the intake before sizing
 
 Lock the problem, observable result, top 2 non-goals, and highest-shape decision before choosing a gate.
 
+For a selected Lite route, `../lite-plan.tmpl.md` provides these preparation and execution steps in one place, including scaffold consent. The detailed guide sequence below is for Full.
+
+## PLAN preparation order
+
+PLAN is a preparation protocol, not a source-execution command. After the four anchors are
+confirmed, keep the work in this order so that every later choice has an observable contract:
+
+1. **Behavior and outputs** — turn each required behavior into a stable criterion id with its
+   observable output, boundary cases, and allowed semantic alternatives. Name exact bytes, order,
+   paths, stdio, or exits only when a consumer depends on them.
+2. **Acceptance and test strategy** — give every criterion a target check, a surrounding check,
+   and an evidence slot. Include negative fixtures for omitted behavior and invalid evidence.
+3. **Contracts and decisions** — compile the interfaces, invariants, dependencies, and recovery
+   rules that Points will consume. Resolve product choices as user-owned decisions; record
+   reversible technical choices as local decisions.
+4. **Decomposition and readiness** — create the scaffold, Points, coverage matrix, and bounded
+   readiness review. A Point is not Ready merely because its requirement id appears in a briefing.
+
+The preparation order is a single PLAN run. Do not wait for a later planning session before
+stabilizing a contract or assigning Ready. A new session with unchanged relevant fingerprints may
+reuse the recorded readiness evidence; changed inputs are handled by the selective revalidation
+rule in `verify.md`.
+
+Material product ambiguity blocks the affected criterion and its consumers. A reversible delegated
+technical choice is recorded with its decision and evidence and does not block unrelated scope.
+
 # Step 2 — Gate sizing (Full / Lite / None)
 
 | Gate | Use for | Example |
 |---|---|---|
-| **None** | One-session, one-file, no handoff | add a constant, rename a local |
+| **None** | One-session, one product file, specified behavior, bounded correction or local edit | restore a whitespace normalization already required by tests/spec |
 | **Lite** | Single-session, bounded scope, few unknowns | add one validation to an existing endpoint |
-| **Full** | Multi-session / multi-track / multi-team / high uncertainty / handoff expected | introduce a new subsystem |
+| **Full** | Multi-session / multi-track / multi-team / high uncertainty / coordination handoff expected | introduce a new subsystem |
 
-**Tie-breaker**: touches ≥2 modules OR changes public API OR spans sessions/teams OR handoff expected → **Full**.
+**Tie-breaker**: touches ≥2 modules OR changes public API OR spans sessions/teams OR coordination handoff expected → **Full**. A durable record for one bounded task alone remains Lite.
 
-## Triviality gate
+## Bounded None route
 
-A task is **trivial** only if **all** of these are true:
-- one file touched;
-- fewer than ~10 changed lines;
-- no new behavior introduced;
-- no searching needed to know what to change.
+Choose None before reading other guides/templates when all conditions hold: one session, one
+product file, a small localized edit (normally fewer than ten changed lines), a fully specified
+result, no new feature, public contract expansion, dependencies, migration, shared-state or security-sensitive
+change, cross-file integration, or handoff requirement. Focused inspection of the named source,
+spec and existing tests is allowed; repository-wide discovery or unresolved product choices is
+not. Restoring declared behavior counts as a correction, not a new feature merely because the
+broken implementation behaves differently. Scope or risk overrides line count.
 
-If a task later fails any criterion, announce the gate failure and enter the full loop (Lite or Full, depending on the other signals). Do not silently upgrade a trivial task; state why the gate failed.
+After explicit execution intent, name the scope and expected behavior, inspect the actual files
+and available check, then edit. An existing failing regression is sufficient red evidence; add a
+new test only for a meaningful uncovered case and use a new test file when originals are protected.
+Run the target and affected surrounding checks; one command may cover both when its coverage is
+explicit. Preserve protected files and unrelated changes. Stop on contradictions, unavailable
+required checks or repeated no-progress; use the same three failed correction-cycle cap as RUN.
+Record actual command/output/exit and available revisions in the tool transcript or a captured
+receipt; unknown clocks/model/effort stay `n/a`. Never invent a start, a fingerprint or independence.
+Finish with the change, observed result and remaining limit. Do not create a plan, log, ledger,
+board, templates, synthetic PASS wrapper or plan-lint work just to satisfy None.
 
-A **Lite** task is the smallest non-trivial plan: it still needs a `plan.md` and `log.md`. Trivial tasks skip the plan workspace entirely.
+If a condition fails, announce why and enter Lite or Full before affected work. Explicit user
+requests for a durable plan are honored even when None is eligible. A generic “Tackle plan and
+run” permits sizing; it does not by itself require a durable workspace. Lite requires `plan.md`,
+`log.md`, and `usage.md`; create separate decisions/questions files only when entries exist.
+Full adds the core coordination artifacts. A None receipt is not a new workspace and has no
+lifecycle-table requirement; existing workspaces retain their current ledger and history.
 
 ## Optional intake artifacts
 

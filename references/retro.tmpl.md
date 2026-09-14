@@ -1,5 +1,9 @@
 # Retro — {{TITLE}}
 
+Optional PLAN learning review. This artifact records
+observed causes and lessons without changing the execution procedure. Profile and archetype writes
+remain separately confirmed and owned by `/tackle-retro`.
+
 Written at initiative close (or mid-flight as a partial retro — say so here) by mining `board.md` + `log.md`. Every metric is mechanical: run the recipe from the workspace root, paste the value. In a Lite plan (no `board.md`), board-derived metrics report `n/a`; log-derived ones stand. Note: comprehension debt counts points that flipped 🟢 with no human review recorded in the log.
 
 ## Metrics

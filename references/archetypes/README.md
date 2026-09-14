@@ -19,4 +19,4 @@ Only `/tackle-retro` writes archetypes. Never hand-author or hand-edit a file he
 
 ## Read path — intake
 
-Intake Step 1 reads this directory alongside profiles (see `guides/intake-and-gate.md` §Learning-loop read). When an archetype matches the incoming initiative's shape, intake offers its skeleton as a tagged proposal — `(from archetype <name>)` — never a silent default. The user may accept, adapt, or override; overrides are retro material.
+PLAN intake reads this directory alongside profiles (see `guides/intake-and-gate.md` §Learning-loop read). When an archetype matches the incoming initiative's shape, PLAN offers its skeleton as a tagged proposal — `(from archetype <name>)` — never a silent default. The user may accept, adapt, or override; overrides are retro material.

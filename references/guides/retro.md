@@ -1,6 +1,8 @@
 # Retro — initiative retrospective (/tackle-retro)
 
-Triggered by `/tackle-retro [initiative]` or a natural phrase like "retro" / "how did it go". Runs at initiative close — every point 🟢 or the initiative abandoned — or on demand mid-flight as a **partial retro** (say so in the artifact title).
+Triggered by `/tackle-retro [initiative]` or a natural phrase like "retro" / "how did it go". Retro
+is optional: run it at initiative close or on demand as a clearly labelled partial retro. It does
+not replace RUN closure or create an autonomy loop.
 
 **Principle: detection before judgment.** Mine `board.md` + `log.md` by grep/count first; use judgment only to distill the counts into lessons. When the workspace carries `log-archive.md`, every mining grep runs over `cat log-archive.md log.md` — entries move, never copy, so the union double-counts nothing. Read-only over `board.md`, `log.md`, `decisions.md`; the only writes are `docs/plans/<initiative>/retro.md` (instantiated from `references/retro.tmpl.md`) and one `log.md` entry.
 
@@ -66,7 +68,9 @@ Distill from the metrics plus the Decisions and Blockers sections of the log. On
 
 ## Profile candidates (learning loop)
 
-The learning loop is the only mechanism that lets Tackle adapt to a user or project. It is opt-in, per scope, and never silent.
+The learning loop is the only mechanism that lets Tackle adapt to a user or project. It is opt-in,
+per scope, and never silent. Lessons must identify an observed cause and a future action; an
+unsupported opinion does not become a global rule.
 
 ### Opt-in (asked once per scope)
 
@@ -97,7 +101,7 @@ Present candidates as a batch. Each candidate must include:
 
 Everything is batch-confirmed by the user before writing. Never append to a profile without an explicit "yes".
 
-For each confirmed candidate:
+For each separately confirmed candidate:
 
 - Update counters from intake tally lines: `profile proposals: N accepted, M overridden (<which>)`.
 - Accept ⇒ increment ✓; override ⇒ increment ✗.

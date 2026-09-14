@@ -1,8 +1,14 @@
 # Testing doctrine
 
-Agent speed inverts test economics (Uncle Bob): an agent writes code many times faster than a human, so the time saved belongs to verification — unit, acceptance, property, torture, mutation, QA. Code is cheap; verification is where the value concentrates. A well-executed point spends most of its effort on test depth, not on writing code.
+Agent speed makes verification valuable: spend the saved time on evidence that exercises the
+Point's observable contract — unit, acceptance, property, torture, mutation, or review as the
+risk requires. Test depth is chosen from the behavior and Touches, not from a generic count.
 
 ## Default: test-first
+
+For the bounded None route, follow `intake-and-gate.md` without expanding the task into this
+template-driven loop. Existing failing tests already establish red; do not duplicate them or add
+a PASS wrapper just for ceremony. A meaningful gap may receive focused additive coverage.
 
 For code points, red → green → refactor is the Driver's default shape:
 
@@ -10,7 +16,9 @@ For code points, red → green → refactor is the Driver's default shape:
 2. Minimal implementation — see it pass.
 3. Refactor with the suite green.
 
-Opting out requires a `D-xx` recorded before implementation. "Seen failing" is the mechanical form of the checker's `repro` question (`team.md`): a test never seen failing proves nothing. The red-phase evidence in `log.md` answers `repro`; the checker does not re-break code by hand.
+Opting out requires a `D-xx` recorded before implementation. "Seen failing" is the mechanical
+form of the checker's `repro` question: a test never seen failing proves little about its bite.
+The red-phase evidence answers `repro`; the checker does not re-break code by hand.
 
 ## Depth tiers
 
@@ -28,6 +36,21 @@ Mutation is not a test you write — it is the audit that the tests you wrote ac
 
 ## What this changes in practice
 
+- Serialization checks parse output with the real consumer or assert a round trip over valid
+  delimiter/quote/newline/Unicode inputs. Numeric checks retain signs and precision. Choose cases
+  from the declared domain, keep invalid-input policy separate, and compare with contract-derived
+  expectations; a nominal file snapshot or test count alone cannot discharge this obligation.
 - `plan.md` §6.1: test-first by default for code points; opt-out via `D-xx`.
 - Point Acceptance names the fired tiers as done-signal fragments; tiers that don't fire are omitted, not waived.
 - Checker: `repro` is answered by red-phase evidence in `log.md`, not by hand-breaking the code.
+
+## Compatibility before implementation
+
+Record the required supported producer/consumer versions and the environments available for
+validation before editing. Choose targets from the user/spec or repository contract; don't invent
+a wider support promise from the installed runtime. Each claimed target needs its own observed
+check or exact externally supplied evidence. Missing required coverage blocks that obligation;
+optional targets remain unverified without blocking a narrower authorized scope. Preserve both
+results on a discrepancy. Cross-version serializer tests use valid domain strings and the consumer
+parser, not assumptions about a library's quoting defaults. An evaluator's later run is separate
+coverage and cannot retroactively justify the executor's earlier completion claim.

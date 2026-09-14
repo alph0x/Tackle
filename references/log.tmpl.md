@@ -10,19 +10,30 @@ Never log secrets. **This is the canonical state source of the plan.**
 last 5 sessions **verbatim** to `log-archive.md`. Append-only is preserved across the pair:
 never edit moved entries. The newest entry always keeps a self-sufficient State snapshot,
 so archiving never breaks resume. Thresholds are workspace-overridable in `AGENTS.md`.
-Runbook: `guides/status-list-next.md` §Archive; size gate: lint row 13 (`Log archive threshold: N` in the workspace `AGENTS.md`, default 400 lines).
+Runbook: `guides/status.md` §Archive; size gate: lint row 13 (`Log archive threshold: N` in the workspace `AGENTS.md`, default 400 lines).
 
 **Evidence entries** — every "done-signal passed/failed" claim carries:
+
+This block is a summary/index, never raw capture. Link the exact captured command and complete
+stdout/stderr/process result; do not reconstruct them from prose. Reuse one observation for all
+covered checks. Timestamps and model/effort come from actual observations or are `n/a`. Lite uses
+this log plus plan/usage; None has a direct receipt and does not instantiate this template.
 
 ````
 **Evidence** — `the literal command`
 ```
-trimmed output (≤ 10 lines, keep counts/exit line)
+trimmed stdout/stderr (≤ 10 lines, keep counts and exit line)
 ```
-exit: 0
+cwd: `{{absolute cwd}}` · runtime: `{{tool/runtime or n/a}}`
+start: `{{UTC timestamp or n/a}}` · end: `{{UTC timestamp or n/a}}`
+exit: 0 · timeout: false · signal: n/a
+revisions: input/code/config/dependency/contract `{{fingerprints or n/a}}`
+raw: `{{immutable evidence path}}`
 ````
 
-No evidence block ⇒ the claim is an assertion, and the point may not flip 🟢.
+No evidence block ⇒ the claim is an assertion, and the point may not flip 🟢. Keep one immutable raw
+observation per validation; unknown telemetry stays `n/a`. See `references/guides/run.md` for
+correction counters, interrupted runs, integration evidence, and global acceptance.
 
 ---
 

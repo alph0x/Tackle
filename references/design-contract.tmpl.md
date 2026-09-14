@@ -1,40 +1,58 @@
 # Design contract — {{TITLE}} (authoritative surface)
 
-> **Full-gate depth artifact (optional).** Create this only when the initiative defines a
-> public surface that several points must agree on — an API, a wire/serialization format, a
-> state machine, an error taxonomy, a protocol between components. If the work has no shared
-> contract, skip it and let each point's briefing stand alone.
+Use this depth artifact when several Points must agree on an API, serialization shape, state
+machine, error taxonomy, or protocol. It is a shared contract, not a second plan. A Point
+briefing remains self-contained and inlines the clauses it implements.
 
-**This file is normative. Points implement it; they do not redefine it.** A point's briefing
-*sketches* approach; this contract *defines* the surface. If a point needs to deviate,
-**supersede the spec FIRST** (edit this file + record a `D-xx`), then write the divergent code.
-That keeps every point agreeing on one source instead of drifting apart.
+**This file defines observable behavior.** It specifies required semantics, exact bytes or
+ordering only where consumers depend on them, valid alternatives where they do not, and the
+failure behavior for invalid transitions or unknown inputs. A Point cannot silently diverge:
+record a superseding decision, update this contract, then regenerate affected compiled Point
+clauses in the same change. Seal each stable section with `<!-- SEALED: D-xx -->`; a later
+change uses `<!-- SEALED: D-yy supersedes D-xx -->` and keeps the earlier decision traceable.
 
-When the contract stabilizes, each named section heading gains the seal marker
-`<!-- SEALED: D-xx -->` (D-xx = the sealing decision) on the heading line. The supersede-first
-flow then also updates the marker — `<!-- SEALED: D-yy supersedes D-xx -->` — so every
-deviation leaves a grep-able trail.
+## Purpose and scope
 
-Map each section to the points that implement it so coverage is auditable.
+{{The user-visible or integration outcome, boundaries, non-goals, and requirement ids.}}
 
-## Signatures / API surface
-{{The exact public types, functions, entry/exit points. One entry, one exit where possible.}}
+## Interface
 
-## States & transitions
-{{If there's a lifecycle/state machine: every state, every legal transition. Invalid
-transitions are defined (ignored/typed-error), never undefined behavior.}}
+{{Public types, functions, entry/exit points, inputs, outputs, and allowed semantic forms.}}
 
-## Error model
-{{The typed error space — every case, recoverable vs terminal, and how unknown/unmapped
-inputs are handled (preserve the original code; unmapped ≠ terminal crash).}}
+## States and transitions
 
-## Invariants / policies (structural, verifiable)
-{{The properties that must always hold — phrased so they can be tested, not just asserted in
-prose. e.g. "recoverable vs terminal is structural: recoverable failures appear as state with
-retry/abort; anything thrown from result() is terminal." "Core compiles with zero
-dependencies." Promote each load-bearing invariant into `plan.md` §6.1 (or a point's done-signal) so it's an actual pass/fail check, not prose.}}
+{{Every state and legal transition. Invalid transitions have an explicit ignored, recoverable,
+or typed terminal result; undefined behavior is not a contract.}}
 
-## Spec → point map
-| Spec section | Implemented by |
-|---|---|
-| {{§ signatures}} | {{P-0x}} |
+## Errors and recovery
+
+{{Typed error cases, diagnostic content, retry/abort behavior, and handling for unknown or
+unmapped inputs. Preserve original codes where mapping is unavailable.}}
+
+## Invariants and quality constraints
+
+{{Structural properties expressed as observable checks: data preservation, effect boundaries,
+complexity or dependency limits when material, integration fit, and relevant quality axes. Do
+not impose layers, formatting, dependencies, or design patterns without a consumer need.}}
+
+## Cases and valid alternatives
+
+| Case | Given | Required observation | Invalid observation |
+|---|---|---|---|
+| {{normal}} | {{...}} | {{...}} | {{...}} |
+| {{boundary}} | {{...}} | {{...}} | {{...}} |
+
+If whitespace, key order, implementation shape, or equivalent algorithms are irrelevant, say so
+explicitly. If bytes, order, paths, stdio, or exits are required, state them exactly.
+
+## Point map and compiler procedure
+
+| Contract clause | Point(s) | Produced/consumed artifact | Regression check |
+|---|---|---|---|
+| {{clause id}} | {{P-0N}} | {{artifact}} | {{check}} |
+
+The compiler copies selected clauses with their id, revision, and hash into each Point. It
+checks coverage in both directions: every requirement reaches a Point and every Point has a
+traceable requirement. When this contract changes, supersede the decision first, regenerate
+dependent Point clauses, re-ground their inputs, and rerun affected checks. Never edit a
+compiled copy to make it agree by itself.

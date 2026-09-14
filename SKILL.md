@@ -1,78 +1,68 @@
 ---
 name: tackle
-description: Use when starting a non-trivial, multi-session or multi-track initiative needing a durable action plan of self-contained points, before writing implementation code. Also use when resuming, checking status, listing plans, getting the next point, or migrating an old plan. Also use to verify or red-team a plan before implementation, to judge finished work adversarially, or to run a retro at initiative close.
+description: Use for durable planning and explicit point-by-point execution of multi-session work, including migration, verification, status queries and retrospectives.
 ---
 
 # Tackle
 
-## Overview
+**Tackle 8.0.0** is a model-agnostic planning and execution method. It keeps the install artifact Markdown-only: `SKILL.md` plus `references/`.
 
-**Tackle 7.3.0** — model-agnostic planning/execution methodology: durable plans under `docs/plans/<initiative>/`, self-contained points that survive handoffs; runs in the target repo, grounds every claim in `file:line`. Eight public commands — **init, plan, verify, next, run, judge, status, retro** — each also reachable by its canonical natural-language trigger.
+## Public surface
 
-- Ordinary Tackle invocation performs no network access or installation-tree mutation. Updates are
-  owner-controlled and out-of-band; use `references/guides/update.md` only when the owner explicitly
-  requests update guidance.
-- Plans by default; executes only when explicitly asked.
-- Workspace artifacts are in English.
+Tackle has two primary actions and one read-only query:
 
-## Routing
+| Surface | Use | Result |
+|---|---|---|
+| **PLAN** | `/tackle-plan` | Intake, specification, contract, decomposition, readiness and handoff. It prepares; it does not execute source work. |
+| **RUN** | `/tackle-run`, `/tackle-run --one`, or `/tackle-run <P-id>` | Explicitly authorized implementation, target and surrounding checks, bounded correction, integration and close or block. |
+| **STATUS** | `/tackle-status [<workspace>]` | Read-only status, list, next and unqualified resume queries. `--handoff` writes only its requested projection. |
 
-| The user says (any language) | Mode |
-|---|---|
-| `start this / initialize` or `/tackle-init <name>` | **Init** → create the workspace (9 core artifacts + `points/`) |
-| `plan this / armar un plan` or `/tackle-plan` | **Plan** → Steps 1–7; intake may instantiate optional `spec.md`/`constitution.md` |
-| `/tackle-plan` + explicit execute | **Plan + Execute** → Steps 1–7, then run execution |
-| `/tackle-verify` | **Verify** → grounding (step 0: the two-phase citation/mtime check), coverage matrix, then the red-team pass |
-| `give me the next point / qué sigue` or `/tackle-next` | **Next** → select the next ready point; pre-attack summary + starting prompt; never executes |
-| `/tackle-run` | **Run** → execute all ready points in dependency order |
-| `/tackle-run --one` / `/tackle-run <P-id>` | **Run one** → execute a single ready point |
-| `/tackle-judge` | **Judge** → adversarial check of finished work |
-| `/tackle-judge suite <target>` | **Judge suite** → trap suite vs skill/model/prompt |
-| `status / how is <x> going?` or `/tackle-status [<ws>]` | **Status** → read-only digest (Step 9); `--handoff` writes `HANDOFF.md` |
-| `what plans are there?` | **List** → one line per initiative |
-| `resume / retomá <x>` | **Resume** → re-enter a plan (read-first) |
-| `migrate / upgrade <x>` | **Migrate** → bring an old plan to the current methodology (checklist chain v2.0 → v7.3 in `references/guides/migrate.md`) |
-| `stop evolving` | **Evolution opt-out** → pause/purge learning-loop profile, per scope (inside retro) |
-| `/tackle-retro` | **Retro** → mine `board.md` + `log.md` into `retro.md` |
+`/tackle-init` forwards to PLAN scaffolding. `/tackle-verify` is internal PLAN validation or an explicitly requested diagnosis. `/tackle-judge` is an explicit post-work audit. `/tackle-retro` is optional learning review. A diagnostic question, `status`, `next`, or plain `resume` never authorizes a fix or source, board or log write; only an explicit resume request that also states execution intent can enter RUN.
 
-**Guide map** (`references/guides/`): 0–2 `intake-and-gate` · 3–4 `scaffold` · 5–5.75 `design-and-contract` · 6–6.6 `decompose-and-lint` · 7 `verify` · 8.5 `migrate` · 9 `status` · retro `retro` · judge `judge` · update `update` (internal). Natural-language triggers are canonical; slash commands are aliases.
+During 8.x, legacy routes forward to the one applicable protocol while preserving intent: `implement` → RUN, `ground`/`trace`/`drill` → PLAN validation, `pulse`/`list`/`next`/`resume` → STATUS, and `handoff` → STATUS `--handoff`. They are compatibility aliases, not additional primary commands, and retire in 9.0 with this forwarding guidance retained for migration.
 
-**Commands are entry points, not boundaries** — internal invocation never bypasses guardrails (`intake-and-gate.md`).
+## PLAN and RUN
 
-## Execution loop
+Resolve relative links from this file; locate missing references before retrying.
+Select the route once with [`intake-and-gate.md`](references/guides/intake-and-gate.md). **None** uses its bounded preflight, edit and
+receipt without a workspace. **Lite** uses only [`lite-plan.tmpl.md`](references/lite-plan.tmpl.md):
+it contains the complete preparation, execution, minimal plan/log/usage and closure procedure.
+Follow that path instead of the Full map below. Open another guide only for a missing capability.
+**Full** uses the detailed PLAN/RUN guides. All routes retain the core conventions. Lite/Full completion requires accessible final evidence
+and verified mandatory coverage; otherwise block the affected scope. Unknown telemetry stays non-gating.
 
-`/tackle-run` and `/tackle-next` use the `team.md` point team (mandatory) and follow `board.md` in dependency order. `/tackle-next` only **selects and prepares**: it picks the next executable point, checks grounding freshness with the two-phase citation/mtime procedure in `references/guides/verify.md`, and emits the pre-attack summary + starting prompt for the user's consent — it never changes code. `/tackle-run` executes: all ready points in dependency order (`run`), one point (`run --one` or `run <P-id>`). Read-first: `board.md`, `log.md`, `decisions.md` (`questions.md` if unresolved) before acting; cold-session modes (`status`, resume, list, next, verify) follow the same rule. Team sizes/tiers/efforts: `team.tmpl.md` + `AGENTS.md` §Model map (plan proposes default tiers by complexity/risk; the user confirms in the intake batch).
+Full PLAN reads the repository and named inputs, records requirements and decisions, builds self-contained Points, checks both positive and negative acceptance cases, validates dependencies and scope, and produces a handoff. A Point states its purpose, requirements, grounded surfaces, write limits, interfaces, errors, invariants, cases, non-goals, approach, alternatives, target/surround checks, recovery and evidence. Exact bytes, order, schema, paths, standard streams and exits apply only when specified; otherwise valid semantic equivalents remain valid.
 
-- **Maker/checker** — Driver's run informative, not gating; flip needs an independent checker (`team.tmpl.md` §Done-conditions).
-- **Closure report** — Full-gate closes via `reports/P-0N-report.md`; Coordinator sign-off gates the flip; grade from section-4 evidence (`team.tmpl.md` §Closure report).
-- **Regression sweep** — re-run done-signals of 🟢 points with intersecting Touches before a flip; failure reopens and blocks (`team.tmpl.md` step 9).
-- **Explicit intent** — no upfront plan+execute ask → pre-attack summary + ask before changing code; silence/ambiguity means stop; default L2 (`AGENTS.md` §Autonomy).
-- **Usage ledger** — every role run appends one `usage.md` row (model, tier, effort, tokens as the harness exposes them; `n/a`, never estimated); retro mines it for cost; recording is informative, never gating.
-- **Lifecycle ledger** — append `start` before substantive role work and one honest `finish` or `observe-incomplete` observation at close; never infer a successful end or duration from a missing close. Usage never gates point closure.
+Full RUN starts only after explicit execution intent and a current Ready Point, or the bounded None preflight. It reads the current contract, dependency outputs, environment, board and log where applicable, freezes protected expectations, writes only declared Touches, and records actual observations. The target check is followed by surrounding and affected integration checks, then global acceptance before initiative close. One persistent pool permits at most three failed correction-validation cycles per Point; two identical no-progress observations stop sooner. Non-implementation, contract, validator, environment, capability and unresolved causes stop with an evidence packet rather than a silent replan or model upgrade.
 
-Subagents are optional in planning for grounding/verify/drill; intake, doubts, decisions never delegate.
+Mechanical execution, focused semantic review and adversarial audit are separate capabilities. The same agent may report a command observation but cannot call its own review independent. Missing isolation is unavailable evidence, never an invented grade. Historical E0–E3 grades remain readable; new evidence records provenance and independence. Unknown telemetry is `n/a`, never zero. Board is canonical current state; log is append-only history; interrupted work is `observe-incomplete`; completed, blocked, skipped and unverifiable remain distinct.
 
-Planning is self-contained: intake, simplicity, and architecture guidance live in `references/guides/` and the templates — no external planning skills required.
+## Migration and distribution
+
+Migrate only a selected active 7.3 workspace, on a disposable copy first. Preserve contracts, evidence, statuses, log bytes and usage bytes; compile only remaining unstarted work; mark readiness pending until checked; adopt at a Point boundary; keep an interrupted Point on its pinned procedure until that boundary. Rollback restores the copy checkpoint and leaves neighboring files intact. Closed or unrelated workspaces are not automatically migrated. See [`migrate.md`](references/guides/migrate.md) for the 7.3 → 8.0 checklist.
+
+Ordinary invocation performs no network access or installation-tree mutation. Release remains a separately authorized owner action after the eight self-lint gates, catalog/workspace sweep and behavioral evidence. Public docs and examples must not leak `docs/plans/` state; profiles are written only by retro after confirmation, and seeds are deliberate writes.
 
 ## Core conventions
 
-1. **Log append-only** — one entry per session; never rewrite history.
-2. **Questions only in `questions.md`**; **decisions only in `decisions.md`**.
-3. **Ground every claim in `file:line`** — a point is **ungrounded** until every citation passes the drift check (with re-anchor) recorded by the newest ground entry in `log.md`; ungrounded points can't be ready or executed.
-4. **One point = one responsibility + one runnable done-signal**.
-5. **Contract supersede-first**: implement `design-contract.md` as written; deviations require a `D-xx` first.
-6. **Self-documenting code**: Clean Code + SOLID; no explanatory inline comments.
-7. **Status vocabulary**: 🔴 not started · 🟡 in progress · ⏸ blocked · 🟢 done · ⚪ skipped.
-8. **Decision ownership** — the user decides every doubt; batch recommendations with defaults.
-9. **Scaffold asks gitignore** — `/tackle-plan` asks about `.gitignore` for `docs/plans/` before creating files; records the decision.
-10. **Harness-agnostic** — works with any agent/LLM and IDE harness; never assume a specific one. Use generic terms ("the agent", "your harness", "the most capable model available"); single-harness features belong outside Tackle.
-11. **Authority order** — user > spec > tests > current code, at every gate including None. A check that contradicts the spec is surfaced, never silently satisfied.
+1. **Authority order** — user > specification/contract > protected tests/acceptance > current implementation; surface contradictions instead of hiding them.
+2. **Grounding** — every claim relies on a verified `file:line` citation or an explicitly historical reference; stale citations are re-anchored before use.
+3. **Scope** — write only declared Point Touches and authorized workspace artifacts; preserve unrelated edits and neighboring files.
+4. **Plan contract** — every Point carries observable purpose, stable requirements, interfaces, cases, constraints, non-goals, approach, checks and recovery, omitting only inapplicable fields.
+5. **One responsibility** — one Point has one responsibility and an observable acceptance target,
+   runnable where honest and otherwise covered by the named REVIEW rubric and actual reviewer;
+   declared semantic alternatives remain valid when exact output is unspecified.
+6. **Run discipline** — explicit intent precedes mutation; follow the current procedure, classify failures, and use the shared three-cycle correction budget. Apply [code-style rules](references/guides/design-and-contract.md#code-style).
+7. **Evidence and independence** — capture actual command, cwd, runtime, actor, revisions, output, exit/timeout/signal and artifact hashes during execution; reconstructed prose is not raw evidence. A wrapper PASS cannot hide a child failure, and unavailable independent review stays unavailable.
+8. **State and independence** — board is current status; log is append-only history; questions and decisions have their own files; interrupted roles record `observe-incomplete`. Mechanical observation, semantic review and adversarial audit are distinct; unavailable isolation stays unavailable and grades are derived from evidence.
+9. **Decision ownership and scaffold consent** — the user owns product and contract decisions; reversible technical choices are delegated within the Point's freedom, while a changed acceptance or contract requires a superseding decision first. PLAN asks about gitignore for `docs/plans/` and applies the same decision to `docs/seeds/`.
+10. **Learning consent** — retro may propose cause-based lessons and archetypes, but profile writes require separate explicit confirmation; seeds are deliberate, and evolution may be paused or stopped.
+11. **Harness agnosticism** — use generic capabilities and report actual model, effort, tools and telemetry; never fabricate a binding or assume a vendor mechanism.
 
-## Output contract
+## Output
 
-Open with one status line; close with `⚠️ On you: ...` and `▶ Continue: ...`. Digest ≤ 12 lines; handoff ≤ one screen. Point to files, don't paste.
-Terse by default; say it fully for security warnings, irreversible actions, or anywhere compression risks misread.
+Open with one status line. Close with `⚠️ On you: ...` and `▶ Continue: ...`. Keep a digest to 12 lines and point to files rather than pasting them.
 
-## Where the detail lives
+## Full guide map and explicit queries
 
-`references/guides/` (per-step guides) · `AGENTS.tmpl.md` (workspace contract) · `team.tmpl.md` (teams) · `*.tmpl.md` (templates).
+PLAN: [`intake-and-gate.md`](references/guides/intake-and-gate.md), [`scaffold.md`](references/guides/scaffold.md), [`design-and-contract.md`](references/guides/design-and-contract.md), [`decompose-and-lint.md`](references/guides/decompose-and-lint.md), [`verify.md`](references/guides/verify.md). RUN: [`run.md`](references/guides/run.md). STATUS: [`status.md`](references/guides/status.md). Explicit audit: [`judge.md`](references/guides/judge.md). Optional learning: [`retro.md`](references/guides/retro.md). Migration: [`migrate.md`](references/guides/migrate.md). Release checks: [`lint-spec.md`](references/guides/lint-spec.md). Updates are owner-controlled: [`update.md`](references/guides/update.md).
