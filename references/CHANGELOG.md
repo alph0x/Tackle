@@ -1,5 +1,46 @@
 # Tackle changelog
 
+## Tackle 8.0.0
+
+- **Code-style continuity.** Restore the existing self-documenting code and comment-placement
+  rules across None, Lite and Full, including their review acceptance.
+
+- Full validation uses one direct-capture entry and a connected canonical lint recipe that
+  verifies executed script bytes before scoring. Isolated mutation tests cover missing scripts,
+  changed commands and truthful partial coverage; no general efficiency or release claim.
+
+- Full execution controls: native write-boundary capability proof, optional exact script/input snapshots and canonical lint extraction, row-specific result interpretation, and a single dependency-aware closure index. Markdown-only; behavior acceptance remains required.
+
+
+- **Full execution overhead.** Resolve reference paths from their containing file, reuse read
+  guidance and readiness, and finish with affected closure checks. Ordinary suites retain native
+  outcomes; exact counts/PASS apply when the contract requires them. Compound checks retain their
+  executed script with the evidence. Initial PLAN lint and release checks remain required.
+
+- **Lite and Full closure.** Both routes resolve required evidence against final inputs before
+  declaring completion. Missing mandatory runtime coverage blocks its owning scope; optional
+  coverage and unknown telemetry do not. Lite names its repository-rooted workspace and clarifies
+  model-tier and correction-counter fields. Behavioral release validation remains a separate gate.
+
+- Lite now has one self-contained preparation/run/closure path and v2-only ledger body; direct
+  capture generates the receipt used by closure. Validation clocks never stand in for role ends.
+  Compatibility targets are fixed before implementation. Repeated paired validation is recorded
+  separately; these source changes do not claim universal compliance or a measured speedup.
+
+
+Released with documented validation limits; Snyk audit revision identity remains unverified.
+
+- **Focused pilot corrections.** Bounded restorations may use the early None route; Lite has an explicit plan/log/usage minimum. Evidence is captured directly with observed revisions and unknown telemetry preserved. Acceptance covers valid adversarial input domains and serialization consumers. The initial pilot remains historical; these changes require separate behavioral validation and do not establish general efficiency gains.
+
+- **Plan → Run.** PLAN prepares self-contained Points; RUN executes explicitly authorized work; STATUS answers queries without changing source, board or log. Compatibility aliases preserve intent through 8.x and retire in 9.0.
+- **Executable Point contracts.** Requirements, interfaces, cases, scope, alternatives, target/surround checks and recovery are compiled into each Point, with positive and negative acceptance cases.
+- **Bounded execution.** Correction counts persist across actors and resumes; three failed correction validations or two identical no-progress observations stop work. Contract, validator and capability failures produce evidence packets.
+- **Integrated delivery.** Closure checks the final artifact and its consumers, separates wrapper and child outcomes, and invalidates dependent evidence when inputs change.
+- **Evidence and migration.** Actual provenance and reviewer independence remain explicit. Migration is selected, copy-first and reversible, preserving historical contracts, grades and log/usage bytes.
+- **Lifecycle compatibility.** The direct validator accepts preserved legacy tables and explicit unknown counts while continuing to reject malformed events, duplicate or orphan terminals, negative counts and role mismatches.
+- **Validation limits.** A dedicated method arm resolved an integrated-delivery trap and an offline rebuild reproduced its ZIP. The 54-episode comparison remains unmeasured; no challenge-score or comparative efficiency improvement is claimed.
+- **Distribution boundary.** The installed artifact remains Markdown-only. Profiles and local plans stay outside distribution; runtime invocation performs no update or installation mutation.
+
 ## Tackle 7.3.0
 
 - **Self-contained point briefings.** Every generated point now carries the facts, constraints,
@@ -14,8 +55,6 @@
   require exact bytes. Invented newline requirements are rejected.
 - **Behavioral evidence.** Two fresh low-effort Luna sessions covered five briefing shapes and
   passed 58/58 fixture outcomes, including negative evidence and input/sentinel preservation.
-- **Release preparation only.** Commit, tag, push, GitHub-release publication, and distribution
-  freshness checks remain explicit owner-gated actions after review.
 
 ## Tackle 7.2.1
 

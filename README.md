@@ -2,25 +2,25 @@
 
 A model-agnostic planning and execution skill that turns an initiative into a durable action plan — self-contained points a cold agent can resolve in a fresh session — and executes that plan point-by-point when you ask it to.
 
-**Tackle 7.3.0: Markdown-only runtime.** Tackle keeps its public surface at eight commands — **init, plan, verify, next, run, judge, status, retro** — and its workspace core at nine artifacts, with direct verification procedures and a realigned eval suite (50 scenarios). The install artifact remains Markdown-only; mechanical verification is documented as direct POSIX checks.
+**Tackle 8.0.0: Markdown-only runtime.** Tackle presents two primary actions — **PLAN** and **RUN** — plus the read-only **STATUS** query, with bounded compatibility aliases. The install artifact is exactly `SKILL.md` plus `references/`; mechanical verification is documented as direct POSIX checks.
 
 ## What it does
 
 Tackle produces a workspace of grounded markdown artifacts under `docs/plans/<initiative>/` in your repository. Each point briefing carries everything needed to resolve it cold — context, approach, recommended prompt, and alternatives.
 
-**Tackle plans and can execute the plan it produces.** It never writes implementation code on its own. `/tackle-run` and `/tackle-next` drive execution by spawning the point team defined in the workspace's team roster, running each point's done-signal, and advancing the board. `/tackle-next` only selects and prepares (pre-attack summary + starting prompt); `/tackle-run` executes (all ready points, or one via `run --one` / `run <P-id>`).
+**Tackle plans and can execute the plan it produces.** PLAN prepares requirements, contracts, Points and a handoff; RUN executes only after explicit intent. STATUS reports current state, list, next and unqualified resume queries without source, board or log mutation. `--handoff` writes only its requested projection.
 
 ## Graph execution
 
 - **Edge audit** — every `Depends-on` edge must name the **crossing artifact** the downstream point consumes (a file, a section, a schema, a protocol); `/tackle-verify` flags edges that don't. False edges get cut; legitimate ordering-only edges get waived as recorded decisions.
 - **Loop archetypes** — a point can be `Type: discovery` (done-signal is convergence: K consecutive rounds surfacing zero new findings, dedupe against everything seen, never a fake pass at budget) or `Type: experiment` (done-signal is a metric threshold: one change per round, keep on improvement, roll back otherwise, the evaluator file untouchable). The **loop-worthiness test** gates both — a loop earns its cost only when the task repeats, verification is automated, the round budget absorbs the waste, and the agent has real tools.
-- **Multi-lens checker** — an optional `Lenses:` field in a point briefing runs N independent skeptic checks, one per lens (e.g. correctness, security, repro); a finding survives only under majority vote.
+- **Focused review** — a Point names the semantic review it needs and the available reviewer capability. Mechanical execution, semantic review and adversarial audit remain separate observations; independence must be demonstrated.
 
 ## Proof-carrying plans
 
-- **Evidence grades, derived not declared** — every closed point carries an evidence grade: **E1** command-verified (an independent checker re-ran the done-signal), **E2** review-gated (rubric + named reviewer), **E3** asserted, **E0** explicitly unverifiable. The grade is derived mechanically from the closure evidence, never self-declared; a declared grade that doesn't match derivation is a grade-inflation finding.
-- **Weakest-link propagation** — a point's effective confidence is the minimum of its own grade and the effective confidence of every upstream point. Digests and handoff packets report the initiative's weakest link, and unattended (L3) execution requires an E1-pure dependency chain.
-- The status board gains a trailing **Confidence** column; grades are orthogonal to the five status glyphs.
+- **Evidence with provenance** — each observation records the actor, command, revision, result and independence actually available. A wrapper's success cannot hide a failed child or a wrong delivered artifact.
+- **Historical grades stay readable** — legacy **E1** command verification, **E2** review, **E3** assertion and **E0** unverifiable records retain their meaning. New work uses the Point's explicit mechanical and semantic acceptance requirements.
+- **Selective invalidation** — a changed input invalidates the evidence of its actual consumers, including semantic dependencies. Disjoint write paths alone do not establish independence.
 
 ## Learning
 
@@ -36,13 +36,13 @@ Tackle produces a workspace of grounded markdown artifacts under `docs/plans/<in
 Tackle's execution loop is hardened with rules proven against common agent failures:
 
 - **INTENT gate** — before any behavior-changing edit, the agent must write `INTENT: current code does X; done-signal expects Y; source says Z` and resolve any contradiction.
-- **Retry bound** — stop after 3 failed fix-verify cycles on the same issue.
+- **Correction bound** — one shared pool permits at most 3 failed correction-validation cycles per Point; 2 identical no-progress observations stop sooner. Resuming or changing actors does not reset it.
 - **Two-halves verification** — every done-signal must check both the target criterion and the surrounding system (build/tests/lint).
 - **Triviality gate** — a task is trivial only if it is one file, <10 changed lines, no new behavior, and no searching.
 - **Authority order** — user > spec > tests > current code, at every gate including None; a check that contradicts the spec is surfaced, never silently satisfied.
 - **Failure-modes catalog** — `references/failure-modes.md` maps common failures to the Tackle rule that prevents them.
-- **Model-bound teams** — point teams bind roles to abstract model tiers resolved by the workspace §Model map (`plan` proposes default tiers by complexity/risk in decompose; the user confirms in the intake batch); Full-gate points close with closure reports and sign-off, and one persistent Coordinator carries continuity.
-- **Double-gate flip** — a point flips only after its direct done-signal is green AND the independent checker signs off (workspace flag `tackle-gate`; absent = off preserves the 4.x flip, `on` = default for new workspaces).
+- **Capability binding** — before dispatch, verify the actual executor and any required independent reviewer. Missing capabilities stop the affected work with an evidence packet; they never produce an invented grade or silent model upgrade.
+- **Integrated acceptance** — target, surrounding and affected integration checks precede Point closure; global acceptance verifies the final deliverable before initiative closure. Any semantic gate declared by the Point also needs its named reviewer.
 
 ## Verification and judge
 
@@ -53,10 +53,11 @@ Tackle's execution loop is hardened with rules proven against common agent failu
 ## Mental model
 
 ```
-INIT → PLAN → VERIFY → (NEXT | RUN) → JUDGE → STATUS → RETRO
+PLAN → prepared Points → explicit RUN → verified delivery
+                         STATUS reads current state
 ```
 
-`INIT` creates the workspace; `PLAN` decomposes (intake may instantiate optional `spec.md`/`constitution.md`); `VERIFY` red-teams + grounds; `NEXT` selects/prepares the next point (read-only); `RUN` executes; `JUDGE` adversarially audits; `STATUS` is the read-only digest (list/resume/handoff); `RETRO` mines the loop and the opt-out.
+PLAN includes intake, specification, contracts, decomposition and readiness checks. RUN executes prepared work only on explicit intent. STATUS handles list, next and unqualified resume queries without mutation. Explicit Judge and optional Retro remain available; 8.x compatibility aliases preserve intent and retire in 9.0.
 
 ### Usage observability
 
@@ -72,14 +73,14 @@ comparable coverage, and tier/effort recommendations additionally require three 
 like-for-like runs.
 
 Optional collector capability profiles are deliberately narrow and access-dependent:
-[Claude Code](docs/plans/tackle-usage-observability-v2/reference-docs/claude-code.md),
-[Oh My Pi](docs/plans/tackle-usage-observability-v2/reference-docs/oh-my-pi.md),
-[OpenAI Responses](docs/plans/tackle-usage-observability-v2/reference-docs/openai-responses.md),
-and [Antigravity CLI](docs/plans/tackle-usage-observability-v2/reference-docs/antigravity-cli.md).
+[Claude Code](references/collectors/claude-code.md),
+[Oh My Pi](references/collectors/oh-my-pi.md),
+[OpenAI Responses](references/collectors/openai-responses.md),
+and [Antigravity CLI](references/collectors/antigravity-cli.md).
 They describe observed surfaces, not installed integrations or automatic collection. A role join
 requires an exact `run_id`; session/account observations stay native and unjoined, and
 API-equivalent or subscription values remain separately labeled rather than canonical cost.
-For adoption and rollback, see the [v7.1 → v7.2 migration checklist](references/guides/migrate.md#v71--v72-checklist);
+For adoption and rollback, see the [7.3 → 8.0 migration checklist](references/guides/migrate.md#v73--v80-checklist);
 the legacy eight-column ledger remains readable and its unknowns are never backfilled.
 
 The optional profile catalog also covers [OpenCode](references/collectors/opencode.md),
@@ -139,28 +140,25 @@ Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this
 
 | You say | Mode |
 |---|---|
-| `start this / initialize` or `/tackle-init <name>` | **Init** — create the workspace (9 core artifacts + `points/`) |
-| `plan this / armar un plan` or `/tackle-plan` | **Plan** — build the full decomposed plan; intake may instantiate optional `spec.md`/`constitution.md` |
-| `/tackle-plan` + "implement it", or "tackle this and implement it" | **Plan + Execute** — build the plan, then run execution |
-| `/tackle-verify` | **Verify** — grounding (step 0), coverage matrix, red-team pass before implementation |
-| `give me the next point / qué sigue` or `/tackle-next` | **Next** — select the next ready point; pre-attack summary + starting prompt; never executes |
-| `/tackle-run` | **Run** — execute all ready points in dependency order |
-| `/tackle-run --one` / `/tackle-run <P-id>` | **Run one** — execute a single ready point |
-| `/tackle-judge` | **Judge** — adversarial verification of finished work |
-| `/tackle-judge suite <target>` | **Judge suite** — run the trap suite against a skill, model, or prompt |
-| `status / how is <x> going?` or `/tackle-status [<ws>]` | **Status** — read-only digest; `--handoff` writes a portable `HANDOFF.md`; detects an old Methodology stamp and offers migrate |
-| `what plans are there?` | **List** — one line per initiative |
-| `resume / retomá <x>` | **Resume** — re-enter a plan (read-first) |
-| `migrate / upgrade <x>` | **Migrate** — bring an old plan to the current methodology (checklist chain v2.0 → v7.3 in `references/guides/migrate.md`) |
-| `stop evolving` | **Evolution opt-out** — pause/purge the learning-loop profile, per scope (inside retro) |
-| `/tackle-retro` | **Retro** — mine board + log into the retro artifact; batch-confirmed profile writes and plan-archetype extraction |
+| `plan this / armar un plan` or `/tackle-plan` | **PLAN** — intake, contract, decomposition, readiness and handoff |
+| `/tackle-run`, `/tackle-run --one` or `/tackle-run <P-id>` | **RUN** — explicit implementation, bounded validation, integration and close/block |
+| `status / list / next / resume` or `/tackle-status [<ws>]` | **STATUS** — read-only query; `--handoff` writes its requested projection |
+| `/tackle-init <name>` | PLAN scaffolding |
+| `/tackle-verify` | PLAN internal validation or explicit diagnosis |
+| `/tackle-judge [suite <target>]` | Explicit post-work audit |
+| `migrate / upgrade <x>` | PLAN migration path; see the 7.3 → 8.0 checklist |
+| `stop evolving` or `/tackle-retro` | Optional retro and separately confirmed learning consent |
 | Direct checks | **Mechanical gate** — direct-procedure coverage runs the `lint` rows, `catalog` integrity checks, each `done-signal`, the two-phase `ground` check, `eval` method arms, and `init` artifact completeness from the documented Markdown procedures; a point flips only after mechanical green and checker sign-off |
+
+During 8.x, legacy `implement`, `ground`, `trace`, `drill`, `pulse`, `handoff` and similar routes forward to PLAN, RUN or STATUS while preserving intent; aliases retire in 9.0.
+
+The migration guide retains the checklist chain v2.0 → v8.0, including the selected-workspace, copy-first 7.3 → 8.0 checklist.
 
 **The Create pipeline:** Intake → Gate (None/Lite/Full) → Location & gitignore → Scaffold → Briefing → Architecture → Stabilize contract → Decompose → Lint → Handoff.
 
 **Execution:** `/tackle-run` reads the board, picks the next ready point in dependency order, runs its done-signal, and updates board + log. Team sizing is Solo/Pair/Pod/Squad, with roles bound to model tiers (`fast`/`standard`/`frontier`) resolved by the workspace §Model map (`plan` proposes defaults by complexity/risk, user confirms in intake); Full-gate points close with a closure report under `reports/` plus sign-off; one persistent Coordinator keeps continuity.
 
-**Version:** Tackle 7.3.0. See `references/CHANGELOG.md` for what's new.
+**Version:** Tackle 8.0.0. See `references/CHANGELOG.md` for this release and earlier changes.
 
 ## What it produces
 
