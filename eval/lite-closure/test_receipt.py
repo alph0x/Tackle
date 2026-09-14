@@ -22,7 +22,8 @@ class ReceiptTests(unittest.TestCase):
             (root / 'SPEC.md').write_text('contract\n')
             argv = [sys.executable, 'module.py', *extra]
             script = RECIPE.replace('argv = ["python3", "-m", "unittest", "discover", "-v"]', 'argv = ' + repr(argv))
-            child = subprocess.run([sys.executable, '-c', script], cwd=root, capture_output=True, timeout=10, env=env)
+            (root / 'capture.py').write_text(script, encoding='utf-8')
+            child = subprocess.run([sys.executable, 'capture.py'], cwd=root, capture_output=True, timeout=10, env=env)
             out = next((root / 'evidence').iterdir())
             return child, {p.name: p.read_bytes() for p in out.iterdir()}, argv
 
