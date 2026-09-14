@@ -1,0 +1,22 @@
+{
+  "requirements": {
+    "outputs": [
+      "summary.csv",
+      "summary.json"
+    ],
+    "empty": {
+      "summary.csv": "name,score\n",
+      "summary.json": "[]"
+    }
+  },
+  "supplied_point": {
+    "id": "work",
+    "outputs": [
+      "summary.csv"
+    ],
+    "requirement_ids": [
+      "outputs",
+      "empty"
+    ]
+  }
+}

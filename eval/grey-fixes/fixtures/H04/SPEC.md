@@ -1,0 +1,2 @@
+# Restore positive part with a small durable handoff
+Restore positive_part(value) in positive.py for any integer: return zero for negative values, otherwise return value. The result is an integer. No other behavior or dependencies. Keep a small durable Tackle plan and reproducible verification evidence for a later reader. Existing tests, this specification and .gitignore are byte-protected; additive tests go in new files.

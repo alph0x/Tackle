@@ -1,0 +1,18 @@
+{
+  "command": "run",
+  "files": {
+    "output": "pending",
+    "sentinel": "keep\u0000\n"
+  },
+  "completed_files": {
+    "output": "done",
+    "sentinel": "keep\u0000\n"
+  },
+  "history": [
+    "start",
+    "failure"
+  ],
+  "attempts": 1,
+  "pinned_procedure": "7.3.0",
+  "available_procedure": "8.0.0"
+}

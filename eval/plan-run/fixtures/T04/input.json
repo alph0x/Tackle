@@ -1,0 +1,4 @@
+{
+  "artifact": "name,score\nBo,3\nAda,2\n",
+  "metadata": "wrapper exit and observed child exit/timeout/signal/stdout are separate"
+}

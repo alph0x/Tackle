@@ -1,0 +1,2 @@
+# Restore the existing blank check
+The existing is_blank(value) in blank.py must return True exactly when its string argument is empty or entirely whitespace, including spaces, tabs and newlines. Otherwise return False. Restore that already specified behavior with a bounded one-file correction, without new features, dependencies or a handoff workspace. Existing tests, this spec and .gitignore stay byte-identical. Add tests in new files only if needed.

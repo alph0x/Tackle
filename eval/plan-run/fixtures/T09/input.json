@@ -1,0 +1,11 @@
+{
+  "attempts": 3,
+  "budget": 3,
+  "capabilities": {
+    "environment": true,
+    "isolation": true
+  },
+  "affected": [
+    "work"
+  ]
+}

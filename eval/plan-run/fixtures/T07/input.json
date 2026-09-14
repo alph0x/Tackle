@@ -1,0 +1,22 @@
+{
+  "before": {
+    "signature": "v1",
+    "config": "cents",
+    "docs": "a"
+  },
+  "after": {
+    "signature": "v2",
+    "config": "cents",
+    "docs": "a"
+  },
+  "consumers": {
+    "consumer": [
+      "signature",
+      "config"
+    ],
+    "unrelated": [
+      "config"
+    ]
+  },
+  "legacy_grade": "E3"
+}

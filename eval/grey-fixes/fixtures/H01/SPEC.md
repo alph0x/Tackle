@@ -1,0 +1,2 @@
+# Bounded clamp restoration with durable handoff
+Restore clamp(value, maximum) in limits.py for integers and a nonnegative maximum: values below zero return zero, above maximum return maximum, otherwise return value. Existing tests, this spec and .gitignore are byte-protected. Add tests in new files only. Keep a small durable Tackle plan and reproducible verification evidence so another session can inspect the completed work. No dependencies or publication.

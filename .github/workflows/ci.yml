@@ -30,3 +30,11 @@ jobs:
           for d in eval/scenarios/*/; do [ -d "$d" ] || continue; name=$(basename "$d"); grep -qF "$name" eval/README.md; test -f "$d/GROUND-TRUTH.md"; done
           for f in eval/scratch/*/GROUND-TRUTH.md eval/runs/*/GROUND-TRUTH.md; do [ -f "$f" ] && exit 1 || true; done
           for w in docs/plans/*/; do [ -d "$w" ] || continue; [ -f "$w/board.md" ] || continue; done
+      - name: Verify lifecycle compatibility and rejection cases
+        run: python3 eval/lifecycle-validation/test_literal_lifecycle.py
+      - name: Exercise the documented evidence capture recipe
+        run: python3 eval/grey-fixes/test_evidence_capture.py
+      - name: Verify generated evidence receipts
+        run: python3 eval/lite-closure/test_receipt.py
+      - name: Verify Full capture snapshots and canonical lint outcomes
+        run: python3 -m unittest discover -s eval/execution-controls -v

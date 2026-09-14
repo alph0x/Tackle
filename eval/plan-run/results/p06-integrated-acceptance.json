@@ -1,0 +1,110 @@
+{
+  "point": "P-06",
+  "status": "local-acceptance-complete-release-blocked",
+  "mechanical": {
+    "source_full_suite": {
+      "tests": 133,
+      "passed": 133,
+      "exit": 0,
+      "timeout": false,
+      "signal": null
+    },
+    "isolated_markdown_install_full_suite": {
+      "tests": 133,
+      "passed": 133,
+      "exit": 0,
+      "timeout": false,
+      "signal": null,
+      "markdown_only_install": true,
+      "install_markdown_files": 52
+    },
+    "source_self_lint_gates": {
+      "passed": 8,
+      "total": 8,
+      "exit": 0
+    },
+    "isolated_install_self_lint_gates": {
+      "passed": 8,
+      "total": 8,
+      "exit": 0
+    },
+    "scenario_catalog": {
+      "scenario_directories": 50,
+      "registry_entries": 50,
+      "registry_matches": true,
+      "top_level_answer_sheet_per_scenario": true,
+      "scratch_arm_root_answer_sheet_leaks": 0
+    }
+  },
+  "workspace_sweep": {
+    "board_workspaces": 27,
+    "active_workspaces": 2,
+    "global_collision_row_passed": true,
+    "corrected_row11_all_boards_passed": true,
+    "active_row4_findings": 2,
+    "active_row15_warnings": 1,
+    "clean_release_sweep": false,
+    "disposition": "Recorded active citation and lifecycle findings remain future-release evidence; closed or warn-only findings are non-gating, execution errors never PASS; no unrelated workspace edits.",
+    "fresh_observation": {
+      "per_workspace_rows": 405,
+      "global_row8_runs": 1,
+      "per_workspace_valid_passes": 325,
+      "per_workspace_failed_checks": 55,
+      "per_workspace_execution_errors": 25,
+      "exit2_execution_errors": 12,
+      "exit0_child_stderr_execution_errors": 13,
+      "active_blocking_failures": 3,
+      "active_warn_only_failures": 1,
+      "workspace_hash_changed": 0,
+      "classification": "exit1 with silent output passes only for canonical rows 5 and 15; exit2, timeout, signal, or any child stderr is an execution error and never a pass"
+    },
+    "snapshot_scope": "Historical observation with two active boards before the later fresh-review closures; not a claim about current board activity.",
+    "observation_window": {
+      "started_at": "2026-09-13T22:00:18.994178+00:00",
+      "ended_at": "2026-09-13T22:00:30.519692+00:00"
+    },
+    "active_row16_findings": 1,
+    "prior_false_pass_execution_anomalies": 24
+  },
+  "inventory": {
+    "source_units": 1230,
+    "captured_nonblank_lines": 2454,
+    "unresolved_destinations": 0,
+    "all_changed_records_have_disposition_destination_safety_purpose_regression": true
+  },
+  "comparison": {
+    "planned_episodes": 54,
+    "planned_pairs": 27,
+    "started_episodes": 0,
+    "valid_eligible_episodes": 0,
+    "invalid_episodes": 0,
+    "first_episode_success": "n/a",
+    "clean_success": "n/a",
+    "empirical_improvement": "UNMEASURED",
+    "reason": "fresh isolated evaluated-arm binding, oracle isolation, and external budget authorization unavailable; local executor profile is Luna High"
+  },
+  "release": {
+    "blocked": true,
+    "reasons": [
+      "active workspace sweep findings",
+      "dedicated feature-specific D-13 behavioral evidence pending"
+    ],
+    "no_benchmark_or_improvement_claim": true
+  },
+  "independent_review": "PASS E2; fresh independent reviewer sessions per Point, with shared repository access; no oracle-isolated benchmark claim",
+  "raw_evidence": "Retained in initiative-local evidence; this public aggregate contains no local plan or workspace names/content.",
+  "evaluation_input": {
+    "manifest_revision": 11,
+    "manifest_sha256": "46688a90be96069c9e4202912b024be41364763b9a23c22bd206f0dec9835b8c",
+    "scope": "Original source and isolated-install observations at revision 11; post-repair target and fresh review are identified separately by reviewed_registration."
+  },
+  "historical_reviewed_registration": {
+    "manifest_revision": 12,
+    "manifest_sha256": "6d99e957da962aa03404734e44eb813d2f3cf8e024ab1ee0c4e96a113a5d4ef6"
+  },
+  "reviewed_registration": {
+    "manifest_revision": 14,
+    "manifest_sha256": "83556b251be05a88ef3c3779d60a161bf6bfa5785062d38cc4c99c7704a4dfa5",
+    "scope": "fresh per-Point semantic reviews and registered post-repair target; final sign-off metadata follows this review"
+  }
+}

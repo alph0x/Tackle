@@ -1,0 +1,12 @@
+{
+  "spec_order": "ascending",
+  "point_order": "descending",
+  "protected_test": "assert sort([2,1]) == [2,1]\n",
+  "affected": [
+    "sort"
+  ],
+  "independent": [
+    "docs"
+  ],
+  "reproducer": "sort([2,1])"
+}

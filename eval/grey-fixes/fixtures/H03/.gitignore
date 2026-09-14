@@ -1,0 +1,5 @@
+docs/plans/
+docs/seeds/
+__pycache__/
+evidence/
+contacts.csv

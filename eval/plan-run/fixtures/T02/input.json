@@ -1,0 +1,9 @@
+{
+  "function": "sum_positive",
+  "input": "list of integers",
+  "empty": 0,
+  "result": "sum of positive values",
+  "no_input_mutation": true,
+  "complexity": "O(n)",
+  "new_dependencies": false
+}

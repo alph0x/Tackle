@@ -122,7 +122,7 @@ eval/
     s54-usage-v2-migration/ # migration trap: append-only adoption and byte-preserving rollback keep legacy unknowns readable
 ```
 
-## Running a scenario — manual path (Tackle 7.1.0)
+## Running a scenario — manual path (Tackle 7.3.0)
 
 The suite flow is manual by design: stage, run, diff, audit, judge, and validate
 each arm without executing an LLM or agent from a repository helper. The strong-model
@@ -152,6 +152,15 @@ Markdown-only.
    an unobserved report.
 6. **Validate the record** — check that `eval/runs/YYYY-MM-DD-<scenario>.md` carries
    the verdict line, the four 0–2 scores, `files_changed`, and `verdict_summary`.
+
+## Plan → Run synthetic measurement fixtures
+
+The refactor's nine synthetic families live under `eval/plan-run/`. They are development fixtures for validating rule inventories, contract checks, staging boundaries, and integrated acceptance; they are not additional numbered scenarios and are not included in the 50-scenario trap count. Their evaluator-only oracle must never be staged for an evaluated planner or executor. Run `python3 -m unittest discover eval/plan-run/tests -p 'test_*.py'` from the repository root for fixture-integrity checks, then follow `eval/plan-run/protocol.md` for any explicitly authorized model comparison.
+
+The migration contract is covered by `test_migration.py`, which creates disposable filesystem
+fixtures during each run. It checks the two-action PLAN/RUN surface, read-only STATUS, copy-first
+migration with byte-preserving history and rollback sentinel, compatibility aliases, and an install
+containing only `SKILL.md` plus `references/`.
 
 ## How to run a scenario manually (fallback)
 

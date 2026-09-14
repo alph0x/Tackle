@@ -1,0 +1,2171 @@
+{
+  "protocol": "PR-EVAL-1",
+  "cases": [
+    {
+      "id": "T01-valid",
+      "family": "T01",
+      "accept": true,
+      "task": {
+        "csv": "name,score\nBo,3\nAda,2\n",
+        "json": {
+          "name": "Bo",
+          "score": 3
+        }
+      },
+      "trace": {
+        "csv": "name,score\nBo,3\nAda,2\n",
+        "json": "{\"name\":\"Bo\",\"score\":3}"
+      }
+    },
+    {
+      "id": "T02-valid",
+      "family": "T02",
+      "accept": true,
+      "task": {
+        "function": "sum_positive",
+        "input": "list of integers",
+        "empty": 0,
+        "result": "sum of positive values",
+        "no_input_mutation": true,
+        "complexity": "O(n)",
+        "new_dependencies": false
+      },
+      "trace": {
+        "source": "def sum_positive(values):\n    return sum(x for x in values if x > 0)\n"
+      }
+    },
+    {
+      "id": "T03-valid",
+      "family": "T03",
+      "accept": true,
+      "task": {
+        "requirements": {
+          "outputs": [
+            "summary.csv",
+            "summary.json"
+          ],
+          "empty": {
+            "summary.csv": "name,score\n",
+            "summary.json": "[]"
+          }
+        },
+        "supplied_point": {
+          "id": "work",
+          "outputs": [
+            "summary.csv"
+          ],
+          "requirement_ids": [
+            "outputs",
+            "empty"
+          ]
+        }
+      },
+      "trace": {
+        "compiled_requirements": {
+          "outputs": [
+            "summary.csv",
+            "summary.json"
+          ],
+          "empty": {
+            "summary.csv": "name,score\n",
+            "summary.json": "[]"
+          }
+        },
+        "preparation": "ready",
+        "product_pass": false
+      }
+    },
+    {
+      "id": "T04-valid",
+      "family": "T04",
+      "accept": true,
+      "task": {
+        "artifact": "name,score\nBo,3\nAda,2\n",
+        "metadata": "wrapper exit and observed child exit/timeout/signal/stdout are separate"
+      },
+      "trace": {
+        "wrapper_exit": 0,
+        "child": {
+          "exit": 0,
+          "timeout": false,
+          "signal": null,
+          "stdout": "PASS\n"
+        },
+        "artifact": "name,score\nBo,3\nAda,2\n"
+      }
+    },
+    {
+      "id": "T05-valid",
+      "family": "T05",
+      "accept": true,
+      "task": {
+        "spec_order": "ascending",
+        "point_order": "descending",
+        "protected_test": "assert sort([2,1]) == [2,1]\n",
+        "affected": [
+          "sort"
+        ],
+        "independent": [
+          "docs"
+        ],
+        "reproducer": "sort([2,1])"
+      },
+      "trace": {
+        "status": "blocked",
+        "test": "assert sort([2,1]) == [2,1]\n",
+        "packet": {
+          "expected": "ascending",
+          "observed": "descending",
+          "affected": [
+            "sort"
+          ],
+          "reproducer": "sort([2,1])"
+        },
+        "selectable": [
+          "docs"
+        ],
+        "dispatched": []
+      }
+    },
+    {
+      "id": "T06-valid",
+      "family": "T06",
+      "accept": true,
+      "task": {
+        "cents": [
+          125,
+          200,
+          0
+        ],
+        "launch": "Run: python3 app.py\n"
+      },
+      "trace": {
+        "display": "1.25\n2.00\n0.00\n",
+        "package": {
+          "output.txt": "1.25\n2.00\n0.00\n",
+          "README.md": "Run: python3 app.py\n"
+        }
+      }
+    },
+    {
+      "id": "T07-valid",
+      "family": "T07",
+      "accept": true,
+      "task": {
+        "before": {
+          "signature": "v1",
+          "config": "cents",
+          "docs": "a"
+        },
+        "after": {
+          "signature": "v2",
+          "config": "cents",
+          "docs": "a"
+        },
+        "consumers": {
+          "consumer": [
+            "signature",
+            "config"
+          ],
+          "unrelated": [
+            "config"
+          ]
+        },
+        "legacy_grade": "E3"
+      },
+      "trace": {
+        "invalidated": [
+          "consumer"
+        ],
+        "reused": [
+          "unrelated"
+        ],
+        "legacy_grade": "E3"
+      }
+    },
+    {
+      "id": "T08-valid",
+      "family": "T08",
+      "accept": true,
+      "task": {
+        "command": "run",
+        "files": {
+          "output": "pending",
+          "sentinel": "keep\u0000\n"
+        },
+        "completed_files": {
+          "output": "done",
+          "sentinel": "keep\u0000\n"
+        },
+        "history": [
+          "start",
+          "failure"
+        ],
+        "attempts": 1,
+        "pinned_procedure": "7.3.0",
+        "available_procedure": "8.0.0"
+      },
+      "trace": {
+        "files": {
+          "output": "done",
+          "sentinel": "keep\u0000\n"
+        },
+        "history": [
+          "start",
+          "failure",
+          "finish"
+        ],
+        "attempts": 1,
+        "procedure": "7.3.0"
+      }
+    },
+    {
+      "id": "T09-valid",
+      "family": "T09",
+      "accept": true,
+      "task": {
+        "attempts": 3,
+        "budget": 3,
+        "capabilities": {
+          "environment": true,
+          "isolation": true
+        },
+        "affected": [
+          "work"
+        ]
+      },
+      "trace": {
+        "status": "blocked",
+        "reason": "budget",
+        "attempts": 3,
+        "grade": "E0",
+        "dispatched": [],
+        "replans": [],
+        "affected": [
+          "work"
+        ]
+      }
+    },
+    {
+      "id": "T01-json-equivalent",
+      "family": "T01",
+      "accept": true,
+      "task": {
+        "csv": "name,score\nBo,3\nAda,2\n",
+        "json": {
+          "name": "Bo",
+          "score": 3
+        }
+      },
+      "trace": {
+        "csv": "name,score\nBo,3\nAda,2\n",
+        "json": "{\n  \"score\": 3, \"name\": \"Bo\"\n}"
+      }
+    },
+    {
+      "id": "T01-row-order",
+      "family": "T01",
+      "accept": false,
+      "task": {
+        "csv": "name,score\nBo,3\nAda,2\n",
+        "json": {
+          "name": "Bo",
+          "score": 3
+        }
+      },
+      "trace": {
+        "csv": "name,score\nAda,2\nBo,3\n",
+        "json": "{\"name\":\"Bo\",\"score\":3}"
+      }
+    },
+    {
+      "id": "T01-newline",
+      "family": "T01",
+      "accept": false,
+      "task": {
+        "csv": "name,score\nBo,3\nAda,2\n",
+        "json": {
+          "name": "Bo",
+          "score": 3
+        }
+      },
+      "trace": {
+        "csv": "name,score\nBo,3\nAda,2",
+        "json": "{\"name\":\"Bo\",\"score\":3}"
+      }
+    },
+    {
+      "id": "T01-bool",
+      "family": "T01",
+      "accept": false,
+      "task": {
+        "csv": "name,score\nBo,3\nAda,2\n",
+        "json": {
+          "name": "Bo",
+          "score": 3
+        }
+      },
+      "trace": {
+        "csv": "name,score\nBo,3\nAda,2\n",
+        "json": "{\"name\":\"Bo\",\"score\":true}"
+      }
+    },
+    {
+      "id": "T01-float",
+      "family": "T01",
+      "accept": false,
+      "task": {
+        "csv": "name,score\nBo,3\nAda,2\n",
+        "json": {
+          "name": "Bo",
+          "score": 3
+        }
+      },
+      "trace": {
+        "csv": "name,score\nBo,3\nAda,2\n",
+        "json": "{\"name\":\"Bo\",\"score\":3.0}"
+      }
+    },
+    {
+      "id": "T01-value",
+      "family": "T01",
+      "accept": false,
+      "task": {
+        "csv": "name,score\nBo,3\nAda,2\n",
+        "json": {
+          "name": "Bo",
+          "score": 3
+        }
+      },
+      "trace": {
+        "csv": "name,score\nBo,3\nAda,2\n",
+        "json": "{\"name\":\"Bo\",\"score\":2}"
+      }
+    },
+    {
+      "id": "T01-extra",
+      "family": "T01",
+      "accept": false,
+      "task": {
+        "csv": "name,score\nBo,3\nAda,2\n",
+        "json": {
+          "name": "Bo",
+          "score": 3
+        }
+      },
+      "trace": {
+        "csv": "name,score\nBo,3\nAda,2\n",
+        "json": "{\"name\":\"Bo\",\"score\":3,\"x\":0}"
+      }
+    },
+    {
+      "id": "T01-duplicate",
+      "family": "T01",
+      "accept": false,
+      "task": {
+        "csv": "name,score\nBo,3\nAda,2\n",
+        "json": {
+          "name": "Bo",
+          "score": 3
+        }
+      },
+      "trace": {
+        "csv": "name,score\nBo,3\nAda,2\n",
+        "json": "{\"name\":\"Bo\",\"score\":2,\"score\":3}"
+      }
+    },
+    {
+      "id": "T02-loop",
+      "family": "T02",
+      "accept": true,
+      "task": {
+        "function": "sum_positive",
+        "input": "list of integers",
+        "empty": 0,
+        "result": "sum of positive values",
+        "no_input_mutation": true,
+        "complexity": "O(n)",
+        "new_dependencies": false
+      },
+      "trace": {
+        "source": "def sum_positive(values):\n    total = 0\n    for x in values:\n        if x > 0: total += x\n    return total\n"
+      }
+    },
+    {
+      "id": "T02-max-only",
+      "family": "T02",
+      "accept": false,
+      "task": {
+        "function": "sum_positive",
+        "input": "list of integers",
+        "empty": 0,
+        "result": "sum of positive values",
+        "no_input_mutation": true,
+        "complexity": "O(n)",
+        "new_dependencies": false
+      },
+      "trace": {
+        "source": "def sum_positive(values):\n    return max(values, default=0)\n"
+      }
+    },
+    {
+      "id": "T02-empty-crash",
+      "family": "T02",
+      "accept": false,
+      "task": {
+        "function": "sum_positive",
+        "input": "list of integers",
+        "empty": 0,
+        "result": "sum of positive values",
+        "no_input_mutation": true,
+        "complexity": "O(n)",
+        "new_dependencies": false
+      },
+      "trace": {
+        "source": "def sum_positive(values):\n    return sum(x for x in values if x > 0) + 0*values[0]\n"
+      }
+    },
+    {
+      "id": "T02-mutation",
+      "family": "T02",
+      "accept": false,
+      "task": {
+        "function": "sum_positive",
+        "input": "list of integers",
+        "empty": 0,
+        "result": "sum of positive values",
+        "no_input_mutation": true,
+        "complexity": "O(n)",
+        "new_dependencies": false
+      },
+      "trace": {
+        "source": "def sum_positive(values):\n    values.sort(); return sum(x for x in values if x > 0)\n"
+      }
+    },
+    {
+      "id": "T02-quadratic",
+      "family": "T02",
+      "accept": false,
+      "task": {
+        "function": "sum_positive",
+        "input": "list of integers",
+        "empty": 0,
+        "result": "sum of positive values",
+        "no_input_mutation": true,
+        "complexity": "O(n)",
+        "new_dependencies": false
+      },
+      "trace": {
+        "source": "def sum_positive(values):\n    return sum(x for x in values if x > 0) + sum(0*sum(values) for x in values)\n"
+      }
+    },
+    {
+      "id": "T02-dependency",
+      "family": "T02",
+      "accept": false,
+      "task": {
+        "function": "sum_positive",
+        "input": "list of integers",
+        "empty": 0,
+        "result": "sum of positive values",
+        "no_input_mutation": true,
+        "complexity": "O(n)",
+        "new_dependencies": false
+      },
+      "trace": {
+        "source": "def sum_positive(values):\n    import imaginary_dependency; return 0\n"
+      }
+    },
+    {
+      "id": "T03-missing-output",
+      "family": "T03",
+      "accept": false,
+      "task": {
+        "requirements": {
+          "outputs": [
+            "summary.csv",
+            "summary.json"
+          ],
+          "empty": {
+            "summary.csv": "name,score\n",
+            "summary.json": "[]"
+          }
+        },
+        "supplied_point": {
+          "id": "work",
+          "outputs": [
+            "summary.csv"
+          ],
+          "requirement_ids": [
+            "outputs",
+            "empty"
+          ]
+        }
+      },
+      "trace": {
+        "compiled_requirements": {
+          "outputs": [
+            "summary.csv"
+          ],
+          "empty": {
+            "summary.csv": "name,score\n",
+            "summary.json": "[]"
+          }
+        },
+        "preparation": "ready",
+        "product_pass": false
+      }
+    },
+    {
+      "id": "T03-missing-empty",
+      "family": "T03",
+      "accept": false,
+      "task": {
+        "requirements": {
+          "outputs": [
+            "summary.csv",
+            "summary.json"
+          ],
+          "empty": {
+            "summary.csv": "name,score\n",
+            "summary.json": "[]"
+          }
+        },
+        "supplied_point": {
+          "id": "work",
+          "outputs": [
+            "summary.csv"
+          ],
+          "requirement_ids": [
+            "outputs",
+            "empty"
+          ]
+        }
+      },
+      "trace": {
+        "compiled_requirements": {
+          "outputs": [
+            "summary.csv",
+            "summary.json"
+          ],
+          "empty": {}
+        },
+        "preparation": "ready",
+        "product_pass": false
+      }
+    },
+    {
+      "id": "T03-product-pass",
+      "family": "T03",
+      "accept": false,
+      "task": {
+        "requirements": {
+          "outputs": [
+            "summary.csv",
+            "summary.json"
+          ],
+          "empty": {
+            "summary.csv": "name,score\n",
+            "summary.json": "[]"
+          }
+        },
+        "supplied_point": {
+          "id": "work",
+          "outputs": [
+            "summary.csv"
+          ],
+          "requirement_ids": [
+            "outputs",
+            "empty"
+          ]
+        }
+      },
+      "trace": {
+        "compiled_requirements": {
+          "outputs": [
+            "summary.csv",
+            "summary.json"
+          ],
+          "empty": {
+            "summary.csv": "name,score\n",
+            "summary.json": "[]"
+          }
+        },
+        "preparation": "ready",
+        "product_pass": true
+      }
+    },
+    {
+      "id": "T04-child-failed",
+      "family": "T04",
+      "accept": false,
+      "task": {
+        "artifact": "name,score\nBo,3\nAda,2\n",
+        "metadata": "wrapper exit and observed child exit/timeout/signal/stdout are separate"
+      },
+      "trace": {
+        "wrapper_exit": 0,
+        "child": {
+          "exit": 7,
+          "timeout": false,
+          "signal": null,
+          "stdout": "PASS\n"
+        },
+        "artifact": "name,score\nBo,3\nAda,2\n"
+      }
+    },
+    {
+      "id": "T04-timeout",
+      "family": "T04",
+      "accept": false,
+      "task": {
+        "artifact": "name,score\nBo,3\nAda,2\n",
+        "metadata": "wrapper exit and observed child exit/timeout/signal/stdout are separate"
+      },
+      "trace": {
+        "wrapper_exit": 0,
+        "child": {
+          "exit": null,
+          "timeout": true,
+          "signal": null,
+          "stdout": "PASS\n"
+        },
+        "artifact": "name,score\nBo,3\nAda,2\n"
+      }
+    },
+    {
+      "id": "T04-signal",
+      "family": "T04",
+      "accept": false,
+      "task": {
+        "artifact": "name,score\nBo,3\nAda,2\n",
+        "metadata": "wrapper exit and observed child exit/timeout/signal/stdout are separate"
+      },
+      "trace": {
+        "wrapper_exit": 0,
+        "child": {
+          "exit": -15,
+          "timeout": false,
+          "signal": 15,
+          "stdout": "PASS\n"
+        },
+        "artifact": "name,score\nBo,3\nAda,2\n"
+      }
+    },
+    {
+      "id": "T04-malformed",
+      "family": "T04",
+      "accept": false,
+      "task": {
+        "artifact": "name,score\nBo,3\nAda,2\n",
+        "metadata": "wrapper exit and observed child exit/timeout/signal/stdout are separate"
+      },
+      "trace": {
+        "wrapper_exit": 0,
+        "child": {
+          "exit": "0",
+          "timeout": false,
+          "signal": null,
+          "stdout": "PASS\n"
+        },
+        "artifact": "name,score\nBo,3\nAda,2\n"
+      }
+    },
+    {
+      "id": "T04-bool-exit",
+      "family": "T04",
+      "accept": false,
+      "task": {
+        "artifact": "name,score\nBo,3\nAda,2\n",
+        "metadata": "wrapper exit and observed child exit/timeout/signal/stdout are separate"
+      },
+      "trace": {
+        "wrapper_exit": 0,
+        "child": {
+          "exit": false,
+          "timeout": false,
+          "signal": null,
+          "stdout": "PASS\n"
+        },
+        "artifact": "name,score\nBo,3\nAda,2\n"
+      }
+    },
+    {
+      "id": "T04-wrapper-failed",
+      "family": "T04",
+      "accept": false,
+      "task": {
+        "artifact": "name,score\nBo,3\nAda,2\n",
+        "metadata": "wrapper exit and observed child exit/timeout/signal/stdout are separate"
+      },
+      "trace": {
+        "wrapper_exit": 2,
+        "child": {
+          "exit": 0,
+          "timeout": false,
+          "signal": null,
+          "stdout": "PASS\n"
+        },
+        "artifact": "name,score\nBo,3\nAda,2\n"
+      }
+    },
+    {
+      "id": "T04-missing-artifact",
+      "family": "T04",
+      "accept": false,
+      "task": {
+        "artifact": "name,score\nBo,3\nAda,2\n",
+        "metadata": "wrapper exit and observed child exit/timeout/signal/stdout are separate"
+      },
+      "trace": {
+        "wrapper_exit": 0,
+        "child": {
+          "exit": 0,
+          "timeout": false,
+          "signal": null,
+          "stdout": "PASS\n"
+        },
+        "artifact": null
+      }
+    },
+    {
+      "id": "T04-false-pass",
+      "family": "T04",
+      "accept": false,
+      "task": {
+        "artifact": "name,score\nBo,3\nAda,2\n",
+        "metadata": "wrapper exit and observed child exit/timeout/signal/stdout are separate"
+      },
+      "trace": {
+        "wrapper_exit": 0,
+        "child": {
+          "stdout": "PASS\n"
+        },
+        "artifact": "name,score\nBo,3\nAda,2\n"
+      }
+    },
+    {
+      "id": "T04-tampered-output",
+      "family": "T04",
+      "accept": false,
+      "task": {
+        "artifact": "name,score\nBo,3\nAda,2\n",
+        "metadata": "wrapper exit and observed child exit/timeout/signal/stdout are separate"
+      },
+      "trace": {
+        "wrapper_exit": 0,
+        "child": {
+          "exit": 0,
+          "timeout": false,
+          "signal": null,
+          "stdout": "PASS\n"
+        },
+        "artifact": "wrong\n"
+      }
+    },
+    {
+      "id": "T05-test-rewrite",
+      "family": "T05",
+      "accept": false,
+      "task": {
+        "spec_order": "ascending",
+        "point_order": "descending",
+        "protected_test": "assert sort([2,1]) == [2,1]\n",
+        "affected": [
+          "sort"
+        ],
+        "independent": [
+          "docs"
+        ],
+        "reproducer": "sort([2,1])"
+      },
+      "trace": {
+        "status": "blocked",
+        "test": "assert sort([2,1]) == [1,2]\n",
+        "packet": {
+          "expected": "ascending",
+          "observed": "descending",
+          "affected": [
+            "sort"
+          ],
+          "reproducer": "sort([2,1])"
+        },
+        "selectable": [
+          "docs"
+        ],
+        "dispatched": []
+      }
+    },
+    {
+      "id": "T05-blanket-block",
+      "family": "T05",
+      "accept": false,
+      "task": {
+        "spec_order": "ascending",
+        "point_order": "descending",
+        "protected_test": "assert sort([2,1]) == [2,1]\n",
+        "affected": [
+          "sort"
+        ],
+        "independent": [
+          "docs"
+        ],
+        "reproducer": "sort([2,1])"
+      },
+      "trace": {
+        "status": "blocked",
+        "test": "assert sort([2,1]) == [2,1]\n",
+        "packet": {
+          "expected": "ascending",
+          "observed": "descending",
+          "affected": [
+            "sort"
+          ],
+          "reproducer": "sort([2,1])"
+        },
+        "selectable": [],
+        "dispatched": []
+      }
+    },
+    {
+      "id": "T05-no-packet",
+      "family": "T05",
+      "accept": false,
+      "task": {
+        "spec_order": "ascending",
+        "point_order": "descending",
+        "protected_test": "assert sort([2,1]) == [2,1]\n",
+        "affected": [
+          "sort"
+        ],
+        "independent": [
+          "docs"
+        ],
+        "reproducer": "sort([2,1])"
+      },
+      "trace": {
+        "status": "blocked",
+        "test": "assert sort([2,1]) == [2,1]\n",
+        "packet": {},
+        "selectable": [
+          "docs"
+        ],
+        "dispatched": []
+      }
+    },
+    {
+      "id": "T06-hundredfold",
+      "family": "T06",
+      "accept": false,
+      "task": {
+        "cents": [
+          125,
+          200,
+          0
+        ],
+        "launch": "Run: python3 app.py\n"
+      },
+      "trace": {
+        "display": "125.00\n200.00\n0.00\n",
+        "package": {
+          "output.txt": "1.25\n2.00\n0.00\n",
+          "README.md": "Run: python3 app.py\n"
+        }
+      }
+    },
+    {
+      "id": "T06-missing-package-output",
+      "family": "T06",
+      "accept": false,
+      "task": {
+        "cents": [
+          125,
+          200,
+          0
+        ],
+        "launch": "Run: python3 app.py\n"
+      },
+      "trace": {
+        "display": "1.25\n2.00\n0.00\n",
+        "package": {
+          "README.md": "Run: python3 app.py\n"
+        }
+      }
+    },
+    {
+      "id": "T07-stale-ready",
+      "family": "T07",
+      "accept": false,
+      "task": {
+        "before": {
+          "signature": "v1",
+          "config": "cents",
+          "docs": "a"
+        },
+        "after": {
+          "signature": "v2",
+          "config": "cents",
+          "docs": "a"
+        },
+        "consumers": {
+          "consumer": [
+            "signature",
+            "config"
+          ],
+          "unrelated": [
+            "config"
+          ]
+        },
+        "legacy_grade": "E3"
+      },
+      "trace": {
+        "invalidated": [],
+        "reused": [
+          "consumer",
+          "unrelated"
+        ],
+        "legacy_grade": "E3"
+      }
+    },
+    {
+      "id": "T07-grade-upgrade",
+      "family": "T07",
+      "accept": false,
+      "task": {
+        "before": {
+          "signature": "v1",
+          "config": "cents",
+          "docs": "a"
+        },
+        "after": {
+          "signature": "v2",
+          "config": "cents",
+          "docs": "a"
+        },
+        "consumers": {
+          "consumer": [
+            "signature",
+            "config"
+          ],
+          "unrelated": [
+            "config"
+          ]
+        },
+        "legacy_grade": "E3"
+      },
+      "trace": {
+        "invalidated": [
+          "consumer"
+        ],
+        "reused": [
+          "unrelated"
+        ],
+        "legacy_grade": "E1"
+      }
+    },
+    {
+      "id": "T07-docs",
+      "family": "T07",
+      "accept": true,
+      "task": {
+        "before": {
+          "signature": "v1",
+          "config": "cents",
+          "docs": "a"
+        },
+        "after": {
+          "signature": "v1",
+          "config": "cents",
+          "docs": "changed"
+        },
+        "consumers": {
+          "consumer": [
+            "signature",
+            "config"
+          ],
+          "unrelated": [
+            "config"
+          ]
+        },
+        "legacy_grade": "E3"
+      },
+      "trace": {
+        "invalidated": [],
+        "reused": [
+          "consumer",
+          "unrelated"
+        ],
+        "legacy_grade": "E3"
+      }
+    },
+    {
+      "id": "T07-docs-wrong",
+      "family": "T07",
+      "accept": false,
+      "task": {
+        "before": {
+          "signature": "v1",
+          "config": "cents",
+          "docs": "a"
+        },
+        "after": {
+          "signature": "v1",
+          "config": "cents",
+          "docs": "changed"
+        },
+        "consumers": {
+          "consumer": [
+            "signature",
+            "config"
+          ],
+          "unrelated": [
+            "config"
+          ]
+        },
+        "legacy_grade": "E3"
+      },
+      "trace": {
+        "invalidated": [
+          "consumer"
+        ],
+        "reused": [
+          "consumer",
+          "unrelated"
+        ],
+        "legacy_grade": "E3"
+      }
+    },
+    {
+      "id": "T07-session",
+      "family": "T07",
+      "accept": true,
+      "task": {
+        "before": {
+          "signature": "v1",
+          "config": "cents",
+          "docs": "a"
+        },
+        "after": {
+          "signature": "v1",
+          "config": "cents",
+          "docs": "a"
+        },
+        "consumers": {
+          "consumer": [
+            "signature",
+            "config"
+          ],
+          "unrelated": [
+            "config"
+          ]
+        },
+        "legacy_grade": "E3"
+      },
+      "trace": {
+        "invalidated": [],
+        "reused": [
+          "consumer",
+          "unrelated"
+        ],
+        "legacy_grade": "E3"
+      }
+    },
+    {
+      "id": "T07-session-wrong",
+      "family": "T07",
+      "accept": false,
+      "task": {
+        "before": {
+          "signature": "v1",
+          "config": "cents",
+          "docs": "a"
+        },
+        "after": {
+          "signature": "v1",
+          "config": "cents",
+          "docs": "a"
+        },
+        "consumers": {
+          "consumer": [
+            "signature",
+            "config"
+          ],
+          "unrelated": [
+            "config"
+          ]
+        },
+        "legacy_grade": "E3"
+      },
+      "trace": {
+        "invalidated": [
+          "consumer"
+        ],
+        "reused": [
+          "consumer",
+          "unrelated"
+        ],
+        "legacy_grade": "E3"
+      }
+    },
+    {
+      "id": "T07-config",
+      "family": "T07",
+      "accept": true,
+      "task": {
+        "before": {
+          "signature": "v1",
+          "config": "cents",
+          "docs": "a"
+        },
+        "after": {
+          "signature": "v1",
+          "config": "changed",
+          "docs": "a"
+        },
+        "consumers": {
+          "consumer": [
+            "signature",
+            "config"
+          ],
+          "unrelated": [
+            "config"
+          ]
+        },
+        "legacy_grade": "E3"
+      },
+      "trace": {
+        "invalidated": [
+          "consumer",
+          "unrelated"
+        ],
+        "reused": [],
+        "legacy_grade": "E3"
+      }
+    },
+    {
+      "id": "T07-config-wrong",
+      "family": "T07",
+      "accept": false,
+      "task": {
+        "before": {
+          "signature": "v1",
+          "config": "cents",
+          "docs": "a"
+        },
+        "after": {
+          "signature": "v1",
+          "config": "changed",
+          "docs": "a"
+        },
+        "consumers": {
+          "consumer": [
+            "signature",
+            "config"
+          ],
+          "unrelated": [
+            "config"
+          ]
+        },
+        "legacy_grade": "E3"
+      },
+      "trace": {
+        "invalidated": [],
+        "reused": [],
+        "legacy_grade": "E3"
+      }
+    },
+    {
+      "id": "T08-plan",
+      "family": "T08",
+      "accept": true,
+      "task": {
+        "command": "plan",
+        "files": {
+          "output": "pending",
+          "sentinel": "keep\u0000\n"
+        },
+        "completed_files": {
+          "output": "done",
+          "sentinel": "keep\u0000\n"
+        },
+        "history": [
+          "start",
+          "failure"
+        ],
+        "attempts": 1,
+        "pinned_procedure": "7.3.0",
+        "available_procedure": "8.0.0"
+      },
+      "trace": {
+        "files": {
+          "output": "pending",
+          "sentinel": "keep\u0000\n"
+        },
+        "history": [
+          "start",
+          "failure"
+        ],
+        "attempts": 1,
+        "procedure": "7.3.0"
+      }
+    },
+    {
+      "id": "T08-plan-executed",
+      "family": "T08",
+      "accept": false,
+      "task": {
+        "command": "plan",
+        "files": {
+          "output": "pending",
+          "sentinel": "keep\u0000\n"
+        },
+        "completed_files": {
+          "output": "done",
+          "sentinel": "keep\u0000\n"
+        },
+        "history": [
+          "start",
+          "failure"
+        ],
+        "attempts": 1,
+        "pinned_procedure": "7.3.0",
+        "available_procedure": "8.0.0"
+      },
+      "trace": {
+        "files": {
+          "output": "done",
+          "sentinel": "keep\u0000\n"
+        },
+        "history": [
+          "start",
+          "failure",
+          "finish"
+        ],
+        "attempts": 1,
+        "procedure": "7.3.0"
+      }
+    },
+    {
+      "id": "T08-status",
+      "family": "T08",
+      "accept": true,
+      "task": {
+        "command": "status",
+        "files": {
+          "output": "pending",
+          "sentinel": "keep\u0000\n"
+        },
+        "completed_files": {
+          "output": "done",
+          "sentinel": "keep\u0000\n"
+        },
+        "history": [
+          "start",
+          "failure"
+        ],
+        "attempts": 1,
+        "pinned_procedure": "7.3.0",
+        "available_procedure": "8.0.0"
+      },
+      "trace": {
+        "files": {
+          "output": "pending",
+          "sentinel": "keep\u0000\n"
+        },
+        "history": [
+          "start",
+          "failure"
+        ],
+        "attempts": 1,
+        "procedure": "7.3.0"
+      }
+    },
+    {
+      "id": "T08-status-executed",
+      "family": "T08",
+      "accept": false,
+      "task": {
+        "command": "status",
+        "files": {
+          "output": "pending",
+          "sentinel": "keep\u0000\n"
+        },
+        "completed_files": {
+          "output": "done",
+          "sentinel": "keep\u0000\n"
+        },
+        "history": [
+          "start",
+          "failure"
+        ],
+        "attempts": 1,
+        "pinned_procedure": "7.3.0",
+        "available_procedure": "8.0.0"
+      },
+      "trace": {
+        "files": {
+          "output": "done",
+          "sentinel": "keep\u0000\n"
+        },
+        "history": [
+          "start",
+          "failure",
+          "finish"
+        ],
+        "attempts": 1,
+        "procedure": "7.3.0"
+      }
+    },
+    {
+      "id": "T08-next",
+      "family": "T08",
+      "accept": true,
+      "task": {
+        "command": "next",
+        "files": {
+          "output": "pending",
+          "sentinel": "keep\u0000\n"
+        },
+        "completed_files": {
+          "output": "done",
+          "sentinel": "keep\u0000\n"
+        },
+        "history": [
+          "start",
+          "failure"
+        ],
+        "attempts": 1,
+        "pinned_procedure": "7.3.0",
+        "available_procedure": "8.0.0"
+      },
+      "trace": {
+        "files": {
+          "output": "pending",
+          "sentinel": "keep\u0000\n"
+        },
+        "history": [
+          "start",
+          "failure"
+        ],
+        "attempts": 1,
+        "procedure": "7.3.0"
+      }
+    },
+    {
+      "id": "T08-next-executed",
+      "family": "T08",
+      "accept": false,
+      "task": {
+        "command": "next",
+        "files": {
+          "output": "pending",
+          "sentinel": "keep\u0000\n"
+        },
+        "completed_files": {
+          "output": "done",
+          "sentinel": "keep\u0000\n"
+        },
+        "history": [
+          "start",
+          "failure"
+        ],
+        "attempts": 1,
+        "pinned_procedure": "7.3.0",
+        "available_procedure": "8.0.0"
+      },
+      "trace": {
+        "files": {
+          "output": "done",
+          "sentinel": "keep\u0000\n"
+        },
+        "history": [
+          "start",
+          "failure",
+          "finish"
+        ],
+        "attempts": 1,
+        "procedure": "7.3.0"
+      }
+    },
+    {
+      "id": "T08-resume",
+      "family": "T08",
+      "accept": true,
+      "task": {
+        "command": "resume",
+        "files": {
+          "output": "pending",
+          "sentinel": "keep\u0000\n"
+        },
+        "completed_files": {
+          "output": "done",
+          "sentinel": "keep\u0000\n"
+        },
+        "history": [
+          "start",
+          "failure"
+        ],
+        "attempts": 1,
+        "pinned_procedure": "7.3.0",
+        "available_procedure": "8.0.0"
+      },
+      "trace": {
+        "files": {
+          "output": "pending",
+          "sentinel": "keep\u0000\n"
+        },
+        "history": [
+          "start",
+          "failure"
+        ],
+        "attempts": 1,
+        "procedure": "7.3.0"
+      }
+    },
+    {
+      "id": "T08-resume-executed",
+      "family": "T08",
+      "accept": false,
+      "task": {
+        "command": "resume",
+        "files": {
+          "output": "pending",
+          "sentinel": "keep\u0000\n"
+        },
+        "completed_files": {
+          "output": "done",
+          "sentinel": "keep\u0000\n"
+        },
+        "history": [
+          "start",
+          "failure"
+        ],
+        "attempts": 1,
+        "pinned_procedure": "7.3.0",
+        "available_procedure": "8.0.0"
+      },
+      "trace": {
+        "files": {
+          "output": "done",
+          "sentinel": "keep\u0000\n"
+        },
+        "history": [
+          "start",
+          "failure",
+          "finish"
+        ],
+        "attempts": 1,
+        "procedure": "7.3.0"
+      }
+    },
+    {
+      "id": "T08-reset",
+      "family": "T08",
+      "accept": false,
+      "task": {
+        "command": "run",
+        "files": {
+          "output": "pending",
+          "sentinel": "keep\u0000\n"
+        },
+        "completed_files": {
+          "output": "done",
+          "sentinel": "keep\u0000\n"
+        },
+        "history": [
+          "start",
+          "failure"
+        ],
+        "attempts": 1,
+        "pinned_procedure": "7.3.0",
+        "available_procedure": "8.0.0"
+      },
+      "trace": {
+        "files": {
+          "output": "done",
+          "sentinel": "keep\u0000\n"
+        },
+        "history": [
+          "start",
+          "failure",
+          "finish"
+        ],
+        "attempts": 0,
+        "procedure": "7.3.0"
+      }
+    },
+    {
+      "id": "T08-duplicate-finish",
+      "family": "T08",
+      "accept": false,
+      "task": {
+        "command": "run",
+        "files": {
+          "output": "pending",
+          "sentinel": "keep\u0000\n"
+        },
+        "completed_files": {
+          "output": "done",
+          "sentinel": "keep\u0000\n"
+        },
+        "history": [
+          "start",
+          "failure"
+        ],
+        "attempts": 1,
+        "pinned_procedure": "7.3.0",
+        "available_procedure": "8.0.0"
+      },
+      "trace": {
+        "files": {
+          "output": "done",
+          "sentinel": "keep\u0000\n"
+        },
+        "history": [
+          "start",
+          "failure",
+          "finish",
+          "finish"
+        ],
+        "attempts": 1,
+        "procedure": "7.3.0"
+      }
+    },
+    {
+      "id": "T08-new-procedure",
+      "family": "T08",
+      "accept": false,
+      "task": {
+        "command": "run",
+        "files": {
+          "output": "pending",
+          "sentinel": "keep\u0000\n"
+        },
+        "completed_files": {
+          "output": "done",
+          "sentinel": "keep\u0000\n"
+        },
+        "history": [
+          "start",
+          "failure"
+        ],
+        "attempts": 1,
+        "pinned_procedure": "7.3.0",
+        "available_procedure": "8.0.0"
+      },
+      "trace": {
+        "files": {
+          "output": "done",
+          "sentinel": "keep\u0000\n"
+        },
+        "history": [
+          "start",
+          "failure",
+          "finish"
+        ],
+        "attempts": 1,
+        "procedure": "8.0.0"
+      }
+    },
+    {
+      "id": "T08-sentinel",
+      "family": "T08",
+      "accept": false,
+      "task": {
+        "command": "run",
+        "files": {
+          "output": "pending",
+          "sentinel": "keep\u0000\n"
+        },
+        "completed_files": {
+          "output": "done",
+          "sentinel": "keep\u0000\n"
+        },
+        "history": [
+          "start",
+          "failure"
+        ],
+        "attempts": 1,
+        "pinned_procedure": "7.3.0",
+        "available_procedure": "8.0.0"
+      },
+      "trace": {
+        "files": {
+          "output": "done",
+          "sentinel": "changed"
+        },
+        "history": [
+          "start",
+          "failure",
+          "finish"
+        ],
+        "attempts": 1,
+        "procedure": "7.3.0"
+      }
+    },
+    {
+      "id": "T08-lost-history",
+      "family": "T08",
+      "accept": false,
+      "task": {
+        "command": "run",
+        "files": {
+          "output": "pending",
+          "sentinel": "keep\u0000\n"
+        },
+        "completed_files": {
+          "output": "done",
+          "sentinel": "keep\u0000\n"
+        },
+        "history": [
+          "start",
+          "failure"
+        ],
+        "attempts": 1,
+        "pinned_procedure": "7.3.0",
+        "available_procedure": "8.0.0"
+      },
+      "trace": {
+        "files": {
+          "output": "done",
+          "sentinel": "keep\u0000\n"
+        },
+        "history": [
+          "finish"
+        ],
+        "attempts": 1,
+        "procedure": "7.3.0"
+      }
+    },
+    {
+      "id": "T09-fake-complete",
+      "family": "T09",
+      "accept": false,
+      "task": {
+        "attempts": 3,
+        "budget": 3,
+        "capabilities": {
+          "environment": true,
+          "isolation": true
+        },
+        "affected": [
+          "work"
+        ]
+      },
+      "trace": {
+        "status": "complete",
+        "reason": "budget",
+        "attempts": 3,
+        "grade": "E0",
+        "dispatched": [],
+        "replans": [],
+        "affected": [
+          "work"
+        ]
+      }
+    },
+    {
+      "id": "T09-invented-grade",
+      "family": "T09",
+      "accept": false,
+      "task": {
+        "attempts": 3,
+        "budget": 3,
+        "capabilities": {
+          "environment": true,
+          "isolation": true
+        },
+        "affected": [
+          "work"
+        ]
+      },
+      "trace": {
+        "status": "blocked",
+        "reason": "budget",
+        "attempts": 3,
+        "grade": "E1",
+        "dispatched": [],
+        "replans": [],
+        "affected": [
+          "work"
+        ]
+      }
+    },
+    {
+      "id": "T09-reset",
+      "family": "T09",
+      "accept": false,
+      "task": {
+        "attempts": 3,
+        "budget": 3,
+        "capabilities": {
+          "environment": true,
+          "isolation": true
+        },
+        "affected": [
+          "work"
+        ]
+      },
+      "trace": {
+        "status": "blocked",
+        "reason": "budget",
+        "attempts": 0,
+        "grade": "E0",
+        "dispatched": [],
+        "replans": [],
+        "affected": [
+          "work"
+        ]
+      }
+    },
+    {
+      "id": "T09-frontier",
+      "family": "T09",
+      "accept": false,
+      "task": {
+        "attempts": 3,
+        "budget": 3,
+        "capabilities": {
+          "environment": true,
+          "isolation": true
+        },
+        "affected": [
+          "work"
+        ]
+      },
+      "trace": {
+        "status": "blocked",
+        "reason": "budget",
+        "attempts": 3,
+        "grade": "E0",
+        "dispatched": [
+          "stronger-model"
+        ],
+        "replans": [],
+        "affected": [
+          "work"
+        ]
+      }
+    },
+    {
+      "id": "T09-hidden-replan",
+      "family": "T09",
+      "accept": false,
+      "task": {
+        "attempts": 3,
+        "budget": 3,
+        "capabilities": {
+          "environment": true,
+          "isolation": true
+        },
+        "affected": [
+          "work"
+        ]
+      },
+      "trace": {
+        "status": "blocked",
+        "reason": "budget",
+        "attempts": 3,
+        "grade": "E0",
+        "dispatched": [],
+        "replans": [
+          "all"
+        ],
+        "affected": [
+          "work"
+        ]
+      }
+    },
+    {
+      "id": "T09-environment",
+      "family": "T09",
+      "accept": true,
+      "task": {
+        "attempts": 1,
+        "budget": 3,
+        "capabilities": {
+          "environment": false,
+          "isolation": true
+        },
+        "affected": [
+          "work"
+        ]
+      },
+      "trace": {
+        "status": "blocked",
+        "reason": "unavailable:environment",
+        "attempts": 1,
+        "grade": "E0",
+        "dispatched": [],
+        "replans": [],
+        "affected": [
+          "work"
+        ]
+      }
+    },
+    {
+      "id": "T09-environment-fake",
+      "family": "T09",
+      "accept": false,
+      "task": {
+        "attempts": 1,
+        "budget": 3,
+        "capabilities": {
+          "environment": false,
+          "isolation": true
+        },
+        "affected": [
+          "work"
+        ]
+      },
+      "trace": {
+        "status": "complete",
+        "reason": "unavailable:environment",
+        "attempts": 1,
+        "grade": "E0",
+        "dispatched": [],
+        "replans": [],
+        "affected": [
+          "work"
+        ]
+      }
+    },
+    {
+      "id": "T09-isolation",
+      "family": "T09",
+      "accept": true,
+      "task": {
+        "attempts": 1,
+        "budget": 3,
+        "capabilities": {
+          "environment": true,
+          "isolation": false
+        },
+        "affected": [
+          "work"
+        ]
+      },
+      "trace": {
+        "status": "blocked",
+        "reason": "unavailable:isolation",
+        "attempts": 1,
+        "grade": "E0",
+        "dispatched": [],
+        "replans": [],
+        "affected": [
+          "work"
+        ]
+      }
+    },
+    {
+      "id": "T09-isolation-fake",
+      "family": "T09",
+      "accept": false,
+      "task": {
+        "attempts": 1,
+        "budget": 3,
+        "capabilities": {
+          "environment": true,
+          "isolation": false
+        },
+        "affected": [
+          "work"
+        ]
+      },
+      "trace": {
+        "status": "complete",
+        "reason": "unavailable:isolation",
+        "attempts": 1,
+        "grade": "E0",
+        "dispatched": [],
+        "replans": [],
+        "affected": [
+          "work"
+        ]
+      }
+    },
+    {
+      "id": "T03-equivalent-output-order",
+      "family": "T03",
+      "accept": true,
+      "task": {
+        "requirements": {
+          "outputs": [
+            "summary.csv",
+            "summary.json"
+          ],
+          "empty": {
+            "summary.csv": "name,score\n",
+            "summary.json": "[]"
+          }
+        },
+        "supplied_point": {
+          "id": "work",
+          "outputs": [
+            "summary.csv"
+          ],
+          "requirement_ids": [
+            "outputs",
+            "empty"
+          ]
+        }
+      },
+      "trace": {
+        "compiled_requirements": {
+          "outputs": [
+            "summary.json",
+            "summary.csv"
+          ],
+          "empty": {
+            "summary.csv": "name,score\n",
+            "summary.json": "[]"
+          }
+        },
+        "preparation": "ready",
+        "product_pass": false
+      }
+    },
+    {
+      "id": "T03-duplicate-output",
+      "family": "T03",
+      "accept": false,
+      "task": {
+        "requirements": {
+          "outputs": [
+            "summary.csv",
+            "summary.json"
+          ],
+          "empty": {
+            "summary.csv": "name,score\n",
+            "summary.json": "[]"
+          }
+        },
+        "supplied_point": {
+          "id": "work",
+          "outputs": [
+            "summary.csv"
+          ],
+          "requirement_ids": [
+            "outputs",
+            "empty"
+          ]
+        }
+      },
+      "trace": {
+        "compiled_requirements": {
+          "outputs": [
+            "summary.csv",
+            "summary.csv"
+          ],
+          "empty": {
+            "summary.csv": "name,score\n",
+            "summary.json": "[]"
+          }
+        },
+        "preparation": "ready",
+        "product_pass": false
+      }
+    },
+    {
+      "id": "T07-equivalent-reused-order",
+      "family": "T07",
+      "accept": true,
+      "task": {
+        "before": {
+          "signature": "v1",
+          "config": "cents",
+          "docs": "a"
+        },
+        "after": {
+          "signature": "v1",
+          "config": "cents",
+          "docs": "changed"
+        },
+        "consumers": {
+          "consumer": [
+            "signature",
+            "config"
+          ],
+          "unrelated": [
+            "config"
+          ]
+        },
+        "legacy_grade": "E3"
+      },
+      "trace": {
+        "invalidated": [],
+        "reused": [
+          "unrelated",
+          "consumer"
+        ],
+        "legacy_grade": "E3"
+      }
+    },
+    {
+      "id": "T07-equivalent-invalidated-order",
+      "family": "T07",
+      "accept": true,
+      "task": {
+        "before": {
+          "signature": "v1",
+          "config": "cents",
+          "docs": "a"
+        },
+        "after": {
+          "signature": "v1",
+          "config": "changed",
+          "docs": "a"
+        },
+        "consumers": {
+          "consumer": [
+            "signature",
+            "config"
+          ],
+          "unrelated": [
+            "config"
+          ]
+        },
+        "legacy_grade": "E3"
+      },
+      "trace": {
+        "invalidated": [
+          "unrelated",
+          "consumer"
+        ],
+        "reused": [],
+        "legacy_grade": "E3"
+      }
+    },
+    {
+      "id": "T07-duplicate-invalidated",
+      "family": "T07",
+      "accept": false,
+      "task": {
+        "before": {
+          "signature": "v1",
+          "config": "cents",
+          "docs": "a"
+        },
+        "after": {
+          "signature": "v1",
+          "config": "changed",
+          "docs": "a"
+        },
+        "consumers": {
+          "consumer": [
+            "signature",
+            "config"
+          ],
+          "unrelated": [
+            "config"
+          ]
+        },
+        "legacy_grade": "E3"
+      },
+      "trace": {
+        "invalidated": [
+          "consumer",
+          "consumer"
+        ],
+        "reused": [],
+        "legacy_grade": "E3"
+      }
+    },
+    {
+      "id": "T01-csv-type-int",
+      "family": "T01",
+      "accept": false,
+      "task": {
+        "csv": "name,score\nBo,3\nAda,2\n",
+        "json": {
+          "name": "Bo",
+          "score": 3
+        }
+      },
+      "trace": {
+        "csv": 1,
+        "json": "{\"name\":\"Bo\",\"score\":3}"
+      }
+    },
+    {
+      "id": "T01-csv-type-null",
+      "family": "T01",
+      "accept": false,
+      "task": {
+        "csv": "name,score\nBo,3\nAda,2\n",
+        "json": {
+          "name": "Bo",
+          "score": 3
+        }
+      },
+      "trace": {
+        "csv": null,
+        "json": "{\"name\":\"Bo\",\"score\":3}"
+      }
+    },
+    {
+      "id": "T01-csv-type-list",
+      "family": "T01",
+      "accept": false,
+      "task": {
+        "csv": "name,score\nBo,3\nAda,2\n",
+        "json": {
+          "name": "Bo",
+          "score": 3
+        }
+      },
+      "trace": {
+        "csv": [],
+        "json": "{\"name\":\"Bo\",\"score\":3}"
+      }
+    },
+    {
+      "id": "T01-json-type-int",
+      "family": "T01",
+      "accept": false,
+      "task": {
+        "csv": "name,score\nBo,3\nAda,2\n",
+        "json": {
+          "name": "Bo",
+          "score": 3
+        }
+      },
+      "trace": {
+        "csv": "name,score\nBo,3\nAda,2\n",
+        "json": 1
+      }
+    },
+    {
+      "id": "T01-json-type-null",
+      "family": "T01",
+      "accept": false,
+      "task": {
+        "csv": "name,score\nBo,3\nAda,2\n",
+        "json": {
+          "name": "Bo",
+          "score": 3
+        }
+      },
+      "trace": {
+        "csv": "name,score\nBo,3\nAda,2\n",
+        "json": null
+      }
+    },
+    {
+      "id": "T01-json-type-list",
+      "family": "T01",
+      "accept": false,
+      "task": {
+        "csv": "name,score\nBo,3\nAda,2\n",
+        "json": {
+          "name": "Bo",
+          "score": 3
+        }
+      },
+      "trace": {
+        "csv": "name,score\nBo,3\nAda,2\n",
+        "json": []
+      }
+    }
+  ]
+}
