@@ -1,5 +1,30 @@
 # Tackle changelog
 
+## Tackle 8.1.0
+
+- Select Tackle once, then ask for what you need in natural language or use short requests such
+  as `plan`, `run`, `verify`, `judge`, and `retro`. Older `/tackle-*` spellings remain text aliases
+  during 8.x; they do not require separate entries in your agent's skill picker.
+- Bare invocation and `help` show the available actions without inspecting a project or creating
+  files. Unclear requests ask for clarification. A question about `run`, or an instruction not to
+  execute it, does not authorize changes.
+- The README now starts with installation and concrete requests, including Spanish examples.
+  It explains which files stay in your repository and when the agent needs permission to execute.
+- Validation checks exact Point ids, decision headings, status fields, and effort values. Collision
+  checks handle inline and multiline file scopes and report unsupported paths instead of treating
+  them as safe. Fixture tests cover these cases; capture tests run from UTF-8 source files.
+- Risk takes precedence over Point count when choosing None, Lite, or Full. A small plan still
+  needs Full when it changes a public API, spans modules or sessions, or requires a handoff.
+- Workspace validation accepts safe dotted names and explicitly marked Lite plans without
+  requiring Full-only artifacts. Lite still needs valid history and evidence; missing Full files
+  never grant an exemption. Existing Lite plans adopt the marker only through selected migration.
+- Release checks require an explicit workspace selection. Every selected or active workspace must
+  pass its mandatory checks; selected work also needs current global acceptance, even with an
+  all-complete board. Old results cannot establish acceptance after relevant inputs change.
+- The 8.0 → 8.1 migration checklist preserves closed work, history, evidence and interrupted-Point
+  procedures. Smoke coverage remains limited to the exercised requests; it does not certify every
+  route or the host app's picker, and no comparative performance improvement is claimed.
+
 ## Tackle 8.0.0
 
 - **Code-style continuity.** Restore the existing self-documenting code and comment-placement

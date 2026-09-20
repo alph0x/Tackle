@@ -3,14 +3,20 @@
 Migration is a **copy-first, selected-active-work** operation. It never structurally rewrites a live
 workspace or its history during the migration trial,
 automatically migrates unrelated or closed work, upgrades historical evidence, or turns a query into
-execution. The 7.3 → 8.0 checklist below is the current protocol; older checklists remain readable
-historical context and cannot bypass its selection, pinning, history or rollback guards.
+execution. Select the 8.0 → 8.1 checklist for an 8.0 workspace; a 7.3 workspace first follows
+7.3 → 8.0. Older checklists remain readable historical context and cannot bypass the current
+selection, pinning, history or rollback guards.
 
 Only a selected active workspace is migrated, and only on a disposable copy. Closed points retain
 their recorded state and evidence; future execution uses the RUN protocol at a Point boundary.
 
 `improve this plan`, `migrate`, and `upgrade` route to PLAN's migration preparation. An unstructured
 source is ingested fresh through PLAN.
+
+Current interaction uses one skill entry: select Tackle, then state a request such as `plan`,
+`run`, `status` or `verify`. Update forward-looking prompts to that form when migrating selected
+work; preserve historical records verbatim. Old slash spellings in the checklists below are
+historical text aliases, not separately registered menu commands. See [invocation.md](invocation.md).
 
 For historical interpretation only, older migration records may use the following F-1–F-8 labels;
 they are not current obligations outside the v7.3 → v8.0 checklist:
@@ -26,6 +32,35 @@ they are not current obligations outside the v7.3 → v8.0 checklist:
   scoped writes, evidence, correction limits, integration and close/block; any review obligation is
   the one named by that Point, with no second closure loop.
 - **F-8 · Verification** — `lint: N/N checks passed` on the migrated workspace and the Methodology stamp is current → generic step 6 plus each checklist's record item.
+
+## v8.0 → v8.1 checklist
+
+Run only for a selected active 8.0 workspace, on a disposable copy. Installation and workspace
+adoption are separate operations; changing the installed skill does not migrate any plan.
+
+1. **Select and checkpoint** — record the workspace and its pinned procedure. Copy its files,
+   hash contracts, evidence, log and usage bytes, and preserve a neighboring rollback sentinel.
+   Leave closed and unrelated workspaces untouched.
+2. **Update future requests** — use the single Tackle entry followed by the requested action.
+   Keep historical prompts verbatim. Legacy text aliases remain valid during 8.x; status,
+   diagnostics and negated execution retain their no-write boundary.
+3. **Recheck remaining work** — apply risk precedence before reducing plan size, and use the
+   corrected dependency, status, decision, effort and collision checks. Surface newly detected
+   gaps in remaining work; do not rewrite old evidence or mark a Point Ready without validation.
+   An interrupted Point stays on its pinned procedure until its boundary.
+   For a selected, already authorized Lite route, put `Gate: Lite` on plan.md's first line in
+   the trial copy; require plan/log/usage and no board, points directory or Full decomposition.
+   Missing Full artifacts do not establish Lite. Do not relabel work during a read-only audit or
+   mass-update historical plans. Preserve log/usage bytes; this metadata grants no Ready state.
+4. **Validate affected acceptance** — reuse only observations whose relevant inputs are unchanged.
+   When preparing a release, record the owner's explicit workspace selection. Selected and active
+   workspaces must pass mandatory checks; selected work also needs current global acceptance,
+   regardless of board status. Warning rows remain non-blocking.
+5. **Verify rollback and adopt** — restore a separate copy from the checkpoint and compare the
+   preserved bytes and sentinel. After validation and owner approval at a Point boundary,
+   selectively promote the validated future artifacts and append the adoption record. Preserve
+   historical states, evidence grades, correction counters, log and usage entries. Failed checks
+   block adoption; neither migration nor a version stamp authorizes publication.
 
 ## Historical migration shape
 
@@ -78,6 +113,13 @@ Run these steps only for a selected active workspace and only on a disposable co
    selected workspace naming the copy, checks, revisions and rollback result. This append-only
    boundary record and selective promotion are the sole live-workspace actions; they never rewrite
    history or claim a release. Publishing a Tackle release requires a separate owner order.
+
+For a release after migration, the owner supplies the selected workspace path(s) explicitly before
+the sweep. Do not infer release scope from an empty board, all-complete Points, historical closure,
+or parked status; selected workspaces still require current global acceptance. Keep the existing
+mandatory lint and done-signal gates for every active workspace, including those not selected.
+The sweep counts the union of active and selected workspaces once each. Historical and parked
+workspaces that are neither active nor selected remain diagnostic/non-gating.
 
 The migration test must exercise a selected active workspace plus completed, blocked and skipped
 legacy rows, an interrupted pinned Point, changed contract, byte hashes, rollback sentinel and an

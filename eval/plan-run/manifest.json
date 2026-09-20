@@ -114,7 +114,7 @@
     "rule-inventory.json": "8bd31d6d976230a286416e433998b0ce8fee818a23c6dc8c14c7cf215e271f9c",
     "tests/test_contracts.py": "225aef8a9b206a6ebe38595a72d4be293d104ba321443dafbed22e819a7b6d77",
     "tests/test_measurement.py": "d95334e6d7781a6d526fe1321ffb7ab3bd3a9a67e7d20d2a1c2290877483f1e4",
-    "tests/test_migration.py": "4baac166025303817b3cec3e80fe3022872511c027baa7141eb8fb233bb429b7",
+    "tests/test_migration.py": "9869cb8caf1f16f143cc499981235c4edc8a56a0989d7f9c01bcdda4f616a09a",
     "tests/test_plan.py": "58cac8a08fa04096aec12ca171d486c7875cc2972664263fee64a3693c747072",
     "tests/test_run.py": "d2bc316c853159fb4f668a469290cdb9510eee06e8fb71a5918cd18a57d6007d"
   },
