@@ -1,188 +1,121 @@
 # Tackle
 
-A model-agnostic planning and execution skill that turns an initiative into a durable action plan — self-contained points a cold agent can resolve in a fresh session — and executes that plan point-by-point when you ask it to.
+Tackle helps an AI agent plan work, carry it across sessions, and execute it when you ask. Plans live in your repository as Markdown. Each task, called a Point, includes the context, scope, and checks an agent needs to pick it up in a fresh session.
 
-**Tackle 8.0.0: Markdown-only runtime.** Tackle presents two primary actions — **PLAN** and **RUN** — plus the read-only **STATUS** query, with bounded compatibility aliases. The install artifact is exactly `SKILL.md` plus `references/`; mechanical verification is documented as direct POSIX checks.
+Use it for features, refactors, and investigations that span sessions or involve handoffs between agents or people. It works with any agent that can read Markdown and search your code.
 
-## What it does
-
-Tackle produces a workspace of grounded markdown artifacts under `docs/plans/<initiative>/` in your repository. Each point briefing carries everything needed to resolve it cold — context, approach, recommended prompt, and alternatives.
-
-**Tackle plans and can execute the plan it produces.** PLAN prepares requirements, contracts, Points and a handoff; RUN executes only after explicit intent. STATUS reports current state, list, next and unqualified resume queries without source, board or log mutation. `--handoff` writes only its requested projection.
-
-## Graph execution
-
-- **Edge audit** — every `Depends-on` edge must name the **crossing artifact** the downstream point consumes (a file, a section, a schema, a protocol); `/tackle-verify` flags edges that don't. False edges get cut; legitimate ordering-only edges get waived as recorded decisions.
-- **Loop archetypes** — a point can be `Type: discovery` (done-signal is convergence: K consecutive rounds surfacing zero new findings, dedupe against everything seen, never a fake pass at budget) or `Type: experiment` (done-signal is a metric threshold: one change per round, keep on improvement, roll back otherwise, the evaluator file untouchable). The **loop-worthiness test** gates both — a loop earns its cost only when the task repeats, verification is automated, the round budget absorbs the waste, and the agent has real tools.
-- **Focused review** — a Point names the semantic review it needs and the available reviewer capability. Mechanical execution, semantic review and adversarial audit remain separate observations; independence must be demonstrated.
-
-## Proof-carrying plans
-
-- **Evidence with provenance** — each observation records the actor, command, revision, result and independence actually available. A wrapper's success cannot hide a failed child or a wrong delivered artifact.
-- **Historical grades stay readable** — legacy **E1** command verification, **E2** review, **E3** assertion and **E0** unverifiable records retain their meaning. New work uses the Point's explicit mechanical and semantic acceptance requirements.
-- **Selective invalidation** — a changed input invalidates the evidence of its actual consumers, including semantic dependencies. Disjoint write paths alone do not establish independence.
-
-## Learning
-
-- **Plan archetypes** — proven decomposition skeletons (point list, edge pattern, wave shape, trap warnings, provenance) live in `references/archetypes/`; `/tackle-retro` offers extraction at initiative close, intake offers a matching skeleton as a proposal — never a silent default.
-- **Retro loop** — the learning loop mines board + log into profile candidates (stored under `~/.tackle/` and `<repo>/.tackle/`), batch-confirmed, written only by `/tackle-retro`, pausable or purgeable anytime (the `stop evolving` opt-out lives inside retro).
-
-## Release self-lint
-
-8 shipped-skill gates run in the release sweep before every tag (`references/guides/lint-spec.md`): word budget (`SKILL.md` ≤ 1100 words), exactly 11 core conventions, changelog currency, migrate-chain currency, README currency, artifact-manifest currency (the update channel must list exactly the files that ship), README content claims (row count, scenario count/range, migrate-chain head, direct-procedure coverage, gate count — every expected value derived from the files it describes), and runtime update trust-boundary checks. The lint table covers rows 1–16 (16 lint rows) and 8 shipped-skill gates; all stay copy-pasteable direct checks while the release sweep runs them in an ordered POSIX procedure.
-
-## Execution discipline
-
-Tackle's execution loop is hardened with rules proven against common agent failures:
-
-- **INTENT gate** — before any behavior-changing edit, the agent must write `INTENT: current code does X; done-signal expects Y; source says Z` and resolve any contradiction.
-- **Correction bound** — one shared pool permits at most 3 failed correction-validation cycles per Point; 2 identical no-progress observations stop sooner. Resuming or changing actors does not reset it.
-- **Two-halves verification** — every done-signal must check both the target criterion and the surrounding system (build/tests/lint).
-- **Triviality gate** — a task is trivial only if it is one file, <10 changed lines, no new behavior, and no searching.
-- **Authority order** — user > spec > tests > current code, at every gate including None; a check that contradicts the spec is surfaced, never silently satisfied.
-- **Failure-modes catalog** — `references/failure-modes.md` maps common failures to the Tackle rule that prevents them.
-- **Capability binding** — before dispatch, verify the actual executor and any required independent reviewer. Missing capabilities stop the affected work with an evidence packet; they never produce an invented grade or silent model upgrade.
-- **Integrated acceptance** — target, surrounding and affected integration checks precede Point closure; global acceptance verifies the final deliverable before initiative closure. Any semantic gate declared by the Point also needs its named reviewer.
-
-## Verification and judge
-
-- `/tackle-verify` is a pre-execution red-team pass over the plan — including the edge audit above, the two-phase mechanical grounding step 0, the criterion↔point coverage matrix, and an optional cold-resolvability probe.
-- `/tackle-judge` is a post-completion adversarial audit: it treats the agent's report as claims, diffs what actually changed, re-runs claimed verifications, hunts weakened tests and false completion, and delivers a verdict of **VERIFIED**, **VERIFIED WITH CAVEATS**, or **REFUTED**.
-- `/tackle-judge suite <target>` runs the trap suite in `eval/scenarios/` against a skill, model, or prompt.
-
-## Mental model
-
-```
-PLAN → prepared Points → explicit RUN → verified delivery
-                         STATUS reads current state
-```
-
-PLAN includes intake, specification, contracts, decomposition and readiness checks. RUN executes prepared work only on explicit intent. STATUS handles list, next and unqualified resume queries without mutation. Explicit Judge and optional Retro remain available; 8.x compatibility aliases preserve intent and retire in 9.0.
-
-### Usage observability
-
-Execution is lifecycle-first: the universal `usage.md` ledger records observed role `start`,
-`finish`, or `observe-incomplete` events even when a harness exposes no token telemetry. An
-optional `usage.telemetry.jsonl` sidecar (`tackle-observability-telemetry/1`) can enrich those
-rows with exact provider observations; it is additive, never required for a point to close.
-Retro reads the universal ledger first, then reports `measured/eligible` coverage per metric and
-comparable cohort. Missing or `n/a` values are unknown, never zero: 0% coverage still supports
-duration, attempts, rework, incomplete runs, verification, and time-to-green; partial coverage
-does not support totals, shares, rankings, or recommendations. Totals/rankings require 100%
-comparable coverage, and tier/effort recommendations additionally require three completed,
-like-for-like runs.
-
-Optional collector capability profiles are deliberately narrow and access-dependent:
-[Claude Code](references/collectors/claude-code.md),
-[Oh My Pi](references/collectors/oh-my-pi.md),
-[OpenAI Responses](references/collectors/openai-responses.md),
-and [Antigravity CLI](references/collectors/antigravity-cli.md).
-They describe observed surfaces, not installed integrations or automatic collection. A role join
-requires an exact `run_id`; session/account observations stay native and unjoined, and
-API-equivalent or subscription values remain separately labeled rather than canonical cost.
-For adoption and rollback, see the [7.3 → 8.0 migration checklist](references/guides/migrate.md#v73--v80-checklist);
-the legacy eight-column ledger remains readable and its unknowns are never backfilled.
-
-The optional profile catalog also covers [OpenCode](references/collectors/opencode.md),
-[Kimi Code](references/collectors/kimi-code.md), and [Cursor](references/collectors/cursor.md);
-all profiles are declarative and preserve native scope.
-
-## Eval
-
-Tackle uses a manual A/B eval in `eval/`: **50 scenarios** (`s1`–`s54`) — decision traps pitting a mid-tier model following Tackle literally against the same model free-styling at a known agent failure, plus one end-to-end lifecycle smoke (`s25-e2e-lifecycle`, the full intake → plan → execute → close → retro chain). The registry and manual workflow live in `eval/README.md`; stage/diff/audit/judge-packing keep the answer sheet out of every arm, each scenario carries its own `GROUND-TRUTH.md`, and the catalog checks scenarios ⊆ registry plus fixture integrity.
-
-## Who is it for
-
-Any team or developer that:
-- Works on multi-session initiatives (Jira tickets, features, refactors, investigations)
-- Hands off work between agents, models, or humans
-- Needs plans that survive context window limits and session boundaries
-- Wants every point to be independently tackleable by a cold agent
-- Wants the same skill to drive execution, not just planning
+Tackle 8.1.0 ships as `SKILL.md` plus `references/`. Select Tackle, then tell it what you need: a plan, implementation, a progress check, or a review.
 
 ## Install
 
-Tackle follows the [Agent Skills](https://github.com/anthropics/skills) format.
+Install with [skills.sh](https://github.com/alph0x/Tackle):
 
-**Claude Code:**
-```bash
+```sh
+npx skills add alph0x/Tackle --skill tackle
+```
+
+For a manual install, copy `SKILL.md` and `references/` from a checkout of this repository into your agent's skill directory. For Claude Code:
+
+```sh
 mkdir -p ~/.claude/skills/tackle
 cp SKILL.md ~/.claude/skills/tackle/
 cp -r references ~/.claude/skills/tackle/
 ```
 
-**Cursor / other:**
-```bash
-mkdir -p ~/.cursor/skills/tackle
-cp SKILL.md ~/.cursor/skills/tackle/
-cp -r references ~/.cursor/skills/tackle/
-```
+For Cursor, use `~/.cursor/skills/tackle/`. Other agents use their own skill directory. Tackle follows the [Agent Skills](https://github.com/anthropics/skills) format; the install contains only `SKILL.md` and `references/`.
 
-**Any model / IDE:**
-Copy only `SKILL.md` and the `references/` directory into your agent's skill directory.
+You control updates through the [manual update guide](references/guides/update.md). Ordinary invocation leaves the installation untouched and performs no network access. Restart your session after an update if your agent cannot reload skills.
 
-**skills.sh discovery:** Tackle is discoverable from the public
-[alph0x/Tackle repository](https://github.com/alph0x/Tackle). Install the `tackle` skill with
-`npx skills add alph0x/Tackle --skill tackle`; no separate Vercel registry submission is needed.
-For compatibility evidence, use the supported agent aliases `opencode`, `kimi-code-cli`,
-`cursor`, and `antigravity-cli`.
+## Start a plan, then run it
 
-**Updates:** ordinary invocation performs no network access or installation-tree mutation. Updates
-are owner-controlled and out-of-band; follow `references/guides/update.md` only when an owner
-explicitly requests the manual workflow. If your harness can't reload skills, restart the session
-after an owner-operated update.
+Select **Tackle** in your agent's skill picker, then write your request. If your app offers `/tackle`, select that entry and continue typing. Selection syntax depends on the app; Tackle has one entry, with the actions inside it.
 
-The install artifact is `SKILL.md` + `references/` only. `docs/plans/` (workspaces) and `docs/seeds/` (this project's backlog) are local to this repo and never ship with the skill; your own plans and seeds get the same gitignore treatment in your repo.
+For example, select Tackle and write “plan an email export,” then “run the plan” when you're ready. You can also ask in Spanish: “armá un plan,” “ejecutá el punto P-03,” or “verificá este plan sin modificarlo.”
 
-## How to use
+Short forms work too. These are requests to the selected skill, not separate menu commands:
 
-Trigger words: `plan de acción`, `armar un plan`, `plan this out`, `tackle this`, `iniciativa`.
-
-| You say | Mode |
+| You say | What happens |
 |---|---|
-| `plan this / armar un plan` or `/tackle-plan` | **PLAN** — intake, contract, decomposition, readiness and handoff |
-| `/tackle-run`, `/tackle-run --one` or `/tackle-run <P-id>` | **RUN** — explicit implementation, bounded validation, integration and close/block |
-| `status / list / next / resume` or `/tackle-status [<ws>]` | **STATUS** — read-only query; `--handoff` writes its requested projection |
-| `/tackle-init <name>` | PLAN scaffolding |
-| `/tackle-verify` | PLAN internal validation or explicit diagnosis |
-| `/tackle-judge [suite <target>]` | Explicit post-work audit |
-| `migrate / upgrade <x>` | PLAN migration path; see the 7.3 → 8.0 checklist |
-| `stop evolving` or `/tackle-retro` | Optional retro and separately confirmed learning consent |
-| Direct checks | **Mechanical gate** — direct-procedure coverage runs the `lint` rows, `catalog` integrity checks, each `done-signal`, the two-phase `ground` check, `eval` method arms, and `init` artifact completeness from the documented Markdown procedures; a point flips only after mechanical green and checker sign-off |
+| `plan <task>` | The agent clarifies the goal, records decisions, breaks work into Points, checks readiness, and prepares a handoff. |
+| `run` | Execute ready Points in dependency order, check the results, and record what passed or remains blocked. |
+| `run --one` or `run <P-id>` | Run one Point. |
+| `status [<workspace>]`, `list`, or `next` | Read progress, list plans, or find the next Point. |
+| `status <workspace> --handoff` | Write a handoff for the next session. |
 
-During 8.x, legacy `implement`, `ground`, `trace`, `drill`, `pulse`, `handoff` and similar routes forward to PLAN, RUN or STATUS while preserving intent; aliases retire in 9.0.
+Open Tackle without a request, or ask for `help`, to see the available actions. It shows help without creating files or starting work. When a request is unclear, it asks before acting.
 
-The migration guide retains the checklist chain v2.0 → v8.0, including the selected-workspace, copy-first 7.3 → 8.0 checklist.
+PLAN prepares the work. RUN needs your explicit request to implement it. STATUS, “next,” and an unqualified “resume” leave source files, the board, and the log unchanged; `--handoff` writes only the requested handoff.
 
-**The Create pipeline:** Intake → Gate (None/Lite/Full) → Location & gitignore → Scaffold → Briefing → Architecture → Stabilize contract → Decompose → Lint → Handoff.
+The agent sizes the plan during intake. None handles a bounded local correction, Lite fits a small coherent task, and Full covers work that needs more coordination. Risk takes precedence over Point count. The [sizing guide](references/guides/intake-and-gate.md#step-2--gate-sizing-full--lite--none) lists the conditions.
 
-**Execution:** `/tackle-run` reads the board, picks the next ready point in dependency order, runs its done-signal, and updates board + log. Team sizing is Solo/Pair/Pod/Squad, with roles bound to model tiers (`fast`/`standard`/`frontier`) resolved by the workspace §Model map (`plan` proposes defaults by complexity/risk, user confirms in intake); Full-gate points close with a closure report under `reports/` plus sign-off; one persistent Coordinator keeps continuity.
+Each Point names what to change, which files it may touch, how to verify the result, and what it depends on. A dependency names the artifact the next Point needs, such as a file, schema, or protocol. That gives a new agent a concrete place to start.
 
-**Version:** Tackle 8.0.0. See `references/CHANGELOG.md` for this release and earlier changes.
+## What stays in your repository
 
-## What it produces
+Lite and Full plans live under `docs/plans/<initiative>/`. Lite uses `plan.md`, `log.md`, and `usage.md`, with separate decisions or questions files when needed. Full adds coordination artifacts:
 
-All artifacts are `.md` files under `docs/plans/<initiative>/`:
-
-| Artifact | Purpose |
+| File | Purpose |
 |---|---|
-| `README` | Human index, reading order |
-| `AGENTS` | Operating contract for any agent that picks up the plan |
-| `plan` | Objective, non-goals, point decomposition + dependency graph |
-| `board` | Canonical status board for execution (🔴🟡⏸🟢⚪ plus a trailing **Confidence** column carrying the derived evidence grade; references `plan.md` §5 for the graph — never copies it) |
-| `log` | Append-only session log (canonical state) |
-| `usage` | Lifecycle-first ledger — one row per observed role event; optional exact `usage.telemetry.jsonl` enrichment, with unknowns `n/a` and never estimated |
-| `questions` | Single source of open questions |
-| `decisions` | Closed decisions register |
-| `retro` | Initiative retrospective artifact (created by `/tackle-retro`) |
-| `HANDOFF` | Portable handoff packet (created by `/tackle-status <ws> --handoff`) |
-| `points/P-0N-*` | One self-contained briefing per point |
+| `README.md` | Index and reading order. |
+| `AGENTS.md` | Instructions for an agent picking up the plan. |
+| `plan.md` | Goal, non-goals, Point decomposition, and dependencies. |
+| `points/P-0N-*.md` | A self-contained briefing for each Point. |
+| `board.md` | Current Point status and evidence grade. |
+| `log.md` | Append-only record of sessions and observations. |
+| `usage.md` | Observed role starts, finishes, and interrupted runs. |
+| `questions.md` / `decisions.md` | Open questions and settled decisions. |
+| `reference.md` | Grounded context and source references. |
 
-Full-gate plans also produce, only when each trigger fires: `foundations` (non-trivial architecture), `design-contract` (shared surface points conform to), `team` (multi-agent execution, incl. §Wave gates), `reference-docs/` (external snapshots), `coordinator` (Coordinator continuity projection; generated, never canonical), `reports/` (per-point closure reports with sign-off). Optional intake artifacts: `spec` / `constitution` (instantiated by `plan` when the user brings formal material).
+Full plans add architecture, shared contracts, team bindings, reference snapshots, and reports when the work needs them. A coordinator file is a projection of the current records. Optional `spec.md` and `constitution.md` capture formal material you provide. A requested handoff creates `HANDOFF.md`; a retro creates `retro.md`.
 
-## Model-agnostic
+Workspaces and parked ideas in `docs/seeds/` stay local to this repository and never ship with the skill. During setup, you decide whether to gitignore plans in your own repository; seeds receive the same treatment.
 
-Works with GPT, Claude Opus/Sonnet, Cursor Composer, Kimi, DeepSeek, or any agent that can read markdown and search code. No vendor-specific tools assumed. Planning is self-contained — no external planning skills are required, recommended, or checked for (adopted in 5.1.0).
+## How work gets checked
+
+Before changing behavior, the agent compares the current implementation, the intended result, and the specification. If they contradict one another, it raises the conflict. The authority order is user → specification → protected acceptance and tests → implementation.
+
+RUN checks the target change, surrounding behavior, and affected integrations. Before closing the initiative, the agent checks the merged deliverable against its global acceptance requirements. A passing unit test alone cannot establish that the delivered package or integrated flow works.
+
+Evidence records who ran a check, the command, revision, output, and result. Where a Point requires independent review, a separate reviewer must provide it. Missing checks or capabilities leave the affected work blocked. Historical grades remain readable: E1 for independent command verification, E2 for semantic review, E3 for an assertion, and E0 for unverifiable work.
+
+A Point allows at most three failed correction-validation cycles. Two identical observations with no progress stop the work sooner. Resuming or changing agents preserves the count. When an input changes, the agent rechecks the affected consumers, including dependencies that reach beyond shared file paths.
+
+The [RUN guide](references/guides/run.md) defines these rules. The [failure-modes catalog](references/failure-modes.md) connects them to problems such as weakened tests, invented evidence, and changes outside the agreed scope.
+
+For review or maintenance, select Tackle and ask:
+
+| Request | Purpose |
+|---|---|
+| `verify [<workspace>]` | Validate a plan before execution, or diagnose it on request. A diagnosis does not authorize fixes. |
+| `judge [<target>]` | Audit finished work by inspecting changes and rerunning claimed checks. |
+| `judge suite <target>` | Run the trap suite against a skill, model, or prompt. |
+| `init <name>` | Create a workspace through PLAN. |
+| `migrate` or `upgrade` | Prepare a selected workspace for migration on a disposable copy. |
+| `retro [<workspace>]` | Review lessons from the initiative and propose improvements. |
+
+Older examples use names such as `/tackle-verify` and `/tackle-run`. During 8.x, Tackle still understands those as text aliases if your app passes them to the agent. They do not create separate picker entries. If one is unavailable, select Tackle and write `verify` or `run` instead. See the [request guide](references/guides/invocation.md) for the full mapping.
+
+During 8.x, older routes such as `implement`, `ground`, `trace`, `drill`, `pulse`, and `handoff` forward to PLAN, RUN, or STATUS while preserving intent. These aliases retire in 9.0. The migration guide retains the checklist chain v2.0 → v8.1, including the [8.0 → 8.1 checklist](references/guides/migrate.md#v80--v81-checklist) and the [copy-first 7.3 → 8.0 checklist](references/guides/migrate.md#v73--v80-checklist).
+
+## Learning and usage
+
+A retro reads the board and log to propose lessons for the project or your user profile. You confirm profile changes before they are written. “Stop evolving” pauses or removes that learning through the retro workflow. Proven plan structures live in [archetypes](references/archetypes/); the agent can offer one during intake.
+
+The `usage.md` ledger records role events even when token or cost data is unavailable. Unknown values stay `n/a`. An optional `usage.telemetry.jsonl` file can add exact provider observations; recording telemetry is never required to close a Point.
+
+Retro reports measured coverage before comparing usage. Totals and rankings require complete, comparable coverage; model-tier or effort recommendations also require three completed, comparable runs. The [usage guide](references/guides/usage-observability.md) explains the schema, partial coverage, and joining records by exact `run_id`.
+
+Optional capability profiles cover [Claude Code](references/collectors/claude-code.md), [Oh My Pi](references/collectors/oh-my-pi.md), [OpenAI Responses](references/collectors/openai-responses.md), [Antigravity CLI](references/collectors/antigravity-cli.md), [OpenCode](references/collectors/opencode.md), [Kimi Code](references/collectors/kimi-code.md), and [Cursor](references/collectors/cursor.md). They describe available data and its limits. Collection requires separate setup; profiles do not install integrations or collect data automatically.
+
+## Developing Tackle
+
+The [eval suite](eval/README.md) contains **50 scenarios** (`s1`–`s54`): decision traps and one end-to-end lifecycle smoke test. The manual A/B workflow compares a model following Tackle with the same model working without it. Each scenario has an answer sheet that must stay outside the agent's copy. A smoke run provides evidence for that run, with its limits recorded alongside the result.
+
+Before a release, the [release sweep](references/guides/lint-spec.md#release-sweep) runs 8 shipped-skill gates covering the entry-file word budget, 11 core conventions, version and migration consistency, README claims, install contents, and update boundaries. The workspace table covers rows 1–16 (16 lint rows). These are documented, copy-pasteable POSIX checks.
+
+Mechanical gate procedures cover `lint` rows, `catalog` integrity, each `done-signal`, the two-phase `ground` check, `eval` method arms, and `init` artifact completeness. Required independent review also gates completion. Release publication requires a separate owner request.
+
+For deeper changes, see the [team capabilities](references/team.tmpl.md), [discovery and experiment Points](references/guides/decompose-and-lint.md), and [changelog](references/CHANGELOG.md).
 
 ## License
 

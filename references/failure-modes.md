@@ -1,6 +1,6 @@
 # Failure modes — symptom → Tackle rule
 
-A short catalog of common execution failures, what each looks like from the outside, and the Tackle rule that prevents it. Use this as a checklist during `/tackle-verify`, audits, and point reviews.
+A short catalog of common execution failures, what each looks like from the outside, and the Tackle rule that prevents it. Use this as a checklist during `verify`, audits, and point reviews.
 
 | # | Failure mode | Symptom | Prevented by |
 |---|---|---|---|

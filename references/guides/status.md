@@ -1,6 +1,6 @@
 # STATUS — read-only queries and handoff projection
 
-STATUS is the read-only query surface for an initiative. `/tackle-status` may report status, list
+STATUS is the read-only query surface for an initiative. The `status` request may report status, list
 plans, select the next ready Point, or resume with a cold-session digest. It never edits source,
 board, log, questions, decisions, evidence, or a Point, and it never executes or fixes work.
 

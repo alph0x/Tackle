@@ -1,0 +1,11 @@
+[
+  {"id": "bare", "request": "tackle", "expected": "Brief help; no project inspection, writes or claimed execution."},
+  {"id": "help", "request": "help", "expected": "Brief help with actions inside Tackle, not separately registered commands; no project writes."},
+  {"id": "verify", "request": "verify /fixture/demo", "expected": "Inspect the plan and report the missing cancellation coverage; no fixes or state writes."},
+  {"id": "spanish", "request": "Verificá el plan de /fixture/demo sin modificarlo.", "expected": "Same verification and no-write boundary as verify; report missing cancellation coverage."},
+  {"id": "legacy", "request": "/tackle-verify /fixture/demo", "expected": "Legacy text alias performs verification with the same no-write boundary."},
+  {"id": "status", "request": "status /fixture/demo", "expected": "Read-only status; no execution, state/history writes or invented successful checks."},
+  {"id": "run", "request": "run: corregí /outputs/format.txt quitando los espacios exteriores y conservando un único salto de línea final. La especificación ya exige esto. Es una corrección interna de un solo archivo, una sesión, sin API pública, dependencias ni integración.", "expected": "Explicit scoped execution normalizes the actual file to ready plus one newline; no extra artifacts or out-of-scope changes."},
+  {"id": "negated", "request": "¿Cómo usaría run para corregir /outputs/format.txt? No lo ejecutes ni modifiques archivos todavía.", "expected": "Explain the request form without executing or changing the file."},
+  {"id": "unknown", "request": "frobnicate", "expected": "Ask what the user intends; no invented action, project writes or execution."}
+]

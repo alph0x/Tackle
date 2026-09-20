@@ -5,19 +5,22 @@ description: Use for durable planning and explicit point-by-point execution of m
 
 # Tackle
 
-**Tackle 8.0.0** is a model-agnostic planning and execution method. It keeps the install artifact Markdown-only: `SKILL.md` plus `references/`.
+**Tackle 8.1.0** is a model-agnostic planning and execution method. It keeps the install artifact Markdown-only: `SKILL.md` plus `references/`.
 
 ## Public surface
 
-Tackle has two primary actions and one read-only query:
+One entry: `tackle`. Select the skill, then give a request in
+any language or a short action below. Requests do not register slash commands.
+Bare invocation or `help` shows brief choices without writes; unclear intent asks before acting.
+See [invocation.md](references/guides/invocation.md) for routing and compatibility.
 
 | Surface | Use | Result |
 |---|---|---|
-| **PLAN** | `/tackle-plan` | Intake, specification, contract, decomposition, readiness and handoff. It prepares; it does not execute source work. |
-| **RUN** | `/tackle-run`, `/tackle-run --one`, or `/tackle-run <P-id>` | Explicitly authorized implementation, target and surrounding checks, bounded correction, integration and close or block. |
-| **STATUS** | `/tackle-status [<workspace>]` | Read-only status, list, next and unqualified resume queries. `--handoff` writes only its requested projection. |
+| **PLAN** | `plan` | Prepare specification, contract, Points, readiness and handoff; no source execution. |
+| **RUN** | `run`, `run --one`, `run <P-id>` | Explicitly authorized implementation, checks, bounded correction, integration and closure. |
+| **STATUS** | `status [<workspace>]` | Read-only status, list, next and plain resume; `--handoff` writes only its requested projection. |
 
-`/tackle-init` forwards to PLAN scaffolding. `/tackle-verify` is internal PLAN validation or an explicitly requested diagnosis. `/tackle-judge` is an explicit post-work audit. `/tackle-retro` is optional learning review. A diagnostic question, `status`, `next`, or plain `resume` never authorizes a fix or source, board or log write; only an explicit resume request that also states execution intent can enter RUN.
+`init` forwards to PLAN scaffolding; `verify` validates a plan; `judge` audits finished work; `retro` reviews lessons. A diagnostic question, `status`, `next`, or plain `resume` never authorizes a fix or source, board or log write; only an explicit resume request that also states execution intent can enter RUN.
 
 During 8.x, legacy routes forward to the one applicable protocol while preserving intent: `implement` → RUN, `ground`/`trace`/`drill` → PLAN validation, `pulse`/`list`/`next`/`resume` → STATUS, and `handoff` → STATUS `--handoff`. They are compatibility aliases, not additional primary commands, and retire in 9.0 with this forwarding guidance retained for migration.
 
@@ -39,7 +42,7 @@ Mechanical execution, focused semantic review and adversarial audit are separate
 
 ## Migration and distribution
 
-Migrate only a selected active 7.3 workspace, on a disposable copy first. Preserve contracts, evidence, statuses, log bytes and usage bytes; compile only remaining unstarted work; mark readiness pending until checked; adopt at a Point boundary; keep an interrupted Point on its pinned procedure until that boundary. Rollback restores the copy checkpoint and leaves neighboring files intact. Closed or unrelated workspaces are not automatically migrated. See [`migrate.md`](references/guides/migrate.md) for the 7.3 → 8.0 checklist.
+Migrate only a selected active 7.3/8.0 workspace, on a disposable copy first. Preserve contracts, evidence, statuses, log bytes and usage bytes; compile only remaining unstarted work; mark readiness pending until checked; adopt at a Point boundary; keep an interrupted Point on its pinned procedure until that boundary. Rollback restores the copy checkpoint and leaves neighboring files intact. Closed or unrelated workspaces are not automatically migrated. See [`migrate.md`](references/guides/migrate.md) for version-specific checklists.
 
 Ordinary invocation performs no network access or installation-tree mutation. Release remains a separately authorized owner action after the eight self-lint gates, catalog/workspace sweep and behavioral evidence. Public docs and examples must not leak `docs/plans/` state; profiles are written only by retro after confirmation, and seeds are deliberate writes.
 

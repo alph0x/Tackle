@@ -4,11 +4,11 @@
 
 **Evolution:** {{enabled (YYYY-MM-DD) / disabled (YYYY-MM-DD)}}
 
-A profile stores hypotheses and directives distilled from retros. It is read during intake and updated only during `/tackle-retro`. Nothing here is ever written silently.
+A profile stores hypotheses and directives distilled from retros. It is read during intake and updated only during the `retro` workflow. Nothing here is ever written silently.
 
 ## Rules
 
-- **Single write path**: `/tackle-retro` is the only command that writes to this file.
+- **Single write path**: the `retro` workflow is the only action that writes to this file.
 - **Batch-confirmed**: every candidate is confirmed by the user before it is recorded.
 - **Top-K limit**: only the top ≤ 10 entries by confidence enter a session.
 - **Conflict resolution**: project directives outrank user directives when both apply.

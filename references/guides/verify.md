@@ -1,7 +1,7 @@
 # Step 7 — Shared validation (PLAN readiness and explicit Verify)
 
 PLAN invokes the preparation and evidence-integrity operations below before handoff. The explicit
-`/tackle-verify` entry remains available for a later audit or for a plan that predates integrated
+`verify` request remains available for a later audit or for a plan that predates integrated
 readiness; it is not a required pre-wave or pre-Point gate after a successful PLAN run. RUN uses the
 single execution protocol in `references/guides/run.md` for explicit intent, preflight, target and
 surround checks, persistent correction, integration, and global acceptance.
@@ -10,8 +10,8 @@ surround checks, persistent correction, integration, and global acceptance.
 
 ## Shared validation contract
 
-Verification has one internal contract with four named operations. The legacy `/tackle-verify`
-entry forwards to these operations; it does not maintain a second protocol or a separate set of
+Verification has one internal contract with four named operations. The `verify` request and its
+legacy text alias forward to these operations; they do not maintain a second protocol or a separate set of
 pass conditions.
 
 1. **Preparation** — resolve the Point's declared inputs, Touches, revisions, dependencies,
@@ -86,7 +86,7 @@ risk; LOW findings are advisory. RUN records target/surround and integrated obse
 
 ## Step 0 — Mechanical grounding (two-phase citation check)
 
-Triggered by `/tackle-verify` (step 0). Run before the red-team pass to remove the mental load of remembering which `file:line` citations have been read.
+Triggered by `verify` (step 0). Run before the red-team pass to remove the mental load of remembering which `file:line` citations have been read.
 
 **Principle: outsource the memory.** The agent should not rely on its session transcript to know what is grounded; the commands produce an explicit, inspectable record.
 
@@ -100,11 +100,11 @@ Triggered by `/tackle-verify` (step 0). Run before the red-team pass to remove t
    - **Phase 2 — whole-file fallback** (only on phase-1 failure): count the lines in `path` containing the fragment. Exactly 1, at line MM ⇒ **drifted → re-anchor** (rewrite `path:NN` → `path:MM` in place, literal replacement, zero model judgment). 0 ⇒ **stale** ⇒ the point is **ungrounded**. More than 1 ⇒ **ambiguous** ⇒ flagged; the point is ungrounded until a more specific fragment is chosen.
 3. **Record** in `log.md` — list every citation read, flag unresolvable ones, and stamp `Last-verified: {{YYYY-MM-DDTHH:MM:SSZ}}` (legacy date-only stamps read as start-of-day and self-heal on the next ground). Grounding is recorded only here — never copied into the board or the point file; staleness is derived from the newest entry that lists a point, never copied.
 
-Any **ungrounded** point blocks execution until fixed or explicitly waived by the user. Run step 0 right after `/tackle-plan`, before any red-team pass, and on any cold session where the freshness check reports stale.
+Any **ungrounded** point blocks execution until fixed or explicitly waived by the user. Run step 0 right after `plan`, before any red-team pass, and on any cold session where the freshness check reports stale.
 
 ## Coverage matrix (criterion → evidence)
 
-Triggered during PLAN readiness (and available to `/tackle-verify` or a natural phrase like
+Triggered during PLAN readiness (and available to `verify` or a natural phrase like
 "trace coverage"). The check itself is read-only. During an authorized PLAN run, an in-scope
 technical gap may be repaired and rechecked; a new product requirement or material ambiguity is a
 user-owned `Q-xx` and blocks its affected scope.

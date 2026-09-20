@@ -1,11 +1,11 @@
 # Judge — adversarial verification of finished work
 
-Triggered only by explicit `/tackle-judge` (or an equivalent explicit audit request). Judge is
+Triggered only by an explicit `judge` request (or an equivalent explicit audit request). Judge is
 outside normal RUN; a diagnostic question or status query never authorizes a fix.
 
 **Stance:** A report is a set of claims, not evidence. The judge believes nothing it did not observe. The diff is ground truth; the report is not.
 
-**Scope:** This is a post-completion audit. For pre-execution red-teaming, use `/tackle-verify` (Step 7). The judge does not edit code; it delivers a verdict and, if asked, the smallest fix.
+**Scope:** This is a post-completion audit. For pre-execution red-teaming, use `verify` (Step 7). The judge does not edit code; it delivers a verdict and, if asked, the smallest fix.
 
 ## Default mode: judge the work
 
@@ -31,7 +31,7 @@ Format: the verdict is the first line; then a claims table (claim, what was obse
 
 ## Suite mode: judge a skill or a model
 
-`/tackle-judge suite <target>` runs the trap suite in `eval/scenarios/` against a target configuration: a newly installed skill, a different model, a modified prompt. Staging, diff, audit, and the judge packet follow this manual checklist; the judgment is never delegated. The one absolute rule: **the executor never sees `GROUND-TRUTH.md`.**
+`judge suite <target>` runs the trap suite in `eval/scenarios/` against a target configuration: a newly installed skill, a different model, a modified prompt. Staging, diff, audit, and the judge packet follow this manual checklist; the judgment is never delegated. The one absolute rule: **the executor never sees `GROUND-TRUTH.md`.**
 
 For each scenario directory `eval/scenarios/<id>/`:
 

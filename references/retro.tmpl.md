@@ -2,7 +2,7 @@
 
 Optional PLAN learning review. This artifact records
 observed causes and lessons without changing the execution procedure. Profile and archetype writes
-remain separately confirmed and owned by `/tackle-retro`.
+remain separately confirmed and owned by the `retro` workflow.
 
 Written at initiative close (or mid-flight as a partial retro — say so here) by mining `board.md` + `log.md`. Every metric is mechanical: run the recipe from the workspace root, paste the value. In a Lite plan (no `board.md`), board-derived metrics report `n/a`; log-derived ones stand. Note: comprehension debt counts points that flipped 🟢 with no human review recorded in the log.
 
@@ -43,7 +43,7 @@ Filled only when evolution is enabled — see the learning-loop section of `guid
 
 ## Plan archetype candidate
 
-Filled only when the decomposition held — see the archetype section of `guides/retro.md`; format fixed by `references/archetypes/README.md`. Like profile candidates: explicit, batched user confirmation before writing; only `/tackle-retro` writes archetypes.
+Filled only when the decomposition held — see the archetype section of `guides/retro.md`; format fixed by `references/archetypes/README.md`. Like profile candidates: explicit, batched user confirmation before writing; only the `retro` workflow writes archetypes.
 
 - **Name**: {{kebab-case name}}
 - **Summary**: {{one line}}

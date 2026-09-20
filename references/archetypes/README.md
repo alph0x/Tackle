@@ -15,7 +15,7 @@ One file per archetype: `references/archetypes/<name>.md`, kebab-case name. Sect
 
 ## Write path — single
 
-Only `/tackle-retro` writes archetypes. Never hand-author or hand-edit a file here outside a retro; extraction is offered at initiative close when the decomposition held. Everything is batch-confirmed by the user before writing (see `guides/retro.md` §Plan archetype candidates).
+Only the `retro` workflow writes archetypes. Never hand-author or hand-edit a file here outside a retro; extraction is offered at initiative close when the decomposition held. Everything is batch-confirmed by the user before writing (see `guides/retro.md` §Plan archetype candidates).
 
 ## Read path — intake
 

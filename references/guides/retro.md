@@ -1,6 +1,6 @@
-# Retro — initiative retrospective (/tackle-retro)
+# Retro — initiative retrospective
 
-Triggered by `/tackle-retro [initiative]` or a natural phrase like "retro" / "how did it go". Retro
+Triggered by `retro [initiative]` or a natural phrase like "retro" / "how did it go". Retro
 is optional: run it at initiative close or on demand as a clearly labelled partial retro. It does
 not replace RUN closure or create an autonomy loop.
 
@@ -89,7 +89,7 @@ Mine the following sources during retro:
 - `log.md` attempt-journal lines that exceed the budget or show no-progress.
 - Reopened points (`🟢 → 🟡`) in `log.md`.
 - Escalation packets from `log.md`.
-- `/tackle-verify` findings that recurred across points.
+- `verify` findings that recurred across points.
 
 Present candidates as a batch. Each candidate must include:
 
@@ -135,7 +135,7 @@ One archetype file per skeleton: `references/archetypes/<name>.md` with the sect
 
 ### Confirming and writing
 
-Everything is batch-confirmed by the user before writing — present the archetype candidate alongside the profile-candidate batch, never write it silently. Only `/tackle-retro` writes archetypes.
+Everything is batch-confirmed by the user before writing — present the archetype candidate alongside the profile-candidate batch, never write it silently. Only the `retro` workflow writes archetypes.
 
 ## Where results go
 
