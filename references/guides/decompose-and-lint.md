@@ -45,9 +45,13 @@ Then judge — the checks no command can decide:
 After lint, collapse if the plan is over-decomposed:
 
 - If a point's `Touches` are a subset of another point's and their done-signals run together, merge them.
-- A one-session, one-product-file correction first checks the bounded **None** route in
-  `intake-and-gate.md`; otherwise prefer **Lite** for a small coherent slice and drop Full ceremony.
-- If the initiative has ≤4 points and no multi-track uncertainty, default to Lite unless the user explicitly asked for Full.
+- Re-apply the **risk precedence** from `intake-and-gate.md` before right-sizing: a public API,
+  multi-module change, multi-session/team work, or expected handoff stays **Full** even when
+  Points are merged into a small count. Only an actually removed trigger permits re-sizing.
+- If no Full trigger applies, a one-session, one-product-file correction first checks the bounded
+  **None** route; otherwise prefer **Lite** for a small coherent slice and drop Full ceremony.
+- If the initiative has ≤4 Points and no multi-track uncertainty, default to Lite only after the
+  risk check and unless the user explicitly asked for Full.
 
 Right-size before final readiness. If a merge or collapse is made after any provisional readiness
 observation, invalidate the affected coverage rows, Point cases, dependencies, fixtures, and

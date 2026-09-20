@@ -1,0 +1,79 @@
+[
+  {
+    "name": "none-single-product-file",
+    "points": 1,
+    "modules": 1,
+    "public_api": false,
+    "multi_session": false,
+    "handoff": false,
+    "explicit_full": false,
+    "none_eligible": true,
+    "expected": "None"
+  },
+  {
+    "name": "lite-bounded-slice",
+    "points": 2,
+    "modules": 1,
+    "public_api": false,
+    "multi_session": false,
+    "handoff": false,
+    "explicit_full": false,
+    "none_eligible": false,
+    "expected": "Lite"
+  },
+  {
+    "name": "small-public-api-stays-full",
+    "points": 2,
+    "modules": 1,
+    "public_api": true,
+    "multi_session": false,
+    "handoff": false,
+    "explicit_full": false,
+    "none_eligible": false,
+    "expected": "Full"
+  },
+  {
+    "name": "small-handoff-stays-full",
+    "points": 2,
+    "modules": 1,
+    "public_api": false,
+    "multi_session": false,
+    "handoff": true,
+    "explicit_full": false,
+    "none_eligible": false,
+    "expected": "Full"
+  },
+  {
+    "name": "merged-points-do-not-hide-api",
+    "points": 2,
+    "modules": 1,
+    "public_api": true,
+    "multi_session": false,
+    "handoff": false,
+    "explicit_full": false,
+    "none_eligible": false,
+    "expected": "Full"
+  },
+  {
+    "name": "explicit-full-wins",
+    "points": 1,
+    "modules": 1,
+    "public_api": false,
+    "multi_session": false,
+    "handoff": false,
+    "explicit_full": true,
+    "none_eligible": true,
+    "expected": "Full"
+  },
+  {
+    "name": "removed-trigger-can-resize",
+    "points": 2,
+    "modules": 1,
+    "public_api": false,
+    "multi_session": false,
+    "handoff": false,
+    "explicit_full": false,
+    "none_eligible": false,
+    "expected": "Lite"
+  }
+]

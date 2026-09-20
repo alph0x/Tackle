@@ -166,7 +166,7 @@ review of the declared selectors establishes whether those bytes cover the oblig
 
 Run all 16 rows during PLAN before Ready. Read the current `lint-spec.md`; extract the literal
 command cell of each numbered row, respecting its backtick delimiter (some use two or four), and
-substitute only a validated slug (`[a-z0-9][a-z0-9-]*`). Save the canonical source snapshot/hash,
+substitute only a validated single-component slug (`[a-z0-9][a-z0-9.-]*`). Save the canonical source snapshot/hash,
 row number, command bytes and pass condition. Reject missing/duplicate rows, malformed cells and
 an unexpected source revision. Do not invent an equivalent short validator, replace a row with
 `true`, or paste the table into an interpolated shell string. Execute each saved command using
@@ -205,7 +205,7 @@ import tempfile
 def canonical_rows(source, expected_sha256, slug):
     if hashlib.sha256(source).hexdigest() != expected_sha256:
         raise ValueError('canonical source revision changed')
-    if not re.fullmatch(r'[a-z0-9][a-z0-9-]*', slug):
+    if not re.fullmatch(r'[a-z0-9][a-z0-9.-]*', slug):
         raise ValueError('invalid slug')
     rows = {}
     for line in source.decode('utf-8').splitlines():
@@ -388,3 +388,8 @@ work and the unresolved obligation. Budget exhaustion ends with an honest incomp
 handoff. It does not justify changing acceptance, omitting global coverage or another unbounded
 bookkeeping loop. Correct an observed failure within the existing recovery budget; do not restart
 unchanged preparation merely because a new heading or session begins.
+
+Explicit Lite applicability uses the first-line marker and shape checks in `lint-spec.md`, not
+absence of Full files. Include plan.md in selectors for every row: route changes invalidate all
+applicability observations. During release, execute all sixteen commands even for Lite and accept
+Full-only checked skips only after row 1 passes. This does not waive selected global acceptance.

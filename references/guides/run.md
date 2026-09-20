@@ -1,7 +1,7 @@
 # RUN — execution and integrated acceptance
 
 This is the Full reference for the single execution protocol; the self-contained Lite procedure
-in `../lite-plan.tmpl.md` implements the same obligations for bounded work. `/tackle-run` uses the
+in `../lite-plan.tmpl.md` implements the same obligations for bounded work. The `run` request uses the
 selected route; Full and an explicitly authorized Full Run use this
 guide; `team.tmpl.md`, `AGENTS.tmpl.md`, and `coordinator.tmpl.md` bind capabilities and state
 ownership and point here. PLAN prepares a handoff and may write its authorized planning artifacts.
@@ -65,6 +65,11 @@ evidence. Initiative `complete` additionally requires global acceptance of the m
 final outputs, packaging and reproducibility where applicable. All Points passing is insufficient
 to close an initiative.
 
+When a release names an initiative in scope, that initiative remains subject to this global
+acceptance obligation until the evidence passes. A board with no in-progress rows, or a board
+whose Points are all complete, cannot infer release acceptance; the release sweep consumes the
+named workspace's existing global-acceptance evidence rather than creating a second status source.
+
 At serialization or unit boundaries, global checks include applicable valid adversarial inputs
 from the declared domain and the actual consumer parser/round trip. Nominal sample output alone
 does not prove preservation of arbitrary allowed strings or numeric values.
@@ -81,6 +86,13 @@ integration checks on the merged tree, including semantic consumers outside the 
 intersection when the interface, configuration, output, or dependency relationship reaches them.
 Before initiative closure, global acceptance covers the integrated flows and initiative obligations
 against the final deliverable.
+
+For release work, the Coordinator records the explicit workspace scope before running the sweep;
+unknown scope blocks the tag pending clarification. The release-gating set is the deduplicated union
+of active and selected workspaces: selection never exempts another active workspace from its
+mandatory lint and done-signal gates. Selected workspaces also require current global acceptance
+regardless of board status. Historical closed and parked workspaces that are neither active nor
+selected remain non-gating; warn-severity lint rows retain their severity.
 
 ## Evidence and recovery
 

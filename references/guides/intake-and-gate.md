@@ -90,7 +90,7 @@ technical choice is recorded with its decision and evidence and does not block u
 | **Lite** | Single-session, bounded scope, few unknowns | add one validation to an existing endpoint |
 | **Full** | Multi-session / multi-track / multi-team / high uncertainty / coordination handoff expected | introduce a new subsystem |
 
-**Tie-breaker**: touches ≥2 modules OR changes public API OR spans sessions/teams OR coordination handoff expected → **Full**. A durable record for one bounded task alone remains Lite.
+**Risk precedence**: evaluate the tie-breaker before reducing ceremony by Point count. Touches ≥2 modules OR changes public API OR spans sessions/teams OR coordination handoff expected → **Full**, even when the initiative has only a few Points. A durable record for one bounded task alone remains Lite only when no Full trigger applies. Within the routes still eligible after this check, choose the lowest ceremony that satisfies the other conditions.
 
 ## Bounded None route
 
@@ -129,6 +129,6 @@ When the user brings formal material at intake — a written product spec, or ex
 
 Both are **optional** — only created when the user supplies the material; a vague ask is explored, not templated. Points trace to them (`point.tmpl.md` §Traces to) instead of a ticket line when they exist.
 
-## Commands are entry points, not boundaries
+## Requests share the same boundaries
 
-Internal invocation never bypasses guardrails: the ladder gates edits, intent stays explicit, and consents and the log/board trail match user-invoked ones. Slash commands and natural-language triggers are aliases into the same modes — a resume triggered by memory of a workspace is the same gate, the same read-first, the same consent as one the user typed.
+Internal invocation never bypasses guardrails: the ladder gates edits, intent stays explicit, and consents and the log/board trail match user-invoked ones. Natural-language requests, short actions and legacy text aliases follow the same modes; see [invocation.md](invocation.md). A resume triggered by memory of a workspace has the same gate, read-first and consent as one the user typed. A bare skill selection or help request stops at help before intake or scaffolding.

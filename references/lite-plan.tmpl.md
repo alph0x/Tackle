@@ -13,7 +13,8 @@ multi-team/session coordination, uncertain integration or a shared public contra
    purpose, non-goals and scope; resolve user-owned ambiguity before the affected work. Reuse an
    authorized gitignore decision; otherwise ask once about docs/plans/ and apply it to docs/seeds/.
    Observe the repository root and create plan.md, log.md and usage.md under
-   `docs/plans/<initiative>/`, plus decisions/questions files when entries exist.
+   `docs/plans/<initiative>/`, plus decisions/questions files when entries exist. Start plan.md
+   with the exact first line `Gate: Lite`; missing Full artifacts alone never identify this route.
    Resolve every write destination from that root, including patch tools and additive tests;
    confirm it stays inside the authorized Touches or workspace before writing.
    Use the minimal bodies below directly; log.tmpl.md and usage.tmpl.md are not prerequisites.
@@ -64,6 +65,7 @@ multi-team/session coordination, uncertain integration or a shared public contra
 
 ## plan.md body
 
+Gate: Lite
 # {{Title}}
 
 - Purpose / requirements: {{observable result and stable ids}}

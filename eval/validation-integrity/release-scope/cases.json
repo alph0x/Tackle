@@ -1,0 +1,93 @@
+[
+  {
+    "name": "selected-all-complete-global-fail",
+    "selected": true,
+    "board_has_in_progress": false,
+    "all_points_complete": true,
+    "global_acceptance": false,
+    "evidence_stale": false,
+    "scope_known": true,
+    "expected_blocking": true
+  },
+  {
+    "name": "selected-no-active-rows-global-fail",
+    "selected": true,
+    "board_has_in_progress": false,
+    "all_points_complete": false,
+    "global_acceptance": false,
+    "evidence_stale": false,
+    "scope_known": true,
+    "expected_blocking": true
+  },
+  {
+    "name": "selected-all-complete-global-pass",
+    "selected": true,
+    "board_has_in_progress": false,
+    "all_points_complete": true,
+    "global_acceptance": true,
+    "evidence_stale": false,
+    "scope_known": true,
+    "expected_blocking": false
+  },
+  {
+    "name": "selected-current-global-pass-with-open-board",
+    "selected": true,
+    "board_has_in_progress": true,
+    "all_points_complete": false,
+    "global_acceptance": true,
+    "evidence_stale": false,
+    "scope_known": true,
+    "expected_blocking": false
+  },
+  {
+    "name": "unselected-historical-closed",
+    "selected": false,
+    "board_has_in_progress": false,
+    "all_points_complete": true,
+    "global_acceptance": false,
+    "evidence_stale": true,
+    "scope_known": true,
+    "expected_blocking": false
+  },
+  {
+    "name": "unselected-parked-plan",
+    "selected": false,
+    "board_has_in_progress": false,
+    "all_points_complete": false,
+    "global_acceptance": false,
+    "evidence_stale": false,
+    "scope_known": true,
+    "expected_blocking": false
+  },
+  {
+    "name": "selected-stale-evidence",
+    "selected": true,
+    "board_has_in_progress": false,
+    "all_points_complete": true,
+    "global_acceptance": true,
+    "evidence_stale": true,
+    "scope_known": true,
+    "expected_blocking": true
+  },
+  {
+    "name": "unknown-selected-scope",
+    "selected": true,
+    "board_has_in_progress": false,
+    "all_points_complete": true,
+    "global_acceptance": true,
+    "evidence_stale": false,
+    "scope_known": false,
+    "expected_blocking": true
+  },
+  {
+    "name": "another-active-workspace-still-gates",
+    "selected": true,
+    "board_has_in_progress": false,
+    "all_points_complete": true,
+    "global_acceptance": true,
+    "evidence_stale": false,
+    "scope_known": true,
+    "other_active_failure": true,
+    "expected_blocking": true
+  }
+]
