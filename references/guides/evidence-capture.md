@@ -1,7 +1,8 @@
-# Direct evidence capture (optional recipe)
+<a id="direct-evidence-capture-optional-recipe"></a>
+# Direct verification record capture (optional recipe)
 
-**Full entry:** use [Full execution checks](full-checks.md#prepare-once-then-capture) for
-workspace-local capture and its connected canonical-lint recipe. Full needs saved script bytes
+**Coordinated entry:** use [Coordinated execution checks](full-checks.md#prepare-once-then-capture) for
+workspace-local capture and its connected canonical-lint recipe. Coordinated needs saved script bytes
 as well as fingerprints; do not adapt the smaller example below with a manual input list that
 omits the observer or executed scripts. A complete harness export remains equivalent.
 The example below remains available for the other routes under their existing evidence contract.
@@ -9,15 +10,23 @@ The example below remains available for the other routes under their existing ev
 Prefer a complete, durable harness export when available. Otherwise adapt this Python 3 example
 to the actual check, cwd, existing source/test/input/config paths and produced artifacts. It is
 documentation, not an installed runner. Do not introduce a dependency when the repository already
-has an equivalent capture mechanism. For None, the actual tool transcript/receipt suffices.
-For Lite/Full, choose the capture destination before validation and open the delivered reference
+has an equivalent capture mechanism. For Direct, the actual tool transcript/receipt suffices.
+For Focused/Coordinated, choose the capture destination before validation and open the delivered reference
 before closure. A generic transcript label is not an accessible export. Choose either capture mechanism;
-the required observation must be delivered and correspond to the final validated inputs.
+the required verification record must be delivered and correspond to the final validated inputs.
+
+Save the recipe in an authorized location and pass the existing initiative workspace as its
+single argument, for example `python3 capture.py docs/plans/demo`. A `python3 -c` adaptation
+also passes that workspace as its argument. The recipe never chooses cwd/evidence implicitly.
+Direct do not require this store when sufficient actual tool records already exist. For
+shared immutable bytes, retention and portable bundles, use [record lifecycle](record-lifecycle.md).
+This smaller recipe preserves fingerprints and streams; it does not claim to retain input
+snapshots or support later reconstruction without an accessible complete source export.
 
 The argv list is the exact child command; use a checked script for compound validation, not a
 shell string whose last command masks earlier failure. List all relevant inputs, including tests
 and the contract. Missing declared inputs fail rather than becoming empty hashes. Select a fresh
-evidence directory; never overwrite a previous observation. The example retains binary output,
+evidence directory; never overwrite a previous verification record. The example retains binary output,
 child failure, partial output on timeout, and before/after revisions. It checks input stability;
 product correctness still belongs to the child acceptance check. Adapt the timeout to its budget.
 This recipe supervises the direct child only. Use it for checks that join all their children;
@@ -43,12 +52,20 @@ argv = ["python3", "-m", "unittest", "discover", "-v"]
 inputs = ["module.py", "test_module.py", "SPEC.md"]
 artifacts = []
 timeout_seconds = 30
-cwd = Path.cwd()
+cwd = Path.cwd().resolve()
+if len(sys.argv) != 2:
+    raise SystemExit("supply the existing authorized initiative workspace")
+workspace = Path(sys.argv[1]).resolve()
+workspace.relative_to(cwd)
+if not workspace.is_dir():
+    raise SystemExit("authorized workspace must already exist")
+destination = workspace / "evidence"
+destination.resolve().relative_to(workspace)
 def hashes(names):
     return {name: hashlib.sha256((cwd / name).read_bytes()).hexdigest() for name in names}
 before = hashes(inputs)
-Path("evidence").mkdir(exist_ok=True)
-out = Path(tempfile.mkdtemp(prefix="validation-", dir="evidence"))
+destination.mkdir(exist_ok=True)
+out = Path(tempfile.mkdtemp(prefix="validation-", dir=destination))
 record = {"argv": argv, "cwd": str(cwd), "capture_runtime": sys.version,
           "actor": "n/a", "model": "n/a", "effort": "n/a", "timeout_seconds": timeout_seconds,
           "inputs_before": before, "start": datetime.now(timezone.utc).isoformat()}
@@ -90,7 +107,7 @@ with (out / "result.json").open("x", encoding="utf-8") as f:
 payload = json.dumps(record, indent=2, ensure_ascii=False)
 fence = "`" * max(3, max((len(part) for part in re.findall(r"`+", payload)), default=0) + 1)
 with (out / "receipt.md").open("x", encoding="utf-8") as receipt:
-    receipt.write("# Validation receipt\n\nGenerated from result.json; validation scope only.\n\n"
+    receipt.write("# Check summary\n\nGenerated from result.json; validation scope only.\n\n"
                   + fence + "json\n" + payload + "\n" + fence + "\n\n"
                   + "Raw streams: [stdout](stdout.bin), [stderr](stderr.bin).\n"
                   + "Role finish: n/a — not observed by this child capture.\n")
@@ -106,7 +123,7 @@ revalidate affected checks on the actual final revision. Check outputs with the 
 and contract; a hash proves identity, not correctness. A frozen test file stays unchanged; additive
 coverage goes in a new file.
 
-The generated receipt is the closure index: link it from the log and usage Verification/Source
+The generated check summary (`receipt.md`) is the completion index: link it from the log and usage Verification/Source
 instead of copying its argv, clocks, hashes or output. It preserves the full observed record and
 stream fingerprints; it does not invent role metadata or declare all product requirements met.
 Read actual result/status and match final source/artifact hashes before using it. Accepted here

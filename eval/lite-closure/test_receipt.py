@@ -23,7 +23,7 @@ class ReceiptTests(unittest.TestCase):
             argv = [sys.executable, 'module.py', *extra]
             script = RECIPE.replace('argv = ["python3", "-m", "unittest", "discover", "-v"]', 'argv = ' + repr(argv))
             (root / 'capture.py').write_text(script, encoding='utf-8')
-            child = subprocess.run([sys.executable, 'capture.py'], cwd=root, capture_output=True, timeout=10, env=env)
+            child = subprocess.run([sys.executable, 'capture.py', str(root)], cwd=root, capture_output=True, timeout=10, env=env)
             out = next((root / 'evidence').iterdir())
             return child, {p.name: p.read_bytes() for p in out.iterdir()}, argv
 

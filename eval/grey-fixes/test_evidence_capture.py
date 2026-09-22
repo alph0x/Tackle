@@ -27,7 +27,7 @@ class CaptureTests(unittest.TestCase):
             script = script.replace('timeout_seconds = 30', 'timeout_seconds = ' + repr(timeout))
             observations = []
             for _ in range(2 if repeat else 1):
-                result = subprocess.run([sys.executable, '-c', script], cwd=root, capture_output=True, timeout=8)
+                result = subprocess.run([sys.executable, '-c', script, str(root)], cwd=root, capture_output=True, timeout=8)
                 dirs = sorted((root / 'evidence').glob('validation-*')) if (root / 'evidence').exists() else []
                 events = {d.name: {f.name: f.read_bytes() for f in d.iterdir()} for d in dirs}
                 observations.append((result, events))

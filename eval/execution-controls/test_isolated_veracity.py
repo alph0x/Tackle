@@ -27,6 +27,10 @@ class IsolatedVeracity(unittest.TestCase):
         (self.workspace/'points').mkdir(parents=True)
         (self.workspace/'points/P-01.md').write_text('- **Effort**: high\n')
         (self.workspace/'plan.md').write_text('P-01\n')
+        (self.workspace/'board.md').write_text(
+            '| Point | What | Briefing | Depends on | Status | Confidence |\n'
+            '|---|---|---|---|---|---|\n'
+            '| P-01 | Work | points/P-01.md | none | 🔴 | n/a |\n')
 
     def captured(self, row=12, command=None):
         canonical = NS['canonical_rows'](SOURCE, SHA, 'demo')[row]['command']
