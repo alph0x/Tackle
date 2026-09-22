@@ -5,7 +5,7 @@ sidecar. It is a documentation contract, not a collector or executable.
 
 ## Lifecycle records
 
-Full and Lite workspaces require `usage.md`; None creates no workspace or ledger. A None task
+Coordinated (Full) and Focused (Lite) workspaces require `usage.md`; Direct (None) creates no workspace or ledger. A Direct task
 resumed inside an existing workspace preserves its existing lifecycle contract. Read this guide
 only when a ledger is applicable. Use observed clock and launch metadata or `n/a`; never fabricate
 midnight start times, infer model/effort from a role label, or duplicate rows to appear compliant.
@@ -40,7 +40,7 @@ otherwise `n/a`. Preserve counters across actors/resumptions; zero requires obse
 A role outcome describes that role: a reviewer may finish successfully while reporting a blocked
 product. Verification/Source identifies that scope; it cannot imply initiative completion.
 Lifecycle recording is informative and never
-gates point closure. The execution sequence and correction limits are owned by
+gates task closure. The execution sequence and correction limits are owned by
 `references/guides/run.md`.
 
 Validation clocks describe the validation child, not the enclosing role. An executor cannot observe
@@ -77,11 +77,11 @@ estimates are separate bases.
 
 Retro computes `measured/eligible` plus a percentage per metric and comparable cohort. No eligible
 measurements is `0/N (0%)`, never `0/0`. Zero or partial telemetry still supports duration, attempts,
-rework, incomplete runs, verification outcomes, and point time-to-green. Partial exact coverage may
+rework, incomplete runs, verification outcomes, and task time to completion. Partial exact coverage may
 list labeled observations but cannot produce totals, shares, rankings, or tier recommendations.
 Totals/rankings require 100% comparable coverage; tier/effort recommendations also require at least
 three completed like-for-like runs. The universal ledger never depends on a collector; no hook,
-daemon, plugin, provider API, or sidecar is required for a point to close.
+daemon, plugin, provider API, or sidecar is required for a task to close.
 
 ## Legacy compatibility
 
@@ -109,4 +109,4 @@ if validate_role_record "$negative"; then echo "invalid role record accepted"; e
 ```
 
 The validator must reject the object; a session/account object may use `run_id: n/a`. Absence of a
-sidecar is valid and never a point-level failure.
+sidecar is valid and never a task-level failure.

@@ -4,29 +4,29 @@ Triggered by `retro [initiative]` or a natural phrase like "retro" / "how did it
 is optional: run it at initiative close or on demand as a clearly labelled partial retro. It does
 not replace RUN closure or create an autonomy loop.
 
-**Principle: detection before judgment.** Mine `board.md` + `log.md` by grep/count first; use judgment only to distill the counts into lessons. When the workspace carries `log-archive.md`, every mining grep runs over `cat log-archive.md log.md` — entries move, never copy, so the union double-counts nothing. Read-only over `board.md`, `log.md`, `decisions.md`; the only writes are `docs/plans/<initiative>/retro.md` (instantiated from `references/retro.tmpl.md`) and one `log.md` entry.
+**Principle: detection before judgment.** Mine `board.md` + `log.md` by grep/count first; use judgment only to distill the counts into lessons. For legacy archives, mining reads `log-archive.md` then `log.md`. For indexed segments use the validated chronological archive index from `context-lifecycle.md`, then the active history; never count checkpoints or summaries as original events. Missing/corrupt history makes affected metrics unavailable, never zero. Read-only over `board.md`, `log.md`, `decisions.md`; the only writes are `docs/plans/<initiative>/retro.md` (instantiated from `references/retro.tmpl.md`) and one `log.md` entry.
 
 ## Metrics — mined, not remembered
 
 Every metric carries a copy-paste recipe; the recipes live in the template's Metrics table. What each one measures:
 
-- **Points by status** — count the status-emoji rows in `board.md`.
-- **Attempts over budget** — count `attempt N:` journal lines per point in `log.md` against the attempt budget declared in the workspace `AGENTS.md`.
-- **Blocked durations** — dates between the log entry that marks a point ⏸ and the entry that unblocks it.
-- **Reopened points** — `🟢 → 🟡` transitions in `log.md` (regression-sweep reopenings included).
-- **Comprehension debt** — points that flipped 🟢 with no human review recorded in the log: mechanically done, humanly unread. High comprehension debt is a warning even when the board is all green.
-- **Gate accuracy** — the gate recorded at intake vs actual effort (points executed, sessions spent): Full-gate initiatives closed in ≤ 2 sessions are over-planning candidates; Lite-gate ones spanning 3+ sessions are under-planning candidates.
+- **Tasks by status** — count exact task rows and their Status field in `board.md`, using its declared schema.
+- **Attempts over budget** — count `attempt N:` journal lines per task in `log.md` against the attempt budget declared in the workspace `AGENTS.md`.
+- **Blocked durations** — dates between the log entry that marks a task Blocked (legacy ⏸) and the entry that unblocks it.
+- **Reopened tasks** — `Complete → In progress` or legacy `🟢 → 🟡` transitions in `log.md` (regression-sweep reopenings included).
+- **Comprehension debt** — tasks recorded Complete (legacy 🟢) with no human review recorded in the log: mechanically done, humanly unread. High comprehension debt is a warning even when the board is all green.
+- **Gate accuracy** — the gate recorded at intake vs actual effort (tasks executed, sessions spent): Full-gate initiatives closed in ≤ 2 sessions are over-planning candidates; Lite-gate ones spanning 3+ sessions are under-planning candidates.
 - **Exact-token coverage** — measured/eligible by metric and comparable scope, with `n/a` rows visible before any arithmetic.
 - **Coverage-gated totals** — cohort totals and rankings only after 100% comparable coverage; otherwise report labeled observations and suppress the aggregate.
 - **Coverage-gated recommendations** — tier/effort recommendations only after 100% coverage plus at least three like-for-like completed runs.
-- **Log growth** — lines per `log.md` session entry (recipe in `retro.tmpl.md`): resume cost compounds across every future session, unlike execution cost which is paid once per point; a rising trend routes narrative back to `decisions.md`/`reference-docs/`.
+- **Log growth** — lines per `log.md` session entry (recipe in `retro.tmpl.md`): resume cost compounds across every future session, unlike execution cost which is paid once per task; a rising trend routes narrative back to `decisions.md`/`reference-docs/`.
 
 ## Lifecycle-first coverage
 
 Read the v2 ledger before any token arithmetic. For every metric and comparable scope, print
 `measured/eligible` plus a percentage; no eligible rows are shown as `0/N (0%)`, never as a
 zero-over-zero denominator. Duration, attempts, rework, incomplete runs, verification outcomes,
-and point time-to-green remain useful when exact telemetry coverage is 0%.
+and task time-to-green remain useful when exact telemetry coverage is 0%.
 
 - At 0% exact-token coverage, report `0/N (0%)` and suppress token totals, shares, rankings, and
   recommendations.
@@ -52,19 +52,19 @@ stay `n/a`, never estimated.
 
 ### Conclusions
 
-- **Top-consuming points vs their bindings** — only within a 100%-covered comparable cohort, rank permitted exact totals by point and compare each against its bound tier/effort.
+- **Top-consuming tasks vs their bindings** — only within a 100%-covered comparable cohort, rank permitted exact totals by task and compare each against its bound tier/effort.
 - **Phase shares** — only within a 100%-covered comparable cohort, compare permitted PLAN / EXEC / RETRO totals; otherwise report the coverage gap instead of a share.
-- **Cache-write-weighted cost** — where the harness exposed cache splits, a point heavy on `cache_write` vs `cache_read` cost more under the billing split (writes ≈ 1.25× reads); rank by `cache_read`/`cache_write` parity, not by input+output throughput alone.
+- **Cache-write-weighted cost** — where the harness exposed cache splits, a task heavy on `cache_write` vs `cache_read` cost more under the billing split (writes ≈ 1.25× reads); rank by `cache_read`/`cache_write` parity, not by input+output throughput alone.
 
 ### Recommendations
 
-- **Downgrade candidates** — points whose actual work matched a lower tier/effort than bound (few tokens on an expensive binding): propose the cheaper binding for the next plan of that shape.
+- **Downgrade candidates** — tasks whose actual work matched a lower tier/effort than bound (few tokens on an expensive binding): propose the cheaper binding for the next plan of that shape.
 - **Recurring shapes worth re-defaulting** — shapes that consistently consume above or below their role default effort: candidates for the role→effort defaults in `team.md`.
-- **Duration outliers vs bound effort** — points whose `duration_ms` sits well above their bound effort's norm (or `compactions`/`context` spikes) are candidates for re-binding or re-decomposition; a long, compacting point bound `low` signals under-scoped work.
+- **Duration outliers vs bound effort** — tasks whose `duration_ms` sits well above their bound effort's norm (or `compactions`/`context` spikes) are candidates for re-binding or re-decomposition; a long, compacting task bound `low` signals under-scoped work.
 
 ## What worked / what didn't / lessons
 
-Distill from the metrics plus the Decisions and Blockers sections of the log. One line each. A lesson must be actionable by a future plan ("gate X earlier", "the attempt budget was too low for points shaped like Y"), not a platitude.
+Distill from the metrics plus the Decisions and Blockers sections of the log. One line each. A lesson must be actionable by a future plan ("gate X earlier", "the attempt budget was too low for tasks shaped like Y"), not a platitude.
 
 ## Profile candidates (learning loop)
 
@@ -87,9 +87,9 @@ Mine the following sources during retro:
 
 - `decisions.md` deltas vs recommended defaults (recurring overrides).
 - `log.md` attempt-journal lines that exceed the budget or show no-progress.
-- Reopened points (`🟢 → 🟡`) in `log.md`.
+- Reopened tasks (`🟢 → 🟡`) in `log.md`.
 - Escalation packets from `log.md`.
-- `verify` findings that recurred across points.
+- `verify` findings that recurred across tasks.
 
 Present candidates as a batch. Each candidate must include:
 
@@ -110,7 +110,9 @@ For each separately confirmed candidate:
 
 ### Directives
 
-Recurring failure evidence may propose a `directive:` entry (C-20). A directive targets a named template or guide section and is applied on top of the resolution stack at instantiation time. Project directives outrank user directives. A directive whose target section no longer exists is flagged **stale** for re-confirm-or-retire. When the failure evidence is a repeatable mid-session action (a commit message, a push, a release step), distil the directive with an `applies_to:` tag naming that action moment — instantiation-time application never reaches an action taken 30 sessions after intake (taptopaykit-integration A1: a commit-format directive written session 23, violated session 35).
+Propose retirement or supersession of incompatible hypotheses without rewriting history. Intake already excludes them from defaults; pending cleanup does not block implementation. One isolated observation remains a hypothesis, not a mandatory global rule.
+
+Recurring failure evidence may propose a `directive:` entry (C-20). A directive targets a named template or guide section and is considered at instantiation only when applicable and compatible with the current authority order. Project directives outrank user directives. A directive whose target section no longer exists is flagged **stale** for re-confirm-or-retire. When the failure evidence is a repeatable mid-session action (a commit message, a push, a release step), distil the directive with an `applies_to:` tag naming that action moment — instantiation-time application never reaches an action taken 30 sessions after intake (taptopaykit-integration A1: a commit-format directive written session 23, violated session 35).
 
 ### Opt-out anytime
 
@@ -121,25 +123,26 @@ The user can stop evolution at any moment, per scope, with any phrasing. Two mod
 
 Both take effect immediately.
 
-## Plan archetype candidates (learning loop)
+<a id="plan-archetype-candidates-learning-loop"></a>
+## Plan reference plan candidates (learning loop)
 
 At initiative close, consider whether the plan itself is worth distilling into `references/archetypes/` (format: `references/archetypes/README.md`).
 
 ### Eligibility
 
-Offer extraction only when **the decomposition held**: no major replans and no D-xx rewrites of the point/edge graph after intake — points closed against the graph that was planned. A plan that was substantially re-shaped mid-flight has no stable skeleton to distill; skip without asking.
+Offer extraction only when **the decomposition held**: no major replans and no D-xx rewrites of the task/edge graph after intake — tasks closed against the graph that was planned. A plan that was substantially re-shaped mid-flight has no stable skeleton to distill; skip without asking.
 
 ### Extraction template
 
-One archetype file per skeleton: `references/archetypes/<name>.md` with the sections the README fixes — name + one-line summary, point list, edge pattern, wave shape, trap warnings, provenance (this initiative, retro link). Mine the graph from `plan.md`/`board.md`; mine trap warnings from attempt journals and reopened points; judgment only names and summarizes.
+One reference plan file per skeleton: `references/archetypes/<name>.md` with the sections the README fixes — name + one-line summary, task list, edge pattern, wave shape, trap warnings, provenance (this initiative, retro link). Mine the graph from `plan.md`/`board.md`; mine trap warnings from attempt journals and reopened tasks; judgment only names and summarizes.
 
 ### Confirming and writing
 
-Everything is batch-confirmed by the user before writing — present the archetype candidate alongside the profile-candidate batch, never write it silently. Only the `retro` workflow writes archetypes.
+Everything is batch-confirmed by the user before writing — present the reference plan candidate alongside the profile-candidate batch, never write it silently. Only the `retro` workflow writes reference plans.
 
 ## Where results go
 
 - `retro.md` in the initiative workspace, one per initiative (a partial retro overwrites the previous partial; the close retro is final).
 - One `log.md` entry noting the retro ran, with the Metrics values as its evidence.
-- One `references/archetypes/<name>.md` per batch-confirmed archetype candidate (the only write outside the initiative workspace).
-- Report a digest ≤ 12 lines in chat per the output contract — point to `retro.md`, don't paste it.
+- One `references/archetypes/<name>.md` per batch-confirmed reference plan candidate (the only write outside the initiative workspace).
+- Report the useful findings and pending consent concisely per the communication contract — link to `retro.md`, don't paste it.

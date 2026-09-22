@@ -1,8 +1,10 @@
-# Usage ledger — {{TITLE}}
+# Resource usage ledger — {{TITLE}}
 
 For a new Lite workspace, use the v2-only body in `lite-plan.tmpl.md`. This compatibility template
 is not a Lite prerequisite. A validation end must never be copied as a role end; use `At=n/a` for
 an unobserved role termination and record the reason in Source.
+
+Persistent `Point` columns retain their schema names; the visible concept is Task. Role values record the actual historical actor and are not upgraded by renaming Driver/Checker to Executor/Verifier.
 
 ## Legacy compatibility ledger
 

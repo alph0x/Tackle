@@ -1,0 +1,265 @@
+{
+  "schema": "tackle-context-measurement/1",
+  "kind": "synthetic deterministic logical content I/O",
+  "sizes": [
+    {
+      "closed_tasks": 10,
+      "initial": {
+        "retained_bytes": 11770,
+        "files": 6
+      },
+      "baseline": {
+        "resume": {
+          "bytes_read": 11770,
+          "bytes_written": 0,
+          "archive_metadata_checks": 0
+        },
+        "task_update": {
+          "bytes_read": 599,
+          "bytes_written": 692,
+          "archive_metadata_checks": 0
+        },
+        "handoff": {
+          "bytes_read": 11863,
+          "bytes_written": 11863,
+          "archive_metadata_checks": 0
+        },
+        "named_archived_failure_retrieval": {
+          "bytes_read": 11093,
+          "bytes_written": 0,
+          "archive_metadata_checks": 0
+        },
+        "complete_history_reconstruction": {
+          "bytes_read": 11093,
+          "bytes_written": 0,
+          "archive_metadata_checks": 0
+        },
+        "measured_scenario_total": {
+          "bytes_read": 46418,
+          "bytes_written": 12555
+        }
+      },
+      "candidate": {
+        "archive_and_index": {
+          "bytes_read": 27516,
+          "bytes_written": 19683,
+          "archive_metadata_checks": 0
+        },
+        "projection_build": {
+          "bytes_read": 6664,
+          "bytes_written": 1979,
+          "archive_metadata_checks": 1
+        },
+        "resume": {
+          "bytes_read": 8643,
+          "bytes_written": 0,
+          "archive_metadata_checks": 1
+        },
+        "task_update": {
+          "bytes_read": 13253,
+          "bytes_written": 8167,
+          "archive_metadata_checks": 2
+        },
+        "handoff": {
+          "bytes_read": 24233,
+          "bytes_written": 3277,
+          "archive_metadata_checks": 2
+        },
+        "named_archived_failure_retrieval": {
+          "bytes_read": 5914,
+          "bytes_written": 0,
+          "archive_metadata_checks": 1
+        },
+        "complete_history_reconstruction": {
+          "bytes_read": 11497,
+          "bytes_written": 0,
+          "archive_metadata_checks": 1
+        },
+        "retained": {
+          "retained_bytes": 14249,
+          "files": 10
+        },
+        "measured_scenario_total": {
+          "bytes_read": 97720,
+          "bytes_written": 33106
+        }
+      }
+    },
+    {
+      "closed_tasks": 100,
+      "initial": {
+        "retained_bytes": 115542,
+        "files": 6
+      },
+      "baseline": {
+        "resume": {
+          "bytes_read": 115542,
+          "bytes_written": 0,
+          "archive_metadata_checks": 0
+        },
+        "task_update": {
+          "bytes_read": 5549,
+          "bytes_written": 5643,
+          "archive_metadata_checks": 0
+        },
+        "handoff": {
+          "bytes_read": 115636,
+          "bytes_written": 115636,
+          "archive_metadata_checks": 0
+        },
+        "named_archived_failure_retrieval": {
+          "bytes_read": 109916,
+          "bytes_written": 0,
+          "archive_metadata_checks": 0
+        },
+        "complete_history_reconstruction": {
+          "bytes_read": 109916,
+          "bytes_written": 0,
+          "archive_metadata_checks": 0
+        },
+        "measured_scenario_total": {
+          "bytes_read": 456559,
+          "bytes_written": 121279
+        }
+      },
+      "candidate": {
+        "archive_and_index": {
+          "bytes_read": 323972,
+          "bytes_written": 119514,
+          "archive_metadata_checks": 0
+        },
+        "projection_build": {
+          "bytes_read": 11949,
+          "bytes_written": 7020,
+          "archive_metadata_checks": 2
+        },
+        "resume": {
+          "bytes_read": 18969,
+          "bytes_written": 0,
+          "archive_metadata_checks": 2
+        },
+        "task_update": {
+          "bytes_read": 23824,
+          "bytes_written": 18169,
+          "archive_metadata_checks": 4
+        },
+        "handoff": {
+          "bytes_read": 69819,
+          "bytes_written": 13268,
+          "archive_metadata_checks": 4
+        },
+        "named_archived_failure_retrieval": {
+          "bytes_read": 65523,
+          "bytes_written": 0,
+          "archive_metadata_checks": 2
+        },
+        "complete_history_reconstruction": {
+          "bytes_read": 110645,
+          "bytes_written": 0,
+          "archive_metadata_checks": 2
+        },
+        "retained": {
+          "retained_bytes": 123388,
+          "files": 11
+        },
+        "measured_scenario_total": {
+          "bytes_read": 624701,
+          "bytes_written": 157971
+        }
+      }
+    },
+    {
+      "closed_tasks": 1000,
+      "initial": {
+        "retained_bytes": 1155044,
+        "files": 6
+      },
+      "baseline": {
+        "resume": {
+          "bytes_read": 1155044,
+          "bytes_written": 0,
+          "archive_metadata_checks": 0
+        },
+        "task_update": {
+          "bytes_read": 55049,
+          "bytes_written": 55144,
+          "archive_metadata_checks": 0
+        },
+        "handoff": {
+          "bytes_read": 1155139,
+          "bytes_written": 1155139,
+          "archive_metadata_checks": 0
+        },
+        "named_archived_failure_retrieval": {
+          "bytes_read": 1099919,
+          "bytes_written": 0,
+          "archive_metadata_checks": 0
+        },
+        "complete_history_reconstruction": {
+          "bytes_read": 1099919,
+          "bytes_written": 0,
+          "archive_metadata_checks": 0
+        },
+        "measured_scenario_total": {
+          "bytes_read": 4565070,
+          "bytes_written": 1210283
+        }
+      },
+      "candidate": {
+        "archive_and_index": {
+          "bytes_read": 3293968,
+          "bytes_written": 1124426,
+          "archive_metadata_checks": 0
+        },
+        "projection_build": {
+          "bytes_read": 66335,
+          "bytes_written": 57421,
+          "archive_metadata_checks": 17
+        },
+        "resume": {
+          "bytes_read": 123756,
+          "bytes_written": 0,
+          "archive_metadata_checks": 17
+        },
+        "task_update": {
+          "bytes_read": 132597,
+          "bytes_written": 118081,
+          "archive_metadata_checks": 34
+        },
+        "handoff": {
+          "bytes_read": 528697,
+          "bytes_written": 113169,
+          "archive_metadata_checks": 34
+        },
+        "named_archived_failure_retrieval": {
+          "bytes_read": 70399,
+          "bytes_written": 0,
+          "archive_metadata_checks": 17
+        },
+        "complete_history_reconstruction": {
+          "bytes_read": 1105524,
+          "bytes_written": 0,
+          "archive_metadata_checks": 17
+        },
+        "retained": {
+          "retained_bytes": 1218168,
+          "files": 26
+        },
+        "measured_scenario_total": {
+          "bytes_read": 5321276,
+          "bytes_written": 1413097
+        }
+      }
+    }
+  ],
+  "coverage": "Same active task and dependencies; closed task board rows grow with history. All recipe reads, hashing, staged writes, indexing, verification and export writes counted.",
+  "baseline": "Pinned 8.1.0 full-history handoff and file-wide latest-entry scan; original task-update append. This is an explicit algorithm comparison, not measured baseline agent behavior.",
+  "limitations": [
+    "Current board/source verification still grows with authoritative scope; no constant total-cost claim.",
+    "Initial indexing, complete reconstruction and named archive retrieval are charged separately and in total, not hidden savings.",
+    "Retained bytes grow; archival changes placement and does not retire original records.",
+    "Filesystem metadata, kernel cache and journal/block-I/O bytes are not measured; metadata calls are counted separately.",
+    "Check-record export costs belong to the record lifecycle benchmark; these fixtures have no additional required raw objects.",
+    "No model/token/latency or agent compliance improvement is established by this fixture."
+  ]
+}
