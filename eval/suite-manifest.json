@@ -1,0 +1,108 @@
+{
+  "version": 1,
+  "excluded_directories": [
+    "eval/scenarios",
+    "eval/plan-run/fixtures",
+    "eval/grey-fixes/fixtures",
+    "eval/lite-closure/fixtures",
+    "eval/scratch",
+    "eval/runs"
+  ],
+  "suites": [
+    {
+      "path": "eval/plan-run/tests",
+      "files": [
+        "test_contracts.py",
+        "test_measurement.py",
+        "test_migration.py",
+        "test_plan.py",
+        "test_run.py"
+      ],
+      "tests": 134
+    },
+    {
+      "path": "eval/validation-integrity",
+      "files": [
+        "test_fields.py",
+        "test_paths.py",
+        "test_release_fixtures.py",
+        "test_review_regressions.py",
+        "test_routing_fixtures.py",
+        "test_workspace_compatibility.py"
+      ],
+      "tests": 41
+    },
+    {
+      "path": "eval/execution-controls",
+      "files": [
+        "test_controls.py",
+        "test_isolated_veracity.py"
+      ],
+      "tests": 39
+    },
+    {
+      "path": "eval/lifecycle-validation",
+      "files": [
+        "test_literal_lifecycle.py"
+      ],
+      "tests": 10
+    },
+    {
+      "path": "eval/lite-closure",
+      "files": [
+        "test_receipt.py"
+      ],
+      "tests": 6
+    },
+    {
+      "path": "eval/grey-fixes",
+      "files": [
+        "test_evidence_capture.py"
+      ],
+      "tests": 8
+    },
+    {
+      "path": "eval/single-entry",
+      "files": [
+        "test_packaging.py"
+      ],
+      "tests": 4
+    },
+    {
+      "path": "eval/suite-integrity",
+      "files": [
+        "test_discovery.py"
+      ],
+      "tests": 14
+    },
+    {
+      "path": "eval/clear-language",
+      "files": [
+        "test_cohort.py"
+      ],
+      "tests": 13
+    },
+    {
+      "path": "eval/task-contracts",
+      "files": [
+        "test_task_contracts.py"
+      ],
+      "tests": 32
+    },
+    {
+      "path": "eval/record-lifecycle",
+      "files": [
+        "test_records.py"
+      ],
+      "tests": 24
+    },
+    {
+      "path": "eval/context-lifecycle",
+      "files": [
+        "test_context.py",
+        "test_measurement.py"
+      ],
+      "tests": 26
+    }
+  ]
+}

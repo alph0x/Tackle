@@ -2,6 +2,32 @@
 
 A smoke-test-grade A/B eval for the Tackle skill. The core claim: a mid-tier model following Tackle literally should beat the same model free-styling at **traps**, situations where the plausible action is the wrong one.
 
+## Deterministic discovery and current-checkout evaluation
+
+CI and `validation-integrity/acceptance.py` use one strict registry:
+
+```sh
+python3 eval/run_suites.py --output /absolute/new/suite-results
+```
+
+`suite-manifest.json` lists every deterministic family, its exact test-file inventory
+and positive discovered test count. Adding/removing tests requires a reviewed registry
+update. Missing files, unregistered families, zero discovery, an unintended subset or
+a failing child test makes the gate fail. Only explicitly listed synthetic fixture,
+numbered-scenario and local trial-output trees are excluded. The result directory retains each command,
+runtime, exit, count, input hashes and complete stdout/stderr. Disposable regression
+tests demonstrate that planted failures and omitted discovery do not turn green.
+
+The [CLEAR-EVAL-1 protocol](clear-language/protocol.md) defines a separate frozen
+current-checkout baseline/candidate experiment, with English/Spanish tasks and a
+small default smoke. [Its runner](clear-language/README.md) stages oracle-free
+participant environments, verifies an externally retained seal and probes container
+isolation before any explicitly authorized model call. It is **PENDING**: no current
+behavioral improvement or release approval is claimed. The historical 7.3/8.0
+comparison and its recorded zero-started status remain unchanged. Deterministic
+harness tests, actual command behavior, agent decisions and integrated product
+acceptance are distinct kinds of evidence.
+
 ## Layout
 
 ```
