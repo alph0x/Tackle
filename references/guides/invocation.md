@@ -8,8 +8,8 @@ never promise a separate menu entry for an action or a particular prefix in ever
 
 ## Resolve intent
 
-1. A bare skill selection, `tackle`, or `help` with no task asks for help. Briefly offer planning,
-   execution, status, plan verification, finished-work audit and retro, with a couple of examples.
+1. A bare skill selection, `tackle`, or `help` with no task asks for help. Briefly offer plan, run, show status,
+   validate the plan, audit the result and review lessons, with a couple of examples.
    Do not read project state or create/change files just to show help.
 2. Prefer the complete request over an action token: a question about `run`, a quoted example,
    or “don't execute” does not authorize execution. If the action or its target is materially
@@ -21,14 +21,20 @@ never promise a separate menu entry for an action or a particular prefix in ever
 | Request after selecting Tackle | Route and boundary | Guide |
 |---|---|---|
 | `plan <task>` / “plan this” / “armá un plan” | PLAN prepares; explicit plan-and-execute intent can also authorize subsequent RUN | [Intake](intake-and-gate.md) |
-| `run`, `run --one`, `run <P-id>` / “ejecutá el punto” | RUN executes the explicitly requested scope after preflight | [Run](run.md) |
+| `run`, `run --one`, `run <P-id>` / “ejecutá la tarea” (legacy “ejecutá el punto” also remains readable) | RUN executes the explicitly requested scope after preflight | [Run](run.md) |
 | `status [<workspace>]`, `list`, `next`, plain `resume` / “qué sigue” | STATUS inspects/selects; no source, board or log writes | [Status](status.md) |
 | `status <workspace> --handoff` / “prepare a handoff” | Write only the requested handoff projection | [Status](status.md) |
-| `verify [<workspace>]` / “verificá este plan sin modificarlo” | PLAN validation or explicit diagnosis; a diagnosis alone never authorizes repairs or history writes | [Verify](verify.md) |
-| `judge [<target>]`, `judge suite <target>` / “auditá lo implementado” | Explicit post-work audit or suite evaluation; no implied fix | [Judge](judge.md) |
-| `retro [<workspace>]` / “review the lessons” | Optional learning review; profile writes require separate confirmation | [Retro](retro.md) |
+| **validate the plan**, `verify [<workspace>]` / “verificá este plan sin modificarlo” | PLAN validation or explicit diagnosis; a diagnosis alone never authorizes repairs or history writes | [Verify](verify.md) |
+| **audit the result**, `judge [<target>]`, `judge suite <target>` / “auditá lo implementado” | Explicit post-work audit or suite evaluation; no implied fix | [Judge](judge.md) |
+| **review lessons**, `retro [<workspace>]` / “review the lessons” | Optional learning review; profile writes require separate confirmation | [Retro](retro.md) |
 | `init <name>` | PLAN scaffolding with the existing setup consent | [Scaffold](scaffold.md) |
 | `migrate`, `upgrade`, “improve this plan” | Selected-workspace, copy-first migration preparation | [Migrate](migrate.md) |
+
+## Continuing authorized work
+
+Route the request in its conversation context. PLAN+RUN remains authorized within its original scope. A status question during active RUN receives a concise answer, then work continues; it does not become a new standalone STATUS job or cancel authorization. An explicit pause, cancellation or incompatible replacement stops dependent execution. Standalone STATUS remains read-only and PLAN-only supplies no RUN permission. Apply the [decision and communication policy](communication.md).
+
+English and Spanish examples preserve intent: “Plan and implement this” / “Planificá e implementá esto” authorize both after readiness; “Plan only, do not execute” / “Solo el plan, no ejecutes” stop at preparation. “What does \`run\` mean?” and “El ejemplo dice \`run\`” are questions/examples, not authorization.
 
 ## Compatibility during 8.x
 

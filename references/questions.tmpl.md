@@ -4,6 +4,8 @@ Single source of truth for the plan's questions. Don't delete; mark resolved wit
 the decision. External ones (to other teams) also go as a packet in `external-questions/`
 when sent.
 
+**Question kind**: {{information / pending decision / blocker; explain its effect on named tasks}}.
+
 **Global status**: {{🟢/🟡/🔴 summary of what is unblocked and what is not}}.
 
 ---
@@ -15,7 +17,7 @@ when sent.
 
 {{Concrete question. What needs deciding and why it blocks (or not).}}
 
-**Determines**: {{what downstream choice/point this answer unblocks or shapes — e.g. "rollback
+**Determines**: {{what downstream choice/task this answer unblocks or shapes — e.g. "rollback
 semantics", "blocks P-06". A question whose answer changes nothing isn't worth tracking.}}
 **Decides**: {{who: the relevant team / owner}}.
 **Already investigated**: {{what you checked before asking — e.g. "grep of pipelineScripts
@@ -25,4 +27,4 @@ can tell you.}}
 <!-- When an entry accumulates 3+ correction/update blocks, pin a one-line
      **Current ask (as of session N):** at the top of the entry; the correction history
      stays below it, append-only. A fresh reader orients from the pin, not from the accretion. -->
-<!-- A point gated on this question is "Deferred" in the wave plan, not 🔴 in an active wave. -->
+<!-- A task gated on this question is "Deferred" in the wave plan, not 🔴 in an active wave. -->

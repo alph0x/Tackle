@@ -10,22 +10,20 @@ not execute source or mutate source, `board.md`, or `log.md`; an explicit handof
 write its own projection.
 
 The bounded None route is self-contained in `intake-and-gate.md`; its focused preflight and receipt
-replace workspace/Point artifacts, not authorization, scope, preservation or truthful validation.
+replace workspace/Task artifacts, not authorization, scope, preservation or truthful validation.
 For Lite, use `../lite-plan.tmpl.md` and its plan/log/usage/decisions. Do not continue through the Full preflight artifacts below unless the task upgrades.
 
 The authority order is user, current contract/specification, protected acceptance and tests, then
 current implementation. A contract or specification contradiction is surfaced and blocks the
-affected scope. This guide never silently changes the procedure that authorized a Point already in
+affected scope. This guide never silently changes the procedure that authorized a Task already in
 progress. A changed contract, dependency output, configuration, input, or relevant source
 fingerprint invalidates only the dependent checks; re-ground and revalidate them before continuing.
 
 ## Authorization and preflight
 
-Run begins only after explicit execution intent. The Coordinator records the intent and reads the
-current `board.md`, `log.md`, relevant `decisions.md`, Point briefing, PLAN handoff, current
-contract, dependency outputs, and environment. The preflight records the protocol and contract
-revisions, relevant fingerprints, declared Touches, executor binding, and the current tree. It
-checks that the Point is Ready, its dependencies have their required outputs, the environment can
+Run begins only after explicit execution intent, including an existing scoped PLAN+RUN request. Record that authorization once and apply [communication.md](communication.md) throughout; a status question does not revoke it. The coordinator verifies current task-board state, applicable decisions and blockers, the task brief, readiness records, contract, dependency outputs and environment. For a long workspace use the verified current-work view in [status.md](status.md) plus necessary source records; do not reread unrelated closed history. A missing/stale projection is rebuilt from authoritative records during authorized RUN, never trusted as permission. The preflight records the protocol and contract
+revisions, relevant fingerprints, declared Write scope, executor binding, and the current tree. It
+checks that the Task is Ready, its dependencies have their required outputs, the environment can
 perform the declared checks, and the source is inside the declared write scope. A stale Ready
 fingerprint cannot authorize execution.
 
@@ -46,9 +44,11 @@ snapshot the executed scripts and selected input membership, and close with affe
 
 ## State transitions
 
-The Point state is distinct from evidence grades and from the board's current execution status.
+New visible states and exact legacy mappings are defined in [terminology.md](../terminology.md#states-and-observations). Draft is unprepared/deferred; Ready to run is prepared, In progress implements, Checking verifies, Complete satisfies mandatory task checks. Blocked, Interrupted, Skipped and Unverifiable are distinct. The historical internal transition names below remain readable; relabeling never certifies success.
+
+The Task state is distinct from evidence grades and from the board's current execution status.
 `Ready` means PLAN's preparation and integrated readiness checks passed with its handoff and
-fingerprints; it does not mean source execution passed. The normal Point path is:
+fingerprints; it does not mean source execution passed. The normal Task path is:
 
 ```text
 Ready → preflight → implementing → target validation →
@@ -60,14 +60,14 @@ Ready → preflight → implementing → target validation →
 Preflight failure, an unavailable required capability, a contract/validator/environment defect,
 budget exhaustion, or an unresolved contradiction blocks the affected scope with evidence. An
 optional, user-authorized descope is `skipped`; it is not completion of a mandatory acceptance.
-Point `complete` requires its target, surrounding, affected integration, and required review
-evidence. Initiative `complete` additionally requires global acceptance of the merged deliverable,
-final outputs, packaging and reproducibility where applicable. All Points passing is insufficient
+Task `complete` requires its target, surrounding, affected integration, and required review
+evidence. Initiative `complete` additionally requires deliverable acceptance of the merged deliverable,
+final outputs, packaging and reproducibility where applicable. All tasks passing is insufficient
 to close an initiative.
 
 When a release names an initiative in scope, that initiative remains subject to this global
 acceptance obligation until the evidence passes. A board with no in-progress rows, or a board
-whose Points are all complete, cannot infer release acceptance; the release sweep consumes the
+whose Tasks are all complete, cannot infer release acceptance; the release sweep consumes the
 named workspace's existing global-acceptance evidence rather than creating a second status source.
 
 At serialization or unit boundaries, global checks include applicable valid adversarial inputs
@@ -75,35 +75,40 @@ from the declared domain and the actual consumer parser/round trip. Nominal samp
 does not prove preservation of arbitrary allowed strings or numeric values.
 Before implementation, record required supported producer/consumer targets and available validation environments in the contract. Record the actual producer and consumer runtimes and the supported range being claimed. A pass on
 one runtime does not establish compatibility with another. An unverified required target blocks
-the Point or global obligation that owns it; an outstanding mandatory global obligation prevents
+the Task or global obligation that owns it; an outstanding mandatory global obligation prevents
 initiative completion. Optional targets remain unverified without blocking the authorized narrower
 scope. Independent unaffected work may proceed. A cross-runtime discrepancy keeps both
 observations and their environments visible.
 
-The executor writes only in the Point's Touches. After implementation it runs the target check and
-the checks for the affected surrounding behavior. After merge it runs the Point's affected
-integration checks on the merged tree, including semantic consumers outside the file-level Touches
+The executor writes only in the Task's Write scope. After implementation it runs the task check and
+the checks for the affected surrounding behavior. After merge it runs the Task's affected
+integration checks on the merged tree, including semantic consumers outside the file-level Write scope
 intersection when the interface, configuration, output, or dependency relationship reaches them.
-Before initiative closure, global acceptance covers the integrated flows and initiative obligations
+Before initiative closure, deliverable acceptance covers the integrated flows and initiative obligations
 against the final deliverable.
 
 For release work, the Coordinator records the explicit workspace scope before running the sweep;
 unknown scope blocks the tag pending clarification. The release-gating set is the deduplicated union
 of active and selected workspaces: selection never exempts another active workspace from its
-mandatory lint and done-signal gates. Selected workspaces also require current global acceptance
+mandatory lint and acceptance check gates. Selected workspaces also require current deliverable acceptance
 regardless of board status. Historical closed and parked workspaces that are neither active nor
 selected remain non-gating; warn-severity lint rows retain their severity.
 
-## Evidence and recovery
+<a id="evidence-and-recovery"></a>
+## Verification records and recovery
 
 Every target, correction, integration, or global validation is an observation. Record the actual
 UTC start and end (or timeout), literal command, cwd, tool and runtime, executor/actor and context,
 input/code/config/dependency/contract revisions, stdout, stderr, exit code or signal, timeout, and
-artifact paths and hashes. Store one immutable raw evidence file per validation; the local report
+artifact paths and hashes. Store one immutable raw check record per actual validation, referencing shared immutable objects where available; the local report
 may summarize it but cannot replace it. A printed PASS is not evidence when a child process,
 wrapper, generated artifact, or package failed. Check a real child return code, timeout and signal
 independently of wrapper output. A validation command's own process result is authoritative; a
 helper that prints PASS while its child failed is a failed observation.
+Every required assertion in a compound check must propagate failure to that process result.
+`set -u`, `pipefail` or a final PASS alone does not do this; use checked subprocesses or explicit
+failure exits for each required condition. Exact-byte edits and checks preserve the specified
+delimiter and final newline; do not normalize either away.
 
 Choose an accessible evidence destination before the check, so a missing export is handled at
 capture time. Capture using the harness's complete exported event or direct stdout/stderr
@@ -118,23 +123,26 @@ canonical lint execution. The smaller `evidence-capture.md` example serves the o
 
 One captured command may discharge target, surrounding and integration obligations when its
 observed coverage includes them all; index that same observation instead of rerunning unchanged
-checks to populate headings. A final PASS is optional unless the consumer requires it; when used,
+checks to populate headings. Do not append equivalent auxiliary assertions or repeat a successful
+check during closure when its inputs and required coverage are unchanged. A final PASS is optional unless the consumer requires it; when used,
 emit it only after all relevant children succeed. Full/Lite append actual start/terminal usage
 events; missing telemetry does not block execution and must not be reconstructed.
 
 The first validation is recorded separately and is not a correction cycle. One shared persistent
-pool permits at most three failed correction-validation cycles for a Point across the executor,
+pool permits at most three failed correction-validation cycles for a Task across the executor,
 reviewer, checker, interruptions, resumptions, and sessions. A successful correction resets no
-counter. Two identical no-progress observations stop immediately, even if fewer than three cycles
+counter.
+
+Task IDs survive renaming. On split, merge or supersession, record ancestor IDs and unresolved failure IDs in the existing attempt journal. Each failed cycle has one stable event ID; descendants addressing the same failure reference the same spent pool, and a merge takes the union of event IDs. A split never grants a fresh allowance for unresolved old work. A new unrelated responsibility receives its own pool only with its distinct requirement/acceptance and no inherited failure. Preserve no-progress observations and the two-cycle unowned integration pool; attribution transfers a cycle once. Reassignment, translation or reopening cannot erase spent work. Validate lineage before another correction. Two identical no-progress observations stop immediately, even if fewer than three cycles
 were spent. Never invent a narrower cap, reset the count under a new actor, or count a repeated
 observation as a new distinct cycle. There is one initiative-wide unowned-integration pool of two
 cycles shared by all unowned integration faults. A dependency artifact failure is first recorded as
 a preflight/dependency cause; if it is an unowned integration fault, its cycle consumes this same
 pool. When attribution identifies an owner, transfer the cycles already spent exactly once to that
-owner's Point; the initiative pool and Point counter both retain the spent count, which survives
+owner's Task; the initiative pool and Task counter both retain the spent count, which survives
 resume.
 
-Before repeating an interrupted side effect, inspect the tree, process results, and raw evidence to
+Before repeating an interrupted command or completion update, inspect the tree, process results, task-board/report revisions, checkpoint and raw records to
 determine whether it occurred. If occurrence is incomplete or unknown, record `observe-incomplete`
 and preserve the history before choosing a safe continuation. Do not duplicate an irreversible
 action merely because a session ended without a terminal message. Lifecycle rows and attempts
@@ -142,15 +150,23 @@ serialize and resume from the workspace; missing end data stays `n/a`.
 
 ## Failure classification and correction
 
+Consume retained failed observations before another check, including on resume. Diagnose from
+their command, output and relevant input fingerprints; do not repeat an unchanged failed check
+to rediscover its result. Recheck only after a recorded relevant input or environment change,
+or an actually justified permitted operational recovery below. Narrower diagnostic inspection
+remains allowed; diagnosis alone does not justify repeating acceptance.
+
 Classify a failed observation before correcting it: implementation, missing or ambiguous
 requirement, incomplete output, required edge case, dependency/integration, contradictory spec,
 validator, environment, capability, or undetermined. Only an implementation fault may be corrected
 within the shared implementation budget. A contract, requirement, validator, environment,
-capability, dependency, or undetermined cause stops affected work and emits a small packet with the
+capability, dependency, or undetermined cause stops the failed action and emits a small packet with the
 exact requirement/clause and revision, expected versus observed result, reproducer and raw-evidence
 pointer, affected consumers, attempts/cycles already used and remaining, and the smallest
 unresolved decision. The packet is a decision aid; it does not silently replan, broaden scope,
 upgrade model or effort, dispatch a frontier role, or make up a missing requirement.
+
+A permitted operational recovery is separate from implementation correction: once per unchanged failure signature (cause, command, relevant inputs and environment), inspect the failed process and records, then correct a workspace-local temporary-path issue, interrupted local capture, or restart an already-configured foreground tool after confirming prior writers stopped. One retry may establish recovery; if it fails, block that action with both records. A relevant external change may justify a new diagnosis, but a new actor/task name does not reset this allowance. Record recovery kind, action, result and spent allowance in the same journal. No global install, credentials, restricted access, protected expectation change or invented requirement is authorized. All other operational causes remain blocked pending the concrete needed capability or decision.
 
 Each failed implementation correction appends an attempt-journal entry before another attempt and
 re-reads the earlier entries. The entry names the observed failure, correction, validation command,
@@ -158,7 +174,8 @@ result, and cycle count. A correction that changes a contract or acceptance requ
 superseding decision first, then re-grounding and revalidation. Generic escalation records its
 trigger, minimal scope, budget and observed outcome.
 
-## Independence and evidence grades
+<a id="independence-and-evidence-grades"></a>
+## Verification method and independence
 
 Mechanical execution, focused semantic review, and adversarial audit are separate capabilities.
 The same agent may observe a deterministic command; that observation is real command evidence with
@@ -175,15 +192,16 @@ semantic review gate when no honest command exists; E0 is explicitly unverifiabl
 assertion. Grades are derived from the evidence, never self-declared, and E2 is not numerically
 ordered against E3. Missing capability is not zero evidence.
 
-## Integration, global acceptance, and close
+<a id="integration-global-acceptance-and-close"></a>
+## Integration, deliverable acceptance, and close
 
-After a Point's target and surrounding checks pass, integrate its scoped change and recheck the
+After a Task's target and related regression checks pass, integrate its scoped change and recheck the
 merged tree. Reuse evidence only while every relevant source, contract, configuration, dependency,
-input, runtime, and protocol revision matches. Selective invalidation preserves unaffected history
+input, selector membership, runtime, protocol revision and relevant freshness window matches. Unknown dependencies require conservative verification. Selective invalidation preserves unaffected history
 and invalidates the changed consumers and crossing artifacts. The integration check must include
-semantic consumers that a Touches-only intersection cannot see.
+semantic consumers that a Write scope-only intersection cannot see.
 
-Global acceptance then checks the final integrated flows, every required global obligation, final
+Deliverable acceptance then checks the final integrated flows, every required global obligation, final
 artifacts, packaging, source/install boundary, reproducibility, and the complete acceptance command
 where applicable. It must catch a producer/consumer unit mismatch such as cents rendered by a
 producer while a consumer expects dollars, even if every local unit suite is green. Missing package
@@ -197,7 +215,7 @@ Before choosing the terminal state, the Coordinator opens every required evidenc
 checks its actual result and relevant final revisions, and matches it to the obligation it proves.
 A generic transcript label without an accessible export is missing evidence. Missing, stale or
 failed required evidence/review/coverage blocks its owning scope; summaries cannot repair it.
-Only all required Point obligations permit Point complete; only all required global obligations
+Only all required Task obligations permit Task complete; only all required global obligations
 permit initiative complete. Board, report and final response must express that same scope and
 outcome. Role completion is separate: a reviewer may successfully report a blocked product,
 but a blocked implementation is not successful product completion. Unknown telemetry and
@@ -207,8 +225,10 @@ On complete, the Coordinator records the final report, raw evidence pointers, im
 attempt and rework counts, and the board status. On blocked, it records the same evidence and the
 failure packet; blocked, skipped, completed, and unverifiable outcomes remain distinct. `board.md`
 is the canonical current state, `log.md` is append-only history, `coordinator.md` is a projection,
-and `usage.md` receives its normal lifecycle rows. A closure report or local Run report is evidence,
-not permission to erase prior history. Initiative closure waits for global acceptance and its
+and `usage.md` receives its normal lifecycle rows. A completion update records the last fully recorded event and intended task state. If interrupted between record/report/board writes, reconcile all three against actual outcomes before repairing the incomplete update. A completed side effect is not repeated merely to fill a missing terminal row; unchecked work remains Interrupted or Checking. A projection never overrides counters, permissions or actual results.
+
+A closure report or local Run report is evidence,
+not permission to erase prior history. Initiative closure waits for deliverable acceptance and its
 review/sign-off obligations. Once they pass, write the closure records, check only fields and
 obligations affected by those writes, and respond. Do not restart whole-plan lint, guide traversal
 or housekeeping after product acceptance without a relevant change, new failure, or explicit
@@ -219,7 +239,49 @@ required product/review checks, or the separately requested release sweep.
 
 The local report contains, in order: authorization and preflight; implementation and target
 observation; surrounding and integration observations; correction journal and any failure packet;
-global acceptance; independent semantic review when required; final status and unresolved risk.
-Each observation points to its immutable raw file. Raw files are append-never/overwrite-never
-artifacts named with a unique Run, Point, validation ordinal, and observed timestamp. Record
+deliverable acceptance; independent semantic review when required; final status and unresolved risk.
+Each observation links to its immutable raw record. Raw records are append-never/overwrite-never
+artifacts named with a unique Run, Task, validation ordinal, and observed timestamp. Record
 unknown telemetry as `n/a`; do not infer duration, tokens, cost, actor, independence, or success.
+
+## Correction lineage consistency recipe
+
+When tasks are reshaped, use stable failure IDs and cycle-event IDs in the existing journal.
+A cycle pool follows unresolved work; several descendant tasks can reference the same pool. Merging distinct pools retains each allowance separately; their sum is informative and does not exhaust an unrelated pool. A combined failed correction has one event ID and names each affected pool once in `pool_ids`. Stop corrections involving an exhausted pool; separate unrelated work may continue.
+Use this optional pure check when composing a split/merge. Callers validate failure attribution
+against the original records; arbitrary IDs cannot manufacture a fresh budget. Successful
+corrections, observations and dispatches are not failed-cycle events.
+
+```python
+def correction_usage(events, pool_ids):
+    unique = {}
+    for event in events:
+        identity = event['cycle_id']
+        if not identity or event.get('kind') != 'failed-correction':
+            raise ValueError('invalid correction event')
+        if identity in unique and unique[identity] != event:
+            raise ValueError('conflicting correction history')
+        unique[identity] = event
+    selected = set(pool_ids)
+    pools = {pool: 0 for pool in selected}
+    counted = set()
+    for identity, event in unique.items():
+        affected = event.get('pool_ids', [event.get('pool_id')])
+        if not isinstance(affected, list) or not affected or any(not isinstance(p, str) or not p for p in affected):
+            raise ValueError('invalid correction pool')
+        for pool in selected & set(affected):
+            pools[pool] += 1
+            counted.add(identity)
+    return {'spent': len(counted), 'pools': pools,
+            'remaining': min((max(0, 3 - n) for n in pools.values()), default=3),
+            'exhausted': any(n >= 3 for n in pools.values())}
+
+
+def transfer_lineage(previous, descendants, unresolved, failure_pools):
+    required = set(previous) & set(unresolved)
+    inherited = set().union(*(set(failures) for failures in descendants.values())) if descendants else set()
+    if required != inherited or not required.issubset(failure_pools):
+        raise ValueError('lost, invented or unrelated failure lineage')
+    return {identity: sorted({failure_pools[failure] for failure in failures})
+            for identity, failures in descendants.items()}
+```

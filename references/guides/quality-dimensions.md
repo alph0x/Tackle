@@ -1,21 +1,21 @@
 # Quality-dimensions catalog
 
-Each fired axis becomes a runnable done-signal fragment folded into the Point's Acceptance, or a
-review-gated criterion only if no honest command exists. An axis fires when the Point's Touches
+Each fired axis becomes a runnable acceptance check fragment folded into the Task's Acceptance, or a
+review-gated criterion only if no honest command exists. An axis fires when the Task's Write scope
 match its heuristic; omit axes that do not fire. Quality asks whether the implementation owns a
 coherent observable responsibility and satisfies constraints relevant to its consumers.
 
-| Axis | Fires when (Touches heuristic) | Done-signal fragment (example shape) | If no honest command |
+| Axis | Fires when (Write scope heuristic) | Acceptance check fragment (example shape) | If no honest command |
 |---|---|---|---|
-| Security | Touches auth, input validation, secrets, or a trust boundary. | Test asserts unauthenticated/cross-tenant access → 401/403; grep confirms no secret literals in the diff. | Review-gate: security checklist filled and reviewed. |
-| Performance | Touches a hot path, large-N structure, or tight loop. | Timing assertion under a hard budget (e.g. fixture run completes < N ms). | Review-gate: Big-O reasoning recorded and reviewed. |
-| Concurrency | Touches parallelism, async flows, locks, or shared mutable state. | Suite repeats ×N under a hard timeout; race checker clean if the environment has one. | Review-gate: lock-ordering / async-safety walkthrough. |
-| Correctness | Every point — fires by default. | The done-signal itself: tests over the complete case set, count-asserted where the set is finite, with required outputs and invalid cases. | Review-gate: worked examples reviewed against the spec. |
-| Test depth | Every code point; escalates with risk — acceptance on public-behavior changes, property on parsers/transforms/money, fuzz on untrusted input/concurrency, mutation on money/security invariants (tiers: `references/guides/testing.md`). | Each fired tier folded as a runnable fragment per `testing.md` — e.g. property runner ≥ N cases with recorded seed; one deliberate break → done-signal fails. | Review-gate: tier ladder reviewed with the reason each non-fired tier doesn't fire. |
-| Data integrity | Touches persistence, migrations, serialization, or schemas. | Round-trip test (write → read → compare); migration up + down leaves data intact. | Review-gate: migration plan reviewed with a rollback path. |
-| Accessibility (a11y) | Touches UI, markup, or user-facing flows. | Automated a11y linter passes; labels/roles asserted in component tests. | Review-gate: manual checklist (contrast, focus order, screen reader). |
-| Internationalization (i18n) | Touches user-visible strings, dates, numbers, or currencies. | grep finds no hardcoded user-facing literals outside the string catalog. | Review-gate: locale walkthrough on the changed screens. |
-| Observability | Touches error handling, external calls, or long-running jobs. | Test asserts the failure path emits the expected log/metric/event. | Review-gate: runbook entry reviewed (what to look at when it breaks). |
-| Resilience | Touches retries, timeouts, external dependencies, or failure paths. | Test injects the dependency failure and asserts graceful degradation or retry. | Review-gate: failure-mode table reviewed. |
+| Security | Write scope auth, input validation, secrets, or a trust boundary. | Test asserts unauthenticated/cross-tenant access → 401/403; grep confirms no secret literals in the diff. | Review-gate: security checklist filled and reviewed. |
+| Performance | Write scope a hot path, large-N structure, or tight loop. | Timing assertion under a hard budget (e.g. fixture run completes < N ms). | Review-gate: Big-O reasoning recorded and reviewed. |
+| Concurrency | Write scope parallelism, async flows, locks, or shared mutable state. | Suite repeats ×N under a hard timeout; race checker clean if the environment has one. | Review-gate: lock-ordering / async-safety walkthrough. |
+| Correctness | Every task — fires by default. | The acceptance check itself: tests over the complete case set, count-asserted where the set is finite, with required outputs and invalid cases. | Review-gate: worked examples reviewed against the spec. |
+| Test depth | Every code task; escalates with risk — acceptance on public-behavior changes, property on parsers/transforms/money, fuzz on untrusted input/concurrency, mutation on money/security invariants (tiers: `references/guides/testing.md`). | Each fired tier folded as a runnable fragment per `testing.md` — e.g. property runner ≥ N cases with recorded seed; one deliberate break → acceptance check fails. | Review-gate: tier ladder reviewed with the reason each non-fired tier doesn't fire. |
+| Data integrity | Write scope persistence, migrations, serialization, or schemas. | Round-trip test (write → read → compare); migration up + down leaves data intact. | Review-gate: migration plan reviewed with a rollback path. |
+| Accessibility (a11y) | Write scope UI, markup, or user-facing flows. | Automated a11y linter passes; labels/roles asserted in component tests. | Review-gate: manual checklist (contrast, focus order, screen reader). |
+| Internationalization (i18n) | Write scope user-visible strings, dates, numbers, or currencies. | grep finds no hardcoded user-facing literals outside the string catalog. | Review-gate: locale walkthrough on the changed screens. |
+| Observability | Write scope error handling, external calls, or long-running jobs. | Test asserts the failure path emits the expected log/metric/event. | Review-gate: runbook entry reviewed (what to look at when it breaks). |
+| Resilience | Write scope retries, timeouts, external dependencies, or failure paths. | Test injects the dependency failure and asserts graceful degradation or retry. | Review-gate: failure-mode table reviewed. |
 
 Initiative-wide axes live in `plan.md` §6.1.

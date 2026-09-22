@@ -1,6 +1,7 @@
-# Lite — complete PLAN → RUN path
+<a id="lite--complete-plan--run-path"></a>
+# Focused (Lite) — complete PLAN → RUN path
 
-After intake selects Lite, use this page as the procedure and briefing template. It contains the
+After intake selects Focused (persistent route Lite), use this page as the procedure and briefing template. It contains the
 required PLAN, RUN and closure steps; do not traverse the Full guide map or copy Full templates.
 Read another guide only for an actual missing capability, such as capturing unavailable tool exports.
 The core conventions in SKILL.md still apply. A durable receipt for this bounded task is Lite;
@@ -16,7 +17,7 @@ multi-team/session coordination, uncertain integration or a shared public contra
    `docs/plans/<initiative>/`, plus decisions/questions files when entries exist. Start plan.md
    with the exact first line `Gate: Lite`; missing Full artifacts alone never identify this route.
    Resolve every write destination from that root, including patch tools and additive tests;
-   confirm it stays inside the authorized Touches or workspace before writing.
+   confirm it stays inside the authorized Write scope or workspace before writing.
    Use the minimal bodies below directly; log.tmpl.md and usage.tmpl.md are not prerequisites.
 2. **Make ready.** Fill the plan body with verified file:line grounding, allowed writes, stable
    requirements, cases and runnable checks (or a named review rubric). Specify inputs, outputs,
@@ -26,32 +27,45 @@ multi-team/session coordination, uncertain integration or a shared public contra
    results come from the contract, never from the implementation. Record intended supported
    producer/consumer runtimes and available validation environments before editing; no declared
    range means observed coverage only. Unavailable required coverage stays unverified/blocked.
-3. **Run when authorized.** Explicit PLAN+RUN consent suffices; a PLAN-only request stops Ready.
+3. **Run when authorized.** Explicit PLAN+RUN consent suffices and persists across status questions; a PLAN-only request stops Ready. Record sufficient supplied anchors without reconfirming them. Ask only for a material product choice; delegated technical choices proceed.
    Verify current inputs/dependencies/environment and protected fingerprints before editing.
    Change only declared source and authorized artifacts. Test-first is the default for non-trivial
    executable work; existing red tests suffice. Add coverage
-   in new files when original tests are byte-protected. Preserve unrelated edits.
+   in new files when original tests are byte-protected. Preserve unrelated edits and exact specified
+   bytes, including delimiters and the final newline.
    Apply self-documenting code: Clean Code + SOLID; no explanatory inline comments. Doc-comments
    belong on public surfaces only; put the why in commits/docs. Review smells, redundancy, SOLID
    and naming; an internal explanatory comment is a finding to fix by clarifying the code. A changed
    contract needs a prior superseding decision; changed inputs invalidate only dependent checks.
 4. **Validate once per revision.** Use direct test commands or a checked script containing the
-   complete compound validation. Capture exact argv/script, cwd, observed runtime, input hashes
+   complete compound validation. Every required assertion must propagate failure through a checked
+   subprocess or explicit failure exit; `set -u`, `pipefail` or a final PASS alone is insufficient.
+   Capture exact argv/script, cwd, observed runtime, input hashes
    before/after, output, child exit/timeout/signal and produced hashes. Before running the check,
    choose an accessible durable export destination or adapt the [capture recipe](guides/evidence-capture.md).
    Choose either capture mechanism; delivering raw evidence is required. Generated
    receipts are evidence indexes: link them instead of retyping commands, output, clocks or hashes.
    One check may cover target, surrounding, affected integration and final deliverable obligations
-   if its actual coverage does. Global acceptance still checks applicable packaging/rebuild and
+   if its actual coverage does. Reuse a sufficient successful check; do not add equivalent auxiliary
+   assertions or rerun it at closure without changed inputs or coverage. Deliverable acceptance still checks applicable packaging/rebuild and
    consumers. Validators use disposable copies and never repair real outputs. Required review
    stays required; self-observation is not independent review. Unavailable isolation is unavailable
    evidence. An output PASS cannot override failure, and counts need no extra regex wrapper.
-5. **Recover or close.** First validation is not a correction cycle. Across actors/resumptions,
+5. **Recover or close.** Consume retained failed observations on resume; diagnose from their command,
+   output and relevant input fingerprints before another check. Repeat the failed acceptance check
+   only after a recorded relevant input or environment change, or justified permitted operational
+   recovery below. Narrower diagnostics remain allowed; diagnosis alone does not justify repetition.
+   First validation is not a correction cycle. Across actors/resumptions,
    allow at most three failed implementation correction-validation cycles; stop after two identical
    no-progress observations. Journal each failed correction before another. Contract, validator,
    environment or unknown causes stop the affected slice with expected/observed, reproducer,
    evidence and remaining budget; never silently replan or upgrade model. Preserve failed and stale
-   observations. Before declaring complete, open each required evidence reference, confirm its
+   observations. One operational recovery may address a workspace-local temporary path, interrupted local
+   capture, or restart of an already-configured foreground tool after confirmed writer shutdown.
+   Diagnose first and retry once per unchanged cause/command/input/environment signature, recording
+   this separate allowance in the same journal; task/actor renaming cannot reset it. A failed retry
+   blocks the affected action. No new install, credentials, restricted access or changed expectation
+   is authorized. Before declaring complete, open each required evidence reference, confirm its
    actual result and final input/artifact revisions, and match it to the requirement it proves.
    A generic tool-transcript label without an accessible export is missing evidence. Failed,
    stale or missing required evidence, review or runtime coverage blocks the affected obligation
@@ -70,7 +84,7 @@ Gate: Lite
 
 - Purpose / requirements: {{observable result and stable ids}}
 - Scope / non-goals / preserved files: {{allowed writes and exclusions}}
-- Grounding / current inputs: {{verified file:line facts and fingerprints}}
+- References / current inputs: {{verified file:line facts and fingerprints}}
 - Contract: {{consumes, produces, errors, invariants and allowed semantic alternatives}}
 - Compatibility: {{required supported targets; observed available producer/consumer environments}}
 - Cases → checks: {{normal, valid adversarial and applicable invalid cases mapped to requirements}}
@@ -88,16 +102,18 @@ fields rather than creating empty sections. Questions and decisions use their ow
 
 ## log.md body
 
-# Log
+<a id="log"></a>
+# History
 
 Append one short kickoff entry with observed date/session, scope, decisions and next action.
 Append one closure entry with outcome, changed surfaces, requirement-to-receipt links, unresolved
 coverage and next action. This is a summary index, never reconstructed raw evidence. Historical
-entries remain byte-preserved; corrections are append-only. No Full report/board/Point files.
+entries remain byte-preserved; corrections are append-only. No Full report/board/Task files.
 
 ## usage.md body
 
-# Usage
+<a id="usage"></a>
+# Resource usage
 
 Schema: tackle-observability/2
 
@@ -107,7 +123,7 @@ Schema: tackle-observability/2
 Append start before substantive role work and one finish at role close, or observe-incomplete
 when an interruption is observed. Exactly one start and at most one terminal event are valid:
 start(running) → finish(success|failed|blocked|aborted) or observe-incomplete(incomplete).
-Use a stable unique Run ID and the same Point/Role. New ledgers
+Use a stable unique Run ID and the same Task/Role. New ledgers
 contain this v2 table only; preserve existing legacy rows without duplicating them. Unknown fields
 are n/a, never guessed. Tier is the observed model binding (fast/standard/frontier), not Lite/Full;
 an unavailable binding is n/a. Attempts counts failed implementation correction-validation cycles
@@ -118,5 +134,5 @@ Verification/Source link the existing receipt and outcome; don't transcribe its 
 **A validation end is not a role end.** An executor cannot observe its own future process termination:
 use At=n/a for that unobserved finish and name this limitation in Source. Only an external observer
 with the actual terminal event may supply its timestamp; never borrow the latest test clock.
-No exact telemetry, collector or model metadata is required to close a product point. Ledger
+No exact telemetry, collector or model metadata is required to close a product task. Ledger
 recording remains informative. A successful test does not by itself establish product completion.

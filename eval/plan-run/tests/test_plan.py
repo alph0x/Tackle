@@ -53,9 +53,9 @@ class PlanProtocol(unittest.TestCase):
     def test_plan_template_keeps_stable_section_consumers(self):
         template = (ROOT.parent.parent / "references/plan.tmpl.md").read_text()
         headings = [
-            "## 5. Point decomposition",
+            "## 5. Task decomposition",
             "## 6. Readiness and acceptance",
-            "### 6.1 Universal per-point acceptance",
+            "### 6.1 Universal per-task acceptance",
             "### 6.2 Initiative-level acceptance",
         ]
         positions = [template.index(heading) for heading in headings]

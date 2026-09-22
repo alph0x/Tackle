@@ -15,7 +15,7 @@ created: {{DATE}}
 
 ## Quality bar
 
-Traces to: every plan point must trace to a source-of-truth line; untraced work is out of scope.
+Traces to: every plan task must trace to a source-of-truth line; untraced work is out of scope.
 
 {{QUALITY_BAR}}
 

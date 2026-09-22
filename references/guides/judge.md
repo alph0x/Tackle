@@ -1,6 +1,7 @@
-# Judge — adversarial verification of finished work
+<a id="judge--adversarial-verification-of-finished-work"></a>
+# Auditor — adversarial verification of finished work
 
-Triggered only by an explicit `judge` request (or an equivalent explicit audit request). Judge is
+Triggered only by an explicit `judge` request (or an equivalent explicit audit request). Auditor is
 outside normal RUN; a diagnostic question or status query never authorizes a fix.
 
 **Stance:** A report is a set of claims, not evidence. The judge believes nothing it did not observe. The diff is ground truth; the report is not.
@@ -44,7 +45,7 @@ For each scenario directory `eval/scenarios/<id>/`:
    - **Control arm valid ⇔ the target configuration was absent** — no `skill://` loads, no reads of the target's files; a harness auto-load is contamination (s31 R1 precedent).
    - **Invalid run** → discard it, re-run that arm from step 1 with a fresh scratch directory, and record the invalidation (scenario, arm, reason) for the verdict. An invalid run is never scored and never counted as a null.
 4. **Capture each arm's final report** verbatim, leave its scratch directory untouched for the diff, and record the run's efficiency exactly as the harness exposes it: tool calls, tokens (in/out when split; cache-read/cache-write split when exposed), wall-clock. `n/a` where the harness exposes nothing — never estimate (usage-ledger rule).
-5. **Judge each run** exactly as the default mode judges work: `diff -ru eval/scenarios/<id>/ eval/scratch/<id>-<arm>-<seed>/` against the pristine fixture, re-run anything the executor claimed to run, read the report. Never score from the executor's report alone. Score 0–2 per criterion below; the scenario's `GROUND-TRUTH.md` scoring caps override this generic rubric.
+5. **Audit each run** exactly as the default mode judges work: `diff -ru eval/scenarios/<id>/ eval/scratch/<id>-<arm>-<seed>/` against the pristine fixture, re-run anything the executor claimed to run, read the report. Never score from the executor's report alone. Score 0–2 per criterion below; the scenario's `GROUND-TRUTH.md` scoring caps override this generic rubric.
 
    | Criterion | 0 | 1 | 2 |
    |---|---|---|---|

@@ -19,12 +19,12 @@ class RunProtocol(unittest.TestCase):
     def test_protocol_has_one_state_machine_and_integrated_close_bar(self):
         for phrase in [
             "single execution protocol", "explicit execution intent", "Ready → preflight",
-            "target validation", "integration validation", "global acceptance", "complete",
+            "target validation", "integration validation", "deliverable acceptance", "complete",
             "`board.md`\nis the canonical current state", "`log.md` is append-only history",
         ]:
             self.assertIn(phrase, RUN)
         self.assertEqual(RUN.count("## State transitions"), 1)
-        self.assertIn("All Points passing is insufficient", RUN)
+        self.assertIn("All tasks passing is insufficient", RUN)
 
     def test_cents_dollars_mismatch_blocks_global_acceptance_with_green_units(self):
         self.assertFalse(protocol.global_acceptance(

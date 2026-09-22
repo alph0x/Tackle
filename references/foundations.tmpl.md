@@ -2,9 +2,9 @@
 
 > **Full-gate depth artifact.** Use this file when a Full initiative introduces architecture,
 > a subsystem, a boundary, or a reusable pattern. A bounded change that follows existing
-> structure can justify the choice in its Point instead.
+> structure can justify the choice in its task instead.
 
-Foundations records decisions that affect more than one Point. The standard is observable
+Foundations records decisions that affect more than one task. The standard is observable
 responsibility, relevant constraints, and integration fit. A design is justified by the need
 it serves and the evidence that checks it; generic style slogans do not substitute for either.
 
@@ -22,7 +22,7 @@ the new row names the earlier decision and the retained safety obligation.
 ## Applying the foundations
 
 1. Prefer the smallest coherent shape that satisfies the contract and its consumers.
-2. Keep each boundary's inputs, outputs, errors, and effects visible in the contract or Point.
+2. Keep each boundary's inputs, outputs, errors, and effects visible in the contract or task.
 3. Add a row when a new abstraction appears; missing evidence is a review finding.
 4. Keep local freedom for equivalent implementations and formatting where consumers do not
    observe them. A reviewer evaluates the stated responsibility and evidence, not a preferred
