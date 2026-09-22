@@ -3,8 +3,8 @@
 Migration is a **copy-first, selected-active-work** operation. It never structurally rewrites a live
 workspace or its history during the migration trial,
 automatically migrates unrelated or closed work, upgrades historical evidence, or turns a query into
-execution. Select the 8.0 → 8.1 checklist for an 8.0 workspace; a 7.3 workspace first follows
-7.3 → 8.0. Older checklists remain readable historical context and cannot bypass the current
+execution. Select the 8.1 → 8.2 checklist for an 8.1 workspace. Earlier workspaces first follow
+their applicable transitions: 8.0 → 8.1, or 7.3 → 8.0 before that. Older checklists remain readable historical context and cannot bypass the current
 selection, pinning, history or rollback guards.
 
 Only a selected active workspace is migrated, and only on a disposable copy. Closed points retain
@@ -32,6 +32,92 @@ they are not current obligations outside the v7.3 → v8.0 checklist:
   scoped writes, evidence, correction limits, integration and close/block; any review obligation is
   the one named by that Point, with no second closure loop.
 - **F-8 · Verification** — `lint: N/N checks passed` on the migrated workspace and the Methodology stamp is current → generic step 6 plus each checklist's record item.
+
+<a id="candidate-workspace-format"></a>
+## v8.1 → v8.2 checklist
+
+Tackle 8.2 adds visible Task terminology, optional `tackle-workspace/3` boards, current-work
+projections and initiative-scoped record storage. An existing workspace keeps its pinned
+procedure until a selected active copy passes compatibility checks and adoption occurs at an
+explicit task boundary. Updating the installation alone cannot authorize workspace migration.
+
+1. Snapshot the selected workspace's exact files, IDs, contracts, history, record references and
+   cycle journals. Preserve a neighbor sentinel. Record original hashes and the pinned procedure.
+   STATUS and terminology questions do not authorize migration or historical evidence deletion.
+2. Update future visible headings/brief fields through the alias map in `terminology.md`; keep
+   P-ids, filenames, links, schema tokens and historical records. Validate old and new fields;
+   conflicting aliases fail. Keep interrupted work on its procedure until a deliberate boundary.
+3. A new v3 board uses the exact state mapping in terminology. Never infer Ready from not-started,
+   Complete from implementation finished, or current evidence from a historic green state. Preserve
+   legacy grade and state in the migration record and original checkpoint. Terminal task reports
+   must already exist and retain their actual method, result and independence; unavailable proof
+   remains unavailable. Read-only legacy interpretation remains supported without conversion.
+4. Verify complete requirement coverage before adopting milestone preparation. Keep deferred work
+   Draft, with owners/outcomes/interfaces/future checks. Verify dependency identities, interfaces,
+   revisions and lineage pools; renaming/splitting/merging resets no unresolved correction allowance.
+5. Adopt context metadata only when size/risk justifies it. Build source-backed current views and
+   verify archive integrity on a copy; preserve original entries and indexes. Migrate old check
+   records only through reversible prepare/verify/switch compaction; retain old resolution until
+   new references and exports validate. Record-store retirement requires its separate policy authority.
+6. Run canonical lint, affected recipe/consumer checks and rollback comparison. Check original
+   log/usage bytes and required raw objects, status/grade interpretation, stable references and
+   neighbor hashes. Promote only selected future artifacts after validation at the boundary;
+   append adoption history. A failed check blocks that adoption, not independent local development.
+
+Existing instantiated title fragments depend on their actual title: preserve the original heading or add its exact old anchor in the selected copy, then test incoming links before adoption. Static template aliases cannot redirect every past title.
+
+The optional pure board conversion below operates on a string from the disposable copy. It writes
+nothing and never assigns readiness or execution permission. `reports` is the set of existing
+verified report paths; callers still inspect those records under RUN before using historical
+completion as current evidence. Save the returned legacy mapping beside the original checkpoint,
+not as a second current-state source. To roll back, restore the exact checkpoint bytes.
+
+```python
+import re
+
+
+def candidate_board(text, reports):
+    if 'Schema: tackle-workspace/3' in text.splitlines():
+        raise ValueError('already adopted; validate instead of migrating again')
+    mapping = {'🔴': 'Draft', '🟡': 'In progress', '⏸': 'Blocked',
+               '🟢': 'Complete', '⚪': 'Skipped'}
+    rows, legacy, identities = [], {}, set()
+    fence = None
+    for line in text.splitlines():
+        delimiter = re.match(r'^\s{0,3}(`{3,}|~{3,})(.*)$', line)
+        if fence:
+            if (delimiter and delimiter[1][0] == fence[0]
+                    and len(delimiter[1]) >= fence[1] and not delimiter[2].strip()):
+                fence = None
+            continue
+        if delimiter:
+            fence = (delimiter[1][0], len(delimiter[1]))
+            continue
+        cells = [cell.strip() for cell in line.split('|')]
+        if len(cells) < 2 or not cells[1].startswith('P-'):
+            continue
+        if len(cells) not in (7, 8) or not re.fullmatch(r'P-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*', cells[1]):
+            raise ValueError('unsupported legacy task row')
+        identity, status = cells[1], cells[5]
+        if identity in identities or status not in mapping:
+            raise ValueError('duplicate identity or unsupported legacy state')
+        identities.add(identity)
+        legacy[identity] = {'status': status, 'grade': cells[6] if len(cells) > 7 else ''}
+        reference = 'reports/' + identity + '-report.md'
+        if mapping[status] in ('Complete', 'Blocked') and reference not in reports:
+            raise ValueError('missing historical verification report: ' + identity)
+        cells[5] = mapping[status]
+        cells[6] = reference if reference in reports else ''
+        rows.append('| ' + ' | '.join(cells[1:7]) + ' |')
+    if fence:
+        raise ValueError('unclosed fenced example')
+    if not identities:
+        raise ValueError('no legacy task rows')
+    header = ('# Task board\n\nSchema: tackle-workspace/3\n\n'
+              '| Task | What | Brief | Depends on | Status | Verification |\n'
+              '|---|---|---|---|---|---|\n')
+    return header + '\n'.join(rows) + '\n', legacy
+```
 
 ## v8.0 → v8.1 checklist
 
@@ -65,7 +151,7 @@ adoption are separate operations; changing the installed skill does not migrate 
 ## Historical migration shape
 
 The following generic sequence and versioned checklists document older releases. They are retained
-for interpretation of old workspaces only; the current 7.3 → 8.0 selection, pinning, preservation
+for interpretation of old workspaces only; the current 8.1 → 8.2 selection, pinning, preservation
 and rollback guards always take precedence.
 
 1. Detect the gap (trust structure, not just the stamp).

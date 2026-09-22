@@ -1,5 +1,18 @@
 # Tackle changelog
 
+## Tackle 8.2.0
+
+- Check named owner prerequisites in a separate probe-only call, await the result, and report missing input before any dependent discovery. Preserve independently authorized work and required records.
+- Use Task, Task brief, Task board, History and Verification records consistently on current surfaces. Visible routes are Direct, Focused and Coordinated, with the existing None/Lite/Full risk triggers and stable paths/IDs. Validated new boards distinguish readiness, implementation, checking and complete obligations; old schemas remain readable.
+- Replace universal closing footers and repeated execution confirmation with one decision and communication policy. Sufficient PLAN+RUN permission persists across status questions; standalone STATUS and PLAN-only boundaries remain. Current rules exclude incompatible historical profile hypotheses without writing profiles.
+- Strengthen compiled briefs, compatible producer/consumer dependencies, selected milestone readiness and semantic counterexamples. Keep full requirement ownership while deferring later detail. Preserve unresolved correction pools across task renaming, split, merge and interruption, with bounded separately recorded local operational recovery.
+- Add optional source-validated current-work projections, immutable indexed history, recoverable archival and portable handoff. Measurements separate routine reads from setup, archive, reconstruction and export costs; active source scope still costs bytes to verify.
+- Scope captures to an explicit workspace, share immutable content objects across distinct check events, validate selectors/retained bytes and protect current, interrupted, unresolved and pinned records. Provide maintenance previews, authorized retirement with tombstones, and verified portable export/restore; existing historical evidence is not cleaned automatically.
+- Run all registered deterministic families in CI, rejecting missing/empty/unregistered discovery and planted failures. Add contract, context, record-lifecycle and evaluation-harness regression fixtures. Keep historical comparisons unchanged; freeze each new cohort before execution and distinguish observed outcomes from pending coverage.
+- Load intake before choosing further guides, keep bounded routes self-contained, and stop unrelated reading once a required owner input is confirmed missing. Make every compound-check assertion propagate failure and consume retained failures before a justified retry; preserve existing correction budgets.
+
+The development evaluation includes twelve paired episodes and ten focused follow-ups, retaining failed attempts. The final missing-input trial stops after an isolated prerequisite check. These observations and synthetic recipe measurements do not establish general reliability or delivery-efficiency improvement; see the repository's 8.2 evaluation summary. Existing workspaces adopt changes through the selected-copy 8.1 → 8.2 migration checklist, preserving their history and pinned procedure until the adoption boundary.
+
 ## Tackle 8.1.0
 
 - Select Tackle once, then ask for what you need in natural language or use short requests such

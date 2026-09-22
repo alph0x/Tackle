@@ -167,10 +167,10 @@ class MigrationContract(unittest.TestCase):
 
     def test_status_has_no_log_write_exception(self):
         status = (ROOT / "references/guides/status.md").read_text()
-        self.assertIn("never edits source,\nboard, log", status)
-        self.assertIn("sole exception", status)
+        self.assertIn("never executes a task or edits source, task board,\nhistory", status)
+        self.assertIn("Only an explicit handoff request may write", status)
         self.assertNotIn("only write allowed is an optional `log.md` entry", status)
-        self.assertIn("never appends a\nstatus log row", status)
+        self.assertIn("STATUS never archives history or appends a status event", status)
 
     def test_aliases_preserve_query_and_execution_intent(self):
         skill = (ROOT / "SKILL.md").read_text()
@@ -311,6 +311,7 @@ class MigrationContract(unittest.TestCase):
                     if destination.is_file() and fragment:
                         headings = {heading_fragment(line)
                                     for line in destination.read_text().splitlines() if line.startswith("#")}
+                        headings.update(re.findall(r'<a id="([^"]+)"', destination.read_text()))
                         self.assertIn(fragment.lower(), headings, link)
                     elif target.startswith(("references/", "guides/", "../")):
                         self.assertTrue(destination.is_file(), link)
