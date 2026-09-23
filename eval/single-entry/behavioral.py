@@ -5,6 +5,7 @@ from pathlib import Path
 import argparse
 import hashlib
 import json
+import re
 import shutil
 import subprocess
 
@@ -17,6 +18,8 @@ def stamp():
 
 
 def hashes(directory):
+    if any(path.is_symlink() for path in directory.rglob('*')):
+        raise ValueError('staged inputs cannot contain symlinks')
     return {str(p.relative_to(directory)): hashlib.sha256(p.read_bytes()).hexdigest()
             for p in sorted(directory.rglob('*')) if p.is_file()}
 
@@ -26,10 +29,48 @@ def write(path, text):
     path.write_text(text)
 
 
+def safe_ids(items):
+    ids = [item['id'] for item in items]
+    if (any(not isinstance(value, str) or not re.fullmatch(r'[a-z0-9][a-z0-9-]{0,63}', value)
+            for value in ids) or len(ids) != len(set(ids))):
+        raise ValueError('case IDs must be unique safe path components')
+    return ids
+
+
+def dedicated_auth(path):
+    selected = path.expanduser().resolve(strict=True)
+    if not selected.is_file() or selected == (Path.home() / '.codex/auth.json').resolve():
+        raise ValueError('run requires a dedicated test credential file, not the normal Codex session')
+    return selected
+
+
+def docker_mount(path, target, readonly=False):
+    source = str(path.resolve(strict=True))
+    if any(character in source for character in ',\n\r'):
+        raise ValueError('Docker mount source contains a reserved separator')
+    suffix = ',readonly' if readonly else ''
+    return f'type=bind,src={source},dst={target}{suffix}'
+
+
+def checked_manifest(source):
+    manifest = json.loads((source / 'manifest.json').read_text())
+    if not isinstance(manifest, list) or not manifest or any(
+            not isinstance(entry, dict) or set(entry) != {'id', 'inputs'} or
+            not isinstance(entry['inputs'], dict) for entry in manifest):
+        raise ValueError('invalid staged manifest')
+    safe_ids(manifest)
+    for entry in manifest:
+        case = source / entry['id']
+        if case.is_symlink() or not case.is_dir() or hashes(case) != entry['inputs']:
+            raise ValueError('staged case is missing, redirected or changed: ' + entry['id'])
+    return manifest
+
+
 def stage(destination):
+    cases = json.loads((Path(__file__).with_name('cases.json')).read_text())
+    safe_ids(cases)
     destination.mkdir(parents=True, exist_ok=False)
     manifest = []
-    cases = json.loads((Path(__file__).with_name('cases.json')).read_text())
     for item in cases:
         case = destination / item['id']
         case.mkdir()
@@ -54,18 +95,23 @@ def stage(destination):
     return manifest
 
 
-def run_case(source, entry, destination, model, effort):
+def run_case(source, entry, destination, model, effort, auth_file):
+    safe_ids([entry])
     case = source / entry['id']
+    if case.is_symlink() or not case.is_dir():
+        raise ValueError('case directory is missing or redirected')
+    fixture_mount = docker_mount(case, '/fixture', readonly=True)
+    credential_mount = docker_mount(auth_file, '/root/.codex/auth.json', readonly=True)
     result_dir = destination / entry['id']
     result_dir.mkdir(parents=True, exist_ok=False)
     artifacts = result_dir / 'artifacts'
     artifacts.mkdir()
     write(artifacts / 'format.txt', '  ready  \n')
     write(artifacts / 'sentinel.txt', 'preserve\n')
+    output_mount = docker_mount(artifacts, '/outputs')
     base = ['docker', 'run', '--rm', '--read-only', '--cap-drop', 'ALL', '--security-opt',
             'no-new-privileges', '--tmpfs', '/tmp', '--tmpfs', '/root', '--mount',
-            f'type=bind,src={case},dst=/fixture,readonly', '--mount',
-            f'type=bind,src={artifacts},dst=/outputs', '--workdir', '/fixture']
+            fixture_mount, '--mount', output_mount, '--workdir', '/fixture']
     probe_command = base + ['--network', 'none', IMAGE, 'sh', '-c',
                             'test -r SKILL.md && test ! -e /Users/alph0x/Developer/Tackle && '
                             'touch /outputs/probe && ! touch /fixture/probe && ! touch /outside-probe']
@@ -74,9 +120,9 @@ def run_case(source, entry, destination, model, effort):
           stdout=probe.stdout.decode(), stderr=probe.stderr.decode()), indent=2))
     if probe.returncode:
         return dict(id=entry['id'], unavailable='isolation')
-    command = base + ['--mount', f'type=bind,src={Path.home() / ".codex/auth.json"},dst=/root/.codex/auth.json,readonly',
+    command = base + ['--mount', credential_mount,
                      IMAGE, 'codex', 'exec', '--ignore-user-config', '--ephemeral',
-                     '--skip-git-repo-check', '--sandbox', 'danger-full-access', '--add-dir',
+                     '--skip-git-repo-check', '--sandbox', 'workspace-write', '--add-dir',
                      '/outputs', '--json', '--color', 'never', '--cd', '/fixture', '-m', model,
                      '-c', f'model_reasoning_effort="{effort}"',
                      'Read SKILL.md, then TASK.md and respond to its user request. Use only /fixture '
@@ -106,16 +152,18 @@ def main():
     parser.add_argument('--output', type=Path)
     parser.add_argument('--model')
     parser.add_argument('--effort')
+    parser.add_argument('--auth-file', type=Path)
     args = parser.parse_args()
     if args.mode == 'stage':
         print(json.dumps(dict(cases=len(stage(args.source)))))
         return
-    if not all((args.output, args.model, args.effort)):
-        parser.error('run needs output, model and effort')
-    manifest = json.loads((args.source / 'manifest.json').read_text())
+    if not all((args.output, args.model, args.effort, args.auth_file)):
+        parser.error('run needs output, model, effort and auth-file')
+    auth_file = dedicated_auth(args.auth_file)
+    manifest = checked_manifest(args.source)
     args.output.mkdir(parents=True, exist_ok=False)
     with ThreadPoolExecutor(max_workers=3) as pool:
-        results = list(pool.map(lambda entry: run_case(args.source, entry, args.output, args.model, args.effort), manifest))
+        results = list(pool.map(lambda entry: run_case(args.source, entry, args.output, args.model, args.effort, auth_file), manifest))
     print(json.dumps(results, indent=2))
     raise SystemExit(0 if all(item.get('exit') == 0 and not item.get('timeout') for item in results) else 1)
 
