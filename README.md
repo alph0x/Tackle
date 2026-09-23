@@ -4,7 +4,7 @@ Tackle helps an AI agent plan work, carry it across sessions, and execute it whe
 
 Use it for features, refactors, and investigations that span sessions or involve handoffs between agents or people. It works with any agent that can read Markdown and search your code.
 
-Tackle 8.2.0 ships as `SKILL.md` plus `references/`. Select Tackle, then tell it what you need: a plan, implementation, a progress check, or a review.
+Tackle 8.2.1 ships as `SKILL.md` plus `references/`. Select Tackle, then tell it what you need: a plan, implementation, a progress check, or a review.
 
 ## Install
 
@@ -122,7 +122,7 @@ A retro reads the board and log to propose lessons for the project or your user 
 
 The `usage.md` ledger records role events even when token or cost data is unavailable. Unknown values stay `n/a`. An optional `usage.telemetry.jsonl` file can add exact provider observations; recording telemetry is never required to close a task.
 
-Retro reports measured coverage before comparing usage. Totals and rankings require complete, comparable coverage; model-tier or effort recommendations also require three completed, comparable runs. The [usage guide](references/guides/usage-observability.md) explains the schema, partial coverage, and joining records by exact `run_id`.
+Retro reports measured coverage before comparing usage. Totals and rankings require complete, comparable coverage; model-tier or effort recommendations also require three completed, comparable runs. The [usage guide](references/guides/usage-observability.md) explains the schema, partial coverage, and joining records by exact `run_id`. For Codex Desktop or `codex exec --json`, an [optional native capture recipe](references/guides/codex-native-usage.md) fills session-scoped token observations and available configured model/effort without guessing per-role usage or cost.
 
 Optional capability profiles cover [Claude Code](references/collectors/claude-code.md), [Oh My Pi](references/collectors/oh-my-pi.md), [OpenAI Responses](references/collectors/openai-responses.md), [Antigravity CLI](references/collectors/antigravity-cli.md), [OpenCode](references/collectors/opencode.md), [Kimi Code](references/collectors/kimi-code.md), and [Cursor](references/collectors/cursor.md). They describe available data and its limits. Collection requires separate setup; profiles do not install integrations or collect data automatically.
 

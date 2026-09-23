@@ -1,5 +1,11 @@
 # Tackle changelog
 
+## Tackle 8.2.1
+
+- Add an optional standard-library recipe for Codex Desktop and `codex exec --json` that captures native token observations into the existing v2 telemetry sidecar. Preserve source-event hashes, native thread and turn identity, configured Desktop model/effort, and a terminal candidate when observed.
+- Attempt capture at Full and Focused role boundaries. Keep overlapping Desktop thread and turn snapshots distinct; never allocate session tokens or inferred subscription cost to a role. Missing or malformed native telemetry remains `n/a` and does not block task completion.
+- Validate the literal recipe with seven Desktop/CLI, per-turn completeness, late-terminal, idempotence and failure-boundary fixtures. The registered deterministic suite passes 358/358 tests. A live Desktop thread and a saved CLI stream were captured successfully; these checks do not attest universal host availability or per-role token totals.
+
 ## Tackle 8.2.0
 
 - Check named owner prerequisites in a separate probe-only call, await the result, and report missing input before any dependent discovery. Preserve independently authorized work and required records.

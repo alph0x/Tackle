@@ -3,7 +3,8 @@
 Migration is a **copy-first, selected-active-work** operation. It never structurally rewrites a live
 workspace or its history during the migration trial,
 automatically migrates unrelated or closed work, upgrades historical evidence, or turns a query into
-execution. Select the 8.1 → 8.2 checklist for an 8.1 workspace. Earlier workspaces first follow
+execution. Select the 8.1 → 8.2 checklist for an 8.1 workspace. An active 8.2.0 workspace can
+adopt optional 8.2.1 usage capture at a task boundary using the patch checklist below. Earlier workspaces first follow
 their applicable transitions: 8.0 → 8.1, or 7.3 → 8.0 before that. Older checklists remain readable historical context and cannot bypass the current
 selection, pinning, history or rollback guards.
 
@@ -34,6 +35,21 @@ they are not current obligations outside the v7.3 → v8.0 checklist:
 - **F-8 · Verification** — `lint: N/N checks passed` on the migrated workspace and the Methodology stamp is current → generic step 6 plus each checklist's record item.
 
 <a id="candidate-workspace-format"></a>
+## v8.2.0 → v8.2.1 checklist
+
+This patch adds optional Codex native usage capture; it does not require a sidecar for task
+closure. Adopt only for a selected active workspace, on a disposable copy at a task boundary.
+
+1. Record the workspace's pinned procedure, current lifecycle rows and any sidecar bytes and
+   hashes. Preserve neighboring workspaces and historical records exactly.
+2. For future Codex Desktop or `codex exec --json` roles, run the optional native capture recipe
+   at role start and after an externally observed close. Keep its receipt and exact thread ID
+   with the Run ID. Leave unavailable fields `n/a`; do not backfill role tokens from session
+   snapshots or assign a terminal clock without an exact Run ID/turn map.
+3. Verify v2 ledger validity, sidecar provenance and the selected workspace's affected checks
+   on the copy. Promote only forward-looking instructions at the boundary and append adoption
+   history. Roll back by restoring the exact checkpoint bytes.
+
 ## v8.1 → v8.2 checklist
 
 Tackle 8.2 adds visible Task terminology, optional `tackle-workspace/3` boards, current-work
