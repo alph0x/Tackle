@@ -14,6 +14,7 @@ docs/seeds/
 /graft/
 
 # Local agent-harness configuration — not release artifact.
+/.agents/
 /.claude/
 /.mcp.json
 /opencode.json
