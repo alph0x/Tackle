@@ -1,5 +1,11 @@
 # Tackle changelog
 
+## Tackle 8.2.2
+
+- Pin the eight executable self-lint command cells in the development acceptance harness. A changed Markdown command now fails before gate scripts are written or run; the trust digest changes only after review. Full lint now checks a fixed digest of its literal capture helper as well as the reviewed Markdown source, and explains that a matching self-reported hash alone does not establish authority.
+- Reject unsafe, duplicate, redirected, or changed single-entry evaluation cases before launching Docker. Require an explicitly selected dedicated test credential instead of mounting the normal Codex session, and request the CLI's `workspace-write` sandbox inside the isolated container.
+- Add regression cases for command-cell tampering, case traversal, staged-input drift, symlinks, credential selection, and sandbox arguments. The normal installed artifact remains Markdown-only (`SKILL.md` and `references/`). The live container trial and Socket rescan require a runnable Docker daemon and publication, respectively; neither is claimed by the local checks.
+
 ## Tackle 8.2.1
 
 - Add an optional standard-library recipe for Codex Desktop and `codex exec --json` that captures native token observations into the existing v2 telemetry sidecar. Preserve source-event hashes, native thread and turn identity, configured Desktop model/effort, and a terminal candidate when observed.

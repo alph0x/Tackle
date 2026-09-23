@@ -16,7 +16,7 @@ Tackle turns a goal into a plan stored in your repository. Each task carries the
 
 Use it for features, refactors, and investigations that span sessions or involve handoffs between agents or people.
 
-**Tackle 8.2.1** · Model-agnostic · Markdown-only install · MIT
+**Tackle 8.2.2** · Model-agnostic · Markdown-only install · MIT
 
 ## Why Tackle
 
