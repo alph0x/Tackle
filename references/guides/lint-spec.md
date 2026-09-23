@@ -67,6 +67,9 @@ Migrate-chain currency: if the release changes any workspace-level contract (`AG
 ### Skill self-lint gates
 
 The eight gates validate the installed Markdown skill and its documentation in the same sweep. Run all eight from the repo root; each stays silent and exits 0 on pass — any echoed line blocks the tag until fixed. Every version value derives from the files; no gate hardcodes one.
+The development acceptance harness pins the exact eight executable command cells independently
+of this document. After a reviewed command change, update its digest in
+`eval/validation-integrity/acceptance.py`; never derive that trust anchor from an unreviewed working copy.
 
 1. **Word budget** — `SKILL.md` ≤ 1100 words:
    `[ "$(wc -w < SKILL.md)" -le 1100 ] || echo "SKILL.md over budget"`

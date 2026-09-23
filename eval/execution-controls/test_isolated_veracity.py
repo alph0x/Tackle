@@ -108,10 +108,23 @@ class IsolatedVeracity(unittest.TestCase):
     def test_connected_path_uses_literal_rows_and_honest_subset_score(self):
         self.run_connected_subset()
 
+    def test_connected_path_rejects_changed_capture_helper(self):
+        config = dict(source='lint-spec.md', source_sha256=SHA, slug='demo', rows=[12],
+                      capture_script='capture.py',
+                      selectors=[dict(glob='docs/plans/demo/**/*.md', required=True)],
+                      workspace='docs/plans/demo', timeout_seconds=2)
+        (self.root/'lint.json').write_text(json.dumps(config))
+        (self.root/'capture.py').write_text(CAPTURE + '\nprint("changed")\n')
+        run = subprocess.run([sys.executable, 'lint.py', 'lint.json'], cwd=self.root, capture_output=True, timeout=10)
+        self.assertNotEqual(run.returncode, 0)
+        self.assertIn(b'capture script revision changed', run.stderr)
+        self.assertFalse((self.workspace/'evidence').exists())
+
     def run_connected_subset(self, external=False):
         (self.workspace/'points/P-01.md').write_text('- **Effort**: impossible\n')
         config = dict(source='lint-spec.md', source_sha256=SHA, slug='demo', rows=[5,12,15],
-                      capture_script='capture.py', selectors=[dict(glob='docs/plans/demo/**/*.md',required=True)],
+                      capture_script='capture.py',
+                      selectors=[dict(glob='docs/plans/demo/**/*.md',required=True)],
                       destination='lint-evidence', timeout_seconds=2)
         (self.workspace/'AGENTS.md').write_text('Reference staleness window: 14\n')
         if external:

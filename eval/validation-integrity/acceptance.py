@@ -11,24 +11,34 @@ import subprocess
 import sys
 from pathlib import Path
 
+TRUSTED_GATES_SHA256 = "a804d033cf69c427364257a3211b99785ec0fefff25e7643693dcac2d6c6c806"
+
 
 def stamp():
     return datetime.datetime.now(datetime.timezone.utc).isoformat()
+
+
+def canonical_gates(source):
+    section = source.split("### Skill self-lint gates\n", 1)[1].split("## Score line", 1)[0]
+    gates = [command.strip() for _, command in re.findall(r"^   (`+)(.+?)\1$", section, re.M)]
+    if len(gates) != 8:
+        raise ValueError("canonical self-lint gate extraction did not yield eight commands")
+    encoded = json.dumps(gates, ensure_ascii=False, separators=(",", ":")).encode()
+    if hashlib.sha256(encoded).hexdigest() != TRUSTED_GATES_SHA256:
+        raise ValueError("canonical self-lint commands changed without trusted review")
+    return gates
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("output", type=Path)
     args = parser.parse_args()
-    args.output.mkdir(parents=True, exist_ok=False)
     source = Path("references/guides/lint-spec.md").read_text()
-    section = source.split("### Skill self-lint gates\n", 1)[1].split("## Score line", 1)[0]
-    gates = re.findall(r"^   (`+)(.+?)\1$", section, re.M)
-    if len(gates) != 8:
-        raise ValueError("canonical self-lint gate extraction did not yield eight commands")
+    gates = canonical_gates(source)
+    args.output.mkdir(parents=True, exist_ok=False)
     checks = [("deterministic-suites", [sys.executable, "eval/run_suites.py", "--output",
                                       str(args.output / "suites")], False)]
-    for index, (_, command) in enumerate(gates, 1):
+    for index, command in enumerate(gates, 1):
         script = args.output / f"gate-{index}.sh"
         script.write_text(command.strip() + "\n")
         checks.append((f"gate-{index}", ["/bin/sh", str(script)], True))

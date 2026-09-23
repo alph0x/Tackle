@@ -355,10 +355,15 @@ Run all 16 rows during PLAN before Ready. Read the current `lint-spec.md`; extra
 command cell of each numbered row, respecting its backtick delimiter (some use two or four), and
 substitute only a validated single-component slug (`[a-z0-9][a-z0-9.-]*`). Save the canonical source snapshot/hash,
 row number, command bytes and pass condition. Reject missing/duplicate rows, malformed cells and
-an unexpected source revision. Do not invent an equivalent short validator, replace a row with
+an unexpected source revision. Establish the expected hash from a reviewed, trusted skill revision
+before reading workspace-provided input; a hash copied from the same unreviewed file proves only
+byte consistency, not authority. Review any change to an executable command cell before updating
+that trust anchor. Do not invent an equivalent short validator, replace a row with
 `true`, or paste the table into an interpolated shell string. Execute each saved command using
 `['sh', saved_script]`; retain a separate raw check record for each row. The snapshot of the saved
 script must match the extracted bytes. A script's trailing `printf` cannot supply the row result.
+Apply the same reviewed-revision rule to the configured capture script and its imports before
+running the Python recipe; it is executable code with the caller's filesystem permissions.
 
 For an existing orchestrator, these two pure Python functions provide exact extraction and row
 interpretation. Save the extracted UTF-8 bytes verbatim as each script; capture that saved script
@@ -370,9 +375,11 @@ build the index from those records. Equivalent harness automation is valid.
 Use the connected path below when equivalent harness automation is absent: save this second
 block as workspace-local `lint.py` beside `capture.py`, then run `python3 <lint.py> <lint.json>`.
 The JSON specifies `source` (current lint-spec path), preflight `source_sha256`, `slug`,
-`capture_script`, `selectors`, `workspace` and `timeout_seconds`. The workspace must already
-exist. Legacy `destination`-only configurations are still accepted as an explicit workspace
-location; newly generated configurations name workspace. Optional `rows` selects
+`capture_script`, `selectors`, `workspace` and `timeout_seconds`. The literal capture recipe
+below is pinned by the lint recipe; only final newlines may vary. Review both recipe blocks
+before changing that pin. The workspace must already exist. Legacy `destination`-only
+configurations are still accepted as an explicit workspace location; newly generated
+configurations name workspace. Optional `rows` selects
 affected checks; omission runs all 16. Initial PLAN still requires all 16. Include citation targets
 and other actual dependencies in selectors. An authorized read-only source outside cwd is read
 and hash-verified, then snapshotted locally; helpers and outputs remain inside cwd. The recipe extracts, saves, captures and verifies
@@ -470,6 +477,7 @@ def captured_lint_verdict(source, expected_sha256, slug, row, script, record, ob
 
 def run_lint(config_path):
     root = Path.cwd().resolve()
+    trusted_capture_sha256 = '0c8008ab64551598cb9317619085178e77a81d80e08ec9d3aae31c452bc9997d'
     def local(name):
         path = (root / name).resolve()
         path.relative_to(root)
@@ -477,6 +485,9 @@ def run_lint(config_path):
     config = json.loads(local(config_path).read_text())
     source = Path(config['source']).read_bytes()
     rows = canonical_rows(source, config['source_sha256'], config['slug'])
+    capture_script = local(config['capture_script'])
+    if hashlib.sha256(capture_script.read_bytes().rstrip(b'\n')).hexdigest() != trusted_capture_sha256:
+        raise ValueError('capture script revision changed')
     selected = config.get('rows', list(rows))
     if not selected or len(set(selected)) != len(selected) or any(n not in rows for n in selected):
         raise ValueError('invalid selected rows')
@@ -493,7 +504,7 @@ def run_lint(config_path):
     batch = Path(tempfile.mkdtemp(prefix='lint-', dir=destination))
     (batch / 'lint-spec.md').write_bytes(source)
     selectors = list(config['selectors'])
-    for path in [config_path, batch / 'lint-spec.md', __file__, config['capture_script']]:
+    for path in [config_path, batch / 'lint-spec.md', __file__, capture_script]:
         selectors.append(dict(glob=str(local(path).relative_to(root)), required=True))
     results = {}
     for number in selected:
@@ -505,7 +516,7 @@ def run_lint(config_path):
                     timeout_seconds=config['timeout_seconds'])
         spec_path = batch / ('row-%02d.json' % number)
         spec_path.write_text(json.dumps(spec, indent=2))
-        result = subprocess.run([sys.executable, str(local(config['capture_script'])), str(spec_path)],
+        result = subprocess.run([sys.executable, str(capture_script), str(spec_path)],
                                 cwd=root, capture_output=True)
         (batch / ('capture-%02d.stdout' % number)).write_bytes(result.stdout)
         (batch / ('capture-%02d.stderr' % number)).write_bytes(result.stderr)

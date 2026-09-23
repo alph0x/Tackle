@@ -3,6 +3,7 @@ from __future__ import annotations
 import subprocess
 import tempfile
 import unittest
+import runpy
 from pathlib import Path
 
 
@@ -37,6 +38,14 @@ def run_command(root: Path, command: str) -> subprocess.CompletedProcess[str]:
 
 
 class ExactFieldValidationTests(unittest.TestCase):
+    def test_acceptance_pins_executable_gate_cells(self) -> None:
+        loader = runpy.run_path(str(ROOT / 'eval/validation-integrity/acceptance.py'))['canonical_gates']
+        source = LINT_SPEC.read_text(encoding='utf-8')
+        self.assertEqual(len(loader(source)), 8)
+        altered = source.replace('SKILL.md over budget', 'SKILL.md changed by attacker', 1)
+        with self.assertRaisesRegex(ValueError, 'without trusted review'):
+            loader(altered)
+
     def make_workspace(self, root: Path, files: dict[str, str]) -> None:
         workspace = root / "docs/plans/probe"
         for relative, content in files.items():
