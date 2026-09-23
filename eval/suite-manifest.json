@@ -69,6 +69,13 @@
       "tests": 4
     },
     {
+      "path": "eval/usage-observability",
+      "files": [
+        "test_capture.py"
+      ],
+      "tests": 7
+    },
+    {
       "path": "eval/suite-integrity",
       "files": [
         "test_discovery.py"

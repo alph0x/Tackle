@@ -27,6 +27,14 @@ checks that the Task is Ready, its dependencies have their required outputs, the
 perform the declared checks, and the source is inside the declared write scope. A stale Ready
 fingerprint cannot authorize execution.
 
+When the actor is Codex Desktop or runs `codex exec --json`, attempt the optional
+[native usage recipe](codex-native-usage.md) at role start, preserving its small receipt and
+exact thread ID with the Run ID. Use configured model/effort only when the matching native turn
+records them; a requested CLI launch binding is labeled requested. Capture again after the
+role's terminal event is externally observed. Save native token observations at their session
+scope, and put an exact terminal clock in the role's `usage.md` finish row only with a reviewed
+Run ID/turn map. If the environment or trace is unavailable, record `n/a` and continue.
+
 Freeze the source and protected expectations at the review boundary. If existing test files are
 protected, add coverage in a new file; do not silently reinterpret byte preservation as merely
 preserving assertions. Otherwise an executor may add a test or

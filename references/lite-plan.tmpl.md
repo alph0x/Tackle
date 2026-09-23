@@ -136,3 +136,8 @@ use At=n/a for that unobserved finish and name this limitation in Source. Only a
 with the actual terminal event may supply its timestamp; never borrow the latest test clock.
 No exact telemetry, collector or model metadata is required to close a product task. Ledger
 recording remains informative. A successful test does not by itself establish product completion.
+In a Codex Desktop or `codex exec --json` environment, attempt the optional literal
+[`codex-native-usage.md`](guides/codex-native-usage.md) recipe at start and after an externally
+observed close. Link its receipt in Source, use only its directly observed configured binding
+and exactly mapped terminal event, and keep thread/turn tokens at session scope. A missing or
+failed capture leaves `n/a` and does not block closure.

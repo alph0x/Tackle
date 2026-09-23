@@ -58,6 +58,12 @@ already present. Verification and Source index captured receipts rather than res
 `provenance`. Scope is `role`, `session`, or `account`; a session/account observation without exact
 attribution uses `run_id: n/a`.
 
+For Codex Desktop and `codex exec --json`, the optional literal
+[native capture recipe](codex-native-usage.md) can populate this sidecar at role start and after
+an externally observed close. It reports directly observed configured model/effort and a native
+terminal candidate separately; only an exact Run ID/turn mapping may fill a role end. Its absence
+or failure leaves telemetry `n/a` and does not block the task.
+
 The `metrics` object may expose any subset of `input_tokens`, `output_tokens`, `reasoning_tokens`,
 `cache_read_tokens`, `cache_write_tokens`, `requests`, `tool_calls`, `compactions`,
 `context_tokens`, `cost`, and `currency`. Values are non-negative numbers or `n/a`; unknown and
