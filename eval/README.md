@@ -146,6 +146,7 @@ eval/
     s52-usage-coverage/ # coverage trap: unknowns are not zero; partial/incomparable cohorts and two-run recommendations stay gated
     s53-usage-provenance/ # provenance trap: exact Antigravity mapping only; native session/account scope and estimates stay unjoined/noncanonical
     s54-usage-v2-migration/ # migration trap: append-only adoption and byte-preserving rollback keep legacy unknowns readable
+    s55-e2e-first/          # testing-doctrine trap: E2E planned and red before code, replay artifact retained
 ```
 
 ## Running a scenario — manual path (Tackle 7.3.0)
