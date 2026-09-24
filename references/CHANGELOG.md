@@ -1,5 +1,24 @@
 # Tackle changelog
 
+## Tackle 8.4.1
+
+- Every workspace lint row can now fail on the defect it names. Cells contain no pipe character, so a copy from GitHub's rendered table runs unchanged. Rows 3, 8, 10, 11 and 14 read Status by its column header. Row 2 accepts a brief copied from `task.tmpl.md` with its leading anchor. Row 4 checks every citation on a line and reports an unterminated one. Row 7 reports a seal whose decision is superseded. Row 9 counts loop budgets only when they are declared as fields. Row 12 requires a resolved effort in `tasks/`; legacy `points/` keep `inherit`. Row 16 is listed as blocking. Each row keeps its exit contract, as interpreted in `full-checks.md`.
+- Seal integrity in `verify.md` is now a command. It recomputes each compiled clause hash from `design-contract.md` and reports drift, malformed hashes and unresolved sources. The design-contract template gives each clause a stable id (`## C02 · Interface`), and the task template states the byte range.
+- The v4 task template restores the 8.3 E2E-first rule and replay-artifact paragraph that 8.4.0 dropped, and gains `Rounds`, `Metric` and `Threshold` field lines. New workspaces get:
+  - the current stamp;
+  - no undefined `tackle-gate` flag;
+  - a reading order that takes current state from `task-board.md`;
+  - placeholders instead of a prefilled `exit: 0`;
+  - no origin-project leftovers.
+- The 8.3 → 8.4 checklist now covers everything needed to finish a migration: the full old → new artifact map, the P → T id and heading change, the board schema, state conversion, the Verification column and the legacy ledger. Retro metric commands render as single table cells, read Status by header and print the coverage rows. The task consistency recipe accepts T ids.
+- Evidence:
+  - Two new deterministic families, `eval/lint-rows` and `eval/template-drift`. The registry runs 404 tests.
+  - Old and new rows were compared on 49 maintainer workspaces under gawk and mawk. All 15 differences are intended.
+  - The E2E tests pass under gawk, mawk, busybox and BWK awk.
+  - Mutation analysis kills 31 of 31 lint mutants and 25 of 25 template mutants.
+  - No behavioral model evaluation was run for this patch.
+- An 8.4.0 workspace adopts the stricter checks through the 8.4.0 → 8.4.1 checklist. Nothing migrates automatically.
+
 ## Tackle 8.4.0
 
 - New Coordinated workspaces use Task identifiers (`T-01`), `tasks/` briefs and `task-board.md`, `history.md`, `resource-usage.md` core files under `Schema: tackle-workspace/4`. New Focused workspaces use `history.md` and `resource-usage.md`. New templates emit these paths and refer to one another consistently. PLAN checks the nine-file map and all 16 direct lint rows before handoff.

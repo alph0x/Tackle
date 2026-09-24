@@ -1,6 +1,6 @@
 # AGENTS — workspace `docs/plans/{{slug}}/`
 
-**Methodology: Tackle 8.4.0** <!-- A future version reads this to decide whether to migrate. -->
+**Methodology: Tackle 8.4.1** <!-- A future version reads this to decide whether to migrate. -->
 
 Conventions for any agent (Claude Code, Cursor, GPT, human) that picks up this plan. The workspace
 inherits the repository contract where one exists.

@@ -3,7 +3,8 @@
 Migration is a **copy-first, selected-active-work** operation. It never structurally rewrites a live
 workspace or its history during the migration trial,
 automatically migrates unrelated or closed work, upgrades historical evidence, or turns a query into
-execution. Select the 8.3 → 8.4 checklist for a workspace that will adopt T identifiers.
+execution. Select the 8.3 → 8.4 checklist for a workspace that will adopt T identifiers. An active
+8.4.0 workspace adopts 8.4.1 at a task boundary with the 8.4.0 → 8.4.1 patch checklist below.
 An older 8.2 workspace first follows the 8.2 → 8.3 checklist at a task boundary;
 an 8.1 workspace follows 8.1 → 8.2 before that. An active 8.2.0 workspace can
 adopt optional 8.2.1 usage capture at a task boundary using the patch checklist below. Earlier workspaces first follow
@@ -35,6 +36,32 @@ they are not current obligations outside the v7.3 → v8.0 checklist:
   scoped writes, evidence, correction limits, integration and close/block; any review obligation is
   the one named by that Point, with no second closure loop.
 - **F-8 · Verification** — `lint: N/N checks passed` on the migrated workspace and the Methodology stamp is current → generic step 6 plus each checklist's record item.
+
+<a id="v840--v841-checklist"></a>
+## v8.4.0 → v8.4.1 checklist
+
+This patch makes the lint rows stricter and restores template clauses; it renames nothing. Adopt
+only for a selected active workspace, on a disposable copy at a task boundary.
+
+1. Record the pinned procedure and the current lint result (`lint: N/16`), with hashes of the
+   board, briefs and history. Preserve neighboring workspaces.
+2. Run rows 1–16 of 8.4.1 on the copy. New findings are expected and name real defects:
+   - a stale second citation on a line (row 4);
+   - a seal whose decision is superseded (row 7);
+   - a loop budget written only in prose (row 9);
+   - `inherit`, or a non-dash bullet, on an Effort line in `tasks/` (row 12);
+   - Write scope lines that row 8 cannot parse (warn).
+
+   Fix each in the workspace's own records and re-anchor citations with `verify.md` step 0. A
+   citation of a line the task itself changed may be pinned as `path@<rev>:NN`.
+3. Remove `**tackle-gate: on**` from `AGENTS.md` when present; no current guide reads it. Existing
+   briefs keep their pinned text. Briefs compiled after adoption use the new template, with the
+   E2E-first and replay clauses and the loop-budget fields.
+4. When `design-contract.md` has compiled clauses, add each clause id to its heading
+   (`## C01 · …`). Do it only through a superseding decision with regenerated clause hashes, then
+   run the seal command in `verify.md` step 8.
+5. Record a `D-xx`, append the adoption to `history.md`, and bump the `Methodology:` stamp to
+   8.4.1. Roll back by restoring the checkpoint copy.
 
 <a id="candidate-workspace-format"></a>
 ## v8.3 → v8.4 checklist
