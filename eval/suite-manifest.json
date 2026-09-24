@@ -131,6 +131,13 @@
         "test_template_drift.py"
       ],
       "tests": 9
+    },
+    {
+      "path": "eval/protocol-v2",
+      "files": [
+        "test_check.py"
+      ],
+      "tests": 8
     }
   ]
 }

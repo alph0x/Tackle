@@ -1,0 +1,123 @@
+{
+  "schema": "tackle-cohort/1",
+  "cohort_id": "valid-edge",
+  "hypothesis": "The method avoids the trap more often than the control.",
+  "primary_metric": "fall rate",
+  "decision_rule": "protocol v2 labels, alpha 0.05",
+  "n_min": 5,
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "variants": [
+    {
+      "scenario_id": "s01",
+      "variant_id": "v0",
+      "split": "development",
+      "fixture_sha256": "1ae4f3b561b2a76fbe7e2d546c31633146d33cfbf7aac4544fc27d47b8c95e02",
+      "class": "outcome-trap"
+    }
+  ],
+  "arms": [
+    "control",
+    "method"
+  ],
+  "comparisons": [
+    {
+      "id": "primary",
+      "baseline_arm": "control",
+      "candidate_arm": "method"
+    }
+  ],
+  "executor": {
+    "harness": "demo-harness",
+    "model": "demo-model",
+    "effort": "high"
+  },
+  "judge": {
+    "model_family": "demo-judge",
+    "blinded": true
+  },
+  "artifacts": {
+    "baseline_sha256": "8ba8496a2525ae171ffd104d632dede6ef418d9b95962a9d88e2fcdbc8d48d24",
+    "candidate_sha256": "dda18a0e21ae47c53b4309434cbc02ae8bf764fa83a6defbb719431242722aa7"
+  },
+  "oracle_sha256": "9202af6ce925b26ae6b25adfff0b2705147e195fa38dd58ae6ecc58ed263751f",
+  "order": [
+    {
+      "episode_id": "e-s01-control-1",
+      "scenario_id": "s01",
+      "variant_id": "v0",
+      "arm": "control",
+      "seed": 1
+    },
+    {
+      "episode_id": "e-s01-control-2",
+      "scenario_id": "s01",
+      "variant_id": "v0",
+      "arm": "control",
+      "seed": 2
+    },
+    {
+      "episode_id": "e-s01-control-3",
+      "scenario_id": "s01",
+      "variant_id": "v0",
+      "arm": "control",
+      "seed": 3
+    },
+    {
+      "episode_id": "e-s01-control-4",
+      "scenario_id": "s01",
+      "variant_id": "v0",
+      "arm": "control",
+      "seed": 4
+    },
+    {
+      "episode_id": "e-s01-control-5",
+      "scenario_id": "s01",
+      "variant_id": "v0",
+      "arm": "control",
+      "seed": 5
+    },
+    {
+      "episode_id": "e-s01-method-1",
+      "scenario_id": "s01",
+      "variant_id": "v0",
+      "arm": "method",
+      "seed": 1
+    },
+    {
+      "episode_id": "e-s01-method-2",
+      "scenario_id": "s01",
+      "variant_id": "v0",
+      "arm": "method",
+      "seed": 2
+    },
+    {
+      "episode_id": "e-s01-method-3",
+      "scenario_id": "s01",
+      "variant_id": "v0",
+      "arm": "method",
+      "seed": 3
+    },
+    {
+      "episode_id": "e-s01-method-4",
+      "scenario_id": "s01",
+      "variant_id": "v0",
+      "arm": "method",
+      "seed": 4
+    },
+    {
+      "episode_id": "e-s01-method-5",
+      "scenario_id": "s01",
+      "variant_id": "v0",
+      "arm": "method",
+      "seed": 5
+    }
+  ],
+  "created_at": "2026-09-24T12:00:00Z",
+  "seal_sha256": "f4c86b8e8f1cc0dde4ab4c3c9c6c72a37be0c2909849eb7f17a56fee4a4057a4"
+}

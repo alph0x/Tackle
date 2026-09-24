@@ -28,6 +28,11 @@ comparison and its recorded zero-started status remain unchanged. Deterministic
 harness tests, actual command behavior, agent decisions and integrated product
 acceptance are distinct kinds of evidence.
 
+[Evaluation protocol v2](protocol-v2/PROTOCOL.md) defines how a behavioral claim is pre-registered,
+sealed, recorded and judged. `python3 eval/protocol-v2/check.py <cohort-dir>` rejects tampered,
+incomplete or placeholder-filled cohorts and prints per-variant labels from one-sided Fisher exact
+tests, with Wilson intervals for reading. No cohort has been run under it yet.
+
 ## Layout
 
 ```
