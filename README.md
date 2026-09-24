@@ -16,7 +16,7 @@ Tackle turns a goal into a plan stored in your repository. Each task carries the
 
 Use it for features, refactors, and investigations that span sessions or involve handoffs between agents or people.
 
-**Tackle 8.2.2** · Model-agnostic · Markdown-only install · MIT
+**Tackle 8.3.0** · Model-agnostic · Markdown-only install · MIT
 
 ## Why Tackle
 
@@ -94,6 +94,8 @@ STATUS reads current progress without starting or changing work.
 **PLAN** prepares requirements, decisions, task briefs, dependencies, and acceptance checks. Readiness checks are part of preparation.
 
 **RUN** executes authorized, ready work in dependency order. It checks results, corrects within the allowed budget, and checks the final deliverable before closing the initiative. Verification is part of execution, not an extra step you must remember to request.
+
+For code, PLAN chooses the checks before implementation. Tackle prefers an end-to-end check through the real consumer as the sole new test when it covers the contract; complex integrated features require one when feasible. Any necessary isolated test starts with a failure-mode inventory and is written before its implementation. Every end-to-end run retains a [repeatable verification artifact](references/guides/testing.md#replayable-e2e-artifact).
 
 **STATUS** reads progress, lists plans, or identifies the next task. An unqualified “resume” is also read-only. Explicit execution intent enters RUN; `--handoff` writes only the requested handoff.
 
@@ -200,7 +202,7 @@ Historical records retain their meanings: E1 for independent command verificatio
 
 During 8.x, documented aliases such as `/tackle-run`, `/tackle-verify`, `implement`, `ground`, `trace`, `drill`, `pulse`, and `handoff` preserve their intent boundaries when the host passes them as text. They do not register separate picker entries and retire in 9.0.
 
-The migration guide retains the checklist chain v2.0 → v8.2, including [8.1 → 8.2](references/guides/migrate.md#v81--v82-checklist), [8.0 → 8.1](references/guides/migrate.md#v80--v81-checklist), and the [copy-first 7.3 → 8.0 transition](references/guides/migrate.md#v73--v80-checklist).
+The migration guide retains the checklist chain v2.0 → v8.3, including [8.2 → 8.3](references/guides/migrate.md#v82--v83-checklist), [8.1 → 8.2](references/guides/migrate.md#v81--v82-checklist), [8.0 → 8.1](references/guides/migrate.md#v80--v81-checklist), and the [copy-first 7.3 → 8.0 transition](references/guides/migrate.md#v73--v80-checklist).
 
 </details>
 
@@ -232,7 +234,7 @@ The [paired experiment protocol](eval/clear-language/protocol.md) defines fixed 
 <details>
 <summary>Evaluation coverage and release checks</summary>
 
-The [eval suite](eval/README.md) contains **50 scenarios** (`s1`–`s54`): decision traps and one end-to-end lifecycle smoke test. The manual A/B workflow compares a model following Tackle with the same model working without it. Each scenario's answer sheet stays outside the agent's copy. A smoke run provides evidence for that run, with its limits recorded alongside the result.
+The [eval suite](eval/README.md) contains **51 scenarios** (`s1`–`s55`): decision traps and one end-to-end lifecycle smoke test. The manual A/B workflow compares a model following Tackle with the same model working without it. Each scenario's answer sheet stays outside the agent's copy. A smoke run provides evidence for that run, with its limits recorded alongside the result.
 
 Before release, the [release sweep](references/guides/lint-spec.md#release-sweep) runs 8 shipped-skill gates covering the entry-file word budget, 11 core conventions, version and migration consistency, README claims, install contents, and update boundaries. The workspace table covers rows 1–16 (16 lint rows). These are documented, copy-pasteable POSIX checks.
 

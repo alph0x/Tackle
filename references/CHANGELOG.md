@@ -1,5 +1,12 @@
 # Tackle changelog
 
+## Tackle 8.3.0
+
+- Choose the testing strategy in PLAN before implementation. Prefer a public-boundary E2E check as the sole new test when it covers the contract, and require one for a feasible complex integrated feature. An existing sufficient regression remains reusable without duplicate tests or a tier quota.
+- Remove the blanket T0 unit requirement. An isolated test now needs a recorded reason and an inventory of applicable failure modes with expected outcomes before implementation. Never write a unit test after the behavior it covers; test-first opt-outs do not override that rule.
+- Require every E2E run to retain a verifiable, repeatable artifact: the exact command or saved script, accessible fixtures, contract-derived expected values, observed child result and outputs, runtime/environment, and hashes. Replay on a disposable copy or fresh destination so the original evidence remains immutable.
+- Carry the policy through Full, Lite and Direct preparation and execution guidance, Task and plan templates, and the quality catalog. Add s55 as a dedicated behavioral scenario covering E2E selection, red-before-code and replay evidence. The corrected method arm passed and replayed without changing original evidence; its control also used a CLI-boundary check, so the comparison makes no causal-improvement claim. Prior workspaces retain pinned procedures until selected copy-first migration at a task boundary.
+
 ## Tackle 8.2.2
 
 - Pin the eight executable self-lint command cells in the development acceptance harness. A changed Markdown command now fails before gate scripts are written or run; the trust digest changes only after review. Full lint now checks a fixed digest of its literal capture helper as well as the reviewed Markdown source, and explains that a matching self-reported hash alone does not establish authority.

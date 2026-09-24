@@ -3,7 +3,8 @@
 Migration is a **copy-first, selected-active-work** operation. It never structurally rewrites a live
 workspace or its history during the migration trial,
 automatically migrates unrelated or closed work, upgrades historical evidence, or turns a query into
-execution. Select the 8.1 → 8.2 checklist for an 8.1 workspace. An active 8.2.0 workspace can
+execution. Select the 8.2 → 8.3 checklist for an active 8.2 workspace at a task boundary. Select
+the 8.1 → 8.2 checklist for an 8.1 workspace first. An active 8.2.0 workspace can
 adopt optional 8.2.1 usage capture at a task boundary using the patch checklist below. Earlier workspaces first follow
 their applicable transitions: 8.0 → 8.1, or 7.3 → 8.0 before that. Older checklists remain readable historical context and cannot bypass the current
 selection, pinning, history or rollback guards.
@@ -35,6 +36,30 @@ they are not current obligations outside the v7.3 → v8.0 checklist:
 - **F-8 · Verification** — `lint: N/N checks passed` on the migrated workspace and the Methodology stamp is current → generic step 6 plus each checklist's record item.
 
 <a id="candidate-workspace-format"></a>
+## v8.2 → v8.3 checklist
+
+Tackle 8.3 changes forward-looking test selection and E2E evidence, not historical test results.
+Adopt only for a selected active workspace on a disposable copy at a Task boundary.
+
+1. Snapshot the workspace, its pinned Task checks, test files, raw evidence and failure-cycle
+   history. Record hashes and a neighboring sentinel. Preserve completed and interrupted Task
+   history exactly; do not rewrite old unit tests or recast their evidence as E2E.
+2. For remaining code Tasks, choose checks before the next implementation edit. Prefer a single
+   public-boundary E2E check when it covers the contract; a feasible complex integrated feature
+   requires one. Keep sufficient existing regression checks without adding a unit quota. If an
+   isolated test is needed, record the uncovered obligation, why E2E cannot observe it and every
+   identified applicable failure mode with expected outcome before the test and code change.
+   Never add a unit test after implementing the behavior it covers.
+3. Give each future E2E run a replay artifact with exact command/script, stable fixtures,
+   contract-derived expected and observed results, runtime/environment, raw child result and
+   input/output hashes. Reproduce on a disposable copy or fresh destination; verify the original
+   raw record and fixtures remain byte-identical. Missing replay inputs or a masked child failure
+   blocks that acceptance claim.
+4. Run the selected workspace's applicable lint, task and integrated acceptance checks on the
+   copy. Compare source, history, evidence and neighbor hashes with the checkpoint. Promote only
+   forward-looking instructions at the Task boundary and append adoption history. Roll back by
+   restoring the exact checkpoint bytes if any check fails.
+
 ## v8.2.0 → v8.2.1 checklist
 
 This patch adds optional Codex native usage capture; it does not require a sidecar for task
