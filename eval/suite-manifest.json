@@ -138,6 +138,13 @@
         "test_check.py"
       ],
       "tests": 8
+    },
+    {
+      "path": "eval/rules",
+      "files": [
+        "test_ledger.py"
+      ],
+      "tests": 11
     }
   ]
 }

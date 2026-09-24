@@ -1,0 +1,2902 @@
+{
+  "schema": "tackle-rule-ledger/1",
+  "rules": [
+    {
+      "rule_id": "R-ENTRY-01",
+      "statement": "The skill has one entry, tackle.",
+      "statement_sha256": "30bb99cf26075f2483fe91107997347c8462d47913d5b424b254890667c8b03b",
+      "home": "SKILL.md:12",
+      "home_fragment": "One entry: `tackle`.",
+      "units": [
+        "One entry: `tackle`."
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.1.0",
+        "trigger": "CHANGELOG 8.1.0: select Tackle once, then ask in natural language or with short requests.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-ENTRY-02",
+      "statement": "Requests may be stated in any language.",
+      "statement_sha256": "d1460fe6aed526d395aa076712fe5193e25e2b977dd16a77dd6389acc47e8009",
+      "home": "SKILL.md:12",
+      "home_fragment": "State requests in any language.",
+      "units": [
+        "State requests in any language."
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "unknown",
+        "trigger": "CHANGELOG 4.4.0 already relies on an \"(any language)\" routing header; 8.1.0 adds Spanish examples.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-ENTRY-03",
+      "statement": "Action names do not register host commands.",
+      "statement_sha256": "4f40142ad3326761d22ef03ede1d14bd7fa38ccba21b3030b54bcef1f2178cce",
+      "home": "SKILL.md:12",
+      "home_fragment": "Action names do not register",
+      "units": [
+        "Action names do not register host commands."
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.1.0",
+        "trigger": "CHANGELOG 8.1.0: older /tackle-* spellings are text aliases and need no separate skill-picker entries.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-ENTRY-04",
+      "statement": "A bare invocation or a help request offers choices and writes nothing.",
+      "statement_sha256": "d80a2fc039c28ff0810a338f3d27a52409d5f5f6fe1a4842c7a177d874e5e4ac",
+      "home": "SKILL.md:13",
+      "home_fragment": "Bare invocation or help offers choices without writes.",
+      "units": [
+        "Bare invocation or help offers choices without w"
+      ],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.1.0",
+        "trigger": "CHANGELOG 8.1.0: bare invocation and help show the actions without inspecting a project or creating files.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-ENTRY-05",
+      "statement": "Requests are interpreted per invocation.md, including negation and quoted examples.",
+      "statement_sha256": "2b53d75156a89d0b863d8441f24387d0c2b132b6fe1e7a153e75273fe1a7fa86",
+      "home": "SKILL.md:14",
+      "home_fragment": "requests, including negation and quoted examples",
+      "units": [
+        "Interpret requests, including negation and quote"
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.1.0",
+        "trigger": "CHANGELOG 8.1.0: unclear requests ask; a question about run, or an instruction not to execute it, authorizes no change.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-ENTRY-06",
+      "statement": "The named operations validate the plan, audit the result and review lessons map to verify, judge and retro, and init forwards to PLAN scaffolding.",
+      "statement_sha256": "8d92156083f1444d48ac5695e1d3a79e9586d8c3d8d648e866cd7451be569c38",
+      "home": "SKILL.md:22",
+      "home_fragment": "Use **validate the plan**, **audit the result**",
+      "units": [
+        "Use **validate the plan**, **audit the result** "
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.2.0",
+        "trigger": "First stated in SKILL.md 8.2.0 (git history).",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-ENTRY-07",
+      "statement": "During 8.x legacy aliases forward with their original boundaries; they retire in 9.0 and migration keeps their interpretation.",
+      "statement_sha256": "3a7fd918d6d07179609048fb487df40ae42e4156699b2980488dedb195a48a60",
+      "home": "SKILL.md:23",
+      "home_fragment": "During 8.x, documented legacy aliases forward with",
+      "units": [
+        "During 8.x, documented legacy aliases forward wi",
+        "They retire in 9.0; migration retains their inte"
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.0.0",
+        "trigger": "CHANGELOG 8.0.0: compatibility aliases preserve intent through 8.x and retire in 9.0.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-INTAKE-01",
+      "statement": "Resolve links from their containing file and locate missing references before retrying.",
+      "statement_sha256": "3e7837d696e1f7b619631b1d7f23e7dec22ae50a97cb5976e68e6b28a0d94e7d",
+      "home": "SKILL.md:30",
+      "home_fragment": "Resolve links from their containing file",
+      "units": [
+        "Resolve links from their containing file; locate"
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.0.0",
+        "trigger": "CHANGELOG 8.0.0: resolve reference paths from their containing file.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s21-migrate-old-format"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-08-01-s21.md",
+          "label": "Discrimination: null (shared)",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-a.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-INTAKE-02",
+      "statement": "First inspect named owner prerequisites in a tool call that contains only those probes, then wait for the results.",
+      "statement_sha256": "66439a5a9f94289a42272714e4057acffe74f49175bffc1865b7fab11bf55c85",
+      "home": "SKILL.md:31",
+      "home_fragment": "inspect named owner prerequisites in a tool call",
+      "units": [
+        "**First:** inspect named owner prerequisites in ",
+        "Wait for results."
+      ],
+      "mirrors": [
+        "references/guides/intake-and-gate.md:14"
+      ],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.2.0",
+        "trigger": "CHANGELOG 8.2.0: check named owner prerequisites in a separate probe-only call and await the result.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-INTAKE-03",
+      "statement": "A missing prerequisite stops its scope with a report of the affected work and the owner action; no further discovery follows, and only required recording and independently authorized work continue.",
+      "statement_sha256": "1b986f9a0426f7cb922318dc4cee923123938423b80d383fc6b3dff6e2be4c0a",
+      "home": "SKILL.md:32",
+      "home_fragment": "stop that scope; report affected work and owner action.",
+      "units": [
+        "**Missing:** stop that scope; report affected wo",
+        "No inventories, guides or implementation/capabil",
+        "Only required state/evidence recording and indep"
+      ],
+      "mirrors": [
+        "references/guides/intake-and-gate.md:19"
+      ],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.2.0",
+        "trigger": "CHANGELOG 8.2.0: report missing input before any dependent discovery and stop unrelated reading.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-INTAKE-04",
+      "statement": "Otherwise read named inputs and retained records before guides, and reuse routing or read intake-and-gate.md alone through sizing.",
+      "statement_sha256": "460881ac9f7208d16f031decf9d6eba98d9ece994e7987950004fdbd48816be8",
+      "home": "SKILL.md:33",
+      "home_fragment": "read named inputs and retained records before guides",
+      "units": [
+        "**Otherwise:** read named inputs and retained re"
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.2.0",
+        "trigger": "CHANGELOG 8.2.0: load intake before choosing further guides.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-INTAKE-05",
+      "statement": "Direct uses its bounded procedure without a workspace, Focused uses only lite-plan.tmpl.md, Coordinated loads the needed operation, and more guidance needs a specific unresolved capability.",
+      "statement_sha256": "d9c205e8338a5a86deb62b3558b4a74272b81399df642e09d4174b25399ac374",
+      "home": "SKILL.md:35",
+      "home_fragment": "**Direct (None)** uses that bounded procedure",
+      "units": [
+        "**Direct (None)** uses that bounded procedure wi",
+        "More guidance requires a specific unresolved cap"
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.2.0",
+        "trigger": "CHANGELOG 8.2.0: visible routes Direct, Focused and Coordinated keep the None/Lite/Full risk triggers.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-INTAKE-06",
+      "statement": "Risk triggers precede task count, and small work needs no milestone, archive or storage machinery.",
+      "statement_sha256": "c7765ac82b5a374fed81b2dfe2a0d2f8b8d260f30e0e54cde011868be3c44d36",
+      "home": "SKILL.md:37",
+      "home_fragment": "Risk triggers precede task count",
+      "units": [
+        "Risk triggers precede task count; small work nee"
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.1.0",
+        "trigger": "CHANGELOG 8.1.0: risk takes precedence over Point count when choosing None, Lite or Full.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s4-gate-trap"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-07-17-suite.md",
+          "label": "null",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-a.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-INTAKE-07",
+      "statement": "The four intake anchors are the intent contract and precede any solution.",
+      "statement_sha256": "054882bb554f8555fcf538e325aab93bd76eb766afc92ffaa76ce0725a4853a1",
+      "home": "references/guides/intake-and-gate.md:34",
+      "home_fragment": "The four anchors are the intent contract.",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "1.5",
+        "trigger": "CHANGELOG 1.5: anchor the intake (problem, observable result, top two non-goals, highest-shape decision) before sizing.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s24-standalone-planning"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-08-05-s24.md",
+          "label": "discrimination CONFIRMED",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-27-s24-standalone-planning.md",
+          "label": "verdict: discriminates",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-a.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-PLAN-01",
+      "statement": "PLAN prepares requirements, contracts, task briefs and readiness.",
+      "statement_sha256": "7cf2f167b48705a602d800b3430a92a282093f16f5d79ea4cf82dc5b2193e84d",
+      "home": "SKILL.md:18",
+      "home_fragment": "Prepare requirements, contracts, task briefs and readiness.",
+      "units": [
+        "**PLAN** `plan` Prepare requirements, contracts,"
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.0.0",
+        "trigger": "CHANGELOG 8.0.0: PLAN prepares self-contained Points.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-02",
+      "statement": "PLAN-only stops before implementation.",
+      "statement_sha256": "cfb14193dd590c5554525340efdc20b4742be8ac835ab8fbd477c4c61f22238b",
+      "home": "SKILL.md:18",
+      "home_fragment": "PLAN-only stops before implementation.",
+      "units": [
+        "PLAN-only stops before implementation."
+      ],
+      "mirrors": [
+        "references/guides/communication.md:20"
+      ],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "3.0",
+        "trigger": "CHANGELOG 3.0: autonomy ladder with explicit intent before execution; 8.2.0 keeps the PLAN-only boundary.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s5-consent-trap"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-07-17-suite.md",
+          "label": "method avoided",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-05-s3-s5-regression.md",
+          "label": "method=avoided control=historical",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-27-s5-consent-trap.md",
+          "label": "verdict: null",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-a.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-PLAN-03",
+      "statement": "PLAN extracts supplied intent without asking to reconfirm it.",
+      "statement_sha256": "ead974b782824db1844c422e84cb35025da57c52a846edb1ad2e91466dabfd37",
+      "home": "SKILL.md:40",
+      "home_fragment": "PLAN extracts supplied intent without reconfirmation.",
+      "units": [
+        "PLAN extracts supplied intent without reconfirma"
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.2.0",
+        "trigger": "CHANGELOG 8.2.0: one decision and communication policy replaces repeated confirmation.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-04",
+      "statement": "A task brief carries observable purpose, requirements, outputs, interfaces, cases, constraints, non-goals, approach, checks, decisions, inputs and recovery, omitting only inapplicable fields.",
+      "statement_sha256": "f0d7771b3140c3d4959976b4569ef0cf76b02ec7dfb7bfa691b93a5d47841f97",
+      "home": "SKILL.md:94",
+      "home_fragment": "**Task contract** — include observable purpose",
+      "units": [
+        "Compile task briefs with requirements, outputs, ",
+        "**Task contract** — include observable purpose, "
+      ],
+      "mirrors": [
+        "SKILL.md:40"
+      ],
+      "class": "format",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.0.0",
+        "trigger": "CHANGELOG 8.0.0: requirements, interfaces, cases, scope, alternatives, checks and recovery are compiled into each Point; 8.2.0 strengthens compiled briefs.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-05",
+      "statement": "Separate requirements from delegated choices; missing product behavior blocks its consumers instead of being invented.",
+      "statement_sha256": "57d086928fc278917836a2a04debd1d7984046080acf0594205207ed66d73550",
+      "home": "SKILL.md:41",
+      "home_fragment": "Separate requirements from delegated choices",
+      "units": [
+        "Separate requirements from delegated choices; mi"
+      ],
+      "mirrors": [
+        "references/guides/intake-and-gate.md:93"
+      ],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "1.4",
+        "trigger": "CHANGELOG 1.4: decision ownership, provisional questions and batched doubts; 8.2.0 separates requirements from delegated choices.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s3-intake-trap",
+          "s22-improve-unstructured",
+          "s42-constitution-trap",
+          "s43-specify-trap"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-07-17-suite.md",
+          "label": "method avoided",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-01-s22.md",
+          "label": "Discrimination is NO LONGER null",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-05-s3-s5-regression.md",
+          "label": "method=avoided control=historical",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-21-s42-constitution-trap.md",
+          "label": "verdict: discriminates",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-21-s43-specify-trap.md",
+          "label": "verdict: null",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-27-s22-improve-unstructured.md",
+          "label": "verdict: discriminates",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-27-s3-intake-trap.md",
+          "label": "verdict: discriminates",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-27-s42-constitution-trap.md",
+          "label": "verdict: discriminates",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-a.md",
+          "label": "method=pass",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-a.md",
+          "label": "method=pass",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-b.md",
+          "label": "method=pass",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-b.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-PLAN-06",
+      "statement": "PLAN validates coverage, dependencies, interfaces and semantic counterexamples.",
+      "statement_sha256": "a46fb72de469b3c53649cac3eaf84fcc223ce869b64948a3bcb7499c0b2ef663",
+      "home": "SKILL.md:42",
+      "home_fragment": "Validate coverage, dependencies, interfaces and semantic",
+      "units": [
+        "Validate coverage, dependencies, interfaces and "
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "2.1.0",
+        "trigger": "CHANGELOG 2.1.0: the verify red-team pass; 3.0 adds the coverage matrix, 4.0.0 the edge audit, 8.2.0 semantic counterexamples.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s11-fake-edge",
+          "s29-trace-untraced-scope"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-07-24-s11-s15.md",
+          "label": "No discrimination",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-05-artifact-traps.md",
+          "label": "method=avoided control=null",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-27-s29-trace-untraced-scope.md",
+          "label": "verdict: null",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-a.md",
+          "label": "method=pass",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-b.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-PLAN-07",
+      "statement": "A workspace PLAN verifies its scaffold files and all 16 lint rows, and reports and fixes failures before handoff.",
+      "statement_sha256": "1f3de7163fbeca8c7da1b7af648d0780cc741f0578e4f9935fe6b4366261649d",
+      "home": "SKILL.md:43",
+      "home_fragment": "For workspace PLAN, verify scaffold files",
+      "units": [
+        "For workspace PLAN, verify scaffold files and al"
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "3.0",
+        "trigger": "CHANGELOG 3.0: a mechanical lint spec with a score line; 6.0.0 adds scaffold file-map checks.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s49-init-trap"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-08-21-s49-init-trap.md",
+          "label": "verdict: null",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-b.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-PLAN-08",
+      "statement": "Cold probes keep their risk trigger and bounded allowance.",
+      "statement_sha256": "690a29c4d62a9dc21db558eb830607982656922a4550bef03a703539d3efcbd7",
+      "home": "SKILL.md:44",
+      "home_fragment": "Cold probes retain their risk trigger and bounded",
+      "units": [
+        "Cold probes retain their risk trigger and bounde"
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.2.0",
+        "trigger": "First stated in SKILL.md 8.2.0 (git history); no changelog entry names it.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-09",
+      "statement": "Long initiatives may prepare milestones; every requirement keeps an owner, and deferred tasks stay Draft until verified Ready.",
+      "statement_sha256": "69a94acb2074238280e8a2ac7a65098bcad79386d4384fc83f55ce0c84a13d05",
+      "home": "SKILL.md:45",
+      "home_fragment": "Long initiatives may prepare milestones",
+      "units": [
+        "Long initiatives may prepare milestones: every r"
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.2.0",
+        "trigger": "CHANGELOG 8.2.0: selected milestone readiness; full requirement ownership while later detail is deferred.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-10",
+      "statement": "A task has one coherent observable acceptance target, checked by an honest command or a named review rubric with its actual reviewer, and valid alternatives are preserved.",
+      "statement_sha256": "08cbf2c4468422cbdcc997d0f95cf53ea95acb859809f239980d2ca21d8fbd40",
+      "home": "SKILL.md:95",
+      "home_fragment": "**One responsibility** — one task has one coherent",
+      "units": [
+        "**One responsibility** — one task has one cohere",
+        "Preserve valid alternatives."
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "unknown",
+        "trigger": "A core convention retained through 8.0; the 8.0 rule-inventory baseline lists coherent Point and evidence among the retained conventions.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-11",
+      "statement": "The repository references/ template library is read-only during scaffolding; initiative-specific edits belong in the workspace copy.",
+      "statement_sha256": "488ffc1715a3bdfe05ef2d92a2ae222b3fc024f69f727fafc06b233242df0571",
+      "home": "references/guides/scaffold.md:43",
+      "home_fragment": "template library is read-only during scaffolding",
+      "units": [],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "unknown",
+        "trigger": "CHANGELOG 7.0.0 init safety guard: restored after s31 caught the regression in the first 7.0 method arm.",
+        "discovered_by": [
+          "s31-init-core-edit"
+        ]
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s31-init-core-edit"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-08-05-s31.md",
+          "label": "method=avoided control=fell",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-27-s31-init-core-edit-rerun.md",
+          "label": "verdict: discriminates",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-27-s31-init-core-edit.md",
+          "label": "verdict: null",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-b.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-RUN-01",
+      "statement": "RUN executes authorized ready tasks, checks them, corrects within budget, integrates and accepts delivery.",
+      "statement_sha256": "bee6fc2fc5f8476ea86aeb0dc7072794bbf7f33ee2dc696e40d9a92444924942",
+      "home": "SKILL.md:19",
+      "home_fragment": "Execute authorized ready tasks, check, correct within budget",
+      "units": [
+        "**RUN** `run`, `run --one`, `run <T-id>` Execute"
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.0.0",
+        "trigger": "CHANGELOG 8.0.0: RUN executes explicitly authorized work.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-02",
+      "statement": "Explicit PLAN+RUN authorization persists within scope: status questions during active work are answered and work continues without asking for execution permission again.",
+      "statement_sha256": "46477588c66873c870e3dfd4772be0273d3545585e33a4e7e04bfb3190ef9bd0",
+      "home": "SKILL.md:48",
+      "home_fragment": "Explicit PLAN+RUN authorization persists within scope.",
+      "units": [
+        "Explicit PLAN+RUN authorization persists within ",
+        "Answer status questions during active work and c"
+      ],
+      "mirrors": [
+        "references/guides/invocation.md:35"
+      ],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.2.0",
+        "trigger": "CHANGELOG 8.2.0: sufficient PLAN+RUN permission persists across status questions.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-03",
+      "statement": "Operational diagnosis uses permitted tools, and recovery never widens access, product requirements or authorization.",
+      "statement_sha256": "7b969bcaaad7e0a3d7c7d0b74b66cb26c4c84c9f4b34f53b1d87f5299e42534d",
+      "home": "SKILL.md:50",
+      "home_fragment": "Operational diagnosis uses permitted",
+      "units": [
+        "Operational diagnosis uses permitted tools; reco"
+      ],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.2.0",
+        "trigger": "First stated in SKILL.md 8.2.0 (git history); no changelog entry names it.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-04",
+      "statement": "RUN records the pinned procedure, current contract, dependency outputs, environment and write scope.",
+      "statement_sha256": "3d941d8a043ac1fe820d1a8b83192066db567139bff0127a70bd525ba84a230d",
+      "home": "SKILL.md:53",
+      "home_fragment": "RUN records the pinned procedure, current contract",
+      "units": [
+        "RUN records the pinned procedure, current contra"
+      ],
+      "mirrors": [],
+      "class": "format",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.2.0",
+        "trigger": "First stated in SKILL.md 8.2.0 (git history); no changelog entry names it.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-05",
+      "statement": "Reuse verified current state and sufficient existing checks; do not append equivalent assertions or unchanged closure reruns.",
+      "statement_sha256": "d9beacfc73bfe0717bd839e70c569c8c6a2133391f0bbffcb8e6877522d2ff55",
+      "home": "SKILL.md:54",
+      "home_fragment": "Reuse verified current state and sufficient existing",
+      "units": [
+        "Reuse verified current state and sufficient exis"
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.0.0",
+        "trigger": "CHANGELOG 8.0.0: reuse read guidance and readiness, and finish with affected closure checks.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-06",
+      "statement": "Changed content, selector membership, configuration, interfaces, runtime or freshness invalidate affected consumers, and unknown dependencies require conservative checks.",
+      "statement_sha256": "1c1280f74aeef7eb7f7257c0cd7e6857d1cdb14607295e70d0e2dac102a2fd0e",
+      "home": "SKILL.md:55",
+      "home_fragment": "Changed content, selector",
+      "units": [
+        "Changed content, selector membership, configurat",
+        "Unknown dependencies require conservative checks"
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.0.0",
+        "trigger": "CHANGELOG 8.0.0: closure invalidates dependent evidence when inputs change.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-07",
+      "statement": "Task, related regression and affected integration checks precede task completion, and deliverable acceptance precedes initiative completion.",
+      "statement_sha256": "3ff8a917588d913bdb03899a3207e55977f61a87556856fd17629cabacf94922",
+      "home": "SKILL.md:61",
+      "home_fragment": "Task checks, related regression checks and affected",
+      "units": [
+        "Task checks, related regression checks and affec",
+        "Deliverable acceptance precedes initiative compl"
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "3.1.0",
+        "trigger": "CHANGELOG 3.1.0: two-halves verification (target criterion and surrounding system health); 8.0.0 integrated delivery.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s23-flip-gate"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-08-03-s23.md",
+          "label": "Discrimination: partial",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-a.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-RUN-08",
+      "statement": "Three failed correction-validation cycles per task or two identical no-progress observations bound implementation correction, and lineage keeps spent cycles across split, merge and resume.",
+      "statement_sha256": "9a6b0e2439703af8ce593d30e2c77c73bc87fa3af6a3b7d586613ea19e28bfb7",
+      "home": "SKILL.md:62",
+      "home_fragment": "Three failed correction-validation cycles",
+      "units": [
+        "Three failed correction-validation cycles per ta",
+        "Lineage preserves spent cycles across split, mer"
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "3.1.0",
+        "trigger": "CHANGELOG 3.1.0: a three-cycle fix-verify bound; 8.0.0 persists counts across actors and resumes; 8.2.0 keeps correction pools across split, merge and interruption.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-09",
+      "statement": "Consume known failure evidence and repeat its check only after a relevant change or permitted recovery.",
+      "statement_sha256": "3de071f2f68a5c703eab0ef6d85352b9a0fefd48c3b08f6fb3b816e79909b5c3",
+      "home": "SKILL.md:64",
+      "home_fragment": "repeat its check only after a relevant change",
+      "units": [
+        "Consume known failure evidence; repeat its check"
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.2.0",
+        "trigger": "CHANGELOG 8.2.0: consume retained failures before a justified retry.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-10",
+      "statement": "Classify other failures and stop the affected work with records; never silently replan or upgrade a model.",
+      "statement_sha256": "6a98aeed20c99f450a375e97037b60daf7208e0735dc7be511429583492b570f",
+      "home": "SKILL.md:65",
+      "home_fragment": "Classify other failures and stop affected",
+      "units": [
+        "Classify other failures and stop affected work w"
+      ],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.0.0",
+        "trigger": "CHANGELOG 8.0.0: contract, validator and capability failures produce evidence packets.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-11",
+      "statement": "Write only the declared task scope and authorized workspace artifacts, and preserve unrelated edits.",
+      "statement_sha256": "7c63532dd55b04a6569045e57794d2f5d54567d799de1fc09f007027d8bebe17",
+      "home": "SKILL.md:93",
+      "home_fragment": "**Scope** — write only declared task scope",
+      "units": [
+        "**Scope** — write only declared task scope and a"
+      ],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "unknown",
+        "trigger": "A core convention retained through the 8.0 rule inventory.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-12",
+      "statement": "Explicit intent precedes mutation; RUN pins its procedure, classifies failures and preserves shared correction budgets.",
+      "statement_sha256": "6e1660a43bd545ba3602a39a14a9762812942eda4c666bcd90896ed82924ae93",
+      "home": "SKILL.md:96",
+      "home_fragment": "**Run discipline** — explicit intent precedes mutation",
+      "units": [
+        "**Run discipline** — explicit intent precedes mu"
+      ],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "3.0",
+        "trigger": "CHANGELOG 3.0: the autonomy ladder makes explicit intent the default before execution.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s27-ambiguous-execution-intent"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-08-05-authority-traps.md",
+          "label": "method=avoided control=fell",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-27-s27-ambiguous-execution-intent.md",
+          "label": "verdict: null",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-b.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-RUN-13",
+      "statement": "Code follows the code style of design-and-contract.md.",
+      "statement_sha256": "5e82a14aac44ea94524632495c5ebfe0651768d914ce0f21e537bfd6c1d31c21",
+      "home": "SKILL.md:96",
+      "home_fragment": "Apply [code style](references/guides/design-and-contract.md",
+      "units": [
+        "Apply [code style](references/guides/design-and-"
+      ],
+      "mirrors": [],
+      "class": "format",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.0.0",
+        "trigger": "CHANGELOG 8.0.0: code-style continuity restores the self-documenting code and comment-placement rules.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-14",
+      "statement": "New tests follow red, green, refactor: the chosen failing test is seen failing before the implementation, and an opt-out needs a decision recorded first.",
+      "statement_sha256": "c33bea5f8bef201516b6c34e8f5345884dbb59406f0c985bddb840e073df8ae6",
+      "home": "references/guides/testing.md:29",
+      "home_fragment": "red → green → refactor is the Executor's default shape",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "4.3.0",
+        "trigger": "CHANGELOG 4.3.0: test-first becomes the default shape for code points.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s17-test-first"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-a.md",
+          "label": "method=pass",
+          "seeds": 1
+        },
+        {
+          "record": "eval/scenarios/s17-test-first/GROUND-TRUTH.md",
+          "label": "discriminating — gate PASSED",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-RUN-15",
+      "statement": "The testing strategy is chosen in PLAN and prefers an end-to-end check through the public boundary.",
+      "statement_sha256": "4978025660f239324f06a50810d1d5267ca85aaebbd394dc5c2a609ed84423ff",
+      "home": "references/guides/testing.md:10",
+      "home_fragment": "Prefer an end-to-end (E2E) check through the public boundary",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "8.3.0",
+        "trigger": "CHANGELOG 8.3.0: choose the testing strategy in PLAN and prefer a public-boundary E2E check.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s55-e2e-first"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/scenarios/s55-e2e-first/GROUND-TRUTH.md",
+          "label": "control outcome is null",
+          "seeds": "n/a"
+        }
+      ]
+    },
+    {
+      "rule_id": "R-RUN-16",
+      "statement": "A discovery task converges on consecutive dry rounds and deduplicates against everything seen.",
+      "statement_sha256": "e92fe9a47b609bf869e0a2c1a84f588eabdc078572690e83e6002aa1691b4cb5",
+      "home": "references/task.tmpl.md:44",
+      "home_fragment": "deduplicate against everything seen",
+      "units": [],
+      "mirrors": [
+        "references/point.tmpl.md:41",
+        "references/guides/decompose-and-lint.md:27"
+      ],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "4.0.0",
+        "trigger": "CHANGELOG 4.0.0: discovery tasks converge on K dry rounds and dedupe against everything seen.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s12-discovery-loop"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-07-24-s11-s15.md",
+          "label": "Documented null",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-a.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-RUN-17",
+      "statement": "Every task the board shows as done has its closure report.",
+      "statement_sha256": "9083b7da6a59b2a9bde0d19581b4cc6db02a6a8b56cb05916afa9fc3ad5c64f8",
+      "home": "references/guides/lint-spec.md:40",
+      "home_fragment": "Closure reports for done tasks",
+      "units": [],
+      "mirrors": [
+        "references/guides/run.md:236"
+      ],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "3.3.0",
+        "trigger": "CHANGELOG 3.3.0: every Full point closes with a closure report and sign-off; 6.0.0 makes lint row 14 gate it.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s40-closure-artifact"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-b.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-EVID-01",
+      "statement": "Checks record the actual command, cwd, runtime, actor, revisions, complete streams, exit/timeout/signal, preserved inputs and artifact hashes, from complete native capture or the scoped capture recipe.",
+      "statement_sha256": "4dfc44d7e987055daddd67daea53c25400b5abb1c2374b58f2fb82c2d9a1816c",
+      "home": "SKILL.md:97",
+      "home_fragment": "**Records and independence** — capture actual",
+      "units": [
+        "Record actual commands, complete results and pre",
+        "**Records and independence** — capture actual co"
+      ],
+      "mirrors": [
+        "SKILL.md:57"
+      ],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "3.0",
+        "trigger": "CHANGELOG 3.0: evidence blocks in the log; 8.0.0 direct capture of actual provenance.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-EVID-02",
+      "statement": "Distinct executions remain distinct events even when they share immutable bytes.",
+      "statement_sha256": "2d9137221659a449c5ca061165739893151da8a5e6441008f6aa5fda84b6b6e0",
+      "home": "SKILL.md:59",
+      "home_fragment": "remain distinct events even when immutable bytes are shared.",
+      "units": [
+        "Distinct executions remain distinct events even "
+      ],
+      "mirrors": [],
+      "class": "format",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.2.0",
+        "trigger": "CHANGELOG 8.2.0: distinct check events share immutable content objects.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-EVID-03",
+      "statement": "Reports state method, result and observed independence; a role name or self-review cannot create independent evidence.",
+      "statement_sha256": "bd6e0a5e51842a07b2ac5b0bd2e844eaa9482551cf83dd11921e2d6a16d044aa",
+      "home": "SKILL.md:75",
+      "home_fragment": "Report method, result and observed independence;",
+      "units": [
+        "Report method, result and observed independence;"
+      ],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "3.3.0",
+        "trigger": "CHANGELOG 3.3.0: checker ≠ maker is best-effort and recorded; 8.0.0 keeps reviewer independence explicit.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-EVID-04",
+      "statement": "Unknown telemetry stays n/a.",
+      "statement_sha256": "04e60b3125590405835035dd24d7ce4a117bfd651aa8507d9713d5570b558c91",
+      "home": "SKILL.md:76",
+      "home_fragment": "Unknown telemetry stays `n/a`.",
+      "units": [
+        "Unknown telemetry stays `n/a`."
+      ],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "5.2.0",
+        "trigger": "CHANGELOG 5.2.0: the usage ledger records n/a instead of estimates.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s32-usage-honesty",
+          "s38-suite-efficiency-honesty"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-08-06-s32.md",
+          "label": "verdict: null",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-b.md",
+          "label": "method=pass",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-b.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-EVID-05",
+      "statement": "Claims are verified against file:line or explicitly historical sources, and stale citations are re-anchored.",
+      "statement_sha256": "e9ef909a1ed89de14fd1429975954d71b7c91b3e1d6b87e7dcf42020b26209fe",
+      "home": "SKILL.md:92",
+      "home_fragment": "**Reference verification** — verify claims against",
+      "units": [
+        "**Reference verification** — verify claims again"
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "2.1.0",
+        "trigger": "CHANGELOG 2.1.0: points stay ungrounded until every cited file:line is read; 4.4.1 fixed the grounding age after s19; 5.3.0 re-anchors mechanically.",
+        "discovered_by": [
+          "s19-resume-grounding"
+        ]
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s7-grounding-trap",
+          "s19-resume-grounding",
+          "s35-citation-drift",
+          "s46-drill-trap"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-07-17-suite.md",
+          "label": "null (form weak in both)",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-01-s19.md",
+          "label": "flaky null at this tier",
+          "seeds": "n/a"
+        },
+        {
+          "record": "eval/runs/2026-08-21-s46-drill-trap.md",
+          "label": "verdict: null",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-27-s46-drill-trap.md",
+          "label": "verdict: null",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-a.md",
+          "label": "method=pass",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-a.md",
+          "label": "method=pass",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-b.md",
+          "label": "method=pass",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-b.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-EVID-06",
+      "statement": "Every required assertion propagates failure: set -u, pipefail or a final PASS alone cannot, wrapper success cannot hide a child failure, and reconstructed prose is not raw evidence.",
+      "statement_sha256": "a6eb4bc66deaf99ae4b395dc6cfeae79cfc5b2cfb4625ba927611de8e307c996",
+      "home": "SKILL.md:97",
+      "home_fragment": "Every required assertion must propagate failure;",
+      "units": [
+        "Every required assertion must propagate failure;",
+        "Wrapper success cannot hide child failure; recon"
+      ],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "7.3.0",
+        "trigger": "CHANGELOG 7.3.0: checked failure propagation, with wrapper and child outcomes kept separate.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-EVID-07",
+      "statement": "Reconcile observe-incomplete before repeating effects, and derive grades from records.",
+      "statement_sha256": "1f81a106cbfb93d720c0ecf67a4e97ca09bf284887f7b5a4392294c90224ccd4",
+      "home": "SKILL.md:98",
+      "home_fragment": "Reconcile `observe-incomplete` before repeating effects;",
+      "units": [
+        "Reconcile `observe-incomplete` before repeating "
+      ],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "4.0.0",
+        "trigger": "CHANGELOG 4.0.0: evidence grades are derived, never self-declared; 4.2.0 moved the derivation into SKILL.md after s15 fired on both arms.",
+        "discovered_by": [
+          "s15-grade-inflation"
+        ]
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s15-grade-inflation"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-07-24-s11-s15.md",
+          "label": "Trap fires on both arms",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-27-s15-grade-inflation.md",
+          "label": "verdict: discriminates",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-a.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-EVID-08",
+      "statement": "Report actual capabilities, model, effort and telemetry; never invent bindings or assume a vendor mechanism.",
+      "statement_sha256": "d54337c0fcca19af2ff34b9808e56e80ce2e7969a064defa89a65ace1dd19d22",
+      "home": "SKILL.md:101",
+      "home_fragment": "**Provider independence** — report actual capabilities",
+      "units": [
+        "**Provider independence** — report actual capabi"
+      ],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "3.3.0",
+        "trigger": "CHANGELOG 3.3.0: model-bound teams record the binding honestly; 5.2.0 records unsupported effort bindings.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s10-tier-trap",
+          "s33-effort-binding"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-07-17-suite.md",
+          "label": "null",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-06-s33.md",
+          "label": "verdict: discriminates",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-27-s33-effort-binding.md",
+          "label": "verdict: null",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-a.md",
+          "label": "method=pass",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-b.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-EVID-09",
+      "statement": "A report is a set of claims, not evidence: an audit accepts no claim without observing its support.",
+      "statement_sha256": "573d9441d7789f50711a6469834d7bcc4208ff33c47afea3ee722b5ff765fdb1",
+      "home": "references/guides/judge.md:7",
+      "home_fragment": "A report is a set of claims, not evidence.",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "3.1.0",
+        "trigger": "CHANGELOG 3.1.0: adversarial post-completion verification with judge.md.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s8-judge-trap"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-07-17-suite.md",
+          "label": "null",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-a.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-EVID-10",
+      "statement": "A suite run is evidence only if the arm's condition actually held, audited before scoring.",
+      "statement_sha256": "03e6510f3f23404667d2ce4dacabdbea1ced18ffb29a21d8aeb3ab1cd2ad91af",
+      "home": "references/guides/judge.md:43",
+      "home_fragment": "A run is evidence only if the arm's condition actually",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "5.5.0",
+        "trigger": "CHANGELOG 5.5.0: the suite arm-compliance audit, after a harness auto-load contaminated an s31 control.",
+        "discovered_by": [
+          "s31-init-core-edit"
+        ]
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s37-suite-compliance"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-b.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-EVID-11",
+      "statement": "The answer sheet is never visible to the agent under test.",
+      "statement_sha256": "5e2db81002e311e96a7103d0fe9809a2c487d3ea0759698fc2a6d00064976ec5",
+      "home": "references/guides/judge.md:39",
+      "home_fragment": "The answer sheet must never be visible to the agent under",
+      "units": [],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "6.0.0",
+        "trigger": "CHANGELOG 6.0.0: staging excludes GROUND-TRUTH.md; 7.1.0 stages manually with the answer sheet outside every arm.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s48-eval-runner-trap"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-08-21-s48-eval-runner-trap.md",
+          "label": "verdict: null",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-b.md",
+          "label": "control=null",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-EVID-12",
+      "statement": "Role-scoped telemetry joins only on an exact run id; a native provider id without an explicit mapping stays unjoined.",
+      "statement_sha256": "5e395c05016c5291504026a85194d85f9c599201d4547b9b400ec229d8baa585",
+      "home": "references/guides/usage-observability.md:78",
+      "home_fragment": "Role-scoped sidecar observations join only on an exact",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "7.2.0",
+        "trigger": "CHANGELOG 7.2.0: provenance keeps native provider scope.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s53-usage-provenance"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-09-04-s53-usage-provenance.md",
+          "label": "verdict: null",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-STATE-01",
+      "statement": "New workspaces use T-ids and tasks/; existing P-ids, paths and historical records remain readable.",
+      "statement_sha256": "45a4dbe9f81bd9c501f702047096da1420d713bcee8bf73a91ae8120dd3b1248",
+      "home": "SKILL.md:72",
+      "home_fragment": "New workspaces use T-ids and `tasks/`",
+      "units": [
+        "New workspaces use T-ids and `tasks/`; existing "
+      ],
+      "mirrors": [],
+      "class": "format",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.4.0",
+        "trigger": "CHANGELOG 8.4.0: new Coordinated workspaces use Task identifiers and tasks/ briefs.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATE-02",
+      "statement": "Validated boards may use Draft, Ready to run, In progress, Checking and Complete, while Blocked, Interrupted, Skipped and Unverifiable remain distinct.",
+      "statement_sha256": "b983422187771d885ee4fa0f56c355ed1596a38f1e9d14b3eb0ae9106bbe179b",
+      "home": "SKILL.md:72",
+      "home_fragment": "New validated boards may use Draft,",
+      "units": [
+        "New validated boards may use Draft, Ready to run"
+      ],
+      "mirrors": [],
+      "class": "format",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.2.0",
+        "trigger": "CHANGELOG 8.2.0: validated new boards distinguish readiness, implementation, checking and complete obligations.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATE-03",
+      "statement": "Complete means every mandatory task obligation passed.",
+      "statement_sha256": "18f2bd208aa2306e89cb9936e988787665302f0394d5bae9af6fd21909bfe1e8",
+      "home": "SKILL.md:74",
+      "home_fragment": "Complete means every mandatory task obligation passed.",
+      "units": [
+        "Complete means every mandatory task obligation p"
+      ],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "3.3.0",
+        "trigger": "CHANGELOG 3.3.0: no sign-off, no flip; 8.2.0 distinguishes complete obligations.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s9-closure-trap"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-07-17-suite.md",
+          "label": "method avoided",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-a.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-STATE-04",
+      "statement": "Historical E0–E3 codes remain readable and are never an ordinal scale.",
+      "statement_sha256": "7d648b5ac45bc2fb19197cfab1ecd45526cf1d57b60673aefe9f07aa717af23f",
+      "home": "SKILL.md:74",
+      "home_fragment": "Historical E0–E3 codes",
+      "units": [
+        "Historical E0–E3 codes remain readable, never an"
+      ],
+      "mirrors": [],
+      "class": "format",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.0.0",
+        "trigger": "CHANGELOG 8.0.0: migration preserves historical grades.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATE-05",
+      "statement": "The task board is canonical current state, history is append-only, current-work projections are reconstructable, and questions and decisions retain their sources.",
+      "statement_sha256": "ff9ea01037ae500a333bdddf60f7832a5980b2d0ab36e613344eccb8d9e83f19",
+      "home": "SKILL.md:78",
+      "home_fragment": "The task board is canonical current state; history is",
+      "units": [
+        "The task board is canonical current state; histo",
+        "**State ownership** — board is current state; lo"
+      ],
+      "mirrors": [
+        "SKILL.md:98"
+      ],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "2.1.0",
+        "trigger": "CHANGELOG 2.1.0: board.md is the single canonical source of status; 3.0 keeps the log append-only.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATE-06",
+      "statement": "Projections are validated against authoritative inputs and checkpoints.",
+      "statement_sha256": "39b76a96dd74a9eeb844ce2293bc0f8c9eeea5a0bd73e0ad1e3fd6515280cd5d",
+      "home": "SKILL.md:79",
+      "home_fragment": "Validate projections against authoritative inputs",
+      "units": [
+        "Validate projections against authoritative input"
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.2.0",
+        "trigger": "CHANGELOG 8.2.0: source-validated current-work projections.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATE-07",
+      "statement": "Reversible archival preserves the original history.",
+      "statement_sha256": "7c7d9211b567781719ac9e85bf11ec59abd153a12a1ea64d2324c2dcda26d9d6",
+      "home": "SKILL.md:79",
+      "home_fragment": "Preserve original",
+      "units": [
+        "Preserve original history during reversible arch"
+      ],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.2.0",
+        "trigger": "CHANGELOG 8.2.0: recoverable archival; 3.0 introduced the log-archive protocol.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATE-08",
+      "statement": "Current, interrupted, unresolved and pinned verification records are protected, and retired bytes cannot support reuse.",
+      "statement_sha256": "f27771cb6798e1e2f687159658e45decafdb225d6ae022bd597129c37f569ffa",
+      "home": "SKILL.md:80",
+      "home_fragment": "Protect current, interrupted, unresolved and pinned",
+      "units": [
+        "Protect current, interrupted, unresolved and pin"
+      ],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.2.0",
+        "trigger": "CHANGELOG 8.2.0: protect current, interrupted, unresolved and pinned records.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATE-09",
+      "statement": "Maintenance follows an authorized initiative policy, and STATUS never archives or cleans up.",
+      "statement_sha256": "096535b6061b69ffb5c6e5f54ffd15f78f99b2c6182dd08c49a8364281c3899e",
+      "home": "SKILL.md:81",
+      "home_fragment": "Maintenance follows an authorized initiative policy;",
+      "units": [
+        "Maintenance follows an authorized initiative pol"
+      ],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.2.0",
+        "trigger": "CHANGELOG 8.2.0: maintenance previews and authorized retirement.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s39-log-archive"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-b.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-STATUS-01",
+      "statement": "STATUS is read-only status, list, next and plain resume.",
+      "statement_sha256": "a1f0f3ee845549a83fba4299793f9edba2ba147dab73099a3ea48d8ac8667138",
+      "home": "SKILL.md:20",
+      "home_fragment": "Read-only status, list, next and plain resume.",
+      "units": [
+        "**STATUS** `status [<workspace>]` Read-only stat"
+      ],
+      "mirrors": [
+        "references/guides/communication.md:20"
+      ],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.0.0",
+        "trigger": "CHANGELOG 8.0.0: STATUS answers queries without changing source, board or log.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s26-pulse-readonly"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-08-05-authority-traps.md",
+          "label": "method=avoided control=null",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-27-s26-pulse-readonly.md",
+          "label": "verdict: null",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-b.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-STATUS-02",
+      "statement": "An explicit --handoff writes only its projection.",
+      "statement_sha256": "8b80d70dab48013aeab4790b735c8660460b28cd50b249dc4107197eee069efc",
+      "home": "SKILL.md:20",
+      "home_fragment": "Explicit `--handoff` writes only its projection.",
+      "units": [
+        "Explicit `--handoff` writes only its projection."
+      ],
+      "mirrors": [
+        "references/guides/context-lifecycle.md:40"
+      ],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.2.0",
+        "trigger": "CHANGELOG 8.2.0: portable handoff as an explicit projection.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATUS-03",
+      "statement": "A diagnostic or standalone STATUS request authorizes no fix.",
+      "statement_sha256": "7f15f74bc39e016366c936b2c855a9f4652fdd345611e2cb5f13678480f06a51",
+      "home": "SKILL.md:26",
+      "home_fragment": "A diagnostic or standalone STATUS request authorizes",
+      "units": [
+        "A diagnostic or standalone STATUS request author"
+      ],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.1.0",
+        "trigger": "CHANGELOG 8.1.0: a question about run, or an instruction not to execute it, authorizes no change.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s1-assessment-trap"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-07-17-suite.md",
+          "label": "method avoided",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-a.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-STATUS-04",
+      "statement": "An explicit resume request that also states execution intent enters RUN after preflight.",
+      "statement_sha256": "d042c6cb435ee7365527febf22608c81075445255b59a6247801a53a67ee887e",
+      "home": "SKILL.md:26",
+      "home_fragment": "An explicit resume request that also states execution",
+      "units": [
+        "An explicit resume request that also states exec"
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.2.0",
+        "trigger": "First stated in SKILL.md 8.2.0 (git history); no changelog entry names it.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATUS-05",
+      "statement": "A portable handoff carries its context inline; local paths alone are insufficient.",
+      "statement_sha256": "eef171ef8533ddcac9a89f0dfb733a3027ed36cdd351e4496a44da68925c8b34",
+      "home": "references/guides/context-lifecycle.md:74",
+      "home_fragment": "Local paths alone are insufficient.",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "5.1.0",
+        "trigger": "CHANGELOG 5.1.0: the handoff portability fix after an s30 method arm leaked plan-local paths.",
+        "discovered_by": [
+          "s30-handoff-planstate-leak"
+        ]
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s30-handoff-planstate-leak"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-08-05-artifact-traps.md",
+          "label": "method=trap-hit control=null",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-05-s30-rerun.md",
+          "label": "method=avoided",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-27-s30-handoff-planstate-leak.md",
+          "label": "verdict: discriminates",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-b.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-LEARN-01",
+      "statement": "Select applicable, current lessons; incompatible hypotheses remain historical.",
+      "statement_sha256": "534a55157470760c6e07fd3b53ee97a1b5fc878405a79ac3a296652634d4b968",
+      "home": "SKILL.md:100",
+      "home_fragment": "**Learning consent** — select applicable, current",
+      "units": [
+        "**Learning consent** — select applicable, curren"
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.2.0",
+        "trigger": "CHANGELOG 8.2.0: current rules exclude incompatible historical profile hypotheses.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s41-directive-resurface"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-b.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-LEARN-02",
+      "statement": "Only retro writes profiles, after confirmation, and backlog ideas are deliberate writes.",
+      "statement_sha256": "5c457f626d04a54db4d50ce26e1ec0d24a2451072a999ccdd7efee791721dfde",
+      "home": "SKILL.md:100",
+      "home_fragment": "Only retro writes profiles after confirmation;",
+      "units": [
+        "Only retro writes profiles after confirmation; b"
+      ],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "3.0",
+        "trigger": "CHANGELOG 3.0: opt-in profiles with batch-confirmed writes through retro.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s6-profile-trap",
+          "s20-retro-opt-in",
+          "s47-evolution-optout-trap"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-07-17-suite.md",
+          "label": "method avoided",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-01-s20.md",
+          "label": "Discrimination result: NULL",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-21-s47-evolution-optout-trap.md",
+          "label": "verdict: null",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-a.md",
+          "label": "method=pass",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-a.md",
+          "label": "method=pass",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-b.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-LEARN-03",
+      "statement": "Cohort totals and rankings need 100% comparable coverage; otherwise retro reports labeled observations.",
+      "statement_sha256": "fa05a54d819eca03a40bd7a20108f6bcbc05202e0d312a0e9786e5e9113cf8b2",
+      "home": "references/guides/retro.md:20",
+      "home_fragment": "Coverage-gated totals",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "7.2.0",
+        "trigger": "CHANGELOG 7.2.0: retro reports measured/eligible coverage before arithmetic and gates totals and rankings.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s52-usage-coverage"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-09-04-s52-usage-coverage.md",
+          "label": "verdict: null",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-LEARN-04",
+      "statement": "Every retro metric is computed by its copy-paste recipe.",
+      "statement_sha256": "177faaeea3a80c629f006001d35e02cb18118a55235bac18b870e9b5a7ef2d09",
+      "home": "references/guides/retro.md:11",
+      "home_fragment": "Every metric carries a copy-paste recipe",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "5.2.0",
+        "trigger": "CHANGELOG 5.2.0: retro cost analysis with mechanical token-mining recipes.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s34-retro-mining"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-08-06-s34.md",
+          "label": "verdict: null",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-b.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-MIGRATE-01",
+      "statement": "Migrate only selected active workspaces, on a disposable copy first, preserving history and correction lineage, and adopt at an explicit task boundary.",
+      "statement_sha256": "3691a83750c46d358d777688cdff8b7287c22280cc53de5b658bfcf996a86a86",
+      "home": "SKILL.md:84",
+      "home_fragment": "Migrate only selected active workspaces",
+      "units": [
+        "Migrate only selected active workspaces on a dis"
+      ],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.0.0",
+        "trigger": "CHANGELOG 8.0.0: migration is selected, copy-first and reversible.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-MIGRATE-02",
+      "statement": "Interrupted tasks stay on their pinned procedure.",
+      "statement_sha256": "ca47b7444be8f60ed391de3cf55fcba2b73ab4d991367080efd4a68fec428658",
+      "home": "SKILL.md:85",
+      "home_fragment": "Interrupted tasks stay on their pinned",
+      "units": [
+        "Interrupted tasks stay on their pinned procedure"
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.1.0",
+        "trigger": "CHANGELOG 8.1.0: the migration checklist preserves interrupted-Point procedures.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-MIGRATE-03",
+      "statement": "Usage v2 adoption appends after the preserved legacy table and never rewrites or backfills historical rows.",
+      "statement_sha256": "6fd2bf428e375b64668f2cc2e1532f06d2db2c015bce4b795c8d12c1d85568d4",
+      "home": "references/guides/migrate.md:348",
+      "home_fragment": "do not rewrite or backfill historical rows.",
+      "units": [],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "7.2.0",
+        "trigger": "CHANGELOG 7.2.0: the reversible v7.1 → v7.2 legacy-ledger checklist with byte preservation.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s54-usage-v2-migration"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-09-04-s54-usage-v2-migration.md",
+          "label": "verdict: null",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-REL-01",
+      "statement": "Ordinary invocation performs no network access or installation mutation.",
+      "statement_sha256": "b10dbf2279fbd472780f8c8622b9abdb6f18dc6f9ec8d4ec38da87030f570fc1",
+      "home": "SKILL.md:86",
+      "home_fragment": "Ordinary invocation performs no network access or",
+      "units": [
+        "Ordinary invocation performs no network access o"
+      ],
+      "mirrors": [
+        "references/guides/intake-and-gate.md:3",
+        "references/guides/update.md:5"
+      ],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "7.2.1",
+        "trigger": "CHANGELOG 7.2.1: ordinary invocation no longer performs release checks, downloads, extraction or installation-tree mutation.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s16-self-update-trap"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-07-24-s16.md",
+          "label": "documented null",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-a.md",
+          "label": "method=pass",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-09-05-s16-security-hardening.md",
+          "label": "verdict: null",
+          "seeds": "n/a"
+        }
+      ]
+    },
+    {
+      "rule_id": "R-REL-02",
+      "statement": "Releases require separate authorization, the eight self-lint gates, a catalog and workspace sweep and the required behavioral evidence.",
+      "statement_sha256": "d86263add30ca9711724b76b21721bd0ed34bfbaf7151decf98d61366b68af2e",
+      "home": "SKILL.md:86",
+      "home_fragment": "Releases require separate",
+      "units": [
+        "Releases require separate authorization, eight s"
+      ],
+      "mirrors": [],
+      "class": "maintainer",
+      "hot_path": true,
+      "origin": {
+        "added_in": "3.3.0",
+        "trigger": "CHANGELOG 3.3.0: the tag waits on a clean sweep; 5.4.0 mechanized the sweep.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s36-sweep-gate"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-08-13-s36-sweep-gate.md",
+          "label": "verdict: discriminates",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-27-s36-sweep-gate.md",
+          "label": "verdict: discriminates",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-b.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-REL-03",
+      "statement": "After a verified replacement, remove only the exact legacy basename tackle-check, never with recursive or prefix cleanup.",
+      "statement_sha256": "f1d9c84d6e7a84700c717480ec67ae13d6a5ac3da7cc2b37f355d6238e32c1bf",
+      "home": "references/guides/update.md:17",
+      "home_fragment": "remove the exact legacy basename `tackle-check`",
+      "units": [],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "7.1.1",
+        "trigger": "CHANGELOG 7.1.1: a verified replacement removes only the exact tackle-check tombstone.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s51-self-update-legacy-prune"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-09-04-s51-self-update-legacy-prune.md",
+          "label": "verdict: discriminates",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-COMM-01",
+      "statement": "Follow the shared decision and communication policy.",
+      "statement_sha256": "d713d08d955af181fa7505177930a4cd80d4141d934f5513dacbcf7c5a528e48",
+      "home": "SKILL.md:49",
+      "home_fragment": "Follow the shared [decision and",
+      "units": [
+        "Follow the shared [decision and communication po"
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.2.0",
+        "trigger": "CHANGELOG 8.2.0: one decision and communication policy.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-COMM-02",
+      "statement": "Authority order is user, then specification or contract, then protected tests or acceptance, then implementation; preferences and hypotheses cannot override it.",
+      "statement_sha256": "109e9cf49e449ff3ec12237a0ea8df9323d2aa0187d4b8a0db061ca1dd91e097",
+      "home": "SKILL.md:91",
+      "home_fragment": "**Authority order** — user >",
+      "units": [
+        "**Authority order** — user > specification/contr",
+        "Preferences and hypotheses cannot override this "
+      ],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "3.3.0",
+        "trigger": "CHANGELOG 3.3.0: authority order as a core convention, added after s2 showed it unreachable for trivial tasks.",
+        "discovered_by": [
+          "s2-surprise-trap"
+        ]
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s2-surprise-trap"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-07-17-suite.md",
+          "label": "method = ideal",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-a.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-COMM-03",
+      "statement": "The user owns product choices; reversible technical choices are delegated within scope.",
+      "statement_sha256": "46e5c521917cbe629778c56953649c6fda2ab7471e809b28cdffeaca2b5ce9ac",
+      "home": "SKILL.md:99",
+      "home_fragment": "**Decision ownership** — user owns product choices;",
+      "units": [
+        "**Decision ownership** — user owns product choic"
+      ],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "1.4",
+        "trigger": "CHANGELOG 1.4: decision ownership.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-COMM-04",
+      "statement": "Changed acceptance needs a superseding decision.",
+      "statement_sha256": "991a21bf5405d039fbb53394b6021742571be5fcad4c9a1073710c83732a3516",
+      "home": "SKILL.md:99",
+      "home_fragment": "Changed acceptance needs a superseding decision.",
+      "units": [
+        "Changed acceptance needs a superseding decision."
+      ],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "3.0",
+        "trigger": "CHANGELOG 3.0: sealed acceptance sections.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s14-evaluator-trap"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-07-24-s11-s15.md",
+          "label": "Null: both",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-a.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ]
+    },
+    {
+      "rule_id": "R-COMM-05",
+      "statement": "Reuse the gitignore choice of authorized plans or seeds; otherwise ask once.",
+      "statement_sha256": "89b3ae53e8eaa9f7af4d3daecabb42db1eefd303a7a8d1eb79de63d00e685f74",
+      "home": "SKILL.md:99",
+      "home_fragment": "Reuse authorized plans/seeds gitignore choices",
+      "units": [
+        "Reuse authorized plans/seeds gitignore choices, "
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "2.1.0",
+        "trigger": "CHANGELOG 2.1.0: PLAN asks about the docs/plans/ gitignore and records the choice.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-COMM-06",
+      "statement": "Output states the result or useful progress, the observed checks and material uncertainty.",
+      "statement_sha256": "1a737e94e16796b96b001e0b23f5ef52b596f3a472446e1147c622bb1f669c58",
+      "home": "SKILL.md:105",
+      "home_fragment": "State the result or useful progress, observed checks",
+      "units": [
+        "State the result or useful progress, observed ch"
+      ],
+      "mirrors": [],
+      "class": "format",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.2.0",
+        "trigger": "CHANGELOG 8.2.0: one communication policy replaces universal closing footers.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-COMM-07",
+      "statement": "Ask only when the input changes affected work.",
+      "statement_sha256": "77b471ebc83f001c37ba9ec65986bdee546b1dd339f0fb1cd51f266f09cd8f36",
+      "home": "SKILL.md:105",
+      "home_fragment": "Ask only when input",
+      "units": [
+        "Ask only when input changes affected work."
+      ],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.2.0",
+        "trigger": "CHANGELOG 8.2.0: one communication policy replaces repeated confirmation.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-COMM-08",
+      "statement": "No mandatory footers; necessary information outranks length targets.",
+      "statement_sha256": "fb1e2e3db0b2e4a26b34a0d60cb528d231d7f55114bb4dd12381ce8b8f29ce24",
+      "home": "SKILL.md:106",
+      "home_fragment": "No mandatory footers; preserve necessary information",
+      "units": [
+        "No mandatory footers; preserve necessary informa"
+      ],
+      "mirrors": [],
+      "class": "format",
+      "hot_path": true,
+      "origin": {
+        "added_in": "8.2.0",
+        "trigger": "CHANGELOG 8.2.0: universal closing footers are removed.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-EVID-13",
+      "statement": "A high-risk point may declare Lenses: distinct verification lenses run as independent skeptic checks, and a finding survives on majority vote.",
+      "statement_sha256": "d580844cc8e9ed18ef38f6ebca038b4c47803f45bf99325f1453fc912e44a72d",
+      "home": "references/team.tmpl.md@v7.3.0:201",
+      "home_fragment": "A point briefing MAY declare **`Lenses:`**",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "4.0.0",
+        "trigger": "CHANGELOG 4.0.0: opt-in multi-lens checker; 4.1.1 standard lens catalog. The 8.0.0 Plan and Run rewrite removed the Lenses field from team.tmpl.md.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s13-single-lens"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-07-24-s11-s15.md",
+          "label": "Null at this tier",
+          "seeds": 1
+        },
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-a.md",
+          "label": "method=pass",
+          "seeds": 1
+        }
+      ],
+      "retired_in": "8.0.0"
+    },
+    {
+      "rule_id": "R-REL-04",
+      "statement": "Every invocation, resume included, first runs the daily self-update check through the ~/.tackle/last-update-check cache.",
+      "statement_sha256": "de9b60209f56540bd60f055282164ca3d8316db6d4bff75e6fc6fa14c47aba1f",
+      "home": "references/guides/update.md@v7.2.0:3",
+      "home_fragment": "Triggered by the daily Self-update check that opens",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "4.1.0",
+        "trigger": "CHANGELOG 4.1.0: daily self-update check; 4.3.1 extends it to resume after s18. 7.2.1 removes release checks from ordinary invocation.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s18-resume-update-check"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-09-24"
+      },
+      "historical": [
+        {
+          "record": "eval/runs/2026-08-29-runner-removal-a.md",
+          "label": "method=pass",
+          "seeds": 1
+        },
+        {
+          "record": "eval/scenarios/s18-resume-update-check/GROUND-TRUTH.md",
+          "label": "discriminating — gate PASSED",
+          "seeds": 1
+        }
+      ],
+      "retired_in": "7.2.1"
+    }
+  ],
+  "non_normative": [
+    {
+      "unit": "[Terminology](references/terminology.md) defines",
+      "reason": "Points to terminology.md, which states the names, mappings and aliases."
+    }
+  ]
+}

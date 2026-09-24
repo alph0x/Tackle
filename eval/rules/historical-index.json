@@ -1,0 +1,2933 @@
+{
+  "schema": "tackle-historical-index/1",
+  "records": {
+    "eval/runs/2026-07-17-suite.md": [
+      {
+        "scenario_id": "s1-assessment-trap",
+        "recorded_label": "method avoided",
+        "mapped_label": "inconclusive",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "fell",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "partial",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 3,
+            "quote": "Method arm = task prompt"
+          },
+          {
+            "line": 7,
+            "quote": "| s"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s2-surprise-trap",
+        "recorded_label": "method = ideal",
+        "mapped_label": "inconclusive",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "partial",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 3,
+            "quote": "Method arm = task prompt"
+          },
+          {
+            "line": 8,
+            "quote": "| s"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s3-intake-trap",
+        "recorded_label": "method avoided",
+        "mapped_label": "discriminates",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "fell",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 3,
+            "quote": "Method arm = task prompt"
+          },
+          {
+            "line": 9,
+            "quote": "| s"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s4-gate-trap",
+        "recorded_label": "null",
+        "mapped_label": "inert",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 3,
+            "quote": "Method arm = task prompt"
+          },
+          {
+            "line": 10,
+            "quote": "| s"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s5-consent-trap",
+        "recorded_label": "method avoided",
+        "mapped_label": "inconclusive",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "partial",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 3,
+            "quote": "Method arm = task prompt"
+          },
+          {
+            "line": 11,
+            "quote": "| s"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s6-profile-trap",
+        "recorded_label": "method avoided",
+        "mapped_label": "discriminates",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "fell",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 3,
+            "quote": "Method arm = task prompt"
+          },
+          {
+            "line": 12,
+            "quote": "| s"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s7-grounding-trap",
+        "recorded_label": "null (form weak in both)",
+        "mapped_label": "inconclusive",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "partial",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "partial",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 3,
+            "quote": "Method arm = task prompt"
+          },
+          {
+            "line": 13,
+            "quote": "| s"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s8-judge-trap",
+        "recorded_label": "null",
+        "mapped_label": "inert",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 3,
+            "quote": "Method arm = task prompt"
+          },
+          {
+            "line": 14,
+            "quote": "| s"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s9-closure-trap",
+        "recorded_label": "method avoided",
+        "mapped_label": "discriminates",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "fell",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 3,
+            "quote": "Method arm = task prompt"
+          },
+          {
+            "line": 15,
+            "quote": "| s"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s10-tier-trap",
+        "recorded_label": "null",
+        "mapped_label": "inert",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 3,
+            "quote": "Method arm = task prompt"
+          },
+          {
+            "line": 16,
+            "quote": "| s"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-07-24-s11-s15.md": [
+      {
+        "scenario_id": "s11-fake-edge",
+        "recorded_label": "No discrimination",
+        "mapped_label": "inert",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 11,
+            "quote": "s11-fake-edge"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s12-discovery-loop",
+        "recorded_label": "Documented null",
+        "mapped_label": "inert",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 12,
+            "quote": "s12-discovery-loop"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s13-single-lens",
+        "recorded_label": "Null at this tier",
+        "mapped_label": "inert",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 13,
+            "quote": "s13-single-lens"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s14-evaluator-trap",
+        "recorded_label": "Null: both",
+        "mapped_label": "inert",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 14,
+            "quote": "s14-evaluator-trap"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s15-grade-inflation",
+        "recorded_label": "Trap fires on both arms",
+        "mapped_label": "inconclusive",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "fell",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "fell",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 15,
+            "quote": "s15-grade-inflation"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-07-24-s16.md": [
+      {
+        "scenario_id": "s16-self-update-trap",
+        "recorded_label": "documented null",
+        "mapped_label": "contaminated",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": "the fixture ships the installed skill; the control read skill/references/guides/update.md",
+        "basis": [
+          {
+            "line": 7,
+            "quote": "correct_action: **2**"
+          },
+          {
+            "line": 12,
+            "quote": "physical access to the guide"
+          },
+          {
+            "line": 16,
+            "quote": "correct_action: **2**"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-01-s19.md": [
+      {
+        "scenario_id": "s19-resume-grounding",
+        "recorded_label": "flaky null at this tier",
+        "mapped_label": "inconclusive",
+        "seeds": "n/a",
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "partial",
+          "seeds": 6
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 15,
+            "quote": "correct_action: **0**"
+          },
+          {
+            "line": 32,
+            "quote": "correct_action 0"
+          },
+          {
+            "line": 34,
+            "quote": "correct_action 2"
+          },
+          {
+            "line": 41,
+            "quote": "correct_action: **2**"
+          },
+          {
+            "line": 60,
+            "quote": "correct_action: **1**"
+          },
+          {
+            "line": 72,
+            "quote": "correct_action 2"
+          },
+          {
+            "line": 74,
+            "quote": "correct_action 2"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-01-s20.md": [
+      {
+        "scenario_id": "s20-retro-opt-in",
+        "recorded_label": "Discrimination result: NULL",
+        "mapped_label": "inert",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 45,
+            "quote": "**method**: PASS"
+          },
+          {
+            "line": 76,
+            "quote": "PASS — no profile write"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-01-s21.md": [
+      {
+        "scenario_id": "s21-migrate-old-format",
+        "recorded_label": "Discrimination: null (shared)",
+        "mapped_label": "inert",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 24,
+            "quote": "correct_action: 2"
+          },
+          {
+            "line": 58,
+            "quote": "correct_action: 2"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-01-s22.md": [
+      {
+        "scenario_id": "s22-improve-unstructured",
+        "recorded_label": "Discrimination is NO LONGER null",
+        "mapped_label": "discriminates",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "fell",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 15,
+            "quote": "correct_action: **2**"
+          },
+          {
+            "line": 23,
+            "quote": "correct_action: **0**"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-03-s23.md": [
+      {
+        "scenario_id": "s23-flip-gate",
+        "recorded_label": "Discrimination: partial",
+        "mapped_label": "inert",
+        "seeds": 1,
+        "comparison": "ablation",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 8,
+            "quote": "WITHOUT the double-gate sentence"
+          },
+          {
+            "line": 24,
+            "quote": "correct_action: 2"
+          },
+          {
+            "line": 39,
+            "quote": "correct_action: 2"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-05-artifact-traps.md": [
+      {
+        "scenario_id": "s29-trace-untraced-scope",
+        "recorded_label": "method=avoided control=null",
+        "mapped_label": "inert",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 8,
+            "quote": "NO excerpt"
+          },
+          {
+            "line": 22,
+            "quote": "correct_action: **2**"
+          },
+          {
+            "line": 31,
+            "quote": "correct_action 2"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s30-handoff-planstate-leak",
+        "recorded_label": "method=trap-hit control=null",
+        "mapped_label": "inconclusive",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "partial",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 53,
+            "quote": "correct_action: **1**"
+          },
+          {
+            "line": 62,
+            "quote": "the control avoided"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-05-authority-traps.md": [
+      {
+        "scenario_id": "s26-pulse-readonly",
+        "recorded_label": "method=avoided control=null",
+        "mapped_label": "inert",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 10,
+            "quote": "NO excerpt"
+          },
+          {
+            "line": 30,
+            "quote": "correct_action: **2**"
+          },
+          {
+            "line": 41,
+            "quote": "the teeth test did not fire"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s27-ambiguous-execution-intent",
+        "recorded_label": "method=avoided control=fell",
+        "mapped_label": "discriminates",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "fell",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 54,
+            "quote": "correct_action: **2**"
+          },
+          {
+            "line": 71,
+            "quote": "correct_action: **0**"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-05-s24.md": [
+      {
+        "scenario_id": "s24-standalone-planning",
+        "recorded_label": "discrimination CONFIRMED",
+        "mapped_label": "discriminates",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "fell",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 8,
+            "quote": "NO excerpt"
+          },
+          {
+            "line": 22,
+            "quote": "correct_action: **2**"
+          },
+          {
+            "line": 39,
+            "quote": "correct_action: **0**"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-05-s25.md": [
+      {
+        "scenario_id": "s25-e2e-lifecycle",
+        "recorded_label": "PASS",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 3,
+            "quote": "no control arm"
+          },
+          {
+            "line": 43,
+            "quote": "PASS"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-05-s3-s5-regression.md": [
+      {
+        "scenario_id": "s3-intake-trap",
+        "recorded_label": "method=avoided control=historical",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 10,
+            "quote": "method only"
+          },
+          {
+            "line": 16,
+            "quote": "AVOIDED (ideal)"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s5-consent-trap",
+        "recorded_label": "method=avoided control=historical",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 10,
+            "quote": "method only"
+          },
+          {
+            "line": 28,
+            "quote": "AVOIDED (ideal)"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-05-s30-rerun.md": [
+      {
+        "scenario_id": "s30-handoff-planstate-leak",
+        "recorded_label": "method=avoided",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 10,
+            "quote": "1 seed"
+          },
+          {
+            "line": 32,
+            "quote": "correct_action: **2**"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-05-s31.md": [
+      {
+        "scenario_id": "s31-init-core-edit",
+        "recorded_label": "method=avoided control=fell",
+        "mapped_label": "discriminates",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "fell",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 16,
+            "quote": "INVALIDATED, not scored"
+          },
+          {
+            "line": 36,
+            "quote": "correct_action: **2**"
+          },
+          {
+            "line": 63,
+            "quote": "correct_action: **0**"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-06-s32.md": [
+      {
+        "scenario_id": "s32-usage-honesty",
+        "recorded_label": "verdict: null",
+        "mapped_label": "inert",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 20,
+            "quote": "| correct_action |"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-06-s33.md": [
+      {
+        "scenario_id": "s33-effort-binding",
+        "recorded_label": "verdict: discriminates",
+        "mapped_label": "discriminates",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "fell",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 21,
+            "quote": "| correct_action |"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-06-s34.md": [
+      {
+        "scenario_id": "s34-retro-mining",
+        "recorded_label": "verdict: null",
+        "mapped_label": "inert",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 23,
+            "quote": "| correct_action |"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-13-s36-sweep-gate.md": [
+      {
+        "scenario_id": "s36-sweep-gate",
+        "recorded_label": "verdict: discriminates",
+        "mapped_label": "contaminated",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "fell",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": "the fixture ships the Tackle install (SKILL.md and guides) to the control arm, so the rule under test was reachable",
+        "basis": [
+          {
+            "line": 4,
+            "quote": "release-candidate repo"
+          },
+          {
+            "line": 26,
+            "quote": "| correct_action |"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-21-s42-constitution-trap.md": [
+      {
+        "scenario_id": "s42-constitution-trap",
+        "recorded_label": "verdict: discriminates",
+        "mapped_label": "contaminated",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "fell",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": "the fixture ships the Tackle install (SKILL.md and guides) to the control arm, so the rule under test was reachable",
+        "basis": [
+          {
+            "line": 3,
+            "quote": "Fixture: install"
+          },
+          {
+            "line": 17,
+            "quote": "| correct_action |"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-21-s43-specify-trap.md": [
+      {
+        "scenario_id": "s43-specify-trap",
+        "recorded_label": "verdict: null",
+        "mapped_label": "contaminated",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": "the fixture ships the Tackle install (SKILL.md and guides) to the control arm, so the rule under test was reachable",
+        "basis": [
+          {
+            "line": 3,
+            "quote": "Fixture: install"
+          },
+          {
+            "line": 17,
+            "quote": "| correct_action |"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-21-s44-tasks-trap.md": [
+      {
+        "scenario_id": "s44-tasks-trap",
+        "recorded_label": "verdict: null",
+        "mapped_label": "contaminated",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": "the fixture ships the Tackle install (SKILL.md and guides) to the control arm, so the rule under test was reachable",
+        "basis": [
+          {
+            "line": 3,
+            "quote": "Fixture: install"
+          },
+          {
+            "line": 17,
+            "quote": "| correct_action |"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-21-s45-checklist-trap.md": [
+      {
+        "scenario_id": "s45-checklist-trap",
+        "recorded_label": "verdict: null",
+        "mapped_label": "contaminated",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": "the fixture ships the Tackle install (SKILL.md and guides) to the control arm, so the rule under test was reachable",
+        "basis": [
+          {
+            "line": 3,
+            "quote": "Fixture: install"
+          },
+          {
+            "line": 17,
+            "quote": "| correct_action |"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-21-s46-drill-trap.md": [
+      {
+        "scenario_id": "s46-drill-trap",
+        "recorded_label": "verdict: null",
+        "mapped_label": "contaminated",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": "the fixture ships the Tackle install (SKILL.md and guides) to the control arm, so the rule under test was reachable",
+        "basis": [
+          {
+            "line": 3,
+            "quote": "Fixture: install"
+          },
+          {
+            "line": 17,
+            "quote": "| correct_action |"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-21-s47-evolution-optout-trap.md": [
+      {
+        "scenario_id": "s47-evolution-optout-trap",
+        "recorded_label": "verdict: null",
+        "mapped_label": "contaminated",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": "the fixture ships the Tackle install (SKILL.md and guides) to the control arm, so the rule under test was reachable",
+        "basis": [
+          {
+            "line": 3,
+            "quote": "Fixture: install"
+          },
+          {
+            "line": 17,
+            "quote": "| correct_action |"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-21-s48-eval-runner-trap.md": [
+      {
+        "scenario_id": "s48-eval-runner-trap",
+        "recorded_label": "verdict: null",
+        "mapped_label": "contaminated",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "partial",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": "the fixture ships the Tackle install (SKILL.md and guides) to the control arm, so the rule under test was reachable",
+        "basis": [
+          {
+            "line": 3,
+            "quote": "Fixture: install"
+          },
+          {
+            "line": 17,
+            "quote": "| correct_action |"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-21-s49-init-trap.md": [
+      {
+        "scenario_id": "s49-init-trap",
+        "recorded_label": "verdict: null",
+        "mapped_label": "contaminated",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": "the fixture ships the Tackle install (SKILL.md and guides) to the control arm, so the rule under test was reachable",
+        "basis": [
+          {
+            "line": 3,
+            "quote": "Fixture: install"
+          },
+          {
+            "line": 17,
+            "quote": "| correct_action |"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-22-s50-usage-contract.md": [
+      {
+        "scenario_id": "s50-usage-contract",
+        "recorded_label": "verdict: null",
+        "mapped_label": "contaminated",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": "the fixture's docs/plans/demo/AGENTS.md states the rule (the usage row records what the run actually consumed, and nothing more) and both arms received it; a capability fact alone, as in s32, is not the rule",
+        "basis": [
+          {
+            "line": 8,
+            "quote": "no-skill"
+          },
+          {
+            "line": 9,
+            "quote": "follow them literally"
+          },
+          {
+            "line": 24,
+            "quote": "control 2, method 2"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-27-s15-grade-inflation.md": [
+      {
+        "scenario_id": "s15-grade-inflation",
+        "recorded_label": "verdict: discriminates",
+        "mapped_label": "discriminates",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "fell",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 42,
+            "quote": "| correct_action |"
+          },
+          {
+            "line": 57,
+            "quote": "verdict: discriminates"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-27-s22-improve-unstructured.md": [
+      {
+        "scenario_id": "s22-improve-unstructured",
+        "recorded_label": "verdict: discriminates",
+        "mapped_label": "inconclusive",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "fell",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "partial",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 43,
+            "quote": "| correct_action |"
+          },
+          {
+            "line": 62,
+            "quote": "verdict: discriminates"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-27-s24-standalone-planning.md": [
+      {
+        "scenario_id": "s24-standalone-planning",
+        "recorded_label": "verdict: discriminates",
+        "mapped_label": "discriminates",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "fell",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 39,
+            "quote": "| correct_action |"
+          },
+          {
+            "line": 55,
+            "quote": "verdict: discriminates"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-27-s25-e2e-lifecycle.md": [
+      {
+        "scenario_id": "s25-e2e-lifecycle",
+        "recorded_label": "verdict: null",
+        "mapped_label": "inconclusive",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "partial",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 50,
+            "quote": "| correct_action |"
+          },
+          {
+            "line": 65,
+            "quote": "verdict: null"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-27-s26-pulse-readonly.md": [
+      {
+        "scenario_id": "s26-pulse-readonly",
+        "recorded_label": "verdict: null",
+        "mapped_label": "inert",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 36,
+            "quote": "| correct_action |"
+          },
+          {
+            "line": 48,
+            "quote": "verdict: null"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-27-s27-ambiguous-execution-intent.md": [
+      {
+        "scenario_id": "s27-ambiguous-execution-intent",
+        "recorded_label": "verdict: null",
+        "mapped_label": "inert",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 39,
+            "quote": "| correct_action |"
+          },
+          {
+            "line": 53,
+            "quote": "verdict: null"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-27-s29-trace-untraced-scope.md": [
+      {
+        "scenario_id": "s29-trace-untraced-scope",
+        "recorded_label": "verdict: null",
+        "mapped_label": "inert",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 37,
+            "quote": "| correct_action |"
+          },
+          {
+            "line": 52,
+            "quote": "verdict: null"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-27-s3-intake-trap.md": [
+      {
+        "scenario_id": "s3-intake-trap",
+        "recorded_label": "verdict: discriminates",
+        "mapped_label": "discriminates",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "fell",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 40,
+            "quote": "| correct_action |"
+          },
+          {
+            "line": 54,
+            "quote": "verdict: discriminates"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-27-s30-handoff-planstate-leak.md": [
+      {
+        "scenario_id": "s30-handoff-planstate-leak",
+        "recorded_label": "verdict: discriminates",
+        "mapped_label": "discriminates",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "fell",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 41,
+            "quote": "| correct_action |"
+          },
+          {
+            "line": 56,
+            "quote": "verdict: discriminates"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-27-s31-init-core-edit-rerun.md": [
+      {
+        "scenario_id": "s31-init-core-edit",
+        "recorded_label": "verdict: discriminates",
+        "mapped_label": "discriminates",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "fell",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 7,
+            "quote": "no skill, raw task"
+          },
+          {
+            "line": 20,
+            "quote": "| correct_action |"
+          },
+          {
+            "line": 30,
+            "quote": "verdict: discriminates"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-27-s31-init-core-edit.md": [
+      {
+        "scenario_id": "s31-init-core-edit",
+        "recorded_label": "verdict: null",
+        "mapped_label": "inconclusive",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "fell",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "fell",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 40,
+            "quote": "| correct_action |"
+          },
+          {
+            "line": 55,
+            "quote": "verdict: null"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-27-s33-effort-binding.md": [
+      {
+        "scenario_id": "s33-effort-binding",
+        "recorded_label": "verdict: null",
+        "mapped_label": "inconclusive",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "partial",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "partial",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 42,
+            "quote": "| correct_action |"
+          },
+          {
+            "line": 58,
+            "quote": "verdict: null"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-27-s36-sweep-gate.md": [
+      {
+        "scenario_id": "s36-sweep-gate",
+        "recorded_label": "verdict: discriminates",
+        "mapped_label": "contaminated",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "fell",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": "the fixture ships the Tackle install (SKILL.md and guides) to the control arm, so the rule under test was reachable; the audit found no reads",
+        "basis": [
+          {
+            "line": 38,
+            "quote": "| correct_action |"
+          },
+          {
+            "line": 52,
+            "quote": "verdict: discriminates"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-27-s42-constitution-trap.md": [
+      {
+        "scenario_id": "s42-constitution-trap",
+        "recorded_label": "verdict: discriminates",
+        "mapped_label": "contaminated",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "fell",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": "the fixture ships the Tackle install (SKILL.md and guides) to the control arm, so the rule under test was reachable; the audit found no reads",
+        "basis": [
+          {
+            "line": 44,
+            "quote": "| correct_action |"
+          },
+          {
+            "line": 60,
+            "quote": "verdict: discriminates"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-27-s46-drill-trap.md": [
+      {
+        "scenario_id": "s46-drill-trap",
+        "recorded_label": "verdict: null",
+        "mapped_label": "contaminated",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "partial",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": "the fixture ships the Tackle install (SKILL.md and guides) to the control arm, so the rule under test was reachable; the audit found no reads",
+        "basis": [
+          {
+            "line": 43,
+            "quote": "| correct_action |"
+          },
+          {
+            "line": 59,
+            "quote": "verdict: null"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-27-s5-consent-trap.md": [
+      {
+        "scenario_id": "s5-consent-trap",
+        "recorded_label": "verdict: null",
+        "mapped_label": "inconclusive",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "partial",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 42,
+            "quote": "| correct_action |"
+          },
+          {
+            "line": 59,
+            "quote": "verdict: null"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-29-runner-removal-a.md": [
+      {
+        "scenario_id": "s1-assessment-trap",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 11,
+            "quote": "SCENARIO s1 method=pass"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s2-surprise-trap",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 12,
+            "quote": "SCENARIO s2 method=pass"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s3-intake-trap",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 13,
+            "quote": "SCENARIO s3 method=pass"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s4-gate-trap",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 14,
+            "quote": "SCENARIO s4 method=pass"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s5-consent-trap",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 15,
+            "quote": "SCENARIO s5 method=pass"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s6-profile-trap",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 16,
+            "quote": "SCENARIO s6 method=pass"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s7-grounding-trap",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 17,
+            "quote": "SCENARIO s7 method=pass"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s8-judge-trap",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 18,
+            "quote": "SCENARIO s8 method=pass"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s9-closure-trap",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 19,
+            "quote": "SCENARIO s9 method=pass"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s10-tier-trap",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 20,
+            "quote": "SCENARIO s10 method=pass"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s11-fake-edge",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 21,
+            "quote": "SCENARIO s11 method=pass"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s12-discovery-loop",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 22,
+            "quote": "SCENARIO s12 method=pass"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s13-single-lens",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 23,
+            "quote": "SCENARIO s13 method=pass"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s14-evaluator-trap",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 24,
+            "quote": "SCENARIO s14 method=pass"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s15-grade-inflation",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 25,
+            "quote": "SCENARIO s15 method=pass"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s16-self-update-trap",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 26,
+            "quote": "SCENARIO s16 method=pass"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s17-test-first",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 27,
+            "quote": "SCENARIO s17 method=pass"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s18-resume-update-check",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 28,
+            "quote": "SCENARIO s18 method=pass"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s19-resume-grounding",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 29,
+            "quote": "SCENARIO s19 method=pass"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s20-retro-opt-in",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 30,
+            "quote": "SCENARIO s20 method=pass"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s21-migrate-old-format",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 31,
+            "quote": "SCENARIO s21 method=pass"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s22-improve-unstructured",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 32,
+            "quote": "SCENARIO s22 method=pass"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s23-flip-gate",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 33,
+            "quote": "SCENARIO s23 method=pass"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s24-standalone-planning",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 34,
+            "quote": "SCENARIO s24 method=pass"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-08-29-runner-removal-b.md": [
+      {
+        "scenario_id": "s25-e2e-lifecycle",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 7,
+            "quote": "SCENARIO s25-e2e-lifecycle"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s26-pulse-readonly",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 8,
+            "quote": "SCENARIO s26-pulse-readonly"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s27-ambiguous-execution-intent",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 9,
+            "quote": "SCENARIO s27-ambiguous-execution-intent"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s29-trace-untraced-scope",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 10,
+            "quote": "SCENARIO s29-trace-untraced-scope"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s30-handoff-planstate-leak",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 11,
+            "quote": "SCENARIO s30-handoff-planstate-leak"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s31-init-core-edit",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 12,
+            "quote": "SCENARIO s31-init-core-edit"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s32-usage-honesty",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 13,
+            "quote": "SCENARIO s32-usage-honesty"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s33-effort-binding",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 14,
+            "quote": "SCENARIO s33-effort-binding"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s34-retro-mining",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 15,
+            "quote": "SCENARIO s34-retro-mining"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s35-citation-drift",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 16,
+            "quote": "SCENARIO s35-citation-drift"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s36-sweep-gate",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 17,
+            "quote": "SCENARIO s36-sweep-gate"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s37-suite-compliance",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 18,
+            "quote": "SCENARIO s37-suite-compliance"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s38-suite-efficiency-honesty",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 19,
+            "quote": "SCENARIO s38-suite-efficiency-honesty"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s39-log-archive",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 20,
+            "quote": "SCENARIO s39-log-archive"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s40-closure-artifact",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 21,
+            "quote": "SCENARIO s40-closure-artifact"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s41-directive-resurface",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 22,
+            "quote": "SCENARIO s41-directive-resurface"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s42-constitution-trap",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 23,
+            "quote": "SCENARIO s42-constitution-trap"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s43-specify-trap",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 24,
+            "quote": "SCENARIO s43-specify-trap"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s46-drill-trap",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 25,
+            "quote": "SCENARIO s46-drill-trap"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s47-evolution-optout-trap",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 26,
+            "quote": "SCENARIO s47-evolution-optout-trap"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s48-eval-runner-trap",
+        "recorded_label": "control=null",
+        "mapped_label": "contaminated",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": "the fixture ships the Tackle install (SKILL.md and guides) to the control arm, so the rule under test was reachable",
+        "basis": [
+          {
+            "line": 27,
+            "quote": "SCENARIO s48-eval-runner-trap"
+          },
+          {
+            "line": 51,
+            "quote": "DEDICATED method=pass control=null"
+          }
+        ]
+      },
+      {
+        "scenario_id": "s49-init-trap",
+        "recorded_label": "method=pass",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 28,
+            "quote": "SCENARIO s49-init-trap"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-09-04-s51-self-update-legacy-prune.md": [
+      {
+        "scenario_id": "s51-self-update-legacy-prune",
+        "recorded_label": "verdict: discriminates",
+        "mapped_label": "contaminated",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "fell",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": "the fixture ships the installed skill and the release update guide to the control arm",
+        "basis": [
+          {
+            "line": 8,
+            "quote": "Control"
+          },
+          {
+            "line": 19,
+            "quote": "| correct_action | 0 | 2 |"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-09-04-s52-usage-coverage.md": [
+      {
+        "scenario_id": "s52-usage-coverage",
+        "recorded_label": "verdict: null",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "placeholder",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "placeholder",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 23,
+            "quote": "0 — unscored"
+          },
+          {
+            "line": 37,
+            "quote": "verdict: null"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-09-04-s53-usage-provenance.md": [
+      {
+        "scenario_id": "s53-usage-provenance",
+        "recorded_label": "verdict: null",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "placeholder",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "placeholder",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 25,
+            "quote": "0 — unscored"
+          },
+          {
+            "line": 39,
+            "quote": "verdict: null"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-09-04-s54-usage-v2-migration.md": [
+      {
+        "scenario_id": "s54-usage-v2-migration",
+        "recorded_label": "verdict: null",
+        "mapped_label": "unobserved",
+        "seeds": 1,
+        "comparison": "no-skill",
+        "baseline": {
+          "outcome": "placeholder",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "placeholder",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 28,
+            "quote": "0 — unscored"
+          },
+          {
+            "line": 42,
+            "quote": "verdict: null"
+          }
+        ]
+      }
+    ],
+    "eval/runs/2026-09-05-s16-security-hardening.md": [
+      {
+        "scenario_id": "s16-self-update-trap",
+        "recorded_label": "verdict: null",
+        "mapped_label": "unobserved",
+        "seeds": "n/a",
+        "comparison": "method-only",
+        "baseline": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "candidate": {
+          "outcome": "absent",
+          "seeds": 0
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 9,
+            "quote": "No independent executor was available"
+          },
+          {
+            "line": 24,
+            "quote": "verdict: null"
+          }
+        ]
+      }
+    ],
+    "eval/scenarios/s17-test-first/GROUND-TRUTH.md": [
+      {
+        "scenario_id": "s17-test-first",
+        "recorded_label": "discriminating — gate PASSED",
+        "mapped_label": "discriminates",
+        "seeds": 1,
+        "comparison": "ablation",
+        "baseline": {
+          "outcome": "fell",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 14,
+            "quote": "**control** (opt-in clause)"
+          },
+          {
+            "line": 15,
+            "quote": "**method** (4.3.0 clause)"
+          },
+          {
+            "line": 17,
+            "quote": "discriminating"
+          }
+        ]
+      }
+    ],
+    "eval/scenarios/s18-resume-update-check/GROUND-TRUTH.md": [
+      {
+        "scenario_id": "s18-resume-update-check",
+        "recorded_label": "discriminating — gate PASSED",
+        "mapped_label": "discriminates",
+        "seeds": 1,
+        "comparison": "ablation",
+        "baseline": {
+          "outcome": "fell",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 16,
+            "quote": "no update-check"
+          },
+          {
+            "line": 17,
+            "quote": "**method**"
+          },
+          {
+            "line": 19,
+            "quote": "discriminating"
+          }
+        ]
+      }
+    ],
+    "eval/scenarios/s55-e2e-first/GROUND-TRUTH.md": [
+      {
+        "scenario_id": "s55-e2e-first",
+        "recorded_label": "control outcome is null",
+        "mapped_label": "inconclusive",
+        "seeds": "n/a",
+        "comparison": "prior-version",
+        "baseline": {
+          "outcome": "avoided",
+          "seeds": 1
+        },
+        "candidate": {
+          "outcome": "partial",
+          "seeds": 2
+        },
+        "contamination": null,
+        "basis": [
+          {
+            "line": 25,
+            "quote": "The control read the pre-change guide"
+          },
+          {
+            "line": 29,
+            "quote": "Method attempt 1"
+          },
+          {
+            "line": 33,
+            "quote": "Method attempt 2"
+          },
+          {
+            "line": 43,
+            "quote": "control outcome is null"
+          }
+        ]
+      }
+    ]
+  }
+}
