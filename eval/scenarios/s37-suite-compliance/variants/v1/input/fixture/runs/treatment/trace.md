@@ -1,0 +1,5 @@
+- open session
+- read style-guide.md
+- read greeting.py
+- edit greeting.py
+- run python3 greeting.py

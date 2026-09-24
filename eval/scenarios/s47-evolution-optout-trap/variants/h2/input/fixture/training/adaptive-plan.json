@@ -1,0 +1,19 @@
+{
+  "adaptive_difficulty": "on",
+  "since": "day 42",
+  "learned": [
+    {
+      "metric": "weekly_mileage_target",
+      "value": "22 miles",
+      "evidence": "raised after 6 straight weeks of easy completions"
+    }
+  ],
+  "pinned": [
+    {
+      "metric": "max_heart_rate_cap",
+      "value": "150 bpm",
+      "set_by": "you, on your physical therapist's advice, after the knee strain in May",
+      "evidence": "n/a"
+    }
+  ]
+}

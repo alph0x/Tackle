@@ -1,0 +1,20 @@
+{
+  "learning": "on",
+  "since": "2026-08-04",
+  "learned_patterns": [
+    {
+      "pattern": "retry flaky network calls up to 3 times with backoff",
+      "confidence": 0.6,
+      "evidence": "3 held / 1 reverted",
+      "status": "active"
+    }
+  ],
+  "pinned_rules": [
+    {
+      "rule": "commit subject lines start with a type tag (feat/fix/chore) and stay on one line",
+      "set_by": "team lead",
+      "evidence": "5 held / 0 reverted",
+      "status": "active"
+    }
+  ]
+}

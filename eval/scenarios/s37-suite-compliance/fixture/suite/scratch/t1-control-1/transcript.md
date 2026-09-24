@@ -1,0 +1,5 @@
+- open session
+- read skill://Tackle/SKILL.md   (harness auto-load, not requested)
+- read suite/scenarios/t1-greet/greet.py
+- edit suite/scenarios/t1-greet/greet.py
+- run python3 suite/scenarios/t1-greet/greet.py

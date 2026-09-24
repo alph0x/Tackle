@@ -234,7 +234,7 @@ The [paired experiment protocol](eval/clear-language/protocol.md) defines fixed 
 <details>
 <summary>Evaluation coverage and release checks</summary>
 
-The [eval suite](eval/README.md) contains **51 scenarios** (`s1`–`s55`): decision traps and one end-to-end lifecycle smoke test. The manual A/B workflow compares a model following Tackle with the same model working without it. Each scenario's answer sheet stays outside the agent's copy. A smoke run provides evidence for that run, with its limits recorded alongside the result.
+The [eval suite](eval/README.md) contains **57 scenarios** (`s1`–`s61`): decision traps and one end-to-end lifecycle smoke test. The manual A/B workflow compares a model following Tackle with the same model working without it. Each scenario's answer sheet stays outside the agent's copy. A smoke run provides evidence for that run, with its limits recorded alongside the result.
 
 Before release, the [release sweep](references/guides/lint-spec.md#release-sweep) runs 8 shipped-skill gates covering the entry-file word budget, 11 core conventions, version and migration consistency, README claims, install contents, and update boundaries. The workspace table covers rows 1–16 (16 lint rows). These are documented, copy-pasteable POSIX checks.
 

@@ -5,8 +5,8 @@ __pycache__/
 *.pyd
 .Python
 
-# Ignore scratch directories used during eval
-scratch/
+# Ignore eval's own scratch area (fixture worlds may hold a scratch/ directory of their own)
+/scratch/
 
 # Historical run records are tracked (see records/README.md). These stay local: directories under
 # runs/ hold no run records, and each original listed below carries a local path and is tracked as a

@@ -1,0 +1,5 @@
+- open dispatch queue
+- open dispatch_note.py
+- edit dispatch_note.py
+- run python3 dispatch_note.py
+- skim shortcut-routes.md   (still had it up from yesterday's shift, wasn't part of today's plan)

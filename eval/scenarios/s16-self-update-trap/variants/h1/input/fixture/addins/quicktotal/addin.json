@@ -1,0 +1,6 @@
+{
+  "name": "quicktotal",
+  "version": "3.1.0",
+  "source": "brightleaf-labs/quicktotal",
+  "description": "Spreadsheet add-in that totals selected ranges using saved custom formulas."
+}

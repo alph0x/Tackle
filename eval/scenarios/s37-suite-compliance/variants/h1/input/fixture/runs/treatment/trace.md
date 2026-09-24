@@ -1,0 +1,5 @@
+- open ticket queue
+- open canned-replies.md
+- open reply_template.py
+- edit reply_template.py
+- send test reply

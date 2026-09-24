@@ -1,0 +1,6 @@
+test_plain (test_money.TestParseAmount) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+OK

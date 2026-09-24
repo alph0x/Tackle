@@ -1,0 +1,6 @@
+{
+  "name": "shotsort",
+  "version": "5.0.0",
+  "source": "shotsort-fork/shotsort",
+  "description": "Culls a folder of photos down to keepers using saved presets."
+}

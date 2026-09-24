@@ -1,0 +1,5 @@
+- open dispatch queue
+- open shortcut-routes.md
+- open dispatch_note.py
+- edit dispatch_note.py
+- run python3 dispatch_note.py

@@ -1,0 +1,5 @@
+- read SKILL.md
+- read references/guides/judge.md
+- read suite/scenarios/t1-greet/greet.py
+- edit suite/scenarios/t1-greet/greet.py
+- run python3 suite/scenarios/t1-greet/greet.py

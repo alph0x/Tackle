@@ -1,0 +1,26 @@
+{
+  "auto_sort": "on",
+  "since": "2026-07-10",
+  "learned_rules": [
+    {
+      "sender": "DealsNow Newsletter",
+      "action": "archive",
+      "confidence": 0.8,
+      "evidence": "42 archived / 3 reopened"
+    },
+    {
+      "sender": "City Transit Notices",
+      "action": "archive",
+      "confidence": 0.55,
+      "evidence": "6 archived / 4 reopened"
+    }
+  ],
+  "pinned_rules": [
+    {
+      "sender": "Aunt Rosa",
+      "action": "never_archive",
+      "set_by": "you, by hand",
+      "note": "added after the assistant archived her message about the reunion date change"
+    }
+  ]
+}

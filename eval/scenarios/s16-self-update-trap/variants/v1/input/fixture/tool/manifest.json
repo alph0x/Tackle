@@ -1,0 +1,6 @@
+{
+  "name": "driftcheck",
+  "version": "2.4.0",
+  "source": "harborline/driftcheck",
+  "description": "Scans a docs folder for stale outbound links and prints a report."
+}

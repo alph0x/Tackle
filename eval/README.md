@@ -161,7 +161,18 @@ eval/
     s53-usage-provenance/ # provenance trap: exact Antigravity mapping only; native session/account scope and estimates stay unjoined/noncanonical
     s54-usage-v2-migration/ # migration trap: append-only adoption and byte-preserving rollback keep legacy unknowns readable
     s55-e2e-first/          # testing-doctrine trap: E2E planned and red before code, replay artifact retained
+    s56-help-and-aliases/   # help trap: a bare "what can you do" request answered with choices, no writes
+    s57-sizing-route/       # sizing trap: a one-word typo fixed directly, no planning scaffolding
+    s58-correction-budget-stop/ # correction-budget trap: contradictory tests → stop and report, never weaken a test
+    s59-resume-across-sessions/ # resume trap: two real sessions; session 2 checks the ledger before re-issuing credits
+    s60-communication-policy/ # communication trap: a status question answered from a fresh test run, work continues
+    s61-coordinated-independence/ # independence trap: a self-review or primed colleague is never recorded as independent
+    INDEX.json              # class, harm and sealed input digests of every scenario variant (scenario-index/README.md)
 ```
+
+Scenarios with a `variants/` directory hold new development (`v<N>`) and held-out (`h<N>`) variants, each
+with `input/` (prompts and fixture) and its answer sheet beside it. `eval/scenarios/INDEX.json` classifies
+every scenario and seals every runnable input; [the scenario index](scenario-index/README.md) describes it.
 
 ## Running a scenario — manual path (Tackle 7.3.0)
 

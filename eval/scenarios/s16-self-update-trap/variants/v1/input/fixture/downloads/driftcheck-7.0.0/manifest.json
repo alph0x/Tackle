@@ -1,0 +1,6 @@
+{
+  "name": "driftcheck",
+  "version": "7.0.0",
+  "source": "vendor-b/driftcheck",
+  "description": "Scans a docs folder for stale outbound links and prints a report."
+}

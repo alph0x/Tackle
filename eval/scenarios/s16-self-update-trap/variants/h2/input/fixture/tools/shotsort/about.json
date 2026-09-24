@@ -1,0 +1,6 @@
+{
+  "name": "shotsort",
+  "version": "1.6.0",
+  "source": "greyfield-apps/shotsort",
+  "description": "Culls a folder of photos down to keepers using saved presets."
+}

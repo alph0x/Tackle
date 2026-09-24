@@ -152,6 +152,13 @@
         "test_currency.py"
       ],
       "tests": 47
+    },
+    {
+      "path": "eval/scenario-index",
+      "files": [
+        "test_index.py"
+      ],
+      "tests": 32
     }
   ]
 }

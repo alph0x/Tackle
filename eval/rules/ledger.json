@@ -95,7 +95,9 @@
       },
       "evidence": {
         "status": "untested",
-        "scenarios": [],
+        "scenarios": [
+          "s56-help-and-aliases"
+        ],
         "cohort_id": null,
         "as_of": "2026-09-24"
       },
@@ -317,7 +319,9 @@
       },
       "evidence": {
         "status": "untested",
-        "scenarios": [],
+        "scenarios": [
+          "s57-sizing-route"
+        ],
         "cohort_id": null,
         "as_of": "2026-09-24"
       },
@@ -343,7 +347,8 @@
       "evidence": {
         "status": "untested",
         "scenarios": [
-          "s4-gate-trap"
+          "s4-gate-trap",
+          "s57-sizing-route"
         ],
         "cohort_id": null,
         "as_of": "2026-09-24"
@@ -785,7 +790,9 @@
       },
       "evidence": {
         "status": "untested",
-        "scenarios": [],
+        "scenarios": [
+          "s61-coordinated-independence"
+        ],
         "cohort_id": null,
         "as_of": "2026-09-24"
       },
@@ -886,7 +893,9 @@
       },
       "evidence": {
         "status": "untested",
-        "scenarios": [],
+        "scenarios": [
+          "s60-communication-policy"
+        ],
         "cohort_id": null,
         "as_of": "2026-09-24"
       },
@@ -1052,7 +1061,9 @@
       },
       "evidence": {
         "status": "untested",
-        "scenarios": [],
+        "scenarios": [
+          "s58-correction-budget-stop"
+        ],
         "cohort_id": null,
         "as_of": "2026-09-24"
       },
@@ -1077,7 +1088,9 @@
       },
       "evidence": {
         "status": "untested",
-        "scenarios": [],
+        "scenarios": [
+          "s58-correction-budget-stop"
+        ],
         "cohort_id": null,
         "as_of": "2026-09-24"
       },
@@ -1102,7 +1115,9 @@
       },
       "evidence": {
         "status": "untested",
-        "scenarios": [],
+        "scenarios": [
+          "s58-correction-budget-stop"
+        ],
         "cohort_id": null,
         "as_of": "2026-09-24"
       },
@@ -1412,7 +1427,9 @@
       },
       "evidence": {
         "status": "untested",
-        "scenarios": [],
+        "scenarios": [
+          "s61-coordinated-independence"
+        ],
         "cohort_id": null,
         "as_of": "2026-09-24"
       },
@@ -1583,7 +1600,8 @@
       "evidence": {
         "status": "untested",
         "scenarios": [
-          "s15-grade-inflation"
+          "s15-grade-inflation",
+          "s59-resume-across-sessions"
         ],
         "cohort_id": null,
         "as_of": "2026-09-24"
@@ -1678,7 +1696,8 @@
       "evidence": {
         "status": "untested",
         "scenarios": [
-          "s8-judge-trap"
+          "s8-judge-trap",
+          "s61-coordinated-independence"
         ],
         "cohort_id": null,
         "as_of": "2026-09-24"
@@ -2174,7 +2193,9 @@
       },
       "evidence": {
         "status": "untested",
-        "scenarios": [],
+        "scenarios": [
+          "s59-resume-across-sessions"
+        ],
         "cohort_id": null,
         "as_of": "2026-09-24"
       },
@@ -2762,7 +2783,9 @@
       },
       "evidence": {
         "status": "untested",
-        "scenarios": [],
+        "scenarios": [
+          "s60-communication-policy"
+        ],
         "cohort_id": null,
         "as_of": "2026-09-24"
       },
@@ -2787,7 +2810,9 @@
       },
       "evidence": {
         "status": "untested",
-        "scenarios": [],
+        "scenarios": [
+          "s60-communication-policy"
+        ],
         "cohort_id": null,
         "as_of": "2026-09-24"
       },

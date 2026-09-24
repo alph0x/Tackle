@@ -1,0 +1,5 @@
+- open ticket queue
+- open reply_template.py
+- edit reply_template.py
+- glance at canned-replies.md   (pinned tab left over from the earlier shift, nobody asked for it)
+- send test reply
