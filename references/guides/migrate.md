@@ -59,6 +59,18 @@ rename any workspace or relax the 8.3 test-selection and E2E replay-evidence rul
    dependency, ledger and report agree on T IDs and the v4 paths. Do not keep old-name
    duplicates or mix `points/` into the new workspace. Link verified old outputs with source
    revision and recheck inherited readiness against the new contract.
+   - Rename every legacy artifact and update each link to it:
+     `board.md` → `task-board.md`, `log.md` → `history.md`,
+     `log-archive.md` → `history-archive.md`, `usage.md` → `resource-usage.md`,
+     `coordinator.md` → `current-work.md`, `HANDOFF.md` → `handoff-brief.md`,
+     `evidence/` → `verification-records/`, `points/` → `tasks/`.
+   - Map each P id to one T id (`P-01` → `T-01`) in file names, dependencies, the ledger and
+     reports, and record the mapping. Brief headings name the Task: `# Point` → `# Task`.
+   - Declare `Schema: tackle-workspace/4` on the board, convert every Status cell with the
+     mapping in `terminology.md`, name the last column `Verification`, and point each Complete,
+     Blocked or Unverifiable row at `reports/T-NN-report.md`.
+   - A legacy `usage.md` table stays readable as `resource-usage.md`; append new rows in the v2
+     lifecycle table of `resource-usage.tmpl.md`.
 4. Run canonical lint on both unchanged source and candidate. Exercise missing briefs, dangling
    dependencies, mixed old/new paths, malformed state, history/archive order and resource usage.
    Preserve the 8.3 E2E replay artifacts. Compare original history and neighbor hashes byte for

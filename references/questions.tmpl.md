@@ -27,4 +27,4 @@ can tell you.}}
 <!-- When an entry accumulates 3+ correction/update blocks, pin a one-line
      **Current ask (as of session N):** at the top of the entry; the correction history
      stays below it, append-only. A fresh reader orients from the pin, not from the accretion. -->
-<!-- A task gated on this question is "Deferred" in the wave plan, not 🔴 in an active wave. -->
+<!-- A task gated on this question stays Draft (or Blocked once started) on `task-board.md`, with this Q-id in its Verification cell. -->

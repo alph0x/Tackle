@@ -10,32 +10,34 @@ failure behavior for invalid transitions or unknown inputs. A Task cannot silent
 record a superseding decision, update this contract, then regenerate affected compiled Task
 clauses in the same change. Seal each stable section with `<!-- SEALED: D-xx -->`; a later
 change uses `<!-- SEALED: D-yy supersedes D-xx -->` and keeps the earlier decision traceable.
+Each clause keeps a stable id in its heading (`## C02 · Interface`); a compiled clause runs from
+that heading through the line before the next `## ` heading or `<a id=` line.
 
-## Purpose and scope
+## C01 · Purpose and scope
 
 {{The user-visible or integration outcome, boundaries, non-goals, and requirement ids.}}
 
-## Interface
+## C02 · Interface
 
 {{Public types, functions, entry/exit points, inputs, outputs, and allowed semantic forms.}}
 
-## States and transitions
+## C03 · States and transitions
 
 {{Every state and legal transition. Invalid transitions have an explicit ignored, recoverable,
 or typed terminal result; undefined behavior is not a contract.}}
 
-## Errors and recovery
+## C04 · Errors and recovery
 
 {{Typed error cases, diagnostic content, retry/abort behavior, and handling for unknown or
 unmapped inputs. Preserve original codes where mapping is unavailable.}}
 
-## Invariants and quality constraints
+## C05 · Invariants and quality constraints
 
 {{Structural properties expressed as observable checks: data preservation, effect boundaries,
 complexity or dependency limits when material, integration fit, and relevant quality axes. Do
 not impose layers, formatting, dependencies, or design patterns without a consumer need.}}
 
-## Cases and valid alternatives
+## C06 · Cases and valid alternatives
 
 | Case | Given | Required observation | Invalid observation |
 |---|---|---|---|

@@ -124,6 +124,13 @@
         "test_lint_rows.py"
       ],
       "tests": 9
+    },
+    {
+      "path": "eval/template-drift",
+      "files": [
+        "test_template_drift.py"
+      ],
+      "tests": 9
     }
   ]
 }

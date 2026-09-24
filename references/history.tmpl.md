@@ -29,7 +29,7 @@ trimmed stdout/stderr (≤ 10 lines, keep counts and exit line)
 ```
 cwd: `{{absolute cwd}}` · runtime: `{{tool/runtime or n/a}}`
 start: `{{UTC timestamp or n/a}}` · end: `{{UTC timestamp or n/a}}`
-exit: 0 · timeout: false · signal: n/a
+exit: `{{exit code}}` · timeout: `{{true/false}}` · signal: `{{signal or n/a}}`
 revisions: input/code/config/dependency/contract `{{fingerprints or n/a}}`
 raw: `{{immutable raw check record path}}`
 ````
@@ -59,7 +59,7 @@ correction counters, interrupted runs, integration evidence, and deliverable acc
 <!-- Failed attempts: one journal line per attempt, each with its verification block:
 attempt N: <what was tried> — failed because <lesson>
 On budget exhaustion or no-progress (two consecutive attempts with identical evidence
-output), the task becomes ⏸ and the entry carries the escalation packet:
+output), the task becomes Blocked and the entry carries the escalation packet:
 ### Escalation — T-NN
 - Attempts: N (budget M) · reason: budget | no-progress
 - Attempt journal: the per-attempt lines above (with verification blocks, last attempt at minimum)

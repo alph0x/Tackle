@@ -21,23 +21,21 @@ directive at the action moment.
 
 ```
 docs/plans/{{slug}}/
-├── README.md      ← index, objective, reading order
-├── plan.md        ← objective, non-goals, task decomposition, acceptance criteria, risks
-├── task-board.md       ← canonical status board for execution
+├── README.md          ← index, objective, reading order
+├── plan.md            ← objective, non-goals, task decomposition, acceptance criteria, risks
+├── task-board.md      ← canonical status board for execution
 ├── history.md         ← append-only session history
-├── resource-usage.md       ← token/model/effort and lifecycle ledger
-├── questions.md   ← single source of questions
-├── decisions.md   ← closed decisions register (D-01…, single source)
-├── reference.md   ← current code state (file:line)
-├── tasks/         ← self-contained task briefs
-└── AGENTS.md      ← this file
+├── resource-usage.md  ← token/model/effort and lifecycle ledger
+├── questions.md       ← single source of questions
+├── decisions.md       ← closed decisions register (D-01…, single source)
+├── reference.md       ← current code state (file:line)
+├── tasks/             ← self-contained task briefs
+└── AGENTS.md          ← this file
 ```
 <!-- List optional depth artifacts only when created: foundations.md, design-contract.md, team.md,
      reference-docs/, external-questions/. Shared execution rules are in references/guides/run.md. -->
 
 ## Rules
-
-**tackle-gate: on** <!-- absent means off for legacy workspaces; new workspaces default on. -->
 
 Select the single Tackle skill, then give a request; action names are not separate menu entries.
 Bare invocation or help shows choices without writes. Public execution has two actions: PLAN

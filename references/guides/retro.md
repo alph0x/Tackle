@@ -37,7 +37,7 @@ and task time-to-green remain useful when exact telemetry coverage is 0%.
 
 ### Fixture recipe
 
-Run `awk -F'|' '/^\\| (duration|attempts|rework|verification|tokens)/ {m=$2; gsub(/^ +| +$/,"",m); printf "%s %s/%s (%s)\\n", m,$4,$5,$6}' resource-usage.md` from a fixture workspace. The four fixtures under
+Run `awk 'BEGIN{FS=sprintf("%c",124)} {m=$2; sub(/^[[:space:]]+/,"",m); sub(/[[:space:]]+$/,"",m); r=$6; sub(/^[[:space:]]+/,"",r); sub(/[[:space:]]+$/,"",r)} (m=="duration") + (m=="attempts") + (m=="rework") + (m=="verification") + (m=="tokens") {print m " " r}' resource-usage.md` from a fixture workspace. The four fixtures under
 `eval/fixtures/usage-observability/` are the reference cases: zero prints `0/N`, partial and
 mixed suppress aggregates, and full alone permits expected totals and recommendations.
 

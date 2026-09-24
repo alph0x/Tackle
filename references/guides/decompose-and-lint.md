@@ -136,7 +136,7 @@ def prepare_tasks(requirements, tasks, selected, available, fingerprints, delive
     identities = [task['id'] for task in tasks]
     if len(set(identities)) != len(identities) or not identities:
         raise ValueError('duplicate or empty task identities')
-    if any(not re.fullmatch(r'P-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*', identity) for identity in identities):
+    if any(not re.fullmatch(r'[PT]-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*', identity) for identity in identities):
         raise ValueError('invalid stable task identity')
     by_id = dict(zip(identities, tasks))
     if len(requirements) != len(set(requirements)) or not requirements:

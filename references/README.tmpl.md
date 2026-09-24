@@ -1,6 +1,6 @@
 # {{TITLE}} — {{one line: what this is}}
 
-> **Methodology: Tackle 8.1.0.** See `AGENTS.md` for the workspace contract.
+> **Methodology: Tackle 8.4.0.** See `AGENTS.md` for the workspace contract.
 
 {{2-3 line description: what this initiative solves.}}
 
@@ -11,11 +11,11 @@
 
 | Ticket | What | Status |
 |---|---|---|
-| {{MBTX-XXXX}} | {{...}} | {{...}} |
+| {{TICKET-ID}} | {{...}} | {{...}} |
 
 ## Objective
 
-{{What the SDK exposes/delivers to the integrator or user — observable.}}
+{{What the initiative delivers to its users — observable.}}
 
 
 ## Index
@@ -23,7 +23,9 @@
 | Doc | Contents |
 |---|---|
 | `plan.md` | Objective, non-goals, task decomposition, acceptance criteria, risks |
+| `task-board.md` | Canonical current task state |
 | `history.md` | Append-only history (current state is in task-board.md) |
+| `resource-usage.md` | Lifecycle and resource-usage ledger |
 | `questions.md` | Open questions (single source) |
 | `decisions.md` | Closed decisions register (`D-01`…, don't revisit without cause) |
 | `reference.md` | Current code state with `file:line` |
@@ -40,7 +42,7 @@ Add appendices here too (descriptive name, not numbered). -->
 
 1. `AGENTS.md` — rules of the workspace.
 2. `plan.md` — objective, non-goals, task decomposition.
-3. `history.md` (newest entry's State snapshot) — where it stands.
+3. `task-board.md` — current state of every task; `history.md` for how it got there.
 4. `decisions.md` / `questions.md` — what's settled / still open.
 5. The relevant `tasks/T-0N-*.md` — self-contained brief for the work you're picking up.
 
