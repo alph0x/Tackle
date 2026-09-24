@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Run the documented mechanical release checks
         run: |
           set -eu
@@ -29,8 +31,17 @@ jobs:
           r=$(git ls-files | awk '/(^|\/)(tackle|tackle-check)$/ {print}' | while IFS= read -r p; do [ -e "$p" ] && printf '%s\n' "$p"; done | awk 'END{print NR+0}'); test "$r" -eq 0
           for d in eval/scenarios/*/; do [ -d "$d" ] || continue; name=$(basename "$d"); grep -qF "$name" eval/README.md; test -f "$d/GROUND-TRUTH.md"; done
           for f in eval/scratch/*/GROUND-TRUTH.md eval/runs/*/GROUND-TRUTH.md; do [ -f "$f" ] && exit 1 || true; done
-      - name: Run every registered deterministic suite with strict discovery
+      - name: Install every awk the lint-row suite exercises
+        run: |
+          set -eu
+          sudo apt-get update
+          sudo apt-get install -y gawk mawk original-awk busybox
+          for a in gawk mawk original-awk busybox; do command -v "$a" >/dev/null || { echo "missing awk: $a"; exit 1; }; done
+          busybox awk 'BEGIN { exit 0 }' || { echo "busybox has no awk applet"; exit 1; }
+      - name: Run every registered deterministic suite with strict discovery (verifies fixtures and harnesses, not agent behavior)
         run: python3 eval/run_suites.py --output "$RUNNER_TEMP/tackle-suite-results"
+      - name: Check evidence-record currency (verifies records and claims, not agent behavior)
+        run: python3 eval/records/check_currency.py --repo .
       - name: Preserve deterministic outcomes and raw command streams
         if: always()
         uses: actions/upload-artifact@v4

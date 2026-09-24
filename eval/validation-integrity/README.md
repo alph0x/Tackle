@@ -25,4 +25,5 @@ python3 -m unittest discover -s eval/validation-integrity -p 'test_release_fixtu
 Negative expectations are fixed before testing the implementation. Canonical
 command regressions fail against the reviewed defective candidate; oracle
 inventory checks make no such behavioral claim. Raw results and environment
-records belong in the local plan evidence, never in the install artifact.
+records stay local and never enter the install artifact; tracked run records,
+their hashes and the claim map live in [`eval/records/`](../records/README.md).

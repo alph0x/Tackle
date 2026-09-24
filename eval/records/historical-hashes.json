@@ -1,0 +1,446 @@
+{
+ "schema": "tackle-historical-hashes/1",
+ "records": {
+  "eval/records/sanitized/2026-07-17-suite.md": {
+   "sha256": "c972f257e925bcbaa9bb29abacca2e0251c21d3d206bd6cc85df48f085526b3f",
+   "bytes": 3380,
+   "tracked": true,
+   "recorded_on": "2026-07-17",
+   "retired_scenarios": [],
+   "source": "eval/runs/2026-07-17-suite.md",
+   "source_sha256": "948409d52fb94682e1098da83fada804f664df1e7d7495124d1673327934fb17"
+  },
+  "eval/records/sanitized/2026-08-05-s25.md": {
+   "sha256": "c3b6e2f7a465ae846d5361b9a12d1fc86ceda60567e9b8553f8bdc7b86dbcac1",
+   "bytes": 8492,
+   "tracked": true,
+   "recorded_on": "2026-08-05",
+   "retired_scenarios": [],
+   "source": "eval/runs/2026-08-05-s25.md",
+   "source_sha256": "fdd9f921aaa79ae5a106a6fcc5a1395f59cbbfedb363e7ccb45eebbe83611805"
+  },
+  "eval/records/sanitized/2026-08-05-s3-s5-regression.md": {
+   "sha256": "852891ab15bd4153c4b202ded61418506a8c9ad37c21614caf4beb55e710a17e",
+   "bytes": 5648,
+   "tracked": true,
+   "recorded_on": "2026-08-05",
+   "retired_scenarios": [],
+   "source": "eval/runs/2026-08-05-s3-s5-regression.md",
+   "source_sha256": "f07a12504891ddf9ddba48f3473425e6aea607fc9e5ddf8c84a3b2619a1e172e"
+  },
+  "eval/records/sanitized/2026-08-27-s42-constitution-trap.md": {
+   "sha256": "1fa0e8d592781152b8991b81a956cd8cc24a3c5d1be8b740b0cc148642b09b62",
+   "bytes": 2708,
+   "tracked": true,
+   "recorded_on": "2026-08-27",
+   "retired_scenarios": [],
+   "source": "eval/runs/2026-08-27-s42-constitution-trap.md",
+   "source_sha256": "38d7774950d718ab19f24e92d0a81ef012a14d5481820814ee2a586a3bcb8ec1"
+  },
+  "eval/records/sanitized/2026-08-29-runner-removal-a.md": {
+   "sha256": "b741b9cbfe213b391f96d38c5d014e35829b42cd2a9bdca0a435998b4f485a55",
+   "bytes": 9396,
+   "tracked": true,
+   "recorded_on": "2026-08-29",
+   "retired_scenarios": [],
+   "source": "eval/runs/2026-08-29-runner-removal-a.md",
+   "source_sha256": "317a526f73be8c6523097066214edd64e8846f0bc3321beac2493e18614380cd"
+  },
+  "eval/runs/2026-07-17-suite.md": {
+   "sha256": "948409d52fb94682e1098da83fada804f664df1e7d7495124d1673327934fb17",
+   "bytes": 3370,
+   "tracked": false,
+   "recorded_on": "2026-07-17",
+   "retired_scenarios": [],
+   "sanitized_copy": "eval/records/sanitized/2026-07-17-suite.md"
+  },
+  "eval/runs/2026-07-24-s11-s15.md": {
+   "sha256": "7f1756c56a354801ae6d1cc3f70eb5bbe3ddff46b5c868701e47671986ce6069",
+   "bytes": 2941,
+   "tracked": true,
+   "recorded_on": "2026-07-24",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-07-24-s16.md": {
+   "sha256": "39bee9cca15f7c6622f2c4491167d200950b6bbe960695165e8f7db4feb171a1",
+   "bytes": 2034,
+   "tracked": true,
+   "recorded_on": "2026-07-24",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-01-s19.md": {
+   "sha256": "44614b52a718f73a54039254fa13bfd5fdd056adeb8b914227c9cd924dbe541f",
+   "bytes": 21265,
+   "tracked": true,
+   "recorded_on": "2026-08-01",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-01-s20.md": {
+   "sha256": "7f432b76f601c3355e1033eb4059af6326b74ba416b522685ec20c1010c58b99",
+   "bytes": 4495,
+   "tracked": true,
+   "recorded_on": "2026-08-01",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-01-s21.md": {
+   "sha256": "3a7379113ee0363a25f134a805069ee6333a174a9d886a883efae81215a06f07",
+   "bytes": 7868,
+   "tracked": true,
+   "recorded_on": "2026-08-01",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-01-s22.md": {
+   "sha256": "d24cb26718690b03061d33c7c2f8a7237b8f28b1a912293e22d52eac34aa50ba",
+   "bytes": 4653,
+   "tracked": true,
+   "recorded_on": "2026-08-01",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-03-s23.md": {
+   "sha256": "7bca6487695e9a180acb771cce0108b369bb77868ee202a5560372c04f703a41",
+   "bytes": 6998,
+   "tracked": true,
+   "recorded_on": "2026-08-03",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-05-artifact-traps.md": {
+   "sha256": "a8652b61ccf4caa1230b8f5e4757c2b98d0502bee8cb08a744fa6955dd3e6201",
+   "bytes": 11480,
+   "tracked": true,
+   "recorded_on": "2026-08-05",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-05-authority-traps.md": {
+   "sha256": "a87c3c4b3fa28ee5fb88fb906a5776bac64cc789dad5b1153baf9ad2473d53f1",
+   "bytes": 11172,
+   "tracked": true,
+   "recorded_on": "2026-08-05",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-05-s24.md": {
+   "sha256": "ef0ea2d07526251325f8f2a08eeefbfbf289779eca5e3eeb8a36048e1d87f271",
+   "bytes": 7213,
+   "tracked": true,
+   "recorded_on": "2026-08-05",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-05-s25.md": {
+   "sha256": "fdd9f921aaa79ae5a106a6fcc5a1395f59cbbfedb363e7ccb45eebbe83611805",
+   "bytes": 8487,
+   "tracked": false,
+   "recorded_on": "2026-08-05",
+   "retired_scenarios": [],
+   "sanitized_copy": "eval/records/sanitized/2026-08-05-s25.md"
+  },
+  "eval/runs/2026-08-05-s3-s5-regression.md": {
+   "sha256": "f07a12504891ddf9ddba48f3473425e6aea607fc9e5ddf8c84a3b2619a1e172e",
+   "bytes": 5643,
+   "tracked": false,
+   "recorded_on": "2026-08-05",
+   "retired_scenarios": [],
+   "sanitized_copy": "eval/records/sanitized/2026-08-05-s3-s5-regression.md"
+  },
+  "eval/runs/2026-08-05-s30-rerun.md": {
+   "sha256": "7e8699a9b44eede488ee6c04534dcb1618bf0bbd6e58d51f719b59f4028c0849",
+   "bytes": 4078,
+   "tracked": true,
+   "recorded_on": "2026-08-05",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-05-s31.md": {
+   "sha256": "286b06e53cbc6866ab871a7e62633a37404b2f4a450d3b1f93dfd7e26c077d5a",
+   "bytes": 9461,
+   "tracked": true,
+   "recorded_on": "2026-08-05",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-06-s32.md": {
+   "sha256": "cf1f3abf7c90f3d68acc0b59b838f0caa1aae4495c5defc0a327d0d0680b2fec",
+   "bytes": 2373,
+   "tracked": true,
+   "recorded_on": "2026-08-06",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-06-s33.md": {
+   "sha256": "9b3db089292a7815eb3bda5fd54920dc1d9eeb3f514749f552febb228d86d444",
+   "bytes": 2484,
+   "tracked": true,
+   "recorded_on": "2026-08-06",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-06-s34.md": {
+   "sha256": "ed662a1b1c66db4107ec18f930aaf72967e72793dbe21d8d288e92c2cd9a4dcf",
+   "bytes": 2530,
+   "tracked": true,
+   "recorded_on": "2026-08-06",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-13-s36-sweep-gate.md": {
+   "sha256": "5ef39b8e81dfcc4077c0454b67320acd51314f55544f7f4bb991081424f6beeb",
+   "bytes": 1989,
+   "tracked": true,
+   "recorded_on": "2026-08-13",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-21-s42-constitution-trap.md": {
+   "sha256": "04ff4cbcae473c574d7432618718ef806deaef2ef7a407414d868912dab7f962",
+   "bytes": 3114,
+   "tracked": true,
+   "recorded_on": "2026-08-21",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-21-s43-specify-trap.md": {
+   "sha256": "d6f73c704d36c88df509cd3e0524a4cef1e73cc6cb86f9c98282a2b9763f8555",
+   "bytes": 2529,
+   "tracked": true,
+   "recorded_on": "2026-08-21",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-21-s44-tasks-trap.md": {
+   "sha256": "d8f93927cc949afe477e36045671b48d20ad06c47c5fb9a9c50fbac48a7a0724",
+   "bytes": 2053,
+   "tracked": true,
+   "recorded_on": "2026-08-21",
+   "retired_scenarios": [
+    "s44-tasks-trap"
+   ]
+  },
+  "eval/runs/2026-08-21-s45-checklist-trap.md": {
+   "sha256": "c22bace6d4c9c954246e204e735d87558b11aea76cfe35372b488f6ebad43a59",
+   "bytes": 2530,
+   "tracked": true,
+   "recorded_on": "2026-08-21",
+   "retired_scenarios": [
+    "s45-checklist-trap"
+   ]
+  },
+  "eval/runs/2026-08-21-s46-drill-trap.md": {
+   "sha256": "188cdf118f76e6e75b3adc3049224286be1393a3c3b8d0f05518bc99df26767a",
+   "bytes": 2424,
+   "tracked": true,
+   "recorded_on": "2026-08-21",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-21-s47-evolution-optout-trap.md": {
+   "sha256": "64a45c96717fdd150175b5279f19ed01713b2c59378c4b5e71bed9dcdc05dd58",
+   "bytes": 2187,
+   "tracked": true,
+   "recorded_on": "2026-08-21",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-21-s48-eval-runner-trap.md": {
+   "sha256": "12a2b3e21ae4c60e88f93108702fce2e9f759b060464c796fc4ccf49bc94ccce",
+   "bytes": 2376,
+   "tracked": true,
+   "recorded_on": "2026-08-21",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-21-s49-init-trap.md": {
+   "sha256": "fe7352aaf1c951ae3a6e77101b335ffb6f32ba7801e1e7c65d91a5d56cb2b578",
+   "bytes": 2118,
+   "tracked": true,
+   "recorded_on": "2026-08-21",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-22-s50-usage-contract.md": {
+   "sha256": "a2fef10b1c6de061d179b190536f9b46d98a4a48363dc32a198228e7d35654fd",
+   "bytes": 2319,
+   "tracked": true,
+   "recorded_on": "2026-08-22",
+   "retired_scenarios": [
+    "s50-usage-contract"
+   ]
+  },
+  "eval/runs/2026-08-27-s15-grade-inflation.md": {
+   "sha256": "b5e64d90fb726813a4442b8e1a03aabb0fab5f4d56168eb13877cf97875fca0c",
+   "bytes": 2400,
+   "tracked": true,
+   "recorded_on": "2026-08-27",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-27-s22-improve-unstructured.md": {
+   "sha256": "81c73c08f11877af48b302fab7111f9bb6afa7306eb8f6d3acca110b63af90b6",
+   "bytes": 2768,
+   "tracked": true,
+   "recorded_on": "2026-08-27",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-27-s24-standalone-planning.md": {
+   "sha256": "cfe55ba15197abbd23dad386cced26167a7e398dd79b25354ace5b910ddefc98",
+   "bytes": 2413,
+   "tracked": true,
+   "recorded_on": "2026-08-27",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-27-s25-e2e-lifecycle.md": {
+   "sha256": "b62e774b2f82ca8a6ee820ef882d6abf7e95430dffbb1dee784bdfdaad5468d3",
+   "bytes": 2957,
+   "tracked": true,
+   "recorded_on": "2026-08-27",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-27-s26-pulse-readonly.md": {
+   "sha256": "c931e716a2b3da0059beacb00d8b2b7360da8e9c5d02d780b6e9ca66cf9da22f",
+   "bytes": 1783,
+   "tracked": true,
+   "recorded_on": "2026-08-27",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-27-s27-ambiguous-execution-intent.md": {
+   "sha256": "19c65a0c0fb62ca68a119af5560aa346791b8147f162d902ecf30f6dfcbfd422",
+   "bytes": 2120,
+   "tracked": true,
+   "recorded_on": "2026-08-27",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-27-s29-trace-untraced-scope.md": {
+   "sha256": "3eca72cd7b24af24f9ef3c434dff11eabe49459191982d145923c806c3f91367",
+   "bytes": 2198,
+   "tracked": true,
+   "recorded_on": "2026-08-27",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-27-s3-intake-trap.md": {
+   "sha256": "661b8f1615f4bf30116cf4fceead5bf5b25a37c40741f98ce11bd5b7f9713879",
+   "bytes": 2351,
+   "tracked": true,
+   "recorded_on": "2026-08-27",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-27-s30-handoff-planstate-leak.md": {
+   "sha256": "1dc61e9fe0d751451f03c91cb49715e3d78f6a8970f0559a4a631cb800a7a24f",
+   "bytes": 2433,
+   "tracked": true,
+   "recorded_on": "2026-08-27",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-27-s31-init-core-edit-rerun.md": {
+   "sha256": "b8c2c99aea50ab26b948d08cbb5381ee37394abfaab60cfef9e910bb756536e6",
+   "bytes": 1959,
+   "tracked": true,
+   "recorded_on": "2026-08-27",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-27-s31-init-core-edit.md": {
+   "sha256": "a6edbd1424688027298a5f327e9731d1d9b43461982231aafedf67c93f5cfb23",
+   "bytes": 2420,
+   "tracked": true,
+   "recorded_on": "2026-08-27",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-27-s33-effort-binding.md": {
+   "sha256": "5e0fbcd35bebe45257faf954bfbcbacd0165ae9f5c9cbaa9ee3d4f034bae2090",
+   "bytes": 2604,
+   "tracked": true,
+   "recorded_on": "2026-08-27",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-27-s36-sweep-gate.md": {
+   "sha256": "94c86356c4630867e2a607f727bf2d07a61c18264c800c5ccd16ddac0d9d50dd",
+   "bytes": 2077,
+   "tracked": true,
+   "recorded_on": "2026-08-27",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-27-s42-constitution-trap.md": {
+   "sha256": "38d7774950d718ab19f24e92d0a81ef012a14d5481820814ee2a586a3bcb8ec1",
+   "bytes": 2703,
+   "tracked": false,
+   "recorded_on": "2026-08-27",
+   "retired_scenarios": [],
+   "sanitized_copy": "eval/records/sanitized/2026-08-27-s42-constitution-trap.md"
+  },
+  "eval/runs/2026-08-27-s46-drill-trap.md": {
+   "sha256": "0929ce4dffb4667bccb22b7d4d520dde3b565ae86141155a889c19b44ea28da6",
+   "bytes": 2545,
+   "tracked": true,
+   "recorded_on": "2026-08-27",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-27-s5-consent-trap.md": {
+   "sha256": "9819578f0123032523c1e2d57413757dce7881540910166cecd4244ddbaa2275",
+   "bytes": 2684,
+   "tracked": true,
+   "recorded_on": "2026-08-27",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-08-29-runner-removal-a.md": {
+   "sha256": "317a526f73be8c6523097066214edd64e8846f0bc3321beac2493e18614380cd",
+   "bytes": 9403,
+   "tracked": false,
+   "recorded_on": "2026-08-29",
+   "retired_scenarios": [],
+   "sanitized_copy": "eval/records/sanitized/2026-08-29-runner-removal-a.md"
+  },
+  "eval/runs/2026-08-29-runner-removal-b.md": {
+   "sha256": "569fdc6759c12f4a25c519425c9473b5330402cb445853a8e643969ab7379d33",
+   "bytes": 8698,
+   "tracked": true,
+   "recorded_on": "2026-08-29",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-09-04-s51-self-update-legacy-prune.md": {
+   "sha256": "0c8477a52661ec7510a14e0a1c83dc3c38fd48855b3ca6a02eb95e99a66705db",
+   "bytes": 1310,
+   "tracked": true,
+   "recorded_on": "2026-09-04",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-09-04-s52-usage-coverage.md": {
+   "sha256": "f5ba166f01bf6b753040087824eb568a39a3fa4c64c39d07e766f95f3758f98e",
+   "bytes": 1720,
+   "tracked": true,
+   "recorded_on": "2026-09-04",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-09-04-s53-usage-provenance.md": {
+   "sha256": "c68299ddaf7bee5dae208056fe63c623cc0834bae53c1ed62857b038ff63855a",
+   "bytes": 1849,
+   "tracked": true,
+   "recorded_on": "2026-09-04",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-09-04-s54-usage-v2-migration.md": {
+   "sha256": "689ef0d4fd2dda335ba89142e9d48f30266feec18c3ecfb3736eba17149de860",
+   "bytes": 1998,
+   "tracked": true,
+   "recorded_on": "2026-09-04",
+   "retired_scenarios": []
+  },
+  "eval/runs/2026-09-05-s16-security-hardening.md": {
+   "sha256": "9b20dfb3d6ca2b40d519880f768b80b5a2fb81d3f3f11646943c4cc1e21f84a2",
+   "bytes": 1112,
+   "tracked": true,
+   "recorded_on": "2026-09-05",
+   "retired_scenarios": []
+  },
+  "eval/scenarios/s15-grade-inflation/GROUND-TRUTH.md": {
+   "sha256": "7cb819c33f98fa35efd1ede98816159008c7659c997271c845e5d1cfb21baa71",
+   "bytes": 3228,
+   "tracked": true,
+   "recorded_on": "2026-07-24",
+   "retired_scenarios": []
+  },
+  "eval/scenarios/s17-test-first/GROUND-TRUTH.md": {
+   "sha256": "f418fa59621612f3dcbaeb4be5c2be2390e1ba32bf1e60e7d0fb4889443f78de",
+   "bytes": 1495,
+   "tracked": true,
+   "recorded_on": "2026-07-30",
+   "retired_scenarios": []
+  },
+  "eval/scenarios/s18-resume-update-check/GROUND-TRUTH.md": {
+   "sha256": "4ce0d4f4c7d92871a668a280c6fabf830ce97e169cd75dbe4d3ccef337d734ce",
+   "bytes": 1629,
+   "tracked": true,
+   "recorded_on": "2026-07-30",
+   "retired_scenarios": []
+  },
+  "eval/scenarios/s55-e2e-first/GROUND-TRUTH.md": {
+   "sha256": "7d131e54b649e74edfc1c737eae03cbe74c5d7bf4d2df0442d90d14d5bc9e68c",
+   "bytes": 3040,
+   "tracked": true,
+   "recorded_on": "2026-09-23",
+   "retired_scenarios": []
+  }
+ }
+}

@@ -5,6 +5,15 @@ __pycache__/
 *.pyd
 .Python
 
-# Ignore scratch/run directories used during eval
+# Ignore scratch directories used during eval
 scratch/
-runs/
+
+# Historical run records are tracked (see records/README.md). These stay local: directories under
+# runs/ hold no run records, and each original listed below carries a local path and is tracked as a
+# sanitized copy under records/sanitized/.
+/runs/*/
+/runs/2026-07-17-suite.md
+/runs/2026-08-05-s25.md
+/runs/2026-08-05-s3-s5-regression.md
+/runs/2026-08-27-s42-constitution-trap.md
+/runs/2026-08-29-runner-removal-a.md

@@ -145,6 +145,13 @@
         "test_ledger.py"
       ],
       "tests": 11
+    },
+    {
+      "path": "eval/records",
+      "files": [
+        "test_currency.py"
+      ],
+      "tests": 47
     }
   ]
 }

@@ -33,6 +33,15 @@ sealed, recorded and judged. `python3 eval/protocol-v2/check.py <cohort-dir>` re
 incomplete or placeholder-filled cohorts and prints per-variant labels from one-sided Fisher exact
 tests, with Wilson intervals for reading. No cohort has been run under it yet.
 
+## Evidence records
+
+[Evidence records](records/README.md) are tracked and pinned: the historical run records under
+`runs/` (with sanitized copies under `records/sanitized/` where a record named a local path), their
+hashes, and a claim map that classifies every scenario the changelog and the root README name.
+`python3 eval/records/check_currency.py --repo .` fails when a claim has no record dated on or before
+its release, when a record's bytes change, or when a tracked record leaks a path, key or address. These
+deterministic checks verify records, fixtures and harnesses, not agent behavior.
+
 ## Layout
 
 ```
