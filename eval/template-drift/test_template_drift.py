@@ -1,4 +1,4 @@
-"""T-02: a workspace scaffolded, compiled and migrated from the shipped templates and guides is current and lint-clean.
+"""A workspace scaffolded, compiled and migrated from the shipped templates and guides is current and lint-clean.
 
 Every case derives its input from the shipped documents (templates, scaffold.md, migrate.md,
 terminology.md, verify.md) and judges lint rows through full-checks.md's canonical recipes.

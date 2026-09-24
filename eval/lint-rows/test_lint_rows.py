@@ -1,4 +1,4 @@
-"""T-01: every workspace lint row passes clean fixtures and fails on a planted defect.
+"""Every workspace lint row passes clean fixtures and fails on a planted defect.
 
 Rows are extracted by ``canonical_rows`` and judged by ``lint_verdict`` from full-checks.md, the
 same recipes a Full run uses, and executed with ``sh`` against disposable copies of the fixtures.
@@ -108,7 +108,7 @@ GENERATED = {
 }
 
 # (overlay, base, row, expected stdout fragment, verdict). A structural diagnostic that exits 1
-# is ERROR under lint_verdict (rows 1, 2 and 12, D-28); every other finding is FAIL or WARN.
+# is ERROR under lint_verdict (rows 1, 2 and 12); every other finding is FAIL or WARN.
 FAILS = [
     ('fail-1', 'pass-full', 1, '{{todo}}', 'FAIL'),
     ('fail-1-lite', 'pass-lite', 1, 'row1: Lite has Full artifact', 'ERROR'),
