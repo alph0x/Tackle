@@ -95,9 +95,12 @@ invented. Expected values come from the contract, before reading candidate outpu
 
 1. {{grounded implementation step and conditional alternative}}.
 2. {{integration step; preserve protected inputs and expectations}}.
-3. Add or update tests over the complete case matrix. For non-trivial executable behavior,
-   test-first is the default: record the failing red phase, then implement and refactor green.
-   A test count alone is not evidence of useful coverage.
+3. Use the check selected in PLAN over the complete case matrix. Prefer E2E through the real
+   consumer as the sole new test; a feasible complex flow requires it. Record its failing red
+   phase before implementing and its replayable artifact after green. Never add a unit test after
+   implementing the behavior it covers. Before any necessary isolated test or implementation,
+   list the applicable failure modes and expected outcomes and write the test first. A test count
+   alone is not evidence of useful coverage.
 
 ### Intent gate
 
@@ -125,6 +128,9 @@ Use the specified result/exit. Validators read evidence and never repair product
 wrapper exit, child exit, timeout, signal and stdout independently; wrapper success cannot hide
 a child failure. Before running a compound check, save its complete script and hash it with its
 inputs so its portable evidence retains the executed logic, not a prose command label.
+For E2E, retain a replay artifact containing this command/script, accessible fixtures, expected
+and observed results, runtime, environment, raw child result, and input/output hashes. Its replay
+uses a disposable copy or fresh destination without overwriting the original raw record.
 
 Once this heading is sealed at Ready, a protected acceptance edit requires a prior superseding
 `D-yy` decision; update the marker to `SEALED: D-yy supersedes D-xx`, regenerate compiled

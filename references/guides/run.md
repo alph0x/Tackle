@@ -44,6 +44,10 @@ the declared expected behavior and valid semantic equivalents; they never derive
 from the candidate's output. Real outputs and inputs are read-only to validators. Disposable
 directories may be created and removed after the observation, with pre-existing sentinels
 preserved.
+Follow the check selected in PLAN under [testing.md](testing.md): prefer the real consumer E2E,
+never add a unit test after its implementation, and list applicable failure modes before any
+necessary isolated test or implementation. Retain a replayable artifact for each E2E run; the
+normal complete raw capture and accessible fixtures can satisfy this without a second record.
 
 For Full, use [execution checks](full-checks.md) when the harness lacks complete capture or
 canonical lint automation. Establish effective write confinement before the first PLAN write/check and retain it in RUN; record

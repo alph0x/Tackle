@@ -24,6 +24,11 @@ the behavior behind an id, not merely repeat the id.
 Map every criterion to a task check, related regression check, and evidence slot. Include positive and
 negative fixtures for each validator boundary and state the plan-only boundary: preparation stops
 before source execution and cannot claim product PASS.
+Choose the check type here before implementation. Prefer one E2E check through the real consumer
+as the sole new test when it covers the behavior; complex features need one when feasible. For
+isolation, state the uncovered obligation, why E2E cannot observe it, and the identified applicable
+failure-mode inventory with expected outcomes. Name the E2E replay artifact destination. Unit tests
+may never be planned as post-implementation additions.
 
 | Criterion / obligation | Task | Task check | Related regression check | Evidence slot |
 |---|---|---|---|---|
@@ -101,9 +106,11 @@ correction recheck. An empty doubts list does not pass a probe whose reconstruct
 Every task's own Acceptance names its literal command and case set. This shared bar adds the
 integration obligations that apply to every task:
 
-- [ ] Tests cover the stated normal and boundary cases; the suite and each task acceptance check
-      pass with checked native results/exits and any contract-required counts. Test-first is the default for non-trivial code;
-      an opt-out is an explicit decision.
+- [ ] Selected checks cover the stated normal and boundary cases and pass with checked native
+      results/exits. Test-first is the default for new checks; an opt-out is an explicit decision.
+      Never write a unit test after the behavior it covers. Prefer E2E as the sole new test, require
+      it for feasible complex flows, and retain its replayable artifact. Isolated checks need their
+      pre-implementation failure-mode inventory and justification.
 - [ ] Contract clauses, interfaces, invariants, and relevant quality constraints are reflected
       in an observable check; equivalent valid implementations remain acceptable.
 - [ ] Protected inputs/source and unrelated files remain unchanged; warnings and regressions

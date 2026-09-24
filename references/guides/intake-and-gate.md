@@ -120,6 +120,10 @@ broken implementation behaves differently. Scope or risk overrides line count.
 After explicit execution intent, name the scope and expected behavior, inspect the actual files
 and available check, then edit. An existing failing regression is sufficient red evidence; add a
 new test only for a meaningful uncovered case and use a new test file when originals are protected.
+Prefer one E2E check through the real consumer as the sole new test when it covers the behavior.
+Never add a unit test after implementing the behavior it covers; if isolation is necessary, list
+its applicable failure modes and expected outcomes before the test and implementation. Retain the
+replayable artifact from any E2E run as described in `testing.md`.
 Run the target and affected related regression checks; one command may cover both when its coverage is
 explicit. Preserve protected files and unrelated changes. Stop on contradictions, unavailable
 required checks or repeated no-progress; use the same three failed correction-cycle cap as RUN.

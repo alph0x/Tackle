@@ -27,10 +27,16 @@ multi-team/session coordination, uncertain integration or a shared public contra
    results come from the contract, never from the implementation. Record intended supported
    producer/consumer runtimes and available validation environments before editing; no declared
    range means observed coverage only. Unavailable required coverage stays unverified/blocked.
+   Select the test type and evidence destination now: prefer E2E through the real consumer as the
+   sole new test, require it for a feasible complex flow, and name the replay artifact. If a
+   required failure needs isolation, record why E2E cannot cover it and all identified applicable
+   failure modes with expected outcomes before implementing.
 3. **Run when authorized.** Explicit PLAN+RUN consent suffices and persists across status questions; a PLAN-only request stops Ready. Record sufficient supplied anchors without reconfirming them. Ask only for a material product choice; delegated technical choices proceed.
    Verify current inputs/dependencies/environment and protected fingerprints before editing.
    Change only declared source and authorized artifacts. Test-first is the default for non-trivial
-   executable work; existing red tests suffice. Add coverage
+   executable work; existing red tests suffice. Never add a unit test after implementing the
+   behavior it covers; a necessary isolated test follows its recorded failure-mode inventory and
+   precedes implementation. Add coverage
    in new files when original tests are byte-protected. Preserve unrelated edits and exact specified
    bytes, including delimiters and the final newline.
    Apply self-documenting code: Clean Code + SOLID; no explanatory inline comments. Doc-comments
@@ -45,6 +51,10 @@ multi-team/session coordination, uncertain integration or a shared public contra
    choose an accessible durable export destination or adapt the [capture recipe](guides/evidence-capture.md).
    Choose either capture mechanism; delivering raw evidence is required. Generated
    receipts are evidence indexes: link them instead of retyping commands, output, clocks or hashes.
+   Every E2E run produces a replayable artifact with its exact command or saved script, accessible
+   fixtures, expected and observed results, runtime/environment, raw child result and hashes;
+   a complete existing capture plus stable inputs may serve without duplication. Replay on a
+   disposable copy or fresh destination, preserving the original raw record and fixtures.
    One check may cover target, surrounding, affected integration and final deliverable obligations
    if its actual coverage does. Reuse a sufficient successful check; do not add equivalent auxiliary
    assertions or rerun it at closure without changed inputs or coverage. Deliverable acceptance still checks applicable packaging/rebuild and

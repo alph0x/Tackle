@@ -17,6 +17,13 @@ slot. Add a positive fixture and a negative fixture for each validator or contra
 negative fixture must expose an implementation that satisfies a keyword, file-existence, or test
 count check while violating the required behavior.
 
+Choose the check type during PLAN, before implementation. Prefer one end-to-end check through the
+real public consumer as the sole new test when it covers the criterion; a complex integrated
+feature needs one when feasible. Name its replay artifact destination. If an obligation requires
+isolation, record why E2E cannot cover it and enumerate the applicable failure modes with expected
+outcomes before implementation or an isolated test is written. No Task plans a unit test to be
+added after the behavior it covers is implemented. See [testing.md](testing.md).
+
 Derive cases from the declared input domain and each output consumer, not only sample data.
 Separate normal inputs, adversarial but valid inputs, and inputs outside the declared domain.
 For strings crossing a serializer, exercise delimiters, quotes, line breaks and Unicode through
