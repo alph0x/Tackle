@@ -20,6 +20,9 @@
 - **Goal**: {{one observable, coherent change with a single acceptance check.}}
 - **Non-goals**: {{explicit exclusions and preserved behavior}}.
 - **Type**: {{standard, discovery, or experiment; omit when standard}}.
+- **Rounds**: {{finite round budget; discovery or experiment only, omit otherwise}}.
+- **Metric**: {{measured quantity and its protected evaluator; experiment only, omit otherwise}}.
+- **Threshold**: {{value Metric must reach to keep a change; experiment only, omit otherwise}}.
 - **Acceptance owner**: {{owner of the required checks/review; existing authorization suffices.
   Request separate approval only for an action outside scope; omit when already assigned}}.
 

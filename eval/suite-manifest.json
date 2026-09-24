@@ -117,6 +117,13 @@
         "test_measurement.py"
       ],
       "tests": 27
+    },
+    {
+      "path": "eval/lint-rows",
+      "files": [
+        "test_lint_rows.py"
+      ],
+      "tests": 9
     }
   ]
 }

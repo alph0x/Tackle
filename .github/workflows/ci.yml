@@ -29,7 +29,6 @@ jobs:
           r=$(git ls-files | awk '/(^|\/)(tackle|tackle-check)$/ {print}' | while IFS= read -r p; do [ -e "$p" ] && printf '%s\n' "$p"; done | awk 'END{print NR+0}'); test "$r" -eq 0
           for d in eval/scenarios/*/; do [ -d "$d" ] || continue; name=$(basename "$d"); grep -qF "$name" eval/README.md; test -f "$d/GROUND-TRUTH.md"; done
           for f in eval/scratch/*/GROUND-TRUTH.md eval/runs/*/GROUND-TRUTH.md; do [ -f "$f" ] && exit 1 || true; done
-          for w in docs/plans/*/; do [ -d "$w" ] || continue; [ -f "$w/board.md" ] || continue; done
       - name: Run every registered deterministic suite with strict discovery
         run: python3 eval/run_suites.py --output "$RUNNER_TEMP/tackle-suite-results"
       - name: Preserve deterministic outcomes and raw command streams

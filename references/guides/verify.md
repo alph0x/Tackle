@@ -62,7 +62,28 @@ For each prepared task in `plan.md`'s task decomposition / `task-board.md`, and 
    legitimate ordering-only edge is recorded as a `D-xx` scheduling choice; false edges get cut.
 6. **Plan-vs-code drift** — compare the task's claimed `Write scope` (legacy `Touches`) and Goal against the current repo; flag if the code already implements it (stale task) or if the described change does not match any touched file.
 7. **Agnosticism / Harness-agnostic check** — confirm the plan remains harness-agnostic: no harness-specific commands (e.g. `/command`, `@mention`, `.claude/`), no model brand names (e.g. `Claude`, `GPT`, `Opus`), and no vendor-specific file paths unless the task is explicitly about that harness. Flag violations as drift.
-8. **Seal integrity** — mechanical: every `SEALED: D-xx` id found in the workspace greps in `decisions.md` (a missing id is a HIGH finding); a sealed section edited with no superseding `SEALED: D-yy supersedes D-xx` marker is a HIGH finding.
+8. **Seal integrity** — mechanical: every `SEALED: D-xx` id found in the workspace resolves to a decision heading in `decisions.md` that is not marked superseded (lint row 7; a missing or superseded id is a HIGH finding); a sealed section edited with no superseding `SEALED: D-yy supersedes D-xx` marker is a HIGH finding. Every compiled clause hash recorded in `tasks/` or legacy `points/` must still match its clause in `design-contract.md`, where a clause runs from its `## <id>` heading through the line before the next `## ` heading or `<a id=` line, each line ending in one newline. The command below reads the first `sha256` of each compiled-clause bullet outside fenced code. It prints `seal drift` for an edit made after compilation (HIGH), `malformed clause hash` for a recorded value that is not 64 lowercase hex digits (HIGH), and `unresolved clause source` for an id with no heading there (MEDIUM until the brief's recorded source is checked); it exits 1 when it prints anything.
+   <a id="seal-integrity-command"></a>
+
+   ```sh
+   ws=docs/plans/<slug>
+   if command -v sha256sum >/dev/null 2>&1; then sum=sha256sum; else sum='shasum -a 256'; fi
+   status=0
+   for f in "$ws"/tasks/*.md "$ws"/points/*.md; do
+     [ -f "$f" ] || continue
+     for entry in $(awk '/^```/ {fence = !fence; next} !fence && /^[[:space:]]*[-*+][[:space:]]+[*][*][^*[:space:]]+ · .* · sha256 `[^`]*`[*][*]/ {id=$0; sub(/^[[:space:]]*[-*+][[:space:]]+[*][*]/, "", id); sub(/[[:space:]].*/, "", id); h=substr($0, index($0, "sha256 `") + 8); sub(/`.*/, "", h); if (length(h) != 64 || h ~ /[^0-9a-f]/) h = "malformed"; print id "=" h}' "$f"); do
+       id=${entry%%=*}; recorded=${entry#*=}
+       if [ "$recorded" = malformed ]; then echo "malformed clause hash: $id in $f"; status=1; continue; fi
+       if [ -f "$ws/design-contract.md" ] && awk -v id="$id" '$1 == "##" && $2 == id {found = 1} END {exit !found}' "$ws/design-contract.md"; then
+         current=$(awk -v id="$id" 'found && (substr($0, 1, 3) == "## " || substr($0, 1, 6) == "<a id=") {exit} !found && $1 == "##" && $2 == id {found = 1} found {print}' "$ws/design-contract.md" | $sum | cut -d ' ' -f 1)
+         if [ "$current" != "$recorded" ]; then echo "seal drift: $id in $f (recorded $recorded, current $current)"; status=1; fi
+       else
+         echo "unresolved clause source: $id in $f"; status=1
+       fi
+     done
+   done
+   exit "$status"
+   ```
 9. **Regression sweep computability** — confirm the task declares `Write scope` (legacy `Touches`) precisely enough that the sweep set (Complete tasks on v3/v4 boards, or legacy 🟢 tasks, with intersecting Write scope) is derivable mechanically (grep over the selected board + `tasks/`, or legacy `points/`); flag missing or vague `Write scope` (legacy `Touches`).
 10. **Verification derivation** — on v3/v4 boards, inspect the referenced report and raw records for actual method, result, revisions and observed independence; missing/failed/stale required records block acceptance. For legacy boards, for every historical `board.md` row carrying a Confidence grade, re-derive the grade from its closure evidence (closure report section 4; Focused/Lite gate: the selected history evidence block): command + output + exit line from the independent checker ⇒ E1; a review-gate marker with rubric + named reviewer ⇒ E2; an explicit UNVERIFIABLE label ⇒ E0; anything else ⇒ E3. A declared grade that doesn't match derivation is a grade-inflation finding — HIGH, mechanically checkable.
 
