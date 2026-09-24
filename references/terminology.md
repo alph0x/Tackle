@@ -14,11 +14,11 @@ not require another agent or prove independence.
 | Canonical visible name | Historical name / stable identifier | Meaning and choice |
 |---|---|---|
 | Initiative, repository, workspace, plan | unchanged | Distinct objective, containing project, working directory and intended work. |
-| Task / task brief | Point / Point briefing; `P-01`, `points/`, `point.tmpl.md` | One responsibility and its sufficient execution contract; retain IDs and paths. |
-| Task board | Board; `board.md` | Canonical current task state. |
-| History | Log; `log.md`, `log-archive.md` | Original ordered events; never a competing current-state authority. |
-| Current work / checkpoint | Coordinator continuity; `coordinator.md` | Verified disposable projection / recorded source revision and event boundary. |
-| Handoff brief | Handoff; `HANDOFF.md` | Portable context plus required source records and objects. |
+| Task / task brief | Point / Point briefing; legacy `P-01`, `points/`, `point.tmpl.md` | New work uses `T-01`, `tasks/`, `task.tmpl.md` and `resource-usage.tmpl.md`; retain historical IDs, paths and `usage.tmpl.md` for reading. |
+| Task board | Board; historical `board.md` | New `task-board.md` is canonical current task state; old boards stay readable. |
+| History | Log; historical `log.md`, `log-archive.md` | New `history.md` and optional `history-archive.md` preserve ordered events. |
+| Current work / checkpoint | Coordinator continuity; historical `coordinator.md` | New `current-work.md` is a verified disposable projection. |
+| Handoff brief | Handoff; historical `HANDOFF.md` | New `handoff-brief.md` carries portable context and required records. |
 | Requirement / criterion / contract clause | unchanged | Required behavior / acceptance statement / selected invariant with source revision. |
 | Acceptance check | Done-signal; legacy `Done-signal` and `Run` fields | Command or defined review procedure; retain reader aliases. |
 | Task check | Target check | Observes the task's intended behavior. |
@@ -26,13 +26,13 @@ not require another agent or prove independence.
 | Deliverable acceptance | Global acceptance | Checks final integrated outputs and all mandatory delivery obligations. |
 | Write scope | Touches | Complete permitted write set; readers accept both labels. |
 | Reference verification | Grounding | Verifies that sources support claims, including current fingerprints and historical citations. |
-| Verification records | Evidence; `evidence/` | Preserved results and inputs; old paths remain valid. |
+| Verification records | Evidence; historical `evidence/` | New `verification-records/` stores preserved results and inputs; old paths remain valid. |
 | Check summary / raw check record | Receipt / observation | Readable index / original captured event. An execution remains a distinct event. |
 | Open question / pending decision / blocker | historically mixed in questions | Information request / unresolved choice / condition preventing affected work. Do not conflate them. |
 | Backlog idea | Seed; `docs/seeds/` | Deliberately deferred work, with the same gitignore decision as plans. |
 | Reference plan | Archetype; `references/archetypes/` | Reusable proven structure, not an obligation to copy it. |
 | Preferences and lessons | Profile; existing profile paths | Applicable preferences, directives and hypotheses with consent-controlled writes. |
-| Resource usage | Usage; `usage.md`, `tackle-observability/2` | Observed lifecycle and resource information; unknown remains `n/a`. |
+| Resource usage | Usage; historical `usage.md`; `tackle-observability/2` schema | New `resource-usage.md` and optional `resource-usage.telemetry.jsonl` hold observed lifecycle and resource information; old sidecar paths remain readable; unknown remains `n/a`. |
 | Executor | Driver / Executor | Implements authorized work. |
 | Coordinator | unchanged | Owns shared state, dependencies and deliverable acceptance. |
 | Reviewer / verifier / auditor | Reviewer or Quality Guardian / Checker, Verifier or Spec Reader / Judge or Red-Teamer | Semantic assessment / actual checks / explicit finished-work audit. Keep responsibilities distinct. |
@@ -59,7 +59,7 @@ Keep PLAN/RUN/STATUS, `verify`, `judge`, `retro`, documented flags and aliases i
 
 ## States and observations
 
-New boards declare `Schema: tackle-workspace/3` and use **Draft → Ready to run → In progress →
+New task boards declare `Schema: tackle-workspace/4` and use **Draft → Ready to run → In progress →
 Checking → Complete**. Draft includes deferred or insufficiently prepared work. Ready to run
 requires current readiness records. In progress covers preflight/implementation/correction;
 Checking covers task, regression and affected integration validation. Complete requires every
@@ -86,12 +86,13 @@ an ordinal quality scale. Renaming evidence never upgrades it or invents a revie
 
 ## Files, fields and adoption
 
-Keep one authoritative file for each fact. Existing filenames, P-ids, D-ids, Q-ids, raw-record
-fields, lifecycle columns and documented anchors remain valid. New briefs use Write scope,
+Keep one authoritative file for each fact. New workspaces use T-ids, `tasks/`, `task-board.md`,
+`history.md` and `resource-usage.md`; existing P-ids, paths, D-ids, Q-ids, raw-record fields, lifecycle columns and documented anchors remain valid for historical reading. New briefs use Write scope,
 Acceptance check, Task check and Related regression check; readers accept their old aliases.
 Legacy section anchors have explicit HTML aliases where a heading changes. Existing schema tokens
-are never translated for a localized conversation. Do not renumber, duplicate a task, or reset
-authorization/correction lineage to adopt terminology.
+are never translated for a localized conversation. Do not renumber a historical task, duplicate an
+identity, or reset authorization/correction lineage to adopt terminology. A selected migration uses
+a reversible copy and explicit P→T mapping.
 
 Use new board schema only in validated new workspaces or selected copy-first migrations.
 [Migration](guides/migrate.md#candidate-workspace-format) preserves history and reversible mapping.

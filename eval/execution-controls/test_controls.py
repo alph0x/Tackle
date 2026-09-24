@@ -119,7 +119,7 @@ class CanonicalTests(unittest.TestCase):
             with self.assertRaises(ValueError):self.rows(slug=slug)
     def test_backticks_quotes_and_substitutions_preserved(self):
         rows=self.rows();self.assertIn(b'`[^`]+`',rows[8]['command'])
-        self.assertIn(b'$(awk',rows[2]['command']);self.assertIn(b'"$id"',rows[2]['command'])
+        self.assertIn(b'$(sed',rows[2]['command']);self.assertIn(b'awk -v prefix="$prefix"',rows[2]['command'])
     def test_findings_with_exit_zero_are_not_pass(self):
         self.assertEqual(self.verdict(4,out=b'stale citation\n'),'FAIL')
     def test_grep_one_is_pass_zero_empty_is_error_two_is_error(self):

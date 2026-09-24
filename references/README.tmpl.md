@@ -23,11 +23,11 @@
 | Doc | Contents |
 |---|---|
 | `plan.md` | Objective, non-goals, task decomposition, acceptance criteria, risks |
-| `log.md` | Append-only history (current state is in board.md) |
+| `history.md` | Append-only history (current state is in task-board.md) |
 | `questions.md` | Open questions (single source) |
 | `decisions.md` | Closed decisions register (`D-01`…, don't revisit without cause) |
 | `reference.md` | Current code state with `file:line` |
-| `points/` | One self-contained `.md` per task (goal, approach, prompt, alternatives) |
+| `tasks/` | One self-contained `.md` per task (goal, approach, prompt, alternatives) |
 | `AGENTS.md` | Workspace conventions |
 <!-- Add the lines below only for the artifacts you actually created (delete the rest):
 | `design-contract.md` | Authoritative API/state/error surface tasks implement |
@@ -40,9 +40,9 @@ Add appendices here too (descriptive name, not numbered). -->
 
 1. `AGENTS.md` — rules of the workspace.
 2. `plan.md` — objective, non-goals, task decomposition.
-3. `log.md` (newest entry's State snapshot) — where it stands.
+3. `history.md` (newest entry's State snapshot) — where it stands.
 4. `decisions.md` / `questions.md` — what's settled / still open.
-5. The relevant `points/P-0N-*.md` — self-contained brief for the work you're picking up.
+5. The relevant `tasks/T-0N-*.md` — self-contained brief for the work you're picking up.
 
 ## Next step
 

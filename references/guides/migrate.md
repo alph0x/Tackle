@@ -3,14 +3,15 @@
 Migration is a **copy-first, selected-active-work** operation. It never structurally rewrites a live
 workspace or its history during the migration trial,
 automatically migrates unrelated or closed work, upgrades historical evidence, or turns a query into
-execution. Select the 8.2 → 8.3 checklist for an active 8.2 workspace at a task boundary. Select
-the 8.1 → 8.2 checklist for an 8.1 workspace first. An active 8.2.0 workspace can
+execution. Select the 8.3 → 8.4 checklist for a workspace that will adopt T identifiers.
+An older 8.2 workspace first follows the 8.2 → 8.3 checklist at a task boundary;
+an 8.1 workspace follows 8.1 → 8.2 before that. An active 8.2.0 workspace can
 adopt optional 8.2.1 usage capture at a task boundary using the patch checklist below. Earlier workspaces first follow
 their applicable transitions: 8.0 → 8.1, or 7.3 → 8.0 before that. Older checklists remain readable historical context and cannot bypass the current
 selection, pinning, history or rollback guards.
 
-Only a selected active workspace is migrated, and only on a disposable copy. Closed points retain
-their recorded state and evidence; future execution uses the RUN protocol at a Point boundary.
+Only a selected active workspace is migrated, and only on a disposable copy. Closed P tasks retain
+their recorded state and evidence; future execution uses the RUN protocol at a task boundary.
 
 `improve this plan`, `migrate`, and `upgrade` route to PLAN's migration preparation. An unstructured
 source is ingested fresh through PLAN.
@@ -36,6 +37,36 @@ they are not current obligations outside the v7.3 → v8.0 checklist:
 - **F-8 · Verification** — `lint: N/N checks passed` on the migrated workspace and the Methodology stamp is current → generic step 6 plus each checklist's record item.
 
 <a id="candidate-workspace-format"></a>
+## v8.3 → v8.4 checklist
+
+New Coordinated workspaces use `T-01`, `tasks/`, `task-board.md`, `history.md`,
+`resource-usage.md`, `task.tmpl.md` and the corresponding new templates. New Focused workspaces
+use `plan.md`, `history.md` and `resource-usage.md`. Triggered artifacts use
+`history-archive.md`, `current-work.md`, `handoff-brief.md` and `verification-records/`.
+The board declares `Schema: tackle-workspace/4`. Existing P workspaces and v3 T candidates
+remain readable with their original paths, links and recorded history. Installing 8.4 does not
+rename any workspace or relax the 8.3 test-selection and E2E replay-evidence rules.
+
+1. Select an active workspace and record its pinned procedure, task boundary, exact file/brief
+   links, history and raw-record hashes. Keep an unchanged checkpoint and neighbor sentinel.
+   A read-only request cannot select a migration.
+2. Continue started or interrupted work under its pinned procedure. At a deliberate boundary,
+   prepare a separate candidate on a disposable copy with an explicit old→new path and P→T
+   obligation map. Preserve completed task identities and original history as external sources;
+   never rewrite original bytes or reset attempt counts.
+3. In the new candidate, instantiate `task-board.tmpl.md`, `history.tmpl.md`,
+   `resource-usage.tmpl.md` and `task.tmpl.md`. Make plan §5, task board, every brief,
+   dependency, ledger and report agree on T IDs and the v4 paths. Do not keep old-name
+   duplicates or mix `points/` into the new workspace. Link verified old outputs with source
+   revision and recheck inherited readiness against the new contract.
+4. Run canonical lint on both unchanged source and candidate. Exercise missing briefs, dangling
+   dependencies, mixed old/new paths, malformed state, history/archive order and resource usage.
+   Preserve the 8.3 E2E replay artifacts. Compare original history and neighbor hashes byte for
+   byte, then restore a separate checkpoint copy to prove rollback.
+5. Adopt only the validated continuation at the boundary. Append the path/identity mapping,
+   input revisions, observed checks and rollback result; keep the original workspace readable.
+   A failed check leaves it active and unchanged.
+
 ## v8.2 → v8.3 checklist
 
 Tackle 8.3 changes forward-looking test selection and E2E evidence, not historical test results.

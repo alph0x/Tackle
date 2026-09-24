@@ -18,7 +18,7 @@ when sent.
 {{Concrete question. What needs deciding and why it blocks (or not).}}
 
 **Determines**: {{what downstream choice/task this answer unblocks or shapes — e.g. "rollback
-semantics", "blocks P-06". A question whose answer changes nothing isn't worth tracking.}}
+semantics", "blocks T-06". A question whose answer changes nothing isn't worth tracking.}}
 **Decides**: {{who: the relevant team / owner}}.
 **Already investigated**: {{what you checked before asking — e.g. "grep of pipelineScripts
 found no enablement"; the partial answer you already have. Don't ask others what the codebase

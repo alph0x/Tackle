@@ -103,7 +103,7 @@ For code, PLAN chooses the checks before implementation. Tackle prefers an end-t
 |---|---|
 | `plan <task>` | Prepare the work without implementing it. |
 | `run` | Execute the authorized ready work and check the results. |
-| `run --one` or `run <P-id>` | Execute one task. |
+| `run --one` or `run <T-id>` | Execute one task. |
 | `status [<workspace>]`, `list`, or `next` | Read current progress or find the next task. |
 | `status <workspace> --handoff` | Write a handoff for the next session. |
 
@@ -116,10 +116,10 @@ A task brief describes an observable result, the relevant inputs, its write scop
 An abbreviated, illustrative brief might read:
 
 ```text
-P-02 — Extract checkout validation
+T-02 — Extract checkout validation
 
 Outcome:       Existing validation behavior is preserved in a separate module.
-Input:         P-01's agreed validation contract and characterized cases.
+Input:         T-01's agreed validation contract and characterized cases.
 Write scope:   The files explicitly named in this task's full brief.
 Constraints:   No changes to public behavior or unrelated payment flows.
 Checks:        Contract cases, existing regressions, affected integration checks.
@@ -132,23 +132,23 @@ The actual brief must name concrete files, cases, and checks. This example is no
 
 Focused and Coordinated plans live under `docs/plans/<initiative>/` as Markdown. The agent sizes the workspace to the work: Direct handles a bounded local correction without a workspace; Focused keeps a small durable plan; Coordinated adds task and coordination artifacts when needed. Risk determines the route, not task count alone.
 
-Focused uses `plan.md`, `log.md`, and `usage.md`, with separate decisions or questions files when needed. A Coordinated workspace includes:
+Focused uses `plan.md`, `history.md`, and `resource-usage.md`, with separate decisions or questions files when needed. A Coordinated workspace includes:
 
 ```text
 docs/plans/<initiative>/
 ├── README.md          Index and reading order
 ├── AGENTS.md          Instructions for the next agent
 ├── plan.md            Goal, non-goals, task decomposition, dependencies
-├── points/            Self-contained task briefs with stable P-ids
-├── board.md           Canonical current task state and verification references
-├── log.md             Session and observation history
-├── usage.md           Observed role starts, finishes, and interrupted runs
+├── tasks/             Self-contained task briefs with stable T-ids
+├── task-board.md     Canonical current task state and verification references
+├── history.md        Session and observation history
+├── resource-usage.md Observed role starts, finishes, and interrupted runs
 ├── questions.md       Open questions
 ├── decisions.md       Settled decisions
 └── reference.md       Grounded context and source references
 ```
 
-Additional contracts, architecture notes, reports, and snapshots depend on the work. A requested handoff creates `HANDOFF.md`; a retro creates `retro.md`. You decide whether to gitignore plans in your repository. Workspaces and parked ideas in `docs/seeds/` never ship with the skill.
+Additional contracts, architecture notes, reports, and snapshots depend on the work. A requested handoff creates `handoff-brief.md`; a retro creates `retro.md`. You decide whether to gitignore plans in your repository. Workspaces and parked ideas in `docs/seeds/` never ship with the skill.
 
 Long initiatives can prepare current tasks while leaving later milestones at outcome/interface level. Current-work views are checked against their source revisions; original history and failed attempts remain recoverable. Optional retention policies manage verification records without treating retired data as current proof.
 
@@ -196,22 +196,22 @@ These requests remain available inside the same Tackle entry. They are not extra
 | `migrate` or `upgrade` | Prepare a selected workspace for migration on a disposable copy. |
 | **review lessons**, `retro [<workspace>]` | Review the initiative and propose improvements. |
 
-Visible sizing names map to existing routes: Direct (None), Focused (Lite), and Coordinated (Full). P-ids and existing artifact paths remain stable. New validated boards distinguish Draft, Ready to run, In progress, Checking, and Complete; Blocked, Interrupted, Skipped, and Unverifiable remain separate.
+Visible sizing names map to existing routes: Direct (None), Focused (Lite), and Coordinated (Full). New workspaces use T-ids and `tasks/`; historical P-ids and paths remain readable. New validated boards distinguish Draft, Ready to run, In progress, Checking, and Complete; Blocked, Interrupted, Skipped, and Unverifiable remain separate.
 
 Historical records retain their meanings: E1 for independent command verification, E2 for semantic review, E3 for an assertion, and E0 for unverifiable work. They are not an ordinal scale.
 
 During 8.x, documented aliases such as `/tackle-run`, `/tackle-verify`, `implement`, `ground`, `trace`, `drill`, `pulse`, and `handoff` preserve their intent boundaries when the host passes them as text. They do not register separate picker entries and retire in 9.0.
 
-The migration guide retains the checklist chain v2.0 → v8.3, including [8.2 → 8.3](references/guides/migrate.md#v82--v83-checklist), [8.1 → 8.2](references/guides/migrate.md#v81--v82-checklist), [8.0 → 8.1](references/guides/migrate.md#v80--v81-checklist), and the [copy-first 7.3 → 8.0 transition](references/guides/migrate.md#v73--v80-checklist).
+The migration guide retains the checklist chain v2.0 → v8.4, including [8.3 → 8.4](references/guides/migrate.md#v83--v84-checklist), [8.2 → 8.3](references/guides/migrate.md#v82--v83-checklist), [8.1 → 8.2](references/guides/migrate.md#v81--v82-checklist), [8.0 → 8.1](references/guides/migrate.md#v80--v81-checklist), and the [copy-first 7.3 → 8.0 transition](references/guides/migrate.md#v73--v80-checklist).
 
 </details>
 
 <details>
 <summary>Learning and usage records</summary>
 
-A retro reads the board and log to propose lessons. You confirm profile changes before they are written. “Stop evolving” pauses or removes that learning through the retro workflow. [Reference plans](references/archetypes/) provide proven decomposition structures that the agent can propose during intake.
+A retro reads the task board and history (`task-board.md` and `history.md`) to propose lessons. You confirm profile changes before they are written. “Stop evolving” pauses or removes that learning through the retro workflow. [Reference plans](references/archetypes/) provide proven decomposition structures that the agent can propose during intake.
 
-The `usage.md` ledger records observed role events even without token or cost data. Unknown values stay `n/a`. Optional `usage.telemetry.jsonl` observations are never required to close a task.
+The `resource-usage.md` ledger records observed role events even without token or cost data. Unknown values stay `n/a`. Optional `resource-usage.telemetry.jsonl` observations are never required to close a task.
 
 Totals and rankings require complete, comparable coverage; model-tier or effort recommendations also require three completed, comparable runs. See [usage observability](references/guides/usage-observability.md) and the optional [Codex native capture recipe](references/guides/codex-native-usage.md).
 

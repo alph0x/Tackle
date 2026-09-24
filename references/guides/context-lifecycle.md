@@ -1,10 +1,12 @@
 # Current work and original history
 
 Use this extension only when measured history growth or a milestone boundary justifies it.
-Direct and ordinary Focused work keep their existing path. `board.md` owns current task state;
-the task brief/contract owns requirements, `decisions.md` owns decisions, `questions.md` owns
-pending questions, and check records own observations. `log.md` and its original archives own
-history. `coordinator.md` and `HANDOFF.md` are disposable projections, never another authority.
+Direct and ordinary Focused work keep their normal artifact size. In new Coordinated work,
+`task-board.md` owns current task state; the task brief/contract owns requirements,
+`decisions.md` owns decisions, `questions.md` owns pending questions, and verification records
+own observations. `history.md` and its original archives own history. `current-work.md` and
+`handoff-brief.md` are disposable projections. Historical workspaces retain `board.md`,
+`log.md`, `coordinator.md` and `HANDOFF.md`; the recipe selects their existing paths.
 
 ## Current work
 
@@ -39,11 +41,11 @@ STATUS is read-only; explicit handoff writes its projection/export only. Without
 explicit archive request, report the need without archiving.
 
 Archive **original bytes in chronological order**. `history/index.md` routes stable event numbers
-and original headings to immutable segments; `log.md` retains its introduction and active tail.
-Existing `log-archive.md` remains readable and is indexed in place on selected adoption. Original
+and original headings to immutable segments; `history.md` (historical `log.md`) retains its introduction and active tail.
+Existing `log-archive.md` remains readable and is indexed in place on selected adoption; new archives use `history-archive.md`. Original
 heading references remain resolvable through the index/lookup. This is logical reference
 resolution, not an automatic redirect in a Markdown browser. Before selected segmentation, check
-live `log.md` anchor consumers and retarget them to the segment/original heading, or retain the
+live history-anchor consumers and retarget them to the segment/original heading, or retain the
 legacy layout. Do not declare migration complete while a required live link is broken; keep
 original historical text unchanged. Closed and unrelated workspaces are not migrated automatically.
 Failed attempts and their failure identities survive archival. Retrieve the named original event
@@ -125,6 +127,15 @@ def decode(data):
 class Context:
     def __init__(self, root):
         self.root = Path(root).resolve(strict=True)
+        modern = (self.root / "task-board.md").is_file()
+        self.board_name = "task-board.md" if modern else "board.md"
+        self.history_name = "history.md" if modern else "log.md"
+        self.archive_name = "history-archive.md" if modern else "log-archive.md"
+        self.projection_name = "current-work.md" if modern else "coordinator.md"
+        self.handoff_name = "handoff-brief.md" if modern else "HANDOFF.md"
+        if modern and any((self.root / name).exists() for name in
+                          ("board.md", "log.md", "log-archive.md", "coordinator.md", "HANDOFF.md")):
+            raise ValueError("mixed workspace paths")
         self.bytes_read = self.bytes_written = self.metadata_checks = 0
 
     def path(self, name):
@@ -220,9 +231,9 @@ class Context:
             index = decode(self.read("history/index.md"))
         else:
             index = {"schema": "tackle-history/1", "segments": []}
-            if self.path("log-archive.md").exists():
-                data = self.read("log-archive.md")
-                index["segments"].append(self.segment("log-archive.md", data, 1))
+            if self.path(self.archive_name).exists():
+                data = self.read(self.archive_name)
+                index["segments"].append(self.segment(self.archive_name, data, 1))
         if index.get("schema") != "tackle-history/1":
             raise ValueError("unknown history schema")
         start, prior_date = 1, ""
@@ -254,14 +265,14 @@ class Context:
     def snapshot(self, scope, sources):
         self.pending()
         names = sorted(set(sources))
-        if not {"board.md", "decisions.md", "questions.md"}.issubset(names):
+        if not {self.board_name, "decisions.md", "questions.md"}.issubset(names):
             raise ValueError("current authority sources missing")
-        if any(name in names for name in ["coordinator.md", "HANDOFF.md", "inventory.md",
+        if any(name in names for name in [self.projection_name, self.handoff_name, "inventory.md",
                                           "history/transaction.md", ".context-lock"]):
             raise ValueError("projection cannot be its own authority")
         source_bytes = {name: self.read(name) for name in names}
         index = self.index()
-        log = self.read("log.md")
+        log = self.read(self.history_name)
         _, active = self.events(log)
         closed = index["segments"][-1]["last"] if index["segments"] else 0
         if index["segments"] and active[0][3:13].decode() < index["segments"][-1]["last_date"]:
@@ -277,13 +288,13 @@ class Context:
     def project(self, scope, sources):
         with self.writer():
             projection = self.snapshot(scope, sources)
-            self.write("coordinator.md", document("Current work — verified source projection", projection))
+            self.write(self.projection_name, document("Current work — verified source projection", projection))
             return projection
 
     def current(self, scope, sources):
         with self.reader():
             actual = self.snapshot(scope, sources)
-            projection = decode(self.read("coordinator.md"))
+            projection = decode(self.read(self.projection_name))
             if projection.get("sources") != actual["sources"]:
                 if projection.get("revisions") == actual["revisions"]:
                     raise ValueError("projection source mismatch")
@@ -295,13 +306,13 @@ class Context:
     def last_event(self):
         self.pending()
         index = self.index()
-        return (index["segments"][-1]["last"] if index["segments"] else 0) + len(self.events(self.read("log.md"))[1])
+        return (index["segments"][-1]["last"] if index["segments"] else 0) + len(self.events(self.read(self.history_name))[1])
 
     def history(self):
         with self.reader():
             self.pending()
             index = self.index()
-            prefix, active = self.events(self.read("log.md"))
+            prefix, active = self.events(self.read(self.history_name))
             result = prefix + b"".join(self.sealed(s) for s in index["segments"]) + b"".join(active)
             self.events(result)
             return result
@@ -314,7 +325,7 @@ class Context:
                 if segment["first"] <= number <= segment["last"]:
                     return self.events(self.sealed(segment))[1][number - segment["first"]]
             closed = index["segments"][-1]["last"] if index["segments"] else 0
-            entries = self.events(self.read("log.md"))[1]
+            entries = self.events(self.read(self.history_name))[1]
             if type(number) is int and 1 <= number - closed <= len(entries):
                 return entries[number - closed - 1]
             raise ValueError("missing event")
@@ -333,7 +344,7 @@ class Context:
         with self.writer():
             self.pending()
             index = self.index()
-            old_log = self.read("log.md")
+            old_log = self.read(self.history_name)
             _, entries = self.events(old_log)
             number = (index["segments"][-1]["last"] if index["segments"] else 0) + len(entries)
             if number == expected_event + 1 and entries[-1] == data:
@@ -342,7 +353,7 @@ class Context:
                 raise ValueError("history head changed; reconcile before appending")
             if data[3:13] < entries[-1][3:13]:
                 raise ValueError("history out of order")
-            self.write("log.md", old_log + data)
+            self.write(self.history_name, old_log + data)
             return True
 
     def archive(self, keep=5, segment_bytes=65536, fail_after=None):
@@ -353,7 +364,7 @@ class Context:
             index = self.index()
             for segment in index["segments"]:
                 self.sealed(segment)
-            old_log = self.read("log.md")
+            old_log = self.read(self.history_name)
             prefix, entries = self.events(old_log)
             if len(entries) <= keep:
                 return False
@@ -396,7 +407,7 @@ class Context:
     def finish(self, transaction, fail_after=None):
         next_log = base64.b64decode(transaction["next_log"], validate=True)
         next_index = document("History index", transaction["next_index"])
-        current_log = self.read("log.md")
+        current_log = self.read(self.history_name)
         current_index = self.read("history/index.md") if self.path("history/index.md").exists() else None
         if (digest(current_log) not in [transaction["old_log"], digest(next_log)] or
                 (digest(current_index) if current_index else None) not in [transaction["old_index"], digest(next_index)]):
@@ -413,7 +424,7 @@ class Context:
             self.write("history/index.md", next_index)
         self.stop(fail_after, "index")
         if current_log != next_log:
-            self.write("log.md", next_log)
+            self.write(self.history_name, next_log)
         self.stop(fail_after, "log")
         self.path("history/transaction.md").unlink()
         self.sync(self.path("history"))
@@ -446,7 +457,7 @@ class Context:
                 name = str(Path(prefix) / path.relative_to(exported))
                 if path.is_symlink() or path.is_file():
                     target = bundle.path(name)
-                    if target.exists() or target.is_symlink() or name in ["HANDOFF.md", "inventory.md"]:
+                    if target.exists() or target.is_symlink() or name in [self.handoff_name, "inventory.md"]:
                         raise ValueError("record bundle path collision")
                     if path.is_symlink():
                         link = os.readlink(path)
@@ -461,7 +472,7 @@ class Context:
                         data = path.read_bytes()
                         self.bytes_read += len(data)
                         bundle.write(name, data)
-        bundle.write("HANDOFF.md", document("Portable current work", projection))
+        bundle.write(self.handoff_name, document("Portable current work", projection))
         if self.snapshot(scope, sources) != projection:
             raise ValueError("sources changed during handoff")
         inventory = bundle.file_inventory()
@@ -495,7 +506,7 @@ class Context:
         actual = bundle.file_inventory()
         if actual != inventory:
             raise ValueError("export inventory mismatch")
-        projection = decode(bundle.read("HANDOFF.md"))
+        projection = decode(bundle.read(bundle.handoff_name))
         if set(projection["sources"]) != set(projection["revisions"]):
             raise ValueError("export source membership mismatch")
         for name, revision in projection["revisions"].items():

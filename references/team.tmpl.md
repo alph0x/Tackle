@@ -3,7 +3,7 @@
 This template binds role capabilities and state ownership. The sole execution lifecycle, correction
 budget, evidence contract, integration checks, and closure rules live in
 `references/guides/run.md`; do not copy an execution protocol into this file. The workspace
-(`board.md`, `log.md`, the Task file, and touched files) is the source of truth; messaging is only
+(`task-board.md`, `history.md`, the Task file, and touched files) is the source of truth; messaging is only
 coordination.
 
 ## Model binding
@@ -69,12 +69,12 @@ create an independent closure loop.
 
 ## State ownership
 
-- `board.md` records the current task state and verification references.
-- `log.md` records append-only history and bounded state snapshots.
-- `usage.md` records observed lifecycle events and exposed telemetry; unknowns are `n/a`.
-- `coordinator.md` is a generated re-contextualization projection, never canonical.
+- `task-board.md` records the current task state and verification references.
+- `history.md` records append-only history and bounded state snapshots.
+- `resource-usage.md` records observed lifecycle events and exposed telemetry; unknowns are `n/a`.
+- `current-work.md` is a generated re-contextualization projection, never canonical.
 
-The Coordinator owns board/log hygiene and records role boundaries. The Executor owns scoped source
+The Coordinator owns task board/history hygiene and records role boundaries. The Executor owns scoped source
 changes and observations. Reviewers verify against the Task and current contract. The Run guide
 defines when any of these observations permit completion; no role may flip a status by assertion.
 

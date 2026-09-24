@@ -21,11 +21,11 @@ never promise a separate menu entry for an action or a particular prefix in ever
 | Request after selecting Tackle | Route and boundary | Guide |
 |---|---|---|
 | `plan <task>` / “plan this” / “armá un plan” | PLAN prepares; explicit plan-and-execute intent can also authorize subsequent RUN | [Intake](intake-and-gate.md) |
-| `run`, `run --one`, `run <P-id>` / “ejecutá la tarea” (legacy “ejecutá el punto” also remains readable) | RUN executes the explicitly requested scope after preflight | [Run](run.md) |
+| `run`, `run --one`, `run <T-id>` / “ejecutá la tarea” (legacy `run <P-id>` and “ejecutá el punto” remain readable) | RUN executes the explicitly requested scope after preflight | [Run](run.md) |
 | `status [<workspace>]`, `list`, `next`, plain `resume` / “qué sigue” | STATUS inspects/selects; no source, board or log writes | [Status](status.md) |
 | `status <workspace> --handoff` / “prepare a handoff” | Write only the requested handoff projection | [Status](status.md) |
 | **validate the plan**, `verify [<workspace>]` / “verificá este plan sin modificarlo” | PLAN validation or explicit diagnosis; a diagnosis alone never authorizes repairs or history writes | [Verify](verify.md) |
-| **audit the result**, `judge [<target>]`, `judge suite <target>` / “auditá lo implementado” | Explicit post-work audit or suite evaluation; no implied fix | [Judge](judge.md) |
+| **audit the result**, `judge [<target>]`, `judge suite <target>` / “auditá lo implementado” | Explicit post-work audit or suite evaluation; no implied fix | [Auditor](judge.md) |
 | **review lessons**, `retro [<workspace>]` / “review the lessons” | Optional learning review; profile writes require separate confirmation | [Retro](retro.md) |
 | `init <name>` | PLAN scaffolding with the existing setup consent | [Scaffold](scaffold.md) |
 | `migrate`, `upgrade`, “improve this plan” | Selected-workspace, copy-first migration preparation | [Migrate](migrate.md) |

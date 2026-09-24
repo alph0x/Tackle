@@ -7,7 +7,7 @@ period. Hashes, mutable paths and potentially unavailable commits are not retain
 
 ## Scope and representation
 
-New Coordinated captures explicitly name the already authorized `workspace`; the store is its `evidence/`
+New Coordinated captures explicitly name the already authorized `workspace`; the store is its `verification-records/`
 directory. Keep its existing gitignore decision. Never include it in the installed package.
 Every actual execution creates a separate immutable raw check record and check summary, even when
 commands and inputs match. `objects/<sha256>` stores shared input/script/artifact/stream bytes.

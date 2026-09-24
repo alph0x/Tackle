@@ -21,6 +21,13 @@
       "tests": 134
     },
     {
+      "path": "eval/task-identity",
+      "files": [
+        "test_identity.py"
+      ],
+      "tests": 19
+    },
+    {
       "path": "eval/validation-integrity",
       "files": [
         "test_fields.py",
@@ -73,7 +80,7 @@
       "files": [
         "test_capture.py"
       ],
-      "tests": 7
+      "tests": 8
     },
     {
       "path": "eval/suite-integrity",
@@ -101,7 +108,7 @@
       "files": [
         "test_records.py"
       ],
-      "tests": 24
+      "tests": 25
     },
     {
       "path": "eval/context-lifecycle",
@@ -109,7 +116,7 @@
         "test_context.py",
         "test_measurement.py"
       ],
-      "tests": 26
+      "tests": 27
     }
   ]
 }

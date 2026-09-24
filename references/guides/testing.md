@@ -89,7 +89,7 @@ affected result.
   unit tests after their implementation.
 - Task Acceptance names only the selected checks, an isolation failure-mode inventory when needed,
   and the E2E replay artifact destination. Unselected types need no waiver or test quota.
-- Verifier: `repro` is answered by red-phase evidence in `log.md`, not by hand-breaking the code.
+- Verifier: `repro` is answered by red-phase evidence in `history.md`, not by hand-breaking the code.
 
 ## Compatibility before implementation
 

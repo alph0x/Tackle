@@ -9,14 +9,14 @@ description: Use for durable planning and explicit task execution of multi-sessi
 
 ## Public surface
 
-One entry: `tackle`. Select it, then state the request in any language. Action names do not register
-host commands. Bare invocation or help offers brief choices without writes. Interpret the complete
-request, including negation and quoted examples; see [invocation.md](references/guides/invocation.md).
+One entry: `tackle`. State requests in any language. Action names do not register
+host commands. Bare invocation or help offers choices without writes. Interpret
+requests, including negation and quoted examples; see [invocation.md](references/guides/invocation.md).
 
 | Surface | Request | Result |
 |---|---|---|
 | **PLAN** | `plan` | Prepare requirements, contracts, task briefs and readiness. PLAN-only stops before implementation. |
-| **RUN** | `run`, `run --one`, `run <P-id>` | Execute authorized ready tasks, check, correct within budget, integrate and accept delivery. |
+| **RUN** | `run`, `run --one`, `run <T-id>` | Execute authorized ready tasks, check, correct within budget, integrate and accept delivery. |
 | **STATUS** | `status [<workspace>]` | Read-only status, list, next and plain resume. Explicit `--handoff` writes only its projection. |
 
 Use **validate the plan**, **audit the result** and **review lessons** for `verify`, `judge` and
@@ -37,12 +37,13 @@ Resolve links from their containing file; locate missing references before retry
 More guidance requires a specific unresolved capability. Risk triggers precede task count; small
 work needs no milestone/archive/storage machinery.
 
-PLAN extracts supplied intent without reconfirmation. Compile sufficient task briefs with
-requirements, observable outputs, cases, checks, decisions and current inputs. Separate hard requirements from
-delegated technical choices; missing product behavior blocks consumers. Validate coverage,
-dependencies, interfaces and semantic counterexamples. Cold probes retain their risk trigger and
-bounded allowance. Long initiatives may prepare one milestone at a time: every requirement retains
-an owner, later tasks remain Draft and only verified tasks become Ready to run.
+PLAN extracts supplied intent without reconfirmation. Compile task briefs with requirements,
+outputs, cases, checks, decisions and inputs. Separate requirements from delegated choices;
+missing product behavior blocks consumers. Validate coverage, dependencies, interfaces and semantic
+counterexamples. For workspace PLAN, verify scaffold files and all 16 lint rows;
+report and fix failures before handoff. Cold probes retain their risk trigger and bounded
+allowance. Long initiatives may prepare milestones: every requirement retains an owner; deferred
+tasks stay Draft until verified Ready.
 
 Explicit PLAN+RUN authorization persists within scope. Answer status questions during active work
 and continue; do not ask for execution permission again. Follow the shared [decision and
@@ -68,7 +69,7 @@ work with records; do not silently replan or upgrade a model.
 ## Compatibility and state
 
 [Terminology](references/terminology.md) defines visible names, exact state mappings and persistent
-aliases. Keep P-ids, existing paths and historical records. New validated boards may use Draft,
+aliases. New workspaces use T-ids and `tasks/`; existing P-ids, paths and historical records remain readable. New validated boards may use Draft,
 Ready to run, In progress, Checking and Complete; Blocked, Interrupted, Skipped and Unverifiable
 remain distinct. Complete means every mandatory task obligation passed. Historical E0–E3 codes
 remain readable, never an ordinal scale. Report method, result and observed independence; a role

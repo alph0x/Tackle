@@ -10,7 +10,7 @@ not an installed runner or a new product dependency. This is Coordinated's direc
 
 Record allowed writes, protected fixtures and the actual harness policy. Configure native
 filesystem restrictions for shell children as well as patch tools; a container protects its host,
-not necessarily the task's Touches inside the container. Put script revisions, evidence and
+not necessarily the task's Write scope (legacy `Touches`) inside the container. Put script revisions, evidence and
 TMPDIR under authorized paths. TMPDIR routes cooperative tools; it does not prohibit an explicit
 `/tmp/name`, a sibling path or a symlink escape. Before the first PLAN write or check, use disposable sentinels to
 prove an allowed write succeeds and outside/protected writes are denied. Never probe by changing
@@ -23,7 +23,7 @@ instruction/audit enforces it. Post-run hashes remain necessary for protected ex
 During PLAN, select a capture destination, exact command and input selectors for each obligation.
 Include source, **all selected tests including additive files**, contract, input data, config and
 dependencies. Selectors come from the acceptance/check's actual dependency surface, not merely
-task Touches. Review completeness before execution; no generic helper can infer every dynamic
+task Write scope (legacy `Touches`). Review completeness before execution; no generic helper can infer every dynamic
 input. A glob records its membership, including an intentionally optional empty match; a required
 selector matching nothing is an error. Do not select credentials, home directories or generated
 evidence. Save compound scripts before invoking them and include every called script/config;
@@ -45,7 +45,7 @@ Save the block as a workspace-local `capture.py`. Invoke it with one JSON specif
 for example `python3 docs/plans/demo/capture.py docs/plans/demo/product-check.json`. The JSON has
 `argv`, `selectors` (objects with `glob` and `required`), `artifacts` (relative file names),
 `workspace` (the already authorized initiative directory) and `timeout_seconds`. Optional
-`destination` must stay inside that workspace's `evidence/` store; the default is the store itself.
+`destination` must stay inside that workspace's `verification-records/` store; the default is the store itself.
 Optional `prior_records` names exact prior record directories inside this same store, never a
 glob. New specifications must declare workspace. Legacy specifications with only `destination`
 still use that explicitly selected directory as their storage root; do not generate new implicit
@@ -246,7 +246,7 @@ def capture(spec_path):
         workspace = local(root, spec['workspace']).resolve()
         if not workspace.is_dir():
             raise ValueError('authorized workspace must already exist')
-        store = workspace / 'evidence'
+        store = workspace / ('verification-records' if (workspace / 'task-board.md').is_file() else 'evidence')
         store.resolve().relative_to(workspace)
         destination = local(root, spec.get('destination', str(store)))
         destination.resolve().relative_to(store.resolve())
@@ -477,7 +477,7 @@ def captured_lint_verdict(source, expected_sha256, slug, row, script, record, ob
 
 def run_lint(config_path):
     root = Path.cwd().resolve()
-    trusted_capture_sha256 = '0c8008ab64551598cb9317619085178e77a81d80e08ec9d3aae31c452bc9997d'
+    trusted_capture_sha256 = '25c07d4052994bde7d94b84d0516cbf21c1fccbd9582b98f878677c490cd93f4'
     def local(name):
         path = (root / name).resolve()
         path.relative_to(root)
@@ -498,7 +498,7 @@ def run_lint(config_path):
     else:
         workspace = local(config['destination']).resolve()
         workspace.mkdir(parents=True, exist_ok=True)
-    destination = workspace / 'evidence'
+    destination = workspace / ('verification-records' if (workspace / 'task-board.md').is_file() else 'evidence')
     destination.resolve().relative_to(workspace)
     destination.mkdir(parents=True, exist_ok=True)
     batch = Path(tempfile.mkdtemp(prefix='lint-', dir=destination))
@@ -582,13 +582,13 @@ Use this dependency map conservatively when selecting affected lint rows:
 | Changed input | Invalidated rows |
 |---|---|
 | Workspace top-level or one-level Markdown content/membership | 1 |
-| Points or plan, including id/dependency membership | 2, 5; Points also 7, 9, 12 |
-| Board | 2, 3, 10, 11, 14; every initiative board also 8 |
-| Points/plan/reference citations or their target bytes | 4 |
-| Log or log-archive content/membership | 6; log also 13 |
+| Task briefs or plan, including id/dependency membership | 2, 5; task briefs also 7, 9, 12 |
+| Task board (`task-board.md`) | 2, 3, 10, 11, 14; every initiative board also 8 |
+| Task brief/plan/reference citations or their target bytes | 4 |
+| History (`history.md` or `history-archive.md`) content/membership | 6; active history also 13 |
 | Design contract or decisions | 7 |
-| Any initiative's Points/Touches membership/content | 8 |
-| Usage membership/content | 11, 16 |
+| Any initiative's task brief/Write scope membership or content | 8 |
+| Resource usage (`resource-usage.md`) membership/content | 11, 16 |
 | Closure report membership | 14 |
 | Workspace AGENTS | 13, 15 |
 | Reference-doc membership/content, current time crossing freshness window | 15 |

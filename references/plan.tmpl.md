@@ -32,7 +32,7 @@ may never be planned as post-implementation additions.
 
 | Criterion / obligation | Task | Task check | Related regression check | Evidence slot |
 |---|---|---|---|---|
-| `{{R01}}` | `{{P-01}}` | {{command and pass condition}} | {{command and pass condition}} | `{{...}}` |
+| `{{R01}}` | `{{T-01}}` | {{command and pass condition}} | {{command and pass condition}} | `{{...}}` |
 
 ## 3. Non-goals
 
@@ -47,6 +47,7 @@ may never be planned as post-implementation additions.
 {{Relevant current code, inputs, and constraints with anchored citations.}}
 
 <a id="5-point-decomposition"></a>
+<a id="5-task-decomposition"></a>
 ## 5. Task decomposition
 
 Each task is a self-contained worker briefing. The plan compiles shared clauses into tasks;
@@ -54,7 +55,7 @@ workers do not need to discover obligations by reading this plan or another plan
 
 | Task | Responsibility | Traces to | Briefing | Depends on |
 |---|---|---|---|---|
-| **P-01 · {{...}}** | {{one coherent change}} | `{{spec:NN}}` | `points/P-01-{{slug}}.md` | {{none / artifact}} |
+| **T-01 · {{...}}** | {{one coherent change}} | `{{spec:NN}}` | `tasks/T-01-{{slug}}.md` | {{none / artifact}} |
 
 ### Optional milestones
 
@@ -77,8 +78,8 @@ authorization continues within its scope; a material product decision follows th
 ### Dependency graph
 
 ```text
-{{P-01 ──► P-02 (P-02 consumes the named artifact)}}
-{{P-03 (independent)}}
+{{T-01 ──► T-02 (T-02 consumes the named artifact)}}
+{{T-03 (independent)}}
 ```
 
 Parallelism follows crossing artifacts and write scope; an ordering-only edge is recorded as a
@@ -101,6 +102,7 @@ Optional cold probes are risk-triggered and measurable: at most one initial prob
 correction recheck. An empty doubts list does not pass a probe whose reconstructed output is wrong.
 
 <a id="61-universal-per-point-acceptance"></a>
+<a id="61-universal-per-task-acceptance"></a>
 ### 6.1 Universal per-task acceptance
 
 Every task's own Acceptance names its literal command and case set. This shared bar adds the

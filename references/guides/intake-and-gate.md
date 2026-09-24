@@ -142,7 +142,7 @@ board, templates, synthetic PASS wrapper or plan-lint work just to satisfy None.
 If a condition fails, announce why and enter Lite or Full before affected work. Explicit user
 requests for a durable plan are honored even when None is eligible. A generic “Tackle plan and
 run” permits sizing; it does not by itself require a durable workspace. Lite requires `plan.md`,
-`log.md`, and `usage.md`; create separate decisions/questions files only when entries exist.
+`history.md`, and `resource-usage.md`; create separate decisions/questions files only when entries exist.
 Coordinated work adds the core coordination artifacts. A None receipt is not a new workspace and has no
 lifecycle-table requirement; existing workspaces retain their current ledger and history.
 
@@ -153,7 +153,7 @@ When the user brings formal material at intake — a written product spec, or ex
 - `specify.tmpl.md` → `spec.md` — the user's spec, captured verbatim plus scope interpretation; never invents acceptance criteria the user didn't state.
 - `constitution.tmpl.md` → `constitution.md` — project principles the user actually holds; never fabricated from a vague ask (explore intent first).
 
-Both are **optional** — only created when the user supplies the material; a vague ask is explored, not templated. Tasks trace to them (`point.tmpl.md` §Traces to) instead of a ticket line when they exist.
+Both are **optional** — only created when the user supplies the material; a vague ask is explored, not templated. Tasks trace to them (`task.tmpl.md` §Traces to) instead of a ticket line when they exist.
 
 ## Requests share the same boundaries
 

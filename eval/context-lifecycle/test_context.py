@@ -51,6 +51,22 @@ class ContextTests(unittest.TestCase):
     def projection(self):
         return self.context.project(self.scope, self.sources)
 
+    def test_v4_workspace_projects_and_exports_new_physical_names(self):
+        (self.root / "board.md").rename(self.root / "task-board.md")
+        (self.root / "log.md").rename(self.root / "history.md")
+        (self.root / "task-board.md").write_text("Schema: tackle-workspace/4\nT-01: Checking\n")
+        self.sources = ["task-board.md" if name == "board.md" else name for name in self.sources]
+        self.context = self.api["Context"](self.root)
+        self.projection()
+        self.assertTrue((self.root / "current-work.md").is_file())
+        self.assertFalse((self.root / "coordinator.md").exists())
+        with tempfile.TemporaryDirectory() as temp:
+            destination = Path(temp) / "handoff"
+            self.context.export(self.scope, self.sources, destination, event_numbers=[1])
+            self.assertTrue((destination / "handoff-brief.md").is_file())
+            self.assertFalse((destination / "HANDOFF.md").exists())
+            self.assertEqual(self.api["Context"].verify_export(destination)["projection"]["last_event"], 10)
+
     def test_projection_is_verified_and_status_is_read_only(self):
         self.projection()
         before = {p.relative_to(self.root): p.read_bytes() for p in self.root.rglob("*") if p.is_file()}

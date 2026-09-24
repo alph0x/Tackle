@@ -13,12 +13,12 @@ multi-team/session coordination, uncertain integration or a shared public contra
    Lite plan/log/usage/decisions. Honor user > contract > protected tests > implementation. Confirm
    purpose, non-goals and scope; resolve user-owned ambiguity before the affected work. Reuse an
    authorized gitignore decision; otherwise ask once about docs/plans/ and apply it to docs/seeds/.
-   Observe the repository root and create plan.md, log.md and usage.md under
+   Observe the repository root and create plan.md, history.md and resource-usage.md under
    `docs/plans/<initiative>/`, plus decisions/questions files when entries exist. Start plan.md
    with the exact first line `Gate: Lite`; missing Full artifacts alone never identify this route.
    Resolve every write destination from that root, including patch tools and additive tests;
    confirm it stays inside the authorized Write scope or workspace before writing.
-   Use the minimal bodies below directly; log.tmpl.md and usage.tmpl.md are not prerequisites.
+   Use the minimal bodies below directly; history.tmpl.md and resource-usage.tmpl.md are not prerequisites.
 2. **Make ready.** Fill the plan body with verified file:line grounding, allowed writes, stable
    requirements, cases and runnable checks (or a named review rubric). Specify inputs, outputs,
    errors and invariants; exact bytes/order/paths/exits only when required. Map each requirement to
@@ -80,10 +80,10 @@ multi-team/session coordination, uncertain integration or a shared public contra
    A generic tool-transcript label without an accessible export is missing evidence. Failed,
    stale or missing required evidence, review or runtime coverage blocks the affected obligation
    and prevents overall completion. Optional coverage and unknown telemetry do not. Set plan state,
-   closure log and final response from that decision: complete only when every required obligation
+   closure history and final response from that decision: complete only when every required obligation
    passes; otherwise this evaluated closure is blocked, with completed portions and the missing check
    named. An interrupted run remains observe-incomplete until its outcome is observed. Record the role
-   outcome separately in usage; do not describe a blocked implementation as successful completion.
+   outcome separately in resource usage; do not describe a blocked implementation as successful completion.
    Make one closure write and respond. After closure,
    don't start template lint, receipt recopying or housekeeping without a new change or failure.
 
@@ -110,7 +110,7 @@ prior findings. For experiments include Metric, Threshold and Rounds, plus an at
 proposal/result/keep-or-rollback. Exhaustion blocks, not automatic acceptance. Omit inapplicable
 fields rather than creating empty sections. Questions and decisions use their own files when needed.
 
-## log.md body
+## history.md body
 
 <a id="log"></a>
 # History
@@ -120,14 +120,14 @@ Append one closure entry with outcome, changed surfaces, requirement-to-receipt 
 coverage and next action. This is a summary index, never reconstructed raw evidence. Historical
 entries remain byte-preserved; corrections are append-only. No Full report/board/Task files.
 
-## usage.md body
+## resource-usage.md body
 
 <a id="usage"></a>
 # Resource usage
 
 Schema: tackle-observability/2
 
-| Run ID | Event | Point | Role | Harness | Tier | Model | Effort | At | Outcome | Attempts | Rework | Verification | Source |
+| Run ID | Event | Task | Role | Harness | Tier | Model | Effort | At | Outcome | Attempts | Rework | Verification | Source |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 
 Append start before substantive role work and one finish at role close, or observe-incomplete

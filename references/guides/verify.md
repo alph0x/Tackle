@@ -46,7 +46,7 @@ When an implemented product or its surrounding system cannot be checked (no runt
 credentials, human-eyes-only), label the claim **UNVERIFIABLE**, never assume it is true. See
 `references/failure-modes.md` for the symptom-to-rule catalog used by this check.
 
-For each prepared task in `plan.md`'s task decomposition / `board.md`, and the full requirement coverage map:
+For each prepared task in `plan.md`'s task decomposition / `task-board.md`, and the full requirement coverage map:
 
 1. **Reference verification** — confirm every cited `file:line` was actually read; flag ungrounded assertions.
 2. **Claim counter** — for every factual claim ("always", "never", "only", "all", "none"), check the repo mechanically. Flag unsupported absolutes.
@@ -63,22 +63,22 @@ For each prepared task in `plan.md`'s task decomposition / `board.md`, and the f
 6. **Plan-vs-code drift** — compare the task's claimed `Write scope` (legacy `Touches`) and Goal against the current repo; flag if the code already implements it (stale task) or if the described change does not match any touched file.
 7. **Agnosticism / Harness-agnostic check** — confirm the plan remains harness-agnostic: no harness-specific commands (e.g. `/command`, `@mention`, `.claude/`), no model brand names (e.g. `Claude`, `GPT`, `Opus`), and no vendor-specific file paths unless the task is explicitly about that harness. Flag violations as drift.
 8. **Seal integrity** — mechanical: every `SEALED: D-xx` id found in the workspace greps in `decisions.md` (a missing id is a HIGH finding); a sealed section edited with no superseding `SEALED: D-yy supersedes D-xx` marker is a HIGH finding.
-9. **Regression sweep computability** — confirm the task declares `Write scope` (legacy `Touches`) precisely enough that the sweep set (Complete tasks on v3 boards, or legacy 🟢 tasks, with intersecting Write scope) is derivable mechanically (grep over `board.md` + `points/`); flag missing or vague `Write scope` (legacy `Touches`).
-10. **Verification derivation** — on v3 boards, inspect the referenced report and raw records for actual method, result, revisions and observed independence; missing/failed/stale required records block acceptance. For legacy boards, for every `board.md` row carrying a Confidence grade, re-derive the grade from its closure evidence (closure report section 4; Lite gate: the `log.md` evidence block): command + output + exit line from the independent checker ⇒ E1; a review-gate marker with rubric + named reviewer ⇒ E2; an explicit UNVERIFIABLE label ⇒ E0; anything else ⇒ E3. A declared grade that doesn't match derivation is a grade-inflation finding — HIGH, mechanically checkable.
+9. **Regression sweep computability** — confirm the task declares `Write scope` (legacy `Touches`) precisely enough that the sweep set (Complete tasks on v3/v4 boards, or legacy 🟢 tasks, with intersecting Write scope) is derivable mechanically (grep over the selected board + `tasks/`, or legacy `points/`); flag missing or vague `Write scope` (legacy `Touches`).
+10. **Verification derivation** — on v3/v4 boards, inspect the referenced report and raw records for actual method, result, revisions and observed independence; missing/failed/stale required records block acceptance. For legacy boards, for every historical `board.md` row carrying a Confidence grade, re-derive the grade from its closure evidence (closure report section 4; Focused/Lite gate: the selected history evidence block): command + output + exit line from the independent checker ⇒ E1; a review-gate marker with rubric + named reviewer ⇒ E2; an explicit UNVERIFIABLE label ⇒ E0; anything else ⇒ E3. A declared grade that doesn't match derivation is a grade-inflation finding — HIGH, mechanically checkable.
 
 Classify every finding with a certainty level:
 
 - **HIGH** — mechanically confirmed (file missing, citation unread, command not runnable). Safe to block on.
-  - Examples: a cited **file does not exist** (e.g. `src/foo.ts:42`); the acceptance check command returns exit code 1; `Depends-on: P-99` references a non-existent task.
+  - Examples: a cited **file does not exist** (e.g. `src/foo.ts:42`); the acceptance check command returns exit code 1; `Depends-on: T-99` references a non-existent task.
 - **MEDIUM** — likely true, needs one extra check before blocking.
-  - Examples: the task claims "X never happens" but a grep finds one counter-example; the `Write scope` (legacy `Touches`) list omits a file the Goal clearly modifies; a `Depends-on: P-03` line names the upstream task but no crossing artifact, and no `D-xx` waiver records it as ordering-only.
+  - Examples: the task claims "X never happens" but a grep finds one counter-example; the `Write scope` (legacy `Touches`) list omits a file the Goal clearly modifies; a `Depends-on: T-03` line names the upstream task but no crossing artifact, and no `D-xx` waiver records it as ordering-only.
 - **LOW** — possible, needs human judgment.
   - Examples: a variable name feels inconsistent with project convention; a prose description could be read two ways but the code is probably correct.
 
 Use these examples to calibrate: if you are not sure whether a finding is HIGH, downgrade it. If you cannot reproduce it mechanically, it is not HIGH.
 
 Output: during PLAN, append readiness findings to its evidence and handoff; during an explicit audit,
-append findings to `log.md` only when that audit is authorized to write history. Verification does
+append findings to `history.md` only when that audit is authorized to write history. Verification does
 not itself update execution status. Any HIGH finding, or an ungrounded task, blocks execution until
 fixed or explicitly waived by the user. MEDIUM findings block unless the user explicitly accepts the
 risk; LOW findings are advisory. RUN records target/surround and integrated observations through
@@ -98,7 +98,7 @@ Triggered by `verify` (step 0). The read-only diagnostic computes proposed citat
 2. **Drift check** — run the following two-phase check with zero model judgment:
    - **Phase 1 — line check**: `sed -n 'NNp' path | grep -Fq "fragment"` → exit 0 = **grounded**.
    - **Phase 2 — whole-file fallback** (only on phase-1 failure): count the lines in `path` containing the fragment. Exactly 1, at line MM ⇒ **drifted → proposed re-anchor** (only when writes are authorized, rewrite `path:NN` → `path:MM` in place, literal replacement, zero model judgment). 0 ⇒ **stale** ⇒ the task is **ungrounded**. More than 1 ⇒ **ambiguous** ⇒ flagged; the task is ungrounded until a more specific fragment is chosen.
-3. **Record** only within authorized planning/execution or explicitly requested history writes; otherwise report without changing files. In `log.md` — list every citation read, flag unresolvable ones, and stamp `Last-verified: {{YYYY-MM-DDTHH:MM:SSZ}}` (legacy date-only stamps read as start-of-day and self-heal on the next ground). Reference verification is recorded only here — never copied into the board or the task file; staleness is derived from the newest entry that lists a task, never copied.
+3. **Record** only within authorized planning/execution or explicitly requested history writes; otherwise report without changing files. In `history.md` — list every citation read, flag unresolvable ones, and stamp `Last-verified: {{YYYY-MM-DDTHH:MM:SSZ}}` (legacy date-only stamps read as start-of-day and self-heal on the next ground). Reference verification is recorded only here — never copied into the board or the task file; staleness is derived from the newest entry that lists a task, never copied.
 
 Any **ungrounded** task blocks execution until fixed or explicitly waived by the user. Run step 0 right after `plan`, before any red-team pass, and on any cold session where the freshness check reports stale.
 

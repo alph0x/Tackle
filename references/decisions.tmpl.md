@@ -3,7 +3,7 @@
 Closed decisions — **don't revisit without cause**. Single source of truth for *what* was
 decided and *why*. **Append-only by superseding**: to change a decision, add a NEW entry
 that supersedes the old one (mark the old one superseded); never edit history. The session
-`log.md` records *when* each decision was made and links its `D-id`. Open items that still
+`history.md` records *when* each decision was made and links its `D-id`. Open items that still
 need deciding live in `questions.md` (a resolved `Q-xx` becomes a `D-xx` here).
 
 **Legend**: ✅ active · ⤴ superseded by D-xx

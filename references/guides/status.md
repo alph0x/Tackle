@@ -5,7 +5,7 @@ STATUS answers the requested question about an initiative: status, available pla
 Ready task, or a cold-session resume. It never executes a task or edits source, task board,
 history, decisions, questions, verification records, or readiness.
 
-Only an explicit handoff request may write `HANDOFF.md` and its requested portable export. This
+Only an explicit handoff request may write `handoff-brief.md` and its requested portable export. This
 projection changes no canonical state. STATUS never archives history or appends a status event.
 A status question during an already authorized RUN answers the question without cancelling that
 RUN; a standalone status/resume request does not authorize execution.
@@ -31,7 +31,8 @@ weakest required verification, resource coverage, and history size. Missing tele
 An older methodology stamp may warrant a selected migration proposal under `migrate.md`; STATUS
 never migrates automatically. All tasks Complete is insufficient to claim deliverable acceptance.
 
-## Handoff projection
+<a id="handoff-projection"></a>
+## Handoff brief projection
 
 Verify current work using [context-lifecycle.md](context-lifecycle.md#current-work): scope, required
 source membership/revisions, state revision, and last fully recorded event. Reuse it with the
@@ -56,7 +57,7 @@ covered by authorized RUN. The policy names paths, observable triggers, retained
 and recovery. STATUS may recommend maintenance but never performs it.
 
 Preserve closed entries verbatim, ascending, including failed attempts. The ordinary legacy path
-keeps the newest five sessions in `log.md` and older entries in `log-archive.md`; do not silently
+keeps the newest five sessions in `history.md` and older entries in `history-archive.md`; do not silently
 rewrite existing archives. When a single archive becomes unwieldy, use the indexed immutable
 segments and recoverable rotation in [context-lifecycle.md](context-lifecycle.md#maintenance-and-interruption).
 Keep the newest State snapshot, stable event references/original-heading lookup, and one bounded

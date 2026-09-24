@@ -70,6 +70,14 @@ class Records(unittest.TestCase):
                     reference_sources=['obligations.json'], reference_writes_coordinated=True,
                     reason='Fixture policy: superseded proof has no remaining byte obligation')
 
+    def test_new_workspace_capture_uses_verification_records(self):
+        (self.workspace / 'task-board.md').write_text('Schema: tackle-workspace/4\n')
+        self.store = self.workspace / 'verification-records'
+        out, record = self.run_capture()
+        self.assertTrue(out.is_relative_to(self.store))
+        self.assertTrue(record['accepted'])
+        self.assertFalse((self.workspace / 'evidence').exists())
+
     def test_three_actual_events_one_copy_of_identical_input_and_streams(self):
         observations = [self.run_capture() for _ in range(3)]
         self.assertEqual(len({str(o) for o, _ in observations}), 3)

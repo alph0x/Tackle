@@ -1,7 +1,7 @@
 <a id="step-6--decompose-into-loop-runnable-points-and-delivery-obligations"></a>
 # Step 6 — Decompose into executable tasks and delivery obligations
 
-- Skeleton board first: P-0N / What / Depends-on / Write scope / acceptance check.
+- Skeleton board first: T-0N / What / Depends-on / Write scope / acceptance check. Existing P workspaces keep their IDs.
 - Then compile sufficient task briefs for the selected readiness scope.
 - Cut for parallelism using crossing artifacts, interfaces, and configuration consumers; disjoint
   `Write scope` (legacy `Touches`) alone do not establish semantic independence. Name every produced/consumed artifact

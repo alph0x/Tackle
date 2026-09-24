@@ -4,22 +4,22 @@ Triggered by `retro [initiative]` or a natural phrase like "retro" / "how did it
 is optional: run it at initiative close or on demand as a clearly labelled partial retro. It does
 not replace RUN closure or create an autonomy loop.
 
-**Principle: detection before judgment.** Mine `board.md` + `log.md` by grep/count first; use judgment only to distill the counts into lessons. For legacy archives, mining reads `log-archive.md` then `log.md`. For indexed segments use the validated chronological archive index from `context-lifecycle.md`, then the active history; never count checkpoints or summaries as original events. Missing/corrupt history makes affected metrics unavailable, never zero. Read-only over `board.md`, `log.md`, `decisions.md`; the only writes are `docs/plans/<initiative>/retro.md` (instantiated from `references/retro.tmpl.md`) and one `log.md` entry.
+**Principle: detection before judgment.** Mine `task-board.md` + `history.md` by grep/count first; use judgment only to distill the counts into lessons. For an unindexed archive, mining reads `history-archive.md` then `history.md` in a new workspace, or `log-archive.md` then `log.md` in a historical workspace. For indexed segments use the validated chronological archive index from `context-lifecycle.md`, then the active history; never count checkpoints or summaries as original events. Missing/corrupt history makes affected metrics unavailable, never zero. Read-only over the selected task board, history and `decisions.md`; the only writes are `docs/plans/<initiative>/retro.md` (instantiated from `references/retro.tmpl.md`) and one entry in the selected history.
 
 ## Metrics — mined, not remembered
 
 Every metric carries a copy-paste recipe; the recipes live in the template's Metrics table. What each one measures:
 
-- **Tasks by status** — count exact task rows and their Status field in `board.md`, using its declared schema.
-- **Attempts over budget** — count `attempt N:` journal lines per task in `log.md` against the attempt budget declared in the workspace `AGENTS.md`.
+- **Tasks by status** — count exact task rows and their Status field in `task-board.md`, using its declared schema.
+- **Attempts over budget** — count `attempt N:` journal lines per task in `history.md` against the attempt budget declared in the workspace `AGENTS.md`.
 - **Blocked durations** — dates between the log entry that marks a task Blocked (legacy ⏸) and the entry that unblocks it.
-- **Reopened tasks** — `Complete → In progress` or legacy `🟢 → 🟡` transitions in `log.md` (regression-sweep reopenings included).
+- **Reopened tasks** — `Complete → In progress` or legacy `🟢 → 🟡` transitions in `history.md` (regression-sweep reopenings included).
 - **Comprehension debt** — tasks recorded Complete (legacy 🟢) with no human review recorded in the log: mechanically done, humanly unread. High comprehension debt is a warning even when the board is all green.
 - **Gate accuracy** — the gate recorded at intake vs actual effort (tasks executed, sessions spent): Full-gate initiatives closed in ≤ 2 sessions are over-planning candidates; Lite-gate ones spanning 3+ sessions are under-planning candidates.
 - **Exact-token coverage** — measured/eligible by metric and comparable scope, with `n/a` rows visible before any arithmetic.
 - **Coverage-gated totals** — cohort totals and rankings only after 100% comparable coverage; otherwise report labeled observations and suppress the aggregate.
 - **Coverage-gated recommendations** — tier/effort recommendations only after 100% coverage plus at least three like-for-like completed runs.
-- **Log growth** — lines per `log.md` session entry (recipe in `retro.tmpl.md`): resume cost compounds across every future session, unlike execution cost which is paid once per task; a rising trend routes narrative back to `decisions.md`/`reference-docs/`.
+- **History growth** — lines per `history.md` session entry (recipe in `retro.tmpl.md`): resume cost compounds across every future session, unlike execution cost which is paid once per task; a rising trend routes narrative back to `decisions.md`/`reference-docs/`.
 
 ## Lifecycle-first coverage
 
@@ -37,17 +37,17 @@ and task time-to-green remain useful when exact telemetry coverage is 0%.
 
 ### Fixture recipe
 
-Run `awk -F'|' '/^\\| (duration|attempts|rework|verification|tokens)/ {m=$2; gsub(/^ +| +$/,"",m); printf "%s %s/%s (%s)\\n", m,$4,$5,$6}' usage.md` from a fixture workspace. The four fixtures under
+Run `awk -F'|' '/^\\| (duration|attempts|rework|verification|tokens)/ {m=$2; gsub(/^ +| +$/,"",m); printf "%s %s/%s (%s)\\n", m,$4,$5,$6}' resource-usage.md` from a fixture workspace. The four fixtures under
 `eval/fixtures/usage-observability/` are the reference cases: zero prints `0/N`, partial and
 mixed suppress aggregates, and full alone permits expected totals and recommendations.
 
-**Lite plans** (no `board.md`): the retro still runs — board-derived metrics report `n/a`; log-derived ones stand.
+**Lite plans** (no `task-board.md`): the retro still runs — board-derived metrics report `n/a`; log-derived ones stand.
 
 ## Cost analysis
 
 Mined from the exact-token recipe only after the coverage gate, never remembered; report the
 `n/a`-row counts alongside any permitted totals. Report `n/a` for the whole section when the
-workspace has no `usage.md`. `usage.md` remains the only ledger source; unexposed harness fields
+workspace has no `resource-usage.md`. `resource-usage.md` remains the only ledger source; unexposed harness fields
 stay `n/a`, never estimated.
 
 ### Conclusions
@@ -66,7 +66,8 @@ stay `n/a`, never estimated.
 
 Distill from the metrics plus the Decisions and Blockers sections of the log. One line each. A lesson must be actionable by a future plan ("gate X earlier", "the attempt budget was too low for tasks shaped like Y"), not a platitude.
 
-## Profile candidates (learning loop)
+<a id="profile-candidates-learning-loop"></a>
+## Preferences and lessons candidates (profile learning loop)
 
 The learning loop is the only mechanism that lets Tackle adapt to a user or project. It is opt-in,
 per scope, and never silent. Lessons must identify an observed cause and a future action; an
@@ -86,9 +87,9 @@ A "no" writes the disabled stub (`Evolution: disabled (YYYY-MM-DD)`) in the rele
 Mine the following sources during retro:
 
 - `decisions.md` deltas vs recommended defaults (recurring overrides).
-- `log.md` attempt-journal lines that exceed the budget or show no-progress.
-- Reopened tasks (`🟢 → 🟡`) in `log.md`.
-- Escalation packets from `log.md`.
+- `history.md` attempt-journal lines that exceed the budget or show no-progress.
+- Reopened tasks (`🟢 → 🟡`) in `history.md`.
+- Escalation packets from `history.md`.
 - `verify` findings that recurred across tasks.
 
 Present candidates as a batch. Each candidate must include:
@@ -134,7 +135,7 @@ Offer extraction only when **the decomposition held**: no major replans and no D
 
 ### Extraction template
 
-One reference plan file per skeleton: `references/archetypes/<name>.md` with the sections the README fixes — name + one-line summary, task list, edge pattern, wave shape, trap warnings, provenance (this initiative, retro link). Mine the graph from `plan.md`/`board.md`; mine trap warnings from attempt journals and reopened tasks; judgment only names and summarizes.
+One reference plan file per skeleton: `references/archetypes/<name>.md` with the sections the README fixes — name + one-line summary, task list, edge pattern, wave shape, trap warnings, provenance (this initiative, retro link). Mine the graph from `plan.md`/`task-board.md`; mine trap warnings from attempt journals and reopened tasks; judgment only names and summarizes.
 
 ### Confirming and writing
 
@@ -143,6 +144,6 @@ Everything is batch-confirmed by the user before writing — present the referen
 ## Where results go
 
 - `retro.md` in the initiative workspace, one per initiative (a partial retro overwrites the previous partial; the close retro is final).
-- One `log.md` entry noting the retro ran, with the Metrics values as its evidence.
+- One `history.md` entry noting the retro ran, with the Metrics values as its evidence.
 - One `references/archetypes/<name>.md` per batch-confirmed reference plan candidate (the only write outside the initiative workspace).
 - Report the useful findings and pending consent concisely per the communication contract — link to `retro.md`, don't paste it.

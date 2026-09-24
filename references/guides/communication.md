@@ -47,7 +47,7 @@ literal source material, dependency, installation requirement, word blacklist or
 | Implementation finished, integration failing | “All tasks green; complete.” | “The parser change passes its task checks. Export still drops quoted names, so delivery remains blocked while I correct that failure.” | Local checks passed; deliverable acceptance has not. |
 | Status during active RUN | “Next is checking. Shall I continue?” | “The change is implemented; regression checks are running.” | Work continues under existing permission. |
 | Required capability unavailable | “Validation failed.” | “The compatibility check needs runtime 3.12, which is unavailable here. The 3.11 check passed; 3.12 acceptance remains unverified. Installing a runtime would require separate authorization.” | What ran, what did not and what enables continuation. |
-| Spanish, delegated choice | “Confirma que puedo elegir nombres.” | “Usaré ‘Task’ en los archivos y conservaré los identificadores P-01. Continúo con los cambios autorizados.” | No material decision is outstanding; canonical tokens are preserved. |
+| Spanish, delegated choice | “Confirma que puedo elegir nombres.” | “Usaré ‘Task’ y `T-01` en los planes nuevos; los identificadores históricos siguen siendo legibles. Continúo con los cambios autorizados.” | No material decision is outstanding; canonical tokens are preserved. |
 
 Review an actual response by asking: what happened, what remains uncertain, does the user need
 to act, and will authorized work continue? Compare answers with records and scope. A terminology

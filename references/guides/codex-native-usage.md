@@ -1,7 +1,8 @@
 # Codex native usage — optional capture recipe
 
 This recipe reads native Codex Desktop or `codex exec --json` records and appends exact
-session-scoped observations to a v2 workspace's `usage.telemetry.jsonl`. It is optional: an
+session-scoped observations to `resource-usage.telemetry.jsonl` in new workspaces; historical
+`usage.telemetry.jsonl` remains readable. It is optional: an
 unavailable trace does not block task completion, and the provider-independent contract in
 [usage-observability.md](usage-observability.md) remains authoritative. It uses only Python's
 standard library, reads no authentication file, and does not copy prompt or tool content.
@@ -11,7 +12,7 @@ At a role's start and again after its externally observed end, run the fenced Py
 verbatim into an ephemeral script and give it the same arguments. With no second argument,
 `CODEX_THREAD_ID` selects the exact Desktop rollout under `~/.codex/sessions/`. For a saved
 CLI stream, pass its JSONL path explicitly. Keep the resulting JSON receipt with the role's
-verification record. The recipe writes only the optional sidecar, never `usage.md`; record
+verification record. The recipe writes only the optional sidecar, never the resource usage ledger; record
 configured model/effort or an exactly mapped terminal clock in the lifecycle row separately.
 
 Desktop `thread_id` identifies the actor; `session_id` can identify its parent and must not
@@ -65,9 +66,11 @@ def metrics(native):
 if len(sys.argv) not in (2, 3):
     fail("use: python3 - <workspace> [native-jsonl]")
 workspace = Path(sys.argv[1]).expanduser().resolve()
-ledger = workspace / "usage.md"
+ledger = workspace / ("resource-usage.md" if (workspace / "resource-usage.md").is_file() else "usage.md")
+if (workspace / "resource-usage.md").is_file() and (workspace / "usage.md").exists():
+    fail("mixed resource usage paths")
 if not workspace.is_dir() or not ledger.is_file():
-    fail("workspace with usage.md required")
+    fail("workspace with resource usage ledger required")
 if "Schema: tackle-observability/2" not in ledger.read_text():
     fail("v2 usage ledger required")
 
@@ -164,7 +167,9 @@ else:
 if not records:
     fail("native token fields unavailable")
 
-sidecar = workspace / "usage.telemetry.jsonl"
+sidecar = workspace / ("resource-usage.telemetry.jsonl" if ledger.name == "resource-usage.md" else "usage.telemetry.jsonl")
+if ledger.name == "resource-usage.md" and (workspace / "usage.telemetry.jsonl").exists():
+    fail("mixed usage telemetry paths")
 if sidecar.is_symlink():
     fail("sidecar symlink rejected")
 known = set()
@@ -200,7 +205,7 @@ print(json.dumps(receipt, ensure_ascii=False))
 ```
 <!-- codex-usage-recipe:end -->
 
-Store the receipt in the role's verification record and cite it from `usage.md` Source. Keep
+Store the receipt in the role's verification record and cite it from the resource usage ledger Source. Keep
 missing metrics `n/a`; the sidecar records available fields only. Capture after the native
 terminal event from another actor or next turn if the current executor cannot observe its own
 future close. This optional recipe does not replace native raw evidence or the ordinary

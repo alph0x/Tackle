@@ -1,22 +1,23 @@
-# Usage observability — portable contract
+<a id="usage-observability--portable-contract"></a>
+# Resource usage — portable contract
 
 This guide defines the provider-independent lifecycle ledger and the optional exact-telemetry
 sidecar. It is a documentation contract, not a collector or executable.
 
 ## Lifecycle records
 
-Coordinated (Full) and Focused (Lite) workspaces require `usage.md`; Direct (None) creates no workspace or ledger. A Direct task
+Coordinated (Full) and Focused (Lite) workspaces require `resource-usage.md`; Direct (None) creates no workspace or ledger. A Direct task
 resumed inside an existing workspace preserves its existing lifecycle contract. Read this guide
 only when a ledger is applicable. Use observed clock and launch metadata or `n/a`; never fabricate
 midnight start times, infer model/effort from a role label, or duplicate rows to appear compliant.
 
-New workspaces declare `Schema: tackle-observability/2` in `usage.md` and use this exact table:
+New workspaces declare `Schema: tackle-observability/2` in `resource-usage.md` and use this table. The third column is `Task` in new workspaces; historical `Point` headers remain readable without rewriting their rows:
 
-| Run ID | Event | Point | Role | Harness | Tier | Model | Effort | At | Outcome | Attempts | Rework | Verification | Source |
+| Run ID | Event | Task | Role | Harness | Tier | Model | Effort | At | Outcome | Attempts | Rework | Verification | Source |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 
 `Run ID` is opaque and workspace-unique; the portable default is
-`<YYYY-MM-DD-sN>/<point>/<role>/<ordinal>`. `Event` is `start`, `finish`, or
+`<YYYY-MM-DD-sN>/<task>/<role>/<ordinal>`. `Event` is `start`, `finish`, or
 `observe-incomplete`. A role appends `start` before substantive work and `finish` at close. A
 Coordinator may append `observe-incomplete` when a start lacks a finish, but that observation time
 is not a claimed end and derived duration remains `n/a`.
@@ -29,7 +30,7 @@ absent -> start(running) -> finish(success|failed|blocked|aborted)
 ```
 
 Exactly one start and at most one terminal event are valid. An orphan terminal, duplicate start,
-duplicate terminal, negative count, or mismatched Point/Role is invalid. Missing values are `n/a`,
+duplicate terminal, negative count, or mismatched Task/Role is invalid. Missing values are `n/a`,
 never zero and never estimated. Unexposed clock or runtime metadata does not block otherwise
 observable work: record metadata as `n/a` and preserve the command result. An unavailable required
 execution environment is an acceptance gap, not missing telemetry, and blocks its owning scope.
@@ -52,7 +53,8 @@ already present. Verification and Source index captured receipts rather than res
 
 ## Optional sidecar
 
-`usage.telemetry.jsonl` contains one JSON object per observation with schema
+`resource-usage.telemetry.jsonl` contains one JSON object per observation in new workspaces;
+historical `usage.telemetry.jsonl` remains readable. Both use schema
 `tackle-observability-telemetry/1`. Required envelope fields are `schema`, `captured_at`,
 `collector`, `source`, `scope`, `scope_id`, `run_id` when `scope=role`, `metrics`, and
 `provenance`. Scope is `role`, `session`, or `account`; a session/account observation without exact

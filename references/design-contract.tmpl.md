@@ -50,7 +50,7 @@ explicitly. If bytes, order, paths, stdio, or exits are required, state them exa
 
 | Contract clause | Task(s) | Produced/consumed artifact | Regression check |
 |---|---|---|---|
-| {{clause id}} | {{P-0N}} | {{artifact}} | {{check}} |
+| {{clause id}} | {{T-0N}} | {{artifact}} | {{check}} |
 
 The compiler copies selected clauses with their id, revision, and hash into each Task. It
 checks coverage in both directions: every requirement reaches a Task and every Task has a

@@ -3,10 +3,10 @@
 This is the Full reference for the single execution protocol; the self-contained Lite procedure
 in `../lite-plan.tmpl.md` implements the same obligations for bounded work. The `run` request uses the
 selected route; Full and an explicitly authorized Full Run use this
-guide; `team.tmpl.md`, `AGENTS.tmpl.md`, and `coordinator.tmpl.md` bind capabilities and state
+guide; `team.tmpl.md`, `AGENTS.tmpl.md`, and `current-work.tmpl.md` bind capabilities and state
 ownership and point here. PLAN prepares a handoff and may write its authorized planning artifacts.
 Status, Next, and plain (unqualified) Resume inspect or select state only. Those three modes may
-not execute source or mutate source, `board.md`, or `log.md`; an explicit handoff projection may
+not execute source or mutate source, `task-board.md`, or `history.md`; an explicit handoff projection may
 write its own projection.
 
 The bounded None route is self-contained in `intake-and-gate.md`; its focused preflight and receipt
@@ -32,7 +32,7 @@ When the actor is Codex Desktop or runs `codex exec --json`, attempt the optiona
 exact thread ID with the Run ID. Use configured model/effort only when the matching native turn
 records them; a requested CLI launch binding is labeled requested. Capture again after the
 role's terminal event is externally observed. Save native token observations at their session
-scope, and put an exact terminal clock in the role's `usage.md` finish row only with a reviewed
+scope, and put an exact terminal clock in the role's `resource-usage.md` finish row only with a reviewed
 Run ID/turn map. If the environment or trace is unavailable, record `n/a` and continue.
 
 Freeze the source and protected expectations at the review boundary. If existing test files are
@@ -65,7 +65,7 @@ fingerprints; it does not mean source execution passed. The normal Task path is:
 ```text
 Ready → preflight → implementing → target validation →
   correction (only after a failed implementation check) →
-  affected integration validation → Point complete
+  affected integration validation → Task complete
                                       ↘ blocked
 ```
 
@@ -226,7 +226,7 @@ fingerprints; a label describing an inline assertion cannot replace its code in 
 Before choosing the terminal state, the Coordinator opens every required evidence reference,
 checks its actual result and relevant final revisions, and matches it to the obligation it proves.
 A generic transcript label without an accessible export is missing evidence. Missing, stale or
-failed required evidence/review/coverage blocks its owning scope; summaries cannot repair it.
+failed required verification-records/review/coverage blocks its owning scope; summaries cannot repair it.
 Only all required Task obligations permit Task complete; only all required global obligations
 permit initiative complete. Board, report and final response must express that same scope and
 outcome. Role completion is separate: a reviewer may successfully report a blocked product,
@@ -235,9 +235,12 @@ optional coverage remain non-gating.
 
 On complete, the Coordinator records the final report, raw evidence pointers, immutable revisions,
 attempt and rework counts, and the board status. On blocked, it records the same evidence and the
-failure packet; blocked, skipped, completed, and unverifiable outcomes remain distinct. `board.md`
-is the canonical current state, `log.md` is append-only history, `coordinator.md` is a projection,
-and `usage.md` receives its normal lifecycle rows. A completion update records the last fully recorded event and intended task state. If interrupted between record/report/board writes, reconcile all three against actual outcomes before repairing the incomplete update. A completed side effect is not repeated merely to fill a missing terminal row; unchecked work remains Interrupted or Checking. A projection never overrides counters, permissions or actual results.
+failure packet; blocked, skipped, completed, and unverifiable outcomes remain distinct. `task-board.md`
+is the canonical current state, `history.md` is append-only history, `current-work.md` is a projection,
+and `resource-usage.md` receives its normal lifecycle rows. A completion update records the last fully recorded event and intended task state. If interrupted between record/report/board writes, reconcile all three against actual outcomes before repairing the incomplete update. A completed side effect is not repeated merely to fill a missing terminal row; unchecked work remains Interrupted or Checking. A projection never overrides counters, permissions or actual results.
+
+For a historical workspace, `board.md`
+is the canonical current state; `log.md` is append-only history.
 
 A closure report or local Run report is evidence,
 not permission to erase prior history. Initiative closure waits for deliverable acceptance and its

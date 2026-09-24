@@ -46,10 +46,15 @@ class ReviewRegressions(unittest.TestCase):
         for plan in ("# Legacy plan\n", "## 5. Point decomposition\n| **P-01** | Work |\n"):
             self.assertEqual("", self.observe(2, self.fields("- **Depends on**: P-01\n", plan, "P-01")))
 
-    def test_official_template_point_cell(self):
+    def test_official_template_task_cell(self):
         template = (Path(__file__).resolve().parents[2] / "references/plan.tmpl.md").read_text()
-        row = next(line for line in template.splitlines() if line.startswith("| **P-01"))
-        self.assertEqual("", self.observe(2, self.fields(plan="## 5. Point decomposition\n" + row + "\n")))
+        row = next(line for line in template.splitlines() if line.startswith("| **T-01"))
+        files = {
+            "docs/plans/probe/plan.md": "## 5. Task decomposition\n" + row + "\n",
+            "docs/plans/probe/board.md": "| Task | What | Brief | Depends on | Status | Verification |\n| T-01 | Work | tasks/T-01.md | none | Draft | pending |\n",
+            "docs/plans/probe/tasks/T-01.md": "# Task T-01 — Work\n- **Depends on**: none\n",
+        }
+        self.assertEqual("", self.observe(2, files))
 
     def test_examples_and_peer_headings_do_not_declare_points(self):
         for body in ("Prose | P-01 | example\n", "```markdown\n| P-01 | example |\n```\n", "~~~markdown\n| P-01 | example |\n~~~\n", "````markdown\n```\n| P-01 | example |\n```\n````\n", "  ## 6. Examples\n| P-01 | example |\n", "##\t6. Examples\n| P-01 | example |\n"):

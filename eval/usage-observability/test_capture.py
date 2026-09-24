@@ -70,6 +70,18 @@ class CaptureTests(unittest.TestCase):
         self.assertTrue(all(record["provenance"]["terminal_event_at"] == "2026-09-23T10:00:04Z" for record in records))
         self.assertNotIn("SECRET PROMPT", (self.workspace / "usage.telemetry.jsonl").read_text() + result.stdout)
 
+    def test_new_workspace_writes_canonical_telemetry_sidecar(self):
+        (self.workspace / "usage.md").unlink()
+        (self.workspace / "resource-usage.md").write_text("Schema: tackle-observability/2\n")
+        self.write_events({"type": "thread.started", "thread_id": "cli-thread"},
+                          {"type": "turn.completed", "usage": {"input_tokens": 12, "output_tokens": 3}})
+        result = self.run_recipe()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        new_sidecar = self.workspace / "resource-usage.telemetry.jsonl"
+        self.assertTrue(new_sidecar.is_file())
+        self.assertFalse((self.workspace / "usage.telemetry.jsonl").exists())
+        self.assertEqual(json.loads(new_sidecar.read_text())['metrics']['input_tokens'], 12)
+
     def test_cli_records_each_completed_turn_without_assigning_role(self):
         self.write_events(
             {"type": "thread.started", "thread_id": "cli-thread"},
