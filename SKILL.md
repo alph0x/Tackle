@@ -5,7 +5,7 @@ description: Use for durable planning and explicit task execution of multi-sessi
 
 # Tackle
 
-**Tackle 8.3.0** is a model-agnostic planning and execution method. Install: Markdown-only `SKILL.md` plus `references/`. Release changes: changelog.
+**Tackle 8.4.0** is a model-agnostic planning and execution method. Install: Markdown-only `SKILL.md` plus `references/`. Release changes: changelog.
 
 ## Public surface
 

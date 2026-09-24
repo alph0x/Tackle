@@ -1,5 +1,13 @@
 # Tackle changelog
 
+## Tackle 8.4.0
+
+- New Coordinated workspaces use Task identifiers (`T-01`), `tasks/` briefs and `task-board.md`, `history.md`, `resource-usage.md` core files under `Schema: tackle-workspace/4`. New Focused workspaces use `history.md` and `resource-usage.md`. New templates emit these paths and refer to one another consistently. PLAN checks the nine-file map and all 16 direct lint rows before handoff.
+- Triggered new-workspace outputs use `history-archive.md`, `current-work.md`, `handoff-brief.md` and `verification-records/`. The capture and context recipes select the new layout from the workspace shape, while preserving the old store and projection paths for historical workspaces. Optional native telemetry uses `resource-usage.telemetry.jsonl` in new plans and its original filename in old ones. Low-level raw-record fields and filenames remain parser-facing compatibility tokens.
+- Existing P/`points/` workspaces and v3 Task candidates keep their original files and historical records. Direct lint and retro readers select the actual layout, reject mixed new/old authorities, and preserve the published legacy P resolver. Old `point.tmpl.md`, `usage.tmpl.md`, `board.tmpl.md`, `log.tmpl.md` and `coordinator.tmpl.md` remain byte-identical.
+- A selected, copy-first 8.3→8.4 checklist maps identities and paths at a task boundary, compares original bytes and verifies rollback. Installing the new method does not migrate an existing workspace or relax the 8.3 testing strategy and E2E replay rules.
+- Register end-to-end filename, legacy-reader and capture-store fixtures in the deterministic suite. Candidate behavioral and release evidence is reported separately; this changelog alone makes no release claim.
+
 ## Tackle 8.3.0
 
 - Choose the testing strategy in PLAN before implementation. Prefer a public-boundary E2E check as the sole new test when it covers the contract, and require one for a feasible complex integrated feature. An existing sufficient regression remains reusable without duplicate tests or a tier quota.
