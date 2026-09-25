@@ -332,6 +332,11 @@ class TranscriptTests(Synthetic):
         self.assertEqual((details['check_runs'], details['correction_cycles'], details['transcript_format']),
                          (3, 2, 'codex'))
 
+    def test_c12_subagent_transcripts_use_the_claude_code_parser(self):
+        details = self.episode('subagent', [claude_stream(STEPS)])['details']
+        self.assertEqual((details['check_runs'], details['correction_cycles'], details['transcript_format']),
+                         (3, 2, 'subagent'))
+
     def test_c12_a_final_failure_is_not_a_cycle(self):
         details = self.episode('codex', [codex_stream([('python3 -m unittest', False)])])['details']
         self.assertEqual((details['check_runs'], details['correction_cycles']), (1, 0))

@@ -165,9 +165,8 @@ python3 eval/harness-v2/subagent.py finish  --episode <dir> --transcript <subage
     `outcome` is `completed`, or `error` when the transcript's last `user`/`assistant` message is not
     from the assistant. Two fields mark this as a different execution path from a headless CLI session:
     `adapter` is `"subagent"` (not `"claude-code"`), and `executor.harness` is `"claude-code-subagent"`.
-    One disclosed consequence: `judge.py`'s correction-cycle parser selects by `adapter`, has no
-    `"subagent"` entry, and so reports `check_runs`, `correction_cycles` and `transcript_format` as `n/a`
-    for these episodes even though `sessions/01/stdout` holds a real Claude Code transcript.
+    `judge.py` selects its correction-cycle parser by `adapter` and maps `"subagent"` to its Claude
+    Code parser, because `sessions/01/stdout` holds a Claude Code session transcript.
   - `audit.json` (`{outside_paths, skill_used, verdict, reason}`), this tool's own contamination check,
     independent of `run.json`. `outside_paths` names every tool-call path argument and every absolute
     path in a Bash command that does not resolve under the episode directory (a `~` or `$HOME`-led token

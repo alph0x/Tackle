@@ -191,7 +191,8 @@ def codex_runs(found):
     return runs
 
 
-PARSERS = {'claude-code': claude_code_runs, 'codex': codex_runs}
+# A subagent episode's transcript is a Claude Code session transcript (D-87), so it shares that parser.
+PARSERS = {'claude-code': claude_code_runs, 'subagent': claude_code_runs, 'codex': codex_runs}
 
 
 def correction_counts(adapter, streams):

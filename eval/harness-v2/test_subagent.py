@@ -482,11 +482,10 @@ class JudgeIntegration(Base):
         self.assertEqual(judge_result.returncode, 0, judge_result.stdout + judge_result.stderr)
         judgment = load(judgment_path)
         self.assertEqual(judgment['outcome'], 'avoided')
-        # Disclosed consequence of adapter="subagent" (see the module docstring and the T-08 report):
-        # judge.py's correction-cycle parser selects by run.json's adapter field, which has no
-        # "subagent" entry, so these come out n/a even though sessions/01/stdout is a real transcript.
+        # judge.py maps adapter="subagent" to its Claude Code transcript parser (D-90), so the counts
+        # come from sessions/01/stdout: this transcript has no check run.
         self.assertEqual((judgment['details']['check_runs'], judgment['details']['correction_cycles'],
-                          judgment['details']['transcript_format']), ('n/a', 'n/a', 'n/a'))
+                          judgment['details']['transcript_format']), (0, 0, 'subagent'))
 
         cohort = self.tmp / 'cohort-judge'
         write(cohort / 'manifest.json', json.dumps(manifest('cohort-judge', [{'episode_id': 'e1', 'arm': 'method', 'seed': 1}],

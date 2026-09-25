@@ -16,11 +16,9 @@ one session: a multi-prompt episode (``stage.json`` listing more than one ``prom
 sessions, transcript_sha256, skill_loaded, executor, roles, cost, capture_path, model_binding,
 started_at, finished_at) so that ``harness.py record`` and ``judge.py --episode`` consume it unchanged.
 Two fields mark this as a different execution path from a headless CLI session: ``adapter`` is
-``"subagent"`` (not ``"claude-code"``), and ``executor.harness`` is ``"claude-code-subagent"``. One
-consequence, disclosed here rather than hidden: judge.py's correction-cycle parser selects by the
-``adapter`` field, and has no ``"subagent"`` entry, so ``judgment.json``'s ``details.check_runs``,
-``correction_cycles`` and ``transcript_format`` come out ``"n/a"`` for this adapter even though
-``sessions/01/stdout`` holds a real Claude Code transcript. See the T-08 report's deviations.
+``"subagent"`` (not ``"claude-code"``), and ``executor.harness`` is ``"claude-code-subagent"``.
+judge.py selects its correction-cycle parser by the ``adapter`` field and maps ``"subagent"`` to its
+Claude Code parser, because ``sessions/01/stdout`` holds a Claude Code session transcript.
 
 ``audit.json`` is this tool's own contamination check, independent of anything ``run.json`` carries:
 - ``outside_paths``: every tool-call path argument (Read/Write/Edit/NotebookEdit/Glob/Grep-shaped

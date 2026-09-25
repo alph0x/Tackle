@@ -49,7 +49,8 @@ variant holds:
 - **Transcript counts.** A check run is a shell command matching
   `\b(unittest|pytest|nose2|tox|nox|make\s+(test|check))\b`. Claude Code `stream-json` pairs a `Bash`
   `tool_use` with its `tool_result` (`is_error` marks a failed run); Codex `--json` reads
-  `item.completed` `command_execution` items and their `exit_code`. `correction_cycles` counts the failing
+  `item.completed` `command_execution` items and their `exit_code`. A subagent episode (D-87) is a Claude
+  Code session transcript and uses the same parser. `correction_cycles` counts the failing
   check runs followed by a later check run. The fake agent's format, an unknown adapter or an unreadable
   transcript gives `n/a`; direct mode has no transcript. Both parsers are tested on synthetic streams
   only: their fidelity to real host output is unverified until an authorized smoke episode.

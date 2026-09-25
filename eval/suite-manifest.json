@@ -189,7 +189,7 @@
       "files": [
         "test_judge.py"
       ],
-      "tests": 32
+      "tests": 33
     },
     {
       "path": "eval/field-report",
