@@ -1,0 +1,7 @@
+{
+  "tasks": [
+    {"title": "Buy milk", "done": false},
+    {"title": "Pay rent", "done": true},
+    {"title": "Water plants", "done": false}
+  ]
+}

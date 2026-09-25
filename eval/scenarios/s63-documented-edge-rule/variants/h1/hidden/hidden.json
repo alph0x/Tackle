@@ -1,0 +1,1 @@
+{"schema": "tackle-hidden-tests/1", "tests": 6, "timeout_seconds": 60, "pythonpath": ["."], "visible": ["python3", "-m", "unittest", "discover", "-s", "tests", "-v"]}

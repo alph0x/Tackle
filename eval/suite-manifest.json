@@ -182,6 +182,13 @@
         "test_hot_path.py"
       ],
       "tests": 24
+    },
+    {
+      "path": "eval/planning-outcomes",
+      "files": [
+        "test_judge.py"
+      ],
+      "tests": 32
     }
   ]
 }
