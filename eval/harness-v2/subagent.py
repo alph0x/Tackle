@@ -66,7 +66,8 @@ SEARCH_TOOLS = ('Glob', 'Grep')
 # The tools whose reach the audit can see from their arguments. Any other tool (an MCP server, web access,
 # a nested agent) reaches past the episode without naming a path, so it is outside by definition.
 LOCAL_TOOLS = ('Read', 'Write', 'Edit', 'MultiEdit', 'NotebookEdit', 'Glob', 'Grep', 'Bash', 'BashOutput',
-               'KillShell', 'Skill', 'ToolSearch', 'TodoWrite', 'TaskCreate', 'TaskGet', 'TaskList', 'TaskUpdate')
+               'KillShell', 'Skill', 'ToolSearch', 'TodoWrite', 'TaskCreate', 'TaskGet', 'TaskList', 'TaskUpdate',
+               'SubagentHandback')  # the harness's channel for the subagent's final report
 LEADING_CD = re.compile(r'^\s*\(?\s*cd\s+([^\s;&|)]+)')
 # Outside every episode, but they hold nothing about the task: compared after lexical normalization, so
 # a '..' cannot climb out through them.

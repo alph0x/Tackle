@@ -494,6 +494,20 @@ class AuditCases(Base):
         self.assertEqual(audit['outside_paths'], ['tool:mcp__graft__graft_find_code', 'tool:WebFetch', 'tool:Agent'])
         self.assertEqual(audit['verdict'], 'invalid')
 
+    def test_the_final_handback_is_not_an_outside_tool(self):
+        """A subagent returns its final report through the harness's SubagentHandback tool (observed in
+        the first smoke episode); it reads and writes nothing."""
+        episode, _ = self.simple_method_episode(scenario='s91-audit-handback')
+        transcript = write_transcript(self.tmp / 'a18.jsonl', [
+            tool_row('tu1', 'Read', {'file_path': str(episode / 'work' / 'a.py')}, cwd=episode / 'work'),
+            result_row('tu1'),
+            tool_row('tu2', 'SubagentHandback', {'message': 'DONE'}, request_id='r2', cwd=episode / 'work'),
+            result_row('tu2'), text_row(request_id='r-final', text='DONE')])
+        self.finish(episode, transcript)
+        audit = load(episode / 'audit.json')
+        self.assertEqual(audit['outside_paths'], [])
+        self.assertEqual(audit['verdict'], 'clean')
+
     def test_local_tools_inside_the_episode_are_clean(self):
         episode, _ = self.simple_method_episode(scenario='s91-audit-local')
         work = episode / 'work'
