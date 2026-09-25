@@ -53,9 +53,9 @@ may never be planned as post-implementation additions.
 Each task is a self-contained worker briefing. The plan compiles shared clauses into tasks;
 workers do not need to discover obligations by reading this plan or another planning document.
 
-| Task | Responsibility | Traces to | Briefing | Depends on |
-|---|---|---|---|---|
-| **T-01 · {{...}}** | {{one coherent change}} | `{{spec:NN}}` | `tasks/T-01-{{slug}}.md` | {{none / artifact}} |
+| Task | Responsibility | Traces to | Briefing | Depends on | Why separate |
+|---|---|---|---|---|---|
+| **T-01 · {{...}}** | {{one coherent change}} | `{{spec:NN}}` | `tasks/T-01-{{slug}}.md` | {{none / artifact}} | {{a different owner / parallel self-contained work / a hard dependency / an independent review or approval / follow-up needing its own tracking, or `—` for a single-task plan}} |
 
 ### Optional milestones
 

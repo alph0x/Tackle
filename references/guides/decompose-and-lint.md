@@ -1,11 +1,16 @@
 <a id="step-6--decompose-into-loop-runnable-points-and-delivery-obligations"></a>
-# Step 6 — Decompose into executable tasks and delivery obligations
+# Decompose and lint — depth for the [PLAN card](plan-card.md)
+
+The card's steps 5 and 6 link here for the decomposition and lint procedure in full.
 
 - Skeleton board first: T-0N / What / Depends-on / Write scope / acceptance check. Existing P workspaces keep their IDs.
 - Then compile sufficient task briefs for the selected readiness scope.
 - Cut for parallelism using crossing artifacts, interfaces, and configuration consumers; disjoint
   `Write scope` (legacy `Touches`) alone do not establish semantic independence. Name every produced/consumed artifact
   and relevant invalidation edge.
+- Decompose to the fewest tasks: one task, unless a qualifying reason forces a split (a different
+  owner, parallel self-contained work, a hard dependency, an independent review or approval, or
+  follow-up that needs its own tracking). Each separate task's briefing names its reason.
 - One task = smallest coherent vertical slice with ONE runnable acceptance check; keep the slice
   vertically complete when splitting it would hide a shared invariant.
 
@@ -45,7 +50,10 @@ Then judge — the checks no command can decide:
 
 # Step 6.6 — Right-size the plan
 
-After lint, collapse if the plan is over-decomposed:
+After lint, confirm the merge-back pass begun at decomposition: collapse further if the wired plan
+is still over-decomposed. A task with no qualifying reason folds into its parent as a checklist
+item or acceptance criterion, and the template's `Why separate` column names the reason that
+survives, or `—` for a single-task plan.
 
 - If a task's `Write scope` (legacy `Touches`) are a subset of another task's and their acceptance checks run together, merge them.
 - Re-apply the **risk precedence** from `intake-and-gate.md` before right-sizing: a public API,

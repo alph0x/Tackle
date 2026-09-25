@@ -228,7 +228,7 @@
         "Wait for results."
       ],
       "mirrors": [
-        "references/guides/intake-and-gate.md:14"
+        "references/guides/intake-and-gate.md:21"
       ],
       "class": "behavioral",
       "hot_path": true,
@@ -257,7 +257,7 @@
         "Only required state/evidence recording and indep"
       ],
       "mirrors": [
-        "references/guides/intake-and-gate.md:19"
+        "references/guides/intake-and-gate.md:26"
       ],
       "class": "behavioral",
       "hot_path": true,
@@ -370,7 +370,7 @@
       "rule_id": "R-INTAKE-07",
       "statement": "The four intake anchors are the intent contract and precede any solution.",
       "statement_sha256": "054882bb554f8555fcf538e325aab93bd76eb766afc92ffaa76ce0725a4853a1",
-      "home": "references/guides/intake-and-gate.md:34",
+      "home": "references/guides/intake-and-gate.md:41",
       "home_fragment": "The four anchors are the intent contract.",
       "units": [],
       "mirrors": [],
@@ -545,7 +545,7 @@
         "Separate requirements from delegated choices; mi"
       ],
       "mirrors": [
-        "references/guides/intake-and-gate.md:93"
+        "references/guides/intake-and-gate.md:71"
       ],
       "class": "behavioral",
       "hot_path": true,
@@ -802,7 +802,7 @@
       "rule_id": "R-PLAN-11",
       "statement": "The repository references/ template library is read-only during scaffolding; initiative-specific edits belong in the workspace copy.",
       "statement_sha256": "488ffc1715a3bdfe05ef2d92a2ae222b3fc024f69f727fafc06b233242df0571",
-      "home": "references/guides/scaffold.md:43",
+      "home": "references/guides/scaffold.md:48",
       "home_fragment": "template library is read-only during scaffolding",
       "units": [],
       "mirrors": [],
@@ -1292,7 +1292,7 @@
       "units": [],
       "mirrors": [
         "references/point.tmpl.md:41",
-        "references/guides/decompose-and-lint.md:27"
+        "references/guides/decompose-and-lint.md:32"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -2501,7 +2501,7 @@
         "Ordinary invocation performs no network access o"
       ],
       "mirrors": [
-        "references/guides/intake-and-gate.md:3",
+        "references/guides/intake-and-gate.md:10",
         "references/guides/update.md:5"
       ],
       "class": "safety-invariant",

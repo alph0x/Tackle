@@ -1,4 +1,9 @@
-# Step 3 — Scaffold inside PLAN
+# Scaffold — depth for the [PLAN card](plan-card.md)
+
+<a id="step-3--scaffold-inside-plan"></a>
+The card's step 3 links here for the whole scaffold procedure: the one gitignore decision, then
+copying the core set. Nothing below is Depth-only; a Coordinated request reads it in full once,
+at decomposition.
 
 PLAN creates `docs/plans/<initiative>/` at the decomposition stage. If this initiative has no
 previously authorized gitignore decision, **ask the user explicitly**: "Should `docs/plans/` be

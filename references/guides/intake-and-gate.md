@@ -1,3 +1,10 @@
+# Intake and gate — procedure and depth for the [PLAN card](plan-card.md)
+
+The card's steps 1 and 2 read Step 1 and Step 2 below in full, together with the anchored sections
+those steps link directly, for a Coordinated or Focused request. Update boundary, decision
+ownership and the guide's other sections are depth, reached from the card's Depth list or from a
+fired trigger (a profile, a reference plan, formal intake material).
+
 ## Update boundary (explicit user control)
 
 Ordinary Tackle invocation performs no network access or installation-tree mutation. Updating is
@@ -61,37 +68,14 @@ If no reference plan matches, skip without offering. There is no scoring engine 
 
 ## Decision ownership
 
-Use the shared decision policy above. Distinguish an informational question, a pending material product decision, and a blocker. Record a Q-id only when an answer changes the work; identify the affected requirement and continue unaffected work. Reversible technical choices inside authorized scope are local freedom, with a recorded reason when consequential. Diagnose operational failures through permitted tools before asking for user input.
+Use the shared decision policy above. Distinguish an informational question, a pending material product decision, and a blocker. Record a Q-id only when an answer changes the work; identify the affected requirement and continue unaffected work. Reversible technical choices inside authorized scope are local freedom, with a recorded reason when consequential. Diagnose operational failures through permitted tools before asking for user input. Material product ambiguity blocks the affected criterion and its consumers. A reversible delegated
+technical choice is recorded with its decision and evidence and does not block unrelated scope.
 
 # Step 1.5 — Anchor the intake before sizing
 
 Lock the problem, observable result, top 2 non-goals, and highest-shape decision before choosing a gate.
 
-For a selected Lite route, `../lite-plan.tmpl.md` provides these preparation and execution steps in one place, including scaffold consent. The detailed guide sequence below is for Full.
-
-## PLAN preparation order
-
-PLAN is a preparation protocol, not a source-execution command. After the four anchors are
-sufficiently established from the request or resolved decisions, keep the work in this order so that every later choice has an observable contract:
-
-1. **Behavior and outputs** — turn each required behavior into a stable criterion id with its
-   observable output, boundary cases, and allowed semantic alternatives. Name exact bytes, order,
-   paths, stdio, or exits only when a consumer depends on them.
-2. **Acceptance and test strategy** — give every criterion a task check, a surrounding check,
-   and an evidence slot. Include negative fixtures for omitted behavior and invalid evidence.
-3. **Contracts and decisions** — compile the interfaces, invariants, dependencies, and recovery
-   rules that Tasks will consume. Resolve product choices as user-owned decisions; record
-   reversible technical choices as local decisions.
-4. **Decomposition and readiness** — create the scaffold, Tasks, coverage matrix, and bounded
-   readiness review. A Task is not Ready merely because its requirement id appears in a briefing.
-
-The preparation order is a single PLAN run. Do not wait for a later planning session before
-stabilizing a contract or assigning Ready. A new session with unchanged relevant fingerprints may
-reuse the recorded readiness evidence; changed inputs are handled by the selective revalidation
-rule in `verify.md`.
-
-Material product ambiguity blocks the affected criterion and its consumers. A reversible delegated
-technical choice is recorded with its decision and evidence and does not block unrelated scope.
+For a selected Lite route, `../lite-plan.tmpl.md` provides these preparation and execution steps in one place, including scaffold consent. The detailed guide sequence below is for Full; the [PLAN card](plan-card.md)'s steps 3–7 are that sequence, in order, with their depth linked from each step.
 
 <a id="step-2--gate-sizing-full--lite--none"></a>
 # Step 2 — Route sizing (Coordinated / Focused / Direct)

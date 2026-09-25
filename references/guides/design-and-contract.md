@@ -1,12 +1,14 @@
-# Step 5 — Compile behavior, acceptance, contracts, and briefings
+# Design and contract — depth for the [PLAN card](plan-card.md)
 
-PLAN compiles the work in this order. Each stage produces an artifact consumed by the next stage;
-the Task brief is the final worker-facing projection.
+<a id="step-5--compile-behavior-acceptance-contracts-and-briefings"></a>
+The card's step 4 links here for the compilation procedure in full. Each stage produces an
+artifact consumed by the next stage; the Task brief is the final worker-facing projection.
 
 ## Behavior and outputs
 
 For every requirement, record a stable criterion id, the behavior it requires, the observable
-output or effect, normal and boundary cases, and any valid semantic alternative. A requirement is
+output or effect, normal and boundary cases, and any valid semantic alternative. Name exact bytes,
+order, paths, stdio, or exits only when a consumer depends on them. A requirement is
 covered for execution only when a Task case and a check demonstrate its observable behavior. An id copied into a
 briefing without its behavior is an omission and remains a readiness gap.
 
@@ -15,7 +17,8 @@ briefing without its behavior is an omission and remains a readiness gap.
 For each criterion and Task, name a task check, an affected surrounding check, and an evidence
 slot. Add a positive fixture and a negative fixture for each validator or contract boundary. The
 negative fixture must expose an implementation that satisfies a keyword, file-existence, or test
-count check while violating the required behavior.
+count check while violating the required behavior. A negative fixture also covers invalid or
+tampered evidence, not only a behavior violation.
 
 Choose the check type during PLAN, before implementation. Prefer one end-to-end check through the
 real public consumer as the sole new test when it covers the criterion; a complex integrated
@@ -82,6 +85,7 @@ become mandatory. Test valid boundary data through the actual consumer for each 
 
 Readiness means a fresh executor can implement from the brief and named inputs without inventing product behavior. Required clauses stay inline with source/revision/hash; optional depth stays linked. Additional reading requires a dependency, relevant change or concrete uncertainty. Record repeated clarification or rework caused by omitted brief requirements as a planning failure in the existing task report; distinguish it from changed user requirements.
 
+<a id="code-style"></a>
 ## Code style
 
 Self-documenting code: Clean Code + SOLID; no explanatory inline comments. Doc-comments belong

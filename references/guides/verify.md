@@ -1,10 +1,14 @@
-# Step 7 — Shared validation (PLAN readiness and explicit Verify)
+# Verify — depth for the [PLAN card](plan-card.md)
 
-PLAN invokes the preparation and evidence-integrity operations below before handoff. The explicit
-`verify` request remains available for a later audit or for a plan that predates integrated
-readiness; it is not a required pre-wave or pre-Task gate after a successful PLAN run. RUN uses the
-single execution protocol in `references/guides/run.md` for explicit intent, preflight, target and
-related regression checks, persistent correction, integration, and deliverable acceptance.
+<a id="step-7--shared-validation-plan-readiness-and-explicit-verify"></a>
+The card's step 7 links here for readiness validation, and to two of this guide's sections
+directly, as procedure rather than depth: [step 0](#step-0--mechanical-grounding-two-phase-citation-check)
+and [step 8, seal integrity](#step-8--seal-integrity). PLAN invokes the preparation and
+evidence-integrity operations below before handoff. The explicit `verify` request remains available
+for a later audit or for a plan that predates integrated readiness; it is not a required pre-wave or
+pre-Task gate after a successful PLAN run. RUN uses the single execution protocol in
+`references/guides/run.md` for explicit intent, preflight, target and related regression checks,
+persistent correction, integration, and deliverable acceptance.
 
 **Principle: detection before judgment.** Use cheap mechanical checks (`grep`, `read`, `ast-grep`, `git`) first; use the LLM only for synthesis of the findings. This keeps the pass fast and reduces false positives.
 
@@ -62,7 +66,7 @@ For each prepared task in `plan.md`'s task decomposition / `task-board.md`, and 
    legitimate ordering-only edge is recorded as a `D-xx` scheduling choice; false edges get cut.
 6. **Plan-vs-code drift** — compare the task's claimed `Write scope` (legacy `Touches`) and Goal against the current repo; flag if the code already implements it (stale task) or if the described change does not match any touched file.
 7. **Agnosticism / Harness-agnostic check** — confirm the plan remains harness-agnostic: no harness-specific commands (e.g. `/command`, `@mention`, `.claude/`), no model brand names (e.g. `Claude`, `GPT`, `Opus`), and no vendor-specific file paths unless the task is explicitly about that harness. Flag violations as drift.
-8. **Seal integrity** — mechanical: every `SEALED: D-xx` id found in the workspace resolves to a decision heading in `decisions.md` that is not marked superseded (lint row 7; a missing or superseded id is a HIGH finding); a sealed section edited with no superseding `SEALED: D-yy supersedes D-xx` marker is a HIGH finding. Every compiled clause hash recorded in `tasks/` or legacy `points/` must still match its clause in `design-contract.md`, where a clause runs from its `## <id>` heading through the line before the next `## ` heading or `<a id=` line, each line ending in one newline. The command below reads the first `sha256` of each compiled-clause bullet outside fenced code. It prints `seal drift` for an edit made after compilation (HIGH), `malformed clause hash` for a recorded value that is not 64 lowercase hex digits (HIGH), and `unresolved clause source` for an id with no heading there (MEDIUM until the brief's recorded source is checked); it exits 1 when it prints anything.
+8. <a id="step-8--seal-integrity"></a>**Seal integrity** — mechanical: every `SEALED: D-xx` id found in the workspace resolves to a decision heading in `decisions.md` that is not marked superseded (lint row 7; a missing or superseded id is a HIGH finding); a sealed section edited with no superseding `SEALED: D-yy supersedes D-xx` marker is a HIGH finding. Every compiled clause hash recorded in `tasks/` or legacy `points/` must still match its clause in `design-contract.md`, where a clause runs from its `## <id>` heading through the line before the next `## ` heading or `<a id=` line, each line ending in one newline. The command below reads the first `sha256` of each compiled-clause bullet outside fenced code. It prints `seal drift` for an edit made after compilation (HIGH), `malformed clause hash` for a recorded value that is not 64 lowercase hex digits (HIGH), and `unresolved clause source` for an id with no heading there (MEDIUM until the brief's recorded source is checked); it exits 1 when it prints anything.
    <a id="seal-integrity-command"></a>
 
    ```sh
