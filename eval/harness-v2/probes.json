@@ -1,0 +1,26 @@
+{
+  "schema": "tackle-harness-probes/1",
+  "note": "Triggering probes: each prompt runs in an empty work tree with the install; skill_loaded comes from transcript evidence only. Real triggering is unobserved until an authorized smoke episode.",
+  "probes": [
+    {"id": "en-plan", "lang": "en", "intent": "plan", "expect": "trigger",
+     "prompt": "Plan the migration of our billing service to the new message queue, broken into tasks I can hand to someone else."},
+    {"id": "en-run", "lang": "en", "intent": "run", "expect": "trigger",
+     "prompt": "Run the next ready task on the board and tell me what changed."},
+    {"id": "en-status", "lang": "en", "intent": "status", "expect": "trigger",
+     "prompt": "What is the status of the checkout rewrite? Only read; do not change anything."},
+    {"id": "es-plan", "lang": "es", "intent": "plan", "expect": "trigger",
+     "prompt": "Planifica la migración del servicio de facturación a la nueva cola de mensajes, en tareas que pueda delegar."},
+    {"id": "es-run", "lang": "es", "intent": "run", "expect": "trigger",
+     "prompt": "Ejecuta la siguiente tarea lista del tablero y contame qué cambió."},
+    {"id": "es-status", "lang": "es", "intent": "status", "expect": "trigger",
+     "prompt": "¿Cuál es el estado del rediseño del checkout? Solo leé, no cambies nada."},
+    {"id": "en-regex", "lang": "en", "intent": "none", "expect": "no-trigger",
+     "prompt": "What does the regular expression ^a+b$ match? Give two examples."},
+    {"id": "en-poem", "lang": "en", "intent": "none", "expect": "no-trigger",
+     "prompt": "Write a four-line poem about autumn leaves."},
+    {"id": "es-translate", "lang": "es", "intent": "none", "expect": "no-trigger",
+     "prompt": "Traducí esta frase al inglés: el gato duerme en la ventana."},
+    {"id": "es-capital", "lang": "es", "intent": "none", "expect": "no-trigger",
+     "prompt": "¿Cuál es la capital de Australia?"}
+  ]
+}

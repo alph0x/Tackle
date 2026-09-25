@@ -160,6 +160,14 @@
         "test_index.py"
       ],
       "tests": 32
+    },
+    {
+      "path": "eval/harness-v2",
+      "files": [
+        "test_components.py",
+        "test_harness.py"
+      ],
+      "tests": 119
     }
   ]
 }

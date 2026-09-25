@@ -18,20 +18,33 @@ numbered-scenario and local trial-output trees are excluded. The result director
 runtime, exit, count, input hashes and complete stdout/stderr. Disposable regression
 tests demonstrate that planted failures and omitted discovery do not turn green.
 
-The [CLEAR-EVAL-1 protocol](clear-language/protocol.md) defines a separate frozen
-current-checkout baseline/candidate experiment, with English/Spanish tasks and a
-small default smoke. [Its runner](clear-language/README.md) stages oracle-free
-participant environments, verifies an externally retained seal and probes container
-isolation before any explicitly authorized model call. It is **PENDING**: no current
-behavioral improvement or release approval is claimed. The historical 7.3/8.0
-comparison and its recorded zero-started status remain unchanged. Deterministic
-harness tests, actual command behavior, agent decisions and integrated product
-acceptance are distinct kinds of evidence.
+**Historical.** The [CLEAR-EVAL-1 protocol](clear-language/protocol.md) defined a separate frozen
+current-checkout baseline/candidate experiment, with English/Spanish tasks and a small default smoke.
+[Its runner](clear-language/README.md) still stages oracle-free participant environments, verifies an
+externally retained seal and probes container isolation, but its model-calling `run` path is retired.
+It never started an episode: no behavioral improvement or release approval was claimed. The historical
+7.3/8.0 comparison and its recorded zero-started status remain unchanged. New cohorts use protocol v2
+and its harness (below). Deterministic harness tests, actual command behavior, agent decisions and
+integrated product acceptance are distinct kinds of evidence.
 
 [Evaluation protocol v2](protocol-v2/PROTOCOL.md) defines how a behavioral claim is pre-registered,
 sealed, recorded and judged. `python3 eval/protocol-v2/check.py <cohort-dir>` rejects tampered,
 incomplete or placeholder-filled cohorts and prints per-variant labels from one-sided Fisher exact
 tests, with Wilson intervals for reading. No cohort has been run under it yet.
+
+## Running episodes — the protocol v2 harness
+
+[The harness](harness-v2/README.md) is the one current path for behavioral episodes.
+
+- It stages a control arm (no skill) or a treated arm (the full install, triggered by its description
+  alone) from the sealed [scenario index](scenario-index/README.md), under a temporary HOME.
+- It runs every prompt as a headless session through a host adapter (Codex, Claude Code, or a fake for
+  tests).
+- It records per-role usage exactly or as `n/a`, appends C01 records that `check.py` accepts, and builds
+  blinded judge packets.
+- No credential reaches a participant: real runs go through a host-side broker and need
+  `--allow-model-calls` and container isolation.
+- The sections below marked historical describe how earlier runs were made.
 
 ## Evidence records
 
@@ -174,9 +187,10 @@ Scenarios with a `variants/` directory hold new development (`v<N>`) and held-ou
 with `input/` (prompts and fixture) and its answer sheet beside it. `eval/scenarios/INDEX.json` classifies
 every scenario and seals every runnable input; [the scenario index](scenario-index/README.md) describes it.
 
-## Running a scenario — manual path (Tackle 7.3.0)
+## Historical: the manual path (Tackle 7.3.0)
 
-The suite flow is manual by design: stage, run, diff, audit, judge, and validate
+Superseded for new cohorts by the protocol v2 harness; kept as the record of how earlier runs were made.
+The suite flow was manual by design: stage, run, diff, audit, judge, and validate
 each arm without executing an LLM or agent from a repository helper. The strong-model
 judgment stays an agent step (convention 10), and the installed artifact remains
 Markdown-only.
@@ -207,14 +221,17 @@ Markdown-only.
 
 ## Plan → Run synthetic measurement fixtures
 
-The refactor's nine synthetic families live under `eval/plan-run/`. They are development fixtures for validating rule inventories, contract checks, staging boundaries, and integrated acceptance; they are not additional numbered scenarios and are not included in the 50-scenario trap count. Their evaluator-only oracle must never be staged for an evaluated planner or executor. Run `python3 -m unittest discover eval/plan-run/tests -p 'test_*.py'` from the repository root for fixture-integrity checks, then follow `eval/plan-run/protocol.md` for any explicitly authorized model comparison.
+The refactor's nine synthetic families live under `eval/plan-run/`. They are development fixtures for validating rule inventories, contract checks, staging boundaries, and integrated acceptance; they are not additional numbered scenarios and are not included in the 50-scenario trap count. Their evaluator-only oracle must never be staged for an evaluated planner or executor. Run `python3 -m unittest discover eval/plan-run/tests -p 'test_*.py'` from the repository root for fixture-integrity checks. `eval/plan-run/protocol.md` is a historical protocol; new model comparisons use protocol v2 and its harness.
 
 The migration contract is covered by `test_migration.py`, which creates disposable filesystem
 fixtures during each run. It checks the two-action PLAN/RUN surface, read-only STATUS, copy-first
 migration with byte-preserving history and rollback sentinel, compatibility aliases, and an install
 containing only `SKILL.md` plus `references/`.
 
-## How to run a scenario manually (fallback)
+## Historical: running a scenario by hand (fallback)
+
+Superseded for new cohorts by the protocol v2 harness. Its method addendum below told the agent to read
+the skill, which bypasses triggering; the harness installs the skill and adds nothing to the prompt.
 
 1. **Copy the scenario to a scratch directory, excluding `GROUND-TRUTH.md`.** The answer sheet must never be visible to the agent under test.
 
@@ -260,9 +277,9 @@ Add `files_changed` (short diff summary or "none") and `verdict_summary` (2–3 
 Two rules proven across s19–s23; follow them for every new scenario:
 
 1. **The no-skill free-styling arm is the teeth test** — a scenario discriminates only when a zero-excerpt arm (raw task, no skill) falls into the trap while the skill arms avoid it. The pre-slim excerpt arm measures *regression* (did the change break old behavior), not *teeth* (can the trap fire at all). Run a no-skill control to establish discrimination; if it also avoids, record a null (valid outcome, precedent s16/s20/s21) — don't claim the trap discriminates from a pre-slim comparison alone.
-2. **Method arms get the mode's destination guide in the excerpt** — a real install carries `SKILL.md` AND the guides it routes to (`resume.md` for a resume trap, `migrate.md` for a migrate trap). Without the guide, "skill-following" degrades to convention-improvisation and flakiness is a harness artifact, not skill behavior (s19: arms without `resume.md` were flaky 1/4; with the guide, behavior changed).
-3. **Fixtures never embed the rule under test; no-skill arms ban `skill://` lookups** — the fixture must not contain the rule the trap measures (s31's R1 control was contaminated by a preset README carrying the resolution-stack sentence, and by the executor's harness auto-loading the real `skill://Tackle`), and no-skill executor prompts must explicitly forbid loading the real skill. A control that avoids because the fixture or the harness told it the rule measures the fixture, not the model — invalidate and re-run clean (s31 R1 → R2 precedent).
+2. **Historical, superseded by the protocol v2 harness:** method arms got the mode's destination guide in the excerpt — a real install carries `SKILL.md` AND the guides it routes to (`resume.md` for a resume trap, `migrate.md` for a migrate trap). Without the guide, "skill-following" degrades to convention-improvisation and flakiness is a harness artifact, not skill behavior (s19: arms without `resume.md` were flaky 1/4; with the guide, behavior changed). The harness installs the full skill, guides included, so nothing is pre-injected and routing is part of what is measured.
+3. **Fixtures never embed the rule under test; no-skill arms ban `skill://` lookups** — the fixture must not contain the rule the trap measures (s31's R1 control was contaminated by a preset README carrying the resolution-stack sentence, and by the executor's harness auto-loading the real `skill://Tackle`), and no-skill executor prompts must explicitly forbid loading the real skill. A control that avoids because the fixture or the harness told it the rule measures the fixture, not the model — invalidate and re-run clean (s31 R1 → R2 precedent). In the protocol v2 harness the control has no skill installed at all, so prompts stay byte-identical across arms, and a control transcript that shows a skill load is recorded invalid.
 
-## Reproducing a manual run
+## Historical: reproducing a manual run
 
 No harness is required. Any agent, any judge, and a `diff` command are enough. The only rule is: **never give the agent `GROUND-TRUTH.md`.**
