@@ -151,8 +151,8 @@ python3 eval/harness-v2/subagent.py finish  --episode <dir> --transcript <subage
     --started <utc> --finished <utc>
 ```
 
-- **`prompt`** prints, to stdout: one fixed preamble naming the episode directory and saying to work only
-  inside it; the staged `prompts/` text, verbatim; for a treated arm only, one fixed sentence naming the
+- **`prompt`** prints, to stdout: one fixed preamble naming `work/` as the task's repository and the
+  episode directory as the boundary to work inside; the staged `prompts/` text, verbatim; for a treated arm only, one fixed sentence naming the
   staged install's `SKILL.md` path (`stage.json`'s `skill_dir` under `home/`). Control and method output
   are byte-identical except for that one sentence. A multi-prompt episode (more than one entry in
   `stage.json`'s `prompts`) is refused: one transcript is one session.
@@ -170,7 +170,11 @@ python3 eval/harness-v2/subagent.py finish  --episode <dir> --transcript <subage
   - `audit.json` (`{outside_paths, skill_used, verdict, reason}`), this tool's own contamination check,
     independent of `run.json`. `outside_paths` names every tool-call path argument and every absolute
     path in a Bash command that does not resolve under the episode directory (a `~` or `$HOME`-led token
-    always counts as outside: these subagents share the operator's real HOME). `skill_used` is set by any
+    always counts as outside: these subagents share the operator's real HOME). A subagent's shell and
+    search tools start from the session's cwd, which every transcript line records: a relative path
+    resolves against it (else against `work/`), and a Glob or Grep without a path, or a Bash command that
+    does not begin with `cd`, counts that cwd itself. `/dev/null` and system tool directories are never
+    outside. `skill_used` is set by any
     `Skill` tool call, or by a path named `SKILL.md` or carrying a `references` segment that does not
     resolve under this episode's own staged install; a method arm reading its own staged copy does not
     set it. `verdict` is `invalid`, naming the reason, for a control episode with `skill_used` or any

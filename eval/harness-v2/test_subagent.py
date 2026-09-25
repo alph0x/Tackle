@@ -69,9 +69,12 @@ def text_row(text='thinking', request_id='r0', model='model-x', tokens_in=1, tok
     return assistant_row(request_id, model, tokens_in, tokens_out, [{'type': 'text', 'text': text}])
 
 
-def tool_row(tool_id, name, input_, request_id='r-tool', model='model-x', tokens_in=1, tokens_out=1):
-    return assistant_row(request_id, model, tokens_in, tokens_out,
-                         [{'type': 'tool_use', 'id': tool_id, 'name': name, 'input': input_}])
+def tool_row(tool_id, name, input_, request_id='r-tool', model='model-x', tokens_in=1, tokens_out=1, cwd=None):
+    row = assistant_row(request_id, model, tokens_in, tokens_out,
+                        [{'type': 'tool_use', 'id': tool_id, 'name': name, 'input': input_}])
+    if cwd is not None:
+        row['cwd'] = str(cwd)  # a real transcript records the session's cwd on every line
+    return row
 
 
 def result_row(tool_id, text='ok'):
@@ -159,6 +162,18 @@ class PromptCases(Base):
         expected_preamble = subagent.PREAMBLE.format(episode='<EPISODE>')
         self.assertTrue(control_norm.startswith(expected_preamble), control_norm)
         self.assertEqual(control_norm[len(expected_preamble):], 'Do the task.\n')
+
+    def test_c1_preamble_names_the_work_tree_as_the_repository(self):
+        """The task's relative paths are relative to the fixture root, which staging puts in work/; the
+        episode directory beside it also holds baseline/, an identical copy the judge never reads."""
+        self.repo.add('s90-demo', prompts=(('task.md', 'Do the task.\n'),))
+        self.repo.seal()
+        control = self.stage(arm='control', name='control')
+        out = self.run_subagent('prompt', '--episode', control)
+        self.assertEqual(out.returncode, 0, out.stderr)
+        preamble = out.stdout[:out.stdout.index('Do the task.')]
+        self.assertIn(str(control / 'work') + ':', preamble)
+        self.assertIn('Work only inside %s:' % control, preamble)
 
     def test_prompt_refuses_when_more_than_one_prompt_is_staged(self):
         self.repo.add('s90-demo', prompts=(('sessions/01.md', 'Step one.\n'), ('sessions/02.md', 'Step two.\n')))
@@ -347,16 +362,74 @@ class AuditCases(Base):
         audit = load(episode / 'audit.json')
         self.assertEqual(audit['outside_paths'], ['/opt/other-project'])
 
-    def test_known_over_flagging_of_ordinary_bash_paths_is_a_disclosed_limit(self):
-        """/usr/bin and /dev/null are absolute paths outside the episode too: the literal rule (every
-        absolute path in a Bash command) flags them. Pinned here as a smoke risk, not silently allowed."""
+    def test_system_paths_that_carry_no_task_information_are_not_outside(self):
+        """/dev/null and system tool directories are outside the episode but hold nothing about the task."""
         episode, _ = self.simple_method_episode(scenario='s91-audit-ordinary')
         transcript = write_transcript(self.tmp / 'a5.jsonl', [
-            tool_row('tu1', 'Bash', {'command': '/usr/bin/true 2>/dev/null'}),
+            tool_row('tu1', 'Bash', {'command': 'cd %s && /usr/bin/true 2>/dev/null' % (episode / 'work')}),
             result_row('tu1'), text_row(request_id='r-final', text='All done.')])
         self.finish(episode, transcript)
         audit = load(episode / 'audit.json')
-        self.assertEqual(sorted(audit['outside_paths']), ['/dev/null', '/usr/bin/true'])
+        self.assertEqual(audit['outside_paths'], [])
+        self.assertEqual(audit['verdict'], 'clean')
+
+    def test_a_system_prefix_that_climbs_out_with_dot_dot_is_outside(self):
+        episode, _ = self.simple_method_episode(scenario='s91-audit-climb')
+        climb = '/usr/bin/../../etc/hosts'
+        transcript = write_transcript(self.tmp / 'a5b.jsonl', [
+            tool_row('tu1', 'Read', {'file_path': climb}), result_row('tu1'),
+            text_row(request_id='r-final', text='All done.')])
+        self.finish(episode, transcript)
+        audit = load(episode / 'audit.json')
+        self.assertEqual(audit['outside_paths'], [climb])
+        self.assertEqual(audit['verdict'], 'invalid')
+
+    def test_a_pathless_search_runs_in_its_recorded_cwd(self):
+        """A subagent's shell and search tools start from the session's cwd, which each transcript line
+        records; a Grep or Glob without a path searched there."""
+        episode, _ = self.simple_method_episode(scenario='s91-audit-cwd')
+        outside = self.repo.root
+        transcript = write_transcript(self.tmp / 'a12.jsonl', [
+            tool_row('tu1', 'Grep', {'pattern': 'format_currency'}, cwd=outside), result_row('tu1'),
+            tool_row('tu2', 'Glob', {'pattern': '**/*.py'}, request_id='r2', cwd=episode / 'work'), result_row('tu2'),
+            text_row(request_id='r-final', text='All done.')])
+        self.finish(episode, transcript)
+        audit = load(episode / 'audit.json')
+        self.assertEqual(audit['outside_paths'], [str(outside)])
+        self.assertEqual(audit['verdict'], 'invalid')
+
+    def test_a_pathless_search_in_the_work_tree_is_clean(self):
+        episode, _ = self.simple_method_episode(scenario='s91-audit-cwd-in')
+        transcript = write_transcript(self.tmp / 'a13.jsonl', [
+            tool_row('tu1', 'Grep', {'pattern': 'x'}, cwd=episode / 'work'), result_row('tu1'),
+            tool_row('tu2', 'Grep', {'pattern': 'x', 'path': 'src'}, request_id='r2', cwd=episode / 'work'),
+            result_row('tu2'), text_row(request_id='r-final', text='All done.')])
+        self.finish(episode, transcript)
+        audit = load(episode / 'audit.json')
+        self.assertEqual(audit['outside_paths'], [])
+        self.assertEqual(audit['verdict'], 'clean')
+
+    def test_a_relative_path_resolves_against_its_recorded_cwd(self):
+        episode, _ = self.simple_method_episode(scenario='s91-audit-rel')
+        transcript = write_transcript(self.tmp / 'a14.jsonl', [
+            tool_row('tu1', 'Glob', {'pattern': '*.md', 'path': 'eval'}, cwd=self.repo.root), result_row('tu1'),
+            text_row(request_id='r-final', text='All done.')])
+        self.finish(episode, transcript)
+        audit = load(episode / 'audit.json')
+        self.assertEqual(audit['outside_paths'], ['eval'])
+        self.assertEqual(audit['verdict'], 'invalid')
+
+    def test_a_bash_command_without_a_leading_cd_runs_in_its_recorded_cwd(self):
+        episode, _ = self.simple_method_episode(scenario='s91-audit-bash-cwd')
+        outside = self.repo.root
+        transcript = write_transcript(self.tmp / 'a15.jsonl', [
+            tool_row('tu1', 'Bash', {'command': 'python3 -m unittest'}, cwd=outside), result_row('tu1'),
+            tool_row('tu2', 'Bash', {'command': 'cd %s && python3 -m unittest' % (episode / 'work')}, request_id='r2',
+                     cwd=outside), result_row('tu2'),
+            text_row(request_id='r-final', text='All done.')])
+        self.finish(episode, transcript)
+        audit = load(episode / 'audit.json')
+        self.assertEqual(audit['outside_paths'], [str(outside)])
         self.assertEqual(audit['verdict'], 'invalid')
 
     def test_a_sibling_directory_with_an_overlapping_prefix_is_outside(self):

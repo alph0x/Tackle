@@ -27,7 +27,11 @@ Claude Code parser, because ``sessions/01/stdout`` holds a Claude Code session t
   is always counted as outside: these episodes run as subagents of the coordinating session on the
   operator's own machine (D-87's stated limit), so HOME is the real host HOME, never the episode's own
   ``home/``, and neither this tool nor the subagent's own environment can tell otherwise from the
-  transcript alone.
+  transcript alone. A subagent's shell and search tools start from the session's cwd, which every
+  transcript line records: a relative path resolves against it (else against ``work/``), and a Glob or
+  Grep without a path, or a Bash command that does not begin with ``cd``, counts that cwd itself.
+  ``SYSTEM_FILES`` and ``SYSTEM_DIRS`` (``/dev/null``, system tool directories) are never outside:
+  they hold nothing about the task.
 - ``skill_used``: true for any ``Skill`` tool call (it always reaches the coordinator's own registered
   skill, never a path inside the episode, so it is never "the staged copy"), or for any read of a path
   named ``SKILL.md`` or carrying a ``references`` path segment that does not resolve under this
@@ -56,12 +60,19 @@ import usage  # noqa: E402
 
 NA = 'n/a'
 PATH_FIELDS = ('file_path', 'path', 'notebook_path', 'directory')
+SEARCH_TOOLS = ('Glob', 'Grep')
+LEADING_CD = re.compile(r'^\s*\(?\s*cd\s+([^\s;&|)]+)')
+# Outside every episode, but they hold nothing about the task: compared after lexical normalization, so
+# a '..' cannot climb out through them.
+SYSTEM_FILES = ('/dev/null', '/dev/stdin', '/dev/stdout', '/dev/stderr', '/dev/tty')
+SYSTEM_DIRS = ('/bin', '/sbin', '/usr/bin', '/usr/sbin', '/usr/lib', '/usr/local/bin', '/opt/homebrew/bin',
+               '/System', '/Library/Developer/CommandLineTools')
 BOUNDARY = r'\s=\'"<>|;('
 ABS_TOKEN = re.compile(r'(?:(?<=^)|(?<=[' + BOUNDARY + r']))(/[^\s\'"()<>|;]+)')
 HOME_TOKEN = re.compile(r'(?:(?<=^)|(?<=[' + BOUNDARY + r']))((?:~|\$HOME)(?:/[^\s\'"()<>|;]*)?)')
 ISO = re.compile(r'^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d+))?Z$')
-PREAMBLE = ('Your work directory for this episode is {episode}. Work only inside this directory: never '
-            'read, write or run anything outside it.\n\n')
+PREAMBLE = ('The repository for this task is {episode}/work: paths in the task are relative to it, and your '
+            'changes go there. Work only inside {episode}: never read, write or run anything outside it.\n\n')
 ARM_SENTENCE = '\nA copy of the skill install for this episode is staged at {skill_md}.\n'
 
 
@@ -132,9 +143,10 @@ def events_of(data):
 
 
 def tool_uses(events):
-    """Every tool_use block, deduplicated by id (a streamed transcript can repeat one as it fills in);
-    order is the id's first appearance, content is its last (most complete) appearance."""
-    order, latest = [], {}
+    """Every tool_use block with the cwd its line records, deduplicated by id (a streamed transcript can
+    repeat one as it fills in); order is the id's first appearance, content is its last (most complete)
+    appearance."""
+    order, latest, cwds = [], {}, {}
     for event in events:
         if event.get('type') != 'assistant':
             continue
@@ -146,8 +158,9 @@ def tool_uses(events):
                 key = block.get('id') if block.get('id') is not None else id(block)
                 if key not in latest:
                     order.append(key)
+                    cwds[key] = event.get('cwd')
                 latest[key] = block
-    return [latest[key] for key in order]
+    return [(latest[key], cwds[key]) for key in order]
 
 
 def last_role(events):
@@ -170,6 +183,11 @@ def is_skill_like(raw):
     return bool(parts) and (parts[-1] == 'SKILL.md' or 'references' in parts)
 
 
+def is_system(raw):
+    normal = os.path.normpath(raw)
+    return normal in SYSTEM_FILES or any(normal == top or normal.startswith(top + '/') for top in SYSTEM_DIRS)
+
+
 def safe_resolve(path):
     try:
         return path.resolve(strict=False)
@@ -177,22 +195,31 @@ def safe_resolve(path):
         return path
 
 
-def audit_of(blocks, episode_dir, staged):
+def audit_of(uses, episode_dir, staged):
     """outside_paths and skill_used, independent of run.json's own skill_loaded: see the module docstring.
     The episode boundary is realpath'd (not just made absolute) so a symlinked temp root, such as macOS's
-    /tmp -> /private/tmp, does not make an in-episode path look like it escaped, or vice versa."""
+    /tmp -> /private/tmp, does not make an in-episode path look like it escaped, or vice versa. A relative
+    path resolves against the cwd its transcript line records, else against work/."""
     episode_real = safe_resolve(episode_dir)
     work_dir = safe_resolve(episode_dir / 'work')
     staged_root = safe_resolve(episode_dir / 'home' / staged['skill_dir']) if staged.get('skill_dir') else None
     outside, skill_used = [], False
-    for block in blocks:
+    for block, cwd in uses:
         name = block.get('name')
         input_ = block.get('input') if isinstance(block.get('input'), dict) else {}
+        base_dir = Path(cwd) if isinstance(cwd, str) and os.path.isabs(cwd) else work_dir
         if name == 'Skill':
             skill_used = True
         candidates = [input_[field] for field in PATH_FIELDS if isinstance(input_.get(field), str) and input_[field]]
+        if name in SEARCH_TOOLS and not candidates:
+            candidates.append(str(base_dir))  # a search without a path searches the cwd
         if name == 'Bash' and isinstance(input_.get('command'), str):
             command = input_['command']
+            lead = LEADING_CD.match(command)
+            if not lead:
+                candidates.append(str(base_dir))  # the command starts in the cwd
+            elif not lead.group(1).startswith(('/', '~', '$HOME')):
+                candidates.append(lead.group(1).strip('\'"'))
             candidates += [m.group(1) for m in HOME_TOKEN.finditer(command)]
             candidates += [m.group(1) for m in ABS_TOKEN.finditer(command)]
         for raw in candidates:
@@ -201,7 +228,9 @@ def audit_of(blocks, episode_dir, staged):
                 if is_skill_like(raw):
                     skill_used = True
                 continue
-            base = Path(raw) if os.path.isabs(raw) else work_dir / raw
+            if os.path.isabs(raw) and is_system(raw):
+                continue
+            base = Path(raw) if os.path.isabs(raw) else base_dir / raw
             resolved = safe_resolve(base)
             if not resolved.is_relative_to(episode_real):
                 outside.append(raw)
@@ -257,10 +286,11 @@ def cmd_finish(args):
         raise Refusal('unreadable --transcript (%s)' % problem.__class__.__name__)
 
     events = events_of(transcript)
-    blocks = tool_uses(events)
+    uses = tool_uses(events)
+    blocks = [block for block, _ in uses]
     outcome = 'completed' if last_role(events) == 'assistant' else 'error'
     loaded = skill_loaded_of(blocks, outcome == 'completed')
-    outside_paths, skill_used = audit_of(blocks, episode, staged)
+    outside_paths, skill_used = audit_of(uses, episode, staged)
 
     reasons = []
     if staged['arm'] == 'control' and skill_used:
