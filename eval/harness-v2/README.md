@@ -139,6 +139,45 @@ A model map is `{"executor": {"tier", "effort"}, "tiers": {"fast"|"standard"|"fr
     participant deliberately encoding its arm with look-alike characters, markup or base64, or the
     style of a skill-guided answer.
 
+## Subagent episodes
+
+D-87: some episodes run as a Task-tool subagent of the coordinating session (the operator's own login)
+instead of a headless CLI subprocess, because a headless session has no credential of its own. Staging is
+unchanged (`harness.py stage --host claude-code ...`); `subagent.py` replaces `run` for these episodes:
+
+```sh
+python3 eval/harness-v2/subagent.py prompt  --episode <dir>
+python3 eval/harness-v2/subagent.py finish  --episode <dir> --transcript <subagent jsonl> --model <id> \
+    --started <utc> --finished <utc>
+```
+
+- **`prompt`** prints, to stdout: one fixed preamble naming the episode directory and saying to work only
+  inside it; the staged `prompts/` text, verbatim; for a treated arm only, one fixed sentence naming the
+  staged install's `SKILL.md` path (`stage.json`'s `skill_dir` under `home/`). Control and method output
+  are byte-identical except for that one sentence. A multi-prompt episode (more than one entry in
+  `stage.json`'s `prompts`) is refused: one transcript is one session.
+- **`finish`** is handed the subagent's own session transcript (JSONL, the same shape
+  `usage.claude_code_transcript` reads) after the fact, and writes:
+  - `run.json` in harness.py's own `run` schema, so `harness.py record` and `judge.py --episode` consume
+    it unchanged. Tokens come from `usage.claude_code_transcript`; wall seconds from `--started`/
+    `--finished`; tool calls count `tool_use` blocks deduplicated by id (a streamed transcript can repeat
+    one as it fills in); files written compares the work tree against `stage.json`'s `work_files`.
+    `outcome` is `completed`, or `error` when the transcript's last `user`/`assistant` message is not
+    from the assistant. Two fields mark this as a different execution path from a headless CLI session:
+    `adapter` is `"subagent"` (not `"claude-code"`), and `executor.harness` is `"claude-code-subagent"`.
+    One disclosed consequence: `judge.py`'s correction-cycle parser selects by `adapter`, has no
+    `"subagent"` entry, and so reports `check_runs`, `correction_cycles` and `transcript_format` as `n/a`
+    for these episodes even though `sessions/01/stdout` holds a real Claude Code transcript.
+  - `audit.json` (`{outside_paths, skill_used, verdict, reason}`), this tool's own contamination check,
+    independent of `run.json`. `outside_paths` names every tool-call path argument and every absolute
+    path in a Bash command that does not resolve under the episode directory (a `~` or `$HOME`-led token
+    always counts as outside: these subagents share the operator's real HOME). `skill_used` is set by any
+    `Skill` tool call, or by a path named `SKILL.md` or carrying a `references` segment that does not
+    resolve under this episode's own staged install; a method arm reading its own staged copy does not
+    set it. `verdict` is `invalid`, naming the reason, for a control episode with `skill_used` or any
+    episode with a non-empty `outside_paths`; otherwise `clean`. The file names paths only, never file
+    content. The coordinator, not this tool, merges the verdict into the judgment before `record`.
+
 ## Probes
 
 `probe` runs each prompt in `probes.json` in an empty work tree with the install. The set holds six

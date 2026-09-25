@@ -165,9 +165,10 @@
       "path": "eval/harness-v2",
       "files": [
         "test_components.py",
-        "test_harness.py"
+        "test_harness.py",
+        "test_subagent.py"
       ],
-      "tests": 119
+      "tests": 142
     },
     {
       "path": "eval/install-inventory",
