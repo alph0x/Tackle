@@ -88,3 +88,99 @@ rename any workspace or relax the 8.3 test-selection and E2E replay-evidence rul
 5. Adopt only the validated continuation at the boundary. Append the path/identity mapping,
    input revisions, observed checks and rollback result; keep the original workspace readable.
    A failed check leaves it active and unchanged.
+
+<a id="schema-keyed-migration"></a>
+## Schema-keyed migration (9.0.0)
+
+Migration keys on the board's `Schema:` line, or on structure when the line is absent — never on the
+free-text `Methodology:` stamp, which is display-only (D-69 item 3). [`recipes/migrate/schema.md`](../recipes/migrate/schema.md)'s
+`schema_of(files)` reads only the workspace root (top-level files; nested paths are ignored for
+detection) and ignores any `legacy-*/` directory, so a stray legacy snapshot next to a current board
+never changes the bucket. A workspace matching more than one row below is `unknown`; its scan for the
+`Schema:` line skips fenced code blocks.
+
+| Bucket | Detected by | Next step |
+|---|---|---|
+| `pre-3` | a `board.md` with no `Schema:` line, and a header row with `Point` or `Task` and a `Status` column | [`step-pre3-to-3`](../recipes/migrate/step-pre3-to-3.md) |
+| `3` | a `board.md` whose line is `Schema: tackle-workspace/3` | [`step-3-to-4`](../recipes/migrate/step-3-to-4.md) |
+| `4` | a `task-board.md` whose line is `Schema: tackle-workspace/4` | [`step-4-to-5`](../recipes/migrate/step-4-to-5.md) |
+| `5` | a `task-board.md` whose line is `Schema: tackle-workspace/5` | none (current in 9.0.0) |
+| `lite` | a `plan.md` whose first line is `Gate: Lite` | none (no board schema) |
+| `unknown` | anything else | none; report and stop |
+
+<a id="migration-steps"></a>
+## Migration steps
+
+Each step is one idempotent detect → transform → verify recipe; a second run of any step on its own
+output is a byte-identical no-op. Standard library only. To run a step: execute
+[`schema.md`](../recipes/migrate/schema.md)'s fenced block first into a namespace, then execute the
+chosen step's fenced block into a namespace seeded with `schema.md`'s names (each step's `detect`,
+`transform` and `verify` call `schema_of`, `parse_board` and the other shared helpers by name, and
+resolve them from that shared namespace, not a copy). Advance a real workspace with
+`schema.md`'s `adopt(files, context, transform)`, never by calling a step's `transform` directly on a
+workspace's full file mapping: `transform`'s `files` argument must already exclude any `legacy-*/`
+directory, and only `adopt` supplies that, then reassembles the result with every pre-existing
+`legacy-*/` directory preserved and the step's own new snapshot added. Passing a mapping that still
+holds `legacy-*/` straight to `transform` risks that step's rename or id-mapping logic reaching inside
+the legacy snapshot and rewriting it.
+
+- [`step-pre3-to-3`](../recipes/migrate/step-pre3-to-3.md) — generalizes `candidate_board()`
+  (`maintaining/migrations.md`) three ways: it accepts P- and T-ids, it maps the legacy states exactly
+  as [terminology.md](../terminology.md)'s States table does, and it never infers `Ready to run`. A
+  `/3` board (or later) returns unchanged.
+- [`step-3-to-4`](../recipes/migrate/step-3-to-4.md) — the v8.3 → v8.4 layout, done mechanically: renames
+  the artifacts that exist (see the checklist above), maps every P-id to one T-id and rewrites the ids
+  in the contents — not only the file names — of `plan.md`, every brief, the board and its dependencies,
+  every report, and the usage ledger's rows (its column format, 8-column legacy or v2 lifecycle, is
+  preserved; only the ids inside it are mapped). `history.md` keeps whichever of `log.md`'s or its own
+  original bytes was already there, plus one appended adoption entry, written exactly once even when
+  the workspace already carries it; `log.md` and `history.md` both present at once is a rename-target
+  collision (see below), refused by name rather than silently picked between. `decisions.md` and
+  `design-contract.md` are never rewritten; an interrupted, pinned task surfaces as residue for review
+  at that task's own boundary (R-MIGRATE-02), never a silent rewrite or a silent restart. An empty P→T
+  map and an absent `points/`
+  are valid inputs — a `/3` workspace already on `tasks/` and T-ids only gets its board renamed and
+  restamped. A `/4` board (or later) returns unchanged.
+- [`step-4-to-5`](../recipes/migrate/step-4-to-5.md) — sets `Schema: tackle-workspace/5` and gives every
+  `Ready to run` row without a citation the Verification text `ready: legacy /4 readiness`. It changes
+  nothing else: a row that already carries some other, non-placeholder Verification text is left alone
+  and reported for review rather than overwritten. A `/5` board returns unchanged.
+
+Each step's `verify(before, after)` takes the same `legacy-*/`-excluding `files` shape as `transform`
+(`schema.md`'s `workspace_files(files)` of the pre- and post-adoption mappings, not the adopted result
+itself, which still carries the legacy snapshots) and is self-contained Python, checked against this
+guide's own reading of each schema: state vocabulary, `Verification` references and, for `step-4-to-5`,
+the `ready:` rule.
+It does not shell out to this repository's lint rows, which reject `/5` until the board-schema task
+lands. `errors` gate adoption: the wrong bucket after the step, a second `transform` that is not
+byte-identical, a board invariant, or an old artifact name left in the root — each a check `verify`
+itself performs and reports. A rename-target collision is a separate, transform-time refusal, not a
+`verify` error: an old artifact name and its new name both already present (`usage.md` and
+`resource-usage.md`, `board.md` and `task-board.md`, `log.md` and `history.md`, or a `points/<id>`
+brief and a `tasks/<id>` one) makes `transform` itself raise by name before anything is written, so
+adoption never reaches `verify` for that workspace. `residue` lists what the agent must review before
+adoption, for example a stray id mention in rewritten prose.
+
+<a id="read-compatibility-promise"></a>
+## Read compatibility
+
+The install reads, and operates on, every workspace in a bucket above; it offers a migration only when
+the requested action needs a newer format. Below the `pre-3` bucket nothing is promised, and this
+repository's historical checklists above and in `maintaining/migrations.md` apply (D-69 item 4).
+
+<a id="pre-migration-originals"></a>
+## The pre-migration original's home
+
+Each step's adoption writes the new content plus every `legacy-*/` directory that existed before,
+unchanged, and adds its own `legacy-<bucket>/` snapshot: the workspace root exactly as the step read it,
+byte-identical and read-only, before that step's transform ran (D-69 item 5). By construction this is
+outside every row that reads a board or history by its path. Row 1's placeholder scan still reaches one
+level into every subdirectory, including a `legacy-*/` one — noted here for the task that next edits
+that row.
+
+<a id="migration-rollback"></a>
+## Rollback
+
+A failed `verify` leaves the workspace active and unchanged: nothing is written. To undo an already
+adopted step, restore the checkpoint taken before that step ran; the pre-migration original is also
+available, byte-identical, at that step's own `legacy-<bucket>/` snapshot.
