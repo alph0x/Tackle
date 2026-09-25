@@ -1,11 +1,14 @@
 """Install inventory: the shipped install stays thin after relocating maintainer-only content.
 
-The shipped install (``SKILL.md`` plus ``references/``) carries none of:
-the changelog, the historical migration checklists, Tackle's own release and self-lint gates, or
-the unreferenced vendor collectors and validator example. Every relocated byte is preserved,
-unchanged except the enumerated substitutions, in a repository file that does not ship. Every
-relative link in the listed files resolves, and the five legacy templates keep their pinned
-hashes.
+Permanent checks read the working tree. The shipped install (``SKILL.md`` plus ``references/``)
+carries none of: the changelog, the historical migration checklists, Tackle's own release and
+self-lint gates, or the unreferenced vendor collectors and validator example. Every relative link
+in the listed files resolves, the five legacy templates keep their pinned hashes, and the eight
+self-lint gates are silent.
+
+Historical checks read commits only. At ``T32_REV``, the commit that made the relocation, every
+relocated byte is preserved, unchanged except the enumerated substitutions, in a repository file
+that does not ship. Later edits to those files cannot break these checks.
 
 Standard library only; no network, container or model call. Every "against a temporary copy"
 case below builds its own disposable directory and never touches this repository.
@@ -22,6 +25,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 BASE_REV = '03b992e52b1b40faa5e3897a0d4729065f503c02'
+# The commit that made the relocation; historical checks compare it with BASE_REV.
+T32_REV = 'b2bb990962096417548f1321964dbe2f4e35e1a9'
 
 
 # ---------------------------------------------------------------------------
@@ -301,9 +306,27 @@ def expected_migrate_bytes():
            + lines_13_24 + lines_39_108[1:]).rstrip(b'\n') + b'\n'
 
 
+def extract_gates(maintaining_text):
+    """The eight self-lint gate commands, extracted the same way
+    ``eval/validation-integrity/acceptance.py``'s ``canonical_gates`` does once it reads
+    MAINTAINING.md: split after the gates heading, stop at the next heading of any level."""
+    after = maintaining_text.split('### Skill self-lint gates\n', 1)[1]
+    section = re.split(r'\n#{1,6} ', after, maxsplit=1)[0]
+    return [command.strip() for _, command in re.findall(r'^   (`+)(.+?)\1$', section, re.M)]
+
+
+def at_t32(path):
+    """Text of ``path`` as committed at T32_REV."""
+    return git_show(T32_REV, path).decode('utf-8')
+
+
+# ---------------------------------------------------------------------------
+# Permanent checks: the working tree
+# ---------------------------------------------------------------------------
+
 class InstallInventoryTests(unittest.TestCase):
-    """Case: install inventory -- references/** after the change carries none of the moved
-    categories."""
+    """Case: install inventory -- references/** carries none of the moved categories, and the
+    maintaining files exist outside the install."""
 
     def test_changelog_is_not_in_the_install(self):
         self.assertFalse((ROOT / 'references/CHANGELOG.md').exists())
@@ -322,15 +345,11 @@ class InstallInventoryTests(unittest.TestCase):
         for stale in ('## v8.2 → v8.3 checklist', '## v7.3 → v8.0 checklist',
                      '## v2.0 → v2.1.0 checklist', 'F-1 · Agent contract'):
             self.assertNotIn(stale, text, 'historical content still in the install: %r' % stale)
-        self.assertIn('## v8.4.0 → v8.4.1 checklist', text)
-        self.assertIn('## v8.3 → v8.4 checklist', text)
-        self.assertIn("maintaining/migrations.md", text)
 
     def test_release_and_self_lint_gate_sections_are_not_in_the_install(self):
         text = (ROOT / 'references/guides/lint-spec.md').read_text(encoding='utf-8')
         for stale in ('## Release sweep', '### Skill self-lint gates'):
             self.assertNotIn(stale, text, 'maintainer content still in the install: %r' % stale)
-        self.assertIn('## Score line', text)
 
     def test_maintaining_files_exist_and_do_not_ship(self):
         self.assertTrue((ROOT / 'MAINTAINING.md').is_file())
@@ -340,44 +359,6 @@ class InstallInventoryTests(unittest.TestCase):
         manifest = (ROOT / 'references/guides/update.md').read_text(encoding='utf-8')
         self.assertNotIn('MAINTAINING.md', manifest)
         self.assertNotIn('maintaining/', manifest)
-
-
-class BytePreservationTests(unittest.TestCase):
-    """Case: byte preservation -- each moved file and each extracted block equals its
-    BASE_REV bytes (reversing exactly the enumerated substitutions)."""
-
-    def test_moved_files_are_byte_identical(self):
-        for old, new in MOVED_FILES:
-            expected = git_show(BASE_REV, old)
-            actual = (ROOT / new).read_bytes()
-            self.assertEqual(sha256(actual), sha256(expected), '%s changed in the move' % new)
-
-    def test_extracted_blocks_reverse_to_their_original_bytes(self):
-        for entry in EXTRACTED_BLOCKS:
-            expected = line_range(git_show(BASE_REV, entry['source']), entry['start'], entry['end'])
-            dest = (ROOT / entry['dest']).read_text(encoding='utf-8')
-            found = self._locate(dest, entry)
-            actual = reverse_subs(found.encode('utf-8'), entry['subs'], entry['dest'])
-            self.assertEqual(sha256(actual), sha256(expected),
-                             '%s:%d-%d (now in %s) is not byte-identical after reversing '
-                             'its substitutions' % (entry['source'], entry['start'], entry['end'], entry['dest']))
-
-    def test_edited_guides_reconstruct_exactly_from_base_rev(self):
-        self.assertEqual((ROOT / 'references/guides/lint-spec.md').read_bytes(), expected_lintspec_bytes())
-        self.assertEqual((ROOT / 'references/guides/migrate.md').read_bytes(), expected_migrate_bytes())
-
-    @staticmethod
-    def _locate(dest_text, entry):
-        """Find an extracted block inside its new home by its first line, then take exactly as
-        many lines as the block spans (substitutions never add or remove a line)."""
-        source_bytes = git_show(BASE_REV, entry['source'])
-        first_line = source_bytes.decode('utf-8').split('\n')[entry['start'] - 1]
-        span = entry['end'] - entry['start'] + 1
-        dest_lines = dest_text.split('\n')
-        for index, line in enumerate(dest_lines):
-            if line == first_line:
-                return '\n'.join(dest_lines[index:index + span]) + '\n'
-        raise AssertionError('%s: could not locate the block starting %r' % (entry['dest'], first_line))
 
 
 class LegacyTemplateTests(unittest.TestCase):
@@ -407,16 +388,6 @@ class GatesTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, 'gate %d exited %d: %s' % (index, result.returncode, result.stderr))
             self.assertEqual(result.stdout, b'', 'gate %d printed a finding: %s' % (index, result.stdout))
 
-
-class UnchangedVersionTests(unittest.TestCase):
-    """Case: unchanged version -- the stamps and the changelog head are still 8.4.1."""
-
-    def test_stamps_are_unchanged(self):
-        skill = (ROOT / 'SKILL.md').read_text(encoding='utf-8')
-        self.assertIn('**Tackle 8.4.1**', skill)
-        changelog = (ROOT / 'CHANGELOG.md').read_text(encoding='utf-8')
-        self.assertTrue(changelog.startswith('# Tackle changelog\n\n## Tackle 8.4.1\n'))
-
     def test_gate_3_and_gate_5_pass_at_the_new_paths(self):
         maintaining = (ROOT / 'MAINTAINING.md').read_text(encoding='utf-8')
         gate3, gate5 = extract_gates(maintaining)[2], extract_gates(maintaining)[4]
@@ -425,43 +396,94 @@ class UnchangedVersionTests(unittest.TestCase):
             self.assertEqual((result.returncode, result.stdout), (0, b''))
 
 
-def extract_gates(maintaining_text):
-    """The eight self-lint gate commands, extracted the same way
-    ``eval/validation-integrity/acceptance.py``'s ``canonical_gates`` does once it reads
-    MAINTAINING.md: split after the gates heading, stop at the next heading of any level."""
-    after = maintaining_text.split('### Skill self-lint gates\n', 1)[1]
-    section = re.split(r'\n#{1,6} ', after, maxsplit=1)[0]
-    return [command.strip() for _, command in re.findall(r'^   (`+)(.+?)\1$', section, re.M)]
+# ---------------------------------------------------------------------------
+# Historical checks: commits only (T32_REV against BASE_REV)
+# ---------------------------------------------------------------------------
 
+class HistoricalRelocationTests(unittest.TestCase):
+    """Case: byte preservation -- at T32_REV, each moved file and each extracted block equals its
+    BASE_REV bytes (reversing exactly the enumerated substitutions), and the edited guides
+    reconstruct exactly."""
 
-class HotPathLintNotesTests(unittest.TestCase):
-    """Case: hot-path lint notes -- the surviving lint rules in lint-spec.md are still present,
-    byte-identical, after the extraction."""
+    def test_moved_files_are_byte_identical(self):
+        for old, new in MOVED_FILES:
+            expected = git_show(BASE_REV, old)
+            actual = git_show(T32_REV, new)
+            self.assertEqual(sha256(actual), sha256(expected), '%s changed in the move' % new)
+
+    def test_extracted_blocks_reverse_to_their_original_bytes(self):
+        for entry in EXTRACTED_BLOCKS:
+            expected = line_range(git_show(BASE_REV, entry['source']), entry['start'], entry['end'])
+            dest = at_t32(entry['dest'])
+            found = self._locate(dest, entry)
+            actual = reverse_subs(found.encode('utf-8'), entry['subs'], entry['dest'])
+            self.assertEqual(sha256(actual), sha256(expected),
+                             '%s:%d-%d (now in %s) is not byte-identical after reversing '
+                             'its substitutions' % (entry['source'], entry['start'], entry['end'], entry['dest']))
+
+    def test_edited_guides_reconstruct_exactly_from_base_rev(self):
+        self.assertEqual(git_show(T32_REV, 'references/guides/lint-spec.md'), expected_lintspec_bytes())
+        self.assertEqual(git_show(T32_REV, 'references/guides/migrate.md'), expected_migrate_bytes())
 
     def test_stayed_ranges_are_byte_identical(self):
+        current = at_t32('references/guides/lint-spec.md')
         for start, end in LINTSPEC_STAYS:
             source = git_show(BASE_REV, 'references/guides/lint-spec.md')
             if end is None:
                 end = len(source.decode('utf-8').split('\n'))
             expected = line_range(source, start, end)
-            current = (ROOT / 'references/guides/lint-spec.md').read_text(encoding='utf-8')
             self.assertIn(expected.decode('utf-8').rstrip('\n'), current,
                          'lines %d-%s of %s no longer appear verbatim' % (start, end, BASE_REV))
 
+    @staticmethod
+    def _locate(dest_text, entry):
+        """Find an extracted block inside its new home by its first line, then take exactly as
+        many lines as the block spans (substitutions never add or remove a line)."""
+        source_bytes = git_show(BASE_REV, entry['source'])
+        first_line = source_bytes.decode('utf-8').split('\n')[entry['start'] - 1]
+        span = entry['end'] - entry['start'] + 1
+        dest_lines = dest_text.split('\n')
+        for index, line in enumerate(dest_lines):
+            if line == first_line:
+                return '\n'.join(dest_lines[index:index + span]) + '\n'
+        raise AssertionError('%s: could not locate the block starting %r' % (entry['dest'], first_line))
 
-class RecipesAndRulesTests(unittest.TestCase):
-    """Case: recipes and rules -- candidate_board loads from its new home, and R-MIGRATE-03 is
-    retired with an updated home."""
+
+class HistoricalContentTests(unittest.TestCase):
+    """Case: the relocation kept the install's current content -- at T32_REV, migrate.md still
+    holds the current checklists and the pointer, and lint-spec.md still holds its score line."""
+
+    def test_current_checklists_and_pointer_stayed(self):
+        text = at_t32('references/guides/migrate.md')
+        self.assertIn('## v8.4.0 → v8.4.1 checklist', text)
+        self.assertIn('## v8.3 → v8.4 checklist', text)
+        self.assertIn('maintaining/migrations.md', text)
+
+    def test_score_line_stayed(self):
+        self.assertIn('## Score line', at_t32('references/guides/lint-spec.md'))
+
+
+class HistoricalVersionTests(unittest.TestCase):
+    """Case: unchanged version -- at T32_REV, the stamps and the changelog head are still 8.4.1."""
+
+    def test_stamps_are_unchanged(self):
+        self.assertIn('**Tackle 8.4.1**', at_t32('SKILL.md'))
+        self.assertTrue(at_t32('CHANGELOG.md').startswith('# Tackle changelog\n\n## Tackle 8.4.1\n'))
+
+
+class HistoricalRecipesAndRulesTests(unittest.TestCase):
+    """Case: recipes and rules -- at T32_REV, candidate_board loads from its new home, the task
+    contracts read it there, and R-MIGRATE-03 alone is retired with an updated home."""
 
     def test_candidate_board_recipe_moved_unchanged(self):
         expected = block_bytes(dict(source='references/guides/migrate.md', start=109, end=636,
                                     subs=EXTRACTED_BLOCKS[3]['subs']))
         self.assertIn(b"def candidate_board(text, reports):", expected)
-        migrations = (ROOT / 'maintaining/migrations.md').read_bytes()
+        migrations = git_show(T32_REV, 'maintaining/migrations.md')
         self.assertIn(b"def candidate_board(text, reports):", migrations)
 
     def test_test_task_contracts_reads_the_new_home(self):
-        text = (ROOT / 'eval/task-contracts/test_task_contracts.py').read_text(encoding='utf-8')
+        text = at_t32('eval/task-contracts/test_task_contracts.py')
         self.assertNotIn("recipe('references/guides/migrate.md')", text)
         self.assertEqual(text.count("recipe('maintaining/migrations.md')['candidate_board']"), 3)
 
@@ -469,7 +491,7 @@ class RecipesAndRulesTests(unittest.TestCase):
         import json
         already_retired = {rule['rule_id'] for rule in json.loads(git_show(BASE_REV, 'eval/rules/ledger.json'))['rules']
                            if isinstance(rule, dict) and 'retired_in' in rule}
-        ledger = json.loads((ROOT / 'eval/rules/ledger.json').read_text(encoding='utf-8'))
+        ledger = json.loads(git_show(T32_REV, 'eval/rules/ledger.json'))
         rules = {rule['rule_id']: rule for rule in ledger['rules'] if isinstance(rule, dict) and 'rule_id' in rule}
         migrate03 = rules['R-MIGRATE-03']
         self.assertEqual(migrate03.get('retired_in'), '9.0.0')
@@ -479,6 +501,21 @@ class RecipesAndRulesTests(unittest.TestCase):
             if rule_id in already_retired | {'R-MIGRATE-03'}:
                 continue
             self.assertNotIn('retired_in', rule, '%s was unexpectedly retired' % rule_id)
+
+
+class HistoricalSelfCheckTests(unittest.TestCase):
+    """Case: the historical checks, and the helpers they call, read commits and never the
+    working tree, so a later edit cannot change their result."""
+
+    def test_historical_checks_read_only_commits(self):
+        import inspect
+        readers = (HistoricalRelocationTests, HistoricalContentTests, HistoricalVersionTests,
+                   HistoricalRecipesAndRulesTests, at_t32, block_bytes, stay_bytes,
+                   expected_lintspec_bytes, expected_migrate_bytes)
+        for reader in readers:
+            source = inspect.getsource(reader)
+            for pattern in ('ROOT /', 'read_bytes(', 'read_text(', 'open(', 'Path('):
+                self.assertNotIn(pattern, source, '%s reads the working tree (%s)' % (reader.__name__, pattern))
 
 
 class PlantedDefectTests(unittest.TestCase):
