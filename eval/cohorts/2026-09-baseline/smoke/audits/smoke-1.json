@@ -1,0 +1,9 @@
+{
+  "outside_paths": [
+    "tool:SubagentHandback"
+  ],
+  "skill_used": false,
+  "verdict": "invalid",
+  "reason": "1 path(s) outside the episode directory",
+  "raw_audit_sha256": "043b9b269b3548c600c410704e512b0a2931cd76904abe08e14d791154fd1154"
+}

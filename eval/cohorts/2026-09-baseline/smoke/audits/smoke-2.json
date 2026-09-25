@@ -1,0 +1,9 @@
+{
+  "outside_paths": [
+    "<repository> root"
+  ],
+  "skill_used": false,
+  "verdict": "invalid",
+  "reason": "1 path(s) outside the episode directory",
+  "raw_audit_sha256": "09f55f1d01f97c30dd81b9ba53383f88ffe2a6006d235acd986d6943f19713ee"
+}

@@ -1,0 +1,63 @@
+{
+  "schema": "tackle-cohort/1",
+  "cohort_id": "2026-09-baseline-smoke-2",
+  "hypothesis": "With the Tackle 8.4.1 method, a Haiku executor falls into the planning-outcome traps less often than with no skill.",
+  "primary_metric": "fall rate: fell over valid episodes, judged mechanically by hidden acceptance tests",
+  "decision_rule": "protocol v2 labels (PROTOCOL.md section 4); with one seed per arm and variant only inert or inconclusive is reachable, so the report reads the pooled difference and the costs",
+  "n_min": 1,
+  "seeds": [
+    1
+  ],
+  "variants": [
+    {
+      "scenario_id": "s62-caller-contract",
+      "variant_id": "v1",
+      "split": "development",
+      "class": "outcome-trap",
+      "fixture_sha256": "6339fd0267f95992b70489a3eb2d14abf87cddeda5e31d21c95d4cfcd000dc5b"
+    }
+  ],
+  "arms": [
+    "control",
+    "method"
+  ],
+  "comparisons": [
+    {
+      "id": "primary",
+      "baseline_arm": "control",
+      "candidate_arm": "method"
+    }
+  ],
+  "executor": {
+    "harness": "claude-code-subagent",
+    "model": "claude-haiku-4-5",
+    "effort": "n/a"
+  },
+  "judge": {
+    "model_family": "n/a",
+    "blinded": true
+  },
+  "artifacts": {
+    "baseline_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "candidate_sha256": "239ceb22fe0cc842393a7e0430b8dd8c0924139b2f64cd17261ffbb6ee041abe"
+  },
+  "oracle_sha256": "ebe35c4a81941eb4d6a6e78b262632f83f213c58aeeeb6967ab740aacc8f962e",
+  "order": [
+    {
+      "episode_id": "smoke2-1",
+      "scenario_id": "s62-caller-contract",
+      "variant_id": "v1",
+      "arm": "control",
+      "seed": 1
+    },
+    {
+      "episode_id": "smoke2-2",
+      "scenario_id": "s62-caller-contract",
+      "variant_id": "v1",
+      "arm": "method",
+      "seed": 1
+    }
+  ],
+  "created_at": "2026-09-25T17:51:08Z",
+  "seal_sha256": "460c05a96a3966690071415eb7090966726ebc029f00e37c560145162dd99980"
+}

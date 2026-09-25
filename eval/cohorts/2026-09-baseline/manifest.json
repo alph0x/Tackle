@@ -1,0 +1,105 @@
+{
+  "schema": "tackle-cohort/1",
+  "cohort_id": "2026-09-baseline",
+  "hypothesis": "With the Tackle 8.4.1 method, a Haiku executor falls into the planning-outcome traps less often than with no skill.",
+  "primary_metric": "fall rate: fell over valid episodes, judged mechanically by hidden acceptance tests",
+  "decision_rule": "protocol v2 labels (PROTOCOL.md section 4); with one seed per arm and variant only inert or inconclusive is reachable, so the report reads the pooled difference and the costs",
+  "n_min": 1,
+  "seeds": [
+    1
+  ],
+  "variants": [
+    {
+      "scenario_id": "s62-caller-contract",
+      "variant_id": "h1",
+      "split": "held-out",
+      "class": "outcome-trap",
+      "fixture_sha256": "f5ce5ef4e4d07e9c0c51be2018370259ad3a9d73bdf0b950213e6a9cc8ecec2e"
+    },
+    {
+      "scenario_id": "s63-documented-edge-rule",
+      "variant_id": "h1",
+      "split": "held-out",
+      "class": "outcome-trap",
+      "fixture_sha256": "5e96183c353a5709d38448df04c26a9b9cbfddfdf98310d7b15f999078a59200"
+    },
+    {
+      "scenario_id": "s64-stored-data-compat",
+      "variant_id": "h1",
+      "split": "held-out",
+      "class": "outcome-trap",
+      "fixture_sha256": "4e0fc4e32a261f18f668c93d718cc6fe8ec649a54a021e263e086f4aff113b52"
+    }
+  ],
+  "arms": [
+    "control",
+    "method"
+  ],
+  "comparisons": [
+    {
+      "id": "primary",
+      "baseline_arm": "control",
+      "candidate_arm": "method"
+    }
+  ],
+  "executor": {
+    "harness": "claude-code-subagent",
+    "model": "claude-haiku-4-5",
+    "effort": "n/a"
+  },
+  "judge": {
+    "model_family": "n/a",
+    "blinded": true
+  },
+  "artifacts": {
+    "baseline_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "candidate_sha256": "239ceb22fe0cc842393a7e0430b8dd8c0924139b2f64cd17261ffbb6ee041abe"
+  },
+  "oracle_sha256": "75cb8a4652691e2ed4c4b1ed9568d537e36e525af189ae2b28501b7c8d70141d",
+  "order": [
+    {
+      "episode_id": "pilot-1",
+      "scenario_id": "s64-stored-data-compat",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-2",
+      "scenario_id": "s63-documented-edge-rule",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-3",
+      "scenario_id": "s64-stored-data-compat",
+      "variant_id": "h1",
+      "arm": "control",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-4",
+      "scenario_id": "s62-caller-contract",
+      "variant_id": "h1",
+      "arm": "control",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-5",
+      "scenario_id": "s62-caller-contract",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-6",
+      "scenario_id": "s63-documented-edge-rule",
+      "variant_id": "h1",
+      "arm": "control",
+      "seed": 1
+    }
+  ],
+  "created_at": "2026-09-25T16:35:36Z",
+  "seal_sha256": "8bd52d76f103f5872f96d5dab46d3a69c68790e9bb4a626ed64c08996f44377b"
+}
