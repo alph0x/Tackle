@@ -10,6 +10,6 @@ Stop duplicate entries from piling up in the reading list and let entries carry 
 ## Non-goals
 - No sync, no accounts, no web UI.
 
-## Acceptance — done-signal per task
+## Checks — one command per task
 - **R-1**: `python3 -m unittest tests/test_readlist.py -k dedupe`
 - **R-2**: `python3 -m unittest tests/test_readlist.py -k tag_filter`

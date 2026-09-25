@@ -1741,7 +1741,7 @@
      ],
      "fixture": "fixture",
      "stageable": true,
-     "fixture_sha256": "d28021dce3b66e9b6e24f90945104ad97a80d27b0a13fe9ebf25c717d3908ffe",
+     "fixture_sha256": "e6fdcef05dd1d35718e5cb854643e3a083044c043b0da922bdac7ec1d08bd2a4",
      "control_exposure": {
       "install": false,
       "fragments": []
@@ -1805,7 +1805,7 @@
      ],
      "fixture": "fixture",
      "stageable": true,
-     "fixture_sha256": "548e594e069a9bbeb0263bf8f585d2eec4f796a7ac4161f48d51033e78234766",
+     "fixture_sha256": "474dab6fa78d7f22ab517175f3002db194d8221978f28cf73d8f0533acd0dd9b",
      "control_exposure": {
       "install": false,
       "fragments": []

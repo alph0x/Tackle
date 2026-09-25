@@ -422,7 +422,7 @@ class IndexTests(unittest.TestCase):
 
 class RepositoryTests(unittest.TestCase):
     def test_repository_index_is_current(self):
-        code, out, err = check(ROOT)
+        code, out, err = check(ROOT, stage=False)  # read the index as it is; never stage the real repository
         self.assertEqual((code, err), (0, ''), out)
         self.assertRegex(out, r'^scenarios=\d+ outcome_traps=\d+ held_out=\d+ stageable=\d+ exposed=\d+ gaps=6/6\n$')
 

@@ -6,5 +6,5 @@
 ## Requirement
 `add` must not create a second entry for a title that is already stored.
 
-## Done-signal
+## Check
 `python3 -m unittest tests/test_readlist.py -k dedupe` — passing.
