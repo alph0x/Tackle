@@ -10,7 +10,7 @@
    "reason": "catalog count and range, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 8.3.0",
    "unit": "s55",
    "kind": "record",
@@ -19,7 +19,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.2.1",
    "unit": "s16",
    "kind": "record",
@@ -28,21 +28,21 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.2.1",
    "unit": "s51",
    "kind": "mention",
    "reason": "fixture change: the tombstone is materialized in scratch"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.2.0",
    "unit": "s1–s54",
    "kind": "mention",
    "reason": "catalog count and range, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.1.1",
    "unit": "s51",
    "kind": "record",
@@ -51,147 +51,147 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s48",
    "kind": "mention",
    "reason": "fixture fact: the s48/s49 fixtures carried the corrected runner copy"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s49",
    "kind": "mention",
    "reason": "fixture fact: the s48/s49 fixtures carried the corrected runner copy"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s10",
    "kind": "mention",
    "reason": "names the scenarios that guard the honesty invariant, no run result"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s33",
    "kind": "mention",
    "reason": "names the scenarios that guard the honesty invariant, no run result"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s44",
    "kind": "mention",
    "reason": "suite realignment: removed, re-pointed or regenerated fixture, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s45",
    "kind": "mention",
    "reason": "suite realignment: removed, re-pointed or regenerated fixture, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s50",
    "kind": "mention",
    "reason": "suite realignment: removed, re-pointed or regenerated fixture, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s5",
    "kind": "mention",
    "reason": "suite realignment: removed, re-pointed or regenerated fixture, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s27",
    "kind": "mention",
    "reason": "suite realignment: removed, re-pointed or regenerated fixture, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s22",
    "kind": "mention",
    "reason": "suite realignment: removed, re-pointed or regenerated fixture, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s26",
    "kind": "mention",
    "reason": "suite realignment: removed, re-pointed or regenerated fixture, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s39",
    "kind": "mention",
    "reason": "suite realignment: removed, re-pointed or regenerated fixture, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s29",
    "kind": "mention",
    "reason": "suite realignment: removed, re-pointed or regenerated fixture, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s30",
    "kind": "mention",
    "reason": "suite realignment: removed, re-pointed or regenerated fixture, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s7",
    "kind": "mention",
    "reason": "suite realignment: removed, re-pointed or regenerated fixture, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s19",
    "kind": "mention",
    "reason": "suite realignment: removed, re-pointed or regenerated fixture, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s35",
    "kind": "mention",
    "reason": "suite realignment: removed, re-pointed or regenerated fixture, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s46",
    "kind": "mention",
    "reason": "suite realignment: removed, re-pointed or regenerated fixture, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s42",
    "kind": "mention",
    "reason": "suite realignment: removed, re-pointed or regenerated fixture, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s43",
    "kind": "mention",
    "reason": "suite realignment: removed, re-pointed or regenerated fixture, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s31",
    "kind": "record",
@@ -201,70 +201,70 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s16",
    "kind": "mention",
    "reason": "suite realignment: removed, re-pointed or regenerated fixture, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s18",
    "kind": "mention",
    "reason": "suite realignment: removed, re-pointed or regenerated fixture, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s21",
    "kind": "mention",
    "reason": "suite realignment: removed, re-pointed or regenerated fixture, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s37",
    "kind": "mention",
    "reason": "suite realignment: removed, re-pointed or regenerated fixture, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s38",
    "kind": "mention",
    "reason": "suite realignment: removed, re-pointed or regenerated fixture, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s23",
    "kind": "mention",
    "reason": "suite realignment: removed, re-pointed or regenerated fixture, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s25",
    "kind": "mention",
    "reason": "suite realignment: removed, re-pointed or regenerated fixture, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s36",
    "kind": "mention",
    "reason": "suite realignment: removed, re-pointed or regenerated fixture, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 7.0.0",
    "unit": "s42–s49",
    "kind": "mention",
    "reason": "suite realignment: removed, re-pointed or regenerated fixture, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 6.1.0",
    "unit": "s50",
    "kind": "record",
@@ -273,14 +273,14 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 6.1.0",
    "unit": "s1–s50",
    "kind": "mention",
    "reason": "catalog count and range, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 6.1.0",
    "unit": "s32",
    "kind": "record",
@@ -289,28 +289,28 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 6.0.0",
    "unit": "s37",
    "kind": "no-record",
    "reason": "cited as precedent for the s43–s49 fixture-as-install nulls, but the 2026-08-18 s37 run record was not retained; only the later 2026-08-29 runner-removal record names s37"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 6.0.0",
    "unit": "s38",
    "kind": "mention",
    "reason": "fixture fact: s37/s38 ship a nested answer sheet"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 6.0.0",
    "unit": "s42–s49",
    "kind": "mention",
    "reason": "range; the member scenarios named in this section are classified individually"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 6.0.0",
    "unit": "s42",
    "kind": "record",
@@ -319,7 +319,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 6.0.0",
    "unit": "s43",
    "kind": "record",
@@ -328,7 +328,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 6.0.0",
    "unit": "s44",
    "kind": "record",
@@ -337,7 +337,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 6.0.0",
    "unit": "s45",
    "kind": "record",
@@ -346,7 +346,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 6.0.0",
    "unit": "s46",
    "kind": "record",
@@ -355,7 +355,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 6.0.0",
    "unit": "s47",
    "kind": "record",
@@ -364,7 +364,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 6.0.0",
    "unit": "s48",
    "kind": "record",
@@ -373,7 +373,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 6.0.0",
    "unit": "s49",
    "kind": "record",
@@ -382,49 +382,49 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 6.0.0",
    "unit": "s1–s49",
    "kind": "mention",
    "reason": "catalog count and range, not a run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 6.0.0",
    "unit": "s25",
    "kind": "mention",
    "reason": "catalog composition: s25 is the lifecycle smoke test"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 6.0.0",
    "unit": "s43–s49",
    "kind": "mention",
    "reason": "range; the member scenarios named in this section are classified individually"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 6.0.0",
    "unit": "s4",
    "kind": "mention",
    "reason": "glob in a record path; the records it matches are classified by scenario"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 6.0.0",
    "unit": "s40",
    "kind": "no-record",
    "reason": "the 2026-08-21 s40 run record was not retained; only the later 2026-08-29 runner-removal record names s40"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 6.0.0",
    "unit": "s41",
    "kind": "no-record",
    "reason": "the 2026-08-21 s41 run record was not retained; only the later 2026-08-29 runner-removal record names s41"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 5.5.0",
    "unit": "s31",
    "kind": "record",
@@ -433,28 +433,28 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 5.5.0",
    "unit": "s37",
    "kind": "no-record",
    "reason": "the 2026-08-18 s37 run record was not retained; only the later 2026-08-29 runner-removal record names s37"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 5.5.0",
    "unit": "s38",
    "kind": "no-record",
    "reason": "the 2026-08-18 s38 run record was not retained; only the later 2026-08-29 runner-removal record names s38"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 5.5.0",
    "unit": "s39",
    "kind": "no-record",
    "reason": "the 2026-08-18 s39 run record was not retained; only the later 2026-08-29 runner-removal record names s39"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 5.5.0",
    "unit": "s16",
    "kind": "record",
@@ -463,7 +463,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 5.5.0",
    "unit": "s20",
    "kind": "record",
@@ -472,7 +472,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 5.5.0",
    "unit": "s21",
    "kind": "record",
@@ -481,7 +481,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 5.5.0",
    "unit": "s32",
    "kind": "record",
@@ -490,7 +490,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 5.4.0",
    "unit": "s36",
    "kind": "record",
@@ -499,14 +499,14 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 5.3.0",
    "unit": "s35",
    "kind": "no-record",
    "reason": "the s35 run record of this release was not retained; only the later 2026-08-29 runner-removal record names s35"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 5.2.0",
    "unit": "s32",
    "kind": "record",
@@ -515,7 +515,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 5.2.0",
    "unit": "s33",
    "kind": "record",
@@ -524,7 +524,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 5.2.0",
    "unit": "s34",
    "kind": "record",
@@ -533,7 +533,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 5.1.0",
    "unit": "s30",
    "kind": "record",
@@ -543,7 +543,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 5.1.0",
    "unit": "s24",
    "kind": "record",
@@ -552,7 +552,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 5.1.0",
    "unit": "s25",
    "kind": "record",
@@ -561,7 +561,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 5.1.0",
    "unit": "s3",
    "kind": "record",
@@ -570,7 +570,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 5.1.0",
    "unit": "s5",
    "kind": "record",
@@ -579,14 +579,14 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 5.1.0",
    "unit": "s26–s31",
    "kind": "mention",
    "reason": "range; the member scenarios named in this section are classified individually"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 5.1.0",
    "unit": "s26",
    "kind": "record",
@@ -595,7 +595,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 5.1.0",
    "unit": "s27",
    "kind": "record",
@@ -604,7 +604,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 5.1.0",
    "unit": "s29",
    "kind": "record",
@@ -613,7 +613,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 5.1.0",
    "unit": "s31",
    "kind": "record",
@@ -622,7 +622,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 5.0.2",
    "unit": "s23",
    "kind": "record",
@@ -631,21 +631,21 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 5.0.0",
    "unit": "s17",
    "kind": "mention",
    "reason": "drift class named by the catalog gate, no run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 5.0.0",
    "unit": "s18",
    "kind": "mention",
    "reason": "drift class named by the catalog gate, no run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 5.0.0",
    "unit": "s23",
    "kind": "record",
@@ -654,7 +654,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 4.4.1",
    "unit": "s19",
    "kind": "record",
@@ -663,14 +663,14 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 4.4.0",
    "unit": "s19–s22",
    "kind": "mention",
    "reason": "range; the member scenarios named in this section are classified individually"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 4.4.0",
    "unit": "s19",
    "kind": "record",
@@ -679,7 +679,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 4.4.0",
    "unit": "s20",
    "kind": "record",
@@ -688,7 +688,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 4.4.0",
    "unit": "s21",
    "kind": "record",
@@ -697,7 +697,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 4.4.0",
    "unit": "s22",
    "kind": "record",
@@ -706,7 +706,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 4.4.0",
    "unit": "s16",
    "kind": "record",
@@ -715,7 +715,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 4.3.1",
    "unit": "s18",
    "kind": "record",
@@ -724,7 +724,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 4.3.0",
    "unit": "s17",
    "kind": "record",
@@ -733,14 +733,14 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 4.2.2",
    "unit": "s16",
    "kind": "mention",
    "reason": "fixture change: the embedded guide copy is refreshed"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 4.2.1",
    "unit": "s15",
    "kind": "record",
@@ -750,7 +750,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 4.2.0",
    "unit": "s15",
    "kind": "record",
@@ -760,14 +760,14 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 4.1.4",
    "unit": "s11–s15",
    "kind": "mention",
    "reason": "range; the member scenarios named in this section are classified individually"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 4.1.4",
    "unit": "s12",
    "kind": "record",
@@ -776,7 +776,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 4.1.4",
    "unit": "s13",
    "kind": "record",
@@ -785,7 +785,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 4.1.4",
    "unit": "s14",
    "kind": "record",
@@ -794,7 +794,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 4.1.4",
    "unit": "s11",
    "kind": "record",
@@ -803,7 +803,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 4.1.4",
    "unit": "s15",
    "kind": "record",
@@ -812,7 +812,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 4.1.2",
    "unit": "s16",
    "kind": "record",
@@ -821,7 +821,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 4.1.2",
    "unit": "s12",
    "kind": "record",
@@ -830,42 +830,42 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 4.0.0",
    "unit": "s11",
    "kind": "mention",
    "reason": "introduces the scenario, no run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 4.0.0",
    "unit": "s12",
    "kind": "no-record",
    "reason": "states a documented null; the only s12 record (2026-07-24) is dated after this release"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 4.0.0",
    "unit": "s13",
    "kind": "mention",
    "reason": "introduces the scenario, no run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 4.0.0",
    "unit": "s14",
    "kind": "mention",
    "reason": "introduces the scenario, no run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 4.0.0",
    "unit": "s15",
    "kind": "mention",
    "reason": "introduces the scenario, no run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 3.4.3",
    "unit": "s8",
    "kind": "record",
@@ -874,7 +874,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 3.4.3",
    "unit": "s9",
    "kind": "record",
@@ -883,7 +883,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 3.4.3",
    "unit": "s10",
    "kind": "record",
@@ -892,7 +892,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 3.4.3",
    "unit": "s1",
    "kind": "record",
@@ -901,7 +901,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 3.4.3",
    "unit": "s2",
    "kind": "record",
@@ -910,7 +910,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 3.4.3",
    "unit": "s3",
    "kind": "record",
@@ -919,7 +919,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 3.4.3",
    "unit": "s5",
    "kind": "record",
@@ -928,7 +928,7 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 3.4.3",
    "unit": "s6",
    "kind": "record",
@@ -937,56 +937,56 @@
    ]
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 3.3.0",
    "unit": "s5",
    "kind": "mention",
    "reason": "introduces the scenario, no run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 3.3.0",
    "unit": "s6",
    "kind": "mention",
    "reason": "introduces the scenario, no run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 3.3.0",
    "unit": "s7",
    "kind": "mention",
    "reason": "introduces the scenario, no run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 3.3.0",
    "unit": "s2",
    "kind": "no-record",
    "reason": "the pre-3.3.0 s2 run is not retained; the same-day suite record ran Tackle 3.4.2"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 3.2.0",
    "unit": "s3",
    "kind": "mention",
    "reason": "introduces the scenario, no run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 3.2.0",
    "unit": "s4",
    "kind": "mention",
    "reason": "introduces the scenario, no run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 3.1.0",
    "unit": "s1",
    "kind": "mention",
    "reason": "lists the scenario, no run claim"
   },
   {
-   "source": "references/CHANGELOG.md",
+   "source": "CHANGELOG.md",
    "section": "Tackle 3.1.0",
    "unit": "s2",
    "kind": "mention",

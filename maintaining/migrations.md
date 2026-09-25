@@ -1,0 +1,548 @@
+# Historical migration checklists
+
+Historical checklists for workspaces older than what `references/guides/migrate.md` covers.
+These do not ship with the installed skill.
+
+For historical interpretation only, older migration records may use the following F-1–F-8 labels;
+they are not current obligations outside the v7.3 → v8.0 checklist:
+
+- **F-1 · Agent contract** — `AGENTS.md` carries the Autonomy level, harness map, §Model map with capability line, `agent-messaging` capability row, and current Methodology stamp → v3.2 → v3.3 items 1, 3 and v2.1 → v3.0 items 6, 8.
+- **F-2 · Artifact names** — current artifact names only; every rename reference-updated workspace-wide and recorded in `decisions.md` → Artifact renames checklist.
+- **F-3 · Status conformance** — `plan.md` lists every P-xx id; `board.md` is the ONLY status source (vocabulary 🔴🟡⏸🟢⚪) → Structural conformance items 1–3.
+- **F-4 · Citations** — every `file:line` citation anchored or git-historical; no bare `file lines X–Y` remains → Citations item.
+- **F-5 · Point fields** — points with remaining work carry the current self-contained fields;
+  completed, blocked and skipped points retain their historical fields and evidence unchanged.
+- **F-6 · Evidence discipline** — log entries written after migration carry evidence blocks; historical entries stay untouched → v2.1 → v3.0 item 2, applied forward-looking.
+- **F-7 · Execution protocol** — future work follows the single RUN procedure for explicit intent,
+  scoped writes, evidence, correction limits, integration and close/block; any review obligation is
+  the one named by that Point, with no second closure loop.
+- **F-8 · Verification** — `lint: N/N checks passed` on the migrated workspace and the Methodology stamp is current → generic step 6 plus each checklist's record item.
+
+## v8.2 → v8.3 checklist
+
+Tackle 8.3 changes forward-looking test selection and E2E evidence, not historical test results.
+Adopt only for a selected active workspace on a disposable copy at a Task boundary.
+
+1. Snapshot the workspace, its pinned Task checks, test files, raw evidence and failure-cycle
+   history. Record hashes and a neighboring sentinel. Preserve completed and interrupted Task
+   history exactly; do not rewrite old unit tests or recast their evidence as E2E.
+2. For remaining code Tasks, choose checks before the next implementation edit. Prefer a single
+   public-boundary E2E check when it covers the contract; a feasible complex integrated feature
+   requires one. Keep sufficient existing regression checks without adding a unit quota. If an
+   isolated test is needed, record the uncovered obligation, why E2E cannot observe it and every
+   identified applicable failure mode with expected outcome before the test and code change.
+   Never add a unit test after implementing the behavior it covers.
+3. Give each future E2E run a replay artifact with exact command/script, stable fixtures,
+   contract-derived expected and observed results, runtime/environment, raw child result and
+   input/output hashes. Reproduce on a disposable copy or fresh destination; verify the original
+   raw record and fixtures remain byte-identical. Missing replay inputs or a masked child failure
+   blocks that acceptance claim.
+4. Run the selected workspace's applicable lint, task and integrated acceptance checks on the
+   copy. Compare source, history, evidence and neighbor hashes with the checkpoint. Promote only
+   forward-looking instructions at the Task boundary and append adoption history. Roll back by
+   restoring the exact checkpoint bytes if any check fails.
+
+## v8.2.0 → v8.2.1 checklist
+
+This patch adds optional Codex native usage capture; it does not require a sidecar for task
+closure. Adopt only for a selected active workspace, on a disposable copy at a task boundary.
+
+1. Record the workspace's pinned procedure, current lifecycle rows and any sidecar bytes and
+   hashes. Preserve neighboring workspaces and historical records exactly.
+2. For future Codex Desktop or `codex exec --json` roles, run the optional native capture recipe
+   at role start and after an externally observed close. Keep its receipt and exact thread ID
+   with the Run ID. Leave unavailable fields `n/a`; do not backfill role tokens from session
+   snapshots or assign a terminal clock without an exact Run ID/turn map.
+3. Verify v2 ledger validity, sidecar provenance and the selected workspace's affected checks
+   on the copy. Promote only forward-looking instructions at the boundary and append adoption
+   history. Roll back by restoring the exact checkpoint bytes.
+
+## v8.1 → v8.2 checklist
+
+Tackle 8.2 adds visible Task terminology, optional `tackle-workspace/3` boards, current-work
+projections and initiative-scoped record storage. An existing workspace keeps its pinned
+procedure until a selected active copy passes compatibility checks and adoption occurs at an
+explicit task boundary. Updating the installation alone cannot authorize workspace migration.
+
+1. Snapshot the selected workspace's exact files, IDs, contracts, history, record references and
+   cycle journals. Preserve a neighbor sentinel. Record original hashes and the pinned procedure.
+   STATUS and terminology questions do not authorize migration or historical evidence deletion.
+2. Update future visible headings/brief fields through the alias map in `terminology.md`; keep
+   P-ids, filenames, links, schema tokens and historical records. Validate old and new fields;
+   conflicting aliases fail. Keep interrupted work on its procedure until a deliberate boundary.
+3. A new v3 board uses the exact state mapping in terminology. Never infer Ready from not-started,
+   Complete from implementation finished, or current evidence from a historic green state. Preserve
+   legacy grade and state in the migration record and original checkpoint. Terminal task reports
+   must already exist and retain their actual method, result and independence; unavailable proof
+   remains unavailable. Read-only legacy interpretation remains supported without conversion.
+4. Verify complete requirement coverage before adopting milestone preparation. Keep deferred work
+   Draft, with owners/outcomes/interfaces/future checks. Verify dependency identities, interfaces,
+   revisions and lineage pools; renaming/splitting/merging resets no unresolved correction allowance.
+5. Adopt context metadata only when size/risk justifies it. Build source-backed current views and
+   verify archive integrity on a copy; preserve original entries and indexes. Migrate old check
+   records only through reversible prepare/verify/switch compaction; retain old resolution until
+   new references and exports validate. Record-store retirement requires its separate policy authority.
+6. Run canonical lint, affected recipe/consumer checks and rollback comparison. Check original
+   log/usage bytes and required raw objects, status/grade interpretation, stable references and
+   neighbor hashes. Promote only selected future artifacts after validation at the boundary;
+   append adoption history. A failed check blocks that adoption, not independent local development.
+
+Existing instantiated title fragments depend on their actual title: preserve the original heading or add its exact old anchor in the selected copy, then test incoming links before adoption. Static template aliases cannot redirect every past title.
+
+The optional pure board conversion below operates on a string from the disposable copy. It writes
+nothing and never assigns readiness or execution permission. `reports` is the set of existing
+verified report paths; callers still inspect those records under RUN before using historical
+completion as current evidence. Save the returned legacy mapping beside the original checkpoint,
+not as a second current-state source. To roll back, restore the exact checkpoint bytes.
+
+```python
+import re
+
+
+def candidate_board(text, reports):
+    if 'Schema: tackle-workspace/3' in text.splitlines():
+        raise ValueError('already adopted; validate instead of migrating again')
+    mapping = {'🔴': 'Draft', '🟡': 'In progress', '⏸': 'Blocked',
+               '🟢': 'Complete', '⚪': 'Skipped'}
+    rows, legacy, identities = [], {}, set()
+    fence = None
+    for line in text.splitlines():
+        delimiter = re.match(r'^\s{0,3}(`{3,}|~{3,})(.*)$', line)
+        if fence:
+            if (delimiter and delimiter[1][0] == fence[0]
+                    and len(delimiter[1]) >= fence[1] and not delimiter[2].strip()):
+                fence = None
+            continue
+        if delimiter:
+            fence = (delimiter[1][0], len(delimiter[1]))
+            continue
+        cells = [cell.strip() for cell in line.split('|')]
+        if len(cells) < 2 or not cells[1].startswith('P-'):
+            continue
+        if len(cells) not in (7, 8) or not re.fullmatch(r'P-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*', cells[1]):
+            raise ValueError('unsupported legacy task row')
+        identity, status = cells[1], cells[5]
+        if identity in identities or status not in mapping:
+            raise ValueError('duplicate identity or unsupported legacy state')
+        identities.add(identity)
+        legacy[identity] = {'status': status, 'grade': cells[6] if len(cells) > 7 else ''}
+        reference = 'reports/' + identity + '-report.md'
+        if mapping[status] in ('Complete', 'Blocked') and reference not in reports:
+            raise ValueError('missing historical verification report: ' + identity)
+        cells[5] = mapping[status]
+        cells[6] = reference if reference in reports else ''
+        rows.append('| ' + ' | '.join(cells[1:7]) + ' |')
+    if fence:
+        raise ValueError('unclosed fenced example')
+    if not identities:
+        raise ValueError('no legacy task rows')
+    header = ('# Task board\n\nSchema: tackle-workspace/3\n\n'
+              '| Task | What | Brief | Depends on | Status | Verification |\n'
+              '|---|---|---|---|---|---|\n')
+    return header + '\n'.join(rows) + '\n', legacy
+```
+
+## v8.0 → v8.1 checklist
+
+Run only for a selected active 8.0 workspace, on a disposable copy. Installation and workspace
+adoption are separate operations; changing the installed skill does not migrate any plan.
+
+1. **Select and checkpoint** — record the workspace and its pinned procedure. Copy its files,
+   hash contracts, evidence, log and usage bytes, and preserve a neighboring rollback sentinel.
+   Leave closed and unrelated workspaces untouched.
+2. **Update future requests** — use the single Tackle entry followed by the requested action.
+   Keep historical prompts verbatim. Legacy text aliases remain valid during 8.x; status,
+   diagnostics and negated execution retain their no-write boundary.
+3. **Recheck remaining work** — apply risk precedence before reducing plan size, and use the
+   corrected dependency, status, decision, effort and collision checks. Surface newly detected
+   gaps in remaining work; do not rewrite old evidence or mark a Point Ready without validation.
+   An interrupted Point stays on its pinned procedure until its boundary.
+   For a selected, already authorized Lite route, put `Gate: Lite` on plan.md's first line in
+   the trial copy; require plan/log/usage and no board, points directory or Full decomposition.
+   Missing Full artifacts do not establish Lite. Do not relabel work during a read-only audit or
+   mass-update historical plans. Preserve log/usage bytes; this metadata grants no Ready state.
+4. **Validate affected acceptance** — reuse only observations whose relevant inputs are unchanged.
+   When preparing a release, record the owner's explicit workspace selection. Selected and active
+   workspaces must pass mandatory checks; selected work also needs current global acceptance,
+   regardless of board status. Warning rows remain non-blocking.
+5. **Verify rollback and adopt** — restore a separate copy from the checkpoint and compare the
+   preserved bytes and sentinel. After validation and owner approval at a Point boundary,
+   selectively promote the validated future artifacts and append the adoption record. Preserve
+   historical states, evidence grades, correction counters, log and usage entries. Failed checks
+   block adoption; neither migration nor a version stamp authorizes publication.
+
+## Historical migration shape
+
+The following generic sequence and versioned checklists document older releases. They are retained
+for interpretation of old workspaces only; the current 8.1 → 8.2 selection, pinning, preservation
+and rollback guards always take precedence.
+
+1. Detect the gap (trust structure, not just the stamp).
+2. Preserve what's settled.
+3. Scope to forward-looking work.
+4. Re-ground remaining points.
+5. Add missing artifacts.
+6. Lint + checkpoint.
+
+## v7.3 → v8.0 checklist
+
+- Full execution uses the optional `references/guides/full-checks.md` capture/extraction recipe: record actual confinement, script/input snapshots and selector membership; reuse only current affected observations. Existing open workspaces adopt the changed procedure by explicit decision. Prior evidence and closed workspaces are not rewritten.
+
+
+Run these steps only for a selected active workspace and only on a disposable copy:
+
+1. **Select and checkpoint** — record the exact workspace path, selection rationale, source and
+   contract revisions, and a checkpoint manifest. Copy the selected workspace and create a rollback
+   sentinel beside it. Leave every unrelated workspace and neighbor untouched.
+2. **Snapshot history** — hash the original `log.md` and `usage.md` bytes (when present), including
+   whitespace and headers. Preserve contracts, evidence artifacts, statuses, and legacy
+   completed/blocked/skipped evidence. Do not rewrite, backfill, re-grade, or reorder history.
+3. **Compile remaining work** — inspect legacy Points and compile only remaining unstarted work into
+   current Point fields. Mark readiness `pending` or unverified until the current checks actually
+   pass. A completed, blocked, skipped or unverifiable Point stays in that state and is not
+   re-executed.
+4. **Pin interrupted work** — an in-progress or interrupted Point continues under its pinned old
+   procedure until its Point boundary. Record an `observe-incomplete` continuation when end data is
+   unknown; do not silently restart its side effect under RUN.
+5. **Adopt at a boundary** — after the selected Point completes or reaches a deliberate boundary,
+   use STATUS for inspection and RUN for explicit execution. Verify the new contract, routes,
+   status read-only behavior, evidence handling and compatibility aliases on the copy. For future
+   Lite/Full closures, require accessible current evidence and let unavailable mandatory coverage
+   block its owning scope; optional coverage and unknown telemetry remain non-gating. Future Lite
+   workspaces use docs/plans/<initiative>/; preserve existing historical paths and counters without
+   guessing or rewriting them. Verify role outcomes are distinct from initiative completion.
+6. **Prove rollback** — restore a separate rollback copy from its checkpoint, compare `log.md` and
+   `usage.md` hashes byte-for-byte, and confirm the neighboring sentinel and every unrelated
+   workspace remain present and unchanged. Discard disposable copies after the observation; never
+   repair history in the live workspace.
+7. **Record adoption** — after the copy passes and the owner adopts it at a Point boundary, promote
+   only the validated candidate copy's future artifacts and Point fields selectively; retain the
+   original snapshots, contracts, evidence and history. If rollback discarded that candidate,
+   recreate and revalidate the same candidate before promotion. Append an adoption record to the
+   selected workspace naming the copy, checks, revisions and rollback result. This append-only
+   boundary record and selective promotion are the sole live-workspace actions; they never rewrite
+   history or claim a release. Publishing a Tackle release requires a separate owner order.
+
+For a release after migration, the owner supplies the selected workspace path(s) explicitly before
+the sweep. Do not infer release scope from an empty board, all-complete Points, historical closure,
+or parked status; selected workspaces still require current global acceptance. Keep the existing
+mandatory lint and done-signal gates for every active workspace, including those not selected.
+The sweep counts the union of active and selected workspaces once each. Historical and parked
+workspaces that are neither active nor selected remain diagnostic/non-gating.
+
+The migration test must exercise a selected active workspace plus completed, blocked and skipped
+legacy rows, an interrupted pinned Point, changed contract, byte hashes, rollback sentinel and an
+old alias request. A boolean result is insufficient: retain disposable fixtures, hashes,
+read-only query output, and the rollback observation.
+
+## v7.0 → v7.1 checklist
+
+Run these when migrating a plan created with Tackle 7.0.x (the Markdown-only runtime transition):
+
+1. **Remove obsolete helper artifacts** — delete any tracked repository-local helper executable or fixture copy; the install artifact is exactly `SKILL.md` + `references/`, with no replacement wrapper.
+2. **Replace helper invocations with direct procedures** — use the copy-pasteable lint rows, the two-phase citation/mtime check, manual eval staging/audit/diff, and the §File map scaffold. Ordinary project commands (`grep`, `awk`, `sed`, tests, builds, and linters) remain valid.
+3. **Preserve the public workflow** — keep `init`, `plan`, `verify`, `next`, `run`, `judge`, `status`, and `retro` as agent workflows, not executable subcommands. Keep the double gate and independent checker requirement.
+4. **Preserve local boundaries** — keep both `docs/plans/` and `docs/seeds/` gitignored; neither ships in the install artifact.
+5. **Re-align evals** — stage scenarios manually, keep `GROUND-TRUTH.md` out of arms, and record the dedicated removal comparison plus lifecycle smoke in the acceptance report.
+6. **Record and verify** — append a `D-xx` decision and `log.md` entry, update the workspace Methodology stamp to Tackle 7.1, run the direct lint/release checklist, and complete the D-13 rule-inventory plus behavioral evidence before any release.
+
+## v7.1 → v7.2 checklist
+
+Run these when adopting the usage-observability v2 contract in a workspace with a v7.1
+eight-column ledger. This is a reversible, copy-first migration; it never rewrites a live
+workspace in place without an owner-approved backup and checkpoint.
+
+1. **Snapshot the legacy bytes** — copy `usage.md` to a disposable migration workspace and
+   hash the exact legacy section, including whitespace and the eight-column header. Keep the
+   original untouched; a legacy row without an exact `run_id` remains legacy-scoped.
+2. **Adopt append-only** — append `Schema: tackle-observability/2` and the v2 lifecycle table
+   below the preserved legacy table. Write only `start`, `finish`, or `observe-incomplete`
+   v2 events after the marker; do not rewrite or backfill historical rows.
+3. **Read compatibly first** — mine the legacy table separately and report
+   `measured/eligible` coverage. `n/a` and missing cells are unknown, never zero; do not join
+   legacy rows to sidecar data without an explicit reviewed mapping.
+4. **Check provenance** — join role telemetry only on an exact `run_id`. Keep session and
+   account observations native and unjoined. Timestamp proximity, a provider conversation id,
+   or a limit delta is not an exact role correlation.
+5. **Keep cost bases distinct** — preserve provider cost as canonical only when observed from
+   an authoritative source. Retain local or API-equivalent calculations under their own
+   labeled basis; never promote them to canonical `cost`.
+6. **Verify before checkpoint** — on the copy, compare the legacy hash/byte sequence before
+   and after adoption, run compatibility reads, and run the current lint. Record the commands,
+   outputs, and exit statuses before treating adoption as complete.
+7. **Rollback narrowly** — on the copy, remove only the newly appended v2 marker/table/events;
+   leave every legacy byte and neighboring file unchanged. Re-hash and byte-compare against the
+   pre-adoption snapshot, then discard the disposable workspace. If comparison fails, stop and
+   restore from the verified snapshot rather than repairing history in place.
+
+This checklist supersedes the old v6.0→v6.1 `tackle-usage/1` sidecar note for usage
+observability: the current optional sidecar is `tackle-observability-telemetry/1`, while the
+Markdown ledger remains the universal source and point closure never depends on migration.
+
+## v7.2 → v7.3 checklist
+
+Run these when adopting the self-contained briefing and executable-validator contract in a
+workspace created with Tackle 7.2.x. This migration is forward-only for active work; closed
+points retain their historical evidence unless reopened.
+
+1. **Self-contain active points** — copy every prerequisite fact needed to resolve an active
+   point into its briefing. Links remain depth references; `plan.md`, `board.md`, workspace
+   `AGENTS.md`, and other plan-local files are not hidden prerequisites.
+2. **Make acceptance runnable** — state cwd, prerequisites, exit condition, literal `PASS`,
+   expected counts/content, and one copy-pasteable shell block. Use checked failure propagation
+   and run valid plus invalid disposable fixtures before flipping the point.
+3. **Preserve evidence boundaries** — keep product outputs untouched during validation; for
+   wrappers record wrapper exit, child exit, timeout, and signal separately, and validate wrapper
+   metadata with the generated artifact.
+4. **Choose the JSON contract explicitly** — validate parsed keys/types/values when formatting
+   is irrelevant; compare bytes or whitespace only when the task declares an exact byte contract.
+   Do not invent newline or formatting requirements.
+5. **Record and verify** — append a decision and log entry, re-ground citations after edits,
+   run the current lint rows and done-signals, and require independent Checker review before
+   marking the board green. No migration is needed for a closed point that remains untouched.
+
+## v6.1 → v7.0 checklist
+
+Run these when migrating a plan created with Tackle 6.1.x (the 7.0 surface consolidation — hard rename, no aliases):
+
+1. **Rename commands in workspace files** — `/tackle-implement` → `/tackle-run` (execute all ready points; `run --one` / `run <P-id>` = one point), `/tackle-next` semantics now select/prepare only (read-only pre-attack summary — it never executes), `/tackle-ground`/`/tackle-trace`/`/tackle-drill` → `/tackle-verify` (step 0 mechanical grounding + coverage matrix + cold-resolvability probe), `/tackle-pulse` → `/tackle-status <ws>`, `/tackle-handoff` → `/tackle-status <ws> --handoff`, `/tackle-constitution`/`/tackle-specify` → optional intake artifacts of `/tackle-plan`. Update `AGENTS.md` rule 9 and any briefing/guide pointers. The workspace flag `workspace-check-gate` → `tackle-gate`.
+2. **Delete removed artifacts if present** — `todo.md`, `tasks.md`, `checklist.md`, `execution-strategy.md` (its wave gates now live in `team.md` §Wave gates). `board.md` stops copying the dependency graph: replace the pasted graph block with "Dependency graph: `plan.md` §5 (single source)".
+3. **Note the surface change** — the old helper-command aliases are removed; the `usage.md` Markdown ledger is unchanged, and scaffolding follows the file map. No workspace edit beyond step 1's references.
+4. **Record** — write a `D-xx` in `decisions.md` noting the 7.0 adoption + the `tackle-gate` decision, append a `log.md` entry, and bump the stamp to **Methodology: Tackle 7.0**.
+5. **Verify** — run the documented lint rows for `<workspace>` and require a green result before any flip.
+
+## v6.0 → v6.1 checklist
+
+Run these when migrating a plan created with Tackle 6.0.x:
+
+1. **Note the usage ledger** — the workflow validates `usage.md` against its Markdown schema. Informational — no workspace edit.
+2. **Note the portable usage contract** — harnesses may emit `tackle-usage/1` events into `docs/plans/<slug>/usage-events.jsonl` as an additional ingest source for the `usage.md` ledger; the 8-column ledger schema is unchanged. Informational — the ledger still takes one row per role run.
+3. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a `log.md` entry, and bump the plan stamp.
+
+## v5.6 → v6.0 checklist
+
+Run these when migrating a plan created with Tackle 5.6.x:
+
+1. **Note the eval + scaffold checklists** — the workflow gains manual prepare/diff/audit/judge/verdict steps for trap runs, plus a file-map scaffold and exhaustive listing check. Informational — no workspace edit.
+2. **Note the fixture-integrity gate** — `catalog` now also verifies every `eval/scenarios/*/` carries a top-level `GROUND-TRUTH.md` and no answer sheet sits at a scratch arm root. Informational — only affects eval staging hygiene.
+3. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a `log.md` entry, and bump the plan stamp.
+
+## v5.5 → v5.6 checklist
+
+Run these when migrating a plan created with Tackle 5.5.x:
+
+1. **Close done points with a closure report** — lint row 14 (gating) requires `reports/P-0N-report.md` for every 🟢 `board.md` row (a stub naming its reviewer suffices). Write the report before flipping the board, then a one-line `log.md` pointer. This binds at the next point close — already-closed points are only flagged, never retro-repaired.
+2. **Stamp reference-doc snapshots** — every `reference-docs/*.md` gains a first-line `captured: YYYY-MM-DD` header (the lint row 15 check skips undated files). Re-snapshot from the live source and update the header when a file is flagged. Workspaces without `reference-docs/` are untouched.
+3. **Note `applies_to:` directive scoping** — directives may now scope to an action moment (`commit-message`, `pre-push`, `release`) and bind mid-session at that action, not at instantiation. Informational for migration; relevant when a profile directive must survive a long session.
+4. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a `log.md` entry, and bump the plan stamp.
+
+## v5.4 → v5.5 checklist
+
+Run these when migrating a plan created with Tackle 5.4.x:
+
+1. **Check `log.md` size against the archive threshold** — lint row 13 flags `log.md` over 400 lines (workspace-overridable via `Log archive threshold: N` in the workspace `AGENTS.md`). If flagged, run the archive protocol (`references/guides/status.md` §Archive): move entries older than the last 5 sessions verbatim to `log-archive.md`, append ascending, never edit moved entries, confirm the newest entry still carries its State snapshot, and record a one-line `log.md` entry. Row 6 now covers the archive pair's ordering.
+2. **Ground stamps are now ISO-with-time** — `Last-verified:` is `YYYY-MM-DDTHH:MM:SSZ` (UTC); legacy date-only stamps still parse (start-of-day, conservative) and self-heal on the next ground entry. No edit needed; the direct mtime comparison reports staleness either way.
+3. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a `log.md` entry, and bump the plan stamp.
+
+## v5.3 → v5.4 checklist
+
+Run these when migrating a plan created with Tackle 5.3.x:
+
+1. **Note the release checklist** — the release sweep now composes self-lint gates 1–7, catalog, and lint over every workspace (active workspaces gate the exit code; closed ones report non-gating `WARN`). Informational — no workspace edit.
+2. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a `log.md` entry, and bump the plan stamp.
+
+## v5.2 → v5.3 checklist
+
+Run these when migrating a plan created with Tackle 5.2.x:
+
+1. **Note the two-phase drift check** — `references/guides/verify.md` step 0 is now two-phase: the line
+   check first; on failure, a whole-file fallback counts matches — exactly one ⇒ the
+   citation is **re-anchored** mechanically (`path:NN` → `path:MM`, literal rewrite, zero
+   model judgment); zero ⇒ stale (unchanged behavior); more than one ⇒ ambiguous, flagged
+   with the match count. Staleness is decided by content, never session memory.
+2. **Note the direct grounding check** — the first writing gate scans
+   `plan.md`/`reference.md`/`points/*.md`, re-anchors drifted citations in place (staged,
+   `cmp -s`-gated), prints one line per citation, and exits cleanly iff zero stale and zero
+   ambiguous. Lint row 4 stays read-only and names it as the fix path. Existing
+   citations with line-accurate fragments are untouched.
+3. **Raise fragment uniqueness** — new point briefings should pick a fragment appearing
+   on exactly one line of its file (the re-anchor needs a unique match); existing
+   fragments keep grounding on their cited line (phase 1), only their re-anchorability
+   changes.
+4. **Note the executor-contract wording** — `AGENTS.tmpl.md` item 4: on drift, re-anchor
+   mechanically per the two-phase rule before hand-editing anything.
+5. **Run the checks once** — run the lint rows for `<workspace>`; then perform the direct
+   two-phase grounding check if any citation is stale.
+6. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a
+   `log.md` entry, and bump the plan stamp.
+
+## v5.1 → v5.2 checklist
+
+Run these when migrating a plan created with Tackle 5.1.x:
+
+1. **Add the usage ledger** — copy `references/usage.tmpl.md` into the workspace as
+   `usage.md`; from now on every role run (point roles, planning sessions, retro) appends
+   one row per the template's schema (Point/Role/Tier/Model/Effort/Tokens in/Tokens
+   out/Session; column meanings are documented in the template's header prose).
+   Historical rows are never backfilled — the ledger starts at adoption.
+2. **Add the capability lines + effort map** — the workspace `AGENTS.md` §Harness map gains
+   the `usage-reporting: supported | partial | unsupported` row; §Model map gains the
+   effort table (`low / medium / high / max` bound to the harness's concrete settings) and
+   the `effort-binding: supported | unsupported` line under `model-binding`. `partial` =
+   cumulative total only (record it in Tokens in, `n/a` out); `unsupported` = `n/a` token
+   fields, rows still appended; recording is informative, never gating.
+3. **Note the Effort field + role defaults** — point briefings may declare
+   `**Effort**: inherit | low | medium | high | max` (overriding the `team.tmpl.md` role
+   defaults). Binds at the next point execution — existing briefings need no rewrite.
+4. **Note lint rows 11–12** — the direct checks now enforce usage rows for done points (row 11;
+   guard-skips until `usage.md` exists — item 1 creates it) and the effort vocabulary
+   (row 12). Run the lint rows once after item 1.
+5. **Note the done-signal parser change** — the direct check now extracts both
+   `**Run**:` and `**Done-signal**:` labels and FAILS on empty extraction (no silent
+   green); review-gate briefings are unaffected.
+6. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a
+   `log.md` entry, and bump the plan stamp.
+
+## v5.0 → v5.1 checklist
+
+Run these when migrating a plan created with Tackle 5.0.x:
+
+1. **Note the removed companion check** — intake Step 0 no longer checks for, recommends, or installs external planning skills; planning is self-contained (intake, simplicity, and architecture guidance live in `references/guides/` and the templates). Informational — no workspace edit.
+2. **Note the intent-exploration essentials** — the adopted intent-exploration discipline (explore intent before solutions; infer first, then ask; batch questions with defaults) now lives in intake Step 1 of `references/guides/intake-and-gate.md`. Informational — no workspace edit.
+3. **Note the simplicity ladder** — `team.tmpl.md` now defines the ladder the Simplicity Auditor runs (does it need to exist → reuse in-codebase → stdlib → native → installed dependency → one line → minimum code) and the security checklist the Security Reviewer runs; workspaces with an instantiated `team.md` may copy the blocks, new workspaces inherit them. Optional adopt.
+4. **Note the architecture guidance** — Step 5.5 of `references/guides/design-and-contract.md` now carries the architecture-decision checklist (dependency rule, SOLID checks, foundations grounding) with a pointer from `foundations.tmpl.md`. Informational — no workspace edit.
+5. **Note the Output-contract carve-out** — the `SKILL.md` Output contract gains the Auto-Clarity carve-out: terse by default, but say it fully for security warnings, irreversible actions, or anywhere compression risks misread. Informational — no workspace edit.
+6. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a `log.md` entry, and bump the plan stamp.
+
+## v4.4 → v5.0 checklist
+
+Run these when migrating a plan created with Tackle 4.4.x:
+
+1. **Adopt the double gate (5.0)** — the flip now requires the direct done-signal check green AND the independent checker's sign-off (workspace flag `tackle-gate: on|off`, default on for new workspaces). Decide the flag: **on** = mechanical gate + sign-off; **off** = 4.x flip semantics preserved. Run the lint rows once to confirm the workspace lints clean before flipping anything.
+2. **D-02 retained** — `guides/lint-spec.md` remains the canonical copy-paste specification; direct lint flows are the only supported composition.
+3. **Record** — write a `D-xx` in `decisions.md` noting the version adopted + the `tackle-gate` decision, append a `log.md` entry, and bump the plan stamp.
+
+## v4.3 → v4.4 checklist
+
+Run these when migrating a plan created with Tackle 4.3.x:
+
+1. **Note the slimmed entry navigation** — the `SKILL.md` routing table keeps one canonical trigger per mode (the "(any language)" header covers phrasing) and the execution-loop rules are compressed to one-liners with pointers to `team.tmpl.md` / `AGENTS.tmpl.md` §Autonomy; the "Commands are entry points" note moved to `guides/intake-and-gate.md`. Command surface, status vocabulary, artifacts, and closure protocol are unchanged. Informational — no workspace edit.
+2. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a `log.md` entry, and bump the plan stamp.
+
+## v4.2 → v4.3 checklist
+
+Run these when migrating a plan created with Tackle 4.2.x:
+
+1. **Adopt the test-first default** — `plan.md` §6.1 now expects test-first for code points (red phase seen failing before implementation; opting out requires a `D-xx`). Doctrine and depth tiers (unit / acceptance / property / fuzz-torture / mutation) live in `guides/testing.md`. Existing plans keep running; new or revised points follow the default.
+2. **Note the Test depth axis** — `guides/quality-dimensions.md` gains a Test depth row: fired tiers fold into point done-signals as runnable fragments. Informational for in-flight points — no rewrite required.
+3. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a `log.md` entry, and bump the plan stamp.
+
+## v4.1 → v4.2 checklist
+
+Run these when migrating a plan created with Tackle 4.1.x:
+
+1. **Note grade derivation in `SKILL.md`** — the closure-report bullet now states the recorded grade is derived from the section-4 evidence block (checker command + output + exit line), never from a declared grade; `board.md` legends already carry the rule. Informational — no workspace edit.
+2. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a `log.md` entry, and bump the plan stamp.
+
+## v4.0 → v4.1 checklist
+
+Run these when migrating a plan created with Tackle 4.0.x:
+
+1. **Note skill self-update** — the installed skill now checks for a new release daily during planning intake (Step 0 "Self-update check") and self-updates via `guides/update.md`; `/tackle-update` forces it. Informational — no workspace edit.
+2. **Note the standard lens catalog** — `team.tmpl.md` §Opt-in `Lenses:` gained six standard lenses (`correctness`, `security`, `repro`, `performance`, `simplicity`, `polish`) with declaration triggers. `Lenses:` stays opt-in; old briefings need no rewrite. Informational — no workspace edit.
+3. **Record** — write a `D-xx` in `decisions.md` noting the version adopted, append a `log.md` entry, and bump the plan stamp.
+
+## v3.4 → v4.0 checklist
+
+Run these when migrating a plan created with Tackle 3.4.x:
+
+1. **Note `Type:` field awareness** — point briefings may declare `Type: standard` (the default when absent), `Type: discovery`, or `Type: experiment`; old points are `standard` by default and need no rewrite.
+2. **Audit `Depends-on` edges** — every `Depends-on` line names the crossing artifact (the concrete upstream output the point consumes — a file, a section, a schema, a protocol); a legitimate ordering-only edge is recorded as a `D-xx` waiver, never waived silently, and false edges are cut, not waived.
+3. **Consider `Lenses:` adoption** — a high-risk point MAY declare `Lenses:` (distinct verification lenses run as independent skeptic checks, decided by majority vote); absent ⇒ single-checker behavior, unchanged. No workspace edit required.
+4. **Add the Confidence column + backfill grades** — `board.md` gains a trailing `Confidence` column; lint row 3 finds the Status column by its header name (legacy 5-column and graded 6-column boards both pass), so the column's placement is free. Backfill every closed point mechanically: **E1** if a checker evidence block (command + output + exit line from the independent checker) exists in `log.md`/`reports/`, **E3** otherwise — grades are derived from evidence, never judged, and never upgraded without the evidence.
+5. **Note the L3 E1-chain condition** — unattended (L3) execution now requires the point's dependency chain to be E1-pure; asserted or review-gated upstream evidence caps the point at L2. Informational — binds at the next L3 execution, no workspace edit.
+6. **Note lint rows 9–10** — row 9 checks loop-point budget fields (`Type: discovery` ⇒ `Rounds:`; `Type: experiment` ⇒ `Metric:` + `Threshold:` + `Rounds:`); row 10 checks every 🟢/⏸ board row carries a grade from E1/E2/E3/E0. The new rows apply at the next lint run; row 10 is satisfied by item 4's backfill.
+7. **Note plan archetypes** — proven decomposition skeletons (point list, edge pattern, wave shape, trap warnings, provenance) live in `references/archetypes/<name>.md`; when re-planning or adding work, check for a matching archetype. Informational — no workspace edit.
+8. **Bump the stamp** — record a `D-xx` in `decisions.md`, append a `log.md` entry, and bump the workspace `Methodology:` stamp to Tackle 4.0.0.
+
+## v3.3 → v3.4 checklist
+
+Run these when migrating a plan created with Tackle 3.3.x:
+
+1. **Adopt the skipped status** — add `⚪ skipped (optional slice not executed, with one-line reason)` to the workspace's status vocabulary references (`AGENTS.md` executor contract, `board.md` legend if present); lint rows 3/5 now accept/scan for it.
+2. **Add §Learning intake** — copy the §Learning intake section from `AGENTS.tmpl.md` into the workspace `AGENTS.md`: read `.tackle/profile.md` / `~/.tackle/user-profile.md` and the repo's `docs/seeds/` at session start; profiles written only via `/tackle-retro`.
+3. **Note the lint changes** — row 1 now exempts fenced code blocks; row 2 accepts board.md-only id lists for old formats. No workspace edit needed; the new rows apply at the next lint run.
+4. **Bump the stamp** — record a `D-xx` in `decisions.md`, append a `log.md` entry, and bump the workspace `Methodology:` stamp to Tackle 3.4.x.
+
+## v3.2 → v3.3 checklist
+
+Run these when migrating a plan created with Tackle 3.2.x:
+
+1. **Add §Model map + messaging capability** — copy the §Model map section from `AGENTS.tmpl.md` into the workspace `AGENTS.md` and fill in the concrete models the harness offers per tier; add the `agent-messaging: supported | unsupported` capability row to the harness map.
+2. **Adopt closure reports + coordinator** (executing Full-gate plans) — every point closes with `reports/P-0N-report.md` carrying the Coordinator sign-off section (human-signed for Solo L2 points; no sign-off, no 🟢 flip); add `coordinator.md` as the Coordinator continuity projection — a projection, never canonical.
+3. **Bump the stamp** — record a `D-xx` in `decisions.md`, append a `log.md` entry, and bump the workspace `Methodology:` stamp to Tackle 3.3.0.
+
+## v3.0 → v3.1 checklist
+
+Run these when migrating a plan created with Tackle 3.0.x:
+
+1. **Adopt the INTENT gate** — every point briefing with remaining work gains the gate: before any behavior-changing edit the Driver writes `INTENT: current code does <X>; done-signal expects <Y>; <source> says <Z>` and stops on contradiction; add the same rule to the team protocol (`team.md` Driver duties) and to `AGENTS.md`.
+2. **Adopt the 3-cycle retry bound** — point briefings and the team protocol cap self-correction at 3 failed fix-verify cycles on the same issue; after that the Driver stops, reports the actual output and current hypothesis, and escalates.
+3. **Adopt two-halves verification** — every point's acceptance names both halves: the target criterion (done-signal) and surrounding-system health (regression sweep); the target passing alone is not done.
+4. **Apply the triviality gate** — new work is sized against the triviality gate (one file, <10 lines, no new behavior, no searching); a task that passes it executes directly instead of earning a workspace.
+5. **Note judge/eval awareness** — record in `AGENTS.md` that finished work is subject to adversarial post-completion verification (`/tackle-judge`); evidence blocks must be re-runnable because the judge re-runs claims.
+6. **Record migration** — write a `D-xx` in `decisions.md`, append a `log.md` entry, and bump the workspace `Methodology:` stamp to Tackle 3.1.0.
+
+## Artifact renames
+
+Run these when the workspace still carries pre-3.0 artifact names (typical for plans created before Tackle 3.0):
+
+1. **Rename the artifacts** — `contract.md` → `design-contract.md`, `strategy.md` → `execution-strategy.md`, `snapshots/` → `reference-docs/`.
+2. **Update every reference** — grep the whole workspace (plan.md, point files, board.md, log.md, decisions.md, AGENTS.md, team.md) for each old name and rewrite every hit; a rename is not done while any reference to the old name remains.
+3. **Handle historical-only files** — files with no current counterpart (`context.md`, `reference.md`) either map to the current artifact they belong to, or are kept as-is with a recorded `D-xx` marking them historical (never silently deleted).
+4. **Record the renames** — list every rename performed in a `D-xx` in `decisions.md`.
+
+## Historical structural conformance
+
+These are historical checks for interpreting older records; the current selected-copy protocol above
+supplies the governing selection, preservation and readiness checks.
+
+1. **plan.md lists every point id** — if `plan.md` §5 has no point table (2.0-era plans), add a table or list naming every `P-xx` id with its Traces-to and briefing path.
+2. **Remove per-point Status fields** — delete every `**Status**:` field inside point files; `board.md` is the ONLY status source. Move any status the field carried into `board.md` first.
+3. **Board status vocabulary** — board statuses use 🔴🟡⏸🟢⚪ only (⚪ = skipped/won't-do, board-only, with a one-line reason); map a deliberate skip to ⚪, never to 🟢 — a skip is not done work.
+4. **Traces-to wiring** — every point file carries a `Traces to:` line; on 2.0-era formats with no "Status & wiring" block, place it in the header directly under the title.
+
+## Historical citations
+
+This is historical guidance for older records; current grounding follows the active PLAN and RUN
+guides and the selected-copy protocol above:
+
+1. **Anchor or convert to git-historical** — every `file:line` citation is either (a) anchored and drift-checked as `path:NN — "literal fragment"` (re-verify with `/tackle-ground`), or (b) converted to the git-historical form when the target moved or drifted beyond re-anchoring: `git show <ref>:path`, noted inline — re-anchoring against the wrong content is worse than a historical-but-verifiable citation. Bare `file lines X–Y` citations must not remain.
+
+## v2.1 → v3.0 checklist
+
+Run these when migrating a plan created with Tackle 2.1.x:
+
+1. **Anchor citations** — rewrite every `file:line` citation to the anchored format `path:NN — "literal fragment"`; run `/tackle-ground` and fix drift.
+2. **Adopt Evidence blocks** — every "done-signal passed" claim in `log.md` must carry an Evidence block (command, trimmed output, exit line); add attempt-journal lines for failed attempts.
+3. **Seal ready points** — append `SEALED: D-xx` to the Acceptance heading of each ready point and to each `design-contract.md` section that has stabilized.
+4. **Run lint-spec** — execute every row of `guides/lint-spec.md` and fix failures until the score line reads `lint: N/N checks passed`.
+5. **Add Last-verified stamps** — keep `reference.md` current with `Last-verified:` dates and re-ground before execution if older than the workspace window.
+6. **Declare autonomy level** — add `Autonomy level: L2 (assisted)` to `AGENTS.md` (or L1/L3 with the required conditions); cap production-path points at L2 unless waived by a `D-xx`.
+7. **Adopt execution rules** — apply regression sweep + maker/checker: the Driver's done-signal run is informative, the 🟢-flipping run comes from an independent checker with evidence in `log.md`.
+8. **Fill the harness map** — record the concrete harness tools for read, search, test, lint, spawn, and git in `AGENTS.md`.
+9. **Record migration** — write a `D-xx` in `decisions.md`, append a `log.md` entry, and bump the workspace `Methodology:` stamp to Tackle 3.0.
+
+## v2.0 → v2.1.0 checklist
+
+Run these when migrating a plan created with Tackle 2.0:
+
+1. **Status migration** — if `plan.md` §5 has a Status column, move every status to `board.md` and remove the column from `plan.md`.
+2. **Source anchor** — add the "Traces to" column to `plan.md` §5 and fill it for every point; add `Traces to` in each point file under Status & wiring.
+3. **Grounding audit** — for each point, read every cited `file:line`; mark the point **ungrounded** if any citation is unread and update its Context.
+4. **Done-signal audit** — rewrite any prose, `test -f`, or "document exists" done-signal into a literal runnable command with an explicit pass condition.
+5. **Right-size** — if the plan has ≤4 points and no multi-track uncertainty, offer to collapse to `lite-plan.tmpl.md`.
+6. **Spec anchors** — if `spec.md` or `constitution.md` exist, add an "Anchors" section with `A-NN` references for each traced requirement.
+7. **Agnosticism sweep** — remove any harness/LLM-specific language (model brand names, vendor commands, tool-specific paths) unless the point is explicitly about that harness.
+8. **Verify** — run `/tackle-verify` on the migrated plan; fix HIGH findings, decide on MEDIUM findings, note LOW findings.
+9. **Record** — write a `D-xx` in `decisions.md` describing the migration, append a `log.md` entry, and bump the plan stamp/version.

@@ -46,7 +46,7 @@ class Repo:
         self.root.mkdir()
         self.git('init', '-q')
         self.files = {
-            'references/CHANGELOG.md': '# Changelog\n\n## Tackle 1.0.0\n\n- The s9 trap discriminates in one seed.\n',
+            'CHANGELOG.md': '# Changelog\n\n## Tackle 1.0.0\n\n- The s9 trap discriminates in one seed.\n',
             'README.md': '# Demo\n\n## Evaluation\n\nThe catalog holds s9.\n',
             'eval/scenarios/s9-demo/GROUND-TRUTH.md': 'answer sheet\n',
             RECORD: 'verdict: discriminates\n',
@@ -55,7 +55,7 @@ class Repo:
         self.index = {RECORD: ['s9-demo']}
         self.hashes = {}
         self.claims = [
-            dict(source='references/CHANGELOG.md', section='Tackle 1.0.0', unit='s9', kind='record', records=[RECORD]),
+            dict(source='CHANGELOG.md', section='Tackle 1.0.0', unit='s9', kind='record', records=[RECORD]),
             dict(source='README.md', section='Evaluation', unit='s9', kind='mention', reason='catalog listing'),
         ]
         self.pin(RECORD, recorded_on='2026-01-01')
@@ -158,7 +158,7 @@ class CheckerTests(unittest.TestCase):
 
     def test_claim_without_entry_fails(self):
         repo = Repo(self)
-        repo.files['references/CHANGELOG.md'] += '- The s8 trap fell for the control.\n'
+        repo.files['CHANGELOG.md'] += '- The s8 trap fell for the control.\n'
         repo.stage()
         self.assertRejected(repo, 'unmapped:')
 
@@ -186,25 +186,25 @@ class CheckerTests(unittest.TestCase):
 
     def test_record_naming_another_scenario_fails(self):
         repo = Repo(self)
-        repo.files['references/CHANGELOG.md'] += '- The s8 trap fell for the control.\n'
+        repo.files['CHANGELOG.md'] += '- The s8 trap fell for the control.\n'
         repo.files['eval/scenarios/s8-other/GROUND-TRUTH.md'] = 'answer sheet\n'
-        repo.claims.append(dict(source='references/CHANGELOG.md', section='Tackle 1.0.0', unit='s8', kind='record',
+        repo.claims.append(dict(source='CHANGELOG.md', section='Tackle 1.0.0', unit='s8', kind='record',
                                 records=[RECORD]))
         repo.stage()
         self.assertRejected(repo, 'wrong-scenario:')
 
     def test_no_record_after_the_gate_fails(self):
         repo = Repo(self)
-        repo.files['references/CHANGELOG.md'] = repo.files['references/CHANGELOG.md'].replace(
+        repo.files['CHANGELOG.md'] = repo.files['CHANGELOG.md'].replace(
             '## Tackle 1.0.0', '## Tackle 2.0.0\n\n- The s9 trap was run again.\n\n## Tackle 1.0.0')
-        repo.claims.append(dict(source='references/CHANGELOG.md', section='Tackle 2.0.0', unit='s9', kind='no-record',
+        repo.claims.append(dict(source='CHANGELOG.md', section='Tackle 2.0.0', unit='s9', kind='no-record',
                                 reason='record lost'))
         repo.stage()
         self.assertRejected(repo, 'no-record:')
 
     def test_no_record_at_the_gate_passes(self):
         repo = Repo(self)
-        repo.claims[0] = dict(source='references/CHANGELOG.md', section='Tackle 1.0.0', unit='s9', kind='no-record',
+        repo.claims[0] = dict(source='CHANGELOG.md', section='Tackle 1.0.0', unit='s9', kind='no-record',
                               reason='the run record was not retained')
         repo.stage()
         self.assertValid(repo, summary(record=0, no_record=1))
@@ -299,14 +299,14 @@ class CheckerTests(unittest.TestCase):
 
     def test_fenced_units_are_not_claims(self):
         repo = Repo(self)
-        repo.files['references/CHANGELOG.md'] += '\n```text\ns8 appears only in an example\n```\n'
+        repo.files['CHANGELOG.md'] += '\n```text\ns8 appears only in an example\n```\n'
         repo.stage()
         self.assertValid(repo, summary())
 
     def test_range_claimed_as_a_record_fails(self):
         repo = Repo(self)
-        repo.files['references/CHANGELOG.md'] += '- The s9–s10 traps were run again.\n'
-        repo.claims.append(dict(source='references/CHANGELOG.md', section='Tackle 1.0.0', unit='s9–s10', kind='record',
+        repo.files['CHANGELOG.md'] += '- The s9–s10 traps were run again.\n'
+        repo.claims.append(dict(source='CHANGELOG.md', section='Tackle 1.0.0', unit='s9–s10', kind='record',
                                 records=[RECORD]))
         repo.stage()
         self.assertRejected(repo, 'wrong-scenario:')
@@ -314,8 +314,8 @@ class CheckerTests(unittest.TestCase):
     def test_untracked_cohort_claim_fails(self):
         repo = Repo(self)
         cohort_id = json.loads((COHORTS / 'valid-discriminates' / 'manifest.json').read_text())['cohort_id']
-        repo.files['references/CHANGELOG.md'] += '- The s1 trap was measured in a cohort.\n'
-        repo.claims.append(dict(source='references/CHANGELOG.md', section='Tackle 1.0.0', unit='s1', kind='cohort',
+        repo.files['CHANGELOG.md'] += '- The s1 trap was measured in a cohort.\n'
+        repo.claims.append(dict(source='CHANGELOG.md', section='Tackle 1.0.0', unit='s1', kind='cohort',
                                 cohort=cohort_id))
         repo.stage()
         shutil.copytree(COHORTS / 'valid-discriminates', repo.root / 'eval/cohorts' / cohort_id)
@@ -356,7 +356,7 @@ class CheckerTests(unittest.TestCase):
         self.assertRejected(repo, sheet + ': leak:')
 
     def test_outcome_claimed_as_mention_after_the_gate_fails(self):
-        for source, section, line in (('references/CHANGELOG.md', 'Tackle 2.0.0', '- s9 discriminates in a new run.\n'),
+        for source, section, line in (('CHANGELOG.md', 'Tackle 2.0.0', '- s9 discriminates in a new run.\n'),
                                       ('README.md', 'Evaluation', 'The s9 control fell.\n')):
             with self.subTest(source=source):
                 repo = Repo(self)
@@ -400,8 +400,8 @@ class CheckerTests(unittest.TestCase):
         repo = Repo(self)
         cohort_id = json.loads((COHORTS / 'valid-discriminates' / 'manifest.json').read_text())['cohort_id']
         shutil.copytree(COHORTS / 'valid-discriminates', repo.root / 'eval/cohorts' / cohort_id)
-        repo.files['references/CHANGELOG.md'] += '- The s8 trap was measured in a cohort.\n'
-        repo.claims.append(dict(source='references/CHANGELOG.md', section='Tackle 1.0.0', unit='s8', kind='cohort',
+        repo.files['CHANGELOG.md'] += '- The s8 trap was measured in a cohort.\n'
+        repo.claims.append(dict(source='CHANGELOG.md', section='Tackle 1.0.0', unit='s8', kind='cohort',
                                 cohort=cohort_id))
         repo.stage()
         self.assertRejected(repo, 'cohort:')
@@ -426,8 +426,8 @@ class CheckerTests(unittest.TestCase):
                 repo = Repo(self)
                 cohort_id = json.loads((COHORTS / fixture / 'manifest.json').read_text())['cohort_id']
                 shutil.copytree(COHORTS / fixture, repo.root / 'eval/cohorts' / cohort_id)
-                repo.files['references/CHANGELOG.md'] += '- The s1 trap was measured in a cohort.\n'
-                repo.claims.append(dict(source='references/CHANGELOG.md', section='Tackle 1.0.0', unit='s1',
+                repo.files['CHANGELOG.md'] += '- The s1 trap was measured in a cohort.\n'
+                repo.claims.append(dict(source='CHANGELOG.md', section='Tackle 1.0.0', unit='s1',
                                         kind='cohort', cohort=cohort_id))
                 repo.stage()
                 if valid:

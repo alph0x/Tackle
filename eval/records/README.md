@@ -22,7 +22,7 @@ that is not a git work tree.
 | `../runs/*.md` | Historical run records, tracked exactly as written. A record is never edited; a correction is a new record. |
 | `sanitized/*.md` | Tracked copies of the historical records that carried a home path, a `~/` path, an address or a key. The original stays local, is listed in `../.gitignore`, and keeps its bytes. |
 | `historical-hashes.json` | Pins every historical record: sha256, byte count, whether it is tracked, the date it was recorded, and the scenarios it names that no longer have a directory. |
-| `claims.json` | Classifies every scenario named in `references/CHANGELOG.md` and `README.md`. |
+| `claims.json` | Classifies every scenario named in `CHANGELOG.md` and `README.md`. |
 | `../cohorts/<id>/` | Protocol v2 cohorts (see [PROTOCOL.md](../protocol-v2/PROTOCOL.md)); each must pass `check.py`. |
 
 `../rules/historical-index.json` (the rule ledger's index) says which scenarios each historical

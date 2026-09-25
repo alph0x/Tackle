@@ -40,7 +40,7 @@ def run_command(root: Path, command: str) -> subprocess.CompletedProcess[str]:
 class ExactFieldValidationTests(unittest.TestCase):
     def test_acceptance_pins_executable_gate_cells(self) -> None:
         loader = runpy.run_path(str(ROOT / 'eval/validation-integrity/acceptance.py'))['canonical_gates']
-        source = LINT_SPEC.read_text(encoding='utf-8')
+        source = (ROOT / 'MAINTAINING.md').read_text(encoding='utf-8')  # the release gates moved there (D-72)
         self.assertEqual(len(loader(source)), 8)
         altered = source.replace('SKILL.md over budget', 'SKILL.md changed by attacker', 1)
         with self.assertRaisesRegex(ValueError, 'without trusted review'):

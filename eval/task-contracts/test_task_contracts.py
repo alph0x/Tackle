@@ -228,7 +228,7 @@ class TaskContracts(unittest.TestCase):
                 preparation([task(identity)], [identity])
 
     def test_board_migration_preserves_states_grades_and_original_bytes(self):
-        convert = recipe('references/guides/migrate.md')['candidate_board']
+        convert = recipe('maintaining/migrations.md')['candidate_board']
         original = board('🟢', 'E1', schema=False)
         before = original.encode()
         candidate, legacy = convert(original, {'reports/P-01-report.md'})
@@ -244,7 +244,7 @@ class TaskContracts(unittest.TestCase):
             convert(candidate, {'reports/P-01-report.md'})
 
     def test_board_migration_never_infers_readiness_or_acceptance(self):
-        convert = recipe('references/guides/migrate.md')['candidate_board']
+        convert = recipe('maintaining/migrations.md')['candidate_board']
         result, legacy = convert(board('🔴', schema=False), set())
         self.assertIn('| Draft |', result)
         self.assertNotIn('Ready to run', result)
@@ -252,7 +252,7 @@ class TaskContracts(unittest.TestCase):
             convert(board('🔴', schema=False) + '| P-01 | repeated | brief | none | 🔴 | |\n', set())
 
     def test_board_migration_ignores_fenced_examples_and_rejects_unclosed_fence(self):
-        convert = recipe('references/guides/migrate.md')['candidate_board']
+        convert = recipe('maintaining/migrations.md')['candidate_board']
         for fence in ('```', '````', '~~~', '~~~~'):
             original = board('🔴', schema=False)
             example = '| P-99 | Example only | points/P-99.md | none | 🔴 | |\n'

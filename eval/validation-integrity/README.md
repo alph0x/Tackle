@@ -4,7 +4,8 @@ These development-only checks stay outside the installed Markdown artifact
 (`SKILL.md` plus `references/`). They provide different kinds of evidence:
 
 - `test_fields.py`, `test_paths.py` and `test_review_regressions.py` execute the
-  canonical shell cells extracted from `references/guides/lint-spec.md`.
+  canonical shell cells extracted from `references/guides/lint-spec.md` (lint rows) and
+  `MAINTAINING.md` (release gates).
 - The routing/release fixture tests check oracle inventory only. They do not
   implement the policy and do not prove that an agent follows the guides.
 - `behavioral.py` stages task-only inputs and captures fresh-agent method trials.

@@ -168,6 +168,13 @@
         "test_harness.py"
       ],
       "tests": 119
+    },
+    {
+      "path": "eval/install-inventory",
+      "files": [
+        "test_install.py"
+      ],
+      "tests": 21
     }
   ]
 }

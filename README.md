@@ -180,7 +180,7 @@ See the [RUN guide](references/guides/run.md) and [failure-modes catalog](refere
 | Audit results or review lessons | [Audit](references/guides/judge.md) · [Retro](references/guides/retro.md) |
 | Read terminology or migrate existing plans | [Terminology](references/terminology.md) · [Migration](references/guides/migrate.md) |
 | Update the installed skill | [Owner-controlled updates](references/guides/update.md) |
-| Follow project changes | [Changelog](references/CHANGELOG.md) |
+| Follow project changes | [Changelog](CHANGELOG.md) |
 
 <details>
 <summary>Explicit reviews, maintenance, and compatibility</summary>
@@ -202,7 +202,7 @@ Historical records retain their meanings: E1 for independent command verificatio
 
 During 8.x, documented aliases such as `/tackle-run`, `/tackle-verify`, `implement`, `ground`, `trace`, `drill`, `pulse`, and `handoff` preserve their intent boundaries when the host passes them as text. They do not register separate picker entries and retire in 9.0.
 
-The migration guide retains the checklist chain v2.0 → v8.4, including [8.3 → 8.4](references/guides/migrate.md#v83--v84-checklist), [8.2 → 8.3](references/guides/migrate.md#v82--v83-checklist), [8.1 → 8.2](references/guides/migrate.md#v81--v82-checklist), [8.0 → 8.1](references/guides/migrate.md#v80--v81-checklist), and the [copy-first 7.3 → 8.0 transition](references/guides/migrate.md#v73--v80-checklist).
+The install keeps the head of the checklist chain v2.0 → v8.4: [8.4.0 → 8.4.1](references/guides/migrate.md#v840--v841-checklist) and [8.3 → 8.4](references/guides/migrate.md#v83--v84-checklist). The historical checklists, v2.0 → v8.3, live in the repository's [`maintaining/migrations.md`](maintaining/migrations.md), including [8.2 → 8.3](maintaining/migrations.md#v82--v83-checklist), [8.1 → 8.2](maintaining/migrations.md#v81--v82-checklist), [8.0 → 8.1](maintaining/migrations.md#v80--v81-checklist), and the [copy-first 7.3 → 8.0 transition](maintaining/migrations.md#v73--v80-checklist).
 
 </details>
 
@@ -215,7 +215,7 @@ The `resource-usage.md` ledger records observed role events even without token o
 
 Totals and rankings require complete, comparable coverage; model-tier or effort recommendations also require three completed, comparable runs. See [usage observability](references/guides/usage-observability.md) and the optional [Codex native capture recipe](references/guides/codex-native-usage.md).
 
-Optional capability profiles cover [Claude Code](references/collectors/claude-code.md), [Oh My Pi](references/collectors/oh-my-pi.md), [OpenAI Responses](references/collectors/openai-responses.md), [Antigravity CLI](references/collectors/antigravity-cli.md), [OpenCode](references/collectors/opencode.md), [Kimi Code](references/collectors/kimi-code.md), and [Cursor](references/collectors/cursor.md). Profiles describe available data and its limits; they neither install integrations nor collect data automatically.
+Optional capability profiles cover [Claude Code](extras/collectors/claude-code.md), [Oh My Pi](extras/collectors/oh-my-pi.md), [OpenAI Responses](extras/collectors/openai-responses.md), [Antigravity CLI](extras/collectors/antigravity-cli.md), [OpenCode](extras/collectors/opencode.md), [Kimi Code](extras/collectors/kimi-code.md), and [Cursor](extras/collectors/cursor.md). Profiles describe available data and its limits; they neither install integrations nor collect data automatically.
 
 </details>
 
@@ -236,7 +236,7 @@ The [paired experiment protocol](eval/clear-language/protocol.md) defines fixed 
 
 The [eval suite](eval/README.md) contains **57 scenarios** (`s1`–`s61`): decision traps and one end-to-end lifecycle smoke test. The manual A/B workflow compares a model following Tackle with the same model working without it. Each scenario's answer sheet stays outside the agent's copy. A smoke run provides evidence for that run, with its limits recorded alongside the result.
 
-Before release, the [release sweep](references/guides/lint-spec.md#release-sweep) runs 8 shipped-skill gates covering the entry-file word budget, 11 core conventions, version and migration consistency, README claims, install contents, and update boundaries. The workspace table covers rows 1–16 (16 lint rows). These are documented, copy-pasteable POSIX checks.
+Before release, the [release sweep](MAINTAINING.md#release-sweep) runs 8 shipped-skill gates covering the entry-file word budget, 11 core conventions, version and migration consistency, README claims, install contents, and update boundaries. The workspace table covers rows 1–16 (16 lint rows). These are documented, copy-pasteable POSIX checks.
 
 Mechanical gate procedures cover `lint` rows, `catalog` integrity, each `done-signal`, the two-phase `ground` check, `eval` method arms, and `init` artifact completeness. Required independent review also gates completion. Release publication requires a separate owner request.
 

@@ -2463,7 +2463,7 @@
       "rule_id": "R-MIGRATE-03",
       "statement": "Usage v2 adoption appends after the preserved legacy table and never rewrites or backfills historical rows.",
       "statement_sha256": "6fd2bf428e375b64668f2cc2e1532f06d2db2c015bce4b795c8d12c1d85568d4",
-      "home": "references/guides/migrate.md:348",
+      "home": "maintaining/migrations.md:260",
       "home_fragment": "do not rewrite or backfill historical rows.",
       "units": [],
       "mirrors": [],
@@ -2488,7 +2488,8 @@
           "label": "verdict: null",
           "seeds": 1
         }
-      ]
+      ],
+      "retired_in": "9.0.0"
     },
     {
       "rule_id": "R-REL-01",

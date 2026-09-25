@@ -16,7 +16,7 @@ jobs:
           set -eu
           test "$(wc -w < SKILL.md)" -le 1100
           test "$(awk '/^## Core conventions/{f=1;next} f && /^## /{exit} f && /^[0-9]+\. /{n++} END{print n+0}' SKILL.md)" -eq 11
-          test "$(awk '/^## Tackle /{print $3; exit}' references/CHANGELOG.md)" = "$(awk '/^\*\*Tackle /{gsub(/\*/,"",$2); print $2; exit}' SKILL.md)"
+          test "$(awk '/^## Tackle /{print $3; exit}' CHANGELOG.md)" = "$(awk '/^\*\*Tackle /{gsub(/\*/,"",$2); print $2; exit}' SKILL.md)"
           v=$(awk '/^\*\*Tackle /{gsub(/\*/,"",$2); print $2; exit}' SKILL.md); mm=${v%.*}; x=${mm%%.*}; y=${mm##*.}; if [ "$y" -gt 0 ]; then p="$x.$((y-1))"; else p="[0-9.]+"; fi; grep -Eq "^## v$p → v$mm checklist" references/guides/migrate.md
           test "$(grep -oE 'Tackle [0-9]+\.[0-9]+\.[0-9]+' README.md | sort -u)" = "Tackle $(awk '/^\*\*Tackle /{gsub(/\*/,"",$2); print $2; exit}' SKILL.md)"
           grep -q 'SKILL.md' references/guides/update.md
@@ -25,7 +25,7 @@ jobs:
           c=0; m=0; for d in eval/scenarios/*/; do [ -d "$d" ] || continue; c=$((c+1)); s=$(basename "$d"); s=${s%%-*}; s=${s#s}; [ "$s" -gt "$m" ] && m=$s; done; grep -qF "**$c scenarios** (" README.md; grep -qF "\`s1\`–\`s$m\`" README.md
           grep -qF "checklist chain v2.0 → v$mm" README.md
           row=$(grep 'Mechanical gate' README.md); for t in lint catalog done-signal ground eval init; do case "$row" in *"\`$t"*) ;; *) exit 1;; esac; done
-          g=$(awk '/^### Skill self-lint gates/{f=1;next} f && /^##/{exit} f && /^[0-9]+\. /{n++} END{print n+0}' references/guides/lint-spec.md); grep -qF "$g shipped-skill gates" README.md
+          g=$(awk '/^### Skill self-lint gates/{f=1;next} f && /^##/{exit} f && /^[0-9]+\. /{n++} END{print n+0}' MAINTAINING.md); grep -qF "$g shipped-skill gates" README.md
           u=$(grep -Ehc 'On any invocation.*self-update|Run the Check phase.*every Tackle invocation|Remote > local.*run Update|Download the tag tarball|Replace only the install artifact' SKILL.md references/guides/intake-and-gate.md references/guides/update.md eval/scenarios/s16-self-update-trap/skill/SKILL.md eval/scenarios/s16-self-update-trap/skill/references/guides/update.md 2>/dev/null | awk '{s+=$1} END{print s+0}'); test "$u" -eq 0
           h=$(git grep -nE 'https://(api\.)?github\.com/(repos/)?tackle-fan/Tackle' -- eval/scenarios 2>/dev/null | wc -l | tr -d ' '); test "$h" -eq 0
           r=$(git ls-files | awk '/(^|\/)(tackle|tackle-check)$/ {print}' | while IFS= read -r p; do [ -e "$p" ] && printf '%s\n' "$p"; done | awk 'END{print NR+0}'); test "$r" -eq 0
