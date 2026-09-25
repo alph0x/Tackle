@@ -102,7 +102,7 @@
       "files": [
         "test_task_contracts.py"
       ],
-      "tests": 32
+      "tests": 33
     },
     {
       "path": "eval/record-lifecycle",
@@ -173,6 +173,13 @@
       "path": "eval/install-inventory",
       "files": [
         "test_install.py"
+      ],
+      "tests": 24
+    },
+    {
+      "path": "eval/hot-path",
+      "files": [
+        "test_hot_path.py"
       ],
       "tests": 24
     }

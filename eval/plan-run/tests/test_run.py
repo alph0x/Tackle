@@ -12,14 +12,16 @@ spec = importlib.util.spec_from_file_location("run_protocol", ROOT / "fixtures/r
 protocol = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = protocol
 spec.loader.exec_module(protocol)
-RUN = (ROOT.parent.parent / "references/guides/run.md").read_text()
+# The RUN chain: the RUN card and its depth, run.md.
+RUN = "\n".join((ROOT.parent.parent / "references/guides" / name).read_text()
+                for name in ("run-card.md", "run.md"))
 
 
 class RunProtocol(unittest.TestCase):
     def test_protocol_has_one_state_machine_and_integrated_close_bar(self):
         for phrase in [
-            "single execution protocol", "explicit execution intent", "Ready → preflight",
-            "target validation", "integration validation", "deliverable acceptance", "complete",
+            "single execution protocol", "explicit execution intent", "| Ready to run | In progress |",
+            "the task check", "the affected integration checks", "deliverable acceptance", "complete",
             "`board.md`\nis the canonical current state", "`log.md` is append-only history",
         ]:
             self.assertIn(phrase, RUN)

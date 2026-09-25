@@ -19,7 +19,7 @@ def recipe(name, ordinal=0):
 
 
 COMPILER = recipe('references/guides/decompose-and-lint.md')
-LINEAGE = recipe('references/guides/run.md')
+LINEAGE = recipe('references/recipes/correction-lineage.md')
 LINT = recipe('references/guides/full-checks.md', 1)
 
 
@@ -183,6 +183,20 @@ class TaskContracts(unittest.TestCase):
         altered = dict(event, pool_id='new')
         with self.assertRaisesRegex(ValueError, 'conflicting'):
             LINEAGE['correction_usage']([event, altered], ['new'])
+
+    def test_unowned_integration_pool_is_exhausted_at_two(self):
+        self.assertEqual((LINEAGE['TASK_POOL_LIMIT'], LINEAGE['UNOWNED_INTEGRATION_POOL_LIMIT']), (3, 2))
+        events = [dict(cycle_id=f'i{i}', pool_id='integration', kind='failed-correction') for i in range(2)]
+        limit = {'integration': LINEAGE['UNOWNED_INTEGRATION_POOL_LIMIT']}
+        one = LINEAGE['correction_usage'](events[:1], ['integration'], limit)
+        self.assertEqual((one['spent'], one['remaining'], one['exhausted']), (1, 1, False))
+        two = LINEAGE['correction_usage'](events, ['integration'], limit)
+        self.assertEqual((two['spent'], two['remaining'], two['exhausted']), (2, 0, True))
+        as_task_pool = LINEAGE['correction_usage'](events, ['integration'])
+        self.assertEqual((as_task_pool['remaining'], as_task_pool['exhausted']), (1, False))
+        for invented in ({'integration': 5}, {'integration': 1}, {'unselected': 2}):
+            with self.assertRaisesRegex(ValueError, 'pool limit'):
+                LINEAGE['correction_usage'](events, ['integration'], invented)
 
     def test_legacy_board_states_still_read_without_upgrading(self):
         for state in ('🔴', '🟡', '⏸', '🟢', '⚪'):

@@ -116,7 +116,7 @@
     "tests/test_measurement.py": "d95334e6d7781a6d526fe1321ffb7ab3bd3a9a67e7d20d2a1c2290877483f1e4",
     "tests/test_migration.py": "5679bd77ea4cb8ade717dc3c9464670a4fbdbee0e1351daeb7433827f4c0df0d",
     "tests/test_plan.py": "e789399c5a40ed454344b1651c43d133875952d44bf6dcd6a35166947f89a236",
-    "tests/test_run.py": "bbb1a55579b0164d6e004d0ab163b5d5ecf204710a7fff33a288181c75797df1"
+    "tests/test_run.py": "0aedab6ab1526268a7d56190f2c342acaa04ada4b6486d156a858d78a8c34950"
   },
   "case_ids": [
     "T01-valid",
