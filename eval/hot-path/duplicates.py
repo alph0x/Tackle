@@ -3,6 +3,7 @@
 Usage:
   python3 eval/hot-path/duplicates.py --repo <dir> --chain run
   python3 eval/hot-path/duplicates.py --repo <dir> --files <path> [<path> ...]
+  python3 eval/hot-path/duplicates.py --repo <dir> --files <path> [<path> ...] --accept <accepted.json>
 
 `--chain run` is the RUN card (references/guides/run-card.md), references/guides/run.md and every
 references/recipes/*.md. `--files` paths are relative to --repo.
@@ -12,12 +13,25 @@ comments and anchor lines are not units. Units with fewer than 8 words, counted 
 backticks, emphasis, link targets) is removed, are not compared. Rows of the same table are never
 paired with each other; a row still pairs with prose or with a row of another table. Every other pair
 whose word 3-gram Jaccard similarity is at least 0.5 prints as
-`duplicate <file>:<line> ~ <file>:<line> j=<value>`, then `duplicates=<k>` prints.
+`duplicate <file>:<line> ~ <file>:<line> j=<value>`, then `duplicates=<k>` prints, where `k` is the
+count with `--accept` omitted, or the count of pairs `--accept` does not cover.
 
-Exit 0 when k = 0, 1 when k > 0, 2 on a usage error or a missing file. Standard library only.
+`--accept <accepted.json>` names a JSON file `{"schema": "tackle-accepted-duplicates/1", "pairs":
+[{"left": {"file", "line"}, "right": {"file", "line"}, "reason"}, ...]}`. A found pair is accepted
+when its two (file, line) endpoints match one entry's `left`/`right` in either order; every found
+pair sharing that same (file, line) x (file, line) key is covered by the one entry (a single line
+pair can hold more than one short sentence, each its own unit). An accepted pair still prints, as
+`duplicate ... j=<value> [accepted: <reason>]`, so the full picture stays visible; only unaccepted
+pairs count toward `duplicates=<k>`, and an `accepted=<n>` line prints beside it. An entry that
+matches no found pair is a stale acceptance and is a usage error (exit 2): remove it once its
+pair is actually fixed, rather than leaving a vestigial allowance.
+
+Exit 0 when k = 0, 1 when k > 0, 2 on a usage error, a missing file, or a stale `--accept` entry.
+Standard library only.
 """
 import argparse
 import bisect
+import json
 import re
 import sys
 from pathlib import Path
@@ -172,14 +186,16 @@ def pairs(entries):
     return found
 
 
-def chain_files(repo, chain):
-    if chain != 'run':
-        raise ValueError('unknown chain: ' + chain)
-    names = ['references/guides/run-card.md', 'references/guides/run.md']
-    recipes = repo / 'references/recipes'
-    if recipes.is_dir():
-        names += sorted(path.relative_to(repo).as_posix() for path in recipes.glob('*.md') if path.is_file())
-    return names
+def load_accepted(path):
+    """Return a set of frozenset({(file, line), (file, line)}) keys from an accepted-duplicates file."""
+    data = json.loads(Path(path).read_text(encoding='utf-8'))
+    if data.get('schema') != 'tackle-accepted-duplicates/1' or not isinstance(data.get('pairs'), list):
+        raise ValueError('not a tackle-accepted-duplicates/1 file: %s' % path)
+    keys = []
+    for entry in data['pairs']:
+        left, right = entry['left'], entry['right']
+        keys.append(frozenset({(left['file'], left['line']), (right['file'], right['line'])}))
+    return keys
 
 
 def main(argv=None):
@@ -188,6 +204,7 @@ def main(argv=None):
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--chain', choices=['run'])
     group.add_argument('--files', nargs='+')
+    parser.add_argument('--accept', help='path to an accepted-duplicates JSON file (see module docstring)')
     args = parser.parse_args(argv)
     repo = args.repo
     names = chain_files(repo, args.chain) if args.chain else list(args.files)
@@ -199,10 +216,46 @@ def main(argv=None):
             return 2
         entries.extend((name, unit) for unit in units(path.read_text(encoding='utf-8')))
     found = pairs(entries)
+    if not args.accept:
+        for value, (left_name, left_line), (right_name, right_line) in found:
+            print('duplicate %s:%d ~ %s:%d j=%.2f' % (left_name, left_line, right_name, right_line, value))
+        print('duplicates=%d' % len(found))
+        return 1 if found else 0
+    try:
+        accepted_keys = load_accepted(args.accept)
+    except (OSError, ValueError, KeyError) as error:
+        print('error: --accept: %s' % error, file=sys.stderr)
+        return 2
+    matched = [False] * len(accepted_keys)
+    unaccepted = 0
     for value, (left_name, left_line), (right_name, right_line) in found:
-        print('duplicate %s:%d ~ %s:%d j=%.2f' % (left_name, left_line, right_name, right_line, value))
-    print('duplicates=%d' % len(found))
-    return 1 if found else 0
+        key = frozenset({(left_name, left_line), (right_name, right_line)})
+        hit_index = next((i for i, accepted_key in enumerate(accepted_keys) if accepted_key == key), None)
+        tag = ''
+        if hit_index is not None:
+            matched[hit_index] = True
+            reason = json.loads(Path(args.accept).read_text(encoding='utf-8'))['pairs'][hit_index]['reason']
+            tag = ' [accepted: %s]' % reason
+        else:
+            unaccepted += 1
+        print('duplicate %s:%d ~ %s:%d j=%.2f%s' % (left_name, left_line, right_name, right_line, value, tag))
+    stale = [i for i, hit in enumerate(matched) if not hit]
+    if stale:
+        for i in stale:
+            print('error: --accept entry %d matches no found pair (fixed already? remove it)' % i, file=sys.stderr)
+        return 2
+    print('duplicates=%d accepted=%d' % (unaccepted, sum(matched)))
+    return 1 if unaccepted else 0
+
+
+def chain_files(repo, chain):
+    if chain != 'run':
+        raise ValueError('unknown chain: ' + chain)
+    names = ['references/guides/run-card.md', 'references/guides/run.md']
+    recipes = repo / 'references/recipes'
+    if recipes.is_dir():
+        names += sorted(path.relative_to(repo).as_posix() for path in recipes.glob('*.md') if path.is_file())
+    return names
 
 
 if __name__ == '__main__':

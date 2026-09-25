@@ -54,7 +54,7 @@ stay `n/a`, never estimated.
 
 - **Top-consuming tasks vs their bindings** — only within a 100%-covered comparable cohort, rank permitted exact totals by task and compare each against its bound tier/effort.
 - **Phase shares** — only within a 100%-covered comparable cohort, compare permitted PLAN / EXEC / RETRO totals; otherwise report the coverage gap instead of a share.
-- **Cache-write-weighted cost** — where the harness exposed cache splits, a task heavy on `cache_write` vs `cache_read` cost more under the billing split (writes ≈ 1.25× reads); rank by `cache_read`/`cache_write` parity, not by input+output throughput alone.
+- **Cache-write-weighted cost** — where the harness exposed cache splits, a task heavy on `cache_write` vs `cache_read` costs more under the harness's own documented cache-read/cache-write cost ratio; rank by `cache_read`/`cache_write` parity, not by input+output throughput alone.
 
 ### Recommendations
 

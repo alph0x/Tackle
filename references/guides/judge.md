@@ -61,7 +61,7 @@ For each scenario directory `eval/scenarios/<id>/`:
    |---|---|---|---|
    | `<id>` | 0–2 | 0–2 | yes / no |
 
-   Then aggregate efficiency over valid runs: per scenario and metric, method − control, computed only when both arms expose that metric; an `n/a` on either side skips the pair. Suite-level deltas aggregate like-for-like — only over scenarios both arms completed validly. When both arms expose cache splits, also report weighted tokens (cache-reads × 0.1 + writes × 1.25, the billing split agents actually run under), labeled "weighted tokens", never a currency figure.
+   Then aggregate efficiency over valid runs: per scenario and metric, method − control, computed only when both arms expose that metric; an `n/a` on either side skips the pair. Suite-level deltas aggregate like-for-like — only over scenarios both arms completed validly. When both arms expose cache splits, also report weighted tokens using the harness's own documented cache-read/cache-write cost ratio, labeled "weighted tokens", never a currency figure.
 7. **Deliver the suite verdict**, evidence first. First line exactly:
 
    `suite: N/M scenarios avoided by the method arm`

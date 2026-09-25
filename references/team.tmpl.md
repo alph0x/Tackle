@@ -1,8 +1,9 @@
 # Team capabilities — {{TITLE}}
 
 This template binds role capabilities and state ownership. The sole execution lifecycle, correction
-budget, evidence contract, integration checks, and closure rules live in
-`references/guides/run.md`; do not copy an execution protocol into this file. The workspace
+budget, evidence contract, integration checks, and closure rules live in the [RUN
+card](guides/run-card.md), with depth in `references/guides/run.md`; do not copy an execution
+protocol into this file. The workspace
 (`task-board.md`, `history.md`, the Task file, and touched files) is the source of truth; messaging is only
 coordination.
 
@@ -82,13 +83,13 @@ defines when any of these observations permit completion; no role may flip a sta
 
 | Capability | Responsibility | Run reference |
 |---|---|---|
-| Authorization / preflight | Check intent, Ready fingerprints, dependencies, contract and environment. | `run.md` §Authorization and preflight |
-| Implementation | Work inside Write scope and preserve protected expectations. | `run.md` §State transitions |
-| Mechanical observation | Capture real command, process, artifact and revision evidence. | `run.md` §Evidence and recovery |
-| Semantic review | Review only where risk requires independent meaning judgment. | `run.md` §Independence and evidence grades |
-| Integration / acceptance | Test the merged tree, semantic consumers and global obligations. | `run.md` §Integration, deliverable acceptance, and close |
-| Recovery | Preserve counters/history; classify failures and emit packets. | `run.md` §Failure classification and correction |
+| Authorization / preflight | Check intent, Ready fingerprints, dependencies, contract and environment. | `run-card.md` step 4 |
+| Implementation | Work inside Write scope and preserve protected expectations. | `run-card.md` step 5 |
+| Mechanical observation | Capture real command, process, artifact and revision evidence. | `run.md` §Verification record fields |
+| Semantic review | Review only where risk requires independent meaning judgment. | `run.md` §Independence and historical grades |
+| Integration / acceptance | Test the merged tree, semantic consumers and global obligations. | `run-card.md` step 6, `run.md` §Integration and deliverable acceptance |
+| Recovery | Preserve counters/history; classify failures and emit packets. | `run-card.md` step 7, `run.md` §Failure classification and escalation packet |
 
 For grounding, quality, and migration concerns, use the linked shared guides. Those guides may
 describe their own PLAN, audit, or historical procedures, but they do not authorize source
-execution; `run.md` does.
+execution; the RUN card does.

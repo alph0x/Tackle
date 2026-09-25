@@ -5,7 +5,7 @@
 Ordinary Tackle invocation performs no network access or installation-tree mutation. Tackle never
 performs release checks, downloads, extraction, or installation-tree replacement, even when a newer
 release may exist. This guide is reference material for a user-controlled, out-of-band workflow
-only. In this document, ordinary invocation performs no network access or installation-tree mutation.
+only.
 
 ## Owner-controlled workflow
 

@@ -125,7 +125,7 @@ Triggered by `verify` (step 0). The read-only diagnostic computes proposed citat
    - **Phase 2 — whole-file fallback** (only on phase-1 failure): count the lines in `path` containing the fragment. Exactly 1, at line MM ⇒ **drifted → proposed re-anchor** (only when writes are authorized, rewrite `path:NN` → `path:MM` in place, literal replacement, zero model judgment). 0 ⇒ **stale** ⇒ the task is **ungrounded**. More than 1 ⇒ **ambiguous** ⇒ flagged; the task is ungrounded until a more specific fragment is chosen.
 3. **Record** only within authorized planning/execution or explicitly requested history writes; otherwise report without changing files. In `history.md` — list every citation read, flag unresolvable ones, and stamp `Last-verified: {{YYYY-MM-DDTHH:MM:SSZ}}` (legacy date-only stamps read as start-of-day and self-heal on the next ground). Reference verification is recorded only here — never copied into the board or the task file; staleness is derived from the newest entry that lists a task, never copied.
 
-Any **ungrounded** task blocks execution until fixed or explicitly waived by the user. Run step 0 right after `plan`, before any red-team pass, and on any cold session where the freshness check reports stale.
+An ungrounded task is blocked per the Output classification above. Run step 0 right after `plan`, before any red-team pass, and on any cold session where the freshness check reports stale.
 
 ## Coverage matrix (criterion → evidence)
 

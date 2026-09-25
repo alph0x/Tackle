@@ -7,9 +7,10 @@ fired trigger (a profile, a reference plan, formal intake material).
 
 ## Update boundary (explicit user control)
 
-Ordinary Tackle invocation performs no network access or installation-tree mutation. Updating is
-never initiated by planning or execution; an owner may use the documented external/manual workflow
-only after explicitly requesting it. Tackle provides guidance but does not perform that workflow.
+Updating is never initiated by planning or execution; an owner may use the documented
+external/manual workflow in [update.md](update.md), which also states the network-access and
+installation-tree boundary, only after explicitly requesting it. Tackle provides guidance but does
+not perform that workflow.
 
 # Step 1 — Intake (infer first, then ask)
 

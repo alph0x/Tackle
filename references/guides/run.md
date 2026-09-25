@@ -156,7 +156,7 @@ After a Task's target and related regression checks pass, integrate its scoped c
 merged tree. Reuse evidence only while every relevant source, contract, configuration, dependency,
 input, selector membership, runtime, protocol revision and relevant freshness window matches. A
 changed contract, dependency output, configuration, input, or relevant source fingerprint invalidates
-only the dependent checks; re-ground and revalidate them before continuing. Selective invalidation
+only the dependent checks; re-ground and revalidate them before continuing. An unknown dependency, or one whose state is unverified, is treated as changed, the conservative choice, since selective invalidation needs a confirmed match. Selective invalidation
 preserves unaffected history and invalidates the changed consumers and crossing artifacts. The integration check must include semantic consumers that a Write scope-only
 intersection cannot see.
 

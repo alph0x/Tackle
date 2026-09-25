@@ -1,6 +1,6 @@
 ---
 name: tackle
-description: Use for durable planning and explicit task execution of multi-session work, including migration, validation, status and lessons.
+description: Use for durable planning and explicit task execution of multi-session work: plan, run and status (planificar, ejecutar y estado), plus migration, validation and lessons.
 ---
 
 # Tackle
@@ -15,65 +15,44 @@ requests, including negation and quoted examples; see [invocation.md](references
 
 | Surface | Request | Result |
 |---|---|---|
-| **PLAN** | `plan` | Prepare requirements, contracts, task briefs and readiness. PLAN-only stops before implementation. |
-| **RUN** | `run`, `run --one`, `run <T-id>` | Execute authorized ready tasks, check, correct within budget, integrate and accept delivery. |
+| **PLAN** | `plan` | Prepare requirements, contracts, task briefs and readiness with the [PLAN card](references/guides/plan-card.md). PLAN-only stops before implementation. |
+| **RUN** | `run`, `run --one`, `run <T-id>` | Execute authorized ready tasks with the [RUN card](references/guides/run-card.md): check, correct within budget, integrate and accept delivery. Focused RUN stays inside [lite-plan.tmpl.md](references/lite-plan.tmpl.md). |
 | **STATUS** | `status [<workspace>]` | Read-only status, list, next and plain resume. Explicit `--handoff` writes only its projection. |
 
 Use **validate the plan**, **audit the result** and **review lessons** for `verify`, `judge` and
-`retro`; `init` forwards to PLAN scaffolding. During 8.x, documented legacy aliases forward with
-their original boundaries: `implement` → RUN; `ground`/`trace`/`drill` → PLAN validation;
-`pulse`/`list`/`next`/`resume` → STATUS; `handoff` → STATUS `--handoff`. They retire in 9.0; migration
-retains their interpretation. A diagnostic or standalone STATUS request authorizes no fix. An explicit resume request that also states execution intent enters RUN after preflight.
+`retro`; `init` forwards to PLAN scaffolding. A diagnostic or standalone STATUS request authorizes no
+fix. An explicit resume request that also states execution intent enters RUN after preflight.
 
 ## PLAN and RUN
 
-Resolve links from their containing file; locate missing references before retrying.
-- **First:** inspect named owner prerequisites in a tool call containing **only those probes**. Wait for results.
-- **Missing:** stop that scope; report affected work and owner action. No inventories, guides or implementation/capability discovery. Only required state/evidence recording and independently authorized work continue.
-- **Otherwise:** read named inputs and retained records before guides; reuse routing or read [intake-and-gate.md](references/guides/intake-and-gate.md) alone through sizing.
+Resolve links from their containing file; locate missing references before retrying. Check named
+owner prerequisites first, in a tool call containing only those probes; a missing one stops that
+scope with an owner report (the full procedure is in
+[intake-and-gate.md](references/guides/intake-and-gate.md), Step 1). Otherwise read named inputs and
+retained records before guides; reuse routing or read intake-and-gate.md alone through sizing.
 
 **Direct (None)** uses that bounded procedure without a workspace; **Focused (Lite)** uses only
-[lite-plan.tmpl.md](references/lite-plan.tmpl.md); **Coordinated (Full)** loads the needed operation.
-More guidance requires a specific unresolved capability. Risk triggers precede task count; small
-work needs no milestone/archive/storage machinery.
+[lite-plan.tmpl.md](references/lite-plan.tmpl.md); **Coordinated (Full)** loads the [PLAN
+card](references/guides/plan-card.md). More guidance requires a specific unresolved capability.
 
-PLAN extracts supplied intent without reconfirmation. Compile task briefs with requirements,
-outputs, cases, checks, decisions and inputs. Separate requirements from delegated choices;
-missing product behavior blocks consumers. Validate coverage, dependencies, interfaces and semantic
-counterexamples. For workspace PLAN, verify scaffold files and all 16 lint rows;
-report and fix failures before handoff. Cold probes retain their risk trigger and bounded
-allowance. Long initiatives may prepare milestones: every requirement retains an owner; deferred
-tasks stay Draft until verified Ready.
+The PLAN card's seven steps take a Coordinated request from intake through readiness validation.
+Follow the shared [decision and communication policy](references/guides/communication.md).
+Operational diagnosis uses permitted tools; recovery never widens access, product requirements or
+authorization.
 
-Explicit PLAN+RUN authorization persists within scope. Answer status questions during active work
-and continue; do not ask for execution permission again. Follow the shared [decision and
-communication policy](references/guides/communication.md). Operational diagnosis uses permitted
-tools; recovery never widens access, product requirements or authorization.
-
-RUN records the pinned procedure, current contract, dependency outputs, environment and write
-scope. Reuse verified current state and sufficient existing checks; do not append equivalent
-assertions or unchanged closure reruns. Changed content, selector
-membership, configuration, interfaces, runtime or freshness invalidate affected consumers. Unknown
-dependencies require conservative checks. Record actual commands, complete results and preserved
-inputs; use complete retained native capture or the scoped capture recipe. Distinct executions
-remain distinct events even when immutable bytes are shared.
-
-Task checks, related regression checks and affected integration checks precede task completion.
-Deliverable acceptance precedes initiative completion. Three failed correction-validation cycles
-per task and two identical no-progress observations bound implementation correction. Consume known
-failure evidence; repeat its check only after a relevant change or permitted recovery. Lineage preserves spent cycles across
-split, merge and resume. Classify other failures and stop affected
-work with records; do not silently replan or upgrade a model.
+A Coordinated RUN follows the [RUN card](references/guides/run-card.md); Focused RUN stays inside
+[lite-plan.tmpl.md](references/lite-plan.tmpl.md). Distinct executions remain distinct
+events even when immutable bytes are shared. Classify other (non-implementation) failures and stop affected work with
+records; do not silently replan or upgrade a model.
 
 <a id="migration-and-distribution"></a>
 ## Compatibility and state
 
 [Terminology](references/terminology.md) defines visible names, exact state mappings and persistent
-aliases. New workspaces use T-ids and `tasks/`; existing P-ids, paths and historical records remain readable. New validated boards may use Draft,
-Ready to run, In progress, Checking and Complete; Blocked, Interrupted, Skipped and Unverifiable
-remain distinct. Complete means every mandatory task obligation passed. Historical E0–E3 codes
-remain readable, never an ordinal scale. Report method, result and observed independence; a role
-name or self-review cannot create independent evidence. Unknown telemetry stays `n/a`.
+aliases. New workspaces use T-ids and `tasks/`; existing P-ids, paths and historical records remain
+readable. Complete means every mandatory task obligation passed. Historical E0–E3 codes remain
+readable, never an ordinal scale. Report method, result and observed independence; a role name or
+self-review cannot create independent evidence. Unknown telemetry stays `n/a`.
 
 The task board is canonical current state; history is append-only; current-work projections are
 reconstructable. Validate projections against authoritative inputs and checkpoints. Preserve original
@@ -82,9 +61,8 @@ records; retired bytes cannot support reuse. Maintenance follows an authorized i
 STATUS never archives or cleans up.
 
 Migrate only selected active workspaces on a disposable copy first, preserve history and correction
-lineage, and adopt at an explicit task boundary. Interrupted tasks stay on their pinned procedure.
-Ordinary invocation performs no network access or installation mutation. Releases require separate
-authorization, eight self-lint gates, catalog/workspace sweep and required behavioral evidence.
+lineage, and adopt at an explicit task boundary. Ordinary invocation performs no network access or
+installation mutation.
 
 ## Core conventions
 
@@ -96,7 +74,7 @@ authorization, eight self-lint gates, catalog/workspace sweep and required behav
 6. **Run discipline** — explicit intent precedes mutation; pin procedure, classify failures and preserve shared correction budgets. Apply [code style](references/guides/design-and-contract.md#code-style).
 7. **Records and independence** — capture actual command, cwd, runtime, actor, revisions, complete streams, exit/timeout/signal and artifact hashes. Every required assertion must propagate failure; `set -u`, `pipefail` or a final PASS alone cannot. Wrapper success cannot hide child failure; reconstructed prose is not raw evidence.
 8. **State ownership** — board is current state; log is history; questions and decisions retain their sources. Reconcile `observe-incomplete` before repeating effects; grades derive from records.
-9. **Decision ownership** — user owns product choices; reversible technical choices are delegated within scope. Changed acceptance needs a superseding decision. Reuse authorized plans/seeds gitignore choices, otherwise ask once.
+9. **Decision ownership** — user owns product choices; reversible technical choices are delegated within scope. Changed acceptance needs a superseding decision.
 10. **Learning consent** — select applicable, current lessons; incompatible hypotheses remain historical. Only retro writes profiles after confirmation; backlog ideas are deliberate writes.
 11. **Provider independence** — report actual capabilities, model, effort and telemetry; never invent bindings or assume a vendor mechanism.
 
@@ -107,9 +85,8 @@ changes affected work. No mandatory footers; preserve necessary information over
 
 ## Full guide map and explicit queries
 
-PLAN: [intake](references/guides/intake-and-gate.md), [scaffold](references/guides/scaffold.md),
-[contracts](references/guides/design-and-contract.md), [readiness](references/guides/decompose-and-lint.md),
-[validation](references/guides/verify.md). RUN: [run](references/guides/run.md).
+PLAN: [PLAN card](references/guides/plan-card.md). RUN: [RUN card](references/guides/run-card.md) for Coordinated; Focused stays in `lite-plan.tmpl.md`.
 STATUS: [status](references/guides/status.md). Explicit [audit](references/guides/judge.md),
-[lessons](references/guides/retro.md), [migration](references/guides/migrate.md),
-[release checks](references/guides/lint-spec.md), [owner-controlled updates](references/guides/update.md).
+[lessons](references/guides/retro.md),
+[migration](references/guides/migrate.md#schema-keyed-migration),
+[owner-controlled updates](references/guides/update.md).

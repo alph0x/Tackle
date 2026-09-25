@@ -164,7 +164,8 @@ class MigrationContract(unittest.TestCase):
         invocation = (ROOT / "references/guides/invocation.md").read_text()
         self.assertIn("/tackle-run --one", invocation)
         self.assertIn("aliases", skill)
-        self.assertIn("retire in 9.0", skill)
+        terminology = (ROOT / "references/terminology.md").read_text()
+        self.assertIn("retired in 9.0", terminology)
         self.assertNotIn("public surface at eight commands", skill)
 
     def test_status_has_no_log_write_exception(self):
@@ -176,10 +177,12 @@ class MigrationContract(unittest.TestCase):
 
     def test_aliases_preserve_query_and_execution_intent(self):
         skill = (ROOT / "SKILL.md").read_text()
-        self.assertIn("implement` → RUN", skill)
-        self.assertIn("ground`/`trace`/`drill` → PLAN validation", skill)
-        self.assertIn("pulse`/`list`/`next`/`resume` → STATUS", skill)
-        self.assertIn("handoff` → STATUS `--handoff`", skill)
+        terminology = (ROOT / "references/terminology.md").read_text()
+        self.assertIn("`implement` | RUN", terminology)
+        self.assertIn("`ground`, `trace`, `drill` | PLAN validation", terminology)
+        self.assertIn("`pulse` | STATUS", terminology)
+        self.assertIn("`handoff` | STATUS `--handoff`", terminology)
+        self.assertIn("current STATUS request words, not retiring aliases", terminology)
         self.assertIn("explicit resume request that also states execution intent", skill)
 
     def test_copy_first_migration_preserves_history_and_neighbor(self):

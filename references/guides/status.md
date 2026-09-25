@@ -15,7 +15,9 @@ RUN; a standalone status/resume request does not authorize execution.
 - **Status** reads the relevant canonical task board, applicable decisions, open questions, and
   latest history checkpoint, or a verified current-work projection backed by those sources.
   Answer the question first. Include stale reference verification, failed checks, blockers, or
-  missing records when they affect that answer; observations grant no mutation permission.
+  missing records when they affect that answer; observations grant no mutation permission. List
+  any `Waiting on owner` row with its owner action (`waiting: <Q-id or prerequisite>`); RUN itself
+  skips those rows when picking the next task.
 - **List** scans available workspaces and gives one line per plan.
 - **Next** selects a Ready task and provides its purpose, dependencies, write scope, and starting
   prompt. Selection is not execution. Draft tasks cannot be selected as Ready.
@@ -28,8 +30,9 @@ Use a concise digest, usually within 12 lines, without omitting a material failu
 Do not print every lint result, historical grade, collision, or archive threshold on every query.
 When requested or relevant, report reference age, checks actually run, task/blocker counts,
 weakest required verification, resource coverage, and history size. Missing telemetry is `n/a`.
-An older methodology stamp may warrant a selected migration proposal under `migrate.md`; STATUS
-never migrates automatically. All tasks Complete is insufficient to claim deliverable acceptance.
+Report a workspace's migration bucket from its board's `Schema:` line, per
+[migrate.md](migrate.md#schema-keyed-migration)'s table; STATUS never migrates automatically. All
+tasks Complete is insufficient to claim deliverable acceptance.
 
 <a id="handoff-projection"></a>
 ## Handoff brief projection
@@ -66,6 +69,6 @@ with a paraphrase. Archive placement does not authorize evidence retirement.
 
 ## Compatibility
 
-During 8.x, `pulse`, `list`, `next`, `resume` and `handoff` forward here while preserving read or
-explicit projection intent. Legacy Point/board/log names and `P-xx` references remain readable.
-The aliases retire in 9.0; this forwarding text remains for interpreting old requests safely.
+Legacy Point/board/log names and `P-xx` references remain readable. The retired 8.x action-name
+aliases that used to reach STATUS keep their historical targets in
+[terminology.md](../terminology.md)'s Routes and actions section.

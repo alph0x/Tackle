@@ -33,7 +33,8 @@ docs/plans/{{slug}}/
 └── AGENTS.md          ← this file
 ```
 <!-- List optional depth artifacts only when created: foundations.md, design-contract.md, team.md,
-     reference-docs/, external-questions/. Shared execution rules are in references/guides/run.md. -->
+     reference-docs/, external-questions/. Shared execution rules are in the RUN card,
+     references/guides/run-card.md, with depth in references/guides/run.md. -->
 
 ## Rules
 
@@ -41,7 +42,7 @@ Select the single Tackle skill, then give a request; action names are not separa
 Bare invocation or help shows choices without writes. Public execution has two actions: PLAN
 prepares a handoff and RUN executes after explicit intent.
 STATUS is the read-only query for status, list, next and plain resume; only an explicitly requested
-`--handoff` may write its projection. Legacy aliases forward during 8.x and retire in 9.0.
+`--handoff` may write its projection. Action names retired at 9.0 keep their historical targets in `references/terminology.md`'s Routes and actions section.
 
 1. **State**: `history.md` is append-only; `task-board.md` is the execution status. Maintain projections and archive under the authorized local policy; STATUS remains read-only. Validate a current-work projection against authoritative revisions before reuse.
 2. **Single source**: questions go in `questions.md`; closed decisions go in append-only
@@ -49,9 +50,10 @@ STATUS is the read-only query for status, list, next and plain resume; only an e
 3. **Reference verification**: ground claims in verified `file:line` citations.
 4. **Scope**: write only the declared Write scope; non-goals are explicit exclusions and must not be
    written.
-5. **Execution**: the single Run protocol in `references/guides/run.md` governs explicit
-   authorization, preflight, state transitions, target/surround and integrated acceptance,
-   persistent correction budgets, recovery, evidence, and closure. The Task acceptance check and
+5. **Execution**: the single Run protocol in `references/guides/run-card.md`, with depth in
+   `references/guides/run.md`, governs explicit authorization, preflight, state transitions,
+   target/surround and integrated acceptance, persistent correction budgets, recovery, evidence,
+   and closure. The Task acceptance check and
    `plan.md` §6.1 remain required inputs; initiative acceptance remains `plan.md` §6.2. STATUS,
    Next, and plain Resume inspect/select only. Do not duplicate Run rules here.
 6. **Contract supersede-first**: when `design-contract.md` exists, implement it as written; a
@@ -108,12 +110,13 @@ Tackle remains harness-agnostic. Record the concrete tools and whether each capa
 **effort-binding: supported | unsupported**
 
 If binding is unsupported, record the actual model/effort or `n/a`; never claim a binding that did
-not occur. See `references/guides/run.md` for evidence provenance and independence.
+not occur. See `references/guides/run-card.md` and `references/guides/run.md` for evidence
+provenance and independence.
 
 <a id="executor-contract-when-you-work-a-point"></a>
 ## Executor contract (when you work a Task)
 
-Before substantive work, read the self-contained task brief and its named inputs. The coordinator supplies verified current constraints, dependency outputs and relevant state; extra reading needs a dependency, change or specific uncertainty. Follow `references/guides/run.md` for the explicit Run intent and preflight. During
+Before substantive work, read the self-contained task brief and its named inputs. The coordinator supplies verified current constraints, dependency outputs and relevant state; extra reading needs a dependency, change or specific uncertainty. Follow `references/guides/run-card.md`, with depth in `references/guides/run.md`, for the explicit Run intent and preflight. During
 work:
 
 1. Keep `task-board.md` as the only current status source and append history to `history.md`.

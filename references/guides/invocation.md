@@ -20,8 +20,8 @@ never promise a separate menu entry for an action or a particular prefix in ever
 
 | Request after selecting Tackle | Route and boundary | Guide |
 |---|---|---|
-| `plan <task>` / “plan this” / “armá un plan” | PLAN prepares; explicit plan-and-execute intent can also authorize subsequent RUN | [Intake](intake-and-gate.md) |
-| `run`, `run --one`, `run <T-id>` / “ejecutá la tarea” (legacy `run <P-id>` and “ejecutá el punto” remain readable) | RUN executes the explicitly requested scope after preflight | [Run](run.md) |
+| `plan <task>` / “plan this” / “armá un plan” | PLAN prepares; explicit plan-and-execute intent can also authorize subsequent RUN | [PLAN card](plan-card.md) |
+| `run`, `run --one`, `run <T-id>` / “ejecutá la tarea” (legacy `run <P-id>` and “ejecutá el punto” remain readable) | RUN executes the explicitly requested scope after preflight: a Coordinated task follows the RUN card; Focused RUN stays inside `lite-plan.tmpl.md` | [RUN card](run-card.md) |
 | `status [<workspace>]`, `list`, `next`, plain `resume` / “qué sigue” | STATUS inspects/selects; no source, board or log writes | [Status](status.md) |
 | `status <workspace> --handoff` / “prepare a handoff” | Write only the requested handoff projection | [Status](status.md) |
 | **validate the plan**, `verify [<workspace>]` / “verificá este plan sin modificarlo” | PLAN validation or explicit diagnosis; a diagnosis alone never authorizes repairs or history writes | [Verify](verify.md) |
@@ -32,7 +32,9 @@ never promise a separate menu entry for an action or a particular prefix in ever
 
 ## Continuing authorized work
 
-Route the request in its conversation context. PLAN+RUN remains authorized within its original scope. A status question during active RUN receives a concise answer, then work continues; it does not become a new standalone STATUS job or cancel authorization. An explicit pause, cancellation or incompatible replacement stops dependent execution. Standalone STATUS remains read-only and PLAN-only supplies no RUN permission. Apply the [decision and communication policy](communication.md).
+Route the request in its conversation context, applying the shared [decision and communication
+policy](communication.md) throughout: it is the one statement of authorization persistence and of
+STATUS staying read-only, so a request here is routed, not re-authorized from scratch.
 
 English and Spanish examples preserve intent: “Plan and implement this” / “Planificá e implementá esto” authorize both after readiness; “Plan only, do not execute” / “Solo el plan, no ejecutes” stop at preparation. “What does \`run\` mean?” and “El ejemplo dice \`run\`” are questions/examples, not authorization.
 
@@ -43,11 +45,10 @@ Previously documented slash strings remain text aliases when they reach the agen
 and `/tackle-init` to the matching request above, retaining the target, flags and stated intent.
 For example, `/tackle-run --one` means `run --one`; `/tackle-verify` means `verify`. Typing a text
 alias cannot make a host register it or show it in a picker. If a host rejects it, select Tackle
-and use the request form instead.
+and use the request form instead. Normalizing a text alias never grants broader execution or write
+permission.
 
-Other legacy routes, with or without their historical `/tackle-` prefix, keep their existing
-forwarding: `implement` → RUN; `ground`/`trace`/`drill` → PLAN validation;
-`pulse`/`list`/`next`/`resume` → STATUS; `handoff` → STATUS `--handoff`.
-Preserve the requested operation: grounding, coverage and cold-resolvability remain their own
-checks within [Verify](verify.md). Forwarding never grants broader execution or write permission.
-Legacy aliases retire in 9.0; retain this guidance for interpreting historical workspaces.
+Action names retired at 9.0 keep their historical targets in the Routes and actions section of
+[terminology.md](../terminology.md), for interpreting an old workspace's requests. Preserve the
+requested operation: grounding, coverage and cold-resolvability remain their own checks within
+[Verify](verify.md).

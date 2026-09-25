@@ -8,9 +8,8 @@ The card's steps 5 and 6 link here for the decomposition and lint procedure in f
 - Cut for parallelism using crossing artifacts, interfaces, and configuration consumers; disjoint
   `Write scope` (legacy `Touches`) alone do not establish semantic independence. Name every produced/consumed artifact
   and relevant invalidation edge.
-- Decompose to the fewest tasks: one task, unless a qualifying reason forces a split (a different
-  owner, parallel self-contained work, a hard dependency, an independent review or approval, or
-  follow-up that needs its own tracking). Each separate task's briefing names its reason.
+- Decompose to the fewest tasks, each with a qualifying reason to stay separate (the [PLAN
+  card](plan-card.md)'s step 5 names the five reasons); each separate task's briefing names its own.
 - One task = smallest coherent vertical slice with ONE runnable acceptance check; keep the slice
   vertically complete when splitting it would hide a shared invariant.
 

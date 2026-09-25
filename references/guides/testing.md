@@ -38,10 +38,9 @@ Never write a unit test after implementing the behavior it covers. For a change 
 write any needed unit regression before changing that behavior; a later discovered isolated gap
 starts with its failure-mode inventory and test before the next implementation change. A general
 test-first opt-out does not authorize post-implementation unit tests.
-The red-phase evidence answers `repro`; the verifier does not re-break code by hand.
-Consume that failed evidence and diagnose first. Repeat the failed acceptance check only after a
-recorded relevant input or environment change, or justified permitted operational recovery.
-Narrower diagnostic inspection remains allowed; diagnosis alone does not justify repetition.
+The red-phase evidence answers `repro`; the verifier does not re-break code by hand. Consume that
+evidence and diagnose first; [run.md](run.md#failure-classification-and-escalation-packet)
+has the full recheck and diagnostic-inspection rule.
 
 Each required assertion must make its command fail when false. `set -u`, `pipefail` and a final
 PASS do not establish this; use checked subprocesses or explicit failure exits. Preserve exact

@@ -4,6 +4,10 @@ Use this policy in intake, routing, PLAN, RUN and completion. Say what the user 
 in their language; keep canonical identifiers, paths, commands, errors and schema tokens exact.
 Shipped instructions and newly defined schema names are English.
 
+Ask the owner only for what the agent may not decide or provide. The [RUN card](run-card.md)'s
+`Waiting on owner` row is the one list of those triggers; this policy does not restate a shorter
+one.
+
 ## Decide whether input is needed
 
 | Situation | Action and effect on work |
@@ -15,7 +19,7 @@ Shipped instructions and newly defined schema names are English.
 | Operational failure or unavailable capability | State expected versus observed behavior, known or unknown cause, verification record and the capability needed to continue. Apply only the bounded recovery permitted by the task; otherwise block affected work. |
 | Destructive/external action or access beyond authorization | Prepare the concrete result and request the missing authorization at the action boundary. Ordinary implementation or recovery scope does not implicitly authorize credentials, global installation or restricted access. Reuse specific existing authorization when present and obey environment restrictions. |
 
-PLAN+RUN authorization persists until completion, an explicit pause/cancellation, or an incompatible
+PLAN+RUN authorization persists within its original scope until completion, an explicit pause/cancellation, or an incompatible
 new objective. A status question or comment during RUN is answered briefly, then work continues.
 Standalone STATUS stays read-only; PLAN-only stops after preparation. Quoted instructions,
 negated execution and examples are not operative authorization. Record the interpreted scope,

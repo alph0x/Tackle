@@ -54,8 +54,26 @@ triggers apply before task count. Persistent `Gate: Lite` stays exact for compat
 headings may say Focused. Renaming a route never lowers its obligations.
 
 Use action verbs: **plan, run, show status, validate the plan, audit the result, review lessons**.
-Keep PLAN/RUN/STATUS, `verify`, `judge`, `retro`, documented flags and aliases in
+Keep PLAN/RUN/STATUS, `verify`, `judge`, `retro` and documented flags in
 [invocation.md](guides/invocation.md). These names register no additional host skill entries.
+
+The 8.x action-name aliases retired in 9.0; this history interprets an old workspace's requests,
+never a current one. `list`, `next` and plain `resume` are current STATUS request words, not retiring aliases. The retiring aliases and their 8.x targets:
+
+| Retiring alias | 8.x target |
+|---|---|
+| `implement` | RUN |
+| `ground`, `trace`, `drill` | PLAN validation (`verify`) |
+| `pulse` | STATUS |
+| `handoff` | STATUS `--handoff` |
+
+The [RUN card](guides/run-card.md) has the full state-transition table (entries, exits and
+triggers); the States table below keeps only the visible names and legacy mappings.
+
+**The card** is context-dependent: the PLAN card (`guides/plan-card.md`) in a PLAN-side guide, the
+RUN card (`guides/run-card.md`) in a RUN-side guide. The **RUN chain** is the mandatory reading of
+one Full task: `SKILL.md`, the RUN card, every file or section the card links outside its **Depth
+(on demand)** section, and the brief; Depth links are read only when needed and are not counted.
 
 ## States and observations
 
@@ -99,4 +117,6 @@ Use new board schema only in validated new workspaces or selected copy-first mig
 [Migration](guides/migrate.md#candidate-workspace-format) preserves history and reversible mapping.
 An unchanged old workspace stays readable under its pinned procedure; no automatic migration of
 closed or unrelated work. New schema names are English. Long-context and record-store metadata
-are optional capability-specific additions, not prerequisites for Direct or Focused work.
+are optional capability-specific additions, not prerequisites for Direct or Focused work. The
+install's [read-compatibility promise](guides/migrate.md#read-compatibility-promise) bounds which
+bucket a workspace must reach before an offered migration.

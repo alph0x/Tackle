@@ -107,7 +107,7 @@ For code, PLAN chooses the checks before implementation. Tackle prefers an end-t
 | `status [<workspace>]`, `list`, or `next` | Read current progress or find the next task. |
 | `status <workspace> --handoff` | Write a handoff for the next session. |
 
-Status questions during an authorized run do not cancel that authorization. Unclear requests are clarified before action. See the [request guide](references/guides/invocation.md) for intent boundaries and compatibility aliases.
+Status questions during an authorized run do not cancel that authorization. Unclear requests are clarified before action. See the [request guide](references/guides/invocation.md) for intent boundaries, and [terminology](references/terminology.md) for retired action-name aliases.
 
 ### What makes a task ready to hand off?
 
@@ -166,7 +166,7 @@ A task allows at most three failed correction-validation cycles; two identical n
 
 Tackle is a method an agent follows. The agent still needs the tools, permissions, and reviewer capabilities required by the task. Verification records show what was actually checked; they do not establish correctness beyond those checks.
 
-See the [RUN guide](references/guides/run.md) and [failure-modes catalog](references/failure-modes.md).
+See the [RUN card](references/guides/run-card.md) and [failure-modes catalog](references/failure-modes.md).
 
 ## Documentation
 
@@ -174,7 +174,7 @@ See the [RUN guide](references/guides/run.md) and [failure-modes catalog](refere
 |---|---|
 | Understand requests and authorization | [Invocation](references/guides/invocation.md) |
 | Choose the right planning scope | [Sizing](references/guides/intake-and-gate.md) |
-| Understand task checks and completion | [RUN](references/guides/run.md) |
+| Understand task checks and completion | [RUN card](references/guides/run-card.md) |
 | Keep a long initiative navigable | [Context lifecycle](references/guides/context-lifecycle.md) |
 | Manage retained verification records | [Record lifecycle](references/guides/record-lifecycle.md) |
 | Audit results or review lessons | [Audit](references/guides/judge.md) · [Retro](references/guides/retro.md) |
@@ -200,7 +200,7 @@ Visible sizing names map to existing routes: Direct (None), Focused (Lite), and 
 
 Historical records retain their meanings: E1 for independent command verification, E2 for semantic review, E3 for an assertion, and E0 for unverifiable work. They are not an ordinal scale.
 
-During 8.x, documented aliases such as `/tackle-run`, `/tackle-verify`, `implement`, `ground`, `trace`, `drill`, `pulse`, and `handoff` preserve their intent boundaries when the host passes them as text. They do not register separate picker entries and retire in 9.0.
+During 8.x, documented slash forms such as `/tackle-run` and `/tackle-verify` preserve their intent boundaries when the host passes them as text; they do not register separate picker entries. The retiring 8.x action-name aliases keep their historical targets in [terminology.md](references/terminology.md).
 
 The install keeps the head of the checklist chain v2.0 → v8.4: [8.4.0 → 8.4.1](references/guides/migrate.md#v840--v841-checklist) and [8.3 → 8.4](references/guides/migrate.md#v83--v84-checklist). The historical checklists, v2.0 → v8.3, live in the repository's [`maintaining/migrations.md`](maintaining/migrations.md), including [8.2 → 8.3](maintaining/migrations.md#v82--v83-checklist), [8.1 → 8.2](maintaining/migrations.md#v81--v82-checklist), [8.0 → 8.1](maintaining/migrations.md#v80--v81-checklist), and the [copy-first 7.3 → 8.0 transition](maintaining/migrations.md#v73--v80-checklist).
 

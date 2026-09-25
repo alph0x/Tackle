@@ -41,8 +41,8 @@ otherwise `n/a`. Preserve counters across actors/resumptions; zero requires obse
 A role outcome describes that role: a reviewer may finish successfully while reporting a blocked
 product. Verification/Source identifies that scope; it cannot imply initiative completion.
 Lifecycle recording is informative and never
-gates task closure. The execution sequence and correction limits are owned by
-`references/guides/run.md`.
+gates task closure. The execution sequence and correction limits are owned by the [RUN
+card](run-card.md), with depth in `references/guides/run.md`.
 
 Validation clocks describe the validation child, not the enclosing role. An executor cannot observe
 its own future process termination. Its finish timestamp is `n/a` unless an actual terminal event
