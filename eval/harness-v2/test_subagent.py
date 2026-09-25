@@ -175,6 +175,21 @@ class PromptCases(Base):
         self.assertIn(str(control / 'work') + ':', preamble)
         self.assertIn('Work only inside %s:' % control, preamble)
 
+    def test_c1_the_method_sentence_asks_for_the_method(self):
+        """A sentence that only names the staged path did not make the executor read it (the first smoke,
+        D-97); the treated arm asks for the method, as a user who invokes it does."""
+        self.repo.add('s90-demo', prompts=(('task.md', 'Do the task.\n'),))
+        self.repo.seal()
+        method = self.stage(arm='method', name='method')
+        out = self.run_subagent('prompt', '--episode', method)
+        self.assertEqual(out.returncode, 0, out.stderr)
+        staged = load(method / 'stage.json')
+        skill_md = str(method.joinpath('home', staged['skill_dir'], 'SKILL.md'))
+        added = out.stdout[out.stdout.index('Do the task.\n') + len('Do the task.\n'):]
+        self.assertIn('Use the Tackle method for this task', added)
+        self.assertIn(skill_md, added)
+        self.assertIn('read that file first and follow it', added)
+
     def test_prompt_refuses_when_more_than_one_prompt_is_staged(self):
         self.repo.add('s90-demo', prompts=(('sessions/01.md', 'Step one.\n'), ('sessions/02.md', 'Step two.\n')))
         self.repo.seal()
@@ -418,6 +433,19 @@ class AuditCases(Base):
         audit = load(episode / 'audit.json')
         self.assertEqual(audit['outside_paths'], ['eval'])
         self.assertEqual(audit['verdict'], 'invalid')
+
+    def test_a_bash_command_that_names_only_paths_inside_the_episode_is_clean(self):
+        """Without a leading cd, a command that names an absolute path inside the episode works on that
+        path (the second smoke's find, D-97); only a command naming nothing inside counts the cwd."""
+        episode, _ = self.simple_method_episode(scenario='s91-audit-bash-inside')
+        transcript = write_transcript(self.tmp / 'a19.jsonl', [
+            tool_row('tu1', 'Bash', {'command': 'find %s -type f -name "*.py" | head -20' % (episode / 'work')},
+                     cwd=self.repo.root), result_row('tu1'),
+            text_row(request_id='r-final', text='DONE')])
+        self.finish(episode, transcript)
+        audit = load(episode / 'audit.json')
+        self.assertEqual(audit['outside_paths'], [])
+        self.assertEqual(audit['verdict'], 'clean')
 
     def test_a_bash_command_without_a_leading_cd_runs_in_its_recorded_cwd(self):
         episode, _ = self.simple_method_episode(scenario='s91-audit-bash-cwd')

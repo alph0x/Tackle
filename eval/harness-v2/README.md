@@ -152,9 +152,10 @@ python3 eval/harness-v2/subagent.py finish  --episode <dir> --transcript <subage
 ```
 
 - **`prompt`** prints, to stdout: one fixed preamble naming `work/` as the task's repository and the
-  episode directory as the boundary to work inside; the staged `prompts/` text, verbatim; for a treated arm only, one fixed sentence naming the
-  staged install's `SKILL.md` path (`stage.json`'s `skill_dir` under `home/`). Control and method output
-  are byte-identical except for that one sentence. A multi-prompt episode (more than one entry in
+  episode directory as the boundary to work inside; the staged `prompts/` text, verbatim; for a treated
+  arm only, one fixed sentence naming the staged install's `SKILL.md` path (`stage.json`'s `skill_dir`
+  under `home/`) and asking the executor to read it first and follow it. Control and method output are
+  byte-identical except for that one sentence. A multi-prompt episode (more than one entry in
   `stage.json`'s `prompts`) is refused: one transcript is one session.
 - **`finish`** is handed the subagent's own session transcript (JSONL, the same shape
   `usage.claude_code_transcript` reads) after the fact, and writes:
@@ -173,7 +174,7 @@ python3 eval/harness-v2/subagent.py finish  --episode <dir> --transcript <subage
     always counts as outside: these subagents share the operator's real HOME). A subagent's shell and
     search tools start from the session's cwd, which every transcript line records: a relative path
     resolves against it (else against `work/`), and a Glob or Grep without a path, or a Bash command that
-    does not begin with `cd`, counts that cwd itself. `/dev/null` and system tool directories are never
+    neither begins with `cd` nor names an absolute path inside the episode, counts that cwd itself. `/dev/null` and system tool directories are never
     outside. A call to any tool outside the listed local tools (an MCP server such as a code graph of the
     host repository, web access, a nested agent) reaches past the episode without naming a path, and is
     listed as `tool:<name>`. `skill_used` is set by any

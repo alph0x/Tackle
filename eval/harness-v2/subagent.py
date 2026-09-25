@@ -29,7 +29,8 @@ Claude Code parser, because ``sessions/01/stdout`` holds a Claude Code session t
   ``home/``, and neither this tool nor the subagent's own environment can tell otherwise from the
   transcript alone. A subagent's shell and search tools start from the session's cwd, which every
   transcript line records: a relative path resolves against it (else against ``work/``), and a Glob or
-  Grep without a path, or a Bash command that does not begin with ``cd``, counts that cwd itself.
+  Grep without a path, or a Bash command that neither begins with ``cd`` nor names an absolute path
+  inside the episode, counts that cwd itself.
   ``SYSTEM_FILES`` and ``SYSTEM_DIRS`` (``/dev/null``, system tool directories) are never outside:
   they hold nothing about the task. A call to any tool outside ``LOCAL_TOOLS`` (an MCP server such as a
   code graph of the host repository, web access, a nested agent) reaches past the episode without naming
@@ -80,7 +81,8 @@ HOME_TOKEN = re.compile(r'(?:(?<=^)|(?<=[' + BOUNDARY + r']))((?:~|\$HOME)(?:/[^
 ISO = re.compile(r'^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d+))?Z$')
 PREAMBLE = ('The repository for this task is {episode}/work: paths in the task are relative to it, and your '
             'changes go there. Work only inside {episode}: never read, write or run anything outside it.\n\n')
-ARM_SENTENCE = '\nA copy of the skill install for this episode is staged at {skill_md}.\n'
+ARM_SENTENCE = ('\nUse the Tackle method for this task: its skill is staged at {skill_md}; read that file first '
+                'and follow it.\n')
 
 
 class Refusal(Exception):
@@ -225,13 +227,15 @@ def audit_of(uses, episode_dir, staged):
             candidates.append(str(base_dir))  # a search without a path searches the cwd
         if name == 'Bash' and isinstance(input_.get('command'), str):
             command = input_['command']
+            absolute = [m.group(1) for m in ABS_TOKEN.finditer(command)]
             lead = LEADING_CD.match(command)
             if not lead:
-                candidates.append(str(base_dir))  # the command starts in the cwd
+                if not any(safe_resolve(Path(raw)).is_relative_to(episode_real) for raw in absolute):
+                    candidates.append(str(base_dir))  # the command starts in the cwd and names nothing inside
             elif not lead.group(1).startswith(('/', '~', '$HOME')):
                 candidates.append(lead.group(1).strip('\'"'))
             candidates += [m.group(1) for m in HOME_TOKEN.finditer(command)]
-            candidates += [m.group(1) for m in ABS_TOKEN.finditer(command)]
+            candidates += absolute
         for raw in candidates:
             if raw.startswith('~') or raw.startswith('$HOME'):
                 outside.append(raw)
