@@ -8,18 +8,19 @@ import json
 from pathlib import Path
 import platform
 import random
+import shlex
 import shutil
 import subprocess
 import sys
 import tarfile
 import tempfile
-import time
 import uuid
 
 ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
 BASELINE = '61f9b4b142ba83a6a502cf833dd6b9b43e556253'
 SMOKE = ['bounded-en', 'active-status-es', 'blocker-en', 'memory-es', 'reuse-en', 'integrated-es']
+RETIRED = 'retired: model runs moved to the protocol v2 harness; see eval/protocol-v2/PROTOCOL.md'
 
 
 def digest(data):
@@ -154,7 +155,7 @@ def preflight(image, fixture, method, work):
     command = base_command(image, fixture, method, work, name) + ['--network', 'none', image, 'sh', '-c',
         'test -r /method/SKILL.md && test -r /fixture/TASK.md && '
         '! test -e /private/oracle.json && ! test -e /oracle.json && '
-        '! test -e /Users/alph0x/Developer/Tackle && '
+        '! test -e ' + shlex.quote(str(ROOT)) + ' && '
         'touch /work/.isolation-probe && ! touch /fixture/.probe && ! touch /method/.probe && ! touch /outside-probe']
     try:
         result = subprocess.run(command, capture_output=True, timeout=30)
@@ -189,14 +190,15 @@ def size_observation(directory):
             'scope': 'regular output files; excludes runtime, network and inaccessible native model state'}
 
 
-def execute(cohort, seal, output, image, model, effort, auth, run=False):
+def execute(cohort, seal, output, image, model, effort, auth):
+    """Preflight-only: probe container isolation for every planned episode. The former model-calling
+    branch (credential mount, `codex exec` inside the container) is retired; see RETIRED/PROTOCOL.md."""
     manifest = verify(cohort, seal)
     if (cohort / 'private/runner.py').read_bytes() != Path(__file__).read_bytes():
         raise ValueError('execute the exact runner preserved by this cohort')
     if output.resolve().is_relative_to(cohort.resolve()):
         raise ValueError('results must stay outside sealed cohort')
     output.mkdir(parents=True, exist_ok=False)
-    oracle = json.loads((cohort / 'private/oracle.json').read_text())
     summaries = []
     for entry in manifest['order']:
         participant = cohort / entry['path']
@@ -209,49 +211,11 @@ def execute(cohort, seal, output, image, model, effort, auth, run=False):
         document(result_dir / 'isolation.json', probe)
         record = {'case': entry['case'], 'arm': entry['arm'], 'status': 'PENDING', 'seal': seal,
                   'model': model, 'effort': effort, 'runtime': platform.platform(), 'inputs': hashes(participant), 'method_inputs': hashes(method),
-                  'storage_before': size_observation(work), 'semantic_review': 'UNREVIEWED'}
-        if not probe['available'] or not run:
-            record['reason'] = 'isolation unavailable' if not probe['available'] else 'preflight only; no model invoked'
-        else:
-            name = 'tackle-trial-' + uuid.uuid4().hex
-            command = base_command(image, participant / 'fixture', method, work, name) + [
-                '--mount', f'type=bind,src={auth.resolve()},dst=/root/.codex/auth.json,readonly', image,
-                'codex', 'exec', '--ignore-user-config', '--ephemeral', '--skip-git-repo-check',
-                '--sandbox', 'danger-full-access', '--json', '--color', 'never', '--cd', '/work',
-                '-m', model, '-c', 'model_reasoning_effort=' + json.dumps(effort),
-                'Read /method/SKILL.md and /fixture/TASK.md. Follow only this task with the selected '
-                'installation under /method; /work contains your writable task files. Do not delegate, '
-                'look up external material or access account credentials. Keep unrelated inputs intact.']
-            record.update(command=command, status='STARTED', start=datetime.now(timezone.utc).isoformat())
-            document(result_dir / 'record.json', record)
-            start = time.monotonic()
-            with (result_dir / 'events.jsonl').open('wb') as stdout, (result_dir / 'stderr').open('wb') as stderr:
-                try:
-                    child = subprocess.run(command, stdout=stdout, stderr=stderr, timeout=600)
-                    record.update(exit=child.returncode, status='OBSERVED' if child.returncode == 0 else 'FAILED')
-                except subprocess.TimeoutExpired:
-                    record.update(exit=None, status='TIMEOUT')
-                except KeyboardInterrupt:
-                    record.update(exit=None, status='INTERRUPTED')
-                finally:
-                    cleanup = subprocess.run(['docker', 'rm', '-f', name], capture_output=True)
-                    record.update(wall_seconds=time.monotonic() - start, cleanup_exit=cleanup.returncode,
-                                  end=datetime.now(timezone.utc).isoformat())
-            record.update(audit_outputs(participant / 'initial', work, oracle[entry['case']]))
-            record['inputs_after'] = hashes(participant)
-            record['method_inputs_after'] = hashes(method)
-            record['inputs_unchanged'] = record['inputs_after'] == record['inputs'] and record['method_inputs_after'] == record['method_inputs']
-            if not record['inputs_unchanged']:
-                record['status'] = 'INVALID'
-            record['storage_after'] = size_observation(work)
-            record['streams'] = {name: digest((result_dir / name).read_bytes()) for name in ('events.jsonl', 'stderr')}
-            record['metrics_pending_independent_review'] = ['functional/integrated acceptance', 'first-run success',
-                'retries/correction cycles', 'necessary/avoidable interventions', 'brief-related rework',
-                'phase times', 'repeated reads/checks', 'bytes read/rewritten', 'comprehension/recoverability']
-            record['tokens_cost'] = 'n/a pending comparable native usage extraction'
+                  'storage_before': size_observation(work), 'semantic_review': 'UNREVIEWED',
+                  'reason': 'isolation unavailable' if not probe['available'] else RETIRED}
         document(result_dir / 'record.json', record)
         summaries.append(record)
-        if not probe['available'] or record['status'] == 'INTERRUPTED':
+        if not probe['available']:
             break
     started = sum('start' in item for item in summaries)
     report = {'status': 'UNREVIEWED' if started else 'PENDING', 'episodes_planned': len(manifest['order']),
@@ -268,33 +232,25 @@ def main():
     stage.add_argument('destination', type=Path)
     stage.add_argument('--case', action='append')
     trial = sub.add_parser('preflight')
+    trial.add_argument('cohort', type=Path)
+    trial.add_argument('--seal', required=True)
+    trial.add_argument('--output', required=True, type=Path)
+    trial.add_argument('--image', required=True)
     actual = sub.add_parser('run')
-    for command in (trial, actual):
-        command.add_argument('cohort', type=Path)
-        command.add_argument('--seal', required=True)
-        command.add_argument('--output', required=True, type=Path)
-        command.add_argument('--image', required=True)
-    actual.add_argument('--model', required=True)
-    actual.add_argument('--effort', required=True)
-    actual.add_argument('--auth', required=True, type=Path)
-    actual.add_argument('--authorized-model-usage', action='store_true', required=True)
+    actual.add_argument('args', nargs=argparse.REMAINDER)
     args = parser.parse_args()
+    if args.mode == 'run':
+        print(RETIRED, file=sys.stderr)
+        raise SystemExit(2)
     if args.mode == 'stage':
         seal = prepare(args.destination, baseline_installation(), installation(ROOT),
                        json.loads((HERE / 'cases.json').read_text()), json.loads((HERE / 'oracle.json').read_text()),
                        (HERE / 'protocol.md').read_bytes(), args.case or SMOKE)
         print(json.dumps({'status': 'PENDING', 'cohort': str(args.destination), 'seal': seal}))
         return
-    if args.mode == 'run' and not args.auth.is_file():
-        parser.error('the existing account session file is unavailable')
-    report = execute(args.cohort, args.seal, args.output, args.image, getattr(args, 'model', None),
-                     getattr(args, 'effort', None), getattr(args, 'auth', None), args.mode == 'run')
+    report = execute(args.cohort, args.seal, args.output, args.image, None, None, None)
     print(json.dumps({key: value for key, value in report.items() if key != 'records'}))
-    if not report['episodes_started']:
-        raise SystemExit(2)
-    mechanical_pass = all(item.get('exit') == 0 and item.get('artifact_pass')
-                          and item.get('inputs_unchanged') for item in report['records'])
-    raise SystemExit(0 if mechanical_pass else 1)
+    raise SystemExit(0 if report['episodes_started'] else 2)
 
 
 if __name__ == '__main__':

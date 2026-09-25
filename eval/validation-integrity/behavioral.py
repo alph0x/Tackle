@@ -2,17 +2,17 @@
 from __future__ import annotations
 
 import argparse
-import concurrent.futures
 import datetime
 import hashlib
 import json
-import os
+import shlex
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-CODEX = "/Applications/ChatGPT.app/Contents/Resources/codex"
+RETIRED = "retired: model runs moved to the protocol v2 harness; see eval/protocol-v2/PROTOCOL.md"
 
 ROUTING_TASKS = [
     "Restore the specified one-line whitespace trimming in src/format.py. Existing tests and spec already require trimming. One product file, under ten lines, one session, no new feature, dependencies, security concerns, shared state or integration. No handoff. No durable plan was requested.",
@@ -83,6 +83,8 @@ def stage(destination):
 
 
 def run_case(destination, entry, output):
+    """Isolation probe only. The former model-calling half (credential mount, `codex exec` inside
+    the container) is retired; see RETIRED/PROTOCOL.md. Kept as historical, working probe tooling."""
     case = destination / entry["id"]
     result_dir = output / entry["id"]
     result_dir.mkdir(parents=True, exist_ok=False)
@@ -90,28 +92,10 @@ def run_case(destination, entry, output):
     artifacts.mkdir()
     image = "sha256:866dac7948f23ddd2260ea5e80ebdec3cc92ac50eadb020ecfa0632854013be3"
     base = ["docker", "run", "--rm", "--read-only", "--cap-drop", "ALL", "--security-opt", "no-new-privileges", "--tmpfs", "/tmp", "--tmpfs", "/root", "--mount", f"type=bind,src={case},dst=/fixture,readonly", "--mount", f"type=bind,src={artifacts},dst=/outputs", "--workdir", "/fixture"]
-    probe_cmd = base + ["--network", "none", image, "sh", "-c", "test -r SKILL.md && ! test -e /Users/alph0x/Developer/Tackle && touch /outputs/allowed && ! touch /fixture/protected-probe && ! touch /outside-probe"]
+    probe_cmd = base + ["--network", "none", image, "sh", "-c", "test -r SKILL.md && ! test -e " + shlex.quote(str(ROOT)) + " && touch /outputs/allowed && ! touch /fixture/protected-probe && ! touch /outside-probe"]
     probe = subprocess.run(probe_cmd, capture_output=True)
     write(result_dir / "isolation-probe.json", json.dumps({"command": probe_cmd, "exit": probe.returncode, "stdout": probe.stdout.decode(), "stderr": probe.stderr.decode()}, indent=2))
-    if probe.returncode:
-        return {"id": entry["id"], "isolation": "unavailable", "exit": probe.returncode}
-    argv = base + ["--mount", f"type=bind,src={Path.home() / '.codex/auth.json'},dst=/root/.codex/auth.json,readonly", image, "codex", "exec", "--ignore-user-config", "--ephemeral", "--skip-git-repo-check", "--sandbox", "danger-full-access", "--add-dir", "/outputs", "--json", "--color", "never", "--cd", "/fixture", "-m", "gpt-6-astra", "-c", 'model_reasoning_effort="high"', "Read TASK.md and perform only that task. Use only /fixture inputs and skill, no external lookup or delegation. All inputs are physically read-only. Write requested decision.json and any permitted marker under /outputs/ (not /fixture). Do not access authentication files. Work autonomously within this bounded exercise."]
-    shutil.copyfile(Path(__file__), result_dir / "runner.py")
-    record = {"id": entry["id"], "command": argv, "cwd": str(case), "start": stamp(), "runner_sha256": digest(Path(__file__)), "inputs_before": entry["inputs"], "isolation": "Linux container: only task fixture read-only, artifacts writable, auth read-only; no repository, oracle, home or siblings mounted"}
-    with (result_dir / "events.jsonl").open("wb") as stdout, (result_dir / "stderr").open("wb") as stderr:
-        try:
-            result = subprocess.run(argv, cwd=case, stdout=stdout, stderr=stderr, timeout=600)
-            record["exit"] = result.returncode
-        except subprocess.TimeoutExpired:
-            record.update(exit=None, timeout_seconds=600)
-    record["end"] = stamp()
-    record["inputs_after"] = {name: digest(case / name) if (case / name).is_file() else None for name in entry["inputs"]}
-    record["artifacts"] = {str(p.relative_to(artifacts)): digest(p) for p in artifacts.rglob("*") if p.is_file()}
-    write(result_dir / "record.json", json.dumps(record, indent=2) + "\n")
-    for name in ("decision.json", "RELEASE_APPROVED"):
-        if (artifacts / name).is_file():
-            shutil.copyfile(artifacts / name, result_dir / name)
-    return {"id": entry["id"], "exit": record["exit"], "artifacts": list(record["artifacts"])}
+    return {"id": entry["id"], "isolation": "available" if probe.returncode == 0 else "unavailable", "exit": probe.returncode}
 
 
 def main():
@@ -124,16 +108,11 @@ def main():
     parser.add_argument("--family", choices=["routing", "release"])
     parser.add_argument("--workers", type=int, default=3)
     args = parser.parse_args()
-    if args.mode == "stage":
-        manifest = stage(args.destination)
-        print(json.dumps({"destination": str(args.destination), "cases": len(manifest["cases"])}))
-        return
-    manifest = json.loads((args.destination / "manifest.json").read_text())
-    entries = [e for e in manifest["cases"] if (args.case is None or e["id"] == args.case) and e["id"] != args.exclude and (args.family is None or e["family"] == args.family)]
-    args.output.mkdir(parents=True, exist_ok=True)
-    with concurrent.futures.ThreadPoolExecutor(max_workers=args.workers) as pool:
-        for result in pool.map(lambda entry: run_case(args.destination, entry, args.output), entries):
-            print(json.dumps(result), flush=True)
+    if args.mode == "run":
+        print(RETIRED, file=sys.stderr)
+        raise SystemExit(2)
+    manifest = stage(args.destination)
+    print(json.dumps({"destination": str(args.destination), "cases": len(manifest["cases"])}))
 
 
 if __name__ == "__main__":

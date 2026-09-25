@@ -85,9 +85,10 @@
     {
       "path": "eval/suite-integrity",
       "files": [
-        "test_discovery.py"
+        "test_discovery.py",
+        "test_credential_guard.py"
       ],
-      "tests": 14
+      "tests": 29
     },
     {
       "path": "eval/clear-language",

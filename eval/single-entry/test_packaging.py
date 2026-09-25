@@ -4,10 +4,11 @@ import json
 import re
 import runpy
 import subprocess
+import sys
 import tempfile
 import unittest
 from types import SimpleNamespace
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 ROOT = Path(__file__).resolve().parents[2]
 HARNESS = runpy.run_path(str(Path(__file__).with_name('behavioral.py')))
@@ -52,28 +53,29 @@ class PackagingTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'safe path'):
                 HARNESS['checked_manifest'](source)
 
-    def test_requires_explicit_dedicated_credential(self):
+    def test_run_entry_point_is_retired_and_builds_no_mount_or_process(self):
         with tempfile.TemporaryDirectory() as directory:
-            home = Path(directory)
-            primary = home / '.codex/auth.json'
-            primary.parent.mkdir()
-            primary.write_text('test only')
-            alternate = home / 'test-auth.json'
-            alternate.write_text('test only')
-            with patch.object(Path, 'home', return_value=home):
-                with self.assertRaisesRegex(ValueError, 'dedicated test'):
-                    HARNESS['dedicated_auth'](primary)
-                self.assertEqual(HARNESS['dedicated_auth'](alternate), alternate.resolve())
-            case = home / 'case'
-            case.mkdir()
-            (case / 'SKILL.md').write_text('test')
-            (home / 'results').mkdir()
-            with patch.object(subprocess, 'run', return_value=SimpleNamespace(returncode=0, stdout=b'', stderr=b'')) as launched:
-                HARNESS['run_case'](home, {'id': 'case'}, home / 'results', 'test-model', 'low', alternate)
-            command = launched.call_args_list[1].args[0]
-            self.assertEqual(command[command.index('--sandbox') + 1], 'workspace-write')
-            self.assertNotIn('danger-full-access', command)
-            self.assertIn(f'type=bind,src={alternate.resolve()},dst=/root/.codex/auth.json,readonly', command)
+            root = Path(directory)
+            source = root / 'source'
+            case = source / 'safe'
+            case.mkdir(parents=True)
+            (case / 'TASK.md').write_text('safe')
+            manifest = [{'id': 'safe', 'inputs': HARNESS['hashes'](case)}]
+            (source / 'manifest.json').write_text(json.dumps(manifest))
+            auth_file = root / 'dummy-auth.json'
+            auth_file.write_text('not a real credential')
+            argv = ['behavioral.py', 'run', str(source), '--output', str(root / 'out'),
+                    '--model', 'test-model', '--effort', 'low', '--auth-file', str(auth_file)]
+            mock_mount = MagicMock()
+            with patch.object(sys, 'argv', argv), \
+                 patch.dict(HARNESS, {'docker_mount': mock_mount}), \
+                 patch.object(subprocess, 'run', return_value=SimpleNamespace(returncode=1, stdout=b'', stderr=b'')) as mock_run:
+                with self.assertRaises(SystemExit) as ctx:
+                    HARNESS['main']()
+        self.assertEqual(ctx.exception.code, 2)
+        mock_run.assert_not_called()
+        mock_mount.assert_not_called()
+        mock_mount.assert_not_called()
 
     def test_one_installed_entry(self):
         skill = (ROOT / 'SKILL.md').read_text()

@@ -46,16 +46,15 @@ python3 eval/clear-language/runner.py preflight /absolute/local/cohort \
 
 A missing Docker daemon/image is a recorded PENDING capability limitation, not a
 successful behavioral observation. The runner does not install software or pull
-images. After independent review of image provenance, isolation and explicitly
-authorized model usage, `run` accepts the same arguments plus `--model`, `--effort`,
-`--auth` pointing to the existing account session and `--authorized-model-usage`.
-This option documents authorization; it does not grant it. Execution needs the user's
-applicable resource authorization; do not infer a paid API fallback.
+images.
 
-Run results remain outside the sealed cohort. Every started episode has raw native
-JSON events/stderr, command, runtime, model/effort, elapsed wall time, before/after
-files, storage observations and source seal. Timeouts/interruption force container
-cleanup and retain a non-success status. Deterministic artifact checks deliberately
+Model runs moved to [`eval/protocol-v2/PROTOCOL.md`](../protocol-v2/PROTOCOL.md); `run` is retired
+here. It exits 2 with a pointer to that harness and starts no process — no credential is ever
+mounted, copied or passed into a participant environment by this file (R14, D-45). `stage` and
+`preflight` are unaffected historical tooling: they keep staging sealed cohorts and probing
+container isolation without ever invoking a model.
+
+Run results remain outside the sealed cohort. Deterministic artifact checks deliberately
 leave semantic behavior UNREVIEWED. An independent evaluator must review actual
 transcripts and the protocol rubric; exiting zero or matching a keyword is never
 behavioral acceptance. Missing metrics remain n/a with coverage stated.

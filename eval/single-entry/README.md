@@ -5,15 +5,10 @@
 requests, fixtures, SKILL.md and references; it never copies expected answers into the container.
 
 Use `python3 -m unittest discover -s eval/single-entry -v` for the packaging checks.
-For fresh method trials, stage into a new absolute scratch directory, then run with explicit
-`--output`, `--model`, `--effort` and `--auth-file` pointing to a dedicated test Codex credential
-file. The runner rejects the normal Codex account file, validates staged case paths and input
-hashes, and requests the CLI's workspace-write sandbox inside the pinned development container.
-The credential remains readable to the isolated test process, so use a disposable test account
-with only the access needed for the trial. It never changes the installed skill or publishes.
 
-Inspect each transcript for actual skill/guide reads and attempted writes, compare before/after
-hashes, then judge the response against the hidden expected behavior. Explicit run must change
-format.txt to `ready` followed by one newline; other cases preserve it and all sentinels. Zero
-child exit alone is not acceptance. One trial per case is a smoke check, not an A/B benchmark or
-proof that an application menu was changed. Results belong in ignored local plan evidence.
+Model runs moved to [`eval/protocol-v2/PROTOCOL.md`](../protocol-v2/PROTOCOL.md); `run` is retired
+here. It exits 2 with a pointer to that harness and starts no process — no credential is ever
+mounted, copied or passed into a participant environment by this file (R14, D-45). `stage` and the
+isolation probe in `run_case` are unaffected historical tooling: staging still copies only requests,
+fixtures, `SKILL.md` and references (never expected answers), and the probe still verifies container
+isolation without ever invoking a model.
