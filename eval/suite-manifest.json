@@ -189,6 +189,13 @@
         "test_judge.py"
       ],
       "tests": 32
+    },
+    {
+      "path": "eval/field-report",
+      "files": [
+        "test_field_report.py"
+      ],
+      "tests": 25
     }
   ]
 }

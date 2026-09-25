@@ -1,0 +1,3 @@
+Arbitrary file content. This workspace has no plan.md, board.md, task-board.md, history.md, log.md,
+resource-usage.md or usage.md at its root, so field_report.py must report bucket "unknown" and every
+field "n/a" with a null source for it, and must never crash on a workspace shaped like this.
