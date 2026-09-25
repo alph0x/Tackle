@@ -174,7 +174,9 @@ python3 eval/harness-v2/subagent.py finish  --episode <dir> --transcript <subage
     search tools start from the session's cwd, which every transcript line records: a relative path
     resolves against it (else against `work/`), and a Glob or Grep without a path, or a Bash command that
     does not begin with `cd`, counts that cwd itself. `/dev/null` and system tool directories are never
-    outside. `skill_used` is set by any
+    outside. A call to any tool outside the listed local tools (an MCP server such as a code graph of the
+    host repository, web access, a nested agent) reaches past the episode without naming a path, and is
+    listed as `tool:<name>`. `skill_used` is set by any
     `Skill` tool call, or by a path named `SKILL.md` or carrying a `references` segment that does not
     resolve under this episode's own staged install; a method arm reading its own staged copy does not
     set it. `verdict` is `invalid`, naming the reason, for a control episode with `skill_used` or any

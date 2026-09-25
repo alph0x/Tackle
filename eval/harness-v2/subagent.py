@@ -31,7 +31,9 @@ Claude Code parser, because ``sessions/01/stdout`` holds a Claude Code session t
   transcript line records: a relative path resolves against it (else against ``work/``), and a Glob or
   Grep without a path, or a Bash command that does not begin with ``cd``, counts that cwd itself.
   ``SYSTEM_FILES`` and ``SYSTEM_DIRS`` (``/dev/null``, system tool directories) are never outside:
-  they hold nothing about the task.
+  they hold nothing about the task. A call to any tool outside ``LOCAL_TOOLS`` (an MCP server such as a
+  code graph of the host repository, web access, a nested agent) reaches past the episode without naming
+  a path, and is listed as ``tool:<name>``.
 - ``skill_used``: true for any ``Skill`` tool call (it always reaches the coordinator's own registered
   skill, never a path inside the episode, so it is never "the staged copy"), or for any read of a path
   named ``SKILL.md`` or carrying a ``references`` path segment that does not resolve under this
@@ -61,6 +63,10 @@ import usage  # noqa: E402
 NA = 'n/a'
 PATH_FIELDS = ('file_path', 'path', 'notebook_path', 'directory')
 SEARCH_TOOLS = ('Glob', 'Grep')
+# The tools whose reach the audit can see from their arguments. Any other tool (an MCP server, web access,
+# a nested agent) reaches past the episode without naming a path, so it is outside by definition.
+LOCAL_TOOLS = ('Read', 'Write', 'Edit', 'MultiEdit', 'NotebookEdit', 'Glob', 'Grep', 'Bash', 'BashOutput',
+               'KillShell', 'Skill', 'ToolSearch', 'TodoWrite', 'TaskCreate', 'TaskGet', 'TaskList', 'TaskUpdate')
 LEADING_CD = re.compile(r'^\s*\(?\s*cd\s+([^\s;&|)]+)')
 # Outside every episode, but they hold nothing about the task: compared after lexical normalization, so
 # a '..' cannot climb out through them.
@@ -210,6 +216,9 @@ def audit_of(uses, episode_dir, staged):
         base_dir = Path(cwd) if isinstance(cwd, str) and os.path.isabs(cwd) else work_dir
         if name == 'Skill':
             skill_used = True
+        if name not in LOCAL_TOOLS:
+            outside.append('tool:%s' % name)
+            continue
         candidates = [input_[field] for field in PATH_FIELDS if isinstance(input_.get(field), str) and input_[field]]
         if name in SEARCH_TOOLS and not candidates:
             candidates.append(str(base_dir))  # a search without a path searches the cwd

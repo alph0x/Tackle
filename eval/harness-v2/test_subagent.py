@@ -480,6 +480,34 @@ class AuditCases(Base):
         self.assertEqual(audit['outside_paths'], [])
         self.assertEqual(audit['verdict'], 'clean')
 
+    def test_a_tool_that_reaches_beyond_the_episode_without_a_path_is_outside(self):
+        """An MCP tool (a code graph over the host repository, a browser, a terminal), web access or a nested
+        agent reaches past the episode without naming a path; only the listed local tools are auditable."""
+        episode, _ = self.simple_method_episode(scenario='s91-audit-tools')
+        transcript = write_transcript(self.tmp / 'a16.jsonl', [
+            tool_row('tu1', 'mcp__graft__graft_find_code', {'query': 'format_currency'}), result_row('tu1'),
+            tool_row('tu2', 'WebFetch', {'url': 'https://example.com/x'}, request_id='r2'), result_row('tu2'),
+            tool_row('tu3', 'Agent', {'prompt': 'help'}, request_id='r3'), result_row('tu3'),
+            text_row(request_id='r-final', text='All done.')])
+        self.finish(episode, transcript)
+        audit = load(episode / 'audit.json')
+        self.assertEqual(audit['outside_paths'], ['tool:mcp__graft__graft_find_code', 'tool:WebFetch', 'tool:Agent'])
+        self.assertEqual(audit['verdict'], 'invalid')
+
+    def test_local_tools_inside_the_episode_are_clean(self):
+        episode, _ = self.simple_method_episode(scenario='s91-audit-local')
+        work = episode / 'work'
+        transcript = write_transcript(self.tmp / 'a17.jsonl', [
+            tool_row('tu1', 'ToolSearch', {'query': 'select:TodoWrite'}, cwd=work), result_row('tu1'),
+            tool_row('tu2', 'TodoWrite', {'todos': []}, request_id='r2', cwd=work), result_row('tu2'),
+            tool_row('tu3', 'Edit', {'file_path': str(work / 'a.py'), 'old_string': 'x', 'new_string': 'y'},
+                     request_id='r3', cwd=work), result_row('tu3'),
+            text_row(request_id='r-final', text='All done.')])
+        self.finish(episode, transcript)
+        audit = load(episode / 'audit.json')
+        self.assertEqual(audit['outside_paths'], [])
+        self.assertEqual(audit['verdict'], 'clean')
+
     def test_c4_skill_tool_call_in_control_is_invalid(self):
         self.repo.add('s91-audit-skillcall')
         self.repo.seal()
