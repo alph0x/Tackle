@@ -37,7 +37,7 @@
         "test_routing_fixtures.py",
         "test_workspace_compatibility.py"
       ],
-      "tests": 42
+      "tests": 43
     },
     {
       "path": "eval/execution-controls",

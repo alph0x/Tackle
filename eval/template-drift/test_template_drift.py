@@ -171,6 +171,7 @@ class TemplateDriftTests(unittest.TestCase):
         for name in names:
             (self.ws / name).write_text(fill((self.ws / name).read_text()))
         board = (self.ws / 'task-board.md').read_text()
+        self.assertIn('Schema: tackle-workspace/5', board)
         header = '| Task | What | Brief | Depends on | Status | Verification |\n|---|---|---|---|---|---|\n'
         self.assertIn(header, board)
         (self.ws / 'task-board.md').write_text(board.replace(header, header + '| T-01 | x | tasks/T-01-x.md | none | Draft | pending |\n'))

@@ -145,8 +145,20 @@ FAILS = [
     ('fail-15', 'pass-full', 15, 'stale reference-doc', 'WARN'),
     ('fail-16', 'pass-full', 16, 'duplicate start', 'FAIL'),
     ('fail-16b', 'pass-full', 16, 'unknown Event', 'FAIL'),
+    # /5 cases (T-39). C2: the token stays invalid on /4 (row 3 unchanged).
+    ('fail-3-waiting-v4', 'pass-full', 3, 'bad status', 'FAIL'),
+    # C3: an uncited Ready to run row on /5 fails row 10's new citation check.
+    ('fail-10-uncited-ready-v5', 'pass-full-5', 10, 'ready-to-run task missing ready citation', 'FAIL'),
+    # C4: two /5 workspaces, one In progress and the other Waiting on owner, with colliding scope.
+    ('fail-8-waiting-v5', 'pass-full-5', 8, 'collision', 'WARN'),
+    # C5: a /5 workspace whose brief declares Status: (row 5 forbids it outside board.md).
+    ('fail-5-status-in-brief-v5', 'pass-full-5', 5, 'duplicated Status declaration', 'FAIL'),
 ]
-PASSES = [('pass-full', None), ('pass-lite', None), ('pass-legacy', None), ('pass-legacy-legend', 'pass-legacy')]
+PASSES = [('pass-full', None), ('pass-lite', None), ('pass-legacy', None), ('pass-legacy-legend', 'pass-legacy'),
+          # C1: a full /5 workspace covering all ten states, a cited Ready row and a waiting: row.
+          ('pass-full-5', None),
+          # Regression guard: a /4 board's Ready to run row stays uncited-tolerant (row 10 is /5-only).
+          ('pass-v4-ready-pending', 'pass-full')]
 
 
 def materialize(root, name, base=None):

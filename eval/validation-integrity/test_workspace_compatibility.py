@@ -204,6 +204,22 @@ class WorkspaceCompatibilityTests(unittest.TestCase):
         (self.workspace / 'board.md').unlink()
         self.assert_blocked(2)
 
+    def test_v5_board_accepts_ready_citation_and_waiting_on_owner(self):
+        self.write('plan.md', '# Task\n\n## 5. Task decomposition\n| Task | Responsibility |\n|---|---|\n'
+                              '| T-01 | Ready work |\n| T-02 | Waiting work |\n')
+        self.write('history.md', '# History\n\n## 2026-09-20 · session 1\nObserved.\n')
+        self.write('reference.md', '# Reference\n')
+        self.write('resource-usage.md', '# Resource usage\n\nSchema: tackle-observability/2\n\n' + HEADER + START + FINISH)
+        self.write('task-board.md', 'Schema: tackle-workspace/5\n\n'
+                                    '| Task | What | Brief | Depends on | Status | Verification |\n|---|---|---|---|---|---|\n'
+                                    '| T-01 | Ready work | tasks/T-01.md | none | Ready to run | ready: D-01 |\n'
+                                    '| T-02 | Waiting work | tasks/T-02.md | none | Waiting on owner | waiting: Q-01 |\n')
+        self.write('tasks/T-01.md', '# Task T-01 — Ready work\n')
+        self.write('tasks/T-02.md', '# Task T-02 — Waiting work\n')
+        for number in range(1, 17):
+            with self.subTest(row=number):
+                self.assert_pass(number)
+
 
 if __name__ == '__main__':
     unittest.main()

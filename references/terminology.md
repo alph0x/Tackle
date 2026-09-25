@@ -59,12 +59,13 @@ Keep PLAN/RUN/STATUS, `verify`, `judge`, `retro`, documented flags and aliases i
 
 ## States and observations
 
-New task boards declare `Schema: tackle-workspace/4` and use **Draft → Ready to run → In progress →
+New task boards declare `Schema: tackle-workspace/5` and use **Draft → Ready to run → In progress →
 Checking → Complete**. Draft includes deferred or insufficiently prepared work. Ready to run
 requires current readiness records. In progress covers preflight/implementation/correction;
 Checking covers task, regression and affected integration validation. Complete requires every
 mandatory task obligation, not merely implementation. Initiative completion additionally requires
-deliverable acceptance. Blocked, Interrupted, Skipped and Unverifiable remain distinct.
+deliverable acceptance. Blocked, Interrupted, Skipped and Unverifiable remain distinct. On `/5`
+boards, Waiting on owner means progress needs an owner action, and it differs from Blocked.
 
 | Historical value | Read/display mapping | What it does not establish |
 |---|---|---|

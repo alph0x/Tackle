@@ -1,17 +1,19 @@
 # Task board — {{TITLE}}
 
-Schema: tackle-workspace/4
+Schema: tackle-workspace/5
 
 **Canonical current task state.** `task-board.md` owns task status; the plan owns requirements and
 coverage; history records original events. The authorized coordinator updates this board. STATUS,
 Next and plain Resume inspect only. Read legacy boards through [terminology.md](terminology.md).
 
 States: Draft, Ready to run, In progress, Checking, Complete, Blocked, Interrupted, Skipped,
-Unverifiable. The Status cell contains exactly one state token, without a reason suffix;
-put blocker detail in Verification and `questions.md`. Only current readiness supports Ready to run. Complete requires task, related
+Unverifiable, Waiting on owner. The Status cell contains exactly one state token, without a reason suffix;
+put blocker detail in Verification and `questions.md`. Only current readiness supports Ready to run,
+cited in Verification as `ready: <reference>`. Complete requires task, related
 regression, affected integration and mandatory review results. Initiative completion additionally
 requires deliverable acceptance. Skipped needs an authorized reason; unavailable required checks
-stay Unverifiable. Interrupted work must be reconciled before repeating an effect.
+stay Unverifiable. Interrupted work must be reconciled before repeating an effect. Waiting on owner
+names the awaited action in Verification as `waiting: <reference>` and differs from Blocked.
 
 Verification references the task report, which records method, result, actual actor/independence,
 input revisions and accessible raw records. A label is not a passing record. E0–E3 remain readable
