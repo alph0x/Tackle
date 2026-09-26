@@ -236,8 +236,8 @@ behind a requirement ID still fails the required semantic counterexample review.
 At the step above that compiles sufficient task briefs, also: read the workspace `AGENTS.md` model
 map once per initiative — confirmed there at intake, re-confirmed only on a deviation — and, per
 task, propose a **Tier** (`fast`/`standard`/`frontier`) and **Effort** for the Executor role,
-defaulting to the cheapest bindable tier at low effort. State this as a recommendation, not yet a
-fixed rule, until its pre-registered comparison decides whether it ships as one. A deviation from the
-routine default, of Tier or Effort, needs a reason in that task's `**Tier reason**`, confirmed by the
-owner like any other material decision ([communication.md](communication.md)); the routine default
-itself needs no confirmation beyond the once-per-initiative one.
+defaulting to the cheapest bindable tier at low effort. Planning always runs on a more capable tier
+than the Executor's, whenever the model map binds more than one tier. A deviation from the routine
+default, of Tier or Effort, needs a reason in that task's `**Tier reason**`, confirmed by the owner
+like any other material decision ([communication.md](communication.md)); the routine default itself
+needs no confirmation beyond the once-per-initiative one.

@@ -97,7 +97,7 @@ class RunMdEscalationLimitsTests(unittest.TestCase):
 
 
 class DecomposeAndLintWordingTests(unittest.TestCase):
-    """C5: the routing default is a labeled recommendation, with no plan-id leak."""
+    """C5: the tier proposal states the planning-tier rule, with no plan-id leak."""
 
     def test_model_and_tier_proposal_section_exists(self):
         self.assertIn('## Model and tier proposal (compile time)', DECOMPOSE)
@@ -106,8 +106,10 @@ class DecomposeAndLintWordingTests(unittest.TestCase):
         after = DECOMPOSE.split('## Model and tier proposal (compile time)', 1)[1]
         return after
 
-    def test_states_the_recommendation_label(self):
-        self.assertIn('recommendation', self.section())
+    def test_states_the_planning_tier_rule(self):
+        section = ' '.join(self.section().split())
+        self.assertIn("Planning always runs on a more capable tier than the Executor's", section)
+        self.assertNotIn('not yet a fixed rule', section)
 
     def test_states_the_model_map_read_and_the_tier_and_effort_proposal(self):
         section = ' '.join(self.section().split())

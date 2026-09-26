@@ -5124,6 +5124,21 @@
       "destination": "references/archetypes/README.md",
       "note": "PLAN intake reads `.tackle/archetypes/` and `~/.tackle/archetypes/` alongside the profiles at those same scopes (see `guides/intake-and-gate.md` §Reference plans).",
       "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 239,
+      "unit_sha256": "bae180ab7a79156cf1dd01bcb96b7f286301720250f4ba5cc9d266454a71046a",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "Planning always runs on a more capable tier than the Executor's, whenever the model map binds more than one tier.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "the owner made the routing default a rule, so the sentence that called it a recommendation and not yet a rule is replaced by the rule itself"
+        }
+      ]
     }
   ]
 }

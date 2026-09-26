@@ -817,6 +817,33 @@
       ]
     },
     {
+      "rule_id": "R-PLAN-12",
+      "statement": "Planning always runs on a more capable tier than the Executor's, whenever the model map binds more than one tier.",
+      "statement_sha256": "1111ad59dc43254533ed02df4f320ab2e2bf78eba119ca4463f3866cb3733baa",
+      "home": "references/guides/decompose-and-lint.md:239",
+      "home_fragment": "Planning always runs on a more capable tier",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.0.0",
+        "trigger": "First stated in decompose-and-lint.md's Model and tier proposal section; no changelog entry names it yet.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "inconclusive",
+        "scenarios": [
+          "s62-caller-contract",
+          "s63-documented-edge-rule",
+          "s64-stored-data-compat"
+        ],
+        "cohort_id": "2026-09-candidate",
+        "as_of": "2026-09-26"
+      },
+      "historical": []
+    },
+    {
       "rule_id": "R-RUN-01",
       "statement": "RUN executes authorized ready tasks, checks them, corrects within budget, integrates and accepts delivery.",
       "statement_sha256": "bee6fc2fc5f8476ea86aeb0dc7072794bbf7f33ee2dc696e40d9a92444924942",
