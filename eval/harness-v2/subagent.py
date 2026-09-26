@@ -135,6 +135,12 @@ PREAMBLE = ('The repository for this task is {episode}/work: paths in the task a
 ARM_SENTENCE = ('\nUse the Tackle method for this task: its skill is staged at {skill_md}; read that file first '
                 'and follow it.\n')
 ROUTED_ARM = 'method:routed'
+# A second multi-session arm: a planner session then an executor session, both pinned to the cheapest
+# bindable tier regardless of anything the brief declares. Every membership test that used to compare
+# against ROUTED_ARM alone now compares against this tuple, so the routed arm's own multi-session
+# mechanism (staging, prompt --session N, finish --session N, close) generalizes to any arm listed here.
+SPLIT_ARM = 'method:split'
+MULTI_SESSION_ARMS = (ROUTED_ARM, SPLIT_ARM)
 # session 1's fixed closing block, method:routed only: the planner writes a paper plan instead of
 # implementing, and never touches work/ or the skill's own PLAN scaffolding.
 PLANNER_CLOSING = (
@@ -152,6 +158,23 @@ EXECUTOR_PROMPT = (
     '{episode}/work. If you hit a capability failure the brief\'s `Escalation` line lets you retry once '
     'at a higher tier, your final report must be exactly the single word ESCALATE instead of DONE; '
     'otherwise it must be exactly the single word DONE, with no summary.\n')
+# session 1's fixed closing block, method:split only: both sessions always run at the cheapest bindable
+# tier by design, so this arm's own text never offers a Tier or an Escalation choice (Findings 3) — it
+# names neither field in the template's own bulleted vocabulary, only in plain prose.
+SPLIT_PLANNER_CLOSING = (
+    '\nWrite a **paper plan** for whoever implements this task to {episode}/brief.md, in the vocabulary '
+    '`references/task.tmpl.md` uses. This task always runs both sessions at the cheapest bindable tier: '
+    'do not add a Tier line or an Escalation line, since neither is ever read for this arm. Do not '
+    'implement the task yourself, do not create or edit any file under {episode}/work, and do not run '
+    'the skill\'s own PLAN scaffolding (no `docs/plans/` workspace) — write the plan as prose to '
+    '`brief.md` only. Do not dispatch any subagent, reviewer or Task-tool call yourself; if the skill\'s '
+    'procedure calls for one, describe that step in your plan instead of doing it. When finished, your '
+    'final report must be exactly the single word DONE, with no summary.\n')
+# session >= 2's fixed prompt, method:split only: identical text regardless of session number; never
+# offers ESCALATE, since this arm's own brief never declares one (Findings 3).
+SPLIT_EXECUTOR_PROMPT = (
+    'Read the file {episode}/brief.md and carry out the task it describes, with your changes going in '
+    '{episode}/work. Your final report must be exactly the single word DONE, with no summary.\n')
 # A session >= 2 stays inside its brief: these paths are legal for session 1 (which legitimately reads its
 # own staged prompt) but not for the executor, who must rely only on the planner's brief.
 DENY_PREFIXES = ('prompts/', 'sessions/', 'dispatch.txt', 'stage.json')
@@ -346,9 +369,9 @@ def audit_of(uses, episode_dir, staged, deny_prefixes=None):
     The episode boundary is realpath'd (not just made absolute) so a symlinked temp root, such as macOS's
     /tmp -> /private/tmp, does not make an in-episode path look like it escaped, or vice versa. A relative
     path resolves against the cwd its transcript line records, else against work/. `deny_prefixes`, used
-    only for a routed episode's session >= 2, folds a legal-looking-but-off-limits in-episode path into
-    this same outside_paths/invalid mechanism (never used for session 1, which legitimately reads its own
-    staged prompt)."""
+    only for a multi-session arm's (MULTI_SESSION_ARMS) session >= 2, folds a legal-looking-but-off-limits
+    in-episode path into this same outside_paths/invalid mechanism (never used for session 1, which
+    legitimately reads its own staged prompt)."""
     episode_real = safe_resolve(episode_dir)
     work_dir = safe_resolve(episode_dir / 'work')
     staged_root = safe_resolve(episode_dir / 'home' / staged['skill_dir']) if staged.get('skill_dir') else None
@@ -417,14 +440,15 @@ def cmd_prompt(args):
     episode = Path(args.episode).absolute()
     staged = read_stage(episode)
     session = args.session or 1
-    routed = staged.get('arm') == ROUTED_ARM
+    arm = staged.get('arm')
     if session >= 2:
-        if not routed:
-            raise Refusal('--session >= 2 is only valid for a %s episode' % ROUTED_ARM)
+        if arm not in MULTI_SESSION_ARMS:
+            raise Refusal('--session >= 2 is only valid for a multi-session arm (%s)' % ', '.join(MULTI_SESSION_ARMS))
         if not (episode / 'brief.md').is_file():
             raise Refusal('%s/brief.md does not exist yet: session 1 has not closed, or produced nothing'
                           % episode)
-        sys.stdout.write(PREAMBLE.format(episode=episode) + EXECUTOR_PROMPT.format(episode=episode))
+        executor_prompt = EXECUTOR_PROMPT if arm == ROUTED_ARM else SPLIT_EXECUTOR_PROMPT
+        sys.stdout.write(PREAMBLE.format(episode=episode) + executor_prompt.format(episode=episode))
         return 0
     prompt_name = single_prompt(staged)
     prompt_path = episode / 'prompts' / prompt_name
@@ -433,13 +457,15 @@ def cmd_prompt(args):
     except OSError as problem:
         raise Refusal('unreadable staged prompt %s (%s)' % (prompt_name, problem.__class__.__name__))
     output = PREAMBLE.format(episode=episode) + text
-    if staged.get('arm') != 'control':
+    if arm != 'control':
         if not staged.get('skill_dir'):
             raise Refusal('a treated arm has no staged skill_dir')
         skill_md = episode / 'home' / staged['skill_dir'] / 'SKILL.md'
         output += ARM_SENTENCE.format(skill_md=skill_md)
-    if routed:
+    if arm == ROUTED_ARM:
         output += PLANNER_CLOSING.format(episode=episode)
+    elif arm == SPLIT_ARM:
+        output += SPLIT_PLANNER_CLOSING.format(episode=episode)
     sys.stdout.write(output)
     return 0
 
@@ -448,8 +474,8 @@ def cmd_finish(args):
     episode = Path(args.episode).absolute()
     staged = read_stage(episode)
     session_n = args.session
-    routed = staged.get('arm') == ROUTED_ARM
-    routed_write = routed and session_n is not None
+    multi_session = staged.get('arm') in MULTI_SESSION_ARMS
+    multi_session_write = multi_session and session_n is not None
 
     if session_n is None or session_n == 1:
         # Today's exact guard and prompt read, unchanged, on any arm.
@@ -457,8 +483,8 @@ def cmd_finish(args):
             raise Refusal('the episode already ran')
         prompt_name = single_prompt(staged)
     else:
-        if not routed:
-            raise Refusal('--session is only valid for a %s episode' % ROUTED_ARM)
+        if not multi_session:
+            raise Refusal('--session is only valid for a multi-session arm (%s)' % ', '.join(MULTI_SESSION_ARMS))
         sessions_dir = episode / 'sessions'
         existing = sorted(int(p.name) for p in sessions_dir.glob('[0-9][0-9]') if p.is_dir()) \
             if sessions_dir.is_dir() else []
@@ -484,7 +510,7 @@ def cmd_finish(args):
     blocks = [block for block, _ in uses]
     outcome = 'completed' if last_role(events) == 'assistant' else 'error'
     loaded = skill_loaded_of(blocks, outcome == 'completed')
-    deny = DENY_PREFIXES if (routed_write and session_n >= 2) else None
+    deny = DENY_PREFIXES if (multi_session_write and session_n >= 2) else None
     outside_paths, skill_used = audit_of(uses, episode, staged, deny_prefixes=deny)
     spent = usage.claude_code_transcript(transcript_path)
     delta_seconds = (finished - started).total_seconds()
@@ -498,7 +524,7 @@ def cmd_finish(args):
         'tokens_out': spent['tokens_out'], 'tool_calls': len(blocks), 'session_id': NA, 'skill_loaded': loaded,
         'usage_source': 'transcript'}
 
-    if routed_write:
+    if multi_session_write:
         session.update(role=args.role or NA, tier=args.tier or NA, model=args.model,
                        work_sha256=tree_digest(episode / 'work'))
         directory = episode / 'sessions' / ('%02d' % session_n)
@@ -540,11 +566,12 @@ def cmd_finish(args):
 
 
 def cmd_close(args):
-    """method:routed only: merge every sessions/0N/ on disk into one run.json/audit.json."""
+    """A multi-session arm only (MULTI_SESSION_ARMS): merge every sessions/0N/ on disk into one
+    run.json/audit.json."""
     episode = Path(args.episode).absolute()
     staged = read_stage(episode)
-    if staged.get('arm') != ROUTED_ARM:
-        raise Refusal('close is only valid for a %s episode' % ROUTED_ARM)
+    if staged.get('arm') not in MULTI_SESSION_ARMS:
+        raise Refusal('close is only valid for a multi-session arm (%s)' % ', '.join(MULTI_SESSION_ARMS))
     if (episode / 'run.json').exists():
         raise Refusal('the episode already ran')
     session_dirs = sorted((p for p in (episode / 'sessions').glob('[0-9][0-9]') if p.is_dir()),
@@ -562,6 +589,7 @@ def cmd_close(args):
 
     metas, sessions = [], []
     outside_all, skill_used_any = [], False
+    session_two_report = None
     for position, directory in enumerate(session_dirs, start=1):
         meta = json.loads((directory / 'meta.json').read_text(encoding='utf-8'))
         transcript = (directory / 'stdout').read_bytes()
@@ -580,11 +608,20 @@ def cmd_close(args):
             if outside:
                 reasons.append('executor read past its brief')
             report = (final_report(events) or '').strip()
+            if position == 2:
+                session_two_report = report
             if report == 'ESCALATE':
                 if escalation != 'declared':
                     reasons.append('escalation without a declared brief')
+                elif position > 2:
+                    reasons.append('escalation attempted past its one capped retry')
                 elif position == 2 and not any(d.name == '03' for d in session_dirs):
                     reasons.append('live escalation out of scope for 9.0.0')
+    # Converse guard (readiness F8): nothing above couples "a session 3 was recorded" to "session 2
+    # actually escalated" — a coordinator slip that dispatches a third session after an ordinary,
+    # non-escalating session 2 would otherwise merge into a clean 3-role record with no invalid signal.
+    if len(session_dirs) > 2 and session_two_report != 'ESCALATE':
+        reasons.append('session 3 present without a preceding escalation')
     if outside_all and not any('read past its brief' in r for r in reasons):
         reasons.append('%d path(s) outside the episode directory' % len(outside_all))
 
@@ -620,7 +657,7 @@ def cmd_close(args):
 
 
 def cmd_tier(args):
-    """method:routed only, mechanical and read-only: prints tier=<value> escalation=<declared|absent> from
+    """Any multi-session arm, mechanical and read-only: prints tier=<value> escalation=<declared|absent> from
     <episode>/brief.md, without the coordinator itself reading the brief's prose."""
     episode = Path(args.episode).absolute()
     brief_path = episode / 'brief.md'

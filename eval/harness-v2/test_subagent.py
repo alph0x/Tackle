@@ -31,6 +31,7 @@ from test_harness import Repo, manifest, digest_files  # noqa: E402
 
 
 ROUTED_ARM = subagent.ROUTED_ARM
+SPLIT_ARM = subagent.SPLIT_ARM
 
 
 def sha(data):
@@ -716,6 +717,16 @@ def write_brief(episode, tier='standard', escalation=None):
     write(episode / 'brief.md', text)
 
 
+def write_split_brief(episode, escalation=None):
+    """A real method:split brief never carries a Tier line (Contract §1, Findings 3: the shipped prompt
+    never invites one); an Escalation line only appears when a test specifically exercises the tool's own
+    arm-agnostic escalation-declared rule against this arm, never because the real prompt offers one."""
+    text = 'A plain paper plan with no Tier line.\n'
+    if escalation is not None:
+        text += '**Escalation**: %s\n' % escalation
+    write(episode / 'brief.md', text)
+
+
 class RoutedEpisodeCases(Base):
     """The subagent-episode path for a method:routed episode: session 1 (the planner) and session 2 (or
     3, the executor and its one capped, unit-tested-only escalation) recorded separately by `finish
@@ -962,6 +973,142 @@ class FinishReplacementGuard(Base):
         episode = self.stage(arm='control')
         transcript = write_transcript(self.tmp / 's2-control.jsonl', [text_row(text='All done.')])
         self.finish(episode, transcript, session=2, expect=1)
+
+
+class SplitEpisodeCases(Base):
+    """The subagent-episode path generalized to the fifth arm, method:split (Contract §1, §3): both
+    sessions pinned to the cheapest tier, and the arm's own prompt text never offers a Tier or an
+    Escalation choice, unlike method:routed's own."""
+
+    def split_episode(self, scenario='s90-demo', variant='v1', **kwargs):
+        files = self.repo.add(scenario, variant=variant, **kwargs)
+        self.repo.seal()
+        episode = self.stage(scenario=scenario, variant=variant, arm=SPLIT_ARM)
+        return episode, files
+
+    def planner(self, episode, escalation=None, work_touched=False, no_brief=False, index=1, tier='fast'):
+        if not no_brief:
+            write_split_brief(episode, escalation=escalation)
+        if work_touched:
+            write((episode / 'work' / 'planner-left-this.txt'), 'should not be here\n')
+        transcript = write_transcript(self.tmp / ('split-s%d.jsonl' % index),
+                                      [handback_row('DONE', tool_id='tu-final-%d' % index, request_id='r-final-%d' % index)])
+        return self.finish(episode, transcript, session=index, role='planner', tier=tier)
+
+    def executor(self, episode, report='DONE', index=2, tier='fast'):
+        transcript = write_transcript(self.tmp / ('split-s%d.jsonl' % index),
+                                      [handback_row(report, tool_id='tu-final-%d' % index, request_id='r-final-%d' % index)])
+        return self.finish(episode, transcript, session=index, role='executor', tier=tier)
+
+    def test_c1_session_one_writes_only_its_session_files_and_defers_close(self):
+        episode, _ = self.split_episode()
+        result = self.planner(episode)
+        self.assertIn('session 1 recorded', result.stdout)
+        self.assertFalse((episode / 'run.json').exists())
+        self.assertFalse((episode / 'audit.json').exists())
+        meta = load(episode / 'sessions' / '01' / 'meta.json')
+        self.assertEqual((meta['role'], meta['tier'], meta['index']), ('planner', 'fast', 1))
+        self.assertIn('work_sha256', meta)
+
+    def test_c2_two_clean_sessions_merge_into_one_run_with_two_roles_both_at_fast(self):
+        episode, _ = self.split_episode()
+        self.planner(episode)
+        self.executor(episode)
+        self.close(episode)
+        run = load(episode / 'run.json')
+        audit = load(episode / 'audit.json')
+        self.assertEqual(len(run['roles']), 2)
+        self.assertEqual([r['role'] for r in run['roles']], ['planner', 'executor'])
+        self.assertEqual([r['tier'] for r in run['roles']], ['fast', 'fast'])
+        self.assertEqual(audit['verdict'], 'clean')
+        self.assertEqual(run['outcome'], 'completed')
+
+    def test_c3_planner_prompt_never_offers_tier_or_escalation(self):
+        episode, _ = self.split_episode()
+        out = self.run_subagent('prompt', '--episode', episode, '--session', '1')
+        self.assertEqual(out.returncode, 0, out.stderr)
+        self.assertNotIn('**Tier**:', out.stdout)
+        self.assertNotIn('**Escalation**:', out.stdout)
+        self.assertIn('paper plan', out.stdout)
+
+    def test_c4_executor_prompt_never_offers_escalate(self):
+        episode, _ = self.split_episode()
+        write_split_brief(episode)
+        out = self.run_subagent('prompt', '--episode', episode, '--session', '2')
+        self.assertEqual(out.returncode, 0, out.stderr)
+        self.assertNotIn('ESCALATE', out.stdout)
+        self.assertIn('DONE', out.stdout)
+
+    def test_c5_freelance_escalate_with_no_declared_brief_is_invalid(self):
+        episode, _ = self.split_episode()
+        self.planner(episode, escalation=None)
+        self.executor(episode, report='ESCALATE')
+        self.close(episode)
+        audit = load(episode / 'audit.json')
+        self.assertEqual(audit['verdict'], 'invalid')
+        self.assertIn('escalation without a declared brief', audit['reason'])
+
+    def test_c6_escalation_past_its_one_capped_retry_is_invalid(self):
+        """Findings 2: a session-3 ESCALATE (a further escalation attempt past the one capped retry the
+        shipped skill allows) used to be accepted, because no prior fixture ever exercised a real session
+        3. Session 2's own legitimate escalation must not itself be flagged."""
+        episode, _ = self.split_episode()
+        self.planner(episode, escalation='declared')
+        self.executor(episode, report='ESCALATE', index=2)
+        self.executor(episode, report='ESCALATE', index=3, tier='standard')
+        self.close(episode)
+        audit = load(episode / 'audit.json')
+        self.assertEqual(audit['verdict'], 'invalid')
+        self.assertEqual(audit['reason'], 'escalation attempted past its one capped retry')
+
+    def test_c17_declared_escalation_with_a_real_third_session_is_accepted(self):
+        """Mirrors the tool's own pre-existing synthetic 3-session proof
+        (RoutedEpisodeCases.test_declared_escalation_with_a_synthetic_third_session_is_accepted), now
+        exercised for the new arm — the exact shape the live escalation mechanism episode's own merged
+        record has: planner (fast), executor (fast, ESCALATE), executor (standard, DONE)."""
+        episode, _ = self.split_episode()
+        self.planner(episode, escalation='declared')
+        self.executor(episode, report='ESCALATE', index=2, tier='fast')
+        self.executor(episode, report='DONE', index=3, tier='standard')
+        self.close(episode)
+        run = load(episode / 'run.json')
+        audit = load(episode / 'audit.json')
+        self.assertEqual(len(run['roles']), 3)
+        self.assertEqual([r['tier'] for r in run['roles']], ['fast', 'fast', 'standard'])
+        self.assertEqual(audit['verdict'], 'clean')
+
+    def test_c19_session_three_present_without_a_preceding_escalation_is_invalid(self):
+        """readiness F8: nothing used to couple 'a session 3 was recorded' to 'session 2 actually
+        escalated' — a coordinator slip that dispatched a third session after an ordinary session 2 (final
+        report DONE, not ESCALATE) merged into a clean 3-role record with no invalidity signal."""
+        episode, _ = self.split_episode()
+        self.planner(episode)
+        self.executor(episode, report='DONE', index=2)
+        self.executor(episode, report='DONE', index=3, tier='standard')
+        self.close(episode)
+        audit = load(episode / 'audit.json')
+        self.assertEqual(audit['verdict'], 'invalid')
+        self.assertEqual(audit['reason'], 'session 3 present without a preceding escalation')
+
+
+class MultiSessionArmRefusals(Base):
+    """C7-C9: the multi-session mechanism refuses every non-multi-session arm, generalizing the existing
+    control-only and routed-only fixtures to MULTI_SESSION_ARMS."""
+
+    def test_c7_close_refuses_a_non_multi_session_arm(self):
+        episode, _ = self.simple_method_episode(scenario='s93-refuse-close', arm='method:candidate')
+        result = self.run_subagent('close', '--episode', episode)
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+
+    def test_c8_finish_session_refuses_a_non_multi_session_arm(self):
+        episode, _ = self.simple_method_episode(scenario='s93-refuse-finish', arm='method:candidate')
+        transcript = write_transcript(self.tmp / 'refuse-finish.jsonl', [handback_row('DONE')])
+        self.finish(episode, transcript, session=2, role='executor', tier='fast', expect=1)
+
+    def test_c9_prompt_session_refuses_a_non_multi_session_arm(self):
+        episode, _ = self.simple_method_episode(scenario='s93-refuse-prompt', arm='method:candidate')
+        result = self.run_subagent('prompt', '--episode', episode, '--session', '2')
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
 
 
 if __name__ == '__main__':
