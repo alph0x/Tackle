@@ -122,16 +122,18 @@
     {
       "path": "eval/lint-rows",
       "files": [
-        "test_lint_rows.py"
+        "test_lint_rows.py",
+        "test_tier_escalation.py"
       ],
-      "tests": 9
+      "tests": 26
     },
     {
       "path": "eval/template-drift",
       "files": [
-        "test_template_drift.py"
+        "test_template_drift.py",
+        "test_model_routing_text.py"
       ],
-      "tests": 9
+      "tests": 31
     },
     {
       "path": "eval/protocol-v2",

@@ -53,14 +53,21 @@ def compiled_brief(identity='T-01', clause=None):
     else:
         text = re.sub(r'- \*\*\{\{clause id\}\}.*?\}\}\.\n', '', text, count=1, flags=re.S)
     lines = []
+    drop_continuation = False
     for line in text.split('\n'):
+        if drop_continuation:
+            drop_continuation = False
+            if line.startswith('  '):
+                continue
         if line.startswith('- **Effort**:'):
             line = '- **Effort**: high'
         elif line.startswith('- **Type**:'):
             line = '- **Type**: standard.'
         elif line.startswith('- **Depends on**:'):
             line = '- **Depends on**: none.'
-        elif line.startswith(('- **Rounds**:', '- **Metric**:', '- **Threshold**:')):
+        elif line.startswith(('- **Rounds**:', '- **Metric**:', '- **Threshold**:',
+                               '- **Tier**:', '- **Tier reason**:', '- **Escalation**:')):
+            drop_continuation = True
             continue
         lines.append(line)
     return fill('\n'.join(lines))

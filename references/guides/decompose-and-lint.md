@@ -229,3 +229,15 @@ The recipe's structural pass is one preparation observation. `semantic_review` a
 `boundary_fixtures` name results whose actual accessible records the coordinator must inspect;
 a caller setting those strings does not establish either result. An omitted behavior hidden
 behind a requirement ID still fails the required semantic counterexample review.
+
+<a id="model-and-tier-proposal-compile-time"></a>
+## Model and tier proposal (compile time)
+
+At the step above that compiles sufficient task briefs, also: read the workspace `AGENTS.md` model
+map once per initiative — confirmed there at intake, re-confirmed only on a deviation — and, per
+task, propose a **Tier** (`fast`/`standard`/`frontier`) and **Effort** for the Executor role,
+defaulting to the cheapest bindable tier at low effort. State this as a recommendation, not yet a
+fixed rule, until its pre-registered comparison decides whether it ships as one. A deviation from the
+routine default, of Tier or Effort, needs a reason in that task's `**Tier reason**`, confirmed by the
+owner like any other material decision ([communication.md](communication.md)); the routine default
+itself needs no confirmation beyond the once-per-initiative one.

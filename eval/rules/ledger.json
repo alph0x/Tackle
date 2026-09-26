@@ -893,7 +893,7 @@
       "rule_id": "R-RUN-04",
       "statement": "RUN records the pinned procedure, current contract, dependency outputs, environment and write scope.",
       "statement_sha256": "3d941d8a043ac1fe820d1a8b83192066db567139bff0127a70bd525ba84a230d",
-      "home": "references/guides/run-card.md:13",
+      "home": "references/guides/run-card.md:12",
       "home_fragment": "Check the pinned procedure, which never changes silently",
       "units": [],
       "mirrors": [],
@@ -916,7 +916,7 @@
       "rule_id": "R-RUN-05",
       "statement": "Reuse verified current state and sufficient existing checks; do not append equivalent assertions or unchanged closure reruns.",
       "statement_sha256": "d9beacfc73bfe0717bd839e70c569c8c6a2133391f0bbffcb8e6877522d2ff55",
-      "home": "references/guides/run.md:222",
+      "home": "references/guides/run.md:238",
       "home_fragment": "Reuse unchanged PLAN readiness checks",
       "units": [],
       "mirrors": [],
@@ -939,7 +939,7 @@
       "rule_id": "R-RUN-06",
       "statement": "Changed content, selector membership, configuration, interfaces, runtime or freshness invalidate affected consumers, and unknown dependencies require conservative checks.",
       "statement_sha256": "1c1280f74aeef7eb7f7257c0cd7e6857d1cdb14607295e70d0e2dac102a2fd0e",
-      "home": "references/guides/run.md:159",
+      "home": "references/guides/run.md:175",
       "home_fragment": "only the dependent checks; re-ground and revalidate",
       "units": [],
       "mirrors": [],
@@ -962,7 +962,7 @@
       "rule_id": "R-RUN-07",
       "statement": "Task, related regression and affected integration checks precede task completion, and deliverable acceptance precedes initiative completion.",
       "statement_sha256": "3ff8a917588d913bdb03899a3207e55977f61a87556856fd17629cabacf94922",
-      "home": "references/guides/run-card.md:42",
+      "home": "references/guides/run-card.md:43",
       "home_fragment": "deliverable acceptance precedes initiative completion",
       "units": [],
       "mirrors": [],
@@ -998,7 +998,7 @@
       "rule_id": "R-RUN-08",
       "statement": "Three failed correction-validation cycles per task or two identical no-progress observations bound implementation correction, and lineage keeps spent cycles across split, merge and resume.",
       "statement_sha256": "9a6b0e2439703af8ce593d30e2c77c73bc87fa3af6a3b7d586613ea19e28bfb7",
-      "home": "references/guides/run-card.md:29",
+      "home": "references/guides/run-card.md:30",
       "home_fragment": "three failed correction-validation cycles per task",
       "units": [],
       "mirrors": [],
@@ -1023,7 +1023,7 @@
       "rule_id": "R-RUN-09",
       "statement": "Consume known failure evidence and repeat its check only after a relevant change or permitted recovery.",
       "statement_sha256": "3de071f2f68a5c703eab0ef6d85352b9a0fefd48c3b08f6fb3b816e79909b5c3",
-      "home": "references/guides/run.md:65",
+      "home": "references/guides/run.md:81",
       "home_fragment": "Consume retained failed observations before another check",
       "units": [],
       "mirrors": [],
@@ -1046,8 +1046,8 @@
     },
     {
       "rule_id": "R-RUN-10",
-      "statement": "Classify other, non-implementation failures and stop the affected work with records; never silently replan or upgrade a model.",
-      "statement_sha256": "21becc2c14c4efab0c0c8457630cc9dffa88a2c4694fdbe3b0a91cb56cef13b5",
+      "statement": "Classify other, non-implementation failures and stop the affected work with records, absent a capability escalation declared in the brief and capped as the RUN card states; never silently replan or upgrade a model.",
+      "statement_sha256": "d9392b25e54e308c090a82964f6802786ecd402f29b5540b6415c5a5b653c4fc",
       "home": "SKILL.md:45",
       "home_fragment": "failures and stop affected work with",
       "units": [
@@ -1235,7 +1235,7 @@
       "rule_id": "R-RUN-16",
       "statement": "A discovery task converges on consecutive dry rounds and deduplicates against everything seen.",
       "statement_sha256": "e92fe9a47b609bf869e0a2c1a84f588eabdc078572690e83e6002aa1691b4cb5",
-      "home": "references/task.tmpl.md:44",
+      "home": "references/task.tmpl.md:48",
       "home_fragment": "deduplicate against everything seen",
       "units": [],
       "mirrors": [
@@ -1278,7 +1278,7 @@
       "home_fragment": "Closure reports for done tasks",
       "units": [],
       "mirrors": [
-        "references/guides/run.md:208"
+        "references/guides/run.md:224"
       ],
       "class": "safety-invariant",
       "hot_path": false,
@@ -1302,6 +1302,31 @@
           "seeds": 1
         }
       ]
+    },
+    {
+      "rule_id": "R-RUN-18",
+      "statement": "A declared capability failure is corrected exactly once, at the model map's next bound tier with effort unchanged, spends one task-pool cycle always, never applies to an unbound tier or a further escalation, never beyond the topmost bound tier, and never for an evaluation control arm.",
+      "statement_sha256": "c300cce289eda9641108b39d53b02fab01e1cef32f8d80bd613728fe2cd8a934",
+      "home": "references/guides/run-card.md:28",
+      "home_fragment": "An implementation fault is corrected; a capability failure",
+      "units": [],
+      "mirrors": [
+        "references/guides/run.md:69"
+      ],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "unknown",
+        "trigger": "First stated in run-card.md's Correct-within-budget step (git history); no changelog entry names it yet.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-25"
+      },
+      "historical": []
     },
     {
       "rule_id": "R-EVID-01",
@@ -1733,7 +1758,7 @@
       "rule_id": "R-EVID-12",
       "statement": "Role-scoped telemetry joins only on an exact run id; a native provider id without an explicit mapping stays unjoined.",
       "statement_sha256": "5e395c05016c5291504026a85194d85f9c599201d4547b9b400ec229d8baa585",
-      "home": "references/guides/usage-observability.md:78",
+      "home": "references/guides/usage-observability.md:80",
       "home_fragment": "Role-scoped sidecar observations join only on an exact",
       "units": [],
       "mirrors": [],

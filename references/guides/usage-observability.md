@@ -35,8 +35,10 @@ never zero and never estimated. Unexposed clock or runtime metadata does not blo
 observable work: record metadata as `n/a` and preserve the command result. An unavailable required
 execution environment is an acceptance gap, not missing telemetry, and blocks its owning scope.
 Tier records an observed fast/standard/frontier model binding, never the Lite/Full route.
-Attempts records shared failed implementation correction-validation cycles; initial validation,
-dispatch and repeated tests do not count. Rework uses a separately defined observed rework counter,
+Attempts records shared failed implementation correction-validation cycles, plus one declared
+capability escalation per task, counted once as its own event, always, including on the task's first
+validation; initial validation, dispatch and repeated tests of an implementation fault do not count.
+Rework uses a separately defined observed rework counter,
 otherwise `n/a`. Preserve counters across actors/resumptions; zero requires observed absence.
 A role outcome describes that role: a reviewer may finish successfully while reporting a blocked
 product. Verification/Source identifies that scope; it cannot imply initiative completion.

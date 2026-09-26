@@ -12,6 +12,10 @@
 - **Write scope**: {{complete file and directory write set; flag shipped paths}}.
 - **Autonomy**: {{resolved concrete value; production paths cap at L2}}.
 - **Effort**: {{low / medium / high / max; bare token without trailing punctuation}}
+- **Tier**: (fast / standard / frontier; omit the whole field when the map cannot propose one)
+- **Tier reason**: ("default" for the compiled default; the reason otherwise, for a Tier or Effort
+  deviation; omit only when Tier is omitted and Effort is the compiled default)
+- **Escalation**: (declared; omit when the task does not permit the one capped retry)
 - **Budget**: {{resolved correction, round, timeout, or tool limits, when applicable}}.
 - **Procedure revision**: {{pinned procedure/version; adopt changes only at a task boundary}}.
 - **Lineage**: {{ancestor task IDs and unresolved failure/cycle-pool references; none for unrelated new work}}.

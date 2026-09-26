@@ -169,10 +169,10 @@ class LoadChainFixtureTests(unittest.TestCase):
                                         r'references/guides/run-card\.md,references/task\.tmpl\.md\n$')
 
     def test_a_card_over_budget_exits_1_even_inside_the_chain_budget(self):
-        chain_fixture(self.root, filler(801) + '\n')
+        chain_fixture(self.root, filler(load_chain.CARD_LIMIT + 1) + '\n')
         result = run_tool('load_chain.py', '--repo', self.root)
         self.assertEqual(result.returncode, 1, result.stderr)
-        self.assertIn('card=801 ', result.stdout)
+        self.assertIn('card=%d ' % (load_chain.CARD_LIMIT + 1), result.stdout)
 
     def test_the_budget_boundaries_pass(self):
         chain_fixture(self.root, filler(800) + '\n', skill_words=1600, brief_words=1600)

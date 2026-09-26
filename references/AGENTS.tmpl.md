@@ -109,6 +109,9 @@ Tackle remains harness-agnostic. Record the concrete tools and whether each capa
 **model-binding: supported | unsupported**
 **effort-binding: supported | unsupported**
 
+**Confirmed for this initiative**: (owner, date; re-confirmed only when a task's Tier or Effort
+deviates from the compiled default, recorded in that task's Tier reason)
+
 If binding is unsupported, record the actual model/effort or `n/a`; never claim a binding that did
 not occur. See `references/guides/run-card.md` and `references/guides/run.md` for evidence
 provenance and independence.

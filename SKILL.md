@@ -43,7 +43,7 @@ authorization.
 A Coordinated RUN follows the [RUN card](references/guides/run-card.md); Focused RUN stays inside
 [lite-plan.tmpl.md](references/lite-plan.tmpl.md). Distinct executions remain distinct
 events even when immutable bytes are shared. Classify other (non-implementation) failures and stop affected work with
-records; do not silently replan or upgrade a model.
+records, absent a capability escalation declared in the brief, capped as the RUN card states; do not silently replan or upgrade a model.
 
 <a id="migration-and-distribution"></a>
 ## Compatibility and state

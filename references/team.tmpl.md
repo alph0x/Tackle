@@ -23,8 +23,11 @@ Teams bind roles to abstract, harness-agnostic tiers, never vendor models:
 | Auditor (explicit risk-triggered audit) | frontier | high |
 | Specialists | standard | medium |
 
-The Task brief may override a default. The workspace `AGENTS.md` model map binds tiers to the
-concrete models available in that harness. Effort is `low / medium / high / max`; when effort or
+The Task brief may override a default: a compiled `**Tier**` and `**Effort**` (with a deviation's
+reason in `**Tier reason**`) is that per-task override of the Executor row above, confirmed once per
+initiative at intake and again only on a Tier or Effort deviation from the compiled default. The
+workspace `AGENTS.md` model map binds tiers to the concrete models available in that harness. Effort
+is `low / medium / high / max`; when effort or
 model binding is unsupported, record the actual binding and `n/a` values honestly. Never silently
 upgrade a role to resolve a Run failure. An independent session or human fallback is selected only
 when the Run risk requires semantic independence; a renamed role or tier does not itself establish

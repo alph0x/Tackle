@@ -59,7 +59,12 @@ def brief(identity, kind='standard', fields=True, effort='- **Effort**: high', d
     else:
         text = re.sub(r'- \*\*\{\{clause id\}\}.*?\}\}\.\n', '', text, count=1, flags=re.S)
     lines = []
+    drop_continuation = False
     for line in text.split('\n'):
+        if drop_continuation:
+            drop_continuation = False
+            if line.startswith('  '):
+                continue
         if line.startswith('- **Effort**:'):
             line = effort
         elif line.startswith('- **Type**:'):
@@ -69,6 +74,9 @@ def brief(identity, kind='standard', fields=True, effort='- **Effort**: high', d
         elif line.startswith('- **Write scope**:') and scope:
             line = '- **Write scope**: `' + scope + '`'
         elif line.startswith(('- **Rounds**:', '- **Metric**:', '- **Threshold**:')) and not fields:
+            continue
+        elif line.startswith(('- **Tier**:', '- **Tier reason**:', '- **Escalation**:')):
+            drop_continuation = True
             continue
         lines.append(line)
     text = '\n'.join(lines).replace('{{D-xx}}', 'D-01')
