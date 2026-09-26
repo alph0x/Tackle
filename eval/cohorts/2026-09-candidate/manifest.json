@@ -1,0 +1,159 @@
+{
+  "schema": "tackle-cohort/1",
+  "cohort_id": "2026-09-candidate",
+  "hypothesis": "With the Tackle 9.0.0 candidate, a Haiku executor falls into the planning-outcome traps no more often than with the 8.4.1 method; with the candidate's per-task routing engaged, no more often and at no higher cost than with the candidate at fixed tiers.",
+  "primary_metric": "fall rate: fell over valid episodes, judged mechanically by hidden acceptance tests",
+  "decision_rule": "protocol v2 labels (PROTOCOL.md section 4); the pooled fall-rate difference is computed only over {s62-caller-contract/h1, s64-stored-data-compat/h1} (s63-documented-edge-rule/h1 is pre-registered out of the pool, D-67 rule 3, from T-08's prior inert finding, not from this cohort's own data); fewer than 2 valid episodes in that pair for either arm of a comparison means 'not passed', never PASS; s63-documented-edge-rule/h1 still runs on all four arms and is a binary tripwire — a fall by the candidate_arm where the baseline_arm avoided it in this cohort blocks PASS regardless of the pooled result (Finding 10); `candidate` (R12) requires the pooled lower bound ≥ -0.10 and the median of cost.tokens_in and of cost.tool_calls, each over the same 2 primary-set episodes per arm, strictly lower for method:candidate than for method (both arms are single-session Haiku, so a raw-token median is not distorted by mixed pricing here); `routing` (R13) requires the same pooled rule and, per D-120 item 3's dollar-normalized basis, the median **per-episode dollar cost** — computed from each episode's `roles[].model`/`tokens_in`/`tokens_out` against a price table sealed alongside decision.py (readiness F2, F5) — equal or lower for method:routed than for method:candidate; cost.tokens_in, cost.wall_seconds and cost.tool_calls medians are also computed and printed beside the dollar figure (D-120 item 3's 'reported beside it'), for transparency, but do not gate this condition. The price table prices a blended tokens_in (usage.py sums fresh input, cache-write and ~10x-cheaper cache-read into one field, with no per-episode cache split recorded) at the fresh-input rate throughout, a disclosed, conservative approximation, not a precise dollar figure (readiness F2); the report states this limitation plainly. This dollar basis does not favor method:routed — pricing the planner's frontier-tier session at its real rate makes the routed arm's structural cost premium larger than the raw-token estimate in Contract §4 suggests, not smaller (Contract §4's disclosure (b) is revised accordingly). decision.py sha256=85177f2193d28f8c84635e40ba7b4777c64685891ed3b8e8cbb8edf5f83d4ad8; price-table sha256=8a61cdf01c69d32b83251267c6dc20ca761796f6e553133a1d5fec8fb2ff7be8",
+  "n_min": 1,
+  "seeds": [
+    1
+  ],
+  "variants": [
+    {
+      "scenario_id": "s62-caller-contract",
+      "variant_id": "h1",
+      "split": "held-out",
+      "class": "outcome-trap",
+      "fixture_sha256": "f5ce5ef4e4d07e9c0c51be2018370259ad3a9d73bdf0b950213e6a9cc8ecec2e"
+    },
+    {
+      "scenario_id": "s63-documented-edge-rule",
+      "variant_id": "h1",
+      "split": "held-out",
+      "class": "outcome-trap",
+      "fixture_sha256": "5e96183c353a5709d38448df04c26a9b9cbfddfdf98310d7b15f999078a59200"
+    },
+    {
+      "scenario_id": "s64-stored-data-compat",
+      "variant_id": "h1",
+      "split": "held-out",
+      "class": "outcome-trap",
+      "fixture_sha256": "4e0fc4e32a261f18f668c93d718cc6fe8ec649a54a021e263e086f4aff113b52"
+    }
+  ],
+  "arms": [
+    "control",
+    "method",
+    "method:candidate",
+    "method:routed"
+  ],
+  "comparisons": [
+    {
+      "id": "primary",
+      "baseline_arm": "control",
+      "candidate_arm": "method"
+    },
+    {
+      "id": "candidate",
+      "baseline_arm": "method",
+      "candidate_arm": "method:candidate"
+    },
+    {
+      "id": "routing",
+      "baseline_arm": "method:candidate",
+      "candidate_arm": "method:routed"
+    }
+  ],
+  "executor": {
+    "harness": "claude-code-subagent",
+    "model": "claude-haiku-4-5",
+    "effort": "n/a"
+  },
+  "judge": {
+    "model_family": "n/a",
+    "blinded": true
+  },
+  "artifacts": {
+    "baseline_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "candidate_sha256": "6acd83167c803ad260a2348bd9f6bc32b9d3d26a01ab18591903a00fed1ff2bd"
+  },
+  "oracle_sha256": "75cb8a4652691e2ed4c4b1ed9568d537e36e525af189ae2b28501b7c8d70141d",
+  "order": [
+    {
+      "episode_id": "pilot-1",
+      "scenario_id": "s64-stored-data-compat",
+      "variant_id": "h1",
+      "arm": "control",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-2",
+      "scenario_id": "s63-documented-edge-rule",
+      "variant_id": "h1",
+      "arm": "control",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-3",
+      "scenario_id": "s64-stored-data-compat",
+      "variant_id": "h1",
+      "arm": "method:routed",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-4",
+      "scenario_id": "s63-documented-edge-rule",
+      "variant_id": "h1",
+      "arm": "method:routed",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-5",
+      "scenario_id": "s63-documented-edge-rule",
+      "variant_id": "h1",
+      "arm": "method:candidate",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-6",
+      "scenario_id": "s64-stored-data-compat",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-7",
+      "scenario_id": "s63-documented-edge-rule",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-8",
+      "scenario_id": "s62-caller-contract",
+      "variant_id": "h1",
+      "arm": "method:candidate",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-9",
+      "scenario_id": "s62-caller-contract",
+      "variant_id": "h1",
+      "arm": "method:routed",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-10",
+      "scenario_id": "s64-stored-data-compat",
+      "variant_id": "h1",
+      "arm": "method:candidate",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-11",
+      "scenario_id": "s62-caller-contract",
+      "variant_id": "h1",
+      "arm": "control",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-12",
+      "scenario_id": "s62-caller-contract",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 1
+    }
+  ],
+  "created_at": "2026-09-26T12:14:12Z",
+  "seal_sha256": "bbf46a5feb5cac6a37238003ef33ae9ed20c09f6f375775b0d397c262ae5a5d1"
+}

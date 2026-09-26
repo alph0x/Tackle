@@ -216,6 +216,14 @@
         "test_text_and_ids.py"
       ],
       "tests": 43
+    },
+    {
+      "path": "eval/cohorts/2026-09-candidate",
+      "files": [
+        "test_decision.py",
+        "test_report.py"
+      ],
+      "tests": 27
     }
   ]
 }

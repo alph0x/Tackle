@@ -1,0 +1,9 @@
+{
+  "outside_paths": [
+    "/tmp/test_occupied_days.py"
+  ],
+  "skill_used": false,
+  "verdict": "invalid",
+  "reason": "1 path(s) outside the episode directory",
+  "raw_audit_sha256": "dea746c59fdc08403dbad66be818ca1778fa06164cc0b99bcafa5b9b92b94c2b"
+}

@@ -1,0 +1,22 @@
+{
+  "outside_paths": [
+    "/^```python$/{f=1",
+    "/^```$/{f=0",
+    "/^",
+    "/,",
+    "/^```sh$/{f=1",
+    "/:.*/,",
+    "/^[^:]*:/,",
+    "//",
+    "<home>",
+    "/^[[:space:]]*/,",
+    "/^[[:space:]]*",
+    "/[[:space:]]+$/,",
+    "<private>/",
+    "/tmp/"
+  ],
+  "skill_used": false,
+  "verdict": "invalid",
+  "reason": "14 path(s) outside the episode directory",
+  "raw_audit_sha256": "7b0d0b9d6b5d467b265762fef3b80dca45eb6e458c53418d1189bd853be83d93"
+}
