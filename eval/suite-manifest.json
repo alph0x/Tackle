@@ -124,9 +124,10 @@
       "files": [
         "test_lint_rows.py",
         "test_row8_wrap.py",
-        "test_tier_escalation.py"
+        "test_tier_escalation.py",
+        "test_effort_only_deviation.py"
       ],
-      "tests": 31
+      "tests": 40
     },
     {
       "path": "eval/template-drift",

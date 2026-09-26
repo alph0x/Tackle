@@ -60,7 +60,7 @@ def compiled_brief(identity='T-01', clause=None):
             if line.startswith('  '):
                 continue
         if line.startswith('- **Effort**:'):
-            line = '- **Effort**: high'
+            line = '- **Effort**: high' + '\n- **Tier reason**: effort raised above the compiled default'
         elif line.startswith('- **Type**:'):
             line = '- **Type**: standard.'
         elif line.startswith('- **Depends on**:'):
