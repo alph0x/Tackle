@@ -66,14 +66,14 @@ A compiled Tier is a requested capability. Preflight resolves it against the wor
 dispatches at the bound model. An unbindable Tier records `unsupported` and the model actually used,
 never an invented binding.
 
-A brief that has declared `Escalation` permits one capability-classified correction, once per task: at
-the model map's next bound tier, with effort unchanged from the brief. It is never applied to an
-unbound tier — the task stops with evidence and returns to the planner or owner instead — never past
-that one escalation, and never above the topmost tier (`frontier` has none). It is never available to
-an evaluation control arm, which dispatches no command. The correction spends exactly one task-pool
-cycle, always, including on the task's first validation. The failed role's finish row records
-`Attempts` +1; the retried role starts its own new Run ID with its own start/finish pair, plus one
-`history.md` line.
+A brief that has declared `Escalation` permits one capability-classified correction, once per task: at the
+model map's next tier, with effort unchanged from the brief. It is never applied to an unbound tier,
+or to a next tier whose bound model id matches the model actually used for the failed attempt — both stop
+the task with evidence and return to the planner or owner instead, never skipping to a further tier — never
+past that one escalation, and never above the topmost tier (`frontier` has none). It is never available to
+an evaluation control arm, which dispatches no command. The correction spends exactly one task-pool cycle,
+always, including on the task's first validation. The failed role's finish row records `Attempts` +1; the
+retried role starts its own new Run ID with its own start/finish pair, plus one `history.md` line.
 
 <a id="failure-classification-and-correction"></a>
 ## Failure classification and escalation packet

@@ -133,9 +133,10 @@
       "path": "eval/template-drift",
       "files": [
         "test_template_drift.py",
-        "test_model_routing_text.py"
+        "test_model_routing_text.py",
+        "test_tier_model_collision.py"
       ],
-      "tests": 31
+      "tests": 35
     },
     {
       "path": "eval/protocol-v2",

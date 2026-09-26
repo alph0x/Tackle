@@ -1307,8 +1307,8 @@
     },
     {
       "rule_id": "R-RUN-18",
-      "statement": "A declared capability failure is corrected exactly once, at the model map's next bound tier with effort unchanged, spends one task-pool cycle always, never applies to an unbound tier or a further escalation, never beyond the topmost bound tier, and never for an evaluation control arm.",
-      "statement_sha256": "c300cce289eda9641108b39d53b02fab01e1cef32f8d80bd613728fe2cd8a934",
+      "statement": "A declared capability failure is corrected exactly once, at the model map's next tier with effort unchanged, spends one task-pool cycle always, never applies to an unbound tier, a next tier whose bound model id matches the model actually used for the failed attempt, or a further escalation, never skips to a further tier, never beyond the topmost bound tier, and never for an evaluation control arm.",
+      "statement_sha256": "394cbc57ad5d115fcaa220a84036a0fcb79cdca4fb5f1ce83b281f90173a61e9",
       "home": "references/guides/run-card.md:28",
       "home_fragment": "An implementation fault is corrected; a capability failure",
       "units": [],
@@ -1326,7 +1326,7 @@
         "status": "untested",
         "scenarios": [],
         "cohort_id": null,
-        "as_of": "2026-09-25"
+        "as_of": "2026-09-26"
       },
       "historical": []
     },
