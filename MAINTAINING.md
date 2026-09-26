@@ -55,6 +55,40 @@ of this document. After a reviewed command change, update its digest in
 
 Gate 4 derives the immediately previous version from the stamp: a minor bump requires exactly `v<x.(y-1)> → v<x.y>`; a major bump (`y` = 0) accepts the previous major's last minor on the left side — e.g. releasing 4.0.0 requires `## v3.4 → v4.0 checklist`.
 
+## Change gate
+
+Every add, change or delete of a normative rule needs a ledger diff before release, symmetrically: an
+addition and a change need the diff exactly as much as a delete already did. Its scope is not every
+rule alike — held-out evidence is required only for a hot-path rule or a safety invariant (in either
+revision, so demoting or reclassifying a rule cannot hide its change); every other touched rule still
+needs its ledger diff, printed and named, but not evidence. A pure rewording (the same words, carried
+into the new text) needs no new evidence either way.
+
+Recorded exceptions live in `eval/rules/gate-exceptions.json` (committed), a list of `{rule_id,
+statement_sha256, reason, accepted}`. An entry lets one in-scope add or change pass without this
+release's own evidence, pinned to its current `statement_sha256` so a later restatement voids it.
+`accepted` is a documentation-only date; its format is checked, and it never gates anything. Exceptions
+never excuse a delete. On every run the gate validates and prints every entry's state — applied,
+dormant or void — so a stale or misapplied exception is never silent.
+
+```sh
+python3 eval/rules/check_ledger.py --repo <dir> --gate <base-rev>|auto [--evidence-cohort <cohort-id>]
+```
+
+A release runs the gate as one of its required steps, citing its own evidence cohort:
+
+```sh
+python3 eval/rules/check_ledger.py --repo . --gate auto --evidence-cohort <this release's cohort id>
+```
+
+`<this release's cohort id>` is a placeholder, never a literal id copied from an earlier release.
+
+CI's own step (`.github/workflows/ci.yml`) runs `--gate auto` with no `--evidence-cohort`: it is
+structural-only by design, because CI cannot know a future release's own cohort ahead of time. The
+release procedure above is what ties a diff to the cohort that actually backs it.
+
+See `eval/rules/LEDGER.md` for the evidence schema `evidence.status`/`evidence.cohort_id` follow.
+
 ## Sweep score
 
 The agent computes the sweep numerator and denominator from the observed gate and workspace

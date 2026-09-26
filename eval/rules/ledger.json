@@ -160,7 +160,9 @@
       "home": "SKILL.md:23",
       "home_fragment": "During 8.x, documented legacy aliases forward with",
       "units": [],
-      "mirrors": [],
+      "mirrors": [
+        "references/terminology.md:60"
+      ],
       "class": "behavioral",
       "hot_path": false,
       "origin": {
@@ -2430,7 +2432,10 @@
       "home": "maintaining/migrations.md:260",
       "home_fragment": "do not rewrite or backfill historical rows.",
       "units": [],
-      "mirrors": [],
+      "mirrors": [
+        "SKILL.md:63",
+        "maintaining/migrations.md:260"
+      ],
       "class": "safety-invariant",
       "hot_path": false,
       "origin": {
@@ -2507,7 +2512,10 @@
       "home": "SKILL.md:86",
       "home_fragment": "Releases require separate",
       "units": [],
-      "mirrors": [],
+      "mirrors": [
+        "MAINTAINING.md:16",
+        "MAINTAINING.md:26"
+      ],
       "class": "maintainer",
       "hot_path": false,
       "origin": {

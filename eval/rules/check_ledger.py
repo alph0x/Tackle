@@ -1,13 +1,20 @@
 """Check the rule ledger (eval/rules/ledger.json) and the historical index against a repository.
 
 Usage: python3 eval/rules/check_ledger.py --repo <dir>
+       python3 eval/rules/check_ledger.py --repo <dir> --gate <base-rev>|auto [--evidence-cohort <id>]
 Exit 0 prints warnings and the summary `rules=<n> hot_path=<n> untested=<n> warnings=<n>`; exit 1 prints
 `error: <reason>` lines; exit 2 is a usage error. The repository is only read. LEDGER.md defines the format.
+
+`--gate` additionally diffs the ledger at `<base-rev>` (or the release before this one, resolved from
+`auto`) against the one on disk in `--repo`, and refuses an add, change or delete of a rule in scope
+(hot-path, or a safety invariant, in either revision) without evidence or a recorded exception. See
+`MAINTAINING.md`'s "Change gate" section for the rule stated in full.
 """
 import argparse
 import hashlib
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path, PurePosixPath
 
@@ -314,6 +321,285 @@ def check_origin_and_evidence(report, repo, owner, rule):
     return scenarios
 
 
+class GateRefusal(Exception):
+    """--gate cannot even attempt a diff: an unreadable base revision or exceptions file."""
+
+
+# A sibling rule-diff tool elsewhere in this repository checks that a *fixed, curated* word list (a
+# handful of modal verbs and quantifiers) survives a move, for restructured multi-paragraph prose. Measured
+# against a real statement change already in this ledger (a rule whose reworked-looking statement in fact
+# adds a whole new escalation carve-out that touches none of that curated list), a curated-list comparison
+# would call it a pure reword — exactly the silent-narrowing risk that tool exists to catch, only inverted
+# here (silently widening the rule, unevidenced). A ledger statement is one dense sentence, not a
+# multi-paragraph guide, so this generalizes the pattern to the statement's *entire* word set instead: every
+# word carried into the new text, unchanged, is reworded; any word added or dropped is a candidate semantic
+# change, folded into the evidence rule below instead.
+def normative_tokens(text):
+    """Every word of a rule statement, markup stripped and case folded."""
+    plain = re.sub(r'[`*_|]', ' ', text or '').lower()
+    return set(re.findall(r"[a-z0-9']+", plain))
+
+
+def is_reworded(base_statement, candidate_statement):
+    """A pure rewording carries exactly the same words; any drop or addition is a semantic change, folded
+    into the evidence rule instead."""
+    return normative_tokens(base_statement) == normative_tokens(candidate_statement)
+
+
+def rules_by_id(ledger):
+    """{rule_id: rule} from a raw (possibly structurally invalid) parsed ledger; a malformed entry is
+    silently excluded, since the plain check above already reports it as an error."""
+    found = {}
+    rules = ledger.get('rules') if isinstance(ledger, dict) else None
+    for rule in rules if isinstance(rules, list) else []:
+        if isinstance(rule, dict) and isinstance(rule.get('rule_id'), str):
+            found[rule['rule_id']] = rule
+    return found
+
+
+def in_scope_alone(rule):
+    return isinstance(rule, dict) and (rule.get('hot_path') is True or rule.get('class') == 'safety-invariant')
+
+
+def in_scope(base_rule, candidate_rule):
+    """hot_path, or a safety invariant, in EITHER ledger — so demoting or reclassifying a rule cannot hide
+    its change."""
+    return in_scope_alone(base_rule) or in_scope_alone(candidate_rule)
+
+
+def is_safety_invariant(base_rule, candidate_rule):
+    return (isinstance(base_rule, dict) and base_rule.get('class') == 'safety-invariant') or \
+           (isinstance(candidate_rule, dict) and candidate_rule.get('class') == 'safety-invariant')
+
+
+def diff_ledgers(base_ledger, candidate_ledger):
+    """(added, changed, deleted) rule_id sets. changed excludes a rule newly retired (that counts as
+    deleted instead); added wins when a rule is both added and retired in one diff."""
+    base, candidate = rules_by_id(base_ledger), rules_by_id(candidate_ledger)
+    added = set(candidate) - set(base)
+    newly_retired = {rid for rid in set(base) & set(candidate)
+                     if 'retired_in' in candidate[rid] and 'retired_in' not in base[rid]}
+    deleted = (set(base) - set(candidate)) | newly_retired
+    changed = {rid for rid in set(base) & set(candidate) - newly_retired
+               if base[rid].get('statement_sha256') != candidate[rid].get('statement_sha256')}
+    return added, changed, deleted
+
+
+def evidence_ok(candidate_rule, evidence_cohort):
+    """The two gate-only additions to check_origin_and_evidence's existing structural rule (Finding 2):
+    an untested status is now a hard failure for a touched, in-scope rule, and, when --evidence-cohort is
+    given, the cited cohort must equal it exactly. Everything else (a cohort that fails to resolve,
+    discriminates resting only on discovery) is already a hard error from the plain check above."""
+    evidence = candidate_rule.get('evidence') if isinstance(candidate_rule, dict) else None
+    status = evidence.get('status') if isinstance(evidence, dict) else None
+    cohort = evidence.get('cohort_id') if isinstance(evidence, dict) else None
+    if status is None or status == 'untested':
+        return False, 'status is untested'
+    if evidence_cohort is not None and cohort != evidence_cohort:
+        return False, 'evidence.cohort_id %r is not tied to this cohort (%r)' % (cohort, evidence_cohort)
+    return True, None
+
+
+def mirrors_ok(files, candidate_rule, safety_invariant):
+    """The delete rule's own mirrors condition: every named place resolves, and a safety invariant needs
+    at least one place inside the installed skill."""
+    mirrors = candidate_rule.get('mirrors') if isinstance(candidate_rule, dict) else None
+    if not isinstance(mirrors, list) or not mirrors:
+        return False, 'mirrors is empty'
+    resolved = []
+    for mirror in mirrors:
+        path, _ = files.place(mirror) if isinstance(mirror, str) else (None, None)
+        if path is None:
+            return False, 'mirror does not resolve: %r' % (mirror,)
+        resolved.append(path)
+    if safety_invariant and not any(path == 'SKILL.md' or path.startswith('references/') for path in resolved):
+        return False, 'a safety invariant needs a mirror inside SKILL.md or references/'
+    return True, None
+
+
+EXCEPTION_FIELDS = ('rule_id', 'statement_sha256', 'reason', 'accepted')
+GATE_EXCEPTIONS = 'eval/rules/gate-exceptions.json'
+
+
+def load_exceptions(report, repo):
+    """[{rule_id, statement_sha256, reason, accepted}], or [] when the file is absent."""
+    path = repo / GATE_EXCEPTIONS
+    if not path.is_file():
+        return []
+    try:
+        data = json.loads(path.read_text(encoding='utf-8'))
+    except ValueError:
+        report.error('%s: invalid JSON' % GATE_EXCEPTIONS)
+        return []
+    if not isinstance(data, list):
+        report.error('%s: must be a list' % GATE_EXCEPTIONS)
+        return []
+    entries = []
+    for position, entry in enumerate(data):
+        owner = '%s[%d]' % (GATE_EXCEPTIONS, position)
+        if not fields(report, owner, entry, EXCEPTION_FIELDS):
+            continue
+        ok = True
+        if not isinstance(entry['rule_id'], str) or not RULE_ID.fullmatch(entry['rule_id']):
+            report.error('%s: rule_id must match R-<AREA>-<NN>' % owner)
+            ok = False
+        if not isinstance(entry['statement_sha256'], str) or not SHA256.fullmatch(entry['statement_sha256']):
+            report.error('%s: statement_sha256 must be 64 lowercase hex digits' % owner)
+            ok = False
+        if not is_text(entry['reason']):
+            report.error('%s: reason must be text' % owner)
+            ok = False
+        if not isinstance(entry['accepted'], str) or not DATE.fullmatch(entry['accepted']):
+            report.error('%s: accepted must be YYYY-MM-DD' % owner)
+            ok = False
+        if ok:
+            entries.append(entry)
+    return entries
+
+
+def git_text(repo, *args):
+    result = subprocess.run(['git', '-C', str(repo)] + list(args), capture_output=True, text=True)
+    return result.returncode, result.stdout.strip()
+
+
+def resolve_auto(repo):
+    """CI's `--gate auto`: the most recent tag reachable from HEAD^ whose tree holds the ledger, else the
+    commit that first added it (re-check N1). Walks tag-by-tag rather than by date, retrying from one
+    commit before each candidate tag until one qualifies or none remain."""
+    spec, seen = 'HEAD^', set()
+    while True:
+        code, commit = git_text(repo, 'rev-parse', spec)
+        if code != 0 or not commit or commit in seen:
+            break
+        seen.add(commit)
+        code, tag = git_text(repo, 'describe', '--tags', '--abbrev=0', commit)
+        if code != 0 or not tag:
+            break
+        code, _ = git_text(repo, 'cat-file', '-e', '%s:%s' % (tag, inventory.LEDGER))
+        if code == 0:
+            return tag
+        spec = tag + '^'
+    code, out = git_text(repo, 'log', '--diff-filter=A', '--format=%H', '--', inventory.LEDGER)
+    lines = [line for line in out.splitlines() if line.strip()]
+    if code != 0 or not lines:
+        raise GateRefusal('--gate auto: no commit adds %s' % inventory.LEDGER)
+    return lines[-1]  # git log lists newest first; the last line is the oldest (first) add
+
+
+def load_base_ledger(repo, base_rev):
+    code, resolved = git_text(repo, 'rev-parse', base_rev) if base_rev != 'auto' else (0, None)
+    if base_rev != 'auto' and code != 0:
+        raise GateRefusal('--gate: %s does not resolve to a revision' % base_rev)
+    rev = resolve_auto(repo) if base_rev == 'auto' else base_rev
+    code, out = git_text(repo, 'show', '%s:%s' % (rev, inventory.LEDGER))
+    if code != 0:
+        raise GateRefusal('--gate: cannot read %s at %s (%s)' % (inventory.LEDGER, base_rev, rev))
+    try:
+        return rev, json.loads(out)
+    except ValueError:
+        raise GateRefusal('--gate: invalid JSON in %s at %s' % (inventory.LEDGER, rev))
+
+
+def void_reason(rule_id, entry, candidate):
+    """None when the entry is not void; otherwise why it is."""
+    if rule_id not in candidate:
+        return 'rule is not in the candidate ledger'
+    if entry['statement_sha256'] != candidate[rule_id].get('statement_sha256'):
+        return 'statement changed since it was recorded'
+    return None
+
+
+def run_gate(report, repo, base_rev, evidence_cohort, candidate_ledger):
+    """Everything --gate adds on top of the plain check above; appends to `report` and returns
+    (resolved_base_rev, always_lines, clean_lines). `always_lines` (every exception's applied/dormant/void
+    state) prints on every run, errors included — read literally, "on every run, CI's included" for the
+    exceptions summary specifically. `clean_lines` (the added/changed/deleted counts and each
+    in-scope rule's own citation) prints only after the summary on a clean run, matching "exit 0 on a
+    clean diff, printing the counts". The resolved base itself is printed unconditionally by the caller,
+    even earlier, so a red run still shows what it diffed against. Raises GateRefusal when the base itself
+    cannot be read."""
+    rev, base_ledger = load_base_ledger(repo, base_rev)
+    candidate = rules_by_id(candidate_ledger)
+    base = rules_by_id(base_ledger)
+    added, changed, deleted = diff_ledgers(base_ledger, candidate_ledger)
+    exceptions = {entry['rule_id']: entry for entry in load_exceptions(report, repo)}
+    files = Files(repo)
+    # Void once, up front, so a rule's own evaluation and the exceptions summary never disagree and
+    # never report the same void entry twice.
+    void = {rule_id: void_reason(rule_id, entry, candidate) for rule_id, entry in exceptions.items()}
+    void = {rule_id: reason for rule_id, reason in void.items() if reason is not None}
+    out_of_scope, in_scope_lines, applied = [], [], set()
+
+    def excused(rule_id):
+        """Exceptions never apply to a deletion: only the add/changed loops call this."""
+        if rule_id not in exceptions or rule_id in void:
+            return False
+        applied.add(rule_id)
+        return True
+
+    for rule_id in sorted(added):
+        rule = candidate[rule_id]
+        if not in_scope(None, rule):
+            out_of_scope.append(rule_id)
+            continue
+        ok, reason = evidence_ok(rule, evidence_cohort)
+        if ok:
+            in_scope_lines.append('%s: added, evidence %s' % (rule_id, rule['evidence'].get('status')))
+        elif excused(rule_id):
+            in_scope_lines.append('%s: added, exception applied' % rule_id)
+        else:
+            report.error('%s: added rule needs held-out evidence: %s' % (rule_id, reason))
+
+    for rule_id in sorted(changed):
+        base_rule, candidate_rule = base[rule_id], candidate[rule_id]
+        if is_reworded(base_rule['statement'], candidate_rule['statement']):
+            in_scope_lines.append('%s: reworded, no new evidence needed' % rule_id) \
+                if in_scope(base_rule, candidate_rule) else None
+            continue
+        if not in_scope(base_rule, candidate_rule):
+            out_of_scope.append(rule_id)
+            continue
+        ok, reason = evidence_ok(candidate_rule, evidence_cohort)
+        if ok:
+            in_scope_lines.append('%s: changed, evidence %s' % (rule_id, candidate_rule['evidence'].get('status')))
+        elif excused(rule_id):
+            in_scope_lines.append('%s: changed, exception applied' % rule_id)
+        else:
+            report.error('%s: changed rule needs held-out evidence: %s' % (rule_id, reason))
+
+    for rule_id in sorted(deleted):
+        base_rule, candidate_rule = base.get(rule_id), candidate.get(rule_id)
+        if not in_scope(base_rule, candidate_rule):
+            out_of_scope.append(rule_id)
+            continue
+        safety_invariant = is_safety_invariant(base_rule, candidate_rule)
+        base_evidence = base_rule.get('evidence') if isinstance(base_rule, dict) else None
+        base_status = base_evidence.get('status') if isinstance(base_evidence, dict) else None
+        if base_status is not None and base_status != 'untested':
+            in_scope_lines.append('%s: deleted, prior evidence %s' % (rule_id, base_status))
+            continue
+        if candidate_rule is None:
+            report.error('%s: deleted rule needs prior evidence (no candidate entry to carry mirrors)' % rule_id)
+            continue
+        ok, reason = mirrors_ok(files, candidate_rule, safety_invariant)
+        if ok:
+            in_scope_lines.append('%s: deleted, mirrors %s' % (rule_id, ', '.join(candidate_rule['mirrors'])))
+        else:
+            report.error('%s: deleted rule needs prior evidence or resolving mirrors: %s' % (rule_id, reason))
+
+    for rule_id in sorted(void):
+        report.error('%s: %s: void exception (%s)' % (GATE_EXCEPTIONS, rule_id, void[rule_id]))
+
+    always_lines = []
+    for rule_id in sorted(exceptions):
+        state = 'applied' if rule_id in applied else 'void' if rule_id in void else 'dormant'
+        always_lines.append('exception: %s %s' % (state, rule_id))
+    clean_lines = ['gate: added=%d changed=%d deleted=%d' % (len(added), len(changed), len(deleted))]
+    clean_lines += ['in-scope: ' + line for line in in_scope_lines]
+    clean_lines.append("untested (outside the gate's scope): %s" % (', '.join(sorted(out_of_scope)) or 'none'))
+    return rev, always_lines, clean_lines
+
+
 def check_coverage(report, repo, rules, non_normative):
     try:
         found = inventory.units((repo / 'SKILL.md').read_text(encoding='utf-8'))
@@ -352,20 +638,20 @@ def check(repo):
     path = repo / inventory.LEDGER
     if not path.is_file():
         report.error('ledger: missing %s' % inventory.LEDGER)
-        return report, None
+        return report, None, None
     try:
         ledger = json.loads(path.read_text(encoding='utf-8'))
     except ValueError:
         report.error('ledger: invalid JSON in %s' % inventory.LEDGER)
-        return report, None
+        return report, None, None
     if not fields(report, 'ledger', ledger, LEDGER_FIELDS):
-        return report, None
+        return report, None, ledger
     if ledger['schema'] != 'tackle-rule-ledger/1':
         report.error('ledger: schema must be tackle-rule-ledger/1')
     rules, non_normative = ledger['rules'], ledger['non_normative']
     if not isinstance(rules, list) or not isinstance(non_normative, list):
         report.error('ledger: rules and non_normative must be lists')
-        return report, None
+        return report, None, ledger
     valid, seen = [], set()
     for position, rule in enumerate(rules):
         if check_rule(report, repo, files, rule, index, position):
@@ -390,25 +676,41 @@ def check(repo):
         len(valid), sum(1 for r in valid if r['hot_path'] is True),
         sum(1 for r in valid if isinstance(r['evidence'], dict) and r['evidence'].get('status') == 'untested'),
         len(report.warnings))
-    return report, summary
+    return report, summary, ledger
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description='Check the rule ledger against a repository.')
     parser.add_argument('--repo', required=True)
+    parser.add_argument('--gate', metavar='<base-rev>|auto',
+                        help="diff the ledger at <base-rev> (or the release before this one, from 'auto') "
+                             "against --repo, and refuse an unevidenced add, change or delete in scope")
+    parser.add_argument('--evidence-cohort', metavar='<cohort-id>',
+                        help='require --gate to see this exact cohort_id on a touched, in-scope rule')
     args = parser.parse_args(argv)
     repo = Path(args.repo)
     if not repo.is_dir():
         print('usage: --repo must be a directory: %s' % repo, file=sys.stderr)
         return 2
-    report, summary = check(repo)
+    report, summary, ledger = check(repo)
     for warning in report.warnings:
         print('warning: ' + warning)
+    clean_lines = []
+    if args.gate is not None and ledger is not None:
+        try:
+            rev, always_lines, clean_lines = run_gate(report, repo, args.gate, args.evidence_cohort, ledger)
+            print('gate: base=%s' % rev)  # printed unconditionally, errors included (re-check N1)
+            for line in always_lines:
+                print(line)  # every exception's state, also unconditional (re-check N1)
+        except GateRefusal as problem:
+            report.error(str(problem))
     for error in report.errors:
         print('error: ' + error)
     if report.errors:
         return 1
     print(summary)
+    for line in clean_lines:
+        print(line)
     return 0
 
 

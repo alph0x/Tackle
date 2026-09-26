@@ -42,6 +42,8 @@ jobs:
         run: python3 eval/run_suites.py --output "$RUNNER_TEMP/tackle-suite-results"
       - name: Check evidence-record currency (verifies records and claims, not agent behavior)
         run: python3 eval/records/check_currency.py --repo .
+      - name: Run the change gate, structural-only (no release cohort to cite from CI)
+        run: python3 eval/rules/check_ledger.py --repo . --gate auto
       - name: Preserve deterministic outcomes and raw command streams
         if: always()
         uses: actions/upload-artifact@v4

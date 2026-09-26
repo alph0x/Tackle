@@ -27,14 +27,31 @@ builder = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(builder)
 WORK = tempfile.TemporaryDirectory()
 FIX = Path(WORK.name) / 'fixtures'
+GATE_WORK = tempfile.TemporaryDirectory()
+GATE_FIX = Path(GATE_WORK.name) / 'gate'
+GATE_AUTO_FIX = Path(GATE_WORK.name) / 'gate-auto'
+GATE_BASES = {}
+GATE_AUTO_ROOTS = {}
+PREFLIGHT_BASE = '8b12ba7f11595adbbd13e06c1871e741155c6004'  # this task's own starting commit
 
 
 def setUpModule():
     subprocess.run([sys.executable, str(BUILD), str(FIX)], check=True, capture_output=True, timeout=120)
+    global GATE_BASES, GATE_AUTO_ROOTS
+    GATE_BASES = builder.build_gate(GATE_FIX)
+    GATE_AUTO_ROOTS = builder.build_gate_auto(GATE_AUTO_FIX)
 
 
 def tearDownModule():
     WORK.cleanup()
+    GATE_WORK.cleanup()
+
+
+def gate(repo, base_rev, cohort=None, timeout=60):
+    args = [sys.executable, str(CHECK), '--repo', str(repo), '--gate', base_rev]
+    if cohort is not None:
+        args += ['--evidence-cohort', cohort]
+    return subprocess.run(args, capture_output=True, text=True, timeout=timeout)
 
 SUITE = 'eval/runs/2026-01-01-suite.md'
 MIXED = 'eval/runs/2026-01-02-mixed.md'
@@ -197,6 +214,212 @@ class InventoryTests(unittest.TestCase):
             self.assertEqual(run(CHECK, '--repo', copy).returncode, 0)
             self.assertTrue(filecmp.cmp(copy / 'eval/rules/ledger.json', FIX / 'valid-base/eval/rules/ledger.json',
                                         shallow=False))
+
+
+class GateCases(unittest.TestCase):
+    """The change gate (`check_ledger.py --gate`): every fixture is a single-commit git repository whose
+    committed tree is the base revision and whose (uncommitted) working tree is the candidate; the gate
+    reads the base through `git show` and the candidate straight off disk, so no second commit is needed."""
+
+    def root(self, name):
+        return GATE_FIX / name
+
+    def test_add_without_evidence_fails(self):
+        result = gate(self.root('c1-add-untested'), GATE_BASES['c1-add-untested'], '2026-09-candidate')
+        self.assertEqual(result.returncode, 1, result.stdout)
+        self.assertIn('R-INTAKE-90: added rule needs held-out evidence: status is untested', result.stdout)
+
+    def test_delete_without_inventory_fails(self):
+        result = gate(self.root('c2-delete-no-inventory'), GATE_BASES['c2-delete-no-inventory'])
+        self.assertEqual(result.returncode, 1, result.stdout)
+        self.assertIn('R-INTAKE-91: deleted rule needs prior evidence or resolving mirrors: mirrors is empty',
+                      result.stdout)
+
+    def test_add_validated_only_by_its_discovering_scenario_fails(self):
+        result = gate(self.root('c3-add-discovery-only'), GATE_BASES['c3-add-discovery-only'], '2026-09-candidate')
+        self.assertEqual(result.returncode, 1, result.stdout)
+        self.assertIn('discriminates rests only on discovering scenarios', result.stdout)
+
+    def test_add_with_held_out_evidence_passes(self):
+        result = gate(self.root('c4-add-held-out-evidence'), GATE_BASES['c4-add-held-out-evidence'],
+                     '2026-09-candidate')
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn('in-scope: R-INTAKE-93: added, evidence inconclusive', result.stdout)
+
+    def test_reword_with_no_semantic_change_needs_no_evidence(self):
+        result = gate(self.root('c5-reword-no-semantic-change'), GATE_BASES['c5-reword-no-semantic-change'])
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn('gate: added=0 changed=1 deleted=0', result.stdout)
+        self.assertNotIn('needs held-out evidence', result.stdout)
+
+    def test_add_citing_an_unrelated_cohort_fails(self):
+        result = gate(self.root('c21-add-unrelated-cohort'), GATE_BASES['c21-add-unrelated-cohort'],
+                     '2026-09-candidate')
+        self.assertEqual(result.returncode, 1, result.stdout)
+        self.assertIn('not tied to this cohort', result.stdout)
+
+    def test_delete_with_prior_evidence_passes(self):
+        result = gate(self.root('c22-delete-prior-evidence'), GATE_BASES['c22-delete-prior-evidence'])
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn('in-scope: R-INTAKE-95: deleted, prior evidence inert', result.stdout)
+
+    def test_delete_restated_elsewhere_passes(self):
+        result = gate(self.root('c23-delete-restated-elsewhere'), GATE_BASES['c23-delete-restated-elsewhere'])
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn('in-scope: R-INTAKE-96: deleted, mirrors references/guide.md:1', result.stdout)
+
+    def test_retire_in_place_with_no_evidence_is_still_a_deletion(self):
+        result = gate(self.root('c29-retire-in-place'), GATE_BASES['c29-retire-in-place'])
+        self.assertEqual(result.returncode, 1, result.stdout)
+        self.assertIn('R-INTAKE-97: deleted rule needs prior evidence or resolving mirrors: mirrors is empty',
+                      result.stdout)
+
+    def test_a_non_hot_path_add_is_out_of_scope(self):
+        result = gate(self.root('c30a-out-of-scope-add'), GATE_BASES['c30a-out-of-scope-add'])
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn("untested (outside the gate's scope): R-INTAKE-98", result.stdout)
+
+    def test_scope_survives_a_demotion_to_non_hot_path(self):
+        result = gate(self.root('c30b-scope-survives-demotion'), GATE_BASES['c30b-scope-survives-demotion'])
+        self.assertEqual(result.returncode, 1, result.stdout)
+        self.assertIn('R-INTAKE-99: changed rule needs held-out evidence', result.stdout)
+
+    def test_change_with_evidence_passes(self):
+        result = gate(self.root('c31-change-with-evidence'), GATE_BASES['c31-change-with-evidence'],
+                     '2026-09-candidate')
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn('in-scope: R-EVID-90: changed, evidence inert', result.stdout)
+
+    def test_a_recorded_exception_applies(self):
+        result = gate(self.root('c32-exception-applies'), GATE_BASES['c32-exception-applies'])
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn('exception: applied R-EVID-91', result.stdout)
+
+    def test_a_recorded_exception_voids_when_the_statement_moves_again(self):
+        result = gate(self.root('c33-exception-void'), GATE_BASES['c33-exception-void'])
+        self.assertEqual(result.returncode, 1, result.stdout)
+        self.assertIn('void exception (statement changed since it was recorded)', result.stdout)
+        self.assertIn('exception: void R-EVID-91', result.stdout)
+
+    def test_safety_invariant_retired_with_only_an_outside_mirror_fails(self):
+        result = gate(self.root('c34a-safety-invariant-outside-only'), GATE_BASES['c34a-safety-invariant-outside-only'])
+        self.assertEqual(result.returncode, 1, result.stdout)
+        self.assertIn('a safety invariant needs a mirror inside SKILL.md or references/', result.stdout)
+
+    def test_safety_invariant_retired_with_one_inside_mirror_passes(self):
+        result = gate(self.root('c34b-safety-invariant-one-inside'), GATE_BASES['c34b-safety-invariant-one-inside'])
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn('in-scope: R-EVID-92: deleted, mirrors', result.stdout)
+
+    def test_reclassifying_a_safety_invariant_does_not_excuse_its_deletion(self):
+        result = gate(self.root('c34c-safety-invariant-reclassified'),
+                     GATE_BASES['c34c-safety-invariant-reclassified'])
+        self.assertEqual(result.returncode, 1, result.stdout)
+        self.assertIn('a safety invariant needs a mirror inside SKILL.md or references/', result.stdout)
+
+    def test_exceptions_never_excuse_a_deletion(self):
+        result = gate(self.root('c35-no-exception-for-deletion'), GATE_BASES['c35-no-exception-for-deletion'])
+        self.assertEqual(result.returncode, 1, result.stdout)
+        self.assertIn('R-EVID-93: deleted rule needs prior evidence or resolving mirrors: mirrors is empty',
+                      result.stdout)
+        # exceptions never apply to a deletion: this one is at most dormant, never applied.
+        self.assertNotIn('exception: applied', result.stdout)
+
+    def test_exception_naming_an_absent_rule_is_void(self):
+        result = gate(self.root('c36a-exception-ghost-rule'), GATE_BASES['c36a-exception-ghost-rule'])
+        self.assertEqual(result.returncode, 1, result.stdout)
+        self.assertIn('void exception (rule is not in the candidate ledger)', result.stdout)
+        self.assertIn('exception: void R-EVID-94', result.stdout)
+
+    def test_exception_on_an_untouched_rule_is_dormant(self):
+        result = gate(self.root('c36b-exception-dormant'), GATE_BASES['c36b-exception-dormant'])
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn('exception: dormant R-ENTRY-01', result.stdout)
+
+    def test_no_exceptions_file_on_a_clean_diff_passes(self):
+        result = gate(self.root('c36c-no-exceptions-file'), GATE_BASES['c36c-no-exceptions-file'])
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertNotIn('exception:', result.stdout)
+
+    def test_gate_prints_the_added_changed_deleted_counts(self):
+        result = gate(self.root('c4-add-held-out-evidence'), GATE_BASES['c4-add-held-out-evidence'],
+                     '2026-09-candidate')
+        self.assertIn('gate: added=1 changed=0 deleted=0', result.stdout)
+
+
+class GateAutoResolution(unittest.TestCase):
+    """`--gate auto`'s base resolution: a tag reachable from HEAD^ whose tree holds the ledger, else the
+    commit that first added it. Each fixture is checked for its resolved base only; whether that specific
+    diff then passes or fails is not the point of this resolution rule."""
+
+    def resolved_base(self, name):
+        result = gate(GATE_AUTO_ROOTS[name], 'auto')
+        lines = [line for line in result.stdout.splitlines() if line.startswith('gate: base=')]
+        self.assertEqual(len(lines), 1, result.stdout)
+        return lines[0][len('gate: base='):], result
+
+    def test_falls_back_to_the_first_commit_that_added_the_ledger_when_every_tag_predates_it(self):
+        base, result = self.resolved_base('c28a-only-tags-predate-ledger')
+        first_add = subprocess.run(['git', '-C', str(GATE_AUTO_ROOTS['c28a-only-tags-predate-ledger']), 'log',
+                                    '--diff-filter=A', '--format=%H', '--', 'eval/rules/ledger.json'],
+                                   capture_output=True, text=True).stdout.split()[-1]
+        self.assertEqual(base, first_add)
+        self.assertNotIn('error:', result.stdout)
+
+    def test_resolves_to_the_nearest_ledger_bearing_tag_behind_head(self):
+        base, result = self.resolved_base('c28b-ledger-tag-behind-head')
+        self.assertEqual(base, 'v2')
+
+    def test_never_resolves_to_a_tag_on_head_itself(self):
+        base, result = self.resolved_base('c28c-tag-on-head-itself')
+        self.assertEqual(base, 'v1')
+        self.assertNotEqual(base, 'v2')  # v2 is the tag on HEAD itself
+
+
+class RepositoryGateRegressionTests(unittest.TestCase):
+    """The gate is additive: a plain run never changes, and every new prose word this task commits stays
+    free of a workspace-local id."""
+
+    def test_plain_mode_is_byte_identical_between_the_old_and_new_code(self):
+        """Compares code, not the live ledger (whose add/changed/deleted counts move by design as this
+        task's own edits land): both the pre-task and the post-task check_ledger.py run against one fixed,
+        unrelated fixture snapshot that neither of them touches."""
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            old_check = tmp / 'check_ledger.py'
+            old = subprocess.run(['git', '-C', str(REPO), 'show', '%s:eval/rules/check_ledger.py' % PREFLIGHT_BASE],
+                                 capture_output=True, text=True, check=True)
+            old_check.write_text(old.stdout, encoding='utf-8')
+            shutil.copy(REPO / 'eval/rules/inventory.py', tmp / 'inventory.py')
+            fixture = FIX / 'valid-base'
+            before = run(old_check, '--repo', fixture)
+            after = run(CHECK, '--repo', fixture)
+            self.assertEqual((before.returncode, before.stdout), (after.returncode, after.stdout))
+            self.assertEqual(before.stderr, after.stderr)
+
+    def test_no_staged_addition_carries_a_workspace_id_or_slug(self):
+        """A grep over every '+'-prefixed line of the diff between this task's own starting commit and the
+        working tree, repo-wide (not only the files this task's brief names): a bare `<letter><NN>` token
+        for the seven letters this repository's workspace ids use, or the workspace's own directory slug.
+        Refined with two guards a blind sweep would need in this codebase: a rule id such as R-EVID-01 or
+        R-COMM-03 is not a leak (the letter sits mid-word, preceded by another letter), and an ISO timestamp
+        such the ones this test suite writes (`...T00:00:00`) is not a leak (immediately followed by a
+        colon, never true of a real workspace id). This check's own source is exempt: it must spell out
+        the pattern and the slug literally to define them, exactly as the pre-existing credential guard
+        (eval/suite-integrity/test_credential_guard.py) already exempts itself from its own home-path scan."""
+        self_path = str(Path(__file__).resolve().relative_to(REPO))
+        pattern = re.compile(r'(?<![A-Za-z])[PTDQRCM]-?[0-9]{2}(?!:)|tackle' + '-9')
+        result = subprocess.run(['git', '-C', str(REPO), 'diff', PREFLIGHT_BASE, '--unified=0'],
+                                capture_output=True, text=True, check=True)
+        found, path = [], None
+        for line in result.stdout.splitlines():
+            if line.startswith('+++ '):
+                name = line[4:]
+                path = None if name == '/dev/null' else name[2:] if name.startswith('b/') else name
+            elif (path and path != self_path and line.startswith('+') and not line.startswith('+++')
+                  and pattern.search(line[1:])):
+                found.append('%s: %s' % (path, line[1:]))
+        self.assertEqual(found, [])
 
 
 if __name__ == '__main__':

@@ -1,0 +1,8 @@
+[
+ {
+  "rule_id": "R-RUN-10",
+  "statement_sha256": "d9392b25e54e308c090a82964f6802786ecd402f29b5540b6415c5a5b653c4fc",
+  "reason": "The statement's added clause concerns a declared capability escalation, which never fires in a live episode this cohort dispatches, so the cohort's traps cannot give it honest evidence. It stays untested by design, not by oversight.",
+  "accepted": "2026-09-26"
+ }
+]
