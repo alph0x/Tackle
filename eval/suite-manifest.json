@@ -178,7 +178,7 @@
       "files": [
         "test_install.py"
       ],
-      "tests": 24
+      "tests": 30
     },
     {
       "path": "eval/hot-path",
@@ -207,6 +207,15 @@
         "test_field_report.py"
       ],
       "tests": 25
+    },
+    {
+      "path": "eval/learning-loop",
+      "files": [
+        "test_confidence.py",
+        "test_coverage_table.py",
+        "test_text_and_ids.py"
+      ],
+      "tests": 43
     }
   ]
 }

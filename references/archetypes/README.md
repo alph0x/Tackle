@@ -5,7 +5,9 @@ A reference plan is a **proven decomposition skeleton** — the shape of an init
 
 ## File format
 
-One file per reference plan (legacy archetype): `references/archetypes/<name>.md`, kebab-case name. Sections, in order:
+One file per reference plan (legacy archetype): `<name>.md`, kebab-case name, stored at
+`.tackle/archetypes/<name>.md` (project scope) or `~/.tackle/archetypes/<name>.md` (user scope) —
+never under this installed `references/` tree. Sections, in order:
 
 - **Name and one-line summary** — what shape of initiative this skeleton fits.
 - **Task list** — the tasks as they were decomposed (titles + one-line responsibility each).
@@ -16,10 +18,18 @@ One file per reference plan (legacy archetype): `references/archetypes/<name>.md
 
 ## Write path — single
 
-Only the `retro` workflow writes reference plans. Never hand-author or hand-edit a file here outside a retro; extraction is offered at initiative close when the decomposition held. Everything is batch-confirmed by the user before writing (see `guides/retro.md` §Reference plan candidates).
+Only the `retro` workflow writes reference plans, to `.tackle/archetypes/<name>.md` or
+`~/.tackle/archetypes/<name>.md` (matching whichever profile scope it was distilled alongside).
+Never hand-author or hand-edit a file here outside a retro; extraction is offered at initiative
+close when the decomposition held. Everything is batch-confirmed by the user before writing (see
+`guides/retro.md` §Reference plan candidates).
 
 ## Read path — intake
 
-PLAN intake reads this directory alongside profiles (see `guides/intake-and-gate.md` §Learning-loop read). When a reference plan matches the incoming initiative's shape, PLAN offers its skeleton as a tagged proposal — `(from archetype <name>)` — never a silent default. The user may accept, adapt, or override; overrides are retro material.
+PLAN intake reads `.tackle/archetypes/` and `~/.tackle/archetypes/` alongside the profiles at those
+same scopes (see `guides/intake-and-gate.md` §Learning-loop read). When a reference plan matches the
+incoming initiative's shape, PLAN offers its skeleton as a tagged proposal — `(from archetype
+<name>)` — never a silent default. The user may accept, adapt, or override; overrides are retro
+material.
 
 Existing extracted plans are historical learning records: preserve their original names, wording, IDs and provenance. Read `Point list` as the legacy form of `Task list`; naming does not authorize rewriting those records.

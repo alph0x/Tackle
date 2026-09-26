@@ -30,7 +30,7 @@ not require another agent or prove independence.
 | Check summary / raw check record | Receipt / observation | Readable index / original captured event. An execution remains a distinct event. |
 | Open question / pending decision / blocker | historically mixed in questions | Information request / unresolved choice / condition preventing affected work. Do not conflate them. |
 | Backlog idea | Seed; `docs/seeds/` | Deliberately deferred work, with the same gitignore decision as plans. |
-| Reference plan | Archetype; `references/archetypes/` | Reusable proven structure, not an obligation to copy it. |
+| Reference plan | Archetype; `.tackle/archetypes/` / `~/.tackle/archetypes/` | Reusable proven structure, not an obligation to copy it. |
 | Preferences and lessons | Profile; existing profile paths | Applicable preferences, directives and hypotheses with consent-controlled writes. |
 | Resource usage | Usage; historical `usage.md`; `tackle-observability/2` schema | New `resource-usage.md` and optional `resource-usage.telemetry.jsonl` hold observed lifecycle and resource information; old sidecar paths remain readable; unknown remains `n/a`. |
 | Executor | Driver / Executor | Implements authorized work. |

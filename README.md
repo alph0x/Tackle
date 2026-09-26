@@ -209,7 +209,7 @@ The install keeps the head of the checklist chain v2.0 → v8.4: [8.4.0 → 8.4.
 <details>
 <summary>Learning and usage records</summary>
 
-A retro reads the task board and history (`task-board.md` and `history.md`) to propose lessons. You confirm profile changes before they are written. “Stop evolving” pauses or removes that learning through the retro workflow. [Reference plans](references/archetypes/) provide proven decomposition structures that the agent can propose during intake.
+A retro reads the task board and history (`task-board.md` and `history.md`) to propose lessons. You confirm profile changes before they are written. “Stop evolving” pauses or removes that learning through the retro workflow. [Reference plans](references/archetypes/README.md) provide proven decomposition structures that the agent can propose during intake, stored under `.tackle/archetypes/` (project) or `~/.tackle/archetypes/` (user).
 
 The `resource-usage.md` ledger records observed role events even without token or cost data. Unknown values stay `n/a`. Optional `resource-usage.telemetry.jsonl` observations are never required to close a task.
 

@@ -4,7 +4,7 @@ Triggered by `retro [initiative]` or a natural phrase like "retro" / "how did it
 is optional: run it at initiative close or on demand as a clearly labelled partial retro. It does
 not replace RUN closure or create an autonomy loop.
 
-**Principle: detection before judgment.** Mine `task-board.md` + `history.md` by grep/count first; use judgment only to distill the counts into lessons. For an unindexed archive, mining reads `history-archive.md` then `history.md` in a new workspace, or `log-archive.md` then `log.md` in a historical workspace. For indexed segments use the validated chronological archive index from `context-lifecycle.md`, then the active history; never count checkpoints or summaries as original events. Missing/corrupt history makes affected metrics unavailable, never zero. Read-only over the selected task board, history and `decisions.md`; the only writes are `docs/plans/<initiative>/retro.md` (instantiated from `references/retro.tmpl.md`) and one entry in the selected history.
+**Principle: detection before judgment.** Mine `task-board.md` + `history.md` by grep/count first; use judgment only to distill the counts into lessons. For an unindexed archive, mining reads `history-archive.md` then `history.md` in a new workspace, or `log-archive.md` then `log.md` in a historical workspace. For indexed segments use the validated chronological archive index from `context-lifecycle.md`, then the active history; never count checkpoints or summaries as original events. Missing/corrupt history makes affected metrics unavailable, never zero. Read-only over the selected task board, history and `decisions.md`; writes go where [Where results go](#where-results-go) lists them, starting with `docs/plans/<initiative>/retro.md` (instantiated from `references/retro.tmpl.md`).
 
 ## Metrics — mined, not remembered
 
@@ -37,9 +37,14 @@ and task time-to-green remain useful when exact telemetry coverage is 0%.
 
 ### Fixture recipe
 
-Run `awk 'BEGIN{FS=sprintf("%c",124)} {m=$2; sub(/^[[:space:]]+/,"",m); sub(/[[:space:]]+$/,"",m); r=$6; sub(/^[[:space:]]+/,"",r); sub(/[[:space:]]+$/,"",r)} (m=="duration") + (m=="attempts") + (m=="rework") + (m=="verification") + (m=="tokens") {print m " " r}' resource-usage.md` from a fixture workspace. The four fixtures under
-`eval/fixtures/usage-observability/` are the reference cases: zero prints `0/N`, partial and
-mixed suppress aggregates, and full alone permits expected totals and recommendations.
+Run `s=resource-usage.telemetry.jsonl; [ -f "$s" ] || s=/dev/null; awk 'BEGIN{FS=sprintf("%c",124)} FNR==NR{ev=$3;sub(/^[[:space:]]+/,"",ev);sub(/[[:space:]]+$/,"",ev);if(ev!="start"&&ev!="finish"&&ev!="observe-incomplete")next;rid=$2;sub(/^[[:space:]]+/,"",rid);sub(/[[:space:]]+$/,"",rid);at=$10;sub(/^[[:space:]]+/,"",at);sub(/[[:space:]]+$/,"",at);oc=$11;sub(/^[[:space:]]+/,"",oc);sub(/[[:space:]]+$/,"",oc);if(ev=="start"){if(at!=""&&at!="n/a")sok[rid]=1}else{term[rid]=1;if(ev=="finish"&&oc=="success"){fsc[rid]=1;if(at!=""&&at!="n/a")fok[rid]=1}};next} {if($0~/"scope"[[:space:]]*:[[:space:]]*"role"/){if(match($0,/"run_id"[[:space:]]*:[[:space:]]*"[^"]*"/)){seg=substr($0,RSTART,RLENGTH);n=split(seg,pp,"\"");side[pp[4]]=1}}} END{de=0;dm=0;te=0;tm=0;for(r in term){te++;if(r in side)tm++;de++;if(fsc[r]&&sok[r]&&fok[r])dm++};if(tm==0)printf "tokens 0/N (0%%)\n";else printf "tokens %d/%d (%d%%)\n",tm,te,int(100*tm/te+0.5);if(dm==0)printf "duration 0/N (0%%)\n";else printf "duration %d/%d (%d%%)\n",dm,de,int(100*dm/de+0.5)}' resource-usage.md "$s"` from a fixture workspace.
+
+`Measured/Eligible` counts distinct `Run ID` role-instances that reached a terminal
+event (`finish` or `observe-incomplete`); `duration` also needs a `finish` with `Outcome: success`
+and a parseable start+finish `At` pair; `tokens` also needs a `scope: role` sidecar entry joined by
+exact `run_id` (absent sidecar ⇒ `0` measured for every instance). `Result` is `M/E (P%)`,
+`P = round(100·M/E)` rounded half up, printed as the literal `0/N (0%)` whenever `M = 0`, regardless
+of `E`. The legacy `Point` column name (in place of `Task`) does not change any column's position.
 
 **Lite plans** (no `task-board.md`): the retro still runs — board-derived metrics report `n/a`; log-derived ones stand.
 
@@ -94,9 +99,110 @@ Mine the following sources during retro:
 
 Present candidates as a batch. Each candidate must include:
 
-- A hypothesis or directive entry.
-- The supporting evidence count.
-- A proposed confidence (0.0–1.0).
+- A hypothesis or directive entry, with a stable `id` (`H01`, `A01`, ... — never a task, decision or
+  question shape (`[PTDQRCM]-?[0-9]{2}`), and never the workspace slug).
+- The mined evidence for or against it, as this initiative's own `observations` item
+  (`<initiative>:✓|✗@<date>`) — never a number chosen by the agent or the user.
+
+### Confidence is computed, never proposed
+
+No step in this workflow asks a human or agent to pick or type a numeric confidence. Every entry's
+`confidence` is the Wilson score interval's lower bound (z=1.96), derived only by counting that
+entry's own `observations` list: `k` is its ✓ count, `n` is `k` plus its ✗ count (a legacy `null`
+observation, and an `assumed` acceptance with no mined support, are excluded from both). The shipped
+recipe below performs this computation, the retirement check two paragraphs down, and reads all
+three legacy shapes a profile may still carry; nothing here reimplements it independently.
+
+```awk
+# Wilson score interval, lower bound (z=1.96): for each Hypotheses/Directives bullet (never a
+# Rules or other section bullet), derive N (checked-true) and M (checked-false) by counting the
+# entry own observations, then compute the lower bound over n=N+M. Two bullets that repeat one
+# hypothesis or directive text merge by the union of the observations initiatives (never by
+# summing two entries N/M, which would double-count a shared initiative); an assumed token is
+# never counted and never occupies the union (it cannot block a later real check or cross for the
+# same initiative). Read over a profile file: `.tackle/profile.md` or `~/.tackle/user-profile.md`.
+function trim(s) { gsub(/^[ \t]+/, "", s); gsub(/[ \t]+$/, "", s); return s }
+function between(line, left, right,   a, b) {
+    a = index(line, left)
+    if (a == 0) return ""
+    a += length(left)
+    b = index(substr(line, a), right)
+    if (b == 0) return trim(substr(line, a))
+    return trim(substr(line, a, b - 1))
+}
+function after(line, left,   a) {
+    a = index(line, left)
+    return a == 0 ? "" : trim(substr(line, a + length(left)))
+}
+function wilson_lower(k, n,   p, denom, centre, half, lower) {
+    p = k / n
+    denom = 1 + 3.8416 / n
+    centre = (p + 3.8416 / (2 * n)) / denom
+    half = 1.96 * sqrt(p * (1 - p) / n + 3.8416 / (4 * n * n)) / denom
+    lower = centre - half
+    if (lower < 0) lower = 0
+    if (lower > 1) lower = 1
+    return lower
+}
+function status_of(m, lower_num) { return (m >= 3 && lower_num < 0.3) ? "retired" : "active" }
+function emit(id, n, m, has_evidence,   total, lower) {
+    total = n + m
+    if (!has_evidence || total == 0) { printf "%s n/a n/a n/a n/a unranked\n", id; return }
+    lower = wilson_lower(n, total)
+    printf "%s %d %d %d %.4f %s\n", id, n, m, total, lower, status_of(m, lower)
+}
+/^## Hypotheses/ { section = 1; next }
+/^## Directives/ { section = 1; next }
+/^## / { section = 0 }
+{
+    if (!section) next
+    line = $0; stripped = trim(line)
+    if (substr(stripped, 1, 2) != "- ") next
+    if (index(line, "observations:") > 0) {
+        id = between(line, "id:", "·")
+        text = between(line, id " · ", " · confidence:")
+        obslist = between(line, "observations:", "· status:")
+        if (obslist == "") obslist = after(line, "observations:")
+        n = 0; m = 0
+        count = split(obslist, tokens, ";")
+        for (i = 1; i <= count; i++) {
+            tok = trim(tokens[i])
+            if (tok == "") continue
+            is_check = index(tok, "✓") > 0
+            is_cross = index(tok, "✗") > 0
+            if (!is_check && !is_cross) continue
+            key = text SUBSEP substr(tok, 1, index(tok, ":") - 1)
+            if (key in seen) continue
+            seen[key] = 1
+            if (is_check) n++; else m++
+        }
+        total_n[text] += n; total_m[text] += m
+        emit(id, total_n[text], total_m[text], 1)
+        next
+    }
+    if (index(line, "evidence:") > 0) {
+        ev = between(line, "evidence:", "· status:")
+        if (ev == "") ev = between(line, "evidence:", "·")
+        if (ev == "") ev = after(line, "evidence:")
+        ck = index(ev, "✓")
+        n = trim(substr(ev, 1, ck - 1)) + 0
+        rest = substr(ev, ck + length("✓")); sub(/^\//, "", rest)
+        if (index(rest, "null") > 0) { m = 0 } else {
+            cx = index(rest, "✗")
+            m = trim(substr(rest, 1, cx - 1)) + 0
+        }
+        emit("line:" NR, n, m, 1)
+        next
+    }
+    emit("line:" NR, 0, 0, 0)
+}
+```
+
+Run it as `awk '<the script above>' <profile-path>` to print `<id> N M n confidence status` for every
+Hypotheses/Directives entry, one line each, old and new format alike. An entry with only `assumed`
+acceptances and no checked observation prints `confidence: n/a`, excluded from Top-K/ranking until
+`n ≥ 1`. The comparison against `0.3` always uses this raw, unrounded value; a rounded display never
+feeds back into it.
 
 ### Confirming and writing
 
@@ -104,9 +210,16 @@ Everything is batch-confirmed by the user before writing. Never append to a prof
 
 For each separately confirmed candidate:
 
-- Update counters from intake tally lines: `profile proposals: N accepted, M overridden (<which>)`.
-- Accept ⇒ increment ✓; override ⇒ increment ✗.
-- If ✗ ≥ 3 with confidence < 0.3, set `status: retired` (kept, never deleted).
+- Update counters from the intake tally line, reading it by id:
+  `profile proposals: <id>✓ accepted [, <id>✓ accepted ...]; <id>✗ overridden [, <id>✗ overridden ...]`.
+- An accepted suggestion appends a real `observations` item only when this retro's own mining (the
+  Distilling candidates sources above) independently surfaced supporting or contradicting evidence
+  for *this* hypothesis in *this* initiative; a bare acceptance with no such mined support is
+  recorded `assumed` instead (kept for audit, never counted toward `N`/`M`/`n`, never moving the
+  computed confidence). Two mined observations from the same initiative for the same hypothesis
+  count once.
+- If ✗ ≥ 3 and the entry's *computed* confidence (its Wilson lower bound, raw and unrounded) is
+  < 0.3, set `status: retired` (kept, never deleted).
 - If a project hypothesis is confirmed in ≥ 2 repos, propose promoting it to the user profile (ask again).
 
 ### Directives
@@ -127,7 +240,7 @@ Both take effect immediately.
 <a id="plan-archetype-candidates-learning-loop"></a>
 ## Plan reference plan candidates (learning loop)
 
-At initiative close, consider whether the plan itself is worth distilling into `references/archetypes/` (format: `references/archetypes/README.md`).
+At initiative close, consider whether the plan itself is worth distilling into `.tackle/archetypes/` or `~/.tackle/archetypes/` — matching whichever scope the profile candidate above came from (format: `references/archetypes/README.md`).
 
 ### Eligibility
 
@@ -135,7 +248,7 @@ Offer extraction only when **the decomposition held**: no major replans and no D
 
 ### Extraction template
 
-One reference plan file per skeleton: `references/archetypes/<name>.md` with the sections the README fixes — name + one-line summary, task list, edge pattern, wave shape, trap warnings, provenance (this initiative, retro link). Mine the graph from `plan.md`/`task-board.md`; mine trap warnings from attempt journals and reopened tasks; judgment only names and summarizes.
+One reference plan file per skeleton: `.tackle/archetypes/<name>.md` or `~/.tackle/archetypes/<name>.md` with the sections the README fixes — name + one-line summary, task list, edge pattern, wave shape, trap warnings, provenance (this initiative, retro link). Mine the graph from `plan.md`/`task-board.md`; mine trap warnings from attempt journals and reopened tasks; judgment only names and summarizes.
 
 ### Confirming and writing
 
@@ -143,7 +256,14 @@ Everything is batch-confirmed by the user before writing — present the referen
 
 ## Where results go
 
-- `retro.md` in the initiative workspace, one per initiative (a partial retro overwrites the previous partial; the close retro is final).
-- One `history.md` entry noting the retro ran, with the Metrics values as its evidence.
-- One `references/archetypes/<name>.md` per batch-confirmed reference plan candidate (the only write outside the initiative workspace).
-- Report the useful findings and pending consent concisely per the communication contract — link to `retro.md`, don't paste it.
+- `docs/plans/<initiative>/retro.md` in the initiative workspace, one per initiative (a partial
+  retro overwrites the previous partial; the close retro is final), plus one `history.md` entry
+  noting the retro ran, with the Metrics values as its evidence.
+- `.tackle/profile.md` (project scope) or `~/.tackle/user-profile.md` (user scope), per
+  batch-confirmed profile candidate.
+- `.tackle/archetypes/<name>.md` (project scope) or `~/.tackle/archetypes/<name>.md` (user scope),
+  per batch-confirmed reference plan candidate.
+
+All of the above are outside the installed skill; none is a write under the install tree. Report
+the useful findings and pending consent concisely per the communication contract — link to
+`retro.md`, don't paste it.

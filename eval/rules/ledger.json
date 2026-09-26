@@ -2877,6 +2877,144 @@
         }
       ],
       "retired_in": "7.2.1"
+    },
+    {
+      "rule_id": "R-LEARN-05",
+      "statement": "A profile entry's confidence is computed from its own recorded observations (Wilson lower bound, z=1.96), never picked or typed by hand.",
+      "statement_sha256": "ec9bda2c95baf971dffc0dff1721e1e9a8bd1fe93abf71286bfff28867a65dbe",
+      "home": "references/guides/retro.md:109",
+      "home_fragment": "No step in this workflow asks a human or agent to pick",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.0.0",
+        "trigger": "First stated in retro.md's Confidence is computed, never proposed section (git history); no changelog entry names it yet.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-26"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-LEARN-06",
+      "statement": "An accepted suggestion counts toward a hypothesis's N/M/n only when this retro's own mining independently surfaced supporting or contradicting evidence; a bare acceptance is recorded assumed and never counted.",
+      "statement_sha256": "62cbbca2054b62e08955d87c8398b29353cdeaf557443accfcc9fd42031585fd",
+      "home": "references/guides/retro.md:218",
+      "home_fragment": "recorded `assumed` instead (kept for audit, never counted",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.0.0",
+        "trigger": "First stated in retro.md's Confirming and writing section (git history); no changelog entry names it yet.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-26"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-LEARN-07",
+      "statement": "A profile entry retires when its cross count is at least 3 and its own computed, raw confidence is below 0.3.",
+      "statement_sha256": "2013662cc5798c60df4042aa8329b5a11ff5b7517fd35afa1cb90e2578e22a5e",
+      "home": "references/guides/retro.md:221",
+      "home_fragment": "If ✗ ≥ 3 and the entry's *computed* confidence",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.0.0",
+        "trigger": "First stated in retro.md's retirement rule (git history); no changelog entry names it yet.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-26"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-LEARN-08",
+      "statement": "A reference plan is stored at .tackle/archetypes/<name>.md (project scope) or ~/.tackle/archetypes/<name>.md (user scope), never under the installed references/ tree.",
+      "statement_sha256": "00c9a81c0afa876e58cca20f1423c040da8167cc4aa48dc9ed047bee6e4173d6",
+      "home": "references/archetypes/README.md:9",
+      "home_fragment": "`.tackle/archetypes/<name>.md` (project scope) or",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.0.0",
+        "trigger": "First stated in archetypes/README.md's File format section (git history); no changelog entry names it yet.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-26"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-LEARN-09",
+      "statement": "Retro's batch-confirmed writes (profile, archetype, retro.md and its history entry) are all outside the installed skill; none is a write under references/ or SKILL.md.",
+      "statement_sha256": "8f761085fce505e3e7f9cec27d1d1d30f83934e2f6ca6b01212ae0351ea05371",
+      "home": "references/guides/retro.md:267",
+      "home_fragment": "are outside the installed skill; none is a write under",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.0.0",
+        "trigger": "First stated in retro.md's Where results go section (git history); no changelog entry names it yet.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-26"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-LEARN-10",
+      "statement": "The coverage table's Measured/Eligible/Result is derived from the v2 lifecycle table and its optional sidecar, never read back from an already-computed coverage table.",
+      "statement_sha256": "fc7d5851b86c2c33f749e3cb6e1dba08874eb0a55be9b79d7939daa4f83091b1",
+      "home": "references/guides/retro.md:42",
+      "home_fragment": "`Measured/Eligible` counts distinct `Run ID`",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.0.0",
+        "trigger": "First stated in retro.md's corrected Fixture recipe (git history); no changelog entry names it yet.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-26"
+      },
+      "historical": []
     }
   ],
   "non_normative": [

@@ -55,7 +55,7 @@ Apply compatible active directives to their named section or `applies_to:` actio
 Record one tally line in the log's `### Intake (context gathered)` section:
 
 ```
-profile proposals: N accepted, M overridden (<which>)
+profile proposals: <id>✓ accepted [, <id>✓ accepted ...]; <id>✗ overridden [, <id>✗ overridden ...]
 ```
 
 If the profile is absent, disabled, or no defaults apply, skip this step without logging a tally.
@@ -63,7 +63,7 @@ If the profile is absent, disabled, or no defaults apply, skip this step without
 <a id="archetypes"></a>
 ### Reference plans
 
-Read `references/archetypes/` alongside the profiles. When an reference plan's summary matches the incoming initiative's shape, offer its skeleton — task list, edge pattern, wave shape — as a proposal explicitly tagged `(from archetype <name>)`, flagging its trap warnings with the offer. These are proposals, never silent defaults: the user may accept, adapt, or override, and overrides are retro material.
+Read `.tackle/archetypes/` (project scope) and `~/.tackle/archetypes/` (user scope) alongside the profiles they came from. When a reference plan's summary matches the incoming initiative's shape, offer its skeleton — task list, edge pattern, wave shape — as a proposal explicitly tagged `(from archetype <name>)`, flagging its trap warnings with the offer. These are proposals, never silent defaults: the user may accept, adapt, or override, and overrides are retro material.
 
 If no reference plan matches, skip without offering. There is no scoring engine — read and judge, exactly like profiles and seeds.
 

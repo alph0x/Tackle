@@ -275,8 +275,13 @@ class TemplateDriftTests(unittest.TestCase):
         def command(metric):
             return template.split('| ' + metric + ' | `', 1)[1].split('`', 1)[0]
         fixtures = ROOT / 'eval/fixtures/usage-observability'
+        # The corrected recipe derives Measured/Eligible from the lifecycle table (plus
+        # its optional telemetry sidecar) instead of reading the fixture's own already-computed
+        # ## Coverage input table back unread. Neither fixture ships a sidecar file, so both now
+        # honestly report 0 measured tokens; coverage-partial.md's old golden (1/2 (50%)) merely
+        # echoed its own hand-authored answer key, never a value the old recipe actually derived.
         golden = {'coverage-zero.md': ['tokens 0/N (0%)', 'duration 1/2 (50%)'],
-                  'coverage-partial.md': ['tokens 1/2 (50%)', 'duration 2/2 (100%)']}
+                  'coverage-partial.md': ['tokens 0/N (0%)', 'duration 2/2 (100%)']}
         guide_recipe = re.search(r'Run `(.*?)` from a fixture workspace', (REF / 'guides/retro.md').read_text())[1]
         for name, expected in golden.items():
             shutil.copyfile(fixtures / name, self.root / 'resource-usage.md')
