@@ -3,7 +3,7 @@
 **Append-only** history, ascending chronological order (newest at the bottom). One entry per
 session: `## YYYY-MM-DD · session N · <title>` with **Did / Decisions / Blockers / Next** and,
 at the end of the **newest** entry, a **State snapshot** sufficient to resume without
-re-reading history. Keep entries terse (append-only ≠ verbose). Never rewrite old entries. Aim for ≤ 25 lines per session entry, preserving material constraints and record references, leading with the compact block — tasks touched, decisions by D-id, status deltas, verification commands + pass/fail. Reasoning and narrative route to `decisions.md` / `reference-docs/`; the history indexes them, it never re-narrates.
+re-reading history. Keep entries terse (append-only ≠ verbose). Never rewrite old entries. Each entry carries what a later session needs to resume, preserving material constraints and record references, and leads with the compact block — tasks touched, decisions by D-id, status deltas, verification commands + pass/fail. Reasoning and narrative route to `decisions.md` / `reference-docs/`; the history indexes them, it never re-narrates.
 Never log secrets. **The task board `task-board.md` is canonical current state; this file preserves original history.**
 
 **Archive policy** — the legacy ~400-line warning is workspace-overridable in `AGENTS.md`

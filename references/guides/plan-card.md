@@ -9,7 +9,8 @@ tasks and stops before source execution.`
    in `file:line`. A sufficient request needs no reconfirmation. The full infer-first-then-ask
    procedure, the owner-prerequisite probe, the
    [learning-loop read](intake-and-gate.md#learning-loop-read-if-enabled) and reference-plan offer
-   are in [intake-and-gate.md](intake-and-gate.md), Step 1.
+   are in [intake-and-gate.md](intake-and-gate.md#step-1--intake-infer-first-then-ask), Step 1
+   through [Step 1.5](intake-and-gate.md#step-15--anchor-the-intake-before-sizing).
 2. **Sizing and routing**, before any route-specific loading:
 
    | Gate | Use for |
@@ -35,7 +36,7 @@ tasks and stops before source execution.`
    user explicitly and record the answer; otherwise reuse it, for `docs/plans/` and `docs/seeds/`
    alike. Then copy the core set of artifacts from the templates into `docs/plans/<initiative>/`
    and run the file-map check before handoff. The full procedure, the core file map and the
-   optional depth artifacts are in [scaffold.md](scaffold.md).
+   optional depth artifacts are in [scaffold.md](scaffold.md#step-3--scaffold-inside-plan).
 4. **Compile behavior, acceptance and contracts.** In order, so every later choice has an observable
    contract: name every requirement's observable behavior and boundary cases; give each one a task
    check, a related regression check and an evidence slot, with positive and negative fixtures;
@@ -44,9 +45,13 @@ tasks and stops before source execution.`
    real consumer as the sole new test for a criterion it covers; every negative fixture must expose
    an implementation that satisfies a keyword, file-existence or count check while violating the
    required behavior. Stabilize `design-contract.md` now, in this PLAN run — do not wait for a
-   second session. The full compilation order, the architecture recommendation and the
-   [code style rule](design-and-contract.md#code-style) are in
-   [design-and-contract.md](design-and-contract.md).
+   second session. The full compilation order — [behavior and outputs](design-and-contract.md#behavior-and-outputs),
+   [acceptance and test strategy](design-and-contract.md#acceptance-and-test-strategy),
+   [contracts and decisions](design-and-contract.md#contracts-and-decisions) and the
+   [task brief](design-and-contract.md#task-brief) — the
+   [architecture recommendation](design-and-contract.md#step-55--architecture-recommendation), the
+   [stabilization rules](design-and-contract.md#step-575--stabilize-the-design-contract-full-only)
+   and the [code style rule](design-and-contract.md#code-style) are in design-and-contract.md.
 5. **Decompose to the fewest tasks.** One task, unless a qualifying reason forces a split: a
    different owner, parallel self-contained work, a hard dependency, an independent review or
    approval, or follow-up that needs its own tracking. Each separate task's briefing names its
@@ -54,9 +59,10 @@ tasks and stops before source execution.`
    pass then folds every task without a surviving reason into its parent, as a checklist item or
    acceptance criterion. What is left is cut for parallelism by crossing artifacts and interfaces,
    not by a merely disjoint write scope, and each is the smallest coherent vertical slice with one
-   runnable acceptance check. The skeleton board, the cut rules and the right-sizing collapse are in
-   [decompose-and-lint.md](decompose-and-lint.md), Step 6 and
-   [Step 6.6](decompose-and-lint.md#step-66--right-size-the-plan).
+   runnable acceptance check. The skeleton board, the cut rules, the right-sizing collapse and the
+   [model and tier proposal](decompose-and-lint.md#model-and-tier-proposal-compile-time) are in
+   [decompose-and-lint.md](decompose-and-lint.md#step-6--decompose-into-loop-runnable-points-and-delivery-obligations),
+   Step 6 and [Step 6.6](decompose-and-lint.md#step-66--right-size-the-plan).
 6. **Lint.** Run every row of `lint-spec.md` — the 16 mechanical, copy-paste checks that decide
    wiring, grounding, statuses, citations, seals and collisions — and report the agent-computed
    summary. Structural lint does not by itself establish readiness: a passing board can still hold a
@@ -82,8 +88,10 @@ tasks and stops before source execution.`
    and [Step 6.75's Ready-to-run criteria](decompose-and-lint.md#step-675--integrated-readiness-validation)
    (coverage, interfaces and fixtures coherent and passing, fingerprints recorded, no material
    contradiction or unowned obligation left).
-   The full validation contract, the coverage matrix, the cold-resolvability probe and the
-   milestone-readiness rules are in [verify.md](verify.md). This step records readiness evidence; it
+   The full validation contract, [including its two halves](verify.md#product-verification-has-two-halves),
+   the coverage matrix, the [cold-resolvability probe](verify.md#cold-resolvability-probe-risk-triggered)
+   and the milestone-readiness rules are in
+   [verify.md](verify.md#step-7--shared-validation-plan-readiness-and-explicit-verify). This step records readiness evidence; it
    never runs source execution or claims a product PASS. Handoff carries the matrix, the global
    obligations, the Ready fingerprints and the explicit execution boundary; RUN records its own
    intent before it may mutate source.

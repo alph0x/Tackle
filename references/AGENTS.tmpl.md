@@ -2,7 +2,7 @@
 
 **Methodology: Tackle 8.4.1** <!-- A future version reads this to decide whether to migrate. -->
 
-Conventions for any agent (Claude Code, Cursor, GPT, human) that picks up this plan. The workspace
+Conventions for any agent or person that picks up this plan, whatever tool it runs in. The workspace
 inherits the repository contract where one exists.
 
 ## Learning intake (session start)

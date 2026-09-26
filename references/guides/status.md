@@ -26,8 +26,9 @@ RUN; a standalone status/resume request does not authorize execution.
   changes, and the next authorized action. Ask only when a user-owned decision actually blocks
   affected work. Plain resume remains STATUS.
 
-Use a concise digest, usually within 12 lines, without omitting a material failure or constraint.
-Do not print every lint result, historical grade, collision, or archive threshold on every query.
+Write a digest the reader can take in at a glance: lead with what changes their next action (a
+blocker, a failure, an owner decision, the next authorized task), and never omit a material
+failure or constraint.
 When requested or relevant, report reference age, checks actually run, task/blocker counts,
 weakest required verification, resource coverage, and history size. Missing telemetry is `n/a`.
 Report a workspace's migration bucket from its board's `Schema:` line, per
