@@ -406,9 +406,13 @@ class RepositoryGateRegressionTests(unittest.TestCase):
         such the ones this test suite writes (`...T00:00:00`) is not a leak (immediately followed by a
         colon, never true of a real workspace id). This check's own source is exempt: it must spell out
         the pattern and the slug literally to define them, exactly as the pre-existing credential guard
-        (eval/suite-integrity/test_credential_guard.py) already exempts itself from its own home-path scan."""
+        (eval/suite-integrity/test_credential_guard.py) already exempts itself from its own home-path scan.
+        The one other exemption is the `decision_rule` field of a sealed cohort manifest: that text is
+        pre-registered and sealed before any episode runs, so it cannot change afterwards. Every other line
+        of a manifest is still scanned."""
         self_path = str(Path(__file__).resolve().relative_to(REPO))
         pattern = re.compile(r'(?<![A-Za-z])[PTDQRCM]-?[0-9]{2}(?!:)|tackle' + '-9')
+        SEALED_MANIFEST = re.compile(r'^eval/cohorts/[^/]+/(?:[^/]+/)?manifest\.json$')
         result = subprocess.run(['git', '-C', str(REPO), 'diff', PREFLIGHT_BASE, '--unified=0'],
                                 capture_output=True, text=True, check=True)
         found, path = [], None
@@ -417,7 +421,8 @@ class RepositoryGateRegressionTests(unittest.TestCase):
                 name = line[4:]
                 path = None if name == '/dev/null' else name[2:] if name.startswith('b/') else name
             elif (path and path != self_path and line.startswith('+') and not line.startswith('+++')
-                  and pattern.search(line[1:])):
+                  and pattern.search(line[1:])
+                  and not (SEALED_MANIFEST.match(path) and line[1:].lstrip().startswith('"decision_rule":'))):
                 found.append('%s: %s' % (path, line[1:]))
         self.assertEqual(found, [])
 
