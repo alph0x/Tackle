@@ -1,0 +1,191 @@
+{
+  "schema": "tackle-cohort/1",
+  "cohort_id": "2026-09-second-candidate",
+  "hypothesis": "With the Tackle 9.0.0 candidate, a Haiku executor falls into the planning-outcome traps no more often than with the 8.4.1 method, replicated at three seeds per held-out variant.",
+  "primary_metric": "fall rate: fell over valid episodes, judged mechanically by hidden acceptance tests",
+  "decision_rule": "protocol v2 labels (PROTOCOL.md section 4); the pooled fall-rate difference for the candidate comparison is computed only over {s62-caller-contract/h1, s64-stored-data-compat/h1} (s63-documented-edge-rule/h1 is pre-registered out of the pool, from the prior cohort's own inert finding on that variant, not from this cohort's own data); each of the two pooled variants needs at least two of its three seeds valid, for both the method arm and the candidate arm, before a pooled figure is computed — short of that in either variant, for either arm, the comparison has not passed, never a passing verdict; s63-documented-edge-rule/h1 still runs on both arms and is a binary tripwire — a fall by the candidate arm on any of its valid seeds, where the method arm avoided the trap on every one of its own valid seeds, in this cohort's own fresh episodes, blocks a passing verdict outright regardless of the pooled result. The candidate comparison (method to method:candidate) requires the pooled lower bound ≥ -0.10 and the median of cost.tokens_in and of cost.tool_calls, each over the same pooled valid episodes per arm, strictly lower for method:candidate than for method; it prints PASS or FAIL, always with a stated reason. decision.py also prints a report-only split line, which decides nothing; this cohort runs no split episodes, so that line's figures print as not computed. A per-episode dollar figure, computed from each episode's roles or its own top-level model and token counts against a price table sealed alongside decision.py, is also printed beside the raw figures, for transparency only — it gates nothing, because both arms run one session at the same tier, so the raw token and tool-call medians are already a fair comparison without a dollar normalization. decision.py sha256=676d5b3282b93fdad400eecdc58966a72c627dc48387937d30231da4409fb2ff; price-table sha256=25cf45a887fdde67c94cf6eee36ec1026fe8195d69646d0c2887d623650da640",
+  "n_min": 2,
+  "seeds": [
+    1,
+    2,
+    3
+  ],
+  "variants": [
+    {
+      "scenario_id": "s62-caller-contract",
+      "variant_id": "h1",
+      "split": "held-out",
+      "class": "outcome-trap",
+      "fixture_sha256": "f5ce5ef4e4d07e9c0c51be2018370259ad3a9d73bdf0b950213e6a9cc8ecec2e"
+    },
+    {
+      "scenario_id": "s63-documented-edge-rule",
+      "variant_id": "h1",
+      "split": "held-out",
+      "class": "outcome-trap",
+      "fixture_sha256": "5e96183c353a5709d38448df04c26a9b9cbfddfdf98310d7b15f999078a59200"
+    },
+    {
+      "scenario_id": "s64-stored-data-compat",
+      "variant_id": "h1",
+      "split": "held-out",
+      "class": "outcome-trap",
+      "fixture_sha256": "4e0fc4e32a261f18f668c93d718cc6fe8ec649a54a021e263e086f4aff113b52"
+    }
+  ],
+  "arms": [
+    "method",
+    "method:candidate"
+  ],
+  "comparisons": [
+    {
+      "id": "candidate",
+      "baseline_arm": "method",
+      "candidate_arm": "method:candidate"
+    }
+  ],
+  "executor": {
+    "harness": "claude-code-subagent",
+    "model": "claude-haiku-4-5",
+    "effort": "n/a"
+  },
+  "judge": {
+    "model_family": "n/a",
+    "blinded": true
+  },
+  "artifacts": {
+    "baseline_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "candidate_sha256": "06c2fd84139648186146f51c8f231504fa64e930dcbe11da7f81fddf0e079774"
+  },
+  "oracle_sha256": "75cb8a4652691e2ed4c4b1ed9568d537e36e525af189ae2b28501b7c8d70141d",
+  "order": [
+    {
+      "episode_id": "pilot-1",
+      "scenario_id": "s63-documented-edge-rule",
+      "variant_id": "h1",
+      "arm": "method:candidate",
+      "seed": 3
+    },
+    {
+      "episode_id": "pilot-2",
+      "scenario_id": "s64-stored-data-compat",
+      "variant_id": "h1",
+      "arm": "method:candidate",
+      "seed": 2
+    },
+    {
+      "episode_id": "pilot-3",
+      "scenario_id": "s63-documented-edge-rule",
+      "variant_id": "h1",
+      "arm": "method:candidate",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-4",
+      "scenario_id": "s62-caller-contract",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 3
+    },
+    {
+      "episode_id": "pilot-5",
+      "scenario_id": "s62-caller-contract",
+      "variant_id": "h1",
+      "arm": "method:candidate",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-6",
+      "scenario_id": "s63-documented-edge-rule",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 3
+    },
+    {
+      "episode_id": "pilot-7",
+      "scenario_id": "s62-caller-contract",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-8",
+      "scenario_id": "s62-caller-contract",
+      "variant_id": "h1",
+      "arm": "method:candidate",
+      "seed": 2
+    },
+    {
+      "episode_id": "pilot-9",
+      "scenario_id": "s64-stored-data-compat",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-10",
+      "scenario_id": "s62-caller-contract",
+      "variant_id": "h1",
+      "arm": "method:candidate",
+      "seed": 3
+    },
+    {
+      "episode_id": "pilot-11",
+      "scenario_id": "s63-documented-edge-rule",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-12",
+      "scenario_id": "s64-stored-data-compat",
+      "variant_id": "h1",
+      "arm": "method:candidate",
+      "seed": 3
+    },
+    {
+      "episode_id": "pilot-13",
+      "scenario_id": "s64-stored-data-compat",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 2
+    },
+    {
+      "episode_id": "pilot-14",
+      "scenario_id": "s64-stored-data-compat",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 3
+    },
+    {
+      "episode_id": "pilot-15",
+      "scenario_id": "s62-caller-contract",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 2
+    },
+    {
+      "episode_id": "pilot-16",
+      "scenario_id": "s63-documented-edge-rule",
+      "variant_id": "h1",
+      "arm": "method:candidate",
+      "seed": 2
+    },
+    {
+      "episode_id": "pilot-17",
+      "scenario_id": "s64-stored-data-compat",
+      "variant_id": "h1",
+      "arm": "method:candidate",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-18",
+      "scenario_id": "s63-documented-edge-rule",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 2
+    }
+  ],
+  "created_at": "2026-09-26T22:20:03Z",
+  "seal_sha256": "961afd84a38268989e918a1ce38b1ae4d4817c67db3c4cd1de4ab3e8dbf8b8ba"
+}

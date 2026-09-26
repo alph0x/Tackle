@@ -1,0 +1,7 @@
+{
+  "outside_paths": [],
+  "skill_used": false,
+  "verdict": "invalid",
+  "reason": "escalation without a declared brief",
+  "raw_audit_sha256": "6569e9778349f201c6be4af48640561c8c33344e4aabf3bc2cc0a7896f524f71"
+}
