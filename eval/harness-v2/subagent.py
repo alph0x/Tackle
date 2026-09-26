@@ -77,7 +77,58 @@ SYSTEM_DIRS = ('/bin', '/sbin', '/usr/bin', '/usr/sbin', '/usr/lib', '/usr/local
                '/System', '/Library/Developer/CommandLineTools')
 BOUNDARY = r'\s=\'"<>|;('
 ABS_TOKEN = re.compile(r'(?:(?<=^)|(?<=[' + BOUNDARY + r']))(/[^\s\'"()<>|;]+)')
-HOME_TOKEN = re.compile(r'(?:(?<=^)|(?<=[' + BOUNDARY + r']))((?:~|\$HOME)(?:/[^\s\'"()<>|;]*)?)')
+HOME_TOKEN = re.compile(r'(?:(?<=^)|(?<=[' + BOUNDARY + r']))((?:~(?!~)|\$HOME)(?:/[^\s\'"()<>|;]*)?)')
+# A text tool's program or pattern argument is code, not a path: a slash-delimited regex such as
+# /^```sh$/{f=1 in an awk program, /tmp/ in a grep alternation, or ~~~ in a fence check would otherwise read
+# as an absolute or home path. File arguments, and -f program or pattern files, stay path candidates.
+PATTERN_TOOLS = {'awk': '-F', 'gawk': '-F', 'mawk': '-F', 'nawk': '-F', 'sed': '-e', 'grep': '-e',
+                 'egrep': '-e', 'fgrep': '-e', 'rg': '-e'}
+TOOL_WORD = re.compile(r'(?:^|(?<=[\s;&|(`]))(' + '|'.join(sorted(PATTERN_TOOLS, key=len, reverse=True))
+                       + r')(?=\s)')
+ARG = re.compile(r'(?:[ \t]|\\\n)+(\'[^\']*\'|"(?:[^"\\]|\\.)*"|[^\s;&|()]+)')
+PATTERN_LONG = ('--regexp=', '--expression=')
+FILE_LONG = ('--file=',)
+
+
+def without_patterns(command):
+    """The command with each text tool's program or pattern argument blanked to '' (see PATTERN_TOOLS)."""
+    spans = []
+    for word in TOOL_WORD.finditer(command):
+        value_option = PATTERN_TOOLS[word.group(1)]
+        position, take_value, pattern_seen, previous = word.end(), None, False, ''
+        while True:
+            arg = ARG.match(command, position)
+            if not arg:
+                break
+            token, position = arg.group(1), arg.end()
+            if take_value is not None:  # the value of the option just read
+                if take_value:
+                    spans.append(arg.span(1))
+                take_value, previous = None, token
+                continue
+            if previous == '-i' and token in ("''", '""'):  # BSD `sed -i ''`: the empty backup suffix
+                previous = token
+                continue
+            if token.startswith('-') and len(token) > 1 and token != '--':
+                if token == value_option:  # -e EXPR (sed, grep) or -F SEP (awk): blank the value
+                    take_value = True
+                    pattern_seen = pattern_seen or value_option == '-e'
+                elif value_option == '-e' and (token.startswith('-e') or token.startswith(PATTERN_LONG)):
+                    spans.append(arg.span(1))  # an attached expression, -e's/a/b/ or --regexp=PAT
+                    pattern_seen = True
+                elif token in ('-f', '-v'):  # a program or pattern file, or an awk assignment: kept
+                    take_value = False
+                    pattern_seen = pattern_seen or token == '-f'
+                elif token.startswith(FILE_LONG):
+                    pattern_seen = True
+                previous = token
+                continue
+            if not pattern_seen:
+                spans.append(arg.span(1))  # the program or pattern itself; what follows are file arguments
+            break
+    for start, end in sorted(spans, reverse=True):
+        command = command[:start] + "''" + command[end:]
+    return command
 ISO = re.compile(r'^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d+))?Z$')
 PREAMBLE = ('The repository for this task is {episode}/work: paths in the task are relative to it, and your '
             'changes go there. Work only inside {episode}: never read, write or run anything outside it.\n\n')
@@ -315,7 +366,7 @@ def audit_of(uses, episode_dir, staged, deny_prefixes=None):
         if name in SEARCH_TOOLS and not candidates:
             candidates.append(str(base_dir))  # a search without a path searches the cwd
         if name == 'Bash' and isinstance(input_.get('command'), str):
-            command = input_['command']
+            command = without_patterns(input_['command'])
             absolute = [m.group(1) for m in ABS_TOKEN.finditer(command)]
             lead = LEADING_CD.match(command)
             if not lead:

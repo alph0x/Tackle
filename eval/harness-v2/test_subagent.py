@@ -399,6 +399,42 @@ class AuditCases(Base):
         self.assertEqual(audit['outside_paths'], [])
         self.assertEqual(audit['verdict'], 'clean')
 
+    def test_text_tool_programs_and_patterns_are_not_paths(self):
+        """An awk program, a grep pattern and sed expressions hold slash-delimited regexes and ~~~ fence
+        checks: code, not paths (a live planner's commands tripped the audit on exactly these)."""
+        episode, _ = self.simple_method_episode(scenario='s91-audit-patterns')
+        work = episode / 'work'
+        commands = [
+            "cd %s && awk '/^```python$/{f=1; next} f && /^```$/{f=0; exit} f' %s/brief.md" % (work, episode),
+            "cd %s && grep -n -i -E 'claude|/private/|/tmp/|opus' %s/brief.md" % (work, episode),
+            "cd %s && sed -e 's/a\\/b/c/' -e \"s#/usr/local#/opt#\" notes.txt" % work,
+            "cd %s && awk 'BEGIN{x=1} (substr(t,1,3)==\"~~~\"){print}' notes.md" % work,
+            "cd %s && grep -E \\\n  'x|/tmp/y' notes.md" % work]
+        rows = []
+        for i, command in enumerate(commands):
+            rows += [tool_row('tu%d' % i, 'Bash', {'command': command}, request_id='r%d' % i), result_row('tu%d' % i)]
+        transcript = write_transcript(self.tmp / 'a-patterns.jsonl', rows + [text_row(request_id='r-final', text='DONE')])
+        self.finish(episode, transcript)
+        audit = load(episode / 'audit.json')
+        self.assertEqual(audit['outside_paths'], [])
+        self.assertEqual(audit['verdict'], 'clean')
+
+    def test_text_tool_file_arguments_still_count(self):
+        """Blanking a program or pattern never hides a file the tool reads: data files and -f files stay."""
+        episode, _ = self.simple_method_episode(scenario='s91-audit-tool-files')
+        work = episode / 'work'
+        commands = ["cd %s && awk '{print}' /etc/passwd" % work, "cd %s && grep -f /etc/patterns notes.txt" % work,
+                    "cd %s && sed -n '1p' /opt/other/x.txt" % work, "cd %s && cat '/etc/hosts'" % work]
+        rows = []
+        for i, command in enumerate(commands):
+            rows += [tool_row('tu%d' % i, 'Bash', {'command': command}, request_id='r%d' % i), result_row('tu%d' % i)]
+        transcript = write_transcript(self.tmp / 'a-tool-files.jsonl', rows + [text_row(request_id='r-final', text='DONE')])
+        self.finish(episode, transcript)
+        audit = load(episode / 'audit.json')
+        self.assertEqual(sorted(audit['outside_paths']), ['/etc/hosts', '/etc/passwd', '/etc/patterns',
+                                                          '/opt/other/x.txt'])
+        self.assertEqual(audit['verdict'], 'invalid')
+
     def test_bash_regex_catches_a_path_after_an_open_paren(self):
         episode, _ = self.simple_method_episode(scenario='s91-audit-paren')
         transcript = write_transcript(self.tmp / 'a4.jsonl', [
