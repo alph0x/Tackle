@@ -3,7 +3,7 @@
 **Generated projection, never canonical.** Refresh only within authorized RUN or explicit handoff.
 The task board `task-board.md` owns current state; `history.md` and original archives own history; task
 briefs/contracts, decisions, questions, and verification records keep their own authority.
-Follow `references/guides/run.md`; use `guides/context-lifecycle.md` only when its size/risk trigger
+Follow `references/guides/run-card.md`; use `guides/context-lifecycle.md` only when its size/risk trigger
 applies. Do not put secrets or unobserved outcomes here.
 
 <a id="current-point--wave"></a>

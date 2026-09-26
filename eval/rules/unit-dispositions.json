@@ -4384,7 +4384,7 @@
       "unit_sha256": "3d7670f49172508fb6853d3f8a1d9642867fb1bc58f3879da4ef14ef3d24b8cf",
       "disposition": "reworded",
       "destination": "references/archetypes/README.md",
-      "note": "PLAN intake reads `.tackle/archetypes/` and `~/.tackle/archetypes/` alongside the profiles at those same scopes (see `guides/intake-and-gate.md` §Learning-loop read).",
+      "note": "PLAN intake reads `.tackle/archetypes/` and `~/.tackle/archetypes/` alongside the profiles at those same scopes (see `guides/intake-and-gate.md` §Reference plans).",
       "destination_unit_sha256": null
     },
     {
@@ -5096,6 +5096,33 @@
       "disposition": "reworded",
       "destination": "references/guides/intake-and-gate.md",
       "note": "When a reference plan's summary matches the incoming initiative's shape, offer its skeleton — task list, edge pattern, wave shape — as a proposal explicitly tagged `(from archetype <name>)`, flagging its trap warnings with the offer.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 5,
+      "unit_sha256": "47dddb2217a669c93deeb31fd3b40b1799e642bee8058d5c4443e45ea8a9906b",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "RUN uses the single execution protocol in `references/guides/run-card.md` for explicit intent, preflight, target and related regression checks, persistent correction, integration, and deliverable acceptance.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 105,
+      "unit_sha256": "79cd4ef068f0cf4353495925cc2ebc71bf812329f062a5c329027d2e21e3beee",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "RUN records target/surround and integrated observations through `references/guides/run-card.md` rather than invoking a universal Verify loop.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/archetypes/README.md",
+      "line": 29,
+      "unit_sha256": "59ff6899180b3e584e33c2680aab4f460f064c203f9d243c6c305afd3a6ccf50",
+      "disposition": "reworded",
+      "destination": "references/archetypes/README.md",
+      "note": "PLAN intake reads `.tackle/archetypes/` and `~/.tackle/archetypes/` alongside the profiles at those same scopes (see `guides/intake-and-gate.md` §Reference plans).",
       "destination_unit_sha256": null
     }
   ]

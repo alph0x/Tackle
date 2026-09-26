@@ -27,7 +27,7 @@ close when the decomposition held. Everything is batch-confirmed by the user bef
 ## Read path — intake
 
 PLAN intake reads `.tackle/archetypes/` and `~/.tackle/archetypes/` alongside the profiles at those
-same scopes (see `guides/intake-and-gate.md` §Learning-loop read). When a reference plan matches the
+same scopes (see `guides/intake-and-gate.md` §Reference plans). When a reference plan matches the
 incoming initiative's shape, PLAN offers its skeleton as a tagged proposal — `(from archetype
 <name>)` — never a silent default. The user may accept, adapt, or override; overrides are retro
 material.

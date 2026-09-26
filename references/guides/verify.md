@@ -7,7 +7,7 @@ and [step 8, seal integrity](#step-8--seal-integrity). PLAN invokes the preparat
 evidence-integrity operations below before handoff. The explicit `verify` request remains available
 for a later audit or for a plan that predates integrated readiness; it is not a required pre-wave or
 pre-Task gate after a successful PLAN run. RUN uses the single execution protocol in
-`references/guides/run.md` for explicit intent, preflight, target and related regression checks,
+`references/guides/run-card.md` for explicit intent, preflight, target and related regression checks,
 persistent correction, integration, and deliverable acceptance.
 
 **Principle: detection before judgment.** Use cheap mechanical checks (`grep`, `read`, `ast-grep`, `git`) first; use the LLM only for synthesis of the findings. This keeps the pass fast and reduces false positives.
@@ -107,7 +107,7 @@ append findings to `history.md` only when that audit is authorized to write hist
 not itself update execution status. Any HIGH finding, or an ungrounded task, blocks execution until
 fixed or explicitly waived by the user. MEDIUM findings block unless the user explicitly accepts the
 risk; LOW findings are advisory. RUN records target/surround and integrated observations through
-`references/guides/run.md` rather than invoking a universal Verify loop.
+`references/guides/run-card.md` rather than invoking a universal Verify loop.
 
 ## Step 0 — Mechanical grounding (two-phase citation check)
 
