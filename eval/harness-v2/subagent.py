@@ -156,8 +156,8 @@ EXECUTOR_PROMPT = (
 # own staged prompt) but not for the executor, who must rely only on the planner's brief.
 DENY_PREFIXES = ('prompts/', 'sessions/', 'dispatch.txt', 'stage.json')
 TIER_VALUES = ('fast', 'standard', 'frontier')
-TIER_LINE = re.compile(r'^\*\*Tier\*\*:[ \t]*(.*)$', re.M)
-ESCALATION_LINE = re.compile(r'^\*\*Escalation\*\*:[ \t]*(.*)$', re.M)
+TIER_LINE = re.compile(r'^(?:[-*+][ \t]+)?\*\*Tier\*\*:[ \t]*(.*)$', re.M)  # the template's bullet field, or a bare line
+ESCALATION_LINE = re.compile(r'^(?:[-*+][ \t]+)?\*\*Escalation\*\*:[ \t]*(.*)$', re.M)
 ROLES = ('planner', 'executor')
 
 

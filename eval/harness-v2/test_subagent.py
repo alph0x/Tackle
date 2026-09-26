@@ -917,6 +917,19 @@ class TierExtraction(Base):
         write((episode / 'brief.md'), '**Tier**: standard, because the task is simple\n')
         self.assertEqual(self.tier(episode), 'tier=n/a escalation=absent')
 
+    def test_the_task_templates_bullet_fields_are_read(self):
+        """A planner following the task template writes its fields as bullets: `- **Tier**: fast`. Missing
+        them sent every live routed episode to the fallback tier and hid its declared escalation."""
+        episode, _ = self.routed_episode()
+        write((episode / 'brief.md'), '# Task\n\n- **Tier**: standard\n- **Tier reason**: default\n'
+                                      '- **Escalation**: declared\n')
+        self.assertEqual(self.tier(episode), 'tier=standard escalation=declared')
+
+    def test_a_bullet_field_with_trailing_prose_still_prints_n_a(self):
+        episode, _ = self.routed_episode()
+        write((episode / 'brief.md'), '- **Tier**: fast, since it is cheap\n')
+        self.assertEqual(self.tier(episode), 'tier=n/a escalation=absent')
+
 
 class FinishReplacementGuard(Base):
     """The new per-session guard (readiness F8): no silent rerun, no out-of-order finish, and --session
