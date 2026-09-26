@@ -148,9 +148,10 @@
     {
       "path": "eval/rules",
       "files": [
-        "test_ledger.py"
+        "test_ledger.py",
+        "test_unit_diff.py"
       ],
-      "tests": 38
+      "tests": 66
     },
     {
       "path": "eval/records",

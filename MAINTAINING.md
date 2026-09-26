@@ -89,6 +89,22 @@ release procedure above is what ties a diff to the cohort that actually backs it
 
 See `eval/rules/LEDGER.md` for the evidence schema `evidence.status`/`evidence.cohort_id` follow.
 
+A second, independent mechanical check (`python3 eval/rules/check_unit_diff.py --repo <dir> --base
+<base-rev>|auto`) accounts for every sentence unit removed from a ledger `home` or `mirrors` file,
+symmetrically with the change gate above: "removed" means present in the base revision's split and
+absent from the candidate's, by exact text, never by line number. Its auto-match has exactly one
+live branch, forever: a removed unit found verbatim (whitespace normalized) in the shipped tree
+(`SKILL.md` plus `references/**`), at or above the duplicate detector's own length floor, closes
+with no committed record. A maintainer-only match — found only under
+`MAINTAINING.md`/`maintaining/**` — never auto-closes; it always needs a written disposition, one
+of `home` (still present at that file), `reworded` (a declared mapping to new text, checked as a
+substring), `merged` (moved to a different named place that still holds it, checked by hash) or
+`ruled` (non-normative, with a reason). Restructuring a table costs one disposition per affected
+row, not one per logical edit, and a version-string bump costs one fresh disposition each release.
+CI and the release procedure both run it structural-only (`--base auto`; no cohort, symmetrically
+with the change gate's own CI step). See `eval/rules/unit-dispositions.json` for the committed
+records.
+
 ## Sweep score
 
 The agent computes the sweep numerator and denominator from the observed gate and workspace

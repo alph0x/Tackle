@@ -44,6 +44,8 @@ jobs:
         run: python3 eval/records/check_currency.py --repo .
       - name: Run the change gate, structural-only (no release cohort to cite from CI)
         run: python3 eval/rules/check_ledger.py --repo . --gate auto
+      - name: Account for every removed rule-home sentence unit, structural-only
+        run: python3 eval/rules/check_unit_diff.py --repo . --base auto
       - name: Preserve deterministic outcomes and raw command streams
         if: always()
         uses: actions/upload-artifact@v4
