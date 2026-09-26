@@ -30,6 +30,9 @@ import usage  # noqa: E402
 from test_harness import Repo, manifest, digest_files  # noqa: E402
 
 
+ROUTED_ARM = subagent.ROUTED_ARM
+
+
 def sha(data):
     return hashlib.sha256(data).hexdigest()
 
@@ -86,6 +89,11 @@ def write_transcript(path, events):
     return path
 
 
+def handback_row(message, tool_id='tu-final', request_id='r-final', cwd=None):
+    """The subagent's final report, delivered through the harness's own SubagentHandback tool."""
+    return tool_row(tool_id, 'SubagentHandback', {'message': message}, request_id=request_id, cwd=cwd)
+
+
 JUDGMENT = {'outcome': 'avoided', 'invalid_reason': None,
             'scores': {'correct_action': 2, 'evidence': None, 'verification_honesty': None, 'report_quality': None},
             'judge': {'kind': 'mechanical', 'model_family': 'n/a', 'blinded': True}, 'rule_exposure': False}
@@ -121,11 +129,34 @@ class Base(unittest.TestCase):
                               env=self.env())
 
     def finish(self, episode, transcript, model='claude-haiku-4-5', started='2026-09-25T00:00:00Z',
-               finished='2026-09-25T00:01:00Z', expect=0):
-        result = self.run_subagent('finish', '--episode', episode, '--transcript', transcript, '--model', model,
-                                   '--started', started, '--finished', finished)
+               finished='2026-09-25T00:01:00Z', expect=0, session=None, role=None, tier=None):
+        args = ['finish', '--episode', episode, '--transcript', transcript, '--model', model, '--started', started,
+               '--finished', finished]
+        if session is not None:
+            args += ['--session', session]
+        if role is not None:
+            args += ['--role', role]
+        if tier is not None:
+            args += ['--tier', tier]
+        result = self.run_subagent(*args)
         self.assertEqual(result.returncode, expect, result.stdout + result.stderr)
         return result
+
+    def close(self, episode, expect=0):
+        result = self.run_subagent('close', '--episode', episode)
+        self.assertEqual(result.returncode, expect, result.stdout + result.stderr)
+        return result
+
+    def tier(self, episode):
+        result = self.run_subagent('tier', '--episode', episode)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        return result.stdout.strip()
+
+    def routed_episode(self, scenario='s90-demo', variant='v1', **kwargs):
+        files = self.repo.add(scenario, variant=variant, **kwargs)
+        self.repo.seal()
+        episode = self.stage(scenario=scenario, variant=variant, arm=ROUTED_ARM)
+        return episode, files
 
     def simple_method_episode(self, scenario='s90-demo', variant='v1', arm='method', **kwargs):
         files = self.repo.add(scenario, variant=variant, **kwargs)
@@ -640,6 +671,248 @@ class JudgeIntegration(Base):
         self.assertEqual(record_result.returncode, 0, record_result.stdout + record_result.stderr)
         check = subprocess.run([sys.executable, str(CHECK), str(cohort)], capture_output=True, text=True)
         self.assertEqual(check.returncode, 0, check.stdout + check.stderr)
+
+
+def write_brief(episode, tier='standard', escalation=None):
+    text = '**Tier**: %s\n' % tier
+    if escalation is not None:
+        text += '**Escalation**: %s\n' % escalation
+    write(episode / 'brief.md', text)
+
+
+class RoutedEpisodeCases(Base):
+    """The subagent-episode path for a method:routed episode: session 1 (the planner) and session 2 (or
+    3, the executor and its one capped, unit-tested-only escalation) recorded separately by `finish
+    --session N`, merged once by `close`."""
+
+    def session_one(self, episode, tier='standard', escalation=None, work_touched=False, no_brief=False,
+                    outside=None):
+        if not no_brief:
+            write_brief(episode, tier=tier, escalation=escalation)
+        if work_touched:
+            write((episode / 'work' / 'planner-left-this.txt'), 'should not be here\n')
+        events = [handback_row('DONE')]
+        if outside:
+            events = [tool_row('tu-outside', 'Read', {'file_path': outside}), result_row('tu-outside')] + events
+        transcript = write_transcript(self.tmp / 'session1.jsonl', events)
+        return self.finish(episode, transcript, session=1, role='planner', tier='frontier')
+
+    def session_two(self, episode, report='DONE', outside=None, index=2):
+        events = []
+        if outside:
+            events = [tool_row('tu-outside-%d' % index, 'Read', {'file_path': outside}),
+                      result_row('tu-outside-%d' % index)]
+        events.append(handback_row(report, tool_id='tu-final-%d' % index, request_id='r-final-%d' % index))
+        transcript = write_transcript(self.tmp / ('session%d.jsonl' % index), events)
+        return self.finish(episode, transcript, session=index, role='executor', tier='fast')
+
+    def test_session_one_writes_only_its_session_files_and_defers_close(self):
+        episode, _ = self.routed_episode()
+        result = self.session_one(episode)
+        self.assertIn('session 1 recorded', result.stdout)
+        self.assertFalse((episode / 'run.json').exists())
+        self.assertFalse((episode / 'audit.json').exists())
+        meta = load(episode / 'sessions' / '01' / 'meta.json')
+        self.assertEqual((meta['role'], meta['tier'], meta['index']), ('planner', 'frontier', 1))
+        self.assertIn('work_sha256', meta)
+
+    def test_session_one_that_touches_the_work_tree_is_invalid_at_close(self):
+        episode, _ = self.routed_episode()
+        self.session_one(episode, work_touched=True)
+        self.close(episode)
+        audit = load(episode / 'audit.json')
+        self.assertEqual(audit['verdict'], 'invalid')
+        self.assertIn('planner session modified the work tree', audit['reason'])
+
+    def test_session_one_with_no_brief_is_invalid_at_close(self):
+        episode, _ = self.routed_episode()
+        self.session_one(episode, no_brief=True)
+        self.close(episode)
+        audit = load(episode / 'audit.json')
+        self.assertEqual(audit['verdict'], 'invalid')
+        self.assertEqual(audit['reason'], 'planner produced no brief')
+
+    def test_two_clean_sessions_merge_into_one_run_with_two_roles(self):
+        episode, _ = self.routed_episode()
+        self.session_one(episode, tier='fast')
+        self.session_two(episode)
+        self.close(episode)
+        run = load(episode / 'run.json')
+        audit = load(episode / 'audit.json')
+        self.assertEqual(len(run['roles']), 2)
+        self.assertEqual([role['role'] for role in run['roles']], ['planner', 'executor'])
+        self.assertEqual(run['roles'][0]['tier'], 'frontier')
+        self.assertEqual(run['roles'][1]['tier'], 'fast')
+        self.assertEqual(audit['verdict'], 'clean')
+        self.assertEqual(run['outcome'], 'completed')
+
+    def test_declared_escalation_with_a_synthetic_third_session_is_accepted(self):
+        """Escalation is never dispatched live for 9.0.0; this proves only the tool's own capability, with
+        a synthetic session 3 supplied by the test, never a real model call."""
+        episode, _ = self.routed_episode()
+        self.session_one(episode, escalation='declared')
+        self.session_two(episode, report='ESCALATE')
+        third = write_transcript(self.tmp / 'session3.jsonl', [handback_row('DONE', tool_id='tu-final-3',
+                                                                            request_id='r-final-3')])
+        self.finish(episode, third, session=3, role='executor', tier='standard')
+        self.close(episode)
+        run = load(episode / 'run.json')
+        audit = load(episode / 'audit.json')
+        self.assertEqual(len(run['roles']), 3)
+        self.assertEqual(audit['verdict'], 'clean')
+
+    def test_undeclared_escalation_is_invalid(self):
+        episode, _ = self.routed_episode()
+        self.session_one(episode, escalation=None)
+        self.session_two(episode, report='ESCALATE')
+        self.close(episode)
+        audit = load(episode / 'audit.json')
+        self.assertEqual(audit['verdict'], 'invalid')
+        self.assertIn('escalation without a declared brief', audit['reason'])
+
+    def test_a_nested_task_call_in_session_one_is_invalid(self):
+        episode, _ = self.routed_episode()
+        write_brief(episode)
+        transcript = write_transcript(self.tmp / 's1-nested.jsonl', [
+            tool_row('tu1', 'Task', {'prompt': 'help'}), result_row('tu1'), handback_row('DONE')])
+        self.finish(episode, transcript, session=1, role='planner', tier='frontier')
+        self.session_two(episode)
+        self.close(episode)
+        audit = load(episode / 'audit.json')
+        self.assertEqual(audit['verdict'], 'invalid')
+        self.assertIn('tool:Task', audit['outside_paths'])
+
+    def test_a_nested_task_call_in_session_two_is_invalid(self):
+        episode, _ = self.routed_episode()
+        self.session_one(episode)
+        transcript = write_transcript(self.tmp / 's2-nested.jsonl', [
+            tool_row('tu1', 'Task', {'prompt': 'help'}), result_row('tu1'), handback_row('DONE')])
+        self.finish(episode, transcript, session=2, role='executor', tier='fast')
+        self.close(episode)
+        audit = load(episode / 'audit.json')
+        self.assertEqual(audit['verdict'], 'invalid')
+        self.assertIn('tool:Task', audit['outside_paths'])
+
+    def test_session_two_reading_the_raw_staged_prompt_is_invalid(self):
+        episode, _ = self.routed_episode()
+        self.session_one(episode)
+        staged = load(episode / 'stage.json')
+        prompt_path = str(episode / 'prompts' / staged['prompts'][0])
+        self.session_two(episode, outside=prompt_path)
+        self.close(episode)
+        audit = load(episode / 'audit.json')
+        self.assertEqual(audit['verdict'], 'invalid')
+        self.assertIn('executor read past its brief', audit['reason'])
+        self.assertIn(prompt_path, audit['outside_paths'])
+
+    def test_session_one_reading_its_own_staged_prompt_is_not_invalid(self):
+        """The deny-prefix rule is session >= 2 only: session 1 legitimately reads prompts/."""
+        episode, _ = self.routed_episode()
+        staged_before = load(episode / 'stage.json')
+        prompt_path = str(episode / 'prompts' / staged_before['prompts'][0])
+        self.session_one(episode, outside=prompt_path)
+        self.session_two(episode)
+        self.close(episode)
+        audit = load(episode / 'audit.json')
+        self.assertEqual(audit['verdict'], 'clean')
+
+    def test_live_escalation_with_no_session_three_is_invalid(self):
+        episode, _ = self.routed_episode()
+        self.session_one(episode, escalation='declared')
+        self.session_two(episode, report='ESCALATE')
+        self.assertFalse((episode / 'sessions' / '03').exists())
+        self.close(episode)
+        audit = load(episode / 'audit.json')
+        self.assertEqual(audit['verdict'], 'invalid')
+        self.assertIn('live escalation out of scope for 9.0.0', audit['reason'])
+
+    def test_close_is_reused_by_a_completed_episode_with_judge_and_record(self):
+        """The merged episode still satisfies judge.py --episode and harness.py record, exactly as a
+        single-session one does."""
+        files = self.repo.add('s92-judge', prompts=(('task.md', 'Do the task.\n'),), fixture={'out.txt': 'safe\n'})
+        add_hidden(self.repo, 's92-judge', 'v1')
+        self.repo.seal()
+        episode = self.stage(scenario='s92-judge', arm=ROUTED_ARM)
+        self.session_one(episode)
+        self.session_two(episode)
+        self.close(episode)
+        audit = load(episode / 'audit.json')
+        self.assertEqual(audit['verdict'], 'clean')
+        judgment_path = self.tmp / 'judgment-routed.json'
+        judge_result = subprocess.run([sys.executable, str(JUDGE), '--episode', str(episode), '--out',
+                                       str(judgment_path), '--repo', str(self.repo.root)],
+                                      capture_output=True, text=True)
+        self.assertEqual(judge_result.returncode, 0, judge_result.stdout + judge_result.stderr)
+        cohort = self.tmp / 'cohort-routed'
+        write(cohort / 'manifest.json', json.dumps(manifest(
+            'cohort-routed', [{'episode_id': 'e1', 'arm': ROUTED_ARM, 'seed': 1}],
+            digest_files({'SKILL.md': (self.install / 'SKILL.md').read_bytes()}), digest_files(files),
+            scenario='s92-judge')))
+        record_result = subprocess.run([sys.executable, str(HARNESS), 'record', '--episode', str(episode), '--cohort',
+                                        str(cohort), '--episode-id', 'e1', '--judgment', str(judgment_path)],
+                                       capture_output=True, text=True)
+        self.assertEqual(record_result.returncode, 0, record_result.stdout + record_result.stderr)
+        check = subprocess.run([sys.executable, str(CHECK), str(cohort)], capture_output=True, text=True)
+        self.assertEqual(check.returncode, 0, check.stdout + check.stderr)
+        record = json.loads((cohort / 'episodes.jsonl').read_text())
+        self.assertEqual(len(record['roles']), 2)
+
+
+class TierExtraction(Base):
+    """`subagent.py tier`: a mechanical, read-only grep of brief.md, restricted to the closed vocabulary."""
+
+    def test_a_present_valid_tier_and_declared_escalation(self):
+        episode, _ = self.routed_episode()
+        write_brief(episode, tier='standard', escalation='declared')
+        self.assertEqual(self.tier(episode), 'tier=standard escalation=declared')
+
+    def test_an_absent_brief_prints_n_a_and_absent(self):
+        episode, _ = self.routed_episode()
+        self.assertEqual(self.tier(episode), 'tier=n/a escalation=absent')
+
+    def test_a_malformed_tier_line_prints_n_a(self):
+        episode, _ = self.routed_episode()
+        write((episode / 'brief.md'), '**Tier**: someday\n')
+        self.assertEqual(self.tier(episode), 'tier=n/a escalation=absent')
+
+    def test_a_valid_value_followed_by_trailing_prose_prints_n_a(self):
+        """A script's own field match, never planner-authored prose echoed back to the coordinator."""
+        episode, _ = self.routed_episode()
+        write((episode / 'brief.md'), '**Tier**: standard, because the task is simple\n')
+        self.assertEqual(self.tier(episode), 'tier=n/a escalation=absent')
+
+
+class FinishReplacementGuard(Base):
+    """The new per-session guard (readiness F8): no silent rerun, no out-of-order finish, and --session
+    stays refused outside a method:routed episode."""
+
+    def test_a_repeat_session_two_is_refused(self):
+        episode, _ = self.routed_episode()
+        self.session_one_default(episode)
+        self.session_two_default(episode)
+        transcript = write_transcript(self.tmp / 'repeat.jsonl', [handback_row('DONE')])
+        self.finish(episode, transcript, session=2, role='executor', tier='fast', expect=1)
+
+    def session_one_default(self, episode):
+        write_brief(episode)
+        transcript = write_transcript(self.tmp / 's1-default.jsonl', [handback_row('DONE')])
+        self.finish(episode, transcript, session=1, role='planner', tier='frontier')
+
+    def session_two_default(self, episode):
+        transcript = write_transcript(self.tmp / 's2-default.jsonl', [handback_row('DONE')])
+        self.finish(episode, transcript, session=2, role='executor', tier='fast')
+
+    def test_session_two_with_no_session_one_recorded_is_refused(self):
+        episode, _ = self.routed_episode()
+        transcript = write_transcript(self.tmp / 's2-orphan.jsonl', [handback_row('DONE')])
+        self.finish(episode, transcript, session=2, role='executor', tier='fast', expect=1)
+
+    def test_session_on_a_control_episode_is_refused(self):
+        self.repo.add('s90-demo')
+        self.repo.seal()
+        episode = self.stage(arm='control')
+        transcript = write_transcript(self.tmp / 's2-control.jsonl', [text_row(text='All done.')])
+        self.finish(episode, transcript, session=2, expect=1)
 
 
 if __name__ == '__main__':

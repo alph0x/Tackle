@@ -184,6 +184,64 @@ python3 eval/harness-v2/subagent.py finish  --episode <dir> --transcript <subage
     episode with a non-empty `outside_paths`; otherwise `clean`. The file names paths only, never file
     content. The coordinator, not this tool, merges the verdict into the judgment before `record`.
 
+### A routed episode: two (or three) sessions, one merged record
+
+A `method:routed` episode dispatches a planner subagent, then an executor subagent, as two separate,
+top-level subagents of the coordinating session — never one subagent dispatching another — recorded as
+one episode with two or three sessions:
+
+```sh
+python3 eval/harness-v2/subagent.py prompt  --episode <dir> [--session N]
+python3 eval/harness-v2/subagent.py finish  --episode <dir> [--session N] [--role planner|executor] \
+    [--tier fast|standard|frontier] --transcript <jsonl> --model <id> --started <utc> --finished <utc>
+python3 eval/harness-v2/subagent.py close   --episode <dir>
+python3 eval/harness-v2/subagent.py tier    --episode <dir>
+```
+
+Every other arm's `prompt`/`finish` call is unaffected: `--session`, `--role` and `--tier` are optional,
+default to session 1 with no role or tier recorded, and a `finish` call with no `--session` still writes
+`run.json`/`audit.json` directly in one call, exactly as above.
+
+- **`<episode>/brief.md`** is a new fixed path, a sibling of `work/`, `home/` and `prompts/`, never inside
+  `work/`. The planner writes its plan there; the coordinator never opens it.
+- **`prompt --session N`** (`N` defaults to 1, and is only meaningful on a `method:routed` episode):
+  - `N = 1`: today's preamble, the staged prompt verbatim and the arm sentence, plus one fixed closing
+    block asking the planner to write a paper plan to `brief.md` (with a `**Tier**:` line and, optionally,
+    an `**Escalation**: declared` line), never to implement the task itself, touch `work/`, or run the
+    skill's own PLAN scaffolding.
+  - `N >= 2`: never reads the staged prompt at all. Prints the fixed preamble plus a request to read
+    `brief.md` and carry out the task it describes, with a final report of exactly `DONE`, or exactly
+    `ESCALATE` if the brief declares an escalation and a capability failure is hit. Refused if `brief.md`
+    does not exist yet.
+- **`finish --session N --role <role> --tier <tier>`**, `method:routed` only: writes only
+  `sessions/0N/{stdout,stderr,meta.json}` plus a work-tree digest snapshot; it does not write
+  `run.json`/`audit.json` itself, and prints a reminder to run `close` once every session is in. The
+  replacement guard is per-session: a repeat of the same `N`, a session more than one past the highest
+  already recorded, or any `--session` on a non-routed episode, is refused; `--session 1` or its omission
+  keeps today's exact "the episode already ran" guard on every arm.
+- **`close`** (`method:routed` only, new subcommand): reads every `sessions/0N/` on disk, in order, and
+  writes the merged `run.json`/`audit.json` once.
+  - `cost` sums tokens, wall seconds and tool calls across sessions; `files_written` is computed once from
+    the current `work/` tree; `roles` has one entry per session (`role`, `tier`, `model`, `tokens_in`,
+    `tokens_out`), matching `check.py`'s own role schema.
+  - The audit runs once per session's own transcript and is invalid if any session is invalid: a nested
+    Task-tool (or any non-local-tool) call in either session is `tool:<name>`, unchanged from the
+    single-session rule; a session's own path audit for session 1 is exactly as any other episode's, but
+    a session 2 (or 3) additionally treats `prompts/`, `sessions/`, `dispatch.txt` and `stage.json` as
+    off-limits even though they resolve inside the episode, so relying on anything but the brief is caught.
+  - New, routed-only invalidity reasons: `"planner session modified the work tree"` (session 1's snapshot
+    differs from the original staged one), `"planner produced no brief"` (`brief.md` missing),
+    `"executor read past its brief"` (a session >= 2 path violation above), `"escalation without a
+    declared brief"` (an `ESCALATE` report with no declared escalation in the brief), and `"live
+    escalation out of scope for 9.0.0"` (a live session 2 hands back `ESCALATE` with no `sessions/03/` on
+    disk — 9.0.0 never dispatches a live third session; the three-session merge above is proven only by
+    this tool's own synthetic test fixtures).
+- **`tier`** (new subcommand, mechanical and read-only): greps `brief.md` for its `**Tier**:` and
+  `**Escalation**:` lines and prints `tier=<value> escalation=<declared|absent>`, nothing else. Output is
+  restricted to the closed vocabulary `fast`, `standard`, `frontier`, `n/a`: a missing or malformed line,
+  or a valid value followed by trailing prose, prints `tier=n/a` rather than echoing planner-authored text
+  to the coordinator.
+
 ## Probes
 
 `probe` runs each prompt in `probes.json` in an empty work tree with the install. The set holds six
