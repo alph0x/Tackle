@@ -90,7 +90,9 @@ def is_active(files):
             continue
         try:
             _, _, header, rows = SCHEMA['parse_board'](SCHEMA['decode'](root[name]))
-        except ValueError:
+        except ValueError as exc:
+            if str(exc) == 'unclosed fenced example':
+                return True
             continue
         status_col = SCHEMA['column_index'](header, 'Status')
         if status_col is None:
@@ -123,7 +125,10 @@ def chain_workspace(files, run_id):
     errors, residue = [], []
     originals_ok = True
     while True:
-        bucket = SCHEMA['schema_of'](current)
+        try:
+            bucket = SCHEMA['schema_of'](current)
+        except ValueError as exc:
+            return 'unknown', errors, residue, str(exc), originals_ok
         if bucket not in CHAIN:
             return bucket, errors, residue, None, originals_ok
         step, target = CHAIN[bucket]
@@ -176,7 +181,10 @@ def census(plans_dir, out_dir, record_dir, gate_names):
         # depth). held-out T-06/T-37 records are skipped entirely, not merely unread (D-73/D-77).
         copytree_excluding_held_out(workspace, scratch)
         files = load_files(scratch)
-        bucket = SCHEMA['schema_of'](files)
+        try:
+            bucket = SCHEMA['schema_of'](files)
+        except ValueError:
+            bucket = 'unknown'
         active = is_active(files)
         gates = active or name in gate_names
         final_bucket, errors, residue, refusal, originals_ok = chain_workspace(files, 'census-' + name)

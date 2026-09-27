@@ -5184,6 +5184,63 @@
       "destination": "references/recipes/correction-lineage.md",
       "note": "```python\nTASK_POOL_LIMIT = 3\nUNOWNED_INTEGRATION_POOL_LIMIT = 2\n\n\ndef correction_usage(events, pool_ids, limits=None):\n    unique = {}\n    for event in events:\n        identity = event['cycle_id']\n        if not identity or event.get('kind') != 'failed-correction':\n            raise ValueError('invalid correction event')\n        if identity in unique and unique[identity] != event:\n            raise ValueError('conflicting correction history')\n        unique[identity] = event\n    selected = set(pool_ids)\n    limits = dict(limits or {})\n    if not set(limits) <= selected or any(\n            limit not in (TASK_POOL_LIMIT, UNOWNED_INTEGRATION_POOL_LIMIT) for limit in limits.values()):\n        raise ValueError('invalid pool limit')\n    caps = {pool: limits.get(pool, TASK_POOL_LIMIT) for pool in selected}\n    pools = {pool: 0 for pool in selected}\n    counted = set()\n    for identity, event in unique.items():\n        affected = event.get('pool_ids', [event.get('pool_id')])\n        if not isinstance(affected, list) or not affected or any(not isinstance(p, str) or not p for p in affected):\n            raise ValueError('invalid correction pool')\n        for pool in selected & set(affected):\n            pools[pool] += 1\n            counted.add(identity)\n    return {'spent': len(counted), 'pools': pools,\n            'remaining': min((max(0, caps[pool] - n) for pool, n in pools.items()), default=TASK_POOL_LIMIT),\n            'exhausted': any(n >= caps[pool] for pool, n in pools.items())}\n\n\ndef transfer_lineage(previous, descendants, unresolved, failure_pools):\n    required = set(previous) & set(unresolved)\n    inherited = set().union(*(set(failures) for failures in descendants.values())) if descendants else set()\n    if required != inherited or not required.issubset(failure_pools):\n        raise ValueError('lost, invented or unrelated failure lineage')\n    return {identity: sorted({failure_pools[failure] for failure in failures})\n            for identity, failures in descendants.items()}\n```",
       "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 95,
+      "unit_sha256": "cae963e1b991b5afd8a400b2d4001a6390795206474adee479be7cb705627d02",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "Migration keys on the board's `Schema:` line, or on structure when the line is absent — never on the free-text `Methodology:` stamp, which is display-only. [`recipes/migrate/schema.md`](../recipes/migrate/schema.md)'s `schema_of(files)` reads only the workspace root (top-level files; nested paths are ignored for detection) and ignores any `legacy-*/` directory, so a stray legacy snapshot next to a current board never changes the bucket.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "69",
+          "reason": "the decision-reference number is deleted along with its citation, not restated"
+        },
+        {
+          "token": "3",
+          "reason": "the citation's item number is deleted along with the citation itself, not restated"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 168,
+      "unit_sha256": "7992f98d515a73d36b8e26bf49515867b3cbf5caadf45a9f4030b86fea2aed6e",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "Below the `pre-3` bucket nothing is promised, and this repository's historical checklists above and in `maintaining/migrations.md` apply.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "69",
+          "reason": "the decision-reference number is deleted along with its citation, not restated"
+        },
+        {
+          "token": "4",
+          "reason": "the citation's item number is deleted along with the citation itself, not restated"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 174,
+      "unit_sha256": "2468025875f8d6c883bb2499bd65ec894c502dc9470e14e07b41fef224f43532",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "Each step's adoption writes the new content plus every `legacy-*/` directory that existed before, unchanged, and adds its own `legacy-<bucket>/` snapshot: the workspace root exactly as the step read it, byte-identical and read-only, before that step's transform ran.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "69",
+          "reason": "the decision-reference number is deleted along with its citation, not restated"
+        },
+        {
+          "token": "5",
+          "reason": "the citation's item number is deleted along with the citation itself, not restated"
+        }
+      ]
     }
   ]
 }

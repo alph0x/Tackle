@@ -12,7 +12,7 @@ PAIRS = (
 )
 UNTOUCHED = ('decisions.md', 'design-contract.md')
 HISTORY_ADOPTION_MARKER = 'adoption · migrated to schema tackle-workspace/4'
-# T36-N2: a real adoption entry is the exact '## <date> · <marker>' heading transform() itself
+# A real adoption entry is the exact '## <date> · <marker>' heading transform() itself
 # writes below -- matched line by line via unfenced_lines() (so a quoted heading inside a fenced
 # example never counts), never a bare substring match anywhere in the file. A bare substring also
 # matches an unrelated line that merely quotes the marker phrase (e.g. a session note discussing
@@ -21,11 +21,11 @@ _HISTORY_ADOPTION_HEADING_RE = re.compile(r'## \S+ · ' + re.escape(HISTORY_ADOP
 
 
 def _has_real_adoption_entry(text):
-    """True if `text` already carries the real '## <date> · <marker>' adoption heading (T36-N2)."""
+    """True if `text` already carries the real '## <date> · <marker>' adoption heading."""
     return any(_HISTORY_ADOPTION_HEADING_RE.fullmatch(line) for line in unfenced_lines(text))
 
 
-# T36-L1: every artifact this step renames, derived from schema.md's own RENAME_FILES/RENAME_DIRS so
+# Every artifact this step renames, derived from schema.md's own RENAME_FILES/RENAME_DIRS so
 # the AGENTS.md residue scan below can never silently drift out of sync with a token those tables add
 # or remove. (PAIRS above is not the source here: its one extra entry, 'Point decomposition', is a
 # prose phrase, not a renamed artifact.)
@@ -34,7 +34,7 @@ _NAME_BOUNDARY = '[A-Za-z0-9_-]'
 
 
 def _name_alternative(token):
-    """One boundary-guarded alternation branch for `token` (T36-M4): excludes a preceding or
+    """One boundary-guarded alternation branch for `token`: excludes a preceding or
     following identifier character so the token is never matched as part of a longer compound name --
     'usage.md' inside 'resource-usage.md', 'board.md' inside 'task-board.md', 'log.md' inside an
     unrelated 'backlog.md'. A directory prefix (ends in '/') gets no trailing guard: it is always
@@ -79,7 +79,7 @@ def build_id_map(header, rows):
 def rewrite_content(text, id_map):
     """Rewrite every PAIRS artifact-name mention, then every mapped id -- each in one single,
     boundary-guarded regex pass over the original text, never a chain of independent `str.replace`
-    calls (T36-M4: that naive chain turns pre-existing 'resource-usage.md' into
+    calls (that naive chain turns pre-existing 'resource-usage.md' into
     'resource-resource-usage.md', because 'usage.md' is a literal substring of it). `map_ids` already
     applies this same one-pass, longest-id-first technique for ids, so a short id such as 'P-1' can
     never swallow part of a longer one such as 'P-10'."""
@@ -112,7 +112,7 @@ def transform(files, context):
             raise ValueError('unsupported task row status: ' + cells[status_col])
     id_map = build_id_map(header, rows)
 
-    # T36-H2: every source path's final destination is computed up front, into one map, before
+    # Every source path's final destination is computed up front, into one map, before
     # anything is written. Two different sources reaching the same target -- an old name and its new
     # name both already present (usage.md + resource-usage.md, board.md + task-board.md, log.md +
     # history.md, points/X + tasks/X) -- is a named refusal, never a silent overwrite of one by the
@@ -135,7 +135,7 @@ def transform(files, context):
         if path == 'AGENTS.md':
             new_files[new_path] = set_methodology(decode(data), context['methodology']).encode('utf-8')
         elif new_path == 'history.md':
-            # T36-H3: log.md's or history.md's own bytes, untouched (never id-mapped or PAIRS-
+            # log.md's or history.md's own bytes, untouched (never id-mapped or PAIRS-
             # rewritten) -- the adoption entry is appended below, once collision detection above has
             # already confirmed there is exactly one source for this target.
             new_files[new_path] = data
@@ -152,8 +152,8 @@ def transform(files, context):
         if path in files:
             new_files[path] = files[path]
 
-    # T36-H3: only log.md exists -> rename it and append one entry; only history.md exists -> keep it
-    # and append one entry; both exist -> already refused above as a HIGH-2 collision. The heading
+    # Only log.md exists -> rename it and append one entry; only history.md exists -> keep it
+    # and append one entry; both exist -> already refused above as a collision. The heading
     # check runs before context is touched at all, so a genuine no-op re-run (which never reaches this
     # branch, since bucket is no longer '3') and a workspace that already carries the entry both leave
     # it written exactly once.
@@ -200,7 +200,7 @@ def verify(before, after):
             leftover.update(re.findall(r'\bP-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*\b', decode(data)))
     residue.extend('P-id mention left in rewritten content: ' + identity for identity in sorted(leftover))
     if 'AGENTS.md' in after:
-        # T36-L1: AGENTS.md's own prose is never rewritten (only its Methodology line is), so a stale
+        # AGENTS.md's own prose is never rewritten (only its Methodology line is), so a stale
         # artifact name or old id it already named survives untouched -- residue for a human to review,
         # boundary-guarded the same way rewrite_content() is, so 'task-board.md'/'resource-usage.md'
         # mentions are not misread as the old 'board.md'/'usage.md'.

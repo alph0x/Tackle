@@ -93,7 +93,7 @@ rename any workspace or relax the 8.3 test-selection and E2E replay-evidence rul
 ## Schema-keyed migration (9.0.0)
 
 Migration keys on the board's `Schema:` line, or on structure when the line is absent — never on the
-free-text `Methodology:` stamp, which is display-only (D-69 item 3). [`recipes/migrate/schema.md`](../recipes/migrate/schema.md)'s
+free-text `Methodology:` stamp, which is display-only. [`recipes/migrate/schema.md`](../recipes/migrate/schema.md)'s
 `schema_of(files)` reads only the workspace root (top-level files; nested paths are ignored for
 detection) and ignores any `legacy-*/` directory, so a stray legacy snapshot next to a current board
 never changes the bucket. A workspace matching more than one row below is `unknown`; its scan for the
@@ -166,14 +166,14 @@ adoption, for example a stray id mention in rewritten prose.
 
 The install reads, and operates on, every workspace in a bucket above; it offers a migration only when
 the requested action needs a newer format. Below the `pre-3` bucket nothing is promised, and this
-repository's historical checklists above and in `maintaining/migrations.md` apply (D-69 item 4).
+repository's historical checklists above and in `maintaining/migrations.md` apply.
 
 <a id="pre-migration-originals"></a>
 ## The pre-migration original's home
 
 Each step's adoption writes the new content plus every `legacy-*/` directory that existed before,
 unchanged, and adds its own `legacy-<bucket>/` snapshot: the workspace root exactly as the step read it,
-byte-identical and read-only, before that step's transform ran (D-69 item 5). By construction this is
+byte-identical and read-only, before that step's transform ran. By construction this is
 outside every row that reads a board or history by its path. Row 1's placeholder scan still reaches one
 level into every subdirectory, including a `legacy-*/` one — noted here for the task that next edits
 that row.

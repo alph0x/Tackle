@@ -46,8 +46,9 @@ def decode(data):
     return data.decode('utf-8')
 
 
-def unfenced_lines(text):
-    """Lines of text outside fenced code blocks, tracking fences exactly like candidate_board()."""
+def unfenced_lines(text, strict=False):
+    """Lines of text outside fenced code blocks, tracking fences exactly like candidate_board().
+    With strict, a fence still open at the end raises ValueError('unclosed fenced example')."""
     fence = None
     out = []
     for line in text.splitlines():
@@ -61,6 +62,8 @@ def unfenced_lines(text):
             fence = (delimiter[1][0], len(delimiter[1]))
             continue
         out.append(line)
+    if strict and fence:
+        raise ValueError('unclosed fenced example')
     return out
 
 
@@ -90,7 +93,7 @@ def is_delimiter_row(line):
 def board_header_has(text, id_words, status_word='Status'):
     """True if some unfenced header row (followed by a delimiter row) names a Status column and one
     of id_words (e.g. {'Point'} or {'Point', 'Task'})."""
-    lines = unfenced_lines(text)
+    lines = unfenced_lines(text, strict=True)
     for i in range(len(lines) - 1):
         if not lines[i].strip().startswith('|') or not is_delimiter_row(lines[i + 1]):
             continue
@@ -146,6 +149,8 @@ def parse_board(text):
             fenced.add(index)
             fence = (delimiter[1][0], len(delimiter[1]))
             continue
+    if fence:
+        raise ValueError('unclosed fenced example')
     header_index = None
     for index in range(len(lines) - 1):
         if index in fenced or (index + 1) in fenced:
@@ -224,7 +229,7 @@ METHODOLOGY_RE = re.compile(r'(Methodology:\s*)(Tackle \d+\.\d+(?:\.\d+)?(?: can
 
 def set_methodology(text, value):
     """Replace only the version substring after 'Methodology:', keeping any bold/comment decoration.
-    A no-op when the line is absent (D-69 item 3: display-only, written when present)."""
+    A no-op when the line is absent (display-only, written when present)."""
     return METHODOLOGY_RE.sub(lambda m: m.group(1) + value, text, count=1)
 
 

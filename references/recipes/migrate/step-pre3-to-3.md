@@ -19,7 +19,7 @@ def find_column(header, names):
 
 
 def locate_pre3_columns(header):
-    """Every column this step needs, located by header name -- never by position (T36-H1): a pre-3
+    """Every column this step needs, located by header name -- never by position: a pre-3
     board's columns can appear in any order, and different workspaces spell some of them differently
     ('Brief' or 'Briefing', 'Confidence' or 'Verification'). A header this step does not fully and
     unambiguously recognize -- a required column missing, a synonym pair both present, or a header
@@ -123,7 +123,7 @@ def verify(before, after):
         for _, cells in rows:
             if status_col is not None and len(cells) > status_col and cells[status_col] == 'Ready to run':
                 errors.append('inferred Ready to run row: ' + cells[0])
-        # T36-H1: every non-status source cell (id, What, Brief, Depends on) must survive verbatim in
+        # Every non-status source cell (id, What, Brief, Depends on) must survive verbatim in
         # its corresponding output row, so a regression back to positional reading -- or any future
         # change that drops or scrambles a cell -- goes red here even when the input header is the
         # fixture's own standard order. Confidence/Verification is deliberately excluded: it is never

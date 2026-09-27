@@ -43,7 +43,7 @@ SCHEMA = 'tackle-field-report/1'
 _FENCE_RE = re.compile(r'^\s{0,3}(`{3,}|~{3,})(.*)$')
 
 
-def unfenced_lines(text):
+def unfenced_lines(text, strict=False):
     """Lines of `text` outside fenced code blocks."""
     fence = None
     out = []
@@ -58,6 +58,8 @@ def unfenced_lines(text):
             fence = (match.group(1)[0], len(match.group(1)))
             continue
         out.append(line)
+    if strict and fence:
+        raise ValueError('unclosed fenced example')
     return out
 
 
@@ -84,10 +86,10 @@ def is_delimiter_row(line):
     return bool(re.fullmatch(r'\|?[\s:|-]+\|?', stripped)) and '-' in stripped
 
 
-def find_table(text, start=0):
+def find_table(text, start=0, strict=False):
     """(header_cells, [row_cells, ...]) for the first header+delimiter pipe table found outside
     fences at or after unfenced line index `start`, or None."""
-    lines = unfenced_lines(text)
+    lines = unfenced_lines(text, strict=strict)
     for i in range(start, len(lines) - 1):
         if not lines[i].strip().startswith('|') or not is_delimiter_row(lines[i + 1]):
             continue
@@ -131,7 +133,10 @@ def detect_bucket(root_texts):
         if token == 'tackle-workspace/3':
             matches['3'] = 'board.md'
         elif token is None:
-            table = find_table(board)
+            try:
+                table = find_table(board, strict=True)
+            except ValueError:
+                return 'unknown', None
             if table and 'Status' in table[0] and any(word in table[0] for word in ('Point', 'Task')):
                 matches['pre-3'] = 'board.md'
     task_board = root_texts.get('task-board.md')
@@ -211,7 +216,7 @@ def count_tasks(board_text):
     """(by_state, unmapped_raw_values) over every task row of the first board table in board_text.
     A row only counts as a task row when its first cell names a P-/T-id (this also excludes a
     decorative or unrelated pipe table, if one precedes the real board)."""
-    table = find_table(board_text)
+    table = find_table(board_text, strict=True)
     by_state, unmapped = {}, []
     if not table:
         return by_state, unmapped
@@ -401,8 +406,12 @@ def workspace_report(plans_arg, slug):
     bucket, bucket_file = detect_bucket(root_texts)
 
     if bucket_file and bucket_file in ('board.md', 'task-board.md'):
-        by_state, unmapped = count_tasks(root_texts[bucket_file])
-        tasks = {'value': by_state, 'source': source(bucket_file), 'unmapped': unmapped}
+        try:
+            by_state, unmapped = count_tasks(root_texts[bucket_file])
+        except ValueError:
+            tasks = {'value': 'n/a', 'source': source(bucket_file), 'unmapped': []}
+        else:
+            tasks = {'value': by_state, 'source': source(bucket_file), 'unmapped': unmapped}
     else:
         tasks = {'value': 'n/a', 'source': None, 'unmapped': []}
 
