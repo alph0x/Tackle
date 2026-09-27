@@ -89,6 +89,35 @@ rename any workspace or relax the 8.3 test-selection and E2E replay-evidence rul
    input revisions, observed checks and rollback result; keep the original workspace readable.
    A failed check leaves it active and unchanged.
 
+<a id="v84--v90-checklist"></a>
+## v8.4 → v9.0 checklist
+
+This major release replaces the RUN and PLAN guides with cards, keys migration on the board
+schema and retires the 8.x action-name aliases. Adopt it only for a selected active workspace, on
+a disposable copy at a task boundary; installing 9.0 migrates nothing by itself.
+
+1. Before updating the install, move any file you added under `references/archetypes/` to
+   `.tackle/archetypes/` or `~/.tackle/archetypes/`. The install no longer carries
+   self-development archetypes, and an update drops files left there.
+2. Record the pinned procedure and the current lint result (`lint: N/16`), with hashes of the
+   board, briefs and history. Preserve neighboring workspaces.
+3. Migrate the board through the [schema-keyed migration](#schema-keyed-migration) and its
+   [steps](#migration-steps). A board whose fenced example never closes is refused; close the
+   fence and run the step again.
+4. Run rows 1–16 on the migrated copy. On a `/5` board, row 12 reports `Effort without Tier
+   reason` for an older brief whose Effort is not `low` and that has no Tier and no Tier reason.
+   This is expected: add a `**Tier reason**` line to that brief saying why its Effort departs
+   from the default, as the [task template](../task.tmpl.md) shows.
+5. Replace retired 8.x action names in forward-looking prompts with the current request words;
+   [terminology.md](../terminology.md) maps each old name. Preserve historical records verbatim.
+6. Profiles need no action: an entry without an id stays readable, and the next retro that
+   touches it assigns an id and computes its confidence.
+7. The routing fields (`Tier`, `Tier reason`, `Escalation`) are optional; a brief without them
+   keeps the default. Planning runs on a more capable tier than the Executor's whenever the
+   model map binds more than one tier.
+8. Adopt only the validated copy at the boundary. Record the path mapping, the checks and the
+   rollback result; a failed check leaves the original active and unchanged.
+
 <a id="schema-keyed-migration"></a>
 ## Schema-keyed migration (9.0.0)
 

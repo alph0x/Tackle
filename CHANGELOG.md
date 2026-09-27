@@ -1,5 +1,53 @@
 # Tackle changelog
 
+## Tackle 9.0.0
+
+- **Archetypes leave the install.** Before updating, move any file you added under
+  `references/archetypes/` to `.tackle/archetypes/` or `~/.tackle/archetypes/`: the update drops
+  files left there. Profile entries now carry an id and a confidence computed as a Wilson lower
+  bound over recorded observations, never typed by hand, with `assumed` observations excluded; an
+  entry without an id stays readable until the next retro that touches it.
+- **Cards replace the RUN and PLAN guides.** The entry file routes to a short RUN card and a PLAN
+  card, each with depth sections, and every normative rule has one home. The 8.x action-name
+  aliases are retired; `references/terminology.md` maps each old name to its current request.
+- **A smaller install.** The release process, the migration checklists before 8.3 and the collector
+  recipes moved to `MAINTAINING.md`, `maintaining/migrations.md` and `extras/`, and `CHANGELOG.md`
+  moved to the repository root; links to the old in-package paths break. The install holds 62,047
+  words, down from 77,324 in 8.4.1.
+- **Planning runs on a more capable tier than the Executor's** whenever the model map binds more
+  than one tier; the Executor's default stays the cheapest bindable tier at low effort. The rule
+  applies when a task's tier is proposed at compile time. A capability escalation during RUN is a
+  separate, capped correction, and an owner-confirmed topmost Executor tier is the owner's exception.
+- **Per-task routing.** Preflight resolves a compiled Tier against the harness model map and
+  dispatches at the bound model, with one declared, capped escalation, refused when the next tier
+  binds the model the failed attempt already used.
+- **Schema-keyed migration.** One idempotent detect, transform and verify step per schema version,
+  pre-3 → 3 → 4 → 5, each with its recipe. Migration refuses a board whose fenced example never
+  closes, instead of silently dropping every row after it; detection refuses a Schema-less pre-3
+  board of that shape, and `/3` and `/4` detection is unchanged.
+- **Board schema `/5`** adds a `Waiting on owner` state, and a `Ready to run` row cites
+  `ready: <reference>`. On a `/5` board, lint row 12 also reports an Effort that departs from the
+  default with no Tier and no Tier reason.
+- The PLAN card links each step to its exact section; STATUS digests and history entries lose their
+  fixed line caps; lint row 8 reads a Write scope wrapped across lines; guide pointers name their
+  current homes. A long history is archived only on an explicit request or a recorded policy, and
+  lint row 13 warns past its threshold.
+- An 8.4 workspace adopts 9.0 through the
+  [8.4 → 9.0 checklist](references/guides/migrate.md#v84--v90-checklist). Nothing migrates
+  automatically.
+- Evidence:
+  - Two pre-registered, development-grade cohorts compared 9.0.0 candidates with 8.4.1 on held-out
+    planning-outcome traps. In both, the fall-rate difference met its −0.10 lower-bound margin, but
+    the median input tokens and tool calls were not lower: 834k against 731k and 15.5 against 13.5,
+    then 1,020,971 against 868,690 and 18.5 against 16. The candidates did not meet the
+    pre-registered rule of non-inferior behavior at lower cost.
+  - The planning-tier rule's evidence is inconclusive: in the first cohort, a more capable planner
+    with a cheapest-tier executor fell in none of three held-out episodes, and cost more.
+  - Every sentence removed from a rule's home file since 8.4.1 is accounted for mechanically: 535
+    recorded dispositions and 5 exact matches in the shipped tree, none unaccounted. The
+    relocations were checked this way, not by a dedicated trap.
+  - `sweep: 9/10 gates passed`.
+
 ## Tackle 8.4.1
 
 - Every workspace lint row can now fail on the defect it names. Cells contain no pipe character, so a copy from GitHub's rendered table runs unchanged. Rows 3, 8, 10, 11 and 14 read Status by its column header. Row 2 accepts a brief copied from `task.tmpl.md` with its leading anchor. Row 4 checks every citation on a line and reports an unterminated one. Row 7 reports a seal whose decision is superseded. Row 9 counts loop budgets only when they are declared as fields. Row 12 requires a resolved effort in `tasks/`; legacy `points/` keep `inherit`. Row 16 is listed as blocking. Each row keeps its exit contract, as interpreted in `full-checks.md`.

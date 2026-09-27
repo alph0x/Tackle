@@ -5241,6 +5241,25 @@
           "reason": "the citation's item number is deleted along with the citation itself, not restated"
         }
       ]
+    },
+    {
+      "path": "SKILL.md",
+      "line": 4,
+      "unit_sha256": "04cd1ade3881b4659f64cf70ff86d8ffcf4f927a1c51b6f3da5d46b1f3cf7959",
+      "disposition": "reworded",
+      "destination": "SKILL.md",
+      "note": "**Tackle 9.0.0** is a model-agnostic planning and execution method.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "8.4",
+          "reason": "version stamp bump for the 9.0.0 release"
+        },
+        {
+          "token": "1",
+          "reason": "version stamp bump for the 9.0.0 release"
+        }
+      ]
     }
   ]
 }
