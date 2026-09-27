@@ -6,7 +6,7 @@ own isolated runner and writes a judgment that ``harness.py record --judgment`` 
 
 Every case that exercises a real fixture reads it from the git index into a scratch directory and never
 runs anything in place. Messages about a variant name paths and counts only, never file content, because
-held-out variants must stay unread by the people who tune the method (D-73, D-77).
+held-out variants must stay unread by the people who tune the method.
 
 Standard library only; no network, container or model call.
 """
@@ -95,7 +95,7 @@ class Base(unittest.TestCase):
 
 
 # ---------------------------------------------------------------------------
-# A synthetic scenario in a throwaway git repository (C7-C12, C18)
+# A synthetic scenario in a throwaway git repository
 # ---------------------------------------------------------------------------
 
 DEMO_TEST = '''import unittest
@@ -278,7 +278,7 @@ class RefusalTests(Synthetic):
 
 
 # ---------------------------------------------------------------------------
-# Transcripts (C12): synthetic streams with placeholder paths only
+# Transcripts: synthetic streams with placeholder paths only
 # ---------------------------------------------------------------------------
 
 def claude_stream(steps):
@@ -502,7 +502,7 @@ class PlanningScenarioTests(Base):
 
 
 # ---------------------------------------------------------------------------
-# Integration (C13): stage -> run (fake adapter) -> judge -> record -> check
+# Integration: stage -> run (fake adapter) -> judge -> record -> check
 # ---------------------------------------------------------------------------
 
 def manifest(cohort_id, scenario, variant, digest, episodes):

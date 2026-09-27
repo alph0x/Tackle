@@ -6,7 +6,7 @@ self-lint gates, or the unreferenced vendor collectors and validator example. Ev
 in the listed files resolves, the five legacy templates keep their pinned hashes, and the eight
 self-lint gates are silent.
 
-Historical checks read commits only. At ``T32_REV``, the commit that made the relocation, every
+Historical checks read commits only. At ``RELOCATION_REV``, the commit that made the relocation, every
 relocated byte is preserved, unchanged except the enumerated substitutions, in a repository file
 that does not ship. Later edits to those files cannot break these checks.
 
@@ -26,7 +26,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 BASE_REV = '03b992e52b1b40faa5e3897a0d4729065f503c02'
 # The commit that made the relocation; historical checks compare it with BASE_REV.
-T32_REV = 'b2bb990962096417548f1321964dbe2f4e35e1a9'
+RELOCATION_REV = 'b2bb990962096417548f1321964dbe2f4e35e1a9'
 
 
 # ---------------------------------------------------------------------------
@@ -284,7 +284,7 @@ def expected_lintspec_bytes():
     # separator.
     lines_1_49 = line_range(git_show(BASE_REV, 'references/guides/lint-spec.md'), 1, 49)
     rest = stay_bytes('references/guides/lint-spec.md', LINTSPEC_STAYS[1:])
-    # The file ends with exactly one newline, as it did at BASE_REV (D-72).
+    # The file ends with exactly one newline, as it did at BASE_REV.
     return (lines_1_49 + LINTSPEC_POINTER.encode('utf-8') + b'\n\n' + rest).rstrip(b'\n') + b'\n'
 
 
@@ -301,7 +301,7 @@ def expected_migrate_bytes():
     # trailing separators would leave two blank lines where the original had one, so the leading
     # "\n" of lines_39_108 is dropped here.
     assert lines_39_108[:1] == b'\n'
-    # Line 108 is the blank separator before the moved chain; the file ends with exactly one newline (D-72).
+    # Line 108 is the blank separator before the moved chain; the file ends with exactly one newline.
     return (lines_1_7 + MIGRATE_POINTER.encode('utf-8') + b'\n'
            + lines_13_24 + lines_39_108[1:]).rstrip(b'\n') + b'\n'
 
@@ -316,8 +316,8 @@ def extract_gates(maintaining_text):
 
 
 def at_t32(path):
-    """Text of ``path`` as committed at T32_REV."""
-    return git_show(T32_REV, path).decode('utf-8')
+    """Text of ``path`` as committed at RELOCATION_REV."""
+    return git_show(RELOCATION_REV, path).decode('utf-8')
 
 
 # ---------------------------------------------------------------------------
@@ -446,18 +446,18 @@ class GatesTests(unittest.TestCase):
 
 
 # ---------------------------------------------------------------------------
-# Historical checks: commits only (T32_REV against BASE_REV)
+# Historical checks: commits only (RELOCATION_REV against BASE_REV)
 # ---------------------------------------------------------------------------
 
 class HistoricalRelocationTests(unittest.TestCase):
-    """Case: byte preservation -- at T32_REV, each moved file and each extracted block equals its
+    """Case: byte preservation -- at RELOCATION_REV, each moved file and each extracted block equals its
     BASE_REV bytes (reversing exactly the enumerated substitutions), and the edited guides
     reconstruct exactly."""
 
     def test_moved_files_are_byte_identical(self):
         for old, new in MOVED_FILES:
             expected = git_show(BASE_REV, old)
-            actual = git_show(T32_REV, new)
+            actual = git_show(RELOCATION_REV, new)
             self.assertEqual(sha256(actual), sha256(expected), '%s changed in the move' % new)
 
     def test_extracted_blocks_reverse_to_their_original_bytes(self):
@@ -471,8 +471,8 @@ class HistoricalRelocationTests(unittest.TestCase):
                              'its substitutions' % (entry['source'], entry['start'], entry['end'], entry['dest']))
 
     def test_edited_guides_reconstruct_exactly_from_base_rev(self):
-        self.assertEqual(git_show(T32_REV, 'references/guides/lint-spec.md'), expected_lintspec_bytes())
-        self.assertEqual(git_show(T32_REV, 'references/guides/migrate.md'), expected_migrate_bytes())
+        self.assertEqual(git_show(RELOCATION_REV, 'references/guides/lint-spec.md'), expected_lintspec_bytes())
+        self.assertEqual(git_show(RELOCATION_REV, 'references/guides/migrate.md'), expected_migrate_bytes())
 
     def test_stayed_ranges_are_byte_identical(self):
         current = at_t32('references/guides/lint-spec.md')
@@ -499,7 +499,7 @@ class HistoricalRelocationTests(unittest.TestCase):
 
 
 class HistoricalContentTests(unittest.TestCase):
-    """Case: the relocation kept the install's current content -- at T32_REV, migrate.md still
+    """Case: the relocation kept the install's current content -- at RELOCATION_REV, migrate.md still
     holds the current checklists and the pointer, and lint-spec.md still holds its score line."""
 
     def test_current_checklists_and_pointer_stayed(self):
@@ -513,7 +513,7 @@ class HistoricalContentTests(unittest.TestCase):
 
 
 class HistoricalVersionTests(unittest.TestCase):
-    """Case: unchanged version -- at T32_REV, the stamps and the changelog head are still 8.4.1."""
+    """Case: unchanged version -- at RELOCATION_REV, the stamps and the changelog head are still 8.4.1."""
 
     def test_stamps_are_unchanged(self):
         self.assertIn('**Tackle 8.4.1**', at_t32('SKILL.md'))
@@ -521,14 +521,14 @@ class HistoricalVersionTests(unittest.TestCase):
 
 
 class HistoricalRecipesAndRulesTests(unittest.TestCase):
-    """Case: recipes and rules -- at T32_REV, candidate_board loads from its new home, the task
+    """Case: recipes and rules -- at RELOCATION_REV, candidate_board loads from its new home, the task
     contracts read it there, and R-MIGRATE-03 alone is retired with an updated home."""
 
     def test_candidate_board_recipe_moved_unchanged(self):
         expected = block_bytes(dict(source='references/guides/migrate.md', start=109, end=636,
                                     subs=EXTRACTED_BLOCKS[3]['subs']))
         self.assertIn(b"def candidate_board(text, reports):", expected)
-        migrations = git_show(T32_REV, 'maintaining/migrations.md')
+        migrations = git_show(RELOCATION_REV, 'maintaining/migrations.md')
         self.assertIn(b"def candidate_board(text, reports):", migrations)
 
     def test_test_task_contracts_reads_the_new_home(self):
@@ -540,7 +540,7 @@ class HistoricalRecipesAndRulesTests(unittest.TestCase):
         import json
         already_retired = {rule['rule_id'] for rule in json.loads(git_show(BASE_REV, 'eval/rules/ledger.json'))['rules']
                            if isinstance(rule, dict) and 'retired_in' in rule}
-        ledger = json.loads(git_show(T32_REV, 'eval/rules/ledger.json'))
+        ledger = json.loads(git_show(RELOCATION_REV, 'eval/rules/ledger.json'))
         rules = {rule['rule_id']: rule for rule in ledger['rules'] if isinstance(rule, dict) and 'rule_id' in rule}
         migrate03 = rules['R-MIGRATE-03']
         self.assertEqual(migrate03.get('retired_in'), '9.0.0')

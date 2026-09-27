@@ -153,7 +153,7 @@ FAILS = [
     ('fail-15', 'pass-full', 15, 'stale reference-doc', 'WARN'),
     ('fail-16', 'pass-full', 16, 'duplicate start', 'FAIL'),
     ('fail-16b', 'pass-full', 16, 'unknown Event', 'FAIL'),
-    # /5 cases (T-39). C2: the token stays invalid on /4 (row 3 unchanged).
+    # /5 cases. C2: the token stays invalid on /4 (row 3 unchanged).
     ('fail-3-waiting-v4', 'pass-full', 3, 'bad status', 'FAIL'),
     # C3: an uncited Ready to run row on /5 fails row 10's new citation check.
     ('fail-10-uncited-ready-v5', 'pass-full-5', 10, 'ready-to-run task missing ready citation', 'FAIL'),

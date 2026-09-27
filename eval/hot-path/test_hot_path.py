@@ -1,6 +1,6 @@
-"""T-33 hot-path checks: the RUN-chain measure, the duplicate detector and the RUN card's transitions.
+"""Hot-path checks: the RUN-chain measure, the duplicate detector and the RUN card's transitions.
 
-Fixture cases build disposable repositories in temporary directories (D-36) and never touch this
+Fixture cases build disposable repositories in temporary directories and never touch this
 checkout. Repository cases read this checkout: the RUN chain is within budget (C1), it holds no
 near-duplicate unit (C3), the card's transition table is structurally complete (C5), and every depth
 section of run.md is reached from the card. Standard library only; no network or model call.

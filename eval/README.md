@@ -40,7 +40,7 @@ tests, with Wilson intervals for reading. No cohort has been run under it yet.
   alone) from the sealed [scenario index](scenario-index/README.md), under a temporary HOME.
 - It runs every prompt as a headless session through a host adapter (Codex, Claude Code, or a fake for
   tests).
-- It records per-role usage exactly or as `n/a`, appends C01 records that `check.py` accepts, and builds
+- It records per-role usage exactly or as `n/a`, appends tackle-episode/1 records that `check.py` accepts, and builds
   blinded judge packets.
 - No credential reaches a participant: real runs go through a host-side broker and need
   `--allow-model-calls` and container isolation.

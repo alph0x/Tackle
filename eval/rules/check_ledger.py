@@ -464,7 +464,7 @@ def git_text(repo, *args):
 
 def resolve_auto(repo):
     """CI's `--gate auto`: the most recent tag reachable from HEAD^ whose tree holds the ledger, else the
-    commit that first added it (re-check N1). Walks tag-by-tag rather than by date, retrying from one
+    commit that first added it. Walks tag-by-tag rather than by date, retrying from one
     commit before each candidate tag until one qualifies or none remain."""
     spec, seen = 'HEAD^', set()
     while True:
@@ -699,9 +699,9 @@ def main(argv=None):
     if args.gate is not None and ledger is not None:
         try:
             rev, always_lines, clean_lines = run_gate(report, repo, args.gate, args.evidence_cohort, ledger)
-            print('gate: base=%s' % rev)  # printed unconditionally, errors included (re-check N1)
+            print('gate: base=%s' % rev)  # printed unconditionally, errors included
             for line in always_lines:
-                print(line)  # every exception's state, also unconditional (re-check N1)
+                print(line)  # every exception's state, also unconditional
         except GateRefusal as problem:
             report.error(str(problem))
     for error in report.errors:

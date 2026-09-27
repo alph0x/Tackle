@@ -1,4 +1,4 @@
-"""Protocol v2 harness: stage an arm, run headless sessions, record C01 lines and build blinded judge packets.
+"""Protocol v2 harness: stage an arm, run headless sessions, record episode-record lines and build blinded judge packets.
 
 Usage: python3 eval/harness-v2/harness.py stage|run|dispatch|record|packet|probe [options]
 (see eval/harness-v2/README.md). Exit 0 success, 1 refusal or failed check, 2 usage error or a real adapter
@@ -54,7 +54,7 @@ def sha(data):
 
 
 def mapping_digest(mapping):
-    """C06: the sha256 of the canonical JSON of {relative path: sha256 of the file's bytes}."""
+    """The tree digest: the sha256 of the canonical JSON of {relative path: sha256 of the file's bytes}."""
     return sha(json.dumps(mapping, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode())
 
 
@@ -63,7 +63,7 @@ def files_digest(files):
 
 
 def read_tree(root):
-    """{relative path: bytes}; a symlink anywhere refuses, because the tree then has no C06 digest."""
+    """{relative path: bytes}; a symlink anywhere refuses, because the tree then has no digest."""
     files = {}
     for path in sorted(Path(root).rglob('*')):
         if path.is_symlink():
@@ -136,7 +136,7 @@ def safe_out(out):
 
 
 def read_install(root):
-    """The install tree (C06): exactly SKILL.md and references/ of --install; a symlink refuses."""
+    """The install tree: exactly SKILL.md and references/ of --install; a symlink refuses."""
     root = Path(root)
     skill = root / 'SKILL.md'
     if skill.is_symlink() or not skill.is_file():
@@ -568,7 +568,7 @@ def dispatch(args):
 # --- records ---------------------------------------------------------------------------------------------------
 
 def record(args):
-    """Append one C01 line whose prev_sha256 chains to the previous line; each line is checked before it lands."""
+    """Append one episode-record line whose prev_sha256 chains to the previous line; each line is checked before it lands."""
     episode, cohort = Path(args.episode).absolute(), Path(args.cohort).absolute()
     staged = load(episode / 'stage.json', 'stage.json')
     ran = load(episode / 'run.json', 'run.json')
@@ -658,7 +658,7 @@ class Blinder:
             if detail:  # method:<config>, ablation:<rule>: every separator, and the detail alone
                 labels |= {kind + sep + detail for sep in '-_ '} | {detail}
         ordered = sorted(labels, key=len, reverse=True)
-        # Underscores separate words here: control_group and method_notes are arm names too (D-71).
+        # Underscores separate words here: control_group and method_notes are arm names too.
         self.arms = re.compile(r'(?<![A-Za-z0-9])(%s)(?![A-Za-z0-9])' % '|'.join(map(re.escape, ordered)), re.I)
         self.name = re.compile(r'(?<![A-Za-z0-9])tackle(?![A-Za-z0-9])', re.I)
         self.leaks = protocol().LEAKS
@@ -787,7 +787,7 @@ def packet(args):
             if any(line in text for line in withheld):
                 raise Refusal('an answer-sheet line reached %s/%s; the episode is not judgeable' % (name, file_name))
             clean, count = blinder.apply(text)
-            if file_name == 'transcript.txt':  # skill-file reads are the treatment's signature (D-71)
+            if file_name == 'transcript.txt':  # skill-file reads are the treatment's signature
                 kept = [line for line in clean.split('\n') if '<skills>/<skill>' not in line]
                 dropped = clean.count('\n') + 1 - len(kept)
                 clean = '\n'.join(kept)

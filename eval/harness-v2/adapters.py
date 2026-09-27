@@ -8,8 +8,8 @@ receives a credential: ``broker`` carries only the broker URL and the dummy toke
 output does not state a value (unknown is never 0).
 
 The real adapters' flags come from `codex exec --help` (codex-cli 0.155.1) and `claude --help` (Claude Code
-2.1.150), probed at T-05 preflight; their real output formats and triggering stay unobserved until an
-authorized smoke episode (T-08 preflight).
+2.1.150), probed before enabling real adapters; their real output formats and triggering stay unobserved until an
+authorized smoke episode.
 """
 import json
 import uuid
@@ -18,7 +18,7 @@ from pathlib import Path
 import usage
 
 NA = 'n/a'
-# The single-entry container flags, restated (D-56), plus the episode network and a non-root user.
+# The single-entry container flags, restated, plus the episode network and a non-root user.
 CONTAINER_FLAGS = ('--rm', '--read-only', '--cap-drop', 'ALL', '--security-opt', 'no-new-privileges', '--tmpfs', '/tmp')
 CONTAINER_WORK, CONTAINER_HOME, CONTAINER_BIN = '/episode/work', '/episode/home', '/episode/bin'
 CONTAINER_PATH = CONTAINER_BIN + ':/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'

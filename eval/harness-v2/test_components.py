@@ -1,7 +1,7 @@
-"""Unit tests for the T-05 components: credscan, usage, broker.
+"""Unit tests for the harness components: credscan, usage, broker.
 
 Write scope note: this file, together with broker.py, credscan.py and usage.py, is the
-component worker's entire write scope for T-05. It never imports adapters.py, harness.py,
+component worker's entire write scope. It never imports adapters.py, harness.py,
 fake_agent.py or test_harness.py -- those belong to the coordinator's parallel task.
 
 Run only this file:
@@ -1125,7 +1125,7 @@ class BrokerHTTPSTests(unittest.TestCase):
 
 
 class BrokerChunkedRequestTests(_BrokerTestBase):
-    """Added by the coordinator at T-05 integration: a chunked request body is refused, never forwarded empty."""
+    """A chunked request body is refused, never forwarded empty."""
 
     def test_chunked_request_body_is_refused_and_not_forwarded(self):
         own_host = '{}:{}'.format(self.broker_host, self.broker_port)

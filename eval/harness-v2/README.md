@@ -6,7 +6,7 @@ One harness for every new cohort. It supersedes CLEAR-EVAL-1, the manual trap pa
 - stages a control arm (no skill) or a treated arm (the full install) from the sealed scenario index;
 - runs each prompt as a headless session under a temporary HOME;
 - records per-role usage, exactly or as `n/a`;
-- writes [C01](../protocol-v2/PROTOCOL.md) episode records that `check.py` accepts;
+- writes [tackle-episode/1](../protocol-v2/PROTOCOL.md) episode records that `check.py` accepts;
 - builds blinded judge packets.
 
 ```sh
@@ -32,7 +32,7 @@ network or model: fake `codex`, `claude` and `docker` executables on PATH record
 ## Staging
 
 - `stage` reads `eval/scenarios/INDEX.json` and the variant's input from the git index of `--repo`,
-  using the functions in `check_index.py`. It refuses when the C06 digest differs from the index's
+  using the functions in `check_index.py`. It refuses when the tree digest differs from the index's
   `fixture_sha256`.
 - `--scenario` takes the full id or its short form (`s18`).
 - Staging refuses when an answer sheet reaches the input: a byte copy of the scenario's or variant's
@@ -52,7 +52,7 @@ The episode directory holds:
   directory: `.agents/skills/tackle/`, `.claude/skills/tackle/` or `.fake/skills/tackle/`;
 - `prompts/`: the prompts, byte-for-byte;
 - `baseline/`: a pristine copy of the fixture, used for diffs;
-- `stage.json`: the C06 digests of the input, the install, the staged skill and the work tree.
+- `stage.json`: the tree digests of the input, the install, the staged skill and the work tree.
 
 Prompts are the same bytes for every arm. No guide is pre-injected, and nothing tells the agent to read
 the skill: triggering depends on the install's frontmatter description, as it does for a real user. A
@@ -116,7 +116,7 @@ A model map is `{"executor": {"tier", "effort"}, "tiers": {"fast"|"standard"|"fr
 
 ## Records and packets
 
-- **`record`** appends one C01 line to `<cohort>/episodes.jsonl`.
+- **`record`** appends one tackle-episode/1 line to `<cohort>/episodes.jsonl`.
   - The line takes the scenario, variant, arm, seed and position from the sealed manifest's order.
   - It takes digests, roles, cost and transcript hashes from the episode.
   - It takes the outcome, scores and judge from `--judgment`.
@@ -132,7 +132,7 @@ A model map is `{"executor": {"tier", "effort"}, "tiers": {"fast"|"standard"|"fr
   - Transcript lines that read skill files are dropped, and the label map counts them.
   - A packet that would contain a line of its scenario's or variant's answer sheet is refused. The
     sheets come from the git index of `--repo`.
-  - Every remaining C01 leak pattern, JSON-escaped paths included, becomes `<redacted>`.
+  - Every remaining episode-record leak pattern, JSON-escaped paths included, becomes `<redacted>`.
   - Packet order is shuffled by the seed.
   - The label map goes only under `--labels`, which must be outside `--out`; its sha256 is printed.
   - Blinding is mechanical. Structural or content re-identification is the reviewer's to catch: a
@@ -141,7 +141,7 @@ A model map is `{"executor": {"tier", "effort"}, "tiers": {"fast"|"standard"|"fr
 
 ## Subagent episodes
 
-D-87: some episodes run as a Task-tool subagent of the coordinating session (the operator's own login)
+Some episodes run as a Task-tool subagent of the coordinating session (the operator's own login)
 instead of a headless CLI subprocess, because a headless session has no credential of its own. Staging is
 unchanged (`harness.py stage --host claude-code ...`); `subagent.py` replaces `run` for these episodes:
 

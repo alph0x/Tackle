@@ -1,4 +1,4 @@
-"""Report near-duplicate sentence units across Markdown files: the single duplicate detector (D-74).
+"""Report near-duplicate sentence units across Markdown files: the single duplicate detector.
 
 Usage:
   python3 eval/hot-path/duplicates.py --repo <dir> --chain run

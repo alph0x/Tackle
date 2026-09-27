@@ -51,7 +51,7 @@ def run_in_workspace(command, lifecycle_path, sidecar_path=None):
 class CoverageTableGoldenTests(unittest.TestCase):
     """C9: the corrected recipe's Measured/Eligible/Result match a hand-derived golden over a new,
     purpose-built fixture (never the four existing coverage-*.md illustrations, which stay
-    byte-identical elsewhere, F9/D-109), and a mutated input row changes the output."""
+    byte-identical elsewhere), and a mutated input row changes the output."""
 
     def setUp(self):
         self.lifecycle = HERE / 'fixtures/coverage-lifecycle.md'
@@ -113,7 +113,7 @@ class CoverageTableGoldenTests(unittest.TestCase):
 
 class SharedRecipeTests(unittest.TestCase):
     """C7: retro.tmpl.md's Lifecycle coverage row embeds the exact same corrected recipe retro.md
-    ships (N1), not merely a paraphrase of it; the Exact-token coverage row independently prints
+    ships, not merely a paraphrase of it; the Exact-token coverage row independently prints
     only the tokens line."""
 
     def test_retro_md_and_the_lifecycle_coverage_row_share_the_same_awk_program(self):

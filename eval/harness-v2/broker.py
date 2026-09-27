@@ -172,7 +172,7 @@ class Broker:
         method = handler.command
         log_path = urllib.parse.urlsplit(handler.path).path or '/'
         if 'chunked' in (handler.headers.get('Transfer-Encoding') or '').lower():
-            # A chunked request body is refused rather than forwarded empty (T-05 integration).
+            # A chunked request body is refused rather than forwarded empty.
             self._reject(handler, method, log_path, start, status=411)
             return
         body = _read_inbound_body(handler)

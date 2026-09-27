@@ -8,7 +8,7 @@ Usage: python3 eval/harness-v2/subagent.py prompt --episode <dir>
 Exit 0 success, 1 refusal, 2 usage error. Standard library only.
 
 Unlike harness.py's own ``run``, this tool starts no process: an episode staged by ``harness.py stage``
-is dispatched as a Task-tool subagent of the coordinating session (D-87), and ``finish`` is handed that
+is dispatched as a Task-tool subagent of the coordinating session, and ``finish`` is handed that
 subagent's own session transcript (JSONL, the same event shape ``usage.claude_code_transcript`` reads)
 after the fact. ``finish`` writes exactly one session under ``sessions/01/`` because one transcript is
 one session: a multi-prompt episode (``stage.json`` listing more than one ``prompts`` entry) is refused.
@@ -26,7 +26,7 @@ Claude Code parser, because ``sessions/01/stdout`` holds a Claude Code session t
   ``file_path``/``path``/``notebook_path``/``directory`` fields), and every absolute path in a Bash
   ``command`` string, that does not resolve under the episode directory. A ``~`` or ``$HOME``-led token
   is always counted as outside: these episodes run as subagents of the coordinating session on the
-  operator's own machine (D-87's stated limit), so HOME is the real host HOME, never the episode's own
+  operator's own machine (a stated development-grade limit), so HOME is the real host HOME, never the episode's own
   ``home/``, and neither this tool nor the subagent's own environment can tell otherwise from the
   transcript alone. A subagent's shell and search tools start from the session's cwd, which every
   transcript line records: a relative path resolves against it (else against ``work/``), and a Glob or
@@ -358,8 +358,8 @@ def safe_resolve(path):
 
 
 def denied(resolved, episode_real, deny_prefixes):
-    """Whether a path that resolves inside the episode still falls under one of deny_prefixes (readiness
-    F1): a session >= 2 relying only on its brief never legitimately reads prompts/, sessions/,
+    """Whether a path that resolves inside the episode still falls under one of deny_prefixes:
+    a session >= 2 relying only on its brief never legitimately reads prompts/, sessions/,
     dispatch.txt or stage.json, even though they resolve inside <episode>."""
     relative = resolved.relative_to(episode_real).as_posix()
     return any(relative == prefix.rstrip('/') or relative.startswith(prefix) for prefix in deny_prefixes)
@@ -658,7 +658,7 @@ def cmd_close(args):
                     reasons.append('escalation attempted past its one capped retry')
                 elif position == 2 and not any(d.name == '03' for d in session_dirs):
                     reasons.append('live escalation out of scope for 9.0.0')
-    # Converse guard (readiness F8): nothing above couples "a session 3 was recorded" to "session 2
+    # Converse guard: nothing above couples "a session 3 was recorded" to "session 2
     # actually escalated" — a coordinator slip that dispatches a third session after an ordinary,
     # non-escalating session 2 would otherwise merge into a clean 3-role record with no invalid signal.
     if len(session_dirs) > 2 and session_two_report != 'ESCALATE':

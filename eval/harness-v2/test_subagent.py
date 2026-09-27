@@ -214,8 +214,8 @@ class PromptCases(Base):
         self.assertIn('Work only inside %s:' % control, preamble)
 
     def test_c1_the_method_sentence_asks_for_the_method(self):
-        """A sentence that only names the staged path did not make the executor read it (the first smoke,
-        D-97); the treated arm asks for the method, as a user who invokes it does."""
+        """A sentence that only names the staged path did not make the executor read it;
+        the treated arm asks for the method, as a user who invokes it does."""
         self.repo.add('s90-demo', prompts=(('task.md', 'Do the task.\n'),))
         self.repo.seal()
         method = self.stage(arm='method', name='method')
@@ -511,7 +511,7 @@ class AuditCases(Base):
 
     def test_a_bash_command_that_names_only_paths_inside_the_episode_is_clean(self):
         """Without a leading cd, a command that names an absolute path inside the episode works on that
-        path (the second smoke's find, D-97); only a command naming nothing inside counts the cwd."""
+        path; only a command naming nothing inside counts the cwd."""
         episode, _ = self.simple_method_episode(scenario='s91-audit-bash-inside')
         transcript = write_transcript(self.tmp / 'a19.jsonl', [
             tool_row('tu1', 'Bash', {'command': 'find %s -type f -name "*.py" | head -20' % (episode / 'work')},
@@ -700,7 +700,7 @@ class JudgeIntegration(Base):
         self.assertEqual(judge_result.returncode, 0, judge_result.stdout + judge_result.stderr)
         judgment = load(judgment_path)
         self.assertEqual(judgment['outcome'], 'avoided')
-        # judge.py maps adapter="subagent" to its Claude Code transcript parser (D-90), so the counts
+        # judge.py maps adapter="subagent" to its Claude Code transcript parser, so the counts
         # come from sessions/01/stdout: this transcript has no check run.
         self.assertEqual((judgment['details']['check_runs'], judgment['details']['correction_cycles'],
                           judgment['details']['transcript_format']), (0, 0, 'subagent'))
@@ -955,7 +955,7 @@ class TierExtraction(Base):
 
 
 class FinishReplacementGuard(Base):
-    """The new per-session guard (readiness F8): no silent rerun, no out-of-order finish, and --session
+    """The new per-session guard: no silent rerun, no out-of-order finish, and --session
     stays refused outside a method:routed episode."""
 
     def test_a_repeat_session_two_is_refused(self):
@@ -1094,7 +1094,7 @@ class SplitEpisodeCases(Base):
         self.assertEqual(audit['verdict'], 'clean')
 
     def test_c19_session_three_present_without_a_preceding_escalation_is_invalid(self):
-        """readiness F8: nothing used to couple 'a session 3 was recorded' to 'session 2 actually
+        """Nothing used to couple 'a session 3 was recorded' to 'session 2 actually
         escalated' — a coordinator slip that dispatched a third session after an ordinary session 2 (final
         report DONE, not ESCALATE) merged into a clean 3-role record with no invalidity signal."""
         episode, _ = self.split_episode()

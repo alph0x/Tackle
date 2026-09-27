@@ -1,5 +1,5 @@
 """Text checks over the shipped prose: no case here launches or simulates an agent
-proposing, accepting or overriding anything (D-103) -- each assertion reads the rule the guide
+proposing, accepting or overriding anything -- each assertion reads the rule the guide
 states or the anchor/path it names, mechanically.
 
 Standard library only; no network, container or model call.
@@ -133,7 +133,7 @@ class C7ArchetypeMechanismTests(unittest.TestCase):
         self.assertIn('intake-and-gate.md#learning-loop-read-if-enabled', card)
 
     def test_no_bare_eval_path_anywhere_in_the_fixture_recipe_section(self):
-        """F1/N2, over the whole rewritten section (not only the extracted command): a shipped
+        """Over the whole rewritten section (not only the extracted command): a shipped
         recipe never sends a reader to a repository-only `eval/` path (it will not exist in an
         installed copy). Scoped to '### Fixture recipe' through the next '##'/'###' heading."""
         retro = read('references/guides/retro.md')
@@ -145,7 +145,7 @@ class C8RetroNeverWritesTheInstallTests(unittest.TestCase):
     """C8: retro.md's rewritten '## Where results go' list names exactly the required set, for
     both project and user scope, and none of its own entries names `references/` or `SKILL.md` --
     scoped to that one list, never a whole-file grep (which would false-positive on retro.md:7's
-    and retro.tmpl.md:50's legitimate format/instantiation citations, N10)."""
+    and retro.tmpl.md:50's legitimate format/instantiation citations)."""
 
     REQUIRED = (
         '.tackle/profile.md',

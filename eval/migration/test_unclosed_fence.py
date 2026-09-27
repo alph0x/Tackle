@@ -13,6 +13,7 @@ fenced Python block, `exec` it into a namespace, `schema.md`'s names shared into
 step calls the very same `schema_of`/`parse_board`/... this suite exercises directly.
 """
 import importlib.util
+import re
 import tempfile
 import unittest
 from pathlib import Path
@@ -192,7 +193,8 @@ class CensusRefusalTests(unittest.TestCase):
             workspace = plans_dir / 'fence-workspace'
             workspace.mkdir(parents=True)
             (workspace / 'board.md').write_text(self.census_board_text(), encoding='utf-8')
-            rows, _counts, concurrent_edits = self.census.census(plans_dir, out_dir, record_dir, set())
+            held_out_re = re.compile(r'(^|/)verification-records/(X-a|X-b)(/|$)')
+            rows, _counts, concurrent_edits = self.census.census(plans_dir, out_dir, record_dir, set(), held_out_re)
             self.assertEqual(concurrent_edits, [])
             row = next(r for r in rows if r['workspace'] == 'fence-workspace')
             self.assertEqual(row['bucket'], 'unknown')

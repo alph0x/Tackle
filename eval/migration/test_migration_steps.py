@@ -1,4 +1,4 @@
-"""E2E tests for the schema-keyed migration recipes (T-36; plan.md R09).
+"""E2E tests for the schema-keyed migration recipes.
 
 Each recipe file (`references/recipes/migrate/*.md`) is one fenced Python block, loaded exactly the
 way this repository already loads recipes elsewhere (`eval/task-contracts/test_task_contracts.py`'s
@@ -10,7 +10,7 @@ of keeping its own copy that could silently diverge from it.
 Fixtures live under `fixtures/` as bare workspace roots (`<case>/before/`, `<case>/after/` where an
 exact after-shape is asserted, or a flat directory for detection/refusal probes) -- never under a
 `docs/plans/` path, so nothing here is swallowed by the repository's `docs/plans/` or `eval/**/runs/`
-gitignore rules. `census.py` (C10) reads real local workspaces separately and is not a `test_*.py`
+gitignore rules. `census.py` reads real local workspaces separately and is not a `test_*.py`
 file, so it is never discovered by the suite registry.
 """
 import re
@@ -42,13 +42,13 @@ STEP_3_TO_4 = load_block(RECIPES / 'step-3-to-4.md', SCHEMA)
 STEP_4_TO_5 = load_block(RECIPES / 'step-4-to-5.md', SCHEMA)
 STEPS = (STEP_PRE3_TO_3, STEP_3_TO_4, STEP_4_TO_5)
 
-CONTEXT_84 = {'date': '2026-09-25', 'run_id': 'T-36-fixture-1', 'methodology': 'Tackle 8.4.0'}
-CONTEXT_90 = {'date': '2026-09-25', 'run_id': 'T-36-fixture-1', 'methodology': 'Tackle 9.0.0'}
+CONTEXT_84 = {'date': '2026-09-25', 'run_id': 'migration-fixture-1', 'methodology': 'Tackle 8.4.0'}
+CONTEXT_90 = {'date': '2026-09-25', 'run_id': 'migration-fixture-1', 'methodology': 'Tackle 9.0.0'}
 
 
 class RecipesLoadTests(unittest.TestCase):
     """The four recipe files exist, each is exactly one fenced Python block, and schema.md's shared
-    names actually reach every step (F15)."""
+    names actually reach every step."""
 
     def test_four_recipe_files_exist_with_one_python_block_and_nothing_else(self):
         # references/recipes/README.md: "Each recipe is a Markdown file that holds one fenced code
@@ -169,7 +169,7 @@ class StepPre3To3Tests(unittest.TestCase):
         result = STEP_PRE3_TO_3['verify'](self.before, self.after)
         self.assertEqual(result, {'errors': [], 'residue': []})
 
-    # -- T36-H1: columns located by header name, never by position -----------------------------
+    # -- Columns located by header name, never by position ------------------------------------
 
     def test_columns_located_by_name_regardless_of_order(self):
         # The coordinator's own reordered shape: Confidence and Status both appear before Brief and
@@ -207,7 +207,7 @@ class StepPre3To3Tests(unittest.TestCase):
         self.assertTrue(any('P-01' in error and 'dropped' in error for error in result['errors']), result)
 
     def test_nonstandard_column_layout_refused(self):
-        # T36-H1's own reproduction shape (Point | Status | Preparation | Confidence | Note), as a
+        # This reproduction shape (Point | Status | Preparation | Confidence | Note), as a
         # synthetic fixture -- never the real workspace content the review found it on.
         files = load_files(FIXTURES / 'refusals/pre3-nonstandard-columns')
         self.assertEqual(SCHEMA['schema_of'](files), 'pre-3')
@@ -356,7 +356,7 @@ class Step3To4Tests(unittest.TestCase):
         result = STEP_3_TO_4['verify'](before, after)
         self.assertEqual(result, {'errors': [], 'residue': []})
 
-    # -- T36-H3: history.md handling (only log.md; only history.md; both -> refusal) -------------
+    # -- history.md handling (only log.md; only history.md; both -> refusal) ---------------------
 
     def test_history_md_alone_is_kept_and_gets_one_adoption_entry(self):
         before = dict(load_files(FIXTURES / '3-to-4/before'))
@@ -394,7 +394,7 @@ class Step3To4Tests(unittest.TestCase):
         self.assertTrue(migrated.startswith(before['log.md'].decode()))
 
     def test_marker_phrase_quoted_in_prose_vs_a_real_adoption_heading(self):
-        # T36-N2 (correction 3, recheck finding): the HIGH-3 idempotency guard was a bare substring
+        # A recheck finding: the idempotency guard was a bare substring
         # test of HISTORY_ADOPTION_MARKER, so an unrelated line that merely quotes the marker phrase
         # (e.g. a session note discussing this migration tooling itself) silently suppressed the
         # run's real adoption entry. The guard must instead recognize only the exact '## <date> ·
@@ -423,7 +423,7 @@ class Step3To4Tests(unittest.TestCase):
                 self.assertTrue(migrated.startswith(before['log.md'].decode()))
                 self.assertEqual(migrated.count(today_heading), expected_new_entries, migrated)
 
-    # -- T36-H2: a rename target collision is a named refusal, nothing written -------------------
+    # -- A rename target collision is a named refusal, nothing written --------------------------
 
     def _minimal_board(self, status='Draft', verification=' '):
         return ('# Task board\n\nSchema: tackle-workspace/3\n\n'
@@ -450,7 +450,7 @@ class Step3To4Tests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'rename target collision'):
             STEP_3_TO_4['transform'](files, CONTEXT_84)
 
-    # -- T36-M2: the leftover-id residue scan also covers resource-usage.md ----------------------
+    # -- The leftover-id residue scan also covers resource-usage.md ------------------------------
 
     def test_leftover_id_in_resource_usage_is_flagged_as_residue(self):
         before = dict(load_files(FIXTURES / '3-to-4/before'))
@@ -461,7 +461,7 @@ class Step3To4Tests(unittest.TestCase):
         result = STEP_3_TO_4['verify'](before, after)
         self.assertTrue(any('P-99' in item for item in result['residue']), result)
 
-    # -- T36-L1: AGENTS.md's own prose is scanned for stale names and ids, boundary-aware ---------
+    # -- AGENTS.md's own prose is scanned for stale names and ids, boundary-aware -----------------
 
     def test_agents_md_stale_names_and_ids_flagged_as_residue(self):
         before = dict(load_files(FIXTURES / '3-to-4/before'))
@@ -491,7 +491,7 @@ class Step3To4Tests(unittest.TestCase):
         self.assertEqual([item for item in result['residue'] if 'AGENTS.md' in item], [])
 
     def test_agents_md_stale_names_for_all_renamed_artifacts_are_flagged_as_residue(self):
-        # T36-L1 (correction 3, recheck finding): the original fix's STALE_ARTIFACT_NAMES covered
+        # A recheck finding: the original fix's STALE_ARTIFACT_NAMES covered
         # only 4 of the 8 tokens RENAME_FILES/RENAME_DIRS actually rename (missing coordinator.md,
         # HANDOFF.md, evidence/ and log-archive.md -- the recheck's own probe). Derived directly from
         # SCHEMA's own tables here, so a future 9th rename is covered automatically without editing
@@ -525,7 +525,7 @@ class Step3To4Tests(unittest.TestCase):
 
 
 class RewriteContentTests(unittest.TestCase):
-    """T36-M4: PAIRS artifact-name substitution and id mapping are each one single, boundary-guarded
+    """PAIRS artifact-name substitution and id mapping are each one single, boundary-guarded
     regex pass -- never a chain of independent `str.replace` calls that can re-match a pair's own new
     name where it already appears as a substring of pre-migration prose."""
 
@@ -550,7 +550,7 @@ class RewriteContentTests(unittest.TestCase):
 
     def test_a_short_id_does_not_swallow_a_longer_id_sharing_its_prefix(self):
         # Green on arrival: map_ids already does one single-pass, longest-id-first regex substitution
-        # (T36-M4's coordinator wording); this locks that property in as a permanent regression test.
+        # (the coordinator's own wording); this locks that property in as a permanent regression test.
         id_map = {'P-1': 'T-1', 'P-10': 'T-10'}
         text = SCHEMA['map_ids']('See P-10 and P-1 in the same sentence, plus P-100.', id_map)
         self.assertEqual(text, 'See T-10 and T-1 in the same sentence, plus P-100.')
@@ -855,8 +855,8 @@ class MutationTests(unittest.TestCase):
 
 
 class CensusHygieneTests(unittest.TestCase):
-    """D-73/D-77: census.py must never open a T-06 or T-37 verification record, even though this
-    initiative's own workspace (which holds both) is always in the gating set. Tests census.py's
+    """census.py must never open a held-out verification record, even though the workspace
+    holding such records may be in the gating set. Tests census.py's
     logic directly; the script itself is never run here (it reads real local docs/plans/ workspaces,
     which do not exist in a fresh checkout)."""
 
@@ -868,17 +868,19 @@ class CensusHygieneTests(unittest.TestCase):
         cls.census = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(cls.census)
 
-    def test_t06_and_t37_records_are_held_out(self):
-        self.assertTrue(self.census.held_out('verification-records/T-06/authoring/notes.json'))
-        self.assertTrue(self.census.held_out('verification-records/T-37/readiness/review.json'))
+    def test_named_held_out_records_are_skipped(self):
+        held_out_re = re.compile(r'(^|/)verification-records/(X-a|X-b)(/|$)')
+        self.assertTrue(self.census.held_out('verification-records/X-a/authoring/notes.json', held_out_re))
+        self.assertTrue(self.census.held_out('verification-records/X-b/readiness/review.json', held_out_re))
 
     def test_other_task_records_are_not_held_out(self):
-        for path in ('verification-records/T-01/report.json', 'verification-records/T-36/census/census.json',
-                     'task-board.md', 'verification-records/T-06-notes.md'):
-            self.assertFalse(self.census.held_out(path), path)
+        held_out_re = re.compile(r'(^|/)verification-records/(X-a|X-b)(/|$)')
+        for path in ('verification-records/X-c/report.json', 'verification-records/X-d/census.json',
+                     'task-board.md', 'verification-records/X-a-notes.md'):
+            self.assertFalse(self.census.held_out(path, held_out_re), path)
 
     def test_waiting_on_owner_counts_as_active(self):
-        # T36-M1: lint-spec.md row 8 (already shipped) ORs in status=="Waiting on owner"; is_active()'s
+        # lint-spec.md row 8 (already shipped) ORs in status=="Waiting on owner"; is_active()'s
         # own docstring claims to mirror row 8, so a lone Waiting-on-owner row (no other active-shaped
         # row) must also count.
         board = ('# Task board\n\nSchema: tackle-workspace/5\n\n'
@@ -895,8 +897,8 @@ class CensusHygieneTests(unittest.TestCase):
         self.assertFalse(self.census.is_active({'task-board.md': board.encode()}))
 
     def test_chain_workspace_preserves_a_pre_existing_legacy_directory_through_a_rename_step(self):
-        # This initiative's own real workspace carries a real legacy-8.3/ directory (D-19) and is
-        # always in C10's gating set. chain_workspace must advance through schema.adopt(), never
+        # This initiative's own real workspace carries a real legacy-8.3/ directory and is
+        # always in census.py's gating set. chain_workspace must advance through schema.adopt(), never
         # transform() directly: calling step-3-to-4's transform() on the full files mapping (legacy
         # directory included) walks its rename/id-map logic into legacy-8.3/ and corrupts it -- proven
         # directly: STEP_3_TO_4['transform'] alone renames 'legacy-8.3/points/P-01.md' to
@@ -921,21 +923,22 @@ class CensusHygieneTests(unittest.TestCase):
 
     def test_load_files_excludes_held_out_paths(self):
         import tempfile
+        held_out_re = re.compile(r'(^|/)verification-records/(X-a|X-b)(/|$)')
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            (root / 'verification-records/T-06').mkdir(parents=True)
-            (root / 'verification-records/T-06/secret.json').write_text('held out')
-            (root / 'verification-records/T-01').mkdir(parents=True)
-            (root / 'verification-records/T-01/report.json').write_text('fine')
+            (root / 'verification-records/X-a').mkdir(parents=True)
+            (root / 'verification-records/X-a/secret.json').write_text('held out')
+            (root / 'verification-records/X-c').mkdir(parents=True)
+            (root / 'verification-records/X-c/report.json').write_text('fine')
             (root / 'board.md').write_text('# Board\n')
-            files = self.census.load_files(root)
-            self.assertNotIn('verification-records/T-06/secret.json', files)
-            self.assertIn('verification-records/T-01/report.json', files)
+            files = self.census.load_files(root, held_out_re)
+            self.assertNotIn('verification-records/X-a/secret.json', files)
+            self.assertIn('verification-records/X-c/report.json', files)
             self.assertIn('board.md', files)
 
 
 class MigrateGuideTests(unittest.TestCase):
-    """C11: the five sections are appended after the existing content; each recipe link resolves;
+    """The five sections are appended after the existing content; each recipe link resolves;
     the 8.x checklists are byte-identical to d024a3f; every migrate.md:N citation elsewhere in the
     repository and in this workspace still resolves (lint row 4); install-inventory and the eight
     gates stay green."""
@@ -973,19 +976,19 @@ class MigrateGuideTests(unittest.TestCase):
         self.assertIn('## v8.3 → v8.4 checklist', self.text)
         self.assertIn('<a id="candidate-workspace-format"></a>', self.text)
 
-    def test_t29s_pinned_citation_still_resolves(self):
-        # references/guides/migrate.md:6 -- "Select the 8.3 → 8.4 checklist" (T-29-patch-release.md:28)
+    def test_the_pinned_citation_still_resolves(self):
+        # references/guides/migrate.md:6 -- "Select the 8.3 → 8.4 checklist" (pinned by a prior release task's own citation)
         self.assertIn('Select the 8.3 → 8.4 checklist', self.lines[5])
 
     def test_no_longer_claims_a_changed_contract_surfaces_as_residue(self):
-        # T36-M3: only the Interrupted-task check exists in step-3-to-4's verify(); the guide must not
+        # Only the Interrupted-task check exists in step-3-to-4's verify(); the guide must not
         # overclaim residue for a changed design-contract.md too (whitespace-normalized, since the
         # prose wraps across lines).
         normalized = ' '.join(self.text.split())
         self.assertNotIn('changed contract', normalized)
 
     def test_rename_target_collision_is_a_transform_refusal_not_a_verify_error(self):
-        # T36-N1 (correction 3, recheck finding): step-3-to-4.md's verify() body never mentions
+        # A recheck finding: step-3-to-4.md's verify() body never mentions
         # 'collision' -- the check is a ValueError raised inside transform() itself, before anything
         # is written, so a colliding workspace's adoption never reaches verify() at all. The guide
         # must not group the collision with the four properties verify()'s own `errors` list reports.

@@ -1,6 +1,6 @@
-"""Registry guard (D-45/D-46/R14): no tracked eval code may mount, copy or pass a credential into a
+"""Registry guard: no tracked eval code may mount, copy or pass a credential into a
 participant environment, and no hard-coded home path may appear. Also proves the three legacy
-runners' `run` entry points are retired to eval/protocol-v2/PROTOCOL.md (D-53)."""
+runners' `run` entry points are retired to eval/protocol-v2/PROTOCOL.md."""
 from __future__ import annotations
 
 import importlib.util
@@ -184,7 +184,7 @@ class GuardTeethTests(unittest.TestCase):
 
     def test_planted_home_literal_fails(self):
         # A synthetic path, concatenated, so this developer's real checkout path is never written
-        # into tracked source by this guard's own test (that literal is exactly what T-31 removes).
+        # into tracked source by this guard's own test (that literal is exactly what this cleanup removes).
         home_like = '/Users/' + 'example/project'
         relative = self.plant('eval/example/bad_home.js',
             "const outside = '" + home_like + "';\n")
@@ -272,7 +272,7 @@ class ValidationIntegrityRetirementTests(unittest.TestCase):
     """Case: 'validation-integrity run retired' — the former run entry point; exit 2, the pointer.
 
     No test_*.py file under eval/validation-integrity/ is in this task's write scope, so this
-    retirement case is proved here instead (see the T-31 report's departure note)."""
+    retirement case is proved here instead."""
 
     def test_run_is_retired_and_starts_no_process(self):
         behavioral = load_module('t31_guard_validation_integrity', ROOT / 'eval/validation-integrity/behavioral.py')

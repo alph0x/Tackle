@@ -1,4 +1,4 @@
-"""Measure the mandatory reading of one Full task's RUN chain (T-33, R11).
+"""Measure the mandatory reading of one Full task's RUN chain.
 
 Usage: python3 eval/hot-path/load_chain.py --repo <dir> [--card <path>]
 

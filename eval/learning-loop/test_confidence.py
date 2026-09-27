@@ -3,7 +3,7 @@
 `references/guides/retro.md` carries a single, self-contained ```awk fenced recipe implementing the
 Wilson score interval's lower bound (z=1.96) over each Hypotheses/Directives bullet's own
 `observations` list. This suite extracts that exact recipe text (never reimplementing the formula,
-the parsing, or the retirement threshold comparison independently, per D-109/N11) and:
+the parsing, or the retirement threshold comparison independently) and:
 
 - runs it over synthetic fixture profiles under `fixtures/` (never the real `.tackle/profile.md` or
   `~/.tackle/user-profile.md` — this suite never reads either), and
@@ -35,7 +35,7 @@ VERDICT = load_verdict()
 
 
 def extract_confidence_recipe(text=None):
-    """The exact ```awk fenced recipe retro.md ships (D-109: extracted, never re-typed)."""
+    """The exact ```awk fenced recipe retro.md ships (extracted, never re-typed)."""
     text = text if text is not None else RETRO.read_text(encoding='utf-8')
     match = re.search(r'```awk\n(.*?)\n```', text, re.S)
     if not match:
@@ -85,7 +85,7 @@ def fixture(name):
 class ConfidenceGoldenTests(unittest.TestCase):
     """C2: the extracted recipe agrees with the independent `verdict.wilson()` oracle, including
     the real audit's own 9/9 -> ~0.70 and 1/1 -> ~0.21, an n=0 (assumed-only) entry, a mutated
-    observation, and the assumed-acceptance falsifying case (F4)."""
+    observation, and the assumed-acceptance falsifying case."""
 
     def setUp(self):
         self.program = extract_confidence_recipe()
@@ -116,7 +116,7 @@ class ConfidenceGoldenTests(unittest.TestCase):
         self.assertEqual(mutated.n_cross, 1)
 
     def test_appending_one_assumed_item_changes_neither_counts_nor_confidence(self):
-        """F4's falsifying case (recheck.json's named counterexample): an implementation that
+        """A falsifying case: an implementation that
         computes Wilson correctly but still counts every accepted suggestion toward N/M/n must be
         caught here."""
         before = run_recipe(
@@ -162,7 +162,7 @@ class DuplicateHypothesisTests(unittest.TestCase):
         self.assertEqual((rows['HY'].n_check, rows['HY'].n_cross), (4, 0))
 
     def test_an_assumed_observation_in_one_duplicate_never_blocks_a_later_real_one(self):
-        """F4 interacting with C3: an `assumed` token for an initiative must never occupy that
+        """C3: an `assumed` token for an initiative must never occupy that
         (hypothesis, initiative) union slot, so a later duplicate bullet's real check/cross for
         the same initiative still counts."""
         text = (
@@ -179,9 +179,9 @@ class DuplicateHypothesisTests(unittest.TestCase):
 class TopKMechanicsTests(unittest.TestCase):
     """C4 (mechanical half): profile.tmpl.md:13's Top-K rule sorts by confidence and cuts at 10.
     Applying that documented rule over the recipe's own emitted rows (never reimplementing the
-    parsing, formula or threshold, N11) checks that the cut actually reacts to the computed value
-    (F10), and that an n=0/assumed-only entry is excluded from the cut entirely, never merely
-    sorted last (F11)."""
+    parsing, formula or threshold) checks that the cut actually reacts to the computed value
+    and that an n=0/assumed-only entry is excluded from the cut entirely, never merely
+    sorted last."""
 
     @staticmethod
     def ranked_ids(rows, limit=10):
@@ -234,7 +234,7 @@ class SectionScopingTests(unittest.TestCase):
 
 
 class LegacyReadCompatTests(unittest.TestCase):
-    """C5: the same shipped recipe (N11) reads three old-format shapes without crashing or
+    """C5: the same shipped recipe reads three old-format shapes without crashing or
     rewriting: plain N-check/M-cross, N-check/M-null (the null bucket excluded from n entirely),
     and a confidence/evidence-less directive (n/a, unranked)."""
 
@@ -252,7 +252,7 @@ class LegacyReadCompatTests(unittest.TestCase):
 class RetirementBoundaryTests(unittest.TestCase):
     """The retirement rule (cross-count >= 3 AND raw confidence < 0.3) fires/doesn't exactly
     on five boundary fixtures, checked by reading the recipe's own emitted status (never
-    recomputed independently, N3/N9/N11)."""
+    recomputed independently)."""
 
     def setUp(self):
         self.rows = run_recipe(fixture('profile-retirement.md'))
@@ -280,7 +280,7 @@ class RetirementBoundaryTests(unittest.TestCase):
         self.assertEqual(self.rows['RB05'].status, 'active')
 
     def test_both_conjuncts_are_required_independently(self):
-        """N3: dropping either the cross-count>=3 conjunct or the <0.3 conjunct changes a
+        """Dropping either the cross-count>=3 conjunct or the <0.3 conjunct changes a
         fixture's outcome. RB04 falsifies 'confidence alone decides retirement' (its raw value is
         as low as RB01's, yet it must stay active); RB03 falsifies 'cross-count alone decides
         retirement' (it has 3 crosses like RB01/RB02, yet it must stay active)."""
@@ -290,7 +290,7 @@ class RetirementBoundaryTests(unittest.TestCase):
 
 
 class RecipePortabilityTests(unittest.TestCase):
-    """The recipe never cites a repository path (F1/N2), and a malformed/empty profile does not
+    """The recipe never cites a repository path, and a malformed/empty profile does not
     crash it (defensive, not part of the case matrix)."""
 
     def test_no_bare_eval_path_anywhere_in_the_recipe_or_its_comments(self):

@@ -40,7 +40,7 @@ def sha(data):
 
 
 def mapping_digest(mapping):
-    """The C06 tree digest: sha256 of the sorted {relative path: sha256} mapping as compact JSON."""
+    """The tree digest: sha256 of the sorted {relative path: sha256} mapping as compact JSON."""
     return sha(json.dumps(mapping, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode('utf-8'))
 
 
@@ -191,7 +191,7 @@ def codex_runs(found):
     return runs
 
 
-# A subagent episode's transcript is a Claude Code session transcript (D-87), so it shares that parser.
+# A subagent episode's transcript is a Claude Code session transcript, so it shares that parser.
 PARSERS = {'claude-code': claude_code_runs, 'subagent': claude_code_runs, 'codex': codex_runs}
 
 

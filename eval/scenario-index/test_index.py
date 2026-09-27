@@ -22,7 +22,7 @@ VECTOR = '1bda081eba31926b2292c94f4827339be927655103610bd8f1c7623091ab02aa'
 
 
 def digest(files):
-    """C06 over a {relative path: bytes} mapping."""
+    """Tree digest over a {relative path: bytes} mapping."""
     mapping = {path: hashlib.sha256(data).hexdigest() for path, data in files.items()}
     return hashlib.sha256(json.dumps(mapping, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()).hexdigest()
 

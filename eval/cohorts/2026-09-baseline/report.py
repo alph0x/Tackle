@@ -1,4 +1,4 @@
-"""Render the 2026-09 baseline cohort's report from its records (T-08).
+"""Render the 2026-09 baseline cohort's report from its records.
 
     python3 eval/cohorts/2026-09-baseline/report.py           # writes report.md beside this file
     python3 eval/cohorts/2026-09-baseline/report.py --check   # exit 0 only if report.md matches

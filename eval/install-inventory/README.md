@@ -5,7 +5,7 @@ the relocation of its maintainer-only content was correct. They verify the insta
 relocation, not agent behavior.
 
 - **Permanent checks** read the working tree. They hold for every later version.
-- **Historical checks** read commits only: `T32_REV`
+- **Historical checks** read commits only: `RELOCATION_REV`
   (`b2bb990962096417548f1321964dbe2f4e35e1a9`, the commit that made the relocation) against
   `BASE_REV` (`03b992e52b1b40faa5e3897a0d4729065f503c02`). Later edits to the moved files, the
   stamps or the ledger cannot change their result, and one test checks that they never read the
@@ -34,7 +34,7 @@ Permanent, on the working tree:
    a link to a path the relocation removed, a gate whose changelog path was never substituted, and
    a legacy template whose bytes changed. Each must make the relevant check fail, naming the file.
 
-Historical, at `T32_REV`:
+Historical, at `RELOCATION_REV`:
 
 6. **Byte preservation** — every moved file, and every extracted block landing in
    `MAINTAINING.md` or `maintaining/migrations.md`, is byte-identical to its bytes at `BASE_REV`

@@ -30,7 +30,7 @@ HOME_PREFIX = SEP + 'Users' + SEP
 ALLOWED_ENV = {'PATH', 'LANG', 'TERM', 'TMPDIR', 'HOME'}
 # macOS adds its text-encoding variable inside every child process; the harness does not pass it.
 PLATFORM_ENV = {'__CF_USER_TEXT_ENCODING'} if sys.platform == 'darwin' else set()
-# Flags probed at T-05 preflight: `codex exec --help` (codex-cli 0.155.1) and `claude --help` (Claude Code 2.1.150).
+# Flags probed before enabling real adapters: `codex exec --help` (codex-cli 0.155.1) and `claude --help` (Claude Code 2.1.150).
 CODEX_FLAGS = {'--json', '-m', '--model', '-c', '--config', '-s', '--sandbox', '--skip-git-repo-check', '--ephemeral',
                '--ignore-user-config', '-o', '--output-last-message', '-C', '--cd'}
 CLAUDE_FLAGS = {'-p', '--print', '--output-format', '--verbose', '--model', '--effort', '--setting-sources', '--settings',
@@ -44,7 +44,7 @@ def sha(data):
 
 
 def digest_files(files):
-    """C06 over {relative path: bytes}, written independently of the harness."""
+    """Tree digest over {relative path: bytes}, written independently of the harness."""
     mapping = {name: sha(data) for name, data in files.items()}
     return sha(json.dumps(mapping, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode())
 
@@ -77,7 +77,7 @@ def load(path):
 
 
 def protocol_leaks():
-    """The C01 leak patterns, imported from the protocol checker rather than restated."""
+    """The episode-record leak patterns, imported from the protocol checker rather than restated."""
     import importlib.util
     spec = importlib.util.spec_from_file_location('protocol_check', CHECK)
     module = importlib.util.module_from_spec(spec)

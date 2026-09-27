@@ -35,7 +35,7 @@ reads it only when the card sends it there, so none of it counts.
 
 ## Duplicates (`duplicates.py`)
 
-The single duplicate detector (D-74). T-34 runs it over the whole install with `--files`.
+The single duplicate detector. It runs over the whole install with `--files`.
 
 - **Units.** One sentence of prose outside code fences, or one table row. Headings, blank lines, HTML
   comments and anchor lines are not units. Paragraphs and list items join into one line, and a sentence

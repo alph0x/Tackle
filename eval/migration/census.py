@@ -1,13 +1,14 @@
 """Census: bucket every local workspace under --plans, and chain the gating set (a workspace with an
-active data row per lint row 8's definition, plus this initiative's own workspace) through the
+active data row per lint row 8's definition, plus every workspace --gate names) through the
 migration steps to /5 on scratch copies under --out. Every other workspace's chain result (clean,
-residue, or a named refusal) is recorded but does not gate (C10).
+residue, or a named refusal) is recorded but does not gate.
 
-Not a test_*.py file: eval/run_suites.py's registry never discovers it (F13), and it is never run in
+Not a test_*.py file: eval/run_suites.py's registry never discovers it, and it is never run in
 CI. Usage:
 
     python3 eval/migration/census.py --plans docs/plans --out <scratch> \\
-        --record docs/plans/tackle-9-evidence-first/verification-records/T-36/census
+        --record <plans-workspace>/verification-records/<task>/census \\
+        --held-out '<regex>' --gate <name>
 
 Writes only under --out (disposable scratch copies) and --record (the JSON report); every real
 workspace under --plans is read, hashed before and after, and never modified -- an assertion fails
@@ -47,42 +48,39 @@ CHAIN = {
 ACTIVE_TOKENS = ('In progress', 'Checking', 'Interrupted', 'Waiting on owner', '\U0001F7E1')
 
 
-HELD_OUT = re.compile(r'(^|/)verification-records/(T-06|T-37)(/|$)')
-
-
-def held_out(relative_path):
-    """D-73/D-77 hygiene: a T-06 or T-37 verification record. Excluded from every copy and read this
-    script makes -- census buckets and chains workspaces by their board/plan files only, and never
-    had a reason to touch these; the exclusion just makes that true of the bytes too, not only the
-    logic."""
-    return bool(HELD_OUT.search(relative_path))
+def held_out(relative_path, held_out_re):
+    """Excluded from every copy and read this script makes -- census buckets and chains workspaces by
+    their board/plan files only, and never had a reason to touch a held-out record; the exclusion just
+    makes that true of the bytes too, not only the logic. --held-out sets the pattern; there is no
+    default, so a run that omits it fails loudly rather than reading records it should not."""
+    return bool(held_out_re.search(relative_path))
 
 
 def sha256_bytes(data):
     return hashlib.sha256(data).hexdigest()
 
 
-def load_files(directory):
+def load_files(directory, held_out_re):
     return {str(p.relative_to(directory)).replace('\\', '/'): p.read_bytes()
             for p in directory.rglob('*') if p.is_file()
-            and not held_out(str(p.relative_to(directory)).replace('\\', '/'))}
+            and not held_out(str(p.relative_to(directory)).replace('\\', '/'), held_out_re)}
 
 
-def hash_all(directory):
-    return {path: sha256_bytes(data) for path, data in load_files(directory).items()}
+def hash_all(directory, held_out_re):
+    return {path: sha256_bytes(data) for path, data in load_files(directory, held_out_re).items()}
 
 
-def copytree_excluding_held_out(source, destination):
+def copytree_excluding_held_out(source, destination, held_out_re):
     def ignore(current, names):
         relative = Path(current).resolve().relative_to(source.resolve())
         return [name for name in names
-                if held_out(str((relative / name)).replace('\\', '/'))]
+                if held_out(str((relative / name)).replace('\\', '/'), held_out_re)]
     shutil.copytree(source, destination, symlinks=True, ignore=ignore)
 
 
 def is_active(files):
     """Lint row 8's definition: a board data row whose trimmed Status is In progress, Checking,
-    Interrupted or Waiting on owner (English -- D-74 item 1: it counts because it holds its write
+    Interrupted or Waiting on owner (English: it counts because it holds its write
     scope), or the legacy in-progress glyph. The legend line never counts (D-11)."""
     root = SCHEMA['root_files'](files)
     for name in ('task-board.md', 'board.md'):
@@ -116,7 +114,7 @@ def chain_workspace(files, run_id):
     step's transform refuses, or a step's verify reports an error. Never raises.
 
     Advances through `schema.adopt()`, never `transform()` directly: `transform` requires its `files`
-    to already exclude `legacy-*/` (C10's own real workspaces may already carry one, e.g. this
+    to already exclude `legacy-*/` (a real workspace this tool scans may already carry one, e.g. this
     initiative's `legacy-8.3/`), and only `adopt()` supplies that, reassembling the result with every
     pre-existing `legacy-*/` directory preserved plus this step's own snapshot. `originals_ok` is an
     independent check of that same guarantee (byte comparison, not trust in `adopt()`'s own return),
@@ -157,7 +155,7 @@ def chain_workspace(files, run_id):
         current = adopted
 
 
-def census(plans_dir, out_dir, record_dir, gate_names):
+def census(plans_dir, out_dir, record_dir, gate_names, held_out_re):
     """Read-only over `plans_dir`: the only writes this function makes are `shutil.copytree` into
     `out_dir` and (by the caller) the JSON report into `record_dir` -- never back into `plans_dir`,
     by construction (there is no other call that takes a path under `plans_dir` as a write target).
@@ -170,7 +168,7 @@ def census(plans_dir, out_dir, record_dir, gate_names):
     rows, counts, concurrent_edits = [], {}, []
     for workspace in sorted(path for path in plans_dir.glob('*') if path.is_dir()):
         name = workspace.name
-        before = hash_all(workspace)
+        before = hash_all(workspace, held_out_re)
         scratch = out_dir / name
         if scratch.exists():
             shutil.rmtree(scratch)
@@ -178,9 +176,9 @@ def census(plans_dir, out_dir, record_dir, gate_names):
         # addressed object pool through a `blobs` symlink (references/guides/full-checks.md's
         # capture recipe); copy the link itself, never dereference it (a dereferencing copy can also
         # fail outright on a relative link whose target only resolves from the original directory
-        # depth). held-out T-06/T-37 records are skipped entirely, not merely unread (D-73/D-77).
-        copytree_excluding_held_out(workspace, scratch)
-        files = load_files(scratch)
+        # depth). held-out records are skipped entirely, not merely unread.
+        copytree_excluding_held_out(workspace, scratch, held_out_re)
+        files = load_files(scratch, held_out_re)
         try:
             bucket = SCHEMA['schema_of'](files)
         except ValueError:
@@ -192,7 +190,7 @@ def census(plans_dir, out_dir, record_dir, gate_names):
                           final_bucket=final_bucket, errors=errors, residue=residue, refusal=refusal,
                           originals_ok=originals_ok))
         counts[bucket] = counts.get(bucket, 0) + 1
-        after = hash_all(workspace)
+        after = hash_all(workspace, held_out_re)
         if before != after:
             if active:
                 concurrent_edits.append(name)
@@ -206,15 +204,19 @@ def main(argv):
     parser.add_argument('--plans', type=Path, required=True)
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--record', type=Path, required=True)
-    parser.add_argument('--gate', action='append', default=['tackle-9-evidence-first'],
-                        help="workspace name to gate even if it has no active data row "
-                             "(repeatable; defaults to this initiative's own workspace)")
+    parser.add_argument('--held-out', required=True,
+                        help='regex (re.search, on the /-joined relative path) matching a verification '
+                             'record to exclude from every copy and read; required, no default')
+    parser.add_argument('--gate', action='append', required=True,
+                        help='workspace name to gate even if it has no active data row '
+                             '(repeatable; required, no default)')
     args = parser.parse_args(argv)
     plans_dir = args.plans.resolve()
     if not plans_dir.is_dir():
         print('no such --plans directory: ' + str(plans_dir), file=sys.stderr)
         return 2
-    rows, counts, concurrent_edits = census(plans_dir, args.out.resolve(), args.record.resolve(), set(args.gate))
+    held_out_re = re.compile(args.held_out)
+    rows, counts, concurrent_edits = census(plans_dir, args.out.resolve(), args.record.resolve(), set(args.gate), held_out_re)
     gating = [row for row in rows if row['gates']]
     gating_clean = bool(gating) and all(
         row['final_bucket'] == '5' and not row['errors'] and row['originals_ok'] for row in gating)
