@@ -3,7 +3,8 @@ turns the subagent's own transcript into a harness.py-shaped run.json plus an au
 
 Usage: python3 eval/harness-v2/subagent.py prompt --episode <dir>
        python3 eval/harness-v2/subagent.py finish --episode <dir> --transcript <subagent jsonl> \
-           --model <id> --started <utc> --finished <utc>
+           --model <id> --started <utc> --finished <utc> --notice-status completed|failed \
+           [--notice-tool-calls <n>]
 Exit 0 success, 1 refusal, 2 usage error. Standard library only.
 
 Unlike harness.py's own ``run``, this tool starts no process: an episode staged by ``harness.py stage``
@@ -471,6 +472,13 @@ def cmd_prompt(args):
 
 
 def cmd_finish(args):
+    if args.notice_status == 'completed' and args.notice_tool_calls is None:
+        raise Usage_('--notice-tool-calls is required with --notice-status completed')
+    if args.notice_status == 'failed' and args.notice_tool_calls is not None:
+        raise Usage_('--notice-tool-calls is never given with --notice-status failed')
+    if args.notice_tool_calls is not None and args.notice_tool_calls < 0:
+        raise Usage_('--notice-tool-calls must be 0 or more')
+
     episode = Path(args.episode).absolute()
     staged = read_stage(episode)
     session_n = args.session
@@ -508,7 +516,39 @@ def cmd_finish(args):
     events = events_of(transcript)
     uses = tool_uses(events)
     blocks = [block for block, _ in uses]
-    outcome = 'completed' if last_role(events) == 'assistant' else 'error'
+
+    if args.notice_status == 'completed':
+        if len(blocks) != args.notice_tool_calls:
+            raise Refusal('the transcript holds %d tool calls and the completion notice %d: read it again '
+                          'after the notice' % (len(blocks), args.notice_tool_calls))
+        last_id = blocks[-1].get('id') if blocks else None
+        if last_id is not None:
+            answered = False
+            for event in events:
+                if event.get('type') != 'user':
+                    continue
+                message = event.get('message')
+                if not isinstance(message, dict):
+                    continue
+                content = message.get('content')
+                if not isinstance(content, list):
+                    continue
+                for item in content:
+                    if (isinstance(item, dict) and item.get('type') == 'tool_result'
+                            and item.get('tool_use_id') == last_id):
+                        answered = True
+                        break
+                if answered:
+                    break
+            if not answered:
+                raise Refusal("the transcript's last tool call has no result yet: read it again after the notice")
+        if last_role(events) != 'assistant':
+            raise Refusal("the transcript does not end on the assistant's final message yet: read it again "
+                          "after the notice")
+        outcome = 'completed'
+    else:
+        outcome = 'error'
+
     loaded = skill_loaded_of(blocks, outcome == 'completed')
     deny = DENY_PREFIXES if (multi_session_write and session_n >= 2) else None
     outside_paths, skill_used = audit_of(uses, episode, staged, deny_prefixes=deny)
@@ -518,7 +558,8 @@ def cmd_finish(args):
     index = session_n if session_n is not None else 1
     session = {
         'index': index, 'prompt': prompt_name, 'exit': 0 if outcome == 'completed' else 1,
-        'timeout': False, 'signal': None, 'error': None if outcome == 'completed' else 'no final assistant message',
+        'timeout': False, 'signal': None,
+        'error': None if outcome == 'completed' else 'the host reported the session failed',
         'started_at': iso(started), 'finished_at': iso(finished), 'wall_seconds': round(delta_seconds, 3),
         'stdout_sha256': transcript_hash, 'stderr_sha256': sha(b''), 'tokens_in': spent['tokens_in'],
         'tokens_out': spent['tokens_out'], 'tool_calls': len(blocks), 'session_id': NA, 'skill_loaded': loaded,
@@ -685,6 +726,11 @@ def parser():
     finish.add_argument('--model', required=True)
     finish.add_argument('--started', required=True)
     finish.add_argument('--finished', required=True)
+    finish.add_argument('--notice-status', choices=('completed', 'failed'), required=True,
+                        help="the status in the host's notice for this session")
+    finish.add_argument('--notice-tool-calls', type=int, default=None,
+                        help="the tool-call count in the host's completion notice; required with "
+                             "--notice-status completed, never given with failed")
     close = sub.add_parser('close')
     close.add_argument('--episode', required=True)
     tier = sub.add_parser('tier')

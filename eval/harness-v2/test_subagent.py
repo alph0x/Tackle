@@ -130,7 +130,8 @@ class Base(unittest.TestCase):
                               env=self.env())
 
     def finish(self, episode, transcript, model='claude-haiku-4-5', started='2026-09-25T00:00:00Z',
-               finished='2026-09-25T00:01:00Z', expect=0, session=None, role=None, tier=None):
+               finished='2026-09-25T00:01:00Z', expect=0, session=None, role=None, tier=None, notice=None,
+               status='completed'):
         args = ['finish', '--episode', episode, '--transcript', transcript, '--model', model, '--started', started,
                '--finished', finished]
         if session is not None:
@@ -139,6 +140,11 @@ class Base(unittest.TestCase):
             args += ['--role', role]
         if tier is not None:
             args += ['--tier', tier]
+        args += ['--notice-status', status]
+        if status == 'completed':
+            count = notice if notice is not None else len(subagent.tool_uses(subagent.events_of(
+                Path(transcript).read_bytes())))
+            args += ['--notice-tool-calls', count]
         result = self.run_subagent(*args)
         self.assertEqual(result.returncode, expect, result.stdout + result.stderr)
         return result
@@ -270,23 +276,24 @@ class FinishRunJson(Base):
         run = load(episode / 'run.json')
         self.assertEqual((run['cost']['tokens_in'], run['cost']['tokens_out']), ('n/a', 'n/a'))
 
-    def test_c2_no_final_assistant_message_is_error(self):
+    def test_c2_no_final_assistant_message_is_refused(self):
         transcript = write_transcript(self.tmp / 't3.jsonl', [
             tool_row('tu1', 'Bash', {'command': 'echo hi'}), result_row('tu1')])
         self.repo.add('s90-demo')
         self.repo.seal()
         episode = self.stage(arm='control')
         result = self.finish(episode, transcript, expect=1)
-        self.assertIn('outcome=error', result.stdout)
-        run = load(episode / 'run.json')
-        self.assertEqual(run['outcome'], 'error')
-        self.assertEqual(run['sessions'][0]['error'], 'no final assistant message')
+        self.assertIn("the transcript does not end on the assistant's final message yet", result.stderr)
+        self.assertFalse((episode / 'run.json').exists())
+        self.assertFalse((episode / 'audit.json').exists())
+        self.assertFalse((episode / 'sessions').exists())
 
     def test_tool_calls_are_deduplicated_by_id(self):
         transcript = write_transcript(self.tmp / 't4.jsonl', [
             tool_row('tu1', 'Bash', {'command': 'echo partial'}, request_id='r1'),
             tool_row('tu1', 'Bash', {'command': 'echo partial and complete'}, request_id='r1'),
             tool_row('tu2', 'Bash', {'command': 'echo other'}, request_id='r2'),
+            result_row('tu2'),
             text_row(request_id='r-final', text='All done.')])
         self.repo.add('s90-demo')
         self.repo.seal()
@@ -738,7 +745,7 @@ class RoutedEpisodeCases(Base):
             write_brief(episode, tier=tier, escalation=escalation)
         if work_touched:
             write((episode / 'work' / 'planner-left-this.txt'), 'should not be here\n')
-        events = [handback_row('DONE')]
+        events = [handback_row('DONE'), result_row('tu-final'), text_row()]
         if outside:
             events = [tool_row('tu-outside', 'Read', {'file_path': outside}), result_row('tu-outside')] + events
         transcript = write_transcript(self.tmp / 'session1.jsonl', events)
@@ -750,6 +757,8 @@ class RoutedEpisodeCases(Base):
             events = [tool_row('tu-outside-%d' % index, 'Read', {'file_path': outside}),
                       result_row('tu-outside-%d' % index)]
         events.append(handback_row(report, tool_id='tu-final-%d' % index, request_id='r-final-%d' % index))
+        events.append(result_row('tu-final-%d' % index))
+        events.append(text_row(request_id='r-final-%d-text' % index))
         transcript = write_transcript(self.tmp / ('session%d.jsonl' % index), events)
         return self.finish(episode, transcript, session=index, role='executor', tier='fast')
 
@@ -799,8 +808,9 @@ class RoutedEpisodeCases(Base):
         episode, _ = self.routed_episode()
         self.session_one(episode, escalation='declared')
         self.session_two(episode, report='ESCALATE')
-        third = write_transcript(self.tmp / 'session3.jsonl', [handback_row('DONE', tool_id='tu-final-3',
-                                                                            request_id='r-final-3')])
+        third = write_transcript(self.tmp / 'session3.jsonl', [
+            handback_row('DONE', tool_id='tu-final-3', request_id='r-final-3'),
+            result_row('tu-final-3'), text_row(request_id='r-final-3-text')])
         self.finish(episode, third, session=3, role='executor', tier='standard')
         self.close(episode)
         run = load(episode / 'run.json')
@@ -821,7 +831,8 @@ class RoutedEpisodeCases(Base):
         episode, _ = self.routed_episode()
         write_brief(episode)
         transcript = write_transcript(self.tmp / 's1-nested.jsonl', [
-            tool_row('tu1', 'Task', {'prompt': 'help'}), result_row('tu1'), handback_row('DONE')])
+            tool_row('tu1', 'Task', {'prompt': 'help'}), result_row('tu1'), handback_row('DONE'),
+            result_row('tu-final'), text_row()])
         self.finish(episode, transcript, session=1, role='planner', tier='frontier')
         self.session_two(episode)
         self.close(episode)
@@ -833,7 +844,8 @@ class RoutedEpisodeCases(Base):
         episode, _ = self.routed_episode()
         self.session_one(episode)
         transcript = write_transcript(self.tmp / 's2-nested.jsonl', [
-            tool_row('tu1', 'Task', {'prompt': 'help'}), result_row('tu1'), handback_row('DONE')])
+            tool_row('tu1', 'Task', {'prompt': 'help'}), result_row('tu1'), handback_row('DONE'),
+            result_row('tu-final'), text_row()])
         self.finish(episode, transcript, session=2, role='executor', tier='fast')
         self.close(episode)
         audit = load(episode / 'audit.json')
@@ -955,11 +967,13 @@ class FinishReplacementGuard(Base):
 
     def session_one_default(self, episode):
         write_brief(episode)
-        transcript = write_transcript(self.tmp / 's1-default.jsonl', [handback_row('DONE')])
+        transcript = write_transcript(self.tmp / 's1-default.jsonl',
+                                      [handback_row('DONE'), result_row('tu-final'), text_row()])
         self.finish(episode, transcript, session=1, role='planner', tier='frontier')
 
     def session_two_default(self, episode):
-        transcript = write_transcript(self.tmp / 's2-default.jsonl', [handback_row('DONE')])
+        transcript = write_transcript(self.tmp / 's2-default.jsonl',
+                                      [handback_row('DONE'), result_row('tu-final'), text_row()])
         self.finish(episode, transcript, session=2, role='executor', tier='fast')
 
     def test_session_two_with_no_session_one_recorded_is_refused(self):
@@ -991,13 +1005,15 @@ class SplitEpisodeCases(Base):
             write_split_brief(episode, escalation=escalation)
         if work_touched:
             write((episode / 'work' / 'planner-left-this.txt'), 'should not be here\n')
-        transcript = write_transcript(self.tmp / ('split-s%d.jsonl' % index),
-                                      [handback_row('DONE', tool_id='tu-final-%d' % index, request_id='r-final-%d' % index)])
+        transcript = write_transcript(self.tmp / ('split-s%d.jsonl' % index), [
+            handback_row('DONE', tool_id='tu-final-%d' % index, request_id='r-final-%d' % index),
+            result_row('tu-final-%d' % index), text_row(request_id='r-final-%d-text' % index)])
         return self.finish(episode, transcript, session=index, role='planner', tier=tier)
 
     def executor(self, episode, report='DONE', index=2, tier='fast'):
-        transcript = write_transcript(self.tmp / ('split-s%d.jsonl' % index),
-                                      [handback_row(report, tool_id='tu-final-%d' % index, request_id='r-final-%d' % index)])
+        transcript = write_transcript(self.tmp / ('split-s%d.jsonl' % index), [
+            handback_row(report, tool_id='tu-final-%d' % index, request_id='r-final-%d' % index),
+            result_row('tu-final-%d' % index), text_row(request_id='r-final-%d-text' % index)])
         return self.finish(episode, transcript, session=index, role='executor', tier=tier)
 
     def test_c1_session_one_writes_only_its_session_files_and_defers_close(self):
@@ -1109,6 +1125,138 @@ class MultiSessionArmRefusals(Base):
         episode, _ = self.simple_method_episode(scenario='s93-refuse-prompt', arm='method:candidate')
         result = self.run_subagent('prompt', '--episode', episode, '--session', '2')
         self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+
+
+class HostNoticeCases(Base):
+    """finish records a session only against the host's own notice for it. A completed notice must match
+    the transcript's own deduplicated tool-call count, the transcript's last tool call must already carry
+    its result, and the transcript must end on the assistant's own message; otherwise nothing is written.
+    A failed notice always records an error outcome, whatever the transcript's last message is. The two
+    notice options are required together and validated as a pair before anything else is read."""
+
+    def test_a_notice_claiming_more_calls_than_the_transcript_holds_is_refused(self):
+        episode, _ = self.simple_method_episode(scenario='notice-undercount')
+        transcript = write_transcript(self.tmp / 'undercount.jsonl', [
+            tool_row('tu1', 'Bash', {'command': 'echo one'}), result_row('tu1'),
+            tool_row('tu2', 'Bash', {'command': 'echo two'}, request_id='r2'), result_row('tu2'),
+            text_row(request_id='r-final', text='All done.')])
+        result = self.finish(episode, transcript, notice=3, expect=1)
+        self.assertIn('the transcript holds 2 tool calls and the completion notice 3', result.stderr)
+        self.assertFalse((episode / 'run.json').exists())
+        self.assertFalse((episode / 'audit.json').exists())
+        self.assertFalse((episode / 'sessions').exists())
+
+    def test_a_notice_claiming_fewer_calls_than_the_transcript_holds_is_refused(self):
+        episode, _ = self.simple_method_episode(scenario='notice-overcount')
+        transcript = write_transcript(self.tmp / 'overcount.jsonl', [
+            tool_row('tu1', 'Bash', {'command': 'echo one'}), result_row('tu1'),
+            tool_row('tu2', 'Bash', {'command': 'echo two'}, request_id='r2'), result_row('tu2'),
+            tool_row('tu3', 'Bash', {'command': 'echo three'}, request_id='r3'), result_row('tu3'),
+            text_row(request_id='r-final', text='All done.')])
+        result = self.finish(episode, transcript, notice=2, expect=1)
+        self.assertIn('the transcript holds 3 tool calls and the completion notice 2', result.stderr)
+        self.assertFalse((episode / 'run.json').exists())
+        self.assertFalse((episode / 'audit.json').exists())
+        self.assertFalse((episode / 'sessions').exists())
+
+    def test_a_matching_notice_records_as_completed(self):
+        episode, _ = self.simple_method_episode(scenario='notice-match')
+        transcript = write_transcript(self.tmp / 'match.jsonl', [
+            tool_row('tu1', 'Bash', {'command': 'echo one'}), result_row('tu1'),
+            text_row(request_id='r-final', text='All done.')])
+        self.finish(episode, transcript)  # default: a completed notice carrying the transcript's own count
+        run = load(episode / 'run.json')
+        self.assertEqual(run['outcome'], 'completed')
+        self.assertIsNone(run['sessions'][0]['error'])
+
+    def test_a_transcript_ending_on_a_tool_result_is_refused(self):
+        episode, _ = self.simple_method_episode(scenario='notice-midsession')
+        transcript = write_transcript(self.tmp / 'midsession.jsonl', [
+            tool_row('tu1', 'Bash', {'command': 'echo hi'}), result_row('tu1')])
+        result = self.finish(episode, transcript, expect=1)
+        self.assertIn("the transcript does not end on the assistant's final message yet", result.stderr)
+        self.assertFalse((episode / 'run.json').exists())
+        self.assertFalse((episode / 'audit.json').exists())
+        self.assertFalse((episode / 'sessions').exists())
+
+    def test_missing_notice_status_is_a_usage_error(self):
+        episode, _ = self.simple_method_episode(scenario='notice-missing-status')
+        transcript = write_transcript(self.tmp / 'missing-status.jsonl', [text_row(text='All done.')])
+        result = self.run_subagent('finish', '--episode', episode, '--transcript', transcript, '--model',
+                                   'claude-haiku-4-5', '--started', '2026-09-25T00:00:00Z', '--finished',
+                                   '2026-09-25T00:01:00Z')
+        self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+        self.assertIn('--notice-status', result.stderr)
+        self.assertFalse((episode / 'run.json').exists())
+
+    def test_completed_notice_without_a_count_is_a_usage_error(self):
+        episode, _ = self.simple_method_episode(scenario='notice-completed-no-count')
+        transcript = write_transcript(self.tmp / 'completed-no-count.jsonl', [text_row(text='All done.')])
+        result = self.run_subagent('finish', '--episode', episode, '--transcript', transcript, '--model',
+                                   'claude-haiku-4-5', '--started', '2026-09-25T00:00:00Z', '--finished',
+                                   '2026-09-25T00:01:00Z', '--notice-status', 'completed')
+        self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+        self.assertIn('subagent: --notice-tool-calls is required with --notice-status completed', result.stderr)
+        self.assertFalse((episode / 'run.json').exists())
+
+    def test_failed_notice_with_a_count_is_a_usage_error(self):
+        episode, _ = self.simple_method_episode(scenario='notice-failed-with-count')
+        transcript = write_transcript(self.tmp / 'failed-with-count.jsonl', [text_row(text='All done.')])
+        result = self.run_subagent('finish', '--episode', episode, '--transcript', transcript, '--model',
+                                   'claude-haiku-4-5', '--started', '2026-09-25T00:00:00Z', '--finished',
+                                   '2026-09-25T00:01:00Z', '--notice-status', 'failed', '--notice-tool-calls', '2')
+        self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+        self.assertIn('subagent: --notice-tool-calls is never given with --notice-status failed', result.stderr)
+        self.assertFalse((episode / 'run.json').exists())
+
+    def test_a_negative_notice_count_is_a_usage_error(self):
+        episode, _ = self.simple_method_episode(scenario='notice-negative')
+        transcript = write_transcript(self.tmp / 'negative.jsonl', [text_row(text='All done.')])
+        result = self.finish(episode, transcript, notice=-1, expect=2)
+        self.assertIn('subagent: --notice-tool-calls must be 0 or more', result.stderr)
+        self.assertFalse((episode / 'run.json').exists())
+
+    def test_a_session_finish_refuses_on_a_count_mismatch(self):
+        episode, _ = self.routed_episode(scenario='notice-multisession')
+        (episode / 'sessions' / '01').mkdir(parents=True)
+        transcript = write_transcript(self.tmp / 'session2.jsonl', [
+            tool_row('tu1', 'Bash', {'command': 'echo hi'}), result_row('tu1'),
+            handback_row('DONE'), result_row('tu-final'), text_row()])
+        result = self.finish(episode, transcript, session=2, role='executor', tier='fast', notice=5, expect=1)
+        self.assertIn('the transcript holds 2 tool calls and the completion notice 5', result.stderr)
+        self.assertFalse((episode / 'sessions' / '02').exists())
+
+    def test_a_duplicated_tool_id_counts_once_toward_the_notice(self):
+        episode, _ = self.simple_method_episode(scenario='notice-duplicate')
+        transcript = write_transcript(self.tmp / 'duplicate.jsonl', [
+            tool_row('tu1', 'Bash', {'command': 'echo partial'}, request_id='r1'),
+            tool_row('tu1', 'Bash', {'command': 'echo partial and complete'}, request_id='r1'),
+            result_row('tu1'),
+            tool_row('tu2', 'Bash', {'command': 'echo other'}, request_id='r2'), result_row('tu2'),
+            text_row(request_id='r-final', text='All done.')])
+        self.finish(episode, transcript, notice=2, expect=0)
+        run = load(episode / 'run.json')
+        self.assertEqual(run['outcome'], 'completed')
+        self.assertEqual(run['cost']['tool_calls'], 2)
+
+    def test_an_unanswered_last_tool_call_is_refused(self):
+        episode, _ = self.simple_method_episode(scenario='notice-unanswered')
+        transcript = write_transcript(self.tmp / 'unanswered.jsonl', [
+            tool_row('tu1', 'Bash', {'command': 'echo hi'}), result_row('tu1'), handback_row('DONE')])
+        result = self.finish(episode, transcript, notice=2, expect=1)
+        self.assertIn("the transcript's last tool call has no result yet", result.stderr)
+        self.assertFalse((episode / 'run.json').exists())
+        self.assertFalse((episode / 'audit.json').exists())
+        self.assertFalse((episode / 'sessions').exists())
+
+    def test_a_failed_notice_records_an_error_outcome(self):
+        episode, _ = self.simple_method_episode(scenario='notice-failed')
+        transcript = write_transcript(self.tmp / 'failed.jsonl', [text_row(text='All done.')])
+        result = self.finish(episode, transcript, status='failed', expect=1)
+        self.assertIn('outcome=error', result.stdout)
+        run = load(episode / 'run.json')
+        self.assertEqual(run['outcome'], 'error')
+        self.assertEqual(run['sessions'][0]['error'], 'the host reported the session failed')
 
 
 if __name__ == '__main__':

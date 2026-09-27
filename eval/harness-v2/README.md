@@ -148,7 +148,7 @@ unchanged (`harness.py stage --host claude-code ...`); `subagent.py` replaces `r
 ```sh
 python3 eval/harness-v2/subagent.py prompt  --episode <dir>
 python3 eval/harness-v2/subagent.py finish  --episode <dir> --transcript <subagent jsonl> --model <id> \
-    --started <utc> --finished <utc>
+    --started <utc> --finished <utc> --notice-status completed|failed [--notice-tool-calls <n>]
 ```
 
 - **`prompt`** prints, to stdout: one fixed preamble naming `work/` as the task's repository and the
@@ -163,9 +163,14 @@ python3 eval/harness-v2/subagent.py finish  --episode <dir> --transcript <subage
     it unchanged. Tokens come from `usage.claude_code_transcript`; wall seconds from `--started`/
     `--finished`; tool calls count `tool_use` blocks deduplicated by id (a streamed transcript can repeat
     one as it fills in); files written compares the work tree against `stage.json`'s `work_files`.
-    `outcome` is `completed`, or `error` when the transcript's last `user`/`assistant` message is not
-    from the assistant. Two fields mark this as a different execution path from a headless CLI session:
-    `adapter` is `"subagent"` (not `"claude-code"`), and `executor.harness` is `"claude-code-subagent"`.
+    `outcome` is `completed` under a completed notice, and `error` under a failed one. `--notice-status`
+    and `--notice-tool-calls` come from the host's notice for that session. With a completed notice,
+    `finish` refuses, writing nothing, unless the transcript holds exactly that many tool calls,
+    deduplicated by id, its last tool call already has its result, and it ends on the assistant's
+    message. So a read made before the session ended is never recorded. With a failed notice, the
+    outcome is `error`. Every tool call in a Claude Code transcript carries an id; an id-less one would
+    be counted once per appearance. Two fields mark this as a different execution path from a headless
+    CLI session: `adapter` is `"subagent"` (not `"claude-code"`), and `executor.harness` is `"claude-code-subagent"`.
     `judge.py` selects its correction-cycle parser by `adapter` and maps `"subagent"` to its Claude
     Code parser, because `sessions/01/stdout` holds a Claude Code session transcript.
   - `audit.json` (`{outside_paths, skill_used, verdict, reason}`), this tool's own contamination check,
@@ -195,7 +200,8 @@ recorded as one episode with two or three sessions:
 ```sh
 python3 eval/harness-v2/subagent.py prompt  --episode <dir> [--session N]
 python3 eval/harness-v2/subagent.py finish  --episode <dir> [--session N] [--role planner|executor] \
-    [--tier fast|standard|frontier] --transcript <jsonl> --model <id> --started <utc> --finished <utc>
+    [--tier fast|standard|frontier] --transcript <jsonl> --model <id> --started <utc> --finished <utc> \
+    --notice-status completed|failed [--notice-tool-calls <n>]
 python3 eval/harness-v2/subagent.py close   --episode <dir>
 python3 eval/harness-v2/subagent.py tier    --episode <dir>
 ```
@@ -227,7 +233,8 @@ default to session 1 with no role or tier recorded, and a `finish` call with no 
   `run.json`/`audit.json` itself, and prints a reminder to run `close` once every session is in. The
   replacement guard is per-session: a repeat of the same `N`, a session more than one past the highest
   already recorded, or any `--session` on an episode of neither multi-session arm, is refused; `--session
-  1` or its omission keeps today's exact "the episode already ran" guard on every arm.
+  1` or its omission keeps today's exact "the episode already ran" guard on every arm. It takes the same
+  two notice options, per session.
 - **`close`** (a multi-session arm only, new subcommand): reads every `sessions/0N/` on disk, in order,
   and writes the merged `run.json`/`audit.json` once.
   - `cost` sums tokens, wall seconds and tool calls across sessions; `files_written` is computed once from

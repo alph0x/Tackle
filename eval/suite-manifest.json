@@ -174,7 +174,7 @@
         "test_harness.py",
         "test_subagent.py"
       ],
-      "tests": 187
+      "tests": 199
     },
     {
       "path": "eval/install-inventory",
