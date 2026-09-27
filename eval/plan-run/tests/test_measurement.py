@@ -101,7 +101,7 @@ class Measurement(unittest.TestCase):
     def test_self_granted_source_exception_is_rejected(self):
         def mutate(root):
             path = root / 'manifest.json'; manifest = json.loads(path.read_text())
-            manifest['allowed_p01_changes'] = ['SKILL.md']
+            manifest['allowed_source_changes'] = ['SKILL.md']
             path.write_text(json.dumps(manifest))
         self.mutation(mutate)
 

@@ -14,7 +14,7 @@ Exit 0: the report was written. Exit 2: a usage error (including `--repo` not a 
 unresolvable `--since`/`--until`, or a requested `--workspace` that does not exist); nothing is
 written in that case.
 
-Design notes (see eval/field-report/README.md for the full rationale, grounded in
+Design notes (see eval/maintaining/field-report/README.md for the full rationale, grounded in
 references/guides/migrate.md's schema-keyed detection table and references/terminology.md's legacy
 state map):
   - Only a workspace's root-level files are read (never a subdirectory), which is what keeps a
@@ -307,7 +307,7 @@ def count_reopenings(history_text):
     Draft -> ... -> Complete progression. Returns 'n/a' when no line has the exact shape at all.
     This intentionally never matches a from-state-carrying line like "- T-01 In progress ->
     Complete." or a transition narrated in prose instead of this bullet shape, however real the
-    underlying event was: see eval/field-report/README.md for the resulting, deliberate undercount."""
+    underlying event was: see eval/maintaining/field-report/README.md for the resulting, deliberate undercount."""
     last_state = {}
     reopenings = 0
     matched_any = False

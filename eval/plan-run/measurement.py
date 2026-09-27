@@ -171,7 +171,7 @@ def validate_paths(family, task_path, trace_path):
 def verify_manifest(root):
     root = Path(root)
     manifest = strict_json((root / 'manifest.json').read_text())
-    if 'allowed_p01_changes' in manifest:
+    if any(isinstance(key, str) and key.startswith('allowed_') for key in manifest):
         raise ValueError('candidate manifest cannot grant source-write authority')
     entries = manifest['artifacts']
     actual = {p.relative_to(root).as_posix() for p in root.rglob('*') if p.is_file()

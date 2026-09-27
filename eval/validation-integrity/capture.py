@@ -16,7 +16,7 @@ def stamp():
 
 def hashes(root):
     paths = [root / "SKILL.md", root / "README.md"]
-    for directory in ("references", "eval/validation-integrity", "eval/plan-run", "eval/execution-controls", "eval/lifecycle-validation", "eval/lite-closure", "eval/grey-fixes"):
+    for directory in ("references", "eval/validation-integrity", "eval/plan-run", "eval/run/execution", "eval/run/lifecycle", "eval/run/focused-closure", "eval/run/evidence-capture"):
         paths.extend(p for p in (root / directory).rglob("*") if p.is_file() and "__pycache__" not in p.parts)
     return {str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(paths)}
 

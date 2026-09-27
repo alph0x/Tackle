@@ -10,7 +10,7 @@ on disk in `--repo`; plus every such path named by *any* commit that ever touche
 once any committed ledger version names a file, it stays covered even after every current rule stops
 naming it. For each covered file, independently: strip a leading YAML frontmatter block (a `---`
 line, any lines, a closing `---` line, both at column 0), split the remainder with
-`eval/hot-path/duplicates.py`'s `units()` plus this file's own `fenced_block_units` (one unit per
+`eval/install/reading-budget/duplicates.py`'s `units()` plus this file's own `fenced_block_units` (one unit per
 fenced code block, the whole span), and split the frontmatter block itself with
 `frontmatter_units` (one unit per non-blank content line, at its true absolute line number) --
 then collapse whitespace and take the multiset difference (base minus candidate) by exact text,
@@ -86,7 +86,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import inventory  # noqa: E402
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'hot-path'))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'install' / 'reading-budget'))
 import duplicates  # noqa: E402
 
 DISPOSITIONS = Path('eval/rules/unit-dispositions.json')

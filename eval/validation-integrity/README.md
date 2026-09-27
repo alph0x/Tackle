@@ -3,7 +3,7 @@
 These development-only checks stay outside the installed Markdown artifact
 (`SKILL.md` plus `references/`). They provide different kinds of evidence:
 
-- `test_fields.py`, `test_paths.py` and `test_review_regressions.py` execute the
+- `test_fields.py`, `test_paths.py` and `test_dependency_and_scope_parsing.py` execute the
   canonical shell cells extracted from `references/guides/lint-spec.md` (lint rows) and
   `MAINTAINING.md` (release gates).
 - The routing/release fixture tests check oracle inventory only. They do not
@@ -18,7 +18,7 @@ Run the focused suites from the repository root:
 ```sh
 python3 -m unittest discover -s eval/validation-integrity -p 'test_fields.py' -v
 python3 -m unittest discover -s eval/validation-integrity -p 'test_paths.py' -v
-python3 -m unittest discover -s eval/validation-integrity -p 'test_review_regressions.py' -v
+python3 -m unittest discover -s eval/validation-integrity -p 'test_dependency_and_scope_parsing.py' -v
 python3 -m unittest discover -s eval/validation-integrity -p 'test_routing_fixtures.py' -v
 python3 -m unittest discover -s eval/validation-integrity -p 'test_release_fixtures.py' -v
 ```

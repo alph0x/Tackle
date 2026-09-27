@@ -2,6 +2,58 @@
 
 A smoke-test-grade A/B eval for the Tackle skill. The core claim: a mid-tier model following Tackle literally should beat the same model free-styling at **traps**, situations where the plausible action is the wrong one.
 
+## Areas
+
+The deterministic families read by the part of the skill each one verifies.
+
+| Area | Folder | Verifies | Registry families |
+|---|---|---|---|
+| Install | `install/` | packaging, the thin install and its reading budget | `install/inventory`, `install/packaging`, `install/reading-budget` |
+| Templates | `templates/` | scaffold and template drift | `templates` |
+| Rules | `rules/` | the rule ledger and unit accounting | `rules` |
+| Lint | `lint/` | the workspace lint rows, task identity and task contracts | `lint/rows`, `lint/task-identity`, `lint/task-contracts` |
+| Plan-run | `plan-run/` | the two-action PLAN/RUN surface and migration fixtures | `plan-run/tests` |
+| Run | `run/` | execution controls, lifecycle, closure, verification records, evidence capture and usage | `run/execution`, `run/lifecycle`, `run/focused-closure`, `run/verification-records`, `run/evidence-capture`, `run/usage` |
+| Status | `status/` | the read-only status projection | `status` |
+| Migration | `migration/` | the schema-keyed migration recipes | `migration` |
+| Lessons | `lessons/` | the learning-loop confidence, ids and coverage | `lessons` |
+| Maintaining | `maintaining/` | the field report and suite integrity | `maintaining/field-report`, `maintaining/suite-integrity` |
+| Behavior | `behavior/` | the harness, the planning and resume judges, and the retired manual protocol | `behavior/harness`, `behavior/judges/planning`, `behavior/judges/resume`, `behavior/retired/clear-language` |
+| Release acceptance | `validation-integrity/` | the release fixtures and routing checks | `validation-integrity` |
+| Protocol | `protocol-v2/` | the cohort manifest and episode-record checker | `protocol-v2` |
+| Evidence | `scenarios/`, `runs/`, `records/`, `cohorts/` | the scenario index, historical run records and sealed cohorts | `scenario-index`, `records`, `cohorts/2026-09-candidate`, `cohorts/2026-09-second-candidate`, `cohorts/2026-09-resume` |
+
+## Moved paths
+
+Every family below moved once, by skill area; a reader of an older record can find the file at its new path.
+
+| Old path | New path | Moved |
+|---|---|---|
+| `install-inventory/` | `install/inventory/` | 2026-09 |
+| `single-entry/` | `install/packaging/` | 2026-09 |
+| `hot-path/` | `install/reading-budget/` | 2026-09 |
+| `template-drift/` | `templates/` | 2026-09 |
+| `lint-rows/` | `lint/rows/` | 2026-09 |
+| `task-identity/` | `lint/task-identity/` | 2026-09 |
+| `task-contracts/` | `lint/task-contracts/` | 2026-09 |
+| `execution-controls/` | `run/execution/` | 2026-09 |
+| `lifecycle-validation/` | `run/lifecycle/` | 2026-09 |
+| `lite-closure/` | `run/focused-closure/` | 2026-09 |
+| `record-lifecycle/` | `run/verification-records/` | 2026-09 |
+| `grey-fixes/` | `run/evidence-capture/` | 2026-09 |
+| `usage-observability/` | `run/usage/` | 2026-09 |
+| `fixtures/usage-observability/` | `run/usage/fixtures/` | 2026-09 |
+| `context-lifecycle/` | `status/` | 2026-09 |
+| `learning-loop/` | `lessons/` | 2026-09 |
+| `field-report/` | `maintaining/field-report/` | 2026-09 |
+| `suite-integrity/` | `maintaining/suite-integrity/` | 2026-09 |
+| `harness-v2/` | `behavior/harness/` | 2026-09 |
+| `planning-outcomes/` | `behavior/judges/planning/` | 2026-09 |
+| `resume-outcomes/` | `behavior/judges/resume/` | 2026-09 |
+| `clear-language/` | `behavior/retired/clear-language/` | 2026-09 |
+
+The template-drift golden test reads its fixtures from `run/usage/fixtures`, the one cross-area read in this layout.
+
 ## Deterministic discovery and current-checkout evaluation
 
 CI and `validation-integrity/acceptance.py` use one strict registry:
@@ -18,9 +70,9 @@ numbered-scenario and local trial-output trees are excluded. The result director
 runtime, exit, count, input hashes and complete stdout/stderr. Disposable regression
 tests demonstrate that planted failures and omitted discovery do not turn green.
 
-**Historical.** The [CLEAR-EVAL-1 protocol](clear-language/protocol.md) defined a separate frozen
+**Historical.** The [CLEAR-EVAL-1 protocol](behavior/retired/clear-language/protocol.md) defined a separate frozen
 current-checkout baseline/candidate experiment, with English/Spanish tasks and a small default smoke.
-[Its runner](clear-language/README.md) still stages oracle-free participant environments, verifies an
+[Its runner](behavior/retired/clear-language/README.md) still stages oracle-free participant environments, verifies an
 externally retained seal and probes container isolation, but its model-calling `run` path is retired.
 It never started an episode: no behavioral improvement or release approval was claimed. The historical
 7.3/8.0 comparison and its recorded zero-started status remain unchanged. New cohorts use protocol v2
@@ -30,11 +82,12 @@ integrated product acceptance are distinct kinds of evidence.
 [Evaluation protocol v2](protocol-v2/PROTOCOL.md) defines how a behavioral claim is pre-registered,
 sealed, recorded and judged. `python3 eval/protocol-v2/check.py <cohort-dir>` rejects tampered,
 incomplete or placeholder-filled cohorts and prints per-variant labels from one-sided Fisher exact
-tests, with Wilson intervals for reading. No cohort has been run under it yet.
+tests, with Wilson intervals for reading. See [`cohorts/README.md`](cohorts/README.md) for the
+sealed cohorts run under it.
 
 ## Running episodes — the protocol v2 harness
 
-[The harness](harness-v2/README.md) is the one current path for behavioral episodes.
+[The harness](behavior/harness/README.md) is the one current path for behavioral episodes.
 
 - It stages a control arm (no skill) or a treated arm (the full install, triggered by its description
   alone) from the sealed [scenario index](scenario-index/README.md), under a temporary HOME.
@@ -191,8 +244,8 @@ eval/
 Scenarios with a `variants/` directory hold new development (`v<N>`) and held-out (`h<N>`) variants, each
 with `input/` (prompts and fixture) and its answer sheet beside it. The planning-outcome scenarios `s62`–`s64` also hold `hidden/`
 acceptance tests and two reference solutions beside `input/`, judged mechanically by
-[the planning-outcome judge](planning-outcomes/README.md). The resume scenarios `s65`–`s66` hold the same layout, plus four planted-fault overlays and a declared ordering check
-([resume outcomes](resume-outcomes/README.md)). `eval/scenarios/INDEX.json` classifies
+[the planning-outcome judge](behavior/judges/planning/README.md). The resume scenarios `s65`–`s66` hold the same layout, plus four planted-fault overlays and a declared ordering check
+([resume outcomes](behavior/judges/resume/README.md)). `eval/scenarios/INDEX.json` classifies
 every scenario and seals every runnable input; [the scenario index](scenario-index/README.md) describes it.
 
 ## Historical: the manual path (Tackle 7.3.0)

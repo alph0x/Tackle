@@ -229,7 +229,7 @@ python3 eval/run_suites.py
 
 CI uses the same registry and rejects missing test files, zero discovery, unregistered suites, and failing tests.
 
-The [paired experiment protocol](eval/clear-language/protocol.md) defines fixed tasks, oracle, budget, and model capabilities. The [8.2 development results](eval/clear-language/results-8.2.md) report twelve paired episodes against the 8.1.0 baseline and ten focused follow-up episodes. These observations do not establish general reliability or delivery-efficiency improvements.
+The [paired experiment protocol](eval/behavior/retired/clear-language/protocol.md) defines fixed tasks, oracle, budget, and model capabilities. The [8.2 development results](eval/behavior/retired/clear-language/results-8.2.md) report twelve paired episodes against the 8.1.0 baseline and ten focused follow-up episodes. These observations do not establish general reliability or delivery-efficiency improvements.
 
 <details>
 <summary>Evaluation coverage and release checks</summary>

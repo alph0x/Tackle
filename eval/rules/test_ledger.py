@@ -406,7 +406,7 @@ class RepositoryGateRegressionTests(unittest.TestCase):
         such the ones this test suite writes (`...T00:00:00`) is not a leak (immediately followed by a
         colon, never true of a real workspace id). This check's own source is exempt: it must spell out
         the pattern and the slug literally to define them, exactly as the pre-existing credential guard
-        (eval/suite-integrity/test_credential_guard.py) already exempts itself from its own home-path scan.
+        (eval/maintaining/suite-integrity/test_credential_guard.py) already exempts itself from its own home-path scan.
         The one other exemption is the `decision_rule` field of a sealed cohort manifest: that text is
         pre-registered and sealed before any episode runs, so it cannot change afterwards. Every other line
         of a manifest is still scanned."""

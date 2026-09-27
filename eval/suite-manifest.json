@@ -3,8 +3,8 @@
   "excluded_directories": [
     "eval/scenarios",
     "eval/plan-run/fixtures",
-    "eval/grey-fixes/fixtures",
-    "eval/lite-closure/fixtures",
+    "eval/run/evidence-capture/fixtures",
+    "eval/run/focused-closure/fixtures",
     "eval/scratch",
     "eval/runs"
   ],
@@ -21,7 +21,7 @@
       "tests": 134
     },
     {
-      "path": "eval/task-identity",
+      "path": "eval/lint/task-identity",
       "files": [
         "test_identity.py"
       ],
@@ -33,14 +33,14 @@
         "test_fields.py",
         "test_paths.py",
         "test_release_fixtures.py",
-        "test_review_regressions.py",
+        "test_dependency_and_scope_parsing.py",
         "test_routing_fixtures.py",
         "test_workspace_compatibility.py"
       ],
       "tests": 43
     },
     {
-      "path": "eval/execution-controls",
+      "path": "eval/run/execution",
       "files": [
         "test_controls.py",
         "test_isolated_veracity.py"
@@ -48,42 +48,42 @@
       "tests": 40
     },
     {
-      "path": "eval/lifecycle-validation",
+      "path": "eval/run/lifecycle",
       "files": [
         "test_literal_lifecycle.py"
       ],
       "tests": 10
     },
     {
-      "path": "eval/lite-closure",
+      "path": "eval/run/focused-closure",
       "files": [
         "test_receipt.py"
       ],
       "tests": 6
     },
     {
-      "path": "eval/grey-fixes",
+      "path": "eval/run/evidence-capture",
       "files": [
         "test_evidence_capture.py"
       ],
       "tests": 8
     },
     {
-      "path": "eval/single-entry",
+      "path": "eval/install/packaging",
       "files": [
         "test_packaging.py"
       ],
       "tests": 8
     },
     {
-      "path": "eval/usage-observability",
+      "path": "eval/run/usage",
       "files": [
         "test_capture.py"
       ],
       "tests": 8
     },
     {
-      "path": "eval/suite-integrity",
+      "path": "eval/maintaining/suite-integrity",
       "files": [
         "test_discovery.py",
         "test_credential_guard.py"
@@ -91,28 +91,28 @@
       "tests": 29
     },
     {
-      "path": "eval/clear-language",
+      "path": "eval/behavior/retired/clear-language",
       "files": [
         "test_cohort.py"
       ],
       "tests": 13
     },
     {
-      "path": "eval/task-contracts",
+      "path": "eval/lint/task-contracts",
       "files": [
         "test_task_contracts.py"
       ],
       "tests": 33
     },
     {
-      "path": "eval/record-lifecycle",
+      "path": "eval/run/verification-records",
       "files": [
         "test_records.py"
       ],
       "tests": 25
     },
     {
-      "path": "eval/context-lifecycle",
+      "path": "eval/status",
       "files": [
         "test_context.py",
         "test_measurement.py"
@@ -120,7 +120,7 @@
       "tests": 27
     },
     {
-      "path": "eval/lint-rows",
+      "path": "eval/lint/rows",
       "files": [
         "test_lint_rows.py",
         "test_row8_wrap.py",
@@ -130,7 +130,7 @@
       "tests": 40
     },
     {
-      "path": "eval/template-drift",
+      "path": "eval/templates",
       "files": [
         "test_template_drift.py",
         "test_model_routing_text.py",
@@ -168,7 +168,7 @@
       "tests": 32
     },
     {
-      "path": "eval/harness-v2",
+      "path": "eval/behavior/harness",
       "files": [
         "test_components.py",
         "test_harness.py",
@@ -177,21 +177,21 @@
       "tests": 199
     },
     {
-      "path": "eval/install-inventory",
+      "path": "eval/install/inventory",
       "files": [
         "test_install.py"
       ],
       "tests": 30
     },
     {
-      "path": "eval/hot-path",
+      "path": "eval/install/reading-budget",
       "files": [
         "test_hot_path.py"
       ],
       "tests": 24
     },
     {
-      "path": "eval/planning-outcomes",
+      "path": "eval/behavior/judges/planning",
       "files": [
         "test_judge.py"
       ],
@@ -206,7 +206,7 @@
       "tests": 115
     },
     {
-      "path": "eval/field-report",
+      "path": "eval/maintaining/field-report",
       "files": [
         "test_field_report.py",
         "test_unclosed_fence.py"
@@ -214,7 +214,7 @@
       "tests": 28
     },
     {
-      "path": "eval/learning-loop",
+      "path": "eval/lessons",
       "files": [
         "test_confidence.py",
         "test_coverage_table.py",
@@ -239,7 +239,7 @@
       "tests": 41
     },
     {
-      "path": "eval/resume-outcomes",
+      "path": "eval/behavior/judges/resume",
       "files": [
         "test_fixtures.py"
       ],

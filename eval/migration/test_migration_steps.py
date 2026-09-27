@@ -1,8 +1,8 @@
 """E2E tests for the schema-keyed migration recipes.
 
 Each recipe file (`references/recipes/migrate/*.md`) is one fenced Python block, loaded exactly the
-way this repository already loads recipes elsewhere (`eval/task-contracts/test_task_contracts.py`'s
-`recipe()`, `eval/template-drift/test_template_drift.py`'s module-level `exec`): read the file, take
+way this repository already loads recipes elsewhere (`eval/lint/task-contracts/test_task_contracts.py`'s
+`recipe()`, `eval/templates/test_template_drift.py`'s module-level `exec`): read the file, take
 its one fenced block, `exec` it into a namespace. `schema.md`'s block is loaded first and its names are
 passed into each step's namespace, so every step calls the same `schema_of`/`parse_board`/... instead
 of keeping its own copy that could silently diverge from it.
