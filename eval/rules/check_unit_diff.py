@@ -3,16 +3,23 @@ revision: a second, independent mechanical check beside check_ledger.py's own ru
 
 Usage: python3 eval/rules/check_unit_diff.py --repo <dir> --base <rev>|auto
 
-At every run, the covered file set is the union, across the ledger at the resolved base and the one
-on disk in `--repo`, of every rule's `home` (a retired `path@tag:line` form excluded) and every
-`mirrors` entry's path. For each covered file, independently: strip a leading YAML frontmatter block
-(a `---` line, any lines, a closing `---` line, both at column 0), split with
-`eval/hot-path/duplicates.py`'s `units()`, collapse whitespace, and take the multiset difference
-(base minus candidate) by exact text, never by line number. One record for a given removed unit
-discharges every occurrence of it removed at that path, however many times.
+At every run, the covered file set is the union of: every rule's `home` (a retired `path@tag:line`
+form excluded) and every `mirrors` entry's path, across the ledger at the resolved base and the one
+on disk in `--repo`; plus every such path named by *any* commit that ever touched
+`eval/rules/ledger.json`, reachable from HEAD (`historical_covered_files`) -- coverage is sticky:
+once any committed ledger version names a file, it stays covered even after every current rule stops
+naming it. For each covered file, independently: strip a leading YAML frontmatter block (a `---`
+line, any lines, a closing `---` line, both at column 0), split the remainder with
+`eval/hot-path/duplicates.py`'s `units()` plus this file's own `fenced_block_units` (one unit per
+fenced code block, the whole span), and split the frontmatter block itself with
+`frontmatter_units` (one unit per non-blank content line, at its true absolute line number) --
+then collapse whitespace and take the multiset difference (base minus candidate) by exact text,
+never by line number. One record for a given removed unit discharges every occurrence of it removed
+at that path, however many times.
 
-Auto-match, one live branch, forever: compute the **shipped** unit pool (`duplicates.units()` over
-`SKILL.md` plus every tracked `references/**` Markdown file, at the candidate). A removed unit whose
+Auto-match, one live branch, forever: compute the **shipped** unit pool (this file's own splitter,
+the same one used everywhere else below, over `SKILL.md` plus every tracked `references/**`
+Markdown file, at the candidate). A removed unit whose
 collapsed text is an exact member of that pool, at or above `duplicates.py`'s own `MIN_WORDS` floor,
 auto-closes with no committed record, printed `auto-matched (shipped): <path>:<line> -> shipped
 tree`. Every other removed unit -- including one whose only match lives in maintainer-only material
@@ -154,19 +161,82 @@ def sha(text):
     return hashlib.sha256(text.encode('utf-8')).hexdigest()
 
 
+def frontmatter_bounds(lines):
+    """(open_index, close_index) of a leading `---`/`---` frontmatter block, both at column 0, or
+    None when the text has none -- the one bound-finder `strip_frontmatter` and `frontmatter_units`
+    both call, so the two can never diverge on what counts as the block."""
+    if lines and lines[0].rstrip('\r') == '---':
+        for index in range(1, len(lines)):
+            if lines[index].rstrip('\r') == '---':
+                return 0, index
+    return None
+
+
 def strip_frontmatter(text):
     """Mechanical and syntactic, inside this tool only: a `---` line, any lines, a closing `---`
     line, both at column 0 -- never a change to duplicates.py itself."""
     lines = text.split('\n')
-    if lines and lines[0].rstrip('\r') == '---':
-        for index in range(1, len(lines)):
-            if lines[index].rstrip('\r') == '---':
-                return '\n'.join(lines[index + 1:])
-    return text
+    bounds = frontmatter_bounds(lines)
+    if bounds is None:
+        return text
+    _, close = bounds
+    return '\n'.join(lines[close + 1:])
+
+
+def frontmatter_units(text):
+    """One Unit per non-blank frontmatter content line (the `---` delimiters themselves excluded --
+    pure syntax, not content), at its true absolute line number counted from the top of the file.
+    The frontmatter analogue of a table row: one atomic line is one unit, never sentence-split and
+    never glommed with a neighbor. A blank line inside the block contributes nothing."""
+    lines = text.split('\n')
+    bounds = frontmatter_bounds(lines)
+    if bounds is None:
+        return []
+    open_index, close_index = bounds
+    units = []
+    for index in range(open_index + 1, close_index):
+        raw = lines[index]
+        if raw.strip():
+            units.append(duplicates.Unit(index + 1, raw))
+    return units
+
+
+def fenced_block_units(text):
+    """One Unit per fenced code block in `text` (opening fence line through closing fence line
+    inclusive, as the unit's own text -- fence markers and any info string included, never
+    stripped), mirroring `duplicates.blocks()`'s own per-line precedence exactly: fence-state
+    checked first, then HTML-comment state, then a fresh fence/comment start -- using
+    `duplicates.FENCE` itself, never a re-derived pattern. A fence-shaped line inside an HTML
+    comment is never mistaken for a boundary, and an opening fence never closed before EOF
+    contributes no unit, matching `blocks()`'s own silent handling of both."""
+    units = []
+    fence, in_comment = None, False
+    start, block_lines = None, []
+    for index, raw in enumerate(text.split('\n')):
+        stripped = raw.strip()
+        if fence:
+            block_lines.append(raw)
+            marker = duplicates.FENCE.match(raw)
+            if marker and marker.group(1)[0] == fence[0] and len(marker.group(1)) >= fence[1] \
+                    and not raw.strip()[len(marker.group(1)):].strip():
+                units.append(duplicates.Unit(start, '\n'.join(block_lines)))
+                fence, block_lines = None, []
+            continue
+        if in_comment:
+            in_comment = '-->' not in stripped
+            continue
+        marker = duplicates.FENCE.match(raw)
+        if marker:
+            fence, start, block_lines = (marker.group(1)[0], len(marker.group(1))), index + 1, [raw]
+            continue
+        if stripped.startswith('<!--'):
+            in_comment = '-->' not in stripped[4:]
+    return units
 
 
 def file_units(text):
-    return duplicates.units(strip_frontmatter(text))
+    stripped = strip_frontmatter(text)
+    return duplicates.units(stripped) + fenced_block_units(stripped) + frontmatter_units(text)
 
 
 def git_text(repo, *args):
@@ -205,6 +275,32 @@ def covered_files(ledger):
         for mirror in mirrors if isinstance(mirrors, list) else []:
             if isinstance(mirror, str) and ':' in mirror:
                 files.add(mirror.rsplit(':', 1)[0])
+    return files
+
+
+def historical_covered_files(repo):
+    """The union of `covered_files()` over every commit that ever touched `eval/rules/ledger.json`,
+    reachable from HEAD: coverage is sticky, so a file dropped by every *current* ledger stays
+    accounted for as long as any committed ledger version once named it. A commit whose
+    `eval/rules/ledger.json` fails to parse as JSON contributes nothing to the union (skipped, never
+    a crash) -- a conservative default, since this is a best-effort sticky addition, never a
+    correctness-critical structural check."""
+    code, out = git_text(repo, 'log', '--format=%H', '--', str(inventory.LEDGER))
+    files = set()
+    if code != 0:
+        return files
+    for commit in out.splitlines():
+        commit = commit.strip()
+        if not commit:
+            continue
+        text = git_show(repo, commit, str(inventory.LEDGER))
+        if text is None:
+            continue
+        try:
+            historical_ledger = json.loads(text)
+        except ValueError:
+            continue
+        files |= covered_files(historical_ledger)
     return files
 
 
@@ -415,7 +511,7 @@ def run(report, repo, base_arg):
     candidate_ledger = json.loads(candidate_ledger_path.read_text(encoding='utf-8')) if candidate_ledger_path.is_file() else {}
     base_ledger_text = git_show(repo, resolved_base, str(inventory.LEDGER))
     base_ledger = json.loads(base_ledger_text) if base_ledger_text is not None else {}
-    files = covered_files(base_ledger) | covered_files(candidate_ledger)
+    files = covered_files(base_ledger) | covered_files(candidate_ledger) | historical_covered_files(repo)
 
     removed = {}  # (path, unit_sha256) -> (line, text)
     for path in sorted(files):

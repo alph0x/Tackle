@@ -104,6 +104,9 @@ row, not one per logical edit, and a version-string bump costs one fresh disposi
 CI and the release procedure both run it structural-only (`--base auto`; no cohort, symmetrically
 with the change gate's own CI step). See `eval/rules/unit-dispositions.json` for the committed
 records.
+The check also accounts for fenced code blocks and covered files' frontmatter lines as units, and
+once any committed ledger version names a file, that file's coverage persists even after every
+current rule stops naming it.
 
 ## Sweep score
 

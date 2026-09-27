@@ -212,6 +212,108 @@ class TokenPreservation(GitRepoTestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
 
+class FencedBlockRemoved(GitRepoTestCase):
+    def test_a_removed_fenced_block_with_no_record_fails(self):
+        fenced = '```text\nan illustrative fence with plenty of separate words inside it today\n```\n'
+        base_sha = self.base({HOME_X: fenced + FILLER}, [rule('%s:1' % HOME_X)])
+        self.candidate({HOME_X: FILLER})
+        self.write_dispositions([])
+        result = self.run_tool(base_sha)
+        self.assertEqual(result.returncode, 1)
+        self.assertIn('removed unit with no disposition', result.stdout + result.stderr)
+
+    def test_the_same_removed_fenced_block_with_a_record_passes(self):
+        fenced_text = '```text\nan illustrative fence with plenty of separate words inside it today\n```'
+        base_sha = self.base({HOME_X: fenced_text + '\n' + FILLER}, [rule('%s:1' % HOME_X)])
+        self.candidate({HOME_X: FILLER})
+        self.write_dispositions([record(HOME_X, 1, tool.collapse(fenced_text), 'ruled',
+                                         note='an illustrative fence, no obligation of its own')])
+        result = self.run_tool(base_sha)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+
+class FencedBlockShippedAutoMatch(GitRepoTestCase):
+    def test_a_fenced_block_found_verbatim_in_the_shipped_tree_auto_closes(self):
+        fenced = '```text\nthis fenced example has quite a few separate words inside it\n```\n'
+        base_sha = self.base({'SKILL.md': fenced + FILLER, 'references/guides/other.md': FILLER},
+                              [rule('SKILL.md:1')])
+        self.candidate({'SKILL.md': FILLER, 'references/guides/other.md': FILLER + fenced})
+        self.write_dispositions([])
+        result = self.run_tool(base_sha)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('auto-matched (shipped)', result.stdout)
+
+
+class FencedBlockIntoMaintainerMaterialNeverAutoCloses(GitRepoTestCase):
+    def test_a_fenced_block_moved_only_into_maintainer_material_still_needs_a_record(self):
+        # Shaped like the real migrate.md -> maintaining/migrations.md move: a fenced block relocated
+        # verbatim into maintainer-only material never auto-closes, however long or exact the match.
+        fenced = '```python\ndef relocated_helper():\n    return "moved verbatim into maintainer-only material during the edit"\n```\n'
+        base_sha = self.base({HOME_X: fenced + FILLER}, [rule('%s:1' % HOME_X)])
+        self.candidate({HOME_X: FILLER, 'MAINTAINING.md': FILLER + fenced})
+        self.write_dispositions([])
+        result = self.run_tool(base_sha)
+        self.assertEqual(result.returncode, 1)
+        self.assertNotIn('auto-matched', result.stdout)
+        self.assertIn('removed unit with no disposition', result.stdout + result.stderr)
+
+
+class FenceCommentParity(GitRepoTestCase):
+    """Mirrors duplicates.blocks()'s own per-line precedence (fence-state, then HTML-comment state,
+    then a fresh boundary): a fence-shaped line inside an HTML comment is never a fence boundary, and
+    an opening fence never closed before EOF contributes no unit. Neither property has a
+    pre-extension analogue to fail -- the unextended tool already contributes no fenced units at all
+    -- so both stay green before and after; their value is guarding the new code's own edge behavior.
+    Each fixture *removes* the shielded/unterminated span entirely between revisions (rather than
+    leaving base and candidate identical), so a buggy scanner that mistakenly treats the shielded or
+    unterminated span as a real unit would show it as removed and fail; only correct exclusion stays
+    silent both before and after."""
+
+    def test_a_fence_shaped_line_inside_an_html_comment_contributes_no_unit(self):
+        text = '<!--\n```\ninside\n```\n-->\n' + FILLER
+        base_sha = self.base({HOME_X: text}, [rule('%s:1' % HOME_X)])
+        self.candidate({HOME_X: FILLER})  # the whole comment-shielded block is removed
+        self.write_dispositions([])
+        result = self.run_tool(base_sha)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_an_unclosed_fence_at_eof_contributes_no_unit(self):
+        text = FILLER + '```text\nan opening fence that is never closed before end of file\n'
+        base_sha = self.base({HOME_X: text}, [rule('%s:1' % HOME_X)])
+        self.candidate({HOME_X: FILLER})  # the whole unterminated span is removed
+        self.write_dispositions([])
+        result = self.run_tool(base_sha)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+
+class TokenPreservationOnAFencedBlock(GitRepoTestCase):
+    def test_a_reworded_fenced_block_that_drops_a_normative_token_without_a_reason_fails(self):
+        removed_inner = 'Every session must record the outcome before the reviewer closes it.'
+        new_inner = 'Every session must record the outcome before closing it.'  # drops "reviewer"
+        removed_fence = '```text\n%s\n```' % removed_inner
+        new_fence = '```text\n%s\n```\n' % new_inner
+        base_sha = self.base({HOME_X: removed_fence + '\n', HOME_Y: FILLER}, [rule('%s:1' % HOME_X), rule('%s:1' % HOME_Y)])
+        self.candidate({HOME_X: FILLER, HOME_Y: FILLER + new_fence})
+        self.write_dispositions([record(HOME_X, 1, tool.collapse(removed_fence), 'reworded', destination=HOME_Y,
+                                         note=new_inner)])
+        result = self.run_tool(base_sha)
+        self.assertEqual(result.returncode, 1)
+        self.assertIn('drops normative token', result.stdout + result.stderr)
+
+    def test_the_same_dropped_token_declared_with_a_reason_passes(self):
+        removed_inner = 'Every session must record the outcome before the reviewer closes it.'
+        new_inner = 'Every session must record the outcome before closing it.'
+        removed_fence = '```text\n%s\n```' % removed_inner
+        new_fence = '```text\n%s\n```\n' % new_inner
+        base_sha = self.base({HOME_X: removed_fence + '\n', HOME_Y: FILLER}, [rule('%s:1' % HOME_X), rule('%s:1' % HOME_Y)])
+        self.candidate({HOME_X: FILLER, HOME_Y: FILLER + new_fence})
+        self.write_dispositions([record(HOME_X, 1, tool.collapse(removed_fence), 'reworded', destination=HOME_Y,
+                                         note=new_inner,
+                                         dropped=[{'token': 'reviewer', 'reason': 'the step is anonymous now'}])])
+        result = self.run_tool(base_sha)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+
 class FileSetUnionAcrossLedgers(GitRepoTestCase):
     def test_a_mirror_only_at_base_still_keeps_its_file_covered(self):
         cut = 'Z keeps a unit that nobody ever writes a disposition record for.'
@@ -224,6 +326,56 @@ class FileSetUnionAcrossLedgers(GitRepoTestCase):
         result = self.run_tool(base_sha)
         self.assertEqual(result.returncode, 1)
         self.assertIn(HOME_Z, result.stdout + result.stderr)
+
+
+class StickyLedgerCoverage(GitRepoTestCase):
+    """A file dropped by every current ledger (base and candidate alike) stays covered as long as
+    any commit that ever touched eval/rules/ledger.json, reachable from HEAD, once named it."""
+
+    def test_a_file_only_covered_by_an_older_ledger_still_needs_its_dispositions(self):
+        cut = 'Z keeps a unit that no current ledger entry accounts for any longer today.'
+        self.base({HOME_Z: cut + '\n' + FILLER}, [rule('%s:1' % HOME_Z)])
+        self.write('eval/rules/ledger.json', json.dumps(ledger([]), indent=2) + '\n')
+        self.commit('drops Z from the ledger entirely')
+        base_sha = self.git('rev-parse', 'HEAD').stdout.strip()
+        self.candidate({HOME_Z: FILLER})
+        self.write_dispositions([])
+        result = self.run_tool(base_sha)
+        self.assertEqual(result.returncode, 1)
+        self.assertIn('removed unit with no disposition: %s' % HOME_Z, result.stdout + result.stderr)
+
+    def test_the_same_sticky_coverage_with_a_valid_record_passes(self):
+        cut = 'Z keeps a unit that no current ledger entry accounts for any longer today.'
+        self.base({HOME_Z: cut + '\n' + FILLER}, [rule('%s:1' % HOME_Z)])
+        self.write('eval/rules/ledger.json', json.dumps(ledger([]), indent=2) + '\n')
+        self.commit('drops Z from the ledger entirely')
+        base_sha = self.git('rev-parse', 'HEAD').stdout.strip()
+        self.candidate({HOME_Z: FILLER})
+        self.write_dispositions([record(HOME_Z, 1, cut, 'ruled', note='kept only for a sticky-coverage regression fixture')])
+        result = self.run_tool(base_sha)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('applied', result.stdout)
+
+
+class MalformedHistoricalLedgerIsSkippedNotFatal(GitRepoTestCase):
+    def test_an_invalid_json_ledger_in_an_intermediate_commit_is_skipped_and_an_older_valid_one_still_covers_its_file(self):
+        # Three commits: the oldest has a valid ledger covering Z; the middle one replaces the
+        # ledger with invalid JSON; the base has a valid ledger again that no longer names Z. The
+        # malformed commit must be skipped (never a crash) while the walk still reaches the older,
+        # valid commit -- a walk that instead stops at the malformed commit would miss Z entirely.
+        cut = 'Z holds a sentence that only an older, valid ledger commit ever covered at all.'
+        self.base({HOME_Z: cut + '\n' + FILLER}, [rule('%s:1' % HOME_Z)])
+        self.write('eval/rules/ledger.json', '{ this is not valid json,,, ')
+        self.commit('a malformed intermediate ledger commit')
+        self.write('eval/rules/ledger.json', json.dumps(ledger([]), indent=2) + '\n')
+        self.commit('a valid ledger again, no longer naming Z')
+        base_sha = self.git('rev-parse', 'HEAD').stdout.strip()
+        self.candidate({HOME_Z: FILLER})
+        self.write_dispositions([])
+        result = self.run_tool(base_sha)
+        self.assertEqual(result.returncode, 1)
+        self.assertIn('removed unit with no disposition: %s' % HOME_Z, result.stdout + result.stderr)
+        self.assertNotIn('Traceback', result.stdout + result.stderr)
 
 
 class CoveredFileDeletedOrRenamed(GitRepoTestCase):
@@ -389,14 +541,48 @@ class LeakShapedNoteRefused(GitRepoTestCase):
         self.assertIn('error:', result.stdout + result.stderr)
 
 
-class FrontmatterStripped(GitRepoTestCase):
-    def test_a_frontmatter_only_change_contributes_no_unit_either_way(self):
+class FrontmatterLineChanged(GitRepoTestCase):
+    def test_a_changed_frontmatter_line_with_no_record_fails(self):
         body = 'The body sentence stays exactly the same across both revisions of this file.\n'
         base_sha = self.base({HOME_X: '---\ndescription: v1\n---\n' + body}, [rule('%s:3' % HOME_X)])
         self.candidate({HOME_X: '---\ndescription: v2\n---\n' + body})
         self.write_dispositions([])
         result = self.run_tool(base_sha)
+        self.assertEqual(result.returncode, 1)
+        self.assertIn('removed unit with no disposition: %s:2' % HOME_X, result.stdout + result.stderr)
+
+    def test_the_same_changed_frontmatter_line_with_a_record_passes(self):
+        body = 'The body sentence stays exactly the same across both revisions of this file.\n'
+        base_sha = self.base({HOME_X: '---\ndescription: v1\n---\n' + body}, [rule('%s:3' % HOME_X)])
+        self.candidate({HOME_X: '---\ndescription: v2\n---\n' + body})
+        self.write_dispositions([record(HOME_X, 2, 'description: v1', 'reworded', destination=HOME_X, note='description: v2')])
+        result = self.run_tool(base_sha)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+
+class FrontmatterChangeNeverGlomsWithBody(unittest.TestCase):
+    """The frontmatter analogue of a table row: one atomic line is its own unit, never combined
+    with a neighboring body sentence -- checked directly against the removed-unit multiset itself,
+    not only through the CLI's exit code."""
+
+    def test_the_removed_unit_is_the_frontmatter_line_alone(self):
+        body = 'The body sentence stays exactly the same across both revisions of this file.\n'
+        base_text = '---\ndescription: v1\n---\n' + body
+        candidate_text = '---\ndescription: v2\n---\n' + body
+        removed = tool.removed_units_for_file(base_text, candidate_text)
+        self.assertEqual([text for _, text in removed], ['description: v1'])
+
+
+class BlankFrontmatterLineIsNotAUnit(GitRepoTestCase):
+    def test_a_blank_frontmatter_line_removed_between_revisions_contributes_no_unit(self):
+        body = 'The body sentence stays exactly the same across both revisions of this file.\n'
+        base_sha = self.base({HOME_X: '---\ndescription: same value throughout\n\n---\n' + body}, [rule('%s:3' % HOME_X)])
+        self.candidate({HOME_X: '---\ndescription: same value throughout\n---\n' + body})
+        self.write_dispositions([])
+        result = self.run_tool(base_sha)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertNotIn('void', result.stdout + result.stderr)
+        self.assertNotIn('removed unit with no disposition', result.stdout + result.stderr)
 
 
 class Restoration(GitRepoTestCase):
@@ -486,6 +672,22 @@ class RealDataEquivalenceFrozen(unittest.TestCase):
         removed = tool.removed_units_for_file(old_text, new_text)
         self.assertEqual(len(removed), 5)
         self.assertEqual({tool.sha(text) for _, text in removed}, self.EXPECTED_HASHES)
+
+
+class LeakScanCoversTheWholeFileNotJustAboveTheGuard(unittest.TestCase):
+    """The guard below only scans this file's source up to its own class line, so anything appended
+    after it would escape that scan entirely. This test scans the whole file instead, excluding only
+    the lines holding the guard's own pattern definitions (located by content, never by line number
+    or by class name), so a leak placed anywhere in this file -- including below the guard -- is
+    still caught. The existing guard itself is not modified."""
+
+    def test_no_case_label_or_decision_shaped_token_anywhere_in_this_file(self):
+        source = Path(__file__).read_text(encoding='utf-8')
+        case_label = re.compile(r'(?<![A-Za-z0-9_])[Cc][0-9]{1,2}(?![0-9])')
+        decision_shaped = re.compile(r'(?<![A-Za-z])[PTDQRCM]-[0-9]{2}(?!:)')
+        scanned = ''.join(line for line in source.splitlines(keepends=True) if 're.compile(' not in line)
+        self.assertEqual(case_label.findall(scanned), [])
+        self.assertEqual(decision_shaped.findall(scanned), [])
 
 
 class NoLeakInCommittedTestNames(unittest.TestCase):
