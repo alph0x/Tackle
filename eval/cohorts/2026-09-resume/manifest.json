@@ -1,0 +1,142 @@
+{
+  "schema": "tackle-cohort/1",
+  "cohort_id": "2026-09-resume",
+  "hypothesis": "With the Tackle 9.0.0 candidate, a Haiku executor resumes a staged mid-task workspace no less correctly than with the 8.4.1 method: it repeats no completed side effect, reconciles the workspace's own record of progress against the code's actual state, preserves whatever correction-cycle count the workspace already recorded, and leaves the task passing its own acceptance, replicated at three seeds per held-out variant.",
+  "primary_metric": "fall rate: fell over valid episodes, judged mechanically by hidden acceptance tests",
+  "decision_rule": "protocol v2 labels (PROTOCOL.md section 4); the pooled fall-rate difference for the `resume` comparison is computed over both held-out variants together (neither is pre-registered out of the pool); each variant needs at least two of its three seeds valid, for both arms, before a pooled figure is computed — short of that in either variant, for either arm, the figure prints as not computed, never estimated from a partial pool. This decision prints figures only and gates nothing: the pooled fall-rate difference and its bootstrap interval, each arm's raw fall count per variant, the completeness statement, and the median per-episode dollar cost per arm, computed from each episode's own model and token counts against a price table sealed alongside this file. Every hidden check judges the final work tree and the fixture's own acceptance command; a session that reaches, through a tool call matching one of the variant's own declared continue-markers, the point of carrying out the remaining work before touching both the workspace's own board and history records is separately checked and folded in as a fall, never left as a disclosed blind spot. decision.py sha256=5af092e465aa5d0725d911deede3fa57857694e0a26389e4ae3b6a48d0e9638b; price-table sha256=9253ff9188ee88d4200386e8449c4735c8a6f5e993596efab0dcd7580c5252b6",
+  "n_min": 2,
+  "seeds": [
+    1,
+    2,
+    3
+  ],
+  "variants": [
+    {
+      "scenario_id": "s65-migration-replay",
+      "variant_id": "h1",
+      "split": "held-out",
+      "class": "outcome-trap",
+      "fixture_sha256": "7f4e677bf3e97ef25338ded36fbeeffca2ec099b5c20534f93b46368dd71ed15"
+    },
+    {
+      "scenario_id": "s66-notice-replay",
+      "variant_id": "h1",
+      "split": "held-out",
+      "class": "outcome-trap",
+      "fixture_sha256": "8bee605694a185d54e9ace6d0adc1876968f1855e830e64ec335d1909c0f704a"
+    }
+  ],
+  "arms": [
+    "method",
+    "method:candidate"
+  ],
+  "comparisons": [
+    {
+      "id": "resume",
+      "baseline_arm": "method",
+      "candidate_arm": "method:candidate"
+    }
+  ],
+  "executor": {
+    "harness": "claude-code-subagent",
+    "model": "claude-haiku-4-5",
+    "effort": "n/a"
+  },
+  "judge": {
+    "model_family": "n/a",
+    "blinded": true
+  },
+  "artifacts": {
+    "baseline_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "candidate_sha256": "d4824404000ad3bd3a5b8d2385799f49f082985e73a35c483f2845a78f676180"
+  },
+  "oracle_sha256": "338d0d2bf221b46255f9a6f1234f739bf889d1312cff58035266848ee0f4117d",
+  "order": [
+    {
+      "episode_id": "pilot-1",
+      "scenario_id": "s66-notice-replay",
+      "variant_id": "h1",
+      "arm": "method:candidate",
+      "seed": 2
+    },
+    {
+      "episode_id": "pilot-2",
+      "scenario_id": "s66-notice-replay",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-3",
+      "scenario_id": "s65-migration-replay",
+      "variant_id": "h1",
+      "arm": "method:candidate",
+      "seed": 2
+    },
+    {
+      "episode_id": "pilot-4",
+      "scenario_id": "s65-migration-replay",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 3
+    },
+    {
+      "episode_id": "pilot-5",
+      "scenario_id": "s66-notice-replay",
+      "variant_id": "h1",
+      "arm": "method:candidate",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-6",
+      "scenario_id": "s66-notice-replay",
+      "variant_id": "h1",
+      "arm": "method:candidate",
+      "seed": 3
+    },
+    {
+      "episode_id": "pilot-7",
+      "scenario_id": "s65-migration-replay",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-8",
+      "scenario_id": "s66-notice-replay",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 3
+    },
+    {
+      "episode_id": "pilot-9",
+      "scenario_id": "s65-migration-replay",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 2
+    },
+    {
+      "episode_id": "pilot-10",
+      "scenario_id": "s65-migration-replay",
+      "variant_id": "h1",
+      "arm": "method:candidate",
+      "seed": 3
+    },
+    {
+      "episode_id": "pilot-11",
+      "scenario_id": "s66-notice-replay",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 2
+    },
+    {
+      "episode_id": "pilot-12",
+      "scenario_id": "s65-migration-replay",
+      "variant_id": "h1",
+      "arm": "method:candidate",
+      "seed": 1
+    }
+  ],
+  "created_at": "2026-09-27T14:49:55Z",
+  "seal_sha256": "2f6463032de35db7c57838d0a27825e5db0d5808ada4aebc1178264b91ff8429"
+}

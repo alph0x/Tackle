@@ -244,6 +244,14 @@
         "test_fixtures.py"
       ],
       "tests": 40
+    },
+    {
+      "path": "eval/cohorts/2026-09-resume",
+      "files": [
+        "test_decision.py",
+        "test_report.py"
+      ],
+      "tests": 36
     }
   ]
 }

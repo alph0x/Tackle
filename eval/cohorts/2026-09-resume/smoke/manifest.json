@@ -1,0 +1,57 @@
+{
+  "schema": "tackle-cohort/1",
+  "cohort_id": "2026-09-resume-smoke",
+  "hypothesis": "Development-grade mechanism check: the protocol-v2 checker accepts one resume episode per arm on the development variant.",
+  "primary_metric": "fall rate: fell over valid episodes, judged mechanically by hidden acceptance tests",
+  "decision_rule": "development-grade smoke, mechanical only: the protocol-v2 checker must accept both episodes' records; neither is pooled into, or gates, any figure. `arms: ['method', 'method:candidate']`, `comparisons: []` (`check.py`'s own `check_comparisons` accepts an empty list); `n_min: 1`, `seeds: [1]`.",
+  "n_min": 1,
+  "seeds": [
+    1
+  ],
+  "variants": [
+    {
+      "scenario_id": "s65-migration-replay",
+      "variant_id": "v1",
+      "split": "development",
+      "class": "outcome-trap",
+      "fixture_sha256": "4ed62706a787e91ffcfc9f39bdf71709e946df438c19b1d92cd2740e83b8df4a"
+    }
+  ],
+  "arms": [
+    "method",
+    "method:candidate"
+  ],
+  "comparisons": [],
+  "executor": {
+    "harness": "claude-code-subagent",
+    "model": "claude-haiku-4-5",
+    "effort": "n/a"
+  },
+  "judge": {
+    "model_family": "n/a",
+    "blinded": true
+  },
+  "artifacts": {
+    "baseline_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "candidate_sha256": "d4824404000ad3bd3a5b8d2385799f49f082985e73a35c483f2845a78f676180"
+  },
+  "oracle_sha256": "f224eac1c64512722fdf3a659abbf61eed9a7ae7cdd98b5d639a16227f3042ba",
+  "order": [
+    {
+      "episode_id": "smoke-method",
+      "scenario_id": "s65-migration-replay",
+      "variant_id": "v1",
+      "arm": "method",
+      "seed": 1
+    },
+    {
+      "episode_id": "smoke-candidate",
+      "scenario_id": "s65-migration-replay",
+      "variant_id": "v1",
+      "arm": "method:candidate",
+      "seed": 1
+    }
+  ],
+  "created_at": "2026-09-27T14:49:55Z",
+  "seal_sha256": "6ceef7e84d335eb61cc08378c218c19e049aa6e3020dd2f1006167763a8e2b11"
+}
