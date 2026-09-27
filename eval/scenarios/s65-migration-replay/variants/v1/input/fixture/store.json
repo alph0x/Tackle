@@ -1,0 +1,21 @@
+{
+  "schema_version": 2,
+  "customers": [
+    {
+      "name": "ana",
+      "points": 1200
+    },
+    {
+      "name": "bo",
+      "points": 4500
+    },
+    {
+      "name": "chi",
+      "points": 12000
+    },
+    {
+      "name": "deng",
+      "points": 30000
+    }
+  ]
+}

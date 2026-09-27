@@ -1,0 +1,17 @@
+{
+  "schema": "tackle-resume-order/1",
+  "continue_markers": [
+    {
+      "tool": "Bash",
+      "match": "deliver_alerts.py --ids"
+    },
+    {
+      "tool": "Write",
+      "match": "deliveries.log"
+    },
+    {
+      "tool": "Edit",
+      "match": "deliveries.log"
+    }
+  ]
+}

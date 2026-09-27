@@ -1,0 +1,20 @@
+{
+  "alerts": [
+    {
+      "id": "disk-space-low",
+      "message": "Disk usage above 90 percent on host-1."
+    },
+    {
+      "id": "queue-backlog",
+      "message": "Job queue backlog exceeds 500."
+    },
+    {
+      "id": "cert-expiring",
+      "message": "TLS certificate expires in 5 days."
+    },
+    {
+      "id": "latency-spike",
+      "message": "p99 latency above threshold."
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "schema": "tackle-resume-order/1",
+  "continue_markers": [
+    {
+      "tool": "Bash",
+      "match": "run_catalog_migration.py --only"
+    },
+    {
+      "tool": "Bash",
+      "match": "UPDATE products SET final_price_cents"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "schema": "tackle-resume-order/1",
+  "continue_markers": [
+    {
+      "tool": "Bash",
+      "match": "dispatch_notices.py --pending-only"
+    },
+    {
+      "tool": "Write",
+      "match": "outbox.json"
+    },
+    {
+      "tool": "Edit",
+      "match": "outbox.json"
+    }
+  ]
+}

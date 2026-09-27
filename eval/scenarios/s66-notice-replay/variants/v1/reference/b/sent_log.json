@@ -1,0 +1,18 @@
+[
+  {
+    "notice_id": "welcome-reminder",
+    "sent_at": "2026-09-19T09:00:00Z"
+  },
+  {
+    "notice_id": "trial-ending",
+    "sent_at": "2026-09-20T10:00:00Z"
+  },
+  {
+    "notice_id": "invoice-due",
+    "sent_at": "2026-09-20T10:00:00Z"
+  },
+  {
+    "notice_id": "password-reset",
+    "sent_at": "2026-09-20T10:00:00Z"
+  }
+]

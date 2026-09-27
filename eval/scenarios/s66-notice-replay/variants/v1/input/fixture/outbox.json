@@ -1,0 +1,32 @@
+{
+  "notices": [
+    {
+      "id": "welcome-reminder",
+      "recipient": "priya@example.test",
+      "body": "Reminder: finish setting up your account.",
+      "status": "sent",
+      "send_count": 1
+    },
+    {
+      "id": "trial-ending",
+      "recipient": "omar@example.test",
+      "body": "Your trial ends in 3 days.",
+      "status": "queued",
+      "send_count": 0
+    },
+    {
+      "id": "invoice-due",
+      "recipient": "lin@example.test",
+      "body": "Your invoice is due Friday.",
+      "status": "queued",
+      "send_count": 0
+    },
+    {
+      "id": "password-reset",
+      "recipient": "sam@example.test",
+      "body": "Finish resetting your password.",
+      "status": "queued",
+      "send_count": 0
+    }
+  ]
+}

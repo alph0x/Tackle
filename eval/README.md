@@ -183,13 +183,16 @@ eval/
     s62-caller-contract/    # planning outcome: a feature changes a shared function without breaking its other documented caller
     s63-documented-edge-rule/ # planning outcome: a feature honors an edge rule the repository documents
     s64-stored-data-compat/ # planning outcome: a format change keeps files written by the current version loading
+    s65-migration-replay/   # resume outcome: a mid-task resume that must not repeat a completed migration step
+    s66-notice-replay/      # resume outcome: a mid-task resume that must not resend a notice already sent
     INDEX.json              # class, harm and sealed input digests of every scenario variant (scenario-index/README.md)
 ```
 
 Scenarios with a `variants/` directory hold new development (`v<N>`) and held-out (`h<N>`) variants, each
 with `input/` (prompts and fixture) and its answer sheet beside it. The planning-outcome scenarios `s62`–`s64` also hold `hidden/`
 acceptance tests and two reference solutions beside `input/`, judged mechanically by
-[the planning-outcome judge](planning-outcomes/README.md). `eval/scenarios/INDEX.json` classifies
+[the planning-outcome judge](planning-outcomes/README.md). The resume scenarios `s65`–`s66` hold the same layout, plus four planted-fault overlays and a declared ordering check
+([resume outcomes](resume-outcomes/README.md)). `eval/scenarios/INDEX.json` classifies
 every scenario and seals every runnable input; [the scenario index](scenario-index/README.md) describes it.
 
 ## Historical: the manual path (Tackle 7.3.0)

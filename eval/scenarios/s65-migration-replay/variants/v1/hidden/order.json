@@ -1,0 +1,17 @@
+{
+  "schema": "tackle-resume-order/1",
+  "continue_markers": [
+    {
+      "tool": "Bash",
+      "match": "apply_migration.py --step"
+    },
+    {
+      "tool": "Write",
+      "match": "store.json"
+    },
+    {
+      "tool": "Edit",
+      "match": "store.json"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "schema": "tackle-hidden-tests/1",
+  "tests": 5,
+  "timeout_seconds": 30,
+  "pythonpath": [],
+  "visible": [
+    "python3 -m unittest discover -s tests -p 'test_*.py' -v"
+  ]
+}

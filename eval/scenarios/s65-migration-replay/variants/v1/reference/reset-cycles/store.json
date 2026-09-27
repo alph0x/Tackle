@@ -1,0 +1,25 @@
+{
+  "schema_version": 3,
+  "customers": [
+    {
+      "name": "ana",
+      "points": 1200,
+      "tier": "bronze"
+    },
+    {
+      "name": "bo",
+      "points": 4500,
+      "tier": "silver"
+    },
+    {
+      "name": "chi",
+      "points": 12000,
+      "tier": "gold"
+    },
+    {
+      "name": "deng",
+      "points": 30000,
+      "tier": "platinum"
+    }
+  ]
+}

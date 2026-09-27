@@ -237,6 +237,13 @@
         "test_report.py"
       ],
       "tests": 41
+    },
+    {
+      "path": "eval/resume-outcomes",
+      "files": [
+        "test_fixtures.py"
+      ],
+      "tests": 40
     }
   ]
 }
