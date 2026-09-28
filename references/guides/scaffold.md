@@ -37,7 +37,7 @@ mode instructions into the workspace. The core file map and readiness checks sti
 
 Apply the selected gate before copying: None creates no workspace. Lite creates only `plan.md`,
 `history.md`, and `resource-usage.md`, with decisions/questions files when needed; it does not load or instantiate
-Full templates. Its complete bodies and lifecycle rules are in `../lite-plan.tmpl.md`; do not copy the generic log or legacy usage template. The core copying procedure below applies to Full only. These gate-specific rules
+Full templates. Its complete bodies and lifecycle rules are in `../lite-plan.tmpl.md`. The core copying procedure below applies to Full only. These gate-specific rules
 also govern the file maps in the generic workspace templates.
 
 Create the workspace by copying the core set from the §File map: nine artifacts from
@@ -63,8 +63,8 @@ done
 
 Compile each new Full brief from `task.tmpl.md` into `tasks/T-0N-<name>.md` and use
 that exact T id in `plan.md` §5, `task-board.md`, dependencies and report references.
-`point.tmpl.md` remains available to read historical P workspaces; do not select it
-for a new workspace.
+No other brief template exists: an older `P-` workspace is migrated before it runs
+([forward only](migrate.md#forward-only)).
 Write each brief's `**Effort**:` as one bare vocabulary token with no trailing punctuation;
 row 12 validates the exact value.
 
@@ -74,8 +74,8 @@ Structural lint does not establish readiness: report that blocker separately. A 
 `resource-usage.md`, malformed status cell or invalid effort field is a failed scaffold.
 
 Core copies include `resource-usage.md` from `resource-usage.tmpl.md` for new Full workspaces.
-Keep `usage.tmpl.md` intact for historical P ledgers and selected legacy adoption;
-do not copy its legacy table into a new T workspace.
+A ledger holds only the v2 lifecycle table of `resource-usage.tmpl.md`; an older ledger
+reaches it through migration.
 New workspaces declare `Schema: tackle-observability/2`; lifecycle rows start before substantive work, finish at close, or use `observe-incomplete` after interruption. Resource usage remains informative and never gates task closure.
 
 ## Depth artifacts

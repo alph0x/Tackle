@@ -24,34 +24,34 @@ def measure(context, operation):
 
 def sample(count):
     api = recipe()
-    scope = {"tasks": ["P-01"], "requirements": ["R01"], "milestone": "M1"}
+    scope = {"tasks": ["T-A"], "requirements": ["RA"], "milestone": "M1"}
     with tempfile.TemporaryDirectory() as temp:
         root = Path(temp) / "workspace"
         root.mkdir()
         sources, events = fixture(root, count)
-        with (root / "board.md").open("a") as stream:
+        with (root / "task-board.md").open("a") as stream:
             for number in range(count):
                 stream.write(f"P-C{number:04}: Complete; record retained in original history\n")
         initial = size(root)
-        event = f"## 2026-09-02 - session {count+1} - active task update\nIn progress P-01; no acceptance inferred.\n".encode()
+        event = f"## 2026-09-02 - session {count+1} - active task update\nIn progress T-A; no acceptance inferred.\n".encode()
         legacy_root = Path(temp) / "legacy"
         shutil.copytree(root, legacy_root)
         legacy = api["Context"](legacy_root)
         def legacy_resume():
             for name in sources:
                 legacy.read(name)
-            legacy.events(legacy.read("log.md"))[-1][-1]
+            legacy.events(legacy.read("history.md"))[-1][-1]
         _, baseline_resume = measure(legacy, legacy_resume)
         def legacy_update():
-            board = legacy.read("board.md")
-            legacy.write("board.md", board.replace(b"Checking", b"In progress", 1))
-            with (legacy_root / "log.md").open("ab") as stream:
+            board = legacy.read("task-board.md")
+            legacy.write("task-board.md", board.replace(b"Checking", b"In progress", 1))
+            with (legacy_root / "history.md").open("ab") as stream:
                 stream.write(event)
                 legacy.bytes_written += len(event)
         _, baseline_update = measure(legacy, legacy_update)
         def legacy_handoff():
-            combined = b"".join(legacy.read(name) for name in sources + ["log.md"])
-            legacy.write("HANDOFF.md", combined)
+            combined = b"".join(legacy.read(name) for name in sources + ["history.md"])
+            legacy.write("handoff-brief.md", combined)
         _, baseline_handoff = measure(legacy, legacy_handoff)
         _, baseline_retrieval = measure(legacy, lambda: legacy.event(1))
         _, baseline_reconstruction = measure(legacy, legacy.history)
@@ -63,8 +63,8 @@ def sample(count):
         projection, build = measure(context, lambda: context.project(scope, sources))
         _, resume = measure(context, lambda: context.current(scope, sources))
         def update():
-            content = context.read("board.md")
-            context.write("board.md", content.replace(b"Checking", b"In progress", 1))
+            content = context.read("task-board.md")
+            context.write("task-board.md", content.replace(b"Checking", b"In progress", 1))
             context.append_event(event, projection["last_event"], projection["last_event_revision"])
             context.project(scope, sources)
         _, update_cost = measure(context, update)

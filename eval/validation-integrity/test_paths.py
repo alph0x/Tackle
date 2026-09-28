@@ -23,15 +23,16 @@ def run_overlap(scope_a: str, scope_b: str) -> subprocess.CompletedProcess[str]:
         root = Path(directory)
         for name, scope in (("probe", scope_a), ("peer", scope_b)):
             workspace = root / "docs/plans" / name
-            (workspace / "points").mkdir(parents=True)
-            (workspace / "board.md").write_text(
-                "| Point | What | Briefing | Depends on | Status | Confidence |\n"
+            (workspace / "tasks").mkdir(parents=True)
+            (workspace / "task-board.md").write_text(
+                "Schema: tackle-workspace/5\n\n"
+                "| Task | What | Brief | Depends on | Status | Verification |\n"
                 "|---|---|---|---|---|---|\n"
-                "| P-01 | Fixture | points/P-01.md | none | 🟡 | n/a |\n",
+                "| T-A | Fixture | tasks/T-A.md | none | In progress | pending |\n",
                 encoding="utf-8",
             )
-            (workspace / "points/P-01.md").write_text(
-                f"- **Touches**: `{scope}`\n",
+            (workspace / "tasks/T-A.md").write_text(
+                f"- **Write scope**: `{scope}`\n",
                 encoding="utf-8",
             )
         return subprocess.run(

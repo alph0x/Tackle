@@ -94,7 +94,9 @@ rename any workspace or relax the 8.3 test-selection and E2E replay-evidence rul
 
 This major release replaces the RUN and PLAN guides with cards, keys migration on the board
 schema and retires the 8.x action-name aliases. Adopt it only for a selected active workspace, on
-a disposable copy at a task boundary; installing 9.0 migrates nothing by itself.
+a disposable copy at a task boundary; installing 9.0 migrates nothing by itself. 9.0 runs only
+the current layout and refuses a workspace that has not been migrated
+([forward only](#forward-only)).
 
 1. Before updating the install, move any file you added under `references/archetypes/` to
    `.tackle/archetypes/` or `~/.tackle/archetypes/`. The install no longer carries
@@ -102,12 +104,16 @@ a disposable copy at a task boundary; installing 9.0 migrates nothing by itself.
 2. Record the pinned procedure and the current lint result (`lint: N/16`), with hashes of the
    board, briefs and history. Preserve neighboring workspaces.
 3. Migrate the board through the [schema-keyed migration](#schema-keyed-migration) and its
-   [steps](#migration-steps). A board whose fenced example never closes is refused; close the
-   fence and run the step again.
-4. Run rows 1–16 on the migrated copy. On a `/5` board, row 12 reports `Effort without Tier
-   reason` for an older brief whose Effort is not `low` and that has no Tier and no Tier reason.
+   [steps](#migration-steps) to bucket `5`. A board whose fenced example never closes is refused;
+   close the fence and run the step again. A Focused workspace has no board: rename `log.md`,
+   `log-archive.md` and `usage.md` to `history.md`, `history-archive.md` and `resource-usage.md`.
+4. Run rows 1–16 on the migrated copy. Row 12 checks only the briefs of tasks that are not
+   closed (Complete, Skipped or Unverifiable), and reports `Effort without Tier reason` for such
+   a brief whose Effort is not `low` and that has no Tier and no Tier reason.
    This is expected: add a `**Tier reason**` line to that brief saying why its Effort departs
-   from the default, as the [task template](../task.tmpl.md) shows.
+   from the default, as the [task template](../task.tmpl.md) shows. In the same open briefs, rename `**Touches**` to
+   `**Write scope**` and `Done-signal` to `Acceptance check`, and replace an `inherit` Effort with
+   a level.
 5. Replace retired 8.x action names in forward-looking prompts with the current request words;
    [terminology.md](../terminology.md) maps each old name. Preserve historical records verbatim.
 6. Profiles need no action: an entry without an id stays readable, and the next retro that
@@ -180,8 +186,8 @@ Each step's `verify(before, after)` takes the same `legacy-*/`-excluding `files`
 itself, which still carries the legacy snapshots) and is self-contained Python, checked against this
 guide's own reading of each schema: state vocabulary, `Verification` references and, for `step-4-to-5`,
 the `ready:` rule.
-It does not shell out to this repository's lint rows, which reject `/5` until the board-schema task
-lands. `errors` gate adoption: the wrong bucket after the step, a second `transform` that is not
+It does not shell out to the lint rows; the [9.0 checklist](#v84--v90-checklist) runs them on the
+migrated copy. `errors` gate adoption: the wrong bucket after the step, a second `transform` that is not
 byte-identical, a board invariant, or an old artifact name left in the root — each a check `verify`
 itself performs and reports. A rename-target collision is a separate, transform-time refusal, not a
 `verify` error: an old artifact name and its new name both already present (`usage.md` and
@@ -191,10 +197,16 @@ adoption never reaches `verify` for that workspace. `residue` lists what the age
 adoption, for example a stray id mention in rewritten prose.
 
 <a id="read-compatibility-promise"></a>
-## Read compatibility
+<a id="forward-only"></a>
+## Forward only
 
-The install reads, and operates on, every workspace in a bucket above; it offers a migration only when
-the requested action needs a newer format. Below the `pre-3` bucket nothing is promised, and this
+The install runs only a workspace in bucket `5`, or a Focused `plan.md` whose history and usage
+are `history.md` and `resource-usage.md`. PLAN, RUN and STATUS refuse any other workspace with
+`migrate first` and point here, and lint rows 1, 2, 3, 5, 10, 11, 12 and 14 print that refusal.
+A board saved with CRLF line endings reads as older: convert it to LF first, because the rows, the
+recipes and this migration read LF only. This guide, its recipes and their fixtures are the one
+bridge: they keep detecting and transforming every bucket above. The readability statements in the 8.x checklists above describe 8.x installs.
+Below the `pre-3` bucket nothing is promised, and this
 repository's historical checklists above and in `maintaining/migrations.md` apply.
 
 <a id="pre-migration-originals"></a>
@@ -203,9 +215,8 @@ repository's historical checklists above and in `maintaining/migrations.md` appl
 Each step's adoption writes the new content plus every `legacy-*/` directory that existed before,
 unchanged, and adds its own `legacy-<bucket>/` snapshot: the workspace root exactly as the step read it,
 byte-identical and read-only, before that step's transform ran. By construction this is
-outside every row that reads a board or history by its path. Row 1's placeholder scan still reaches one
-level into every subdirectory, including a `legacy-*/` one — noted here for the task that next edits
-that row.
+outside every row that reads a board or history by its path. Row 1's placeholder scan skips every
+`legacy-*/` directory.
 
 <a id="migration-rollback"></a>
 ## Rollback

@@ -5,8 +5,8 @@ Direct and ordinary Focused work keep their normal artifact size. In new Coordin
 `task-board.md` owns current task state; the task brief/contract owns requirements,
 `decisions.md` owns decisions, `questions.md` owns pending questions, and verification records
 own observations. `history.md` and its original archives own history. `current-work.md` and
-`handoff-brief.md` are disposable projections. Historical workspaces retain `board.md`,
-`log.md`, `coordinator.md` and `HANDOFF.md`; the recipe selects their existing paths.
+`handoff-brief.md` are disposable projections. The recipe reads only these current paths and
+refuses an older workspace with `migrate first` ([forward only](migrate.md#forward-only)).
 
 ## Current work
 
@@ -41,8 +41,8 @@ STATUS is read-only; explicit handoff writes its projection/export only. Without
 explicit archive request, report the need without archiving.
 
 Archive **original bytes in chronological order**. `history/index.md` routes stable event numbers
-and original headings to immutable segments; `history.md` (historical `log.md`) retains its introduction and active tail.
-Existing `log-archive.md` remains readable and is indexed in place on selected adoption; new archives use `history-archive.md`. Original
+and original headings to immutable segments; `history.md` retains its introduction and active tail.
+Archives use `history-archive.md`. Original
 heading references remain resolvable through the index/lookup. This is logical reference
 resolution, not an automatic redirect in a Markdown browser. Before selected segmentation, check
 live history-anchor consumers and retarget them to the segment/original heading, or retain the
@@ -127,15 +127,20 @@ def decode(data):
 class Context:
     def __init__(self, root):
         self.root = Path(root).resolve(strict=True)
-        modern = (self.root / "task-board.md").is_file()
-        self.board_name = "task-board.md" if modern else "board.md"
-        self.history_name = "history.md" if modern else "log.md"
-        self.archive_name = "history-archive.md" if modern else "log-archive.md"
-        self.projection_name = "current-work.md" if modern else "coordinator.md"
-        self.handoff_name = "handoff-brief.md" if modern else "HANDOFF.md"
-        if modern and any((self.root / name).exists() for name in
-                          ("board.md", "log.md", "log-archive.md", "coordinator.md", "HANDOFF.md")):
-            raise ValueError("mixed workspace paths")
+        self.board_name = "task-board.md"
+        self.history_name = "history.md"
+        self.archive_name = "history-archive.md"
+        self.projection_name = "current-work.md"
+        self.handoff_name = "handoff-brief.md"
+        older = [name for name in ("board.md", "log.md", "log-archive.md", "coordinator.md", "HANDOFF.md")
+                 if (self.root / name).exists()]
+        if older:
+            raise ValueError("migrate first: older workspace path " + older[0] +
+                             " (references/guides/migrate.md#forward-only)")
+        board = self.root / self.board_name
+        if board.is_file() and b"Schema: tackle-workspace/5" not in board.read_bytes().split(b"\n"):
+            raise ValueError("migrate first: task-board.md has no tackle-workspace/5 schema line with LF line "
+                             "endings (references/guides/migrate.md#forward-only)")
         self.bytes_read = self.bytes_written = self.metadata_checks = 0
 
     def path(self, name):

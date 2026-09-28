@@ -1,2 +1,0 @@
-- **Autonomy**: inherit
-- **Effort**: heroic

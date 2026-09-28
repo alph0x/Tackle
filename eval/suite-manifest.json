@@ -2,7 +2,6 @@
   "version": 1,
   "excluded_directories": [
     "eval/scenarios",
-    "eval/plan-run/fixtures",
     "eval/run/evidence-capture/fixtures",
     "eval/run/focused-closure/fixtures",
     "eval/scratch",
@@ -12,29 +11,27 @@
     {
       "path": "eval/plan-run/tests",
       "files": [
-        "test_contracts.py",
         "test_migration.py",
         "test_plan.py",
         "test_run.py"
       ],
-      "tests": 16
+      "tests": 11
     },
     {
       "path": "eval/lint/task-identity",
       "files": [
         "test_identity.py"
       ],
-      "tests": 19
+      "tests": 16
     },
     {
       "path": "eval/validation-integrity",
       "files": [
         "test_fields.py",
         "test_paths.py",
-        "test_dependency_and_scope_parsing.py",
-        "test_workspace_compatibility.py"
+        "test_dependency_and_scope_parsing.py"
       ],
-      "tests": 39
+      "tests": 22
     },
     {
       "path": "eval/run/execution",
@@ -43,13 +40,6 @@
         "test_isolated_veracity.py"
       ],
       "tests": 40
-    },
-    {
-      "path": "eval/run/lifecycle",
-      "files": [
-        "test_literal_lifecycle.py"
-      ],
-      "tests": 10
     },
     {
       "path": "eval/run/focused-closure",
@@ -70,7 +60,7 @@
       "files": [
         "test_capture.py"
       ],
-      "tests": 8
+      "tests": 9
     },
     {
       "path": "eval/maintaining/suite-integrity",
@@ -85,7 +75,7 @@
       "files": [
         "test_task_contracts.py"
       ],
-      "tests": 33
+      "tests": 32
     },
     {
       "path": "eval/run/verification-records",
@@ -100,7 +90,7 @@
         "test_context.py",
         "test_measurement.py"
       ],
-      "tests": 27
+      "tests": 30
     },
     {
       "path": "eval/lint/rows",
@@ -108,18 +98,22 @@
         "test_lint_rows.py",
         "test_row8_wrap.py",
         "test_tier_escalation.py",
-        "test_effort_only_deviation.py"
+        "test_effort_only_deviation.py",
+        "test_forward_only.py",
+        "test_workspace_shapes.py",
+        "test_row_contracts.py"
       ],
-      "tests": 40
+      "tests": 75
     },
     {
       "path": "eval/templates",
       "files": [
         "test_template_drift.py",
         "test_model_routing_text.py",
-        "test_tier_model_collision.py"
+        "test_tier_model_collision.py",
+        "test_brief_template.py"
       ],
-      "tests": 35
+      "tests": 37
     },
     {
       "path": "eval/protocol-v2",
@@ -164,7 +158,7 @@
       "files": [
         "test_install.py"
       ],
-      "tests": 19
+      "tests": 17
     },
     {
       "path": "eval/install/reading-budget",

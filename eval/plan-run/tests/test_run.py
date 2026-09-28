@@ -15,7 +15,7 @@ class RunProtocol(unittest.TestCase):
         for phrase in [
             "single execution protocol", "explicit execution intent", "| Ready to run | In progress |",
             "the task check", "the affected integration checks", "deliverable acceptance", "complete",
-            "`board.md`\nis the canonical current state", "`log.md` is append-only history",
+            "with `migrate first`",
         ]:
             self.assertIn(phrase, RUN)
         self.assertEqual(RUN.count("## State transitions"), 1)
@@ -24,13 +24,28 @@ class RunProtocol(unittest.TestCase):
     def test_docs_bind_templates_to_run_without_competing_loops(self):
         team = (ROOT.parent.parent / "references/team.tmpl.md").read_text()
         agents = (ROOT.parent.parent / "references/AGENTS.tmpl.md").read_text()
-        coordinator = (ROOT.parent.parent / "references/coordinator.tmpl.md").read_text()
-        for text in [team, agents, coordinator]:
+        current_work = (ROOT.parent.parent / "references/current-work.tmpl.md").read_text()
+        for text in [team, agents]:
             self.assertIn("references/guides/run.md", text)
             self.assertNotIn("Pre-wave verification gate", text)
             self.assertNotIn("Rework bound", text)
         self.assertIn("non-goals are explicit exclusions", agents)
-        self.assertIn("Initiative unowned-integration cycles", coordinator)
+        self.assertNotIn("Rework bound", current_work)
+        self.assertIn("Initiative unowned-integration cycles", current_work)
+
+    def test_run_guidance_refuses_an_older_workspace_before_its_first_write(self):
+        references = ROOT.parent.parent / "references"
+        card = " ".join((references / "guides/run-card.md").read_text().split())
+        refusal = card.index("stop with `migrate first` before any write unless it declares `Schema: tackle-workspace/5`")
+        self.assertLess(card.index("1. **Read.**"), refusal)
+        self.assertLess(refusal, card.index("3. **Claim.**"))
+        focused = " ".join((references / "lite-plan.tmpl.md").read_text().split())
+        stop = focused.index("Before any write, stop with `migrate first`")
+        self.assertLess(focused.index("1. **Prepare.**"), stop)
+        self.assertLess(stop, focused.index("create plan.md, history.md and resource-usage.md"))
+        status = " ".join((references / "guides/status.md").read_text().split())
+        self.assertIn("On a workspace that reads `migrate first`, the handoff writes nothing", status)
+        self.assertIn("a bucket other than `5`, or a Focused plan on older paths, reads `migrate first`", status)
 
 
 if __name__ == "__main__":

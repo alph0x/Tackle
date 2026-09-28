@@ -9,8 +9,10 @@ multi-team/session coordination, uncertain integration or a shared public contra
 
 ## Procedure
 
-1. **Prepare.** Read the named spec, source and tests, relevant repository instructions and existing
-   Lite plan/log/usage/decisions. Honor user > contract > protected tests > implementation. Confirm
+1. **Prepare.** Read the named spec, source and tests, relevant repository instructions and the existing
+   Lite plan, history, resource usage and decisions. Before any write, stop with `migrate first`
+   ([forward only](guides/migrate.md#forward-only)) if the workspace still holds `log.md`, `log-archive.md` or
+   `usage.md`. Honor user > contract > protected tests > implementation. Confirm
    purpose, non-goals and scope; resolve user-owned ambiguity before the affected work. Reuse an
    authorized gitignore decision; otherwise ask once about docs/plans/ and apply it to docs/seeds/.
    Observe the repository root and create plan.md, history.md and resource-usage.md under
@@ -134,7 +136,7 @@ Append start before substantive role work and one finish at role close, or obser
 when an interruption is observed. Exactly one start and at most one terminal event are valid:
 start(running) → finish(success|failed|blocked|aborted) or observe-incomplete(incomplete).
 Use a stable unique Run ID and the same Task/Role. New ledgers
-contain this v2 table only; preserve existing legacy rows without duplicating them. Unknown fields
+contain this v2 table only. Unknown fields
 are n/a, never guessed. Tier is the observed model binding (fast/standard/frontier), not Lite/Full;
 an unavailable binding is n/a. Attempts counts failed implementation correction-validation cycles
 shared across actors/resumptions: initial validation, dispatches and repeated tests do not count.

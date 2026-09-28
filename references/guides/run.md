@@ -157,8 +157,8 @@ renamed role or a fresh label is not proof of independence. Routine Run has no u
 checker, majority vote, or audit. A vote cannot erase a confirmed correctness failure. Freeze the
 source and protected expectations at the review boundary.
 
-The Task state is distinct from evidence grades and from the board's current execution status. Keep
-historical E0–E3 grades readable. New evidence also records provenance and independence dimensions.
+The Task state is distinct from evidence grades and from the board's current execution status.
+New evidence also records provenance and independence dimensions.
 E1 is command-verified evidence from an actually independent checker; E2 is a named semantic review
 gate when no honest command exists; E0 is explicitly unverifiable; E3 is an assertion. Grades are
 derived from the evidence, never self-declared, and E2 is not numerically ordered against E3. Missing
@@ -228,8 +228,8 @@ update records the last fully recorded event and intended task state. A projecti
 counters, permissions or actual results. Lifecycle rows and attempts serialize and resume from the
 workspace; missing end data stays `n/a`.
 
-For a historical workspace, `board.md`
-is the canonical current state; `log.md` is append-only history.
+RUN runs a Coordinated workspace only on a `tackle-workspace/5` board, and a Focused one only on `history.md`
+and `resource-usage.md`; it refuses any other with `migrate first` ([forward only](migrate.md#forward-only)).
 
 A closure report or local Run report is evidence, not permission to erase prior history. Once
 deliverable acceptance and its review/sign-off obligations pass, write the closure records, check only

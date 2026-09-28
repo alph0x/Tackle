@@ -32,17 +32,19 @@ failure or constraint.
 When requested or relevant, report reference age, checks actually run, task/blocker counts,
 weakest required verification, resource coverage, and history size. Missing telemetry is `n/a`.
 Report a workspace's migration bucket from its board's `Schema:` line, per
-[migrate.md](migrate.md#schema-keyed-migration)'s table; STATUS never migrates automatically. All
+[migrate.md](migrate.md#schema-keyed-migration)'s table; a bucket other than `5`, or a Focused plan on
+older paths, reads `migrate first`, with its next step. STATUS never migrates automatically. All
 tasks Complete is insufficient to claim deliverable acceptance.
 
 <a id="handoff-projection"></a>
 ## Handoff brief projection
 
+On a workspace that reads `migrate first`, the handoff writes nothing and reports that refusal.
 Verify current work using [context-lifecycle.md](context-lifecycle.md#current-work): scope, required
 source membership/revisions, state revision, and last fully recorded event. Reuse it with the
 necessary source records; do not unconditionally read complete closed history. If stale or
 incomplete, reconstruct affected context from authoritative sources and expand when completeness
-is uncertain. Legacy workspaces without a verified projection use their original source records.
+is uncertain.
 An explicitly requested audit may require complete history.
 
 The portable handoff contains context; current task state and checkpoint; applicable decisions,
@@ -68,8 +70,9 @@ Keep the newest State snapshot, stable event references/original-heading lookup,
 maintenance record with before/after sizes and the committed checkpoint. Never replace originals
 with a paraphrase. Archive placement does not authorize evidence retirement.
 
-## Compatibility
+## Older workspaces
 
-Legacy Point/board/log names and `P-xx` references remain readable. The retired 8.x action-name
+STATUS reads only the current layout and reports any older workspace as `migrate first`
+([forward only](migrate.md#forward-only)). The retired 8.x action-name
 aliases that used to reach STATUS keep their historical targets in
 [terminology.md](../terminology.md)'s Routes and actions section.

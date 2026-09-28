@@ -21,7 +21,7 @@ never promise a separate menu entry for an action or a particular prefix in ever
 | Request after selecting Tackle | Route and boundary | Guide |
 |---|---|---|
 | `plan <task>` / “plan this” / “armá un plan” | PLAN prepares; explicit plan-and-execute intent can also authorize subsequent RUN | [PLAN card](plan-card.md) |
-| `run`, `run --one`, `run <T-id>` / “ejecutá la tarea” (legacy `run <P-id>` and “ejecutá el punto” remain readable) | RUN executes the explicitly requested scope after preflight: a Coordinated task follows the RUN card; Focused RUN stays inside `lite-plan.tmpl.md` | [RUN card](run-card.md) |
+| `run`, `run --one`, `run <T-id>` / “ejecutá la tarea” | RUN executes the explicitly requested scope after preflight: a Coordinated task follows the RUN card; Focused RUN stays inside `lite-plan.tmpl.md` | [RUN card](run-card.md) |
 | `status [<workspace>]`, `list`, `next`, plain `resume` / “qué sigue” | STATUS inspects/selects; no source, board or log writes | [Status](status.md) |
 | `status <workspace> --handoff` / “prepare a handoff” | Write only the requested handoff projection | [Status](status.md) |
 | **validate the plan**, `verify [<workspace>]` / “verificá este plan sin modificarlo” | PLAN validation or explicit diagnosis; a diagnosis alone never authorizes repairs or history writes | [Verify](verify.md) |

@@ -8,7 +8,7 @@ Run `python3 eval/status/benchmark.py` to reproduce `measurements.json`.
 Coverage includes source/scope/membership invalidation; tampered projections; old binding
 decisions; archived failed attempts and original-heading lookup; missing/corrupt originals;
 single-writer refusal; recoverable rotation at all publish boundaries; interrupted completion;
-idempotent final-event retry; selected legacy archive adoption; and portable source export.
+idempotent final-event retry; adoption of an existing archive; and portable source export.
 The immutable expected original bytes are created before running the candidate recipe.
 
 The 10/100/1,000-task comparison measures **logical content bytes**, with the same active task

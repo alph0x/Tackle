@@ -93,12 +93,13 @@ Totals/rankings require 100% comparable coverage; tier/effort recommendations al
 three completed like-for-like runs. The universal ledger never depends on a collector; no hook,
 daemon, plugin, provider API, or sidecar is required for a task to close.
 
-## Legacy compatibility
+## Pre-v2 tables the migration carries
 
 An eight-column header beginning `Point | Role | Tier | Model | Effort | Tokens in | Tokens out |
 Session` is legacy and remains readable. Adoption appends the v2 marker/table below it and writes
 only v2 events. Legacy rows without exact run ids remain legacy-scoped. Rollback removes only the
 new v2 section and preserves legacy bytes. Migration and compatibility reads are fixture-tested.
+Only a migration carries such a table into `resource-usage.md`; a new ledger starts on the v2 table.
 
 ## Negative validator example
 

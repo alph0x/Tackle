@@ -3,8 +3,7 @@
 Permanent checks read the working tree. The shipped install (``SKILL.md`` plus ``references/``)
 carries none of: the changelog, the historical migration checklists, Tackle's own release and
 self-lint gates, or the unreferenced vendor collectors and validator example. Every relative link
-in the listed files resolves, the five legacy templates keep their pinned hashes, and the eight
-self-lint gates are silent.
+in the listed files resolves, and the eight self-lint gates are silent.
 
 Standard library only; no network, container or model call. Every "against a temporary copy"
 case below builds its own disposable directory and never touches this repository.
@@ -107,28 +106,6 @@ def check_links(root):
                 continue
             if fragment and fragment not in anchors_of(resolved):
                 problems.append('%s: anchor missing: %s' % (source.relative_to(root), target))
-    return problems
-
-
-LEGACY_TEMPLATE_HASHES = {
-    'references/point.tmpl.md': 'a6b787c810fa6184af995c2d55eb3a6a9024ac22b9f1f8eee6c4eab8abd2852c',
-    'references/log.tmpl.md': 'def3ee4ed6228ebab8e137c57d446a63e9b5eea7d34d4fd01daa96de1d1baca1',
-    'references/usage.tmpl.md': 'f48bca9f80d51043642ea8ec4e58ba09eee6f2e924158494cec29c6000736860',
-    'references/board.tmpl.md': '2b46170bef238aa537fd71605d3e20c04c88c5744d0947228a6fc41fd72cb00b',
-    'references/coordinator.tmpl.md': '2840778e58f8a169a7a02e284b723a302240ea7cd01fd13e7a8fd83c9200ade6',
-}
-
-
-def check_legacy_hashes(root):
-    problems = []
-    for path, expected in LEGACY_TEMPLATE_HASHES.items():
-        target = root / path
-        if not target.is_file():
-            problems.append('%s: missing' % path)
-            continue
-        actual = sha256(target.read_bytes())
-        if actual != expected:
-            problems.append('%s: hash changed (expected %s, got %s)' % (path, expected, actual))
     return problems
 
 
@@ -235,13 +212,6 @@ class InstallInventoryTests(unittest.TestCase):
         self.assertEqual(archetype_leaks(ROOT), [])
 
 
-class LegacyTemplateTests(unittest.TestCase):
-    """Case: legacy templates -- the five frozen templates keep the audit's pinned hashes."""
-
-    def test_legacy_template_hashes_are_unchanged(self):
-        self.assertEqual(check_legacy_hashes(ROOT), [])
-
-
 class LinksTests(unittest.TestCase):
     """Case: links -- every relative link in the listed files resolves to a file, and to an
     anchor where one is given."""
@@ -277,9 +247,8 @@ class ShippedEntryPointTests(unittest.TestCase):
 
 
 class PlantedDefectTests(unittest.TestCase):
-    """Case: planted defect -- a link to a removed path, a gate reading
-    references/CHANGELOG.md, or a changed legacy template must each make the relevant check
-    fail, naming the file. Every defect is planted in a disposable temporary copy, never in the
+    """Case: planted defect -- a link to a removed path or a gate reading
+    references/CHANGELOG.md must make the relevant check fail, naming the file. Every defect is planted in a disposable temporary copy, never in the
     repository."""
 
     def test_a_dangling_link_is_caught(self):
@@ -293,18 +262,6 @@ class PlantedDefectTests(unittest.TestCase):
             self.assertEqual(len(problems), 1)
             self.assertIn('README.md', problems[0])
             self.assertIn('references/CHANGELOG.md', problems[0])
-
-    def test_a_changed_legacy_template_is_caught(self):
-        with tempfile.TemporaryDirectory(prefix='tackle-t32-defect-') as scratch:
-            root = Path(scratch)
-            (root / 'references').mkdir()
-            for path in LEGACY_TEMPLATE_HASHES:
-                (root / path).write_bytes((ROOT / path).read_bytes())
-            tampered = root / 'references/point.tmpl.md'
-            tampered.write_bytes(tampered.read_bytes() + b'\n')
-            problems = check_legacy_hashes(root)
-            self.assertEqual(len(problems), 1)
-            self.assertIn('references/point.tmpl.md', problems[0])
 
     def test_a_leaked_archetype_copy_under_the_shipped_surface_is_caught_by_content(self):
         """C6's negative fixture: byte-identical content under `references/**`, at a different

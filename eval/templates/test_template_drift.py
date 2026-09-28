@@ -204,7 +204,7 @@ class TemplateDriftTests(unittest.TestCase):
         self.assertEqual(drift.returncode, 1)
         self.assertIn(b'seal drift: C02', drift.stdout)
 
-    def test_checklist_migrates_a_legacy_workspace_to_a_clean_v4_workspace(self):
+    def test_checklist_migrates_an_older_workspace_to_a_clean_5_workspace(self):
         shutil.copytree(HERE / 'fixtures/legacy-p', self.root, dirs_exist_ok=True)
         pairs = re.findall(r'`([^`]+)` → `([^`]+)`', checklist())
         self.assertTrue(pairs, 'the checklist names no old → new artifact map')
@@ -236,6 +236,25 @@ class TemplateDriftTests(unittest.TestCase):
         text = '\n'.join(out)
         self.assertIn('Schema: tackle-workspace/4', checklist())
         board.write_text(re.sub(r'\n\n\|', '\n\nSchema: tackle-workspace/4\n\n|', text, count=1))
+        # 9.0 runs only bucket 5: the shipped schema-keyed step takes the /4 board there, then the 9.0
+        # checklist gives each open brief whose Effort departs from the default its Tier reason.
+        schema = recipe_block('recipes/migrate/schema.md')
+        step = recipe_block('recipes/migrate/step-4-to-5.md', schema)
+        files = {p.relative_to(self.ws).as_posix(): p.read_bytes() for p in self.ws.rglob('*') if p.is_file()}
+        context = {'date': '2026-09-27', 'run_id': 'template-drift', 'methodology': 'Tackle ' + skill_stamp()}
+        adopted, _ = schema['adopt'](files, context, step['transform'])
+        for relative, data in adopted.items():
+            (self.ws / relative).parent.mkdir(parents=True, exist_ok=True)
+            (self.ws / relative).write_bytes(data)
+        self.assertIn('Schema: tackle-workspace/5', board.read_text())
+        closed = ('Complete', 'Skipped', 'Unverifiable')
+        for line in board.read_text().split('\n'):
+            cells = [cell.strip() for cell in line.split('|')[1:-1]]
+            if len(cells) == 6 and re.fullmatch(r'T-\d+', cells[0]) and cells[4] not in closed:
+                brief = self.ws / cells[2]
+                text = re.sub(r'(- \*\*Effort\*\*: (?!low\n).*\n)', r'\1- **Tier reason**: kept its Effort through migration\n',
+                              brief.read_text())
+                brief.write_text(text)
         for number, (verdict, out_text, err) in lint(self.root).items():
             with self.subTest(row=number):
                 self.assertEqual(verdict, 'PASS', (out_text, err))
@@ -247,20 +266,24 @@ class TemplateDriftTests(unittest.TestCase):
         names = {re.search(r'[├└]── (\S+)', l)[1] for l in entries}
         self.assertEqual(names, set(scaffold_names()[1]) | {'tasks/'})
 
-    def test_task_consistency_recipe_accepts_t_and_p_identities(self):
-        for identity in ('T-01', 'P-01'):
+    def test_task_consistency_recipe_accepts_t_identities_and_refuses_p(self):
+        for identity in ('T-A', 'P-A'):
             with self.subTest(identity=identity):
-                task = dict(id=identity, requirements=['R01'], outcome='Preserve parsed output',
+                task = dict(id=identity, requirements=['RA'], outcome='Preserve parsed output',
                             write_scope=['result.json'], inputs={'spec': 'revision-1'},
                             acceptance_check='python3 check.py', regression_check='python3 regression.py',
                             record='records/check', produces={}, consumes=[],
-                            cases=[dict(requirement='R01', input='', expected=[], check='empty-array round trip')],
+                            cases=[dict(requirement='RA', input='', expected=[], check='empty-array round trip')],
                             semantic_review='passed', boundary_fixtures='passed')
-                result = RECIPE['prepare_tasks'](['R01'], [task], [identity], {},
-                                                 dict(contract='c1', source='s1', configuration='cfg1', dependencies='d1',
-                                                      selectors=['input.json'], runtime='Python 3'),
-                                                 [dict(owner='coordinator', check='consumer round trip', record='records/delivery')])
-                self.assertEqual(result['states'][identity], 'Ready to run')
+                prepare = lambda: RECIPE['prepare_tasks'](['RA'], [task], [identity], {},
+                                                          dict(contract='c1', source='s1', configuration='cfg1', dependencies='d1',
+                                                               selectors=['input.json'], runtime='Python 3'),
+                                                          [dict(owner='coordinator', check='consumer round trip', record='records/delivery')])
+                if identity.startswith('T-'):
+                    self.assertEqual(prepare()['states'][identity], 'Ready to run')
+                else:
+                    with self.assertRaisesRegex(ValueError, 'identity'):
+                        prepare()
 
     def test_retro_metrics_render_and_print_the_documented_rows(self):
         template = (REF / 'retro.tmpl.md').read_text()
@@ -311,6 +334,13 @@ class TemplateDriftTests(unittest.TestCase):
                 for fragment in fragments:
                     self.assertIn(fragment, child.stdout)
                 self.assertNotIn('T-02', child.stdout) if metric == 'Comprehension debt' else None
+
+
+def recipe_block(name, namespace=None):
+    text = (REF / name).read_text()
+    scope = dict(namespace or {})
+    exec(text.split('```python\n', 1)[1].split('\n```', 1)[0], scope)
+    return scope
 
 
 if __name__ == '__main__':

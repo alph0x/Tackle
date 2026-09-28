@@ -23,7 +23,7 @@ LINEAGE = recipe('references/recipes/correction-lineage.md')
 LINT = recipe('references/guides/full-checks.md', 1)
 
 
-def task(identity='P-01', requirement='R01'):
+def task(identity='T-A', requirement='RA'):
     return dict(id=identity, requirements=[requirement], outcome='Preserve parsed output',
                 write_scope=['result.json'], inputs={'spec': 'revision-1'},
                 acceptance_check='python3 check.py', regression_check='python3 regression.py',
@@ -35,7 +35,7 @@ def task(identity='P-01', requirement='R01'):
 def preparation(tasks=None, selected=None, available=None, requirements=None):
     tasks = tasks if tasks is not None else [task()]
     return COMPILER['prepare_tasks'](
-        requirements or ['R01'], tasks, selected or ['P-01'], available or {},
+        requirements or ['RA'], tasks, selected or ['T-A'], available or {},
         dict(contract='c1', source='s1', configuration='cfg1', dependencies='d1',
              selectors=['input.json'], runtime='Python 3'),
         [dict(owner='coordinator', check='consumer round trip', record='records/delivery')])
@@ -62,106 +62,126 @@ def board(state, proof='', schema=True):
         f'| P-01 | Work | points/P-01.md | none | {state} | {proof} |\n')
 
 
+def task_board(state, proof='', schema=True):
+    return ('Schema: tackle-workspace/5\n' if schema else '') + (
+        '| Task | What | Brief | Depends on | Status | Verification |\n'
+        '|---|---|---|---|---|---|\n'
+        f'| T-A | Work | tasks/T-A.md | none | {state} | {proof} |\n')
+
+
+def layout(**extra):
+    # The current layout's required files around a `/5` board, for rows that read more than the board.
+    files = {'plan.md': '## 5. Task decomposition\n| **T-A · Work** | one |\n',
+             'history.md': '# History\n\n## 2026-09-22 · prepared\nReady records are indexed.\n',
+             'resource-usage.md': ('# Resource usage\n\nSchema: tackle-observability/2\n\n| Run ID | Event | Task | Role | '
+                                   'Harness | Tier | Model | Effort | At | Outcome | Attempts | Rework | Verification | '
+                                   'Source |\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n')}
+    files.update(extra)
+    return files
+
+
 class TaskContracts(unittest.TestCase):
     def test_complete_brief_accepts_explicit_empty_boundary(self):
         result = preparation()
-        self.assertEqual(result['states']['P-01'], 'Ready to run')
+        self.assertEqual(result['states']['T-A'], 'Ready to run')
         self.assertFalse(result['execution_authorized'])
         self.assertFalse(result['product_pass'])
 
     def test_missing_product_decision_blocks_selected_task(self):
         item = task()
         item['pending_product_decisions'] = ['empty input policy']
-        self.assertEqual(preparation([item])['states']['P-01'], 'Draft')
+        self.assertEqual(preparation([item])['states']['T-A'], 'Draft')
 
     def test_delegated_choice_does_not_become_blocker(self):
         item = task()
         item['technical_choices'] = ['dictionary or dataclass']
-        self.assertEqual(preparation([item])['states']['P-01'], 'Ready to run')
+        self.assertEqual(preparation([item])['states']['T-A'], 'Ready to run')
 
     def test_missing_requirement_case_is_not_covered_by_id(self):
         item = task()
         item['cases'] = [dict(requirement='other', input='x', expected='x', check='identity')]
-        self.assertIn('missing observable case: R01', preparation([item])['findings']['P-01'])
+        self.assertIn('missing observable case: RA', preparation([item])['findings']['T-A'])
 
     def test_missing_record_or_regression_check_prevents_readiness(self):
         for key in ('record', 'regression_check', 'write_scope', 'inputs'):
             item = task()
             del item[key]
-            self.assertEqual(preparation([item])['states']['P-01'], 'Draft')
+            self.assertEqual(preparation([item])['states']['T-A'], 'Draft')
 
     def test_missing_semantic_or_boundary_review_prevents_readiness(self):
         for key in ('semantic_review', 'boundary_fixtures'):
             item = task()
             item[key] = 'pending'
-            self.assertEqual(preparation([item])['states']['P-01'], 'Draft')
+            self.assertEqual(preparation([item])['states']['T-A'], 'Draft')
 
     def test_milestone_retains_draft_requirement_owner(self):
-        later = task('P-02', 'R02')
+        later = task('T-B', 'RB')
         later.update(milestone='release', future_check='final package reconstruction')
         later.pop('cases')
-        result = preparation([task(), later], requirements=['R01', 'R02'])
-        self.assertEqual(result['states'], {'P-01': 'Ready to run', 'P-02': 'Draft'})
-        self.assertEqual(result['owners']['R02'], ['P-02'])
+        result = preparation([task(), later], requirements=['RA', 'RB'])
+        self.assertEqual(result['states'], {'T-A': 'Ready to run', 'T-B': 'Draft'})
+        self.assertEqual(result['owners']['RB'], ['T-B'])
 
     def test_deferred_missing_future_check_is_not_hidden(self):
-        later = task('P-02', 'R02')
+        later = task('T-B', 'RB')
         later['milestone'] = 'later'
         with self.assertRaisesRegex(ValueError, 'deferred'):
-            preparation([task(), later], requirements=['R01', 'R02'])
+            preparation([task(), later], requirements=['RA', 'RB'])
 
     def test_unowned_requirement_and_unjustified_task_reject(self):
         with self.assertRaisesRegex(ValueError, 'unowned requirement'):
-            preparation(requirements=['R01', 'R02'])
+            preparation(requirements=['RA', 'RB'])
         with self.assertRaisesRegex(ValueError, 'unjustified'):
-            preparation([task(requirement='R02')])
+            preparation([task(requirement='RB')])
 
     def test_duplicate_and_missing_task_identity_reject(self):
         with self.assertRaisesRegex(ValueError, 'duplicate'):
             preparation([task(), task()])
         item = task()
-        item['consumes'] = [dict(task='P-99', artifact='schema', interface='v1', revision='abc')]
+        item['consumes'] = [dict(task='T-Z', artifact='schema', interface='v1', revision='abc')]
         with self.assertRaisesRegex(ValueError, 'missing dependency'):
             preparation([item])
 
     def test_dependency_cycle_rejects_before_execution(self):
-        first, second = task(), task('P-02', 'R02')
-        for item, producer in ((first, 'P-02'), (second, 'P-01')):
+        first, second = task(), task('T-B', 'RB')
+        for item, producer in ((first, 'T-B'), (second, 'T-A')):
             item['produces'] = {'schema': dict(interface='v1', revision='abc')}
             item['consumes'] = [dict(task=producer, artifact='schema', interface='v1', revision='abc')]
         with self.assertRaisesRegex(ValueError, 'cyclic'):
-            preparation([first, second], selected=['P-01', 'P-02'], requirements=['R01', 'R02'])
+            preparation([first, second], selected=['T-A', 'T-B'], requirements=['RA', 'RB'])
 
     def test_existing_artifact_wrong_interface_or_revision_rejects(self):
-        first, second = task(), task('P-02', 'R02')
+        first, second = task(), task('T-B', 'RB')
         first.update(produces={'schema': dict(interface='v1', revision='abc')},
                      milestone='producer', future_check='schema consumer')
-        second['consumes'] = [dict(task='P-01', artifact='schema', interface='v1', revision='abc')]
-        for observed in ({}, {'P-01/schema': dict(interface='v1', revision='old')},
-                         {'P-01/schema': dict(interface='v2', revision='abc')}):
-            result = preparation([first, second], ['P-02'], observed, ['R01', 'R02'])
-            self.assertEqual(result['states']['P-02'], 'Draft')
-        valid = {'P-01/schema': dict(interface='v1', revision='abc')}
-        result = preparation([first, second], ['P-02'], valid, ['R01', 'R02'])
-        self.assertEqual(result['states']['P-02'], 'Ready to run')
+        second['consumes'] = [dict(task='T-A', artifact='schema', interface='v1', revision='abc')]
+        for observed in ({}, {'T-A/schema': dict(interface='v1', revision='old')},
+                         {'T-A/schema': dict(interface='v2', revision='abc')}):
+            result = preparation([first, second], ['T-B'], observed, ['RA', 'RB'])
+            self.assertEqual(result['states']['T-B'], 'Draft')
+        valid = {'T-A/schema': dict(interface='v1', revision='abc')}
+        result = preparation([first, second], ['T-B'], valid, ['RA', 'RB'])
+        self.assertEqual(result['states']['T-B'], 'Ready to run')
         second['consumes'][0]['interface'] = 'different'
         with self.assertRaisesRegex(ValueError, 'incompatible'):
-            preparation([first, second], ['P-02'], valid, ['R01', 'R02'])
+            preparation([first, second], ['T-B'], valid, ['RA', 'RB'])
 
     def test_title_or_translation_does_not_change_stable_task_id(self):
         item = task()
         item['title'] = 'Tarea de exportación'
-        self.assertEqual(set(preparation([item])['states']), {'P-01'})
+        self.assertEqual(set(preparation([item])['states']), {'T-A'})
 
-    def test_field_aliases_preserve_value_and_reject_conflict(self):
-        old = '- **Touches**: src/\n**Done-signal**: python3 check.py\n'
+    def test_current_field_names_parse_and_retired_ones_are_refused(self):
         new = '- **Write scope**: src/\n**Acceptance check**: python3 check.py\n'
         parse = COMPILER['task_fields']
-        self.assertEqual(parse(old), parse(new))
-        self.assertEqual(parse("**Touches:** src/\n**Run:** python3 check.py\n"), parse(new))
-        self.assertEqual(parse(old + new), parse(new))
+        self.assertEqual(parse(new), {'Write scope': 'src/', 'Acceptance check': 'python3 check.py'})
+        for older in ('- **Touches**: src/\n', '**Done-signal**: python3 check.py\n', '**Run:** python3 check.py\n',
+                      '**Target check**: unit\n', '**Surround check**: suite\n'):
+            with self.subTest(field=older):
+                with self.assertRaisesRegex(ValueError, 'migrate first'):
+                    parse(new + older)
         with self.assertRaisesRegex(ValueError, 'conflicting'):
-            parse(old + '**Write scope**: unrelated/\n')
+            parse(new + '**Write scope**: unrelated/\n')
 
     def test_split_merge_share_original_cycle_pool(self):
         events = [dict(cycle_id=f'c{i}', pool_id='original', kind='failed-correction') for i in range(3)]
@@ -198,46 +218,38 @@ class TaskContracts(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'pool limit'):
                 LINEAGE['correction_usage'](events, ['integration'], invented)
 
-    def test_legacy_board_states_still_read_without_upgrading(self):
-        for state in ('🔴', '🟡', '⏸', '🟢', '⚪'):
-            result = row(3, {'board.md': board(state, schema=False)})
-            self.assertEqual((result.returncode, result.stdout, result.stderr), (0, '', ''))
-        result = row(10, {'board.md': board('🟢', schema=False)})
-        self.assertIn('without grade', result.stdout)
-
-    def test_v3_states_need_explicit_schema(self):
+    def test_states_need_the_current_schema(self):
         for state in ('Draft', 'Ready to run', 'In progress', 'Checking', 'Complete', 'Blocked',
-                      'Interrupted', 'Skipped', 'Unverifiable'):
-            self.assertEqual(row(3, {'board.md': board(state)}).stdout, '')
-            self.assertIn('bad status', row(3, {'board.md': board(state, schema=False)}).stdout)
-        self.assertIn('bad status', row(3, {'board.md': board('Success-ish')}).stdout)
+                      'Interrupted', 'Skipped', 'Unverifiable', 'Waiting on owner'):
+            self.assertEqual(row(3, {'task-board.md': task_board(state)}).stdout, '')
+            self.assertIn('migrate first', row(3, {'task-board.md': task_board(state, schema=False)}).stdout)
+        self.assertIn('bad status', row(3, {'task-board.md': task_board('Success-ish')}).stdout)
 
-    def test_v3_terminal_state_requires_task_record_reference(self):
+    def test_terminal_state_requires_task_record_reference(self):
         for state in ('Complete', 'Blocked', 'Unverifiable'):
-            self.assertIn('without verification', row(10, {'board.md': board(state)}).stdout)
-            self.assertEqual(row(10, {'board.md': board(state, 'reports/P-01-report.md')}).stdout, '')
+            self.assertIn('without verification', row(10, {'task-board.md': task_board(state)}).stdout)
+            self.assertEqual(row(10, {'task-board.md': task_board(state, 'reports/T-A-report.md')}).stdout, '')
 
-    def test_v3_complete_still_requires_report_and_usage(self):
-        files = {'board.md': board('Complete', 'reports/P-01-report.md'), 'usage.md': '# Usage\n'}
+    def test_complete_still_requires_report_and_usage(self):
+        files = layout(**{'task-board.md': task_board('Complete', 'reports/T-A-report.md')})
         self.assertIn('without closure report', row(14, files).stdout)
         self.assertNotEqual(row(11, files).returncode, 0)
-        files.update({'reports/P-01-report.md': 'Command result with raw pointer\n',
-                      'usage.md': '| role | P-01 | observed |\n'})
+        files.update({'reports/T-A-report.md': 'Command result with raw pointer\n'})
+        files['resource-usage.md'] += '| role | T-A | observed |\n'
         self.assertEqual(row(14, files).stdout, '')
         self.assertEqual(row(11, files).returncode, 0)
 
-    def test_v3_task_heading_preserves_dependency_identity_checks(self):
-        files = {'plan.md': '## 5. Task decomposition\n| **P-01 · Work** | one |\n',
-                 'board.md': board('Draft'), 'points/P-01.md': '# Task P-01\n- **Depends on**: P-99\n'}
-        self.assertIn('unresolved: P-99', row(2, files).stdout)
-        files['points/P-01.md'] = '# Task P-01\n- **Depends on**: none\n'
+    def test_task_heading_preserves_dependency_identity_checks(self):
+        files = layout(**{'task-board.md': task_board('Draft'), 'tasks/T-A.md': '# Task T-A\n- **Depends on**: T-Z\n'})
+        self.assertIn('unresolved: T-Z', row(2, files).stdout)
+        files['tasks/T-A.md'] = '# Task T-A\n- **Depends on**: none\n'
         self.assertEqual(row(2, files).stdout, '')
 
-    def test_legacy_named_ids_are_stable_and_unsafe_ids_reject(self):
-        for identity in ('P-tc-core', 'P-s27-greet'):
+    def test_named_ids_are_stable_and_unsafe_or_older_ids_reject(self):
+        for identity in ('T-tc-core', 'T-s-greet'):
             item = task(identity)
             self.assertEqual(preparation([item], [identity])['states'][identity], 'Ready to run')
-        for identity in ('../P-01', 'P-01/path', 'P-01;echo'):
+        for identity in ('../T-A', 'T-A/path', 'T-A;echo', 'P-A'):
             with self.assertRaisesRegex(ValueError, 'identity'):
                 preparation([task(identity)], [identity])
 
@@ -249,7 +261,6 @@ class TaskContracts(unittest.TestCase):
         self.assertEqual(original.encode(), before)
         self.assertIn('| Complete | reports/P-01-report.md |', candidate)
         self.assertEqual(legacy, {'P-01': {'status': '🟢', 'grade': 'E1'}})
-        self.assertEqual(row(3, {'board.md': candidate}).stdout, '')
         with self.assertRaisesRegex(ValueError, 'missing historical'):
             convert(original, set())
         with self.assertRaisesRegex(ValueError, 'unsupported legacy'):
@@ -292,12 +303,9 @@ class TaskContracts(unittest.TestCase):
     def test_new_workspace_runs_all_canonical_rows(self):
         source = (ROOT / 'references/guides/lint-spec.md').read_bytes()
         commands = LINT['canonical_rows'](source, hashlib.sha256(source).hexdigest(), 'sample')
-        files = {'plan.md': '## 5. Task decomposition\n| **P-01 · Work** | one |\n',
-                 'board.md': board('Ready to run'),
-                 'points/P-01.md': '# Task P-01\n- **Depends on**: none\n- **Write scope**: src/\n- **Effort**: high\n',
-                 'decisions.md': '# Decisions\n', 'reference.md': '# References\n',
-                 'log.md': '# History\n\n## 2026-09-22 · prepared\nReady records are indexed.\n',
-                 'usage.md': '# Resource usage\n\nSchema: tackle-observability/2\n\n| Run ID | Event | Point | Role | Harness | Tier | Model | Effort | At | Outcome | Attempts | Rework | Verification | Source |\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n'}
+        files = layout(**{'task-board.md': task_board('Ready to run', 'ready: readiness record'),
+                          'tasks/T-A.md': '# Task T-A\n- **Depends on**: none\n- **Write scope**: src/\n- **Effort**: low\n',
+                          'decisions.md': '# Decisions\n', 'reference.md': '# References\n'})
         for number in range(1, 17):
             result = row(number, files)
             record = dict(child_exit=result.returncode, timeout=False, launch_error=None,
@@ -307,21 +315,23 @@ class TaskContracts(unittest.TestCase):
         self.assertEqual(set(commands), set(range(1, 17)))
 
     def test_new_status_declaration_outside_board_is_rejected(self):
-        files = {'plan.md': '# Plan\n', 'board.md': board('Draft'),
-                 'points/P-01.md': '# Task P-01\n**Status**: Complete\n'}
+        files = {'plan.md': '# Plan\n', 'task-board.md': task_board('Draft'),
+                 'tasks/T-A.md': '# Task T-A\n**Status**: Complete\n'}
         result = row(5, files)
         self.assertIn('duplicated Status', result.stdout)
         self.assertEqual(result.returncode, 0)
-        files['points/P-01.md'] = '# Task P-01\n```text\n**Status**: example\n```\n'
+        files['tasks/T-A.md'] = '# Task T-A\n```text\n**Status**: example\n```\n'
         result = row(5, files)
         self.assertEqual((result.returncode, result.stdout), (1, ''))
 
     def test_new_write_scope_and_checking_detect_cross_workspace_collision(self):
-        files = {'plan.md': '# Plan\n', 'board.md': board('Checking'),
-                 'points/P-01.md': '# Task P-01\n- **Write scope**: src/\n',
-                 '../neighbor/board.md': board('In progress'),
-                 '../neighbor/points/P-01.md': '# Task P-01\n- **Touches**: src/result.py\n'}
+        files = {'plan.md': '# Plan\n', 'task-board.md': task_board('Checking'),
+                 'tasks/T-A.md': '# Task T-A\n- **Write scope**: src/\n',
+                 '../neighbor/task-board.md': task_board('In progress'),
+                 '../neighbor/tasks/T-A.md': '# Task T-A\n- **Write scope**: src/result.py\n'}
         self.assertIn('collision: ', row(8, files).stdout)
+        files['../neighbor/tasks/T-A.md'] = '# Task T-A\n- **Touches**: src/result.py\n'
+        self.assertNotIn('collision: ', row(8, files).stdout)
 
     def test_missing_or_wrong_typed_fingerprints_cannot_mark_ready(self):
         valid = dict(contract='c1', source='s1', configuration='cfg1', dependencies='none',
@@ -331,29 +341,29 @@ class TaskContracts(unittest.TestCase):
             for missing in (None, '', {}, [], False, 0):
                 changed = dict(valid, **{key: missing})
                 with self.assertRaisesRegex(ValueError, 'fingerprint'):
-                    COMPILER['prepare_tasks'](['R01'], [task()], ['P-01'], {}, changed, delivery)
-        result = COMPILER['prepare_tasks'](['R01'], [task()], ['P-01'], {}, valid, delivery)
-        self.assertEqual(result['states']['P-01'], 'Ready to run')
+                    COMPILER['prepare_tasks'](['RA'], [task()], ['T-A'], {}, changed, delivery)
+        result = COMPILER['prepare_tasks'](['RA'], [task()], ['T-A'], {}, valid, delivery)
+        self.assertEqual(result['states']['T-A'], 'Ready to run')
 
 
-    def test_retro_queries_read_both_state_formats_without_counting_other_columns(self):
+    def test_retro_queries_read_the_board_without_counting_other_columns(self):
         template = (ROOT / 'references/retro.tmpl.md').read_text()
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            (root / 'board.md').write_text(board('Complete') +
-                '| P-02 | Legacy | brief | none | 🟢 | E1 |\n' +
-                '| P-03 | Complete 🟢 example | brief | none | In progress | |\n')
-            (root / 'log.md').write_text('## 2026-09-22\nP-01 Complete → In progress\n'
-                'P-02 🟢 → 🟡\nP-03 Blocked\nP-04 ⏸\n')
-            for metric, expected in [('Comprehension debt', ['P-01', 'P-02']),
-                                     ('Reopened tasks', ['P-01', 'P-02']),
-                                     ('Blocked durations', ['P-03', 'P-04'])]:
+            (root / 'task-board.md').write_text(task_board('Complete') +
+                '| T-B | Also done | brief | none | Complete | |\n' +
+                '| T-C | Complete example | brief | none | In progress | |\n')
+            (root / 'history.md').write_text('## 2026-09-22\nT-A Complete → In progress\n'
+                'T-B Complete → In progress\nT-C Blocked\nT-D Blocked\n')
+            for metric, expected in [('Comprehension debt', ['T-A', 'T-B']),
+                                     ('Reopened tasks', ['T-A', 'T-B']),
+                                     ('Blocked durations', ['T-C', 'T-D'])]:
                 command = template.split('| ' + metric + ' | `', 1)[1].split('`', 1)[0]
                 result = subprocess.run(['sh', '-c', command], cwd=root, text=True, capture_output=True)
                 self.assertEqual(result.returncode, 0, result.stderr)
                 self.assertTrue(all(identity in result.stdout for identity in expected), result.stdout)
                 if metric == 'Comprehension debt':
-                    self.assertNotIn('P-03', result.stdout)
+                    self.assertNotIn('T-C', result.stdout)
 
 
 if __name__ == '__main__':

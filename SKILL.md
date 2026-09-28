@@ -49,9 +49,9 @@ records, absent a capability escalation declared in the brief, capped as the RUN
 ## Compatibility and state
 
 [Terminology](references/terminology.md) defines visible names, exact state mappings and persistent
-aliases. New workspaces use T-ids and `tasks/`; existing P-ids, paths and historical records remain
-readable. Complete means every mandatory task obligation passed. Historical E0–E3 codes remain
-readable, never an ordinal scale. Report method, result and observed independence; a role name or
+aliases. A workspace runs only on the current layout: a `tackle-workspace/5` board with T-ids and `tasks/`, or a Focused plan;
+an older one is refused with "migrate first" until [migration](references/guides/migrate.md#forward-only) moves it forward. Complete means every mandatory task obligation passed.
+Report method, result and observed independence; a role name or
 self-review cannot create independent evidence. Unknown telemetry stays `n/a`.
 
 The task board is canonical current state; history is append-only; current-work projections are

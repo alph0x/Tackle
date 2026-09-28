@@ -24,7 +24,7 @@ FENCED_INVALID_EFFORT = (
 )
 
 
-def brief_with(identity, tier=None, tier_reason=None, escalation=None, effort='- **Effort**: high',
+def brief_with(identity, tier=None, tier_reason=None, escalation=None, effort='- **Effort**: low',
                trailer=''):
     """A template-derived brief (base.brief) with explicit Tier/Tier reason/Escalation lines spliced
     in immediately after Effort, mirroring where the Contract places them in task.tmpl.md."""

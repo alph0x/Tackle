@@ -10,7 +10,7 @@ not an installed runner or a new product dependency. This is Coordinated's direc
 
 Record allowed writes, protected fixtures and the actual harness policy. Configure native
 filesystem restrictions for shell children as well as patch tools; a container protects its host,
-not necessarily the task's Write scope (legacy `Touches`) inside the container. Put script revisions, evidence and
+not necessarily the task's Write scope inside the container. Put script revisions, evidence and
 TMPDIR under authorized paths. TMPDIR routes cooperative tools; it does not prohibit an explicit
 `/tmp/name`, a sibling path or a symlink escape. Before the first PLAN write or check, use disposable sentinels to
 prove an allowed write succeeds and outside/protected writes are denied. Never probe by changing
@@ -23,7 +23,7 @@ instruction/audit enforces it. Post-run hashes remain necessary for protected ex
 During PLAN, select a capture destination, exact command and input selectors for each obligation.
 Include source, **all selected tests including additive files**, contract, input data, config and
 dependencies. Selectors come from the acceptance/check's actual dependency surface, not merely
-task Write scope (legacy `Touches`). Review completeness before execution; no generic helper can infer every dynamic
+task Write scope. Review completeness before execution; no generic helper can infer every dynamic
 input. A glob records its membership, including an intentionally optional empty match; a required
 selector matching nothing is an error. Do not select credentials, home directories or generated
 evidence. Save compound scripts before invoking them and include every called script/config;

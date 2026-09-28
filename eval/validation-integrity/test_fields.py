@@ -19,11 +19,12 @@ def canonical_command(row: int) -> str:
     raise AssertionError(f"canonical lint row {row} not found")
 
 
-def board(status: str = "🔴", title: str = "Fixture") -> str:
+def board(status: str = "Draft", title: str = "Fixture") -> str:
     return (
-        "| Point | What | Briefing | Depends on | Status | Confidence |\n"
+        "Schema: tackle-workspace/5\n\n"
+        "| Task | What | Brief | Depends on | Status | Verification |\n"
         "|---|---|---|---|---|---|\n"
-        f"| P-01 | {title} | points/P-01.md | none | {status} | n/a |\n"
+        f"| T-A | {title} | tasks/T-A.md | none | {status} | pending |\n"
     )
 
 
@@ -71,23 +72,14 @@ class ExactFieldValidationTests(unittest.TestCase):
             self.assertEqual(result.stdout, "")
             self.assertEqual(result.stderr, "")
 
-    def test_row_2_requires_exact_point_id_declaration(self) -> None:
-        self.assert_clean(
-            2,
-            {
-                "plan.md": "## 5. Point decomposition\n| P-01 | Work | R01 | points/P-01.md | none |\n",
-                "points/P-01.md": "# P-01\n",
-                "board.md": board(),
-            },
-        )
+    def test_row_2_requires_exact_task_id_declaration(self) -> None:
+        layout = {"history.md": "# History\n", "resource-usage.md": "# Resource usage\n",
+                  "tasks/T-A.md": "# Task T-A — Work\n", "task-board.md": board()}
+        self.assert_clean(2, dict(layout, **{"plan.md": "## 5. Task decomposition\n| T-A | Work | RA | tasks/T-A.md | none |\n"}))
         self.assert_finding(
             2,
-            {
-                "plan.md": "## 5. Point decomposition\n| P-010 | Work | R01 | points/P-010.md | none |\n",
-                "points/P-01.md": "# P-01\n",
-                "board.md": board(),
-            },
-            "unresolved: P-01",
+            dict(layout, **{"plan.md": "## 5. Task decomposition\n| T-AA | Work | RA | tasks/T-AA.md | none |\n"}),
+            "unresolved: T-A",
         )
 
     def test_row_2_fails_closed_when_plan_is_missing(self) -> None:
@@ -96,8 +88,10 @@ class ExactFieldValidationTests(unittest.TestCase):
             self.make_workspace(
                 root,
                 {
-                    "points/P-01.md": "# P-01\n",
-                    "board.md": board(),
+                    "tasks/T-A.md": "# Task T-A — Work\n",
+                    "task-board.md": board(),
+                    "history.md": "# History\n",
+                    "resource-usage.md": "# Resource usage\n",
                 },
             )
             result = run_command(root, canonical_command(2).replace("<slug>", "probe"))
@@ -105,10 +99,10 @@ class ExactFieldValidationTests(unittest.TestCase):
             self.assertIn("missing:", result.stdout)
 
     def test_row_3_validates_status_field_not_any_emoji(self) -> None:
-        self.assert_clean(3, {"board.md": board("🟢", "Example 🟢 output")})
+        self.assert_clean(3, {"task-board.md": board("Complete", "Example 🟢 output")})
         self.assert_finding(
             3,
-            {"board.md": board("BROKEN", "Example 🟢 output")},
+            {"task-board.md": board("BROKEN", "Example 🟢 output")},
             "bad status:",
         )
 
@@ -116,24 +110,24 @@ class ExactFieldValidationTests(unittest.TestCase):
         self.assert_clean(
             7,
             {
-                "points/P-01.md": "## Acceptance <!-- SEALED: D-01 -->\n",
-                "decisions.md": "## D-01 — Accepted rule\n",
+                "tasks/T-A.md": "## Acceptance <!-- SEALED: D-1 -->\n",
+                "decisions.md": "## D-1 — Accepted rule\n",
             },
         )
         self.assert_finding(
             7,
             {
-                "points/P-01.md": "## Acceptance <!-- SEALED: D-01 -->\n",
-                "decisions.md": "## D-010 — Different decision\n",
+                "tasks/T-A.md": "## Acceptance <!-- SEALED: D-1 -->\n",
+                "decisions.md": "## D-2 — Different decision\n",
             },
-            "missing seal: D-01",
+            "missing seal: D-1",
         )
 
     def test_row_12_closes_effort_token(self) -> None:
-        self.assert_clean(12, {"points/P-01.md": "- **Effort**:   high   \n"})
+        self.assert_clean(12, {"task-board.md": board(), "tasks/T-A.md": "- **Effort**:   low   \n"})
         self.assert_finding(
             12,
-            {"points/P-01.md": "- **Effort**: highXYZ\n"},
+            {"task-board.md": board(), "tasks/T-A.md": "- **Effort**: highXYZ\n"},
             "highXYZ",
         )
 

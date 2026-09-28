@@ -24,18 +24,19 @@ class IsolatedVeracity(unittest.TestCase):
         for name, data in [('capture.py', CAPTURE.encode()), ('lint.py', LINT.encode()), ('lint-spec.md', SOURCE)]:
             (self.root/name).write_bytes(data)
         self.workspace = self.root/'docs/plans/demo'
-        (self.workspace/'points').mkdir(parents=True)
-        (self.workspace/'points/P-01.md').write_text('- **Effort**: high\n')
-        (self.workspace/'plan.md').write_text('P-01\n')
-        (self.workspace/'board.md').write_text(
-            '| Point | What | Briefing | Depends on | Status | Confidence |\n'
+        (self.workspace/'tasks').mkdir(parents=True)
+        (self.workspace/'tasks/T-A.md').write_text('- **Effort**: low\n')
+        (self.workspace/'plan.md').write_text('T-A\n')
+        (self.workspace/'task-board.md').write_text(
+            'Schema: tackle-workspace/5\n\n'
+            '| Task | What | Brief | Depends on | Status | Verification |\n'
             '|---|---|---|---|---|---|\n'
-            '| P-01 | Work | points/P-01.md | none | 🔴 | n/a |\n')
+            '| T-A | Work | tasks/T-A.md | none | Draft | pending |\n')
 
     def captured(self, row=12, command=None):
         canonical = NS['canonical_rows'](SOURCE, SHA, 'demo')[row]['command']
         (self.root/'row.sh').write_bytes(canonical if command is None else command)
-        spec = dict(argv=['sh', 'row.sh'], selectors=[dict(glob='docs/plans/demo/points/*.md', required=True)],
+        spec = dict(argv=['sh', 'row.sh'], selectors=[dict(glob='docs/plans/demo/tasks/*.md', required=True)],
                     artifacts=[], destination='evidence', timeout_seconds=2)
         (self.root/'check.json').write_text(json.dumps(spec))
         run = subprocess.run([sys.executable, 'capture.py', 'check.json'], cwd=self.root, capture_output=True, timeout=5)
@@ -62,7 +63,7 @@ class IsolatedVeracity(unittest.TestCase):
         self.assertEqual(self.verdict(4, out, record), 'ERROR')
 
     def test_stdout_findings_exit_zero_fail(self):
-        (self.workspace/'points/P-01.md').write_text('- **Effort**: impossible\n')
+        (self.workspace/'tasks/T-A.md').write_text('- **Effort**: impossible\n')
         out, record = self.captured()
         self.assertEqual(record['child_exit'], 0)
         self.assertEqual(self.verdict(12, out, record), 'FAIL')
@@ -121,7 +122,7 @@ class IsolatedVeracity(unittest.TestCase):
         self.assertFalse((self.workspace/'evidence').exists())
 
     def run_connected_subset(self, external=False):
-        (self.workspace/'points/P-01.md').write_text('- **Effort**: impossible\n')
+        (self.workspace/'tasks/T-A.md').write_text('- **Effort**: impossible\n')
         config = dict(source='lint-spec.md', source_sha256=SHA, slug='demo', rows=[5,12,15],
                       capture_script='capture.py',
                       selectors=[dict(glob='docs/plans/demo/**/*.md',required=True)],

@@ -9,11 +9,11 @@ The deterministic families read by the part of the skill each one verifies.
 | Area | Folder | Verifies | Registry families |
 |---|---|---|---|
 | Install | `install/` | packaging, the thin install and its reading budget | `install/inventory`, `install/reading-budget` |
-| Templates | `templates/` | scaffold and template drift | `templates` |
+| Templates | `templates/` | scaffold, template drift and the brief template's contract | `templates` |
 | Rules | `rules/` | the rule ledger and unit accounting | `rules` |
 | Lint | `lint/` | the workspace lint rows, task identity and task contracts | `lint/rows`, `lint/task-identity`, `lint/task-contracts` |
 | Plan-run | `plan-run/` | the two-action PLAN/RUN surface and migration fixtures | `plan-run/tests` |
-| Run | `run/` | execution controls, lifecycle, closure, verification records, evidence capture and usage | `run/execution`, `run/lifecycle`, `run/focused-closure`, `run/verification-records`, `run/evidence-capture`, `run/usage` |
+| Run | `run/` | execution controls, closure, verification records, evidence capture and usage | `run/execution`, `run/focused-closure`, `run/verification-records`, `run/evidence-capture`, `run/usage` |
 | Status | `status/` | the read-only status projection | `status` |
 | Migration | `migration/` | the schema-keyed migration recipes | `migration` |
 | Lessons | `lessons/` | the learning-loop confidence, ids and coverage | `lessons` |
@@ -37,7 +37,7 @@ Every family below moved once, by skill area; a reader of an older record can fi
 | `task-identity/` | `lint/task-identity/` | 2026-09 |
 | `task-contracts/` | `lint/task-contracts/` | 2026-09 |
 | `execution-controls/` | `run/execution/` | 2026-09 |
-| `lifecycle-validation/` | `run/lifecycle/` | 2026-09 |
+| `lifecycle-validation/` | `run/lifecycle/` | 2026-09 (its tests moved to `lint/rows/` later) |
 | `lite-closure/` | `run/focused-closure/` | 2026-09 |
 | `record-lifecycle/` | `run/verification-records/` | 2026-09 |
 | `grey-fixes/` | `run/evidence-capture/` | 2026-09 |
@@ -277,10 +277,10 @@ Markdown-only.
 
 ## Plan → Run fixtures
 
-`eval/plan-run/` covers the two-action PLAN/RUN surface: `test_contracts.py` validates lint-spec
-rows against legacy-schema fixtures, and `test_migration.py` validates the migration contract; the
-refactor's own one-time synthetic measurement of the historical Plan→Run rewrite was removed, and
-git history keeps it.
+`eval/plan-run/` covers the two-action PLAN/RUN surface: `test_migration.py` validates the migration
+contract. The lint-row and brief-template checks that once ran here on older-layout fixtures now run
+on current fixtures in `lint/rows/` and `templates/`. The refactor's one-time synthetic measurement of
+the historical Plan→Run rewrite was removed, and git history keeps it.
 
 The migration contract is covered by `test_migration.py`, which creates disposable filesystem
 fixtures during each run. It checks the two-action PLAN/RUN surface, read-only STATUS, copy-first

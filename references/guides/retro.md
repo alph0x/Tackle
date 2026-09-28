@@ -4,7 +4,7 @@ Triggered by `retro [initiative]` or a natural phrase like "retro" / "how did it
 is optional: run it at initiative close or on demand as a clearly labelled partial retro. It does
 not replace RUN closure or create an autonomy loop.
 
-**Principle: detection before judgment.** Mine `task-board.md` + `history.md` by grep/count first; use judgment only to distill the counts into lessons. For an unindexed archive, mining reads `history-archive.md` then `history.md` in a new workspace, or `log-archive.md` then `log.md` in a historical workspace. For indexed segments use the validated chronological archive index from `context-lifecycle.md`, then the active history; never count checkpoints or summaries as original events. Missing/corrupt history makes affected metrics unavailable, never zero. Read-only over the selected task board, history and `decisions.md`; writes go where [Where results go](#where-results-go) lists them, starting with `docs/plans/<initiative>/retro.md` (instantiated from `references/retro.tmpl.md`).
+**Principle: detection before judgment.** Mine `task-board.md` + `history.md` by grep/count first; use judgment only to distill the counts into lessons. For an unindexed archive, mining reads `history-archive.md` then `history.md`. For indexed segments use the validated chronological archive index from `context-lifecycle.md`, then the active history; never count checkpoints or summaries as original events. Missing/corrupt history makes affected metrics unavailable, never zero. Read-only over the selected task board, history and `decisions.md`; writes go where [Where results go](#where-results-go) lists them, starting with `docs/plans/<initiative>/retro.md` (instantiated from `references/retro.tmpl.md`).
 
 ## Metrics — mined, not remembered
 
@@ -14,7 +14,7 @@ Every metric carries a copy-paste recipe; the recipes live in the template's Met
 - **Attempts over budget** — count `attempt N:` journal lines per task in `history.md` against the attempt budget declared in the workspace `AGENTS.md`.
 - **Blocked durations** — dates between the log entry that marks a task Blocked (legacy ⏸) and the entry that unblocks it.
 - **Reopened tasks** — `Complete → In progress` or legacy `🟢 → 🟡` transitions in `history.md` (regression-sweep reopenings included).
-- **Comprehension debt** — tasks recorded Complete (legacy 🟢) with no human review recorded in the log: mechanically done, humanly unread. High comprehension debt is a warning even when the board is all green.
+- **Comprehension debt** — tasks recorded Complete with no human review recorded in the log: mechanically done, humanly unread. High comprehension debt is a warning even when the board is all green.
 - **Gate accuracy** — the gate recorded at intake vs actual effort (tasks executed, sessions spent): Full-gate initiatives closed in ≤ 2 sessions are over-planning candidates; Lite-gate ones spanning 3+ sessions are under-planning candidates.
 - **Exact-token coverage** — measured/eligible by metric and comparable scope, with `n/a` rows visible before any arithmetic.
 - **Coverage-gated totals** — cohort totals and rankings only after 100% comparable coverage; otherwise report labeled observations and suppress the aggregate.

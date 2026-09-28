@@ -20,12 +20,12 @@ def recipe():
 
 
 def fixture(root, count=10):
-    sources = ["board.md", "decisions.md", "questions.md", "contract.md", "points/P-01.md"]
+    sources = ["task-board.md", "decisions.md", "questions.md", "contract.md", "tasks/T-A.md"]
     for name, body in zip(sources, [
-        "P-01: Checking; failure F-old; cycles spent: 2/3\n",
+        "Schema: tackle-workspace/5\n\nT-A: Checking; failure F-old; cycles spent: 2/3\n",
         "D-01 (still binding): preserve customers' original bytes.\n",
-        "No pending decisions.\n", "R01: preserve bytes, including CRLF.\n",
-        "P-01 consumes R01; only declared files may change.\n",
+        "No pending decisions.\n", "RA: preserve bytes, including CRLF.\n",
+        "T-A consumes RA; only declared files may change.\n",
     ]):
         path = root / name
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -34,7 +34,7 @@ def fixture(root, count=10):
                (b"Failed F-old; spent cycles: 2/3; unresolved.\r\n" if n == 1 else
                 b"Completed task.\n") + b"Original detail: " + b"x" * 1024 + b"\n"
                for n in range(1, count + 1)]
-    (root / "log.md").write_bytes(b"# History\n\n" + b"".join(entries))
+    (root / "history.md").write_bytes(b"# History\n\n" + b"".join(entries))
     return sources, entries
 
 
@@ -46,26 +46,46 @@ class ContextTests(unittest.TestCase):
         self.sources, self.original = fixture(self.root)
         self.api = recipe()
         self.context = self.api["Context"](self.root)
-        self.scope = {"tasks": ["P-01"], "requirements": ["R01"], "milestone": "M1"}
+        self.scope = {"tasks": ["T-A"], "requirements": ["RA"], "milestone": "M1"}
 
     def projection(self):
         return self.context.project(self.scope, self.sources)
 
-    def test_v4_workspace_projects_and_exports_new_physical_names(self):
-        (self.root / "board.md").rename(self.root / "task-board.md")
-        (self.root / "log.md").rename(self.root / "history.md")
-        (self.root / "task-board.md").write_text("Schema: tackle-workspace/4\nT-01: Checking\n")
-        self.sources = ["task-board.md" if name == "board.md" else name for name in self.sources]
-        self.context = self.api["Context"](self.root)
+    def test_workspace_projects_and_exports_current_names(self):
         self.projection()
         self.assertTrue((self.root / "current-work.md").is_file())
-        self.assertFalse((self.root / "coordinator.md").exists())
         with tempfile.TemporaryDirectory() as temp:
             destination = Path(temp) / "handoff"
             self.context.export(self.scope, self.sources, destination, event_numbers=[1])
             self.assertTrue((destination / "handoff-brief.md").is_file())
-            self.assertFalse((destination / "HANDOFF.md").exists())
             self.assertEqual(self.api["Context"].verify_export(destination)["projection"]["last_event"], 10)
+
+    def test_an_older_workspace_path_is_refused(self):
+        for older in ("board.md", "log.md", "log-archive.md", "coordinator.md", "HANDOFF.md"):
+            with self.subTest(path=older):
+                (self.root / older).write_text("# Older\n")
+                with self.assertRaisesRegex(ValueError, "migrate first: older workspace path " + older):
+                    self.api["Context"](self.root)
+                (self.root / older).unlink()
+
+    def test_a_board_below_5_or_with_crlf_endings_is_refused_before_any_write(self):
+        for body in (b"Schema: tackle-workspace/4\n\nT-A: Checking\n", b"T-A: Checking\n",
+                     b"Schema: tackle-workspace/5\r\n\r\nT-A: Checking\r\n"):
+            with self.subTest(body=body):
+                (self.root / "task-board.md").write_bytes(body)
+                before = {p.name: p.read_bytes() for p in self.root.iterdir() if p.is_file()}
+                with self.assertRaisesRegex(ValueError, "migrate first: task-board.md has no tackle-workspace/5"):
+                    self.api["Context"](self.root).project(self.scope, self.sources)
+                self.assertEqual(before, {p.name: p.read_bytes() for p in self.root.iterdir() if p.is_file()})
+
+    def test_a_current_focused_workspace_is_not_refused(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "plan.md").write_text("Gate: Lite\n# Task\n")
+            (root / "resource-usage.md").write_text("# Resource usage\n")
+            (root / "history.md").write_bytes(b"# History\n\n" + self.original[0])
+            context = self.api["Context"](root)
+            self.assertEqual(context.history(), b"# History\n\n" + self.original[0])
 
     def test_projection_is_verified_and_status_is_read_only(self):
         self.projection()
@@ -77,7 +97,7 @@ class ContextTests(unittest.TestCase):
 
     def test_contract_change_rejects_stale_checkpoint(self):
         self.projection()
-        (self.root / "contract.md").write_text("R01 changed materially.\n")
+        (self.root / "contract.md").write_text("RA changed materially.\n")
         with self.assertRaisesRegex(ValueError, "stale"):
             self.context.current(self.scope, self.sources)
 
@@ -89,9 +109,9 @@ class ContextTests(unittest.TestCase):
                 self.context.current(scope, sources)
 
     def test_new_event_reopened_task_and_new_blocker_invalidate(self):
-        for path, value in [("board.md", "P-01 reopened\n"),
+        for path, value in [("task-board.md", "T-A reopened\n"),
                             ("questions.md", "Q-03: blocked on product decision\n"),
-                            ("log.md", "## 2026-09-02 · session 11 · interrupted\n")]:
+                            ("history.md", "## 2026-09-02 · session 11 · interrupted\n")]:
             self.projection()
             with (self.root / path).open("a") as stream:
                 stream.write(value)
@@ -99,12 +119,12 @@ class ContextTests(unittest.TestCase):
                 self.context.current(self.scope, self.sources)
 
     def test_archive_preserves_original_bytes_order_and_failure_lineage(self):
-        before = (self.root / "log.md").read_bytes()
+        before = (self.root / "history.md").read_bytes()
         self.context.archive(keep=5, segment_bytes=2500)
         self.assertEqual(self.context.history(), before)
         self.assertEqual(self.context.event(1), self.original[0])
         self.assertIn(b"spent cycles: 2/3", self.context.event(1))
-        self.assertEqual(len(self.context.events((self.root / "log.md").read_bytes())[1]), 5)
+        self.assertEqual(len(self.context.events((self.root / "history.md").read_bytes())[1]), 5)
         self.projection()
         self.assertIn("still binding", self.context.current(self.scope, self.sources)["sources"]["decisions.md"])
 
@@ -128,7 +148,7 @@ class ContextTests(unittest.TestCase):
             with self.subTest(phase=phase), tempfile.TemporaryDirectory() as temp:
                 root = Path(temp)
                 fixture(root)
-                before = (root / "log.md").read_bytes()
+                before = (root / "history.md").read_bytes()
                 context = self.api["Context"](root)
                 with self.assertRaisesRegex(RuntimeError, "injected interruption"):
                     context.archive(fail_after=phase)
@@ -144,12 +164,12 @@ class ContextTests(unittest.TestCase):
     def test_recovery_refuses_to_overwrite_uncoordinated_append(self):
         with self.assertRaises(RuntimeError):
             self.context.archive(fail_after="index")
-        with (self.root / "log.md").open("ab") as stream:
+        with (self.root / "history.md").open("ab") as stream:
             stream.write(b"\nUncoordinated append\n")
-        before = (self.root / "log.md").read_bytes()
+        before = (self.root / "history.md").read_bytes()
         with self.assertRaisesRegex(ValueError, "changed during maintenance"):
             self.context.recover()
-        self.assertEqual((self.root / "log.md").read_bytes(), before)
+        self.assertEqual((self.root / "history.md").read_bytes(), before)
 
     def test_single_writer_lock_covers_archive_and_projection(self):
         with self.context.writer():
@@ -162,17 +182,17 @@ class ContextTests(unittest.TestCase):
         effect = self.root / "delivered.txt"
         effect.write_text("once")
         self.projection()
-        (self.root / "board.md").write_text("P-01: Checking; completion update interrupted\n")
+        (self.root / "task-board.md").write_text("T-A: Checking; completion update interrupted\n")
         with self.assertRaisesRegex(ValueError, "stale"):
             self.context.current(self.scope, self.sources)
         self.assertEqual(effect.read_text(), "once")
         self.projection()
-        self.assertIn("Checking", self.context.current(self.scope, self.sources)["sources"]["board.md"])
+        self.assertIn("Checking", self.context.current(self.scope, self.sources)["sources"]["task-board.md"])
         self.assertEqual(effect.read_text(), "once")
 
     def test_current_projection_cannot_be_tampered_into_success(self):
         self.projection()
-        path = self.root / "coordinator.md"
+        path = self.root / "current-work.md"
         path.write_text(path.read_text().replace("Checking", "Complete"))
         with self.assertRaisesRegex(ValueError, "projection source mismatch"):
             self.context.current(self.scope, self.sources)
@@ -191,25 +211,25 @@ class ContextTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "export inventory"):
                 self.api["Context"].verify_export(destination)
 
-    def test_legacy_archive_is_preserved_and_explicitly_adopted(self):
+    def test_existing_archive_is_preserved_and_explicitly_adopted(self):
         original = "## 2026-08-01 · session 0 · earlier\nLegacy original\n".encode()
-        (self.root / "log-archive.md").write_bytes(original)
+        (self.root / "history-archive.md").write_bytes(original)
         self.projection()
-        self.assertEqual((self.root / "log-archive.md").read_bytes(), original)
+        self.assertEqual((self.root / "history-archive.md").read_bytes(), original)
         self.context.archive()
         self.assertTrue(self.context.history().endswith(b"".join(self.original)))
         self.assertEqual(self.context.event(1), original)
-        self.assertEqual((self.root / "log-archive.md").read_bytes(), original)
+        self.assertEqual((self.root / "history-archive.md").read_bytes(), original)
 
     def test_invalid_archive_policy_and_path_escape_fail_without_source_change(self):
-        before = (self.root / "log.md").read_bytes()
+        before = (self.root / "history.md").read_bytes()
         for keep in [0, -1, True]:
             with self.assertRaises(ValueError):
                 self.context.archive(keep=keep)
         for name in ["../outside.md", "/tmp/outside.md"]:
             with self.assertRaises(ValueError):
                 self.context.project(self.scope, self.sources + [name])
-        self.assertEqual((self.root / "log.md").read_bytes(), before)
+        self.assertEqual((self.root / "history.md").read_bytes(), before)
 
     def test_original_heading_lookup_and_unknown_event(self):
         self.context.archive()
@@ -219,7 +239,7 @@ class ContextTests(unittest.TestCase):
 
     def test_completion_event_retry_is_idempotent_and_wrong_head_blocks(self):
         projection = self.projection()
-        data = b"## 2026-09-02 - session 11 - checked closure\nTask P-01 Complete; record observed.\n"
+        data = b"## 2026-09-02 - session 11 - checked closure\nTask T-A Complete; record observed.\n"
         args = (data, projection["last_event"], projection["last_event_revision"])
         self.assertTrue(self.context.append_event(*args))
         self.assertFalse(self.context.append_event(*args))
@@ -236,11 +256,11 @@ class ContextTests(unittest.TestCase):
         path.write_bytes(self.api["document"]("Pending history maintenance", transaction))
         with self.assertRaises(ValueError):
             self.context.recover()
-        self.assertEqual((self.root / "log.md").read_bytes(), b"# History\n\n" + b"".join(self.original))
+        self.assertEqual((self.root / "history.md").read_bytes(), b"# History\n\n" + b"".join(self.original))
 
     def test_out_of_order_archive_boundary_is_rejected(self):
         self.context.archive()
-        path = self.root / "log.md"
+        path = self.root / "history.md"
         path.write_bytes(path.read_bytes().replace(b"2026-09-01", b"2026-08-01"))
         with self.assertRaisesRegex(ValueError, "history out of order"):
             self.projection()
@@ -256,12 +276,12 @@ class ContextTests(unittest.TestCase):
 
     def test_failed_completion_event_publish_preserves_exact_old_event(self):
         projection = self.projection()
-        original = (self.root / "log.md").read_bytes()
+        original = (self.root / "history.md").read_bytes()
         event = b"## 2026-09-02 - session 11 - checked closure\nVerified result\n"
         with mock.patch.object(self.api["os"], "replace", side_effect=OSError("disk failure")):
             with self.assertRaises(OSError):
                 self.context.append_event(event, 10, projection["last_event_revision"])
-        self.assertEqual((self.root / "log.md").read_bytes(), original)
+        self.assertEqual((self.root / "history.md").read_bytes(), original)
         self.assertTrue(self.context.append_event(event, 10, projection["last_event_revision"]))
 
     def test_handoff_carries_checked_record_bundle_without_original_store(self):
@@ -284,7 +304,7 @@ class ContextTests(unittest.TestCase):
             child = subprocess.run([sys.executable, "-c", command, str(record.parent), record.name, str(exported)],
                                    cwd=runtime, capture_output=True, text=True)
             self.assertEqual(child.returncode, 0, child.stderr)
-            with (self.root / "board.md").open("a") as stream:
+            with (self.root / "task-board.md").open("a") as stream:
                 stream.write("Required record: evidence/" + record.name + "/result.json\n")
             self.projection()
             handoff = runtime / "handoff"
@@ -328,7 +348,7 @@ class ContextTests(unittest.TestCase):
                 self.context.export(self.scope, self.sources, Path(temp) / "later", event_numbers=[11])
             def current_with_external_change(scope, sources):
                 current = original_current(scope, sources)
-                (self.root / "board.md").write_text("P-01 reopened by source owner\n")
+                (self.root / "task-board.md").write_text("T-A reopened by source owner\n")
                 return current
             with mock.patch.object(self.context, "current", current_with_external_change):
                 with self.assertRaisesRegex(ValueError, "sources changed during handoff"):
@@ -340,9 +360,9 @@ class ContextTests(unittest.TestCase):
             destination = Path(temp) / "handoff"
             self.context.export(self.scope, self.sources, destination)
             bundle = self.api["Context"](destination)
-            value = self.api["decode"]((destination / "HANDOFF.md").read_bytes())
-            value["sources"]["board.md"] = "P-01 Complete (invented)"
-            bundle.write("HANDOFF.md", self.api["document"]("Portable current work", value))
+            value = self.api["decode"]((destination / "handoff-brief.md").read_bytes())
+            value["sources"]["task-board.md"] = "T-A Complete (invented)"
+            bundle.write("handoff-brief.md", self.api["document"]("Portable current work", value))
             bundle.write("inventory.md", self.api["document"]("Handoff inventory", bundle.file_inventory()))
             with self.assertRaisesRegex(ValueError, "source text/revision mismatch"):
                 self.api["Context"].verify_export(destination)

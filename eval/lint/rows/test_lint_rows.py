@@ -48,7 +48,7 @@ def awk_variants():
     return variants
 
 
-def brief(identity, kind='standard', fields=True, effort='- **Effort**: high', depends='none',
+def brief(identity, kind='standard', fields=True, effort='- **Effort**: low', depends='none',
           scope=None, clause_sha=None, clause_id='C01'):
     text = TEMPLATE.read_text().replace('T-0N', identity).replace('t-0n', identity.lower())
     if clause_sha:
@@ -123,13 +123,10 @@ FAILS = [
     ('fail-2', 'pass-full', 2, 'missing brief: tasks/T-03.md', 'FAIL'),
     ('fail-2b', 'pass-full', 2, 'mixed board identity: P-07', 'FAIL'),
     ('fail-2c', 'pass-full', 2, 'unresolved: T-09', 'FAIL'),
-    ('fail-2-legacy', 'pass-legacy', 2, 'unresolved: P-09', 'FAIL'),
     ('fail-3', 'pass-full', 3, 'bad status', 'FAIL'),
-    ('fail-3-legacy', 'pass-legacy', 3, 'bad status', 'FAIL'),
     ('fail-4', 'pass-full', 4, 'malformed', 'FAIL'),
     ('fail-4b', 'pass-full', 4, 'stale: decisions.md:1', 'FAIL'),
     ('fail-5', 'pass-full', 5, 'duplicated Status declaration', 'FAIL'),
-    ('fail-5-legacy', 'pass-legacy', 5, 'P-02.md', 'FAIL'),
     ('fail-6', 'pass-full', 6, 'out of order', 'FAIL'),
     ('fail-6b', 'pass-full', 6, 'archive newer than log oldest', 'FAIL'),
     ('fail-7', 'pass-full', 7, 'superseded seal: D-02', 'FAIL'),
@@ -141,32 +138,25 @@ FAILS = [
     ('fail-9c', 'pass-full', 9, 'experiment task missing metric fields', 'FAIL'),
     ('fail-9d', 'pass-full', 9, 'experiment task missing metric fields', 'FAIL'),
     ('fail-10', 'pass-full', 10, 'terminal task without verification reference', 'FAIL'),
-    ('fail-10-legacy', 'pass-legacy', 10, 'done/blocked row without grade', 'FAIL'),
     ('fail-11', 'pass-full', 11, 'done task without usage row: T-01', 'FAIL'),
-    ('fail-11-legacy', 'pass-legacy', 11, 'done point without usage row: P-01', 'FAIL'),
     ('fail-12', 'pass-full', 12, 'inherit', 'FAIL'),
     ('fail-12b', 'pass-full', 12, 'extreme', 'FAIL'),
     ('fail-13', 'pass-full', 13, 'over archive threshold', 'WARN'),
     ('fail-14', 'pass-full', 14, 'done task without closure report: T-02', 'FAIL'),
     ('fail-14b', 'pass-full', 14, 'done task without closure report: T-02', 'FAIL'),
-    ('fail-14-legacy', 'pass-legacy', 14, 'done task without closure report: P-03', 'FAIL'),
     ('fail-15', 'pass-full', 15, 'stale reference-doc', 'WARN'),
     ('fail-16', 'pass-full', 16, 'duplicate start', 'FAIL'),
     ('fail-16b', 'pass-full', 16, 'unknown Event', 'FAIL'),
-    # /5 cases. C2: the token stays invalid on /4 (row 3 unchanged).
-    ('fail-3-waiting-v4', 'pass-full', 3, 'bad status', 'FAIL'),
-    # C3: an uncited Ready to run row on /5 fails row 10's new citation check.
+    # /5 cases. C3: an uncited Ready to run row fails row 10's citation check.
     ('fail-10-uncited-ready-v5', 'pass-full-5', 10, 'ready-to-run task missing ready citation', 'FAIL'),
     # C4: two /5 workspaces, one In progress and the other Waiting on owner, with colliding scope.
     ('fail-8-waiting-v5', 'pass-full-5', 8, 'collision', 'WARN'),
     # C5: a /5 workspace whose brief declares Status: (row 5 forbids it outside board.md).
     ('fail-5-status-in-brief-v5', 'pass-full-5', 5, 'duplicated Status declaration', 'FAIL'),
 ]
-PASSES = [('pass-full', None), ('pass-lite', None), ('pass-legacy', None), ('pass-legacy-legend', 'pass-legacy'),
+PASSES = [('pass-full', None), ('pass-lite', None),
           # C1: a full /5 workspace covering all ten states, a cited Ready row and a waiting: row.
-          ('pass-full-5', None),
-          # Regression guard: a /4 board's Ready to run row stays uncited-tolerant (row 10 is /5-only).
-          ('pass-v4-ready-pending', 'pass-full')]
+          ('pass-full-5', None)]
 
 
 def materialize(root, name, base=None):
@@ -252,7 +242,7 @@ class LintRowTests(unittest.TestCase):
                     self.assertEqual(len(cells), 5, 'GFM splits this row into %d cells' % (len(cells) - 2))
 
     def test_status_rows_share_the_header_extractor(self):
-        for number in (3, 8, 10, 11, 14):
+        for number in (3, 8, 10, 11, 12, 14):
             with self.subTest(row=number):
                 self.assertIn(EXTRACTOR.encode(), rows()[number]['command'])
 

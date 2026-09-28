@@ -1268,7 +1268,6 @@
       "home_fragment": "deduplicate against everything seen",
       "units": [],
       "mirrors": [
-        "references/point.tmpl.md:41",
         "references/guides/decompose-and-lint.md:31"
       ],
       "class": "behavioral",
@@ -1816,15 +1815,15 @@
     },
     {
       "rule_id": "R-STATE-01",
-      "statement": "New workspaces use T-ids and tasks/; existing P-ids, paths and historical records remain readable.",
-      "statement_sha256": "45a4dbe9f81bd9c501f702047096da1420d713bcee8bf73a91ae8120dd3b1248",
+      "statement": "A workspace runs only on the current layout: a tackle-workspace/5 board with T-ids and tasks/, or a Focused plan; an older one is refused with migrate first until migration moves it forward.",
+      "statement_sha256": "e68637537f6cd1a459cf676007a709f0606ca77f1e045061552f188c97e27a96",
       "home": "SKILL.md:52",
-      "home_fragment": "New workspaces use T-ids and `tasks/`",
+      "home_fragment": "A workspace runs only on the current layout",
       "units": [
-        "New workspaces use T-ids and `tasks/`; existing "
+        "A workspace runs only on the current layout: a `"
       ],
       "mirrors": [],
-      "class": "format",
+      "class": "behavioral",
       "hot_path": true,
       "origin": {
         "added_in": "8.4.0",
@@ -1906,12 +1905,12 @@
       "statement_sha256": "7d648b5ac45bc2fb19197cfab1ecd45526cf1d57b60673aefe9f07aa717af23f",
       "home": "SKILL.md:53",
       "home_fragment": "Historical E0–E3 codes",
-      "units": [
-        "Historical E0–E3 codes remain readable, never an"
+      "units": [],
+      "mirrors": [
+        "references/guides/run.md:164"
       ],
-      "mirrors": [],
       "class": "format",
-      "hot_path": true,
+      "hot_path": false,
       "origin": {
         "added_in": "8.0.0",
         "trigger": "CHANGELOG 8.0.0: migration preserves historical grades.",
@@ -1923,7 +1922,8 @@
         "cohort_id": null,
         "as_of": "2026-09-24"
       },
-      "historical": []
+      "historical": [],
+      "retired_in": "9.0.0"
     },
     {
       "rule_id": "R-STATE-05",

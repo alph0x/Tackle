@@ -1,4 +1,4 @@
-# Terminology and compatibility
+# Terminology
 
 A repository contains initiatives. Each initiative has an objective, a plan and tasks. A run
 executes authorized tasks and produces a deliverable. Checks produce verification records that
@@ -14,25 +14,25 @@ not require another agent or prove independence.
 | Canonical visible name | Historical name / stable identifier | Meaning and choice |
 |---|---|---|
 | Initiative, repository, workspace, plan | unchanged | Distinct objective, containing project, working directory and intended work. |
-| Task / task brief | Point / Point briefing; legacy `P-01`, `points/`, `point.tmpl.md` | New work uses `T-01`, `tasks/`, `task.tmpl.md` and `resource-usage.tmpl.md`; retain historical IDs, paths and `usage.tmpl.md` for reading. |
-| Task board | Board; historical `board.md` | New `task-board.md` is canonical current task state; old boards stay readable. |
-| History | Log; historical `log.md`, `log-archive.md` | New `history.md` and optional `history-archive.md` preserve ordered events. |
-| Current work / checkpoint | Coordinator continuity; historical `coordinator.md` | New `current-work.md` is a verified disposable projection. |
-| Handoff brief | Handoff; historical `HANDOFF.md` | New `handoff-brief.md` carries portable context and required records. |
+| Task / task brief | Point / Point briefing | Work uses `T-` ids, `tasks/`, `task.tmpl.md` and `resource-usage.tmpl.md`; an older `P-` workspace is migrated before it runs. |
+| Task board | Board | `task-board.md` is canonical current task state; it declares `Schema: tackle-workspace/5`. |
+| History | Log | `history.md` and optional `history-archive.md` preserve ordered events. |
+| Current work / checkpoint | Coordinator continuity | `current-work.md` is a verified disposable projection. |
+| Handoff brief | Handoff | `handoff-brief.md` carries portable context and required records. |
 | Requirement / criterion / contract clause | unchanged | Required behavior / acceptance statement / selected invariant with source revision. |
-| Acceptance check | Done-signal; legacy `Done-signal` and `Run` fields | Command or defined review procedure; retain reader aliases. |
+| Acceptance check | Done-signal | Command or defined review procedure; briefs name it `Acceptance check`. |
 | Task check | Target check | Observes the task's intended behavior. |
 | Related regression check | Surround check | Observes affected surrounding behavior. |
 | Deliverable acceptance | Global acceptance | Checks final integrated outputs and all mandatory delivery obligations. |
-| Write scope | Touches | Complete permitted write set; readers accept both labels. |
+| Write scope | Touches | Complete permitted write set; briefs name it `Write scope`. |
 | Reference verification | Grounding | Verifies that sources support claims, including current fingerprints and historical citations. |
-| Verification records | Evidence; historical `evidence/` | New `verification-records/` stores preserved results and inputs; old paths remain valid. |
+| Verification records | Evidence | `verification-records/` stores preserved results and inputs. |
 | Check summary / raw check record | Receipt / observation | Readable index / original captured event. An execution remains a distinct event. |
 | Open question / pending decision / blocker | historically mixed in questions | Information request / unresolved choice / condition preventing affected work. Do not conflate them. |
 | Backlog idea | Seed; `docs/seeds/` | Deliberately deferred work, with the same gitignore decision as plans. |
 | Reference plan | Archetype; `.tackle/archetypes/` / `~/.tackle/archetypes/` | Reusable proven structure, not an obligation to copy it. |
 | Preferences and lessons | Profile; existing profile paths | Applicable preferences, directives and hypotheses with consent-controlled writes. |
-| Resource usage | Usage; historical `usage.md`; `tackle-observability/2` schema | New `resource-usage.md` and optional `resource-usage.telemetry.jsonl` hold observed lifecycle and resource information; old sidecar paths remain readable; unknown remains `n/a`. |
+| Resource usage | Usage; `tackle-observability/2` schema | `resource-usage.md` and optional `resource-usage.telemetry.jsonl` hold observed lifecycle and resource information; unknown remains `n/a`. |
 | Executor | Driver / Executor | Implements authorized work. |
 | Coordinator | unchanged | Owns shared state, dependencies and deliverable acceptance. |
 | Reviewer / verifier / auditor | Reviewer or Quality Guardian / Checker, Verifier or Spec Reader / Judge or Red-Teamer | Semantic assessment / actual checks / explicit finished-work audit. Keep responsibilities distinct. |
@@ -68,7 +68,7 @@ never a current one. `list`, `next` and plain `resume` are current STATUS reques
 | `handoff` | STATUS `--handoff` |
 
 The [RUN card](guides/run-card.md) has the full state-transition table (entries, exits and
-triggers); the States table below keeps only the visible names and legacy mappings.
+triggers); the States table below keeps only the visible names and the migration's mapping of older values.
 
 **The card** is context-dependent: the PLAN card (`guides/plan-card.md`) in a PLAN-side guide, the
 RUN card (`guides/run-card.md`) in a RUN-side guide. The **RUN chain** is the mandatory reading of
@@ -85,6 +85,9 @@ mandatory task obligation, not merely implementation. Initiative completion addi
 deliverable acceptance. Blocked, Interrupted, Skipped and Unverifiable remain distinct. On `/5`
 boards, Waiting on owner means progress needs an owner action, and it differs from Blocked.
 
+No current board holds an older value. The [migration](guides/migrate.md#migration-steps) maps an
+older board's values as this table shows, and the mapping never adds evidence.
+
 | Historical value | Read/display mapping | What it does not establish |
 |---|---|---|
 | `🔴` not started | Draft; Ready to run only with current readiness evidence | Readiness cannot be inferred from color. |
@@ -99,24 +102,21 @@ boards, Waiting on owner means progress needs an owner action, and it differs fr
 
 Check-event states stay exact: started/incomplete, observed exit/timeout/signal, accepted or
 rejected child result. Child acceptance is not semantic approval. Describe verification by method
-(command/review/audit), result and **observed** independence. E0–E3 remain readable historical codes:
-E0 unverifiable, E1 independently command verified, E2 named review gate, E3 asserted. They are not
-an ordinal quality scale. Renaming evidence never upgrades it or invents a reviewer.
+(command/review/audit), result and **observed** independence. Renaming evidence never upgrades it or
+invents a reviewer.
 
 ## Files, fields and adoption
 
-Keep one authoritative file for each fact. New workspaces use T-ids, `tasks/`, `task-board.md`,
-`history.md` and `resource-usage.md`; existing P-ids, paths, D-ids, Q-ids, raw-record fields, lifecycle columns and documented anchors remain valid for historical reading. New briefs use Write scope,
-Acceptance check, Task check and Related regression check; readers accept their old aliases.
+Keep one authoritative file for each fact. Workspaces use T-ids, `tasks/`, `task-board.md`,
+`history.md` and `resource-usage.md`; existing D-ids, Q-ids, raw-record fields and documented anchors remain valid. Briefs use Write scope,
+Acceptance check, Task check and Related regression check; readers accept no older field name.
 Legacy section anchors have explicit HTML aliases where a heading changes. Existing schema tokens
 are never translated for a localized conversation. Do not renumber a historical task, duplicate an
 identity, or reset authorization/correction lineage to adopt terminology. A selected migration uses
 a reversible copy and explicit P→T mapping.
 
-Use new board schema only in validated new workspaces or selected copy-first migrations.
-[Migration](guides/migrate.md#candidate-workspace-format) preserves history and reversible mapping.
-An unchanged old workspace stays readable under its pinned procedure; no automatic migration of
-closed or unrelated work. New schema names are English. Long-context and record-store metadata
-are optional capability-specific additions, not prerequisites for Direct or Focused work. The
-install's [read-compatibility promise](guides/migrate.md#read-compatibility-promise) bounds which
-bucket a workspace must reach before an offered migration.
+A Coordinated workspace runs only on a `tackle-workspace/5` board, and a Focused one only on
+`history.md` and `resource-usage.md`; an older workspace is refused until a selected, copy-first
+[migration](guides/migrate.md#forward-only) adopts it, preserving history and reversible mapping.
+Closed or unrelated work is never migrated automatically. New schema names are English. Long-context and record-store metadata
+are optional capability-specific additions, not prerequisites for Direct or Focused work.

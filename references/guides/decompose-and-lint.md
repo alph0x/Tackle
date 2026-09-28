@@ -6,7 +6,7 @@ The card's steps 5 and 6 link here for the decomposition and lint procedure in f
 - Skeleton board first: T-0N / What / Depends-on / Write scope / acceptance check. Existing P workspaces keep their IDs.
 - Then compile sufficient task briefs for the selected readiness scope.
 - Cut for parallelism using crossing artifacts, interfaces, and configuration consumers; disjoint
-  `Write scope` (legacy `Touches`) alone do not establish semantic independence. Name every produced/consumed artifact
+  `Write scope` alone do not establish semantic independence. Name every produced/consumed artifact
   and relevant invalidation edge.
 - Decompose to the fewest tasks, each with a qualifying reason to stay separate (the [PLAN
   card](plan-card.md)'s step 5 names the five reasons); each separate task's briefing names its own.
@@ -54,7 +54,7 @@ is still over-decomposed. A task with no qualifying reason folds into its parent
 item or acceptance criterion, and the template's `Why separate` column names the reason that
 survives, or `—` for a single-task plan.
 
-- If a task's `Write scope` (legacy `Touches`) are a subset of another task's and their acceptance checks run together, merge them.
+- If a task's `Write scope` are a subset of another task's and their acceptance checks run together, merge them.
 - Re-apply the **risk precedence** from `intake-and-gate.md` before right-sizing: a public API,
   multi-module change, multi-session/team work, or expected handoff stays **Full** even when
   Tasks are merged into a small count. Only an actually removed trigger permits re-sizing.
@@ -124,17 +124,17 @@ import re
 
 
 def task_fields(text):
-    aliases = {'Touches': 'Write scope', 'Done-signal': 'Acceptance check',
-               'Run': 'Acceptance check', 'Target check': 'Task check',
-               'Surround check': 'Related regression check'}
+    retired = {'Touches', 'Done-signal', 'Run', 'Target check', 'Surround check'}
     fields = {}
     for line in text.splitlines():
         match = re.fullmatch(r'\s*(?:-\s*)?\*\*([^*:]+)(?:\*\*\s*:|:\*\*)\s*(.*?)\s*', line)
         if not match:
             continue
-        key = aliases.get(match[1], match[1])
+        key = match[1]
+        if key in retired:
+            raise ValueError('migrate first: retired field name ' + key + ' (references/guides/migrate.md#forward-only)')
         if key in fields and fields[key] != match[2]:
-            raise ValueError('conflicting field aliases: ' + key)
+            raise ValueError('conflicting field values: ' + key)
         fields[key] = match[2]
     return fields
 
@@ -143,7 +143,7 @@ def prepare_tasks(requirements, tasks, selected, available, fingerprints, delive
     identities = [task['id'] for task in tasks]
     if len(set(identities)) != len(identities) or not identities:
         raise ValueError('duplicate or empty task identities')
-    if any(not re.fullmatch(r'[PT]-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*', identity) for identity in identities):
+    if any(not re.fullmatch(r'T-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*', identity) for identity in identities):
         raise ValueError('invalid stable task identity')
     by_id = dict(zip(identities, tasks))
     if len(requirements) != len(set(requirements)) or not requirements:

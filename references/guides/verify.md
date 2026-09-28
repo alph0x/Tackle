@@ -61,19 +61,19 @@ For each prepared task in `plan.md`'s task decomposition / `task-board.md`, and 
    file existence or keywords alone never satisfy either gate.
 5. **Dependency sanity** — confirm `Depends-on` resolves to an actual task and is not aspirational;
    reject missing identities, duplicate identities and dependency cycles; verify that produced interfaces/revisions match the consumers, not merely that a file exists. Derive independence from crossing artifacts, interfaces, and configuration consumers rather than
-   disjoint `Write scope` (legacy `Touches`); flag any edge that names no **crossing artifact** (the concrete output of the
+   disjoint `Write scope`; flag any edge that names no **crossing artifact** (the concrete output of the
    upstream task the downstream task consumes — a file, a section, a schema, a protocol). A
    legitimate ordering-only edge is recorded as a `D-xx` scheduling choice; false edges get cut.
-6. **Plan-vs-code drift** — compare the task's claimed `Write scope` (legacy `Touches`) and Goal against the current repo; flag if the code already implements it (stale task) or if the described change does not match any touched file.
+6. **Plan-vs-code drift** — compare the task's claimed `Write scope` and Goal against the current repo; flag if the code already implements it (stale task) or if the described change does not match any touched file.
 7. **Agnosticism / Harness-agnostic check** — confirm the plan remains harness-agnostic: no harness-specific commands (e.g. `/command`, `@mention`, `.claude/`), no model brand names (e.g. `Claude`, `GPT`, `Opus`), and no vendor-specific file paths unless the task is explicitly about that harness. Flag violations as drift.
-8. <a id="step-8--seal-integrity"></a>**Seal integrity** — mechanical: every `SEALED: D-xx` id found in the workspace resolves to a decision heading in `decisions.md` that is not marked superseded (lint row 7; a missing or superseded id is a HIGH finding); a sealed section edited with no superseding `SEALED: D-yy supersedes D-xx` marker is a HIGH finding. Every compiled clause hash recorded in `tasks/` or legacy `points/` must still match its clause in `design-contract.md`, where a clause runs from its `## <id>` heading through the line before the next `## ` heading or `<a id=` line, each line ending in one newline. The command below reads the first `sha256` of each compiled-clause bullet outside fenced code. It prints `seal drift` for an edit made after compilation (HIGH), `malformed clause hash` for a recorded value that is not 64 lowercase hex digits (HIGH), and `unresolved clause source` for an id with no heading there (MEDIUM until the brief's recorded source is checked); it exits 1 when it prints anything.
+8. <a id="step-8--seal-integrity"></a>**Seal integrity** — mechanical: every `SEALED: D-xx` id found in the workspace resolves to a decision heading in `decisions.md` that is not marked superseded (lint row 7; a missing or superseded id is a HIGH finding); a sealed section edited with no superseding `SEALED: D-yy supersedes D-xx` marker is a HIGH finding. Every compiled clause hash recorded in `tasks/` must still match its clause in `design-contract.md`, where a clause runs from its `## <id>` heading through the line before the next `## ` heading or `<a id=` line, each line ending in one newline. The command below reads the first `sha256` of each compiled-clause bullet outside fenced code. It prints `seal drift` for an edit made after compilation (HIGH), `malformed clause hash` for a recorded value that is not 64 lowercase hex digits (HIGH), and `unresolved clause source` for an id with no heading there (MEDIUM until the brief's recorded source is checked); it exits 1 when it prints anything.
    <a id="seal-integrity-command"></a>
 
    ```sh
    ws=docs/plans/<slug>
    if command -v sha256sum >/dev/null 2>&1; then sum=sha256sum; else sum='shasum -a 256'; fi
    status=0
-   for f in "$ws"/tasks/*.md "$ws"/points/*.md; do
+   for f in "$ws"/tasks/*.md; do
      [ -f "$f" ] || continue
      for entry in $(awk '/^```/ {fence = !fence; next} !fence && /^[[:space:]]*[-*+][[:space:]]+[*][*][^*[:space:]]+ · .* · sha256 `[^`]*`[*][*]/ {id=$0; sub(/^[[:space:]]*[-*+][[:space:]]+[*][*]/, "", id); sub(/[[:space:]].*/, "", id); h=substr($0, index($0, "sha256 `") + 8); sub(/`.*/, "", h); if (length(h) != 64 || h ~ /[^0-9a-f]/) h = "malformed"; print id "=" h}' "$f"); do
        id=${entry%%=*}; recorded=${entry#*=}
@@ -88,15 +88,15 @@ For each prepared task in `plan.md`'s task decomposition / `task-board.md`, and 
    done
    exit "$status"
    ```
-9. **Regression sweep computability** — confirm the task declares `Write scope` (legacy `Touches`) precisely enough that the sweep set (Complete tasks on v3/v4 boards, or legacy 🟢 tasks, with intersecting Write scope) is derivable mechanically (grep over the selected board + `tasks/`, or legacy `points/`); flag missing or vague `Write scope` (legacy `Touches`).
-10. **Verification derivation** — on v3/v4 boards, inspect the referenced report and raw records for actual method, result, revisions and observed independence; missing/failed/stale required records block acceptance. For legacy boards, for every historical `board.md` row carrying a Confidence grade, re-derive the grade from its closure evidence (closure report section 4; Focused/Lite gate: the selected history evidence block): command + output + exit line from the independent checker ⇒ E1; a review-gate marker with rubric + named reviewer ⇒ E2; an explicit UNVERIFIABLE label ⇒ E0; anything else ⇒ E3. A declared grade that doesn't match derivation is a grade-inflation finding — HIGH, mechanically checkable.
+9. **Regression sweep computability** — confirm the task declares `Write scope` precisely enough that the sweep set (Complete tasks with intersecting Write scope) is derivable mechanically (grep over the board + `tasks/`); flag missing or vague `Write scope`.
+10. **Verification derivation** — inspect the report each terminal board row references and its raw records for actual method, result, revisions and observed independence; missing/failed/stale required records block acceptance.
 
 Classify every finding with a certainty level:
 
 - **HIGH** — mechanically confirmed (file missing, citation unread, command not runnable). Safe to block on.
   - Examples: a cited **file does not exist** (e.g. `src/foo.ts:42`); the acceptance check command returns exit code 1; `Depends-on: T-99` references a non-existent task.
 - **MEDIUM** — likely true, needs one extra check before blocking.
-  - Examples: the task claims "X never happens" but a grep finds one counter-example; the `Write scope` (legacy `Touches`) list omits a file the Goal clearly modifies; a `Depends-on: T-03` line names the upstream task but no crossing artifact, and no `D-xx` waiver records it as ordering-only.
+  - Examples: the task claims "X never happens" but a grep finds one counter-example; the `Write scope` list omits a file the Goal clearly modifies; a `Depends-on: T-0N` line names the upstream task but no crossing artifact, and no `D-xx` waiver records it as ordering-only.
 - **LOW** — possible, needs human judgment.
   - Examples: a variable name feels inconsistent with project convention; a prose description could be read two ways but the code is probably correct.
 

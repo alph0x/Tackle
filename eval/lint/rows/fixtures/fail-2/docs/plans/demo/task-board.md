@@ -1,6 +1,6 @@
 # Task board — demo
 
-Schema: tackle-workspace/4
+Schema: tackle-workspace/5
 
 The Status column sits last on purpose: rows read it by its header.
 

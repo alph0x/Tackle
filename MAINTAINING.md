@@ -1,13 +1,13 @@
 # Maintaining Tackle
 
 This file documents Tackle's own release process: the release sweep, the eight self-lint
-gates, the D-13 deletion gate, and the byte-identity promise for the five legacy templates.
+gates, the deletion gate, and the one migration bridge.
 It does not ship with the installed skill (`SKILL.md` plus `references/`).
 
-## Legacy templates
+## Migration bridge
 
-Old `point.tmpl.md`, `usage.tmpl.md`, `board.tmpl.md`, `log.tmpl.md` and `coordinator.tmpl.md`
-remain byte-identical.
+The installed skill reads only the current workspace layout. The migration guide, its recipes and
+`eval/migration/` stay the one bridge: they keep detecting and transforming every older schema.
 
 ## Release sweep
 

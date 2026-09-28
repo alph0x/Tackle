@@ -28,7 +28,9 @@ class TaskIdentityTests(unittest.TestCase):
 
     def fixture(self, identity="T-01", directory="tasks", status="Draft", dependency="none"):
         self.write("plan.md", "# Plan\n\n## 5. Task decomposition\n| Task | Responsibility |\n|---|---|\n| " + identity + " | Work |\n")
-        self.write("board.md", "Schema: tackle-workspace/3\n\n| Task | What | Brief | Depends on | Status | Verification |\n|---|---|---|---|---|---|\n| " + identity + " | Work | " + directory + "/" + identity + ".md | " + dependency + " | " + status + " | pending |\n")
+        self.write("history.md", "# History\n\n## 2026-09-24 s1\n")
+        self.write("resource-usage.md", "Schema: tackle-observability/2\n")
+        self.write("task-board.md", "Schema: tackle-workspace/5\n\n| Task | What | Brief | Depends on | Status | Verification |\n|---|---|---|---|---|---|\n| " + identity + " | Work | " + directory + "/" + identity + ".md | " + dependency + " | " + status + " | pending |\n")
         self.write(directory + "/" + identity + ".md", "# Task " + identity + " — Work\n\n- **Depends on**: " + dependency + "\n- **Effort**: high\n")
 
     def row(self, number):
@@ -48,18 +50,17 @@ class TaskIdentityTests(unittest.TestCase):
     def test_fresh_usage_template_does_not_install_legacy_ledger(self):
         scaffold = (ROOT / "references/guides/scaffold.md").read_text()
         current = (ROOT / "references/resource-usage.tmpl.md").read_text()
-        historical = (ROOT / "references/usage.tmpl.md").read_text()
         self.assertIn("`resource-usage.md` from `resource-usage.tmpl.md`", scaffold)
         self.assertIn("| Run ID | Event | Task | Role |", current)
         self.assertNotIn("| Point |", current)
-        self.assertIn("| Point | Role | Tier |", historical)
+        self.assertFalse((ROOT / "references/usage.tmpl.md").exists())
 
     def test_canonical_physical_workspace_paths_pass_real_lint(self):
-        self.write("plan.md", "# Plan\n\n## 5. Task decomposition\n| Task | Responsibility |\n|---|---|\n| T-01 | Work |\n")
-        self.write("task-board.md", "Schema: tackle-workspace/4\n\n| Task | What | Brief | Depends on | Status | Verification |\n|---|---|---|---|---|---|\n| T-01 | Work | `tasks/T-01.md` | none | Draft | pending |\n")
+        self.write("plan.md", "# Plan\n\n## 5. Task decomposition\n| Task | Responsibility |\n|---|---|\n| T-A | Work |\n")
+        self.write("task-board.md", "Schema: tackle-workspace/5\n\n| Task | What | Brief | Depends on | Status | Verification |\n|---|---|---|---|---|---|\n| T-A | Work | `tasks/T-A.md` | none | Draft | pending |\n")
         self.write("history.md", "# History\n\n## 2026-09-24 s1\n")
         self.write("resource-usage.md", "Schema: tackle-observability/2\n\n| Run ID | Event | Task | Role | Harness | Tier | Model | Effort | At | Outcome | Attempts | Rework | Verification | Source |\n")
-        self.write("tasks/T-01.md", "# Task T-01 — Work\n\n- **Depends on**: none\n- **Effort**: high\n")
+        self.write("tasks/T-A.md", "# Task T-A — Work\n\n- **Depends on**: none\n- **Effort**: low\n")
         self.write("reference.md", "# Sources\n")
         for number in range(1, 17):
             with self.subTest(row=number):
@@ -98,55 +99,37 @@ class TaskIdentityTests(unittest.TestCase):
                 self.assertEqual((result.returncode, result.stdout, result.stderr), (0, b"", b""))
         self.write("log.md", "# Duplicate\n")
         result = self.row(1)
-        self.assertIn(b"mixed Focused paths", result.stdout + result.stderr)
+        self.assertIn(b"migrate first", result.stdout + result.stderr)
 
     def test_new_board_names_missing_resource_ledger(self):
-        self.write("plan.md", "# Plan\n\n## 5. Task decomposition\n| Task | Responsibility |\n|---|---|\n| T-01 | Work |\n")
-        self.write("task-board.md", "Schema: tackle-workspace/4\n\n| Task | What | Brief | Depends on | Status | Verification |\n|---|---|---|---|---|---|\n| T-01 | Work | tasks/T-01.md | none | Draft | pending |\n")
+        self.write("plan.md", "# Plan\n\n## 5. Task decomposition\n| Task | Responsibility |\n|---|---|\n| T-A | Work |\n")
+        self.write("task-board.md", "Schema: tackle-workspace/5\n\n| Task | What | Brief | Depends on | Status | Verification |\n|---|---|---|---|---|---|\n| T-A | Work | tasks/T-A.md | none | Draft | pending |\n")
         self.write("history.md", "# History\n")
-        self.write("tasks/T-01.md", "# Task T-01 — Work\n")
+        self.write("tasks/T-A.md", "# Task T-A — Work\n")
         result = self.row(2)
         self.assertIn(b"missing: docs/plans/probe/resource-usage.md", result.stdout + result.stderr)
         result = self.row(16)
         self.assertIn(b"missing resource-usage.md", result.stdout + result.stderr)
 
     def test_new_board_rejects_old_core_path_duplicate(self):
-        self.write("plan.md", "# Plan\n\n## 5. Task decomposition\n| Task | Responsibility |\n|---|---|\n| T-01 | Work |\n")
-        self.write("task-board.md", "Schema: tackle-workspace/4\n\n| Task | What | Brief | Depends on | Status | Verification |\n|---|---|---|---|---|---|\n| T-01 | Work | tasks/T-01.md | none | Draft | pending |\n")
+        self.write("plan.md", "# Plan\n\n## 5. Task decomposition\n| Task | Responsibility |\n|---|---|\n| T-A | Work |\n")
+        self.write("task-board.md", "Schema: tackle-workspace/5\n\n| Task | What | Brief | Depends on | Status | Verification |\n|---|---|---|---|---|---|\n| T-A | Work | tasks/T-A.md | none | Draft | pending |\n")
         self.write("history.md", "# History\n")
         self.write("resource-usage.md", "Schema: tackle-observability/2\n")
-        self.write("tasks/T-01.md", "# Task T-01 — Work\n")
+        self.write("tasks/T-A.md", "# Task T-A — Work\n")
         self.write("board.md", "# Duplicate\n")
         result = self.row(2)
         self.assertIn(b"mixed workspace paths", result.stdout + result.stderr)
 
     def test_new_board_rejects_legacy_point_directory(self):
-        self.write("plan.md", "# Plan\n\n## 5. Task decomposition\n| Task | Responsibility |\n|---|---|\n| P-01 | Work |\n")
-        self.write("task-board.md", "Schema: tackle-workspace/4\n\n| Task | What | Brief | Depends on | Status | Verification |\n|---|---|---|---|---|---|\n| P-01 | Work | points/P-01.md | none | Draft | pending |\n")
+        self.write("plan.md", "# Plan\n\n## 5. Task decomposition\n| Task | Responsibility |\n|---|---|\n| T-A | Work |\n")
+        self.write("task-board.md", "Schema: tackle-workspace/5\n\n| Task | What | Brief | Depends on | Status | Verification |\n|---|---|---|---|---|---|\n| T-A | Work | tasks/T-A.md | none | Draft | pending |\n")
         self.write("history.md", "# History\n")
         self.write("resource-usage.md", "Schema: tackle-observability/2\n")
-        self.write("points/P-01.md", "# Point P-01 — Work\n")
+        self.write("tasks/T-A.md", "# Task T-A — Work\n")
+        self.write("points/P-A.md", "# An older brief\n")
         result = self.row(2)
-        self.assertIn(b"missing tasks directory", result.stdout + result.stderr)
-
-    def test_legacy_point_workspace_remains_readable(self):
-        self.fixture(identity="P-01", directory="points")
-        result = self.row(2)
-        self.assertEqual((result.returncode, result.stdout, result.stderr), (0, b"", b""))
-
-    def test_legacy_point_brief_with_backtick_path_and_heading_remains_readable(self):
-        self.write("plan.md", "# Plan\n\n## 5. Point decomposition\n| Point | Brief |\n|---|---|\n| **P-01 · Work** | `points/P-01-work.md` |\n")
-        self.write("board.md", "| Point | What | Brief | Depends on | Status |\n|---|---|---|---|---|\n| P-01 | Work | `points/P-01-work.md` | none | 🟢 |\n")
-        self.write("points/P-01-work.md", "# Point P-01 — Work\n- **Depends on**: none\n")
-        result = self.row(2)
-        self.assertEqual((result.returncode, result.stdout, result.stderr), (0, b"", b""))
-
-    def test_legacy_board_ids_remain_valid_without_section_five(self):
-        self.write("plan.md", "# Legacy plan\n")
-        self.write("board.md", "| Point | What | Brief | Depends on | Status |\n|---|---|---|---|---|\n| P-01 | Work | points/P-01.md | none | 🟢 |\n")
-        self.write("points/P-01.md", "# Point P-01 — Work\n")
-        result = self.row(2)
-        self.assertEqual((result.returncode, result.stdout, result.stderr), (0, b"", b""))
+        self.assertIn(b"mixed workspace paths", result.stdout + result.stderr)
 
     def test_invalid_dangling_task_dependency_is_rejected(self):
         self.fixture(dependency="T-99")
@@ -155,7 +138,7 @@ class TaskIdentityTests(unittest.TestCase):
 
     def test_invalid_mixed_task_and_point_identity_is_rejected(self):
         self.fixture()
-        board = self.workspace / "board.md"
+        board = self.workspace / "task-board.md"
         board.write_text(board.read_text().replace("| T-01 | Work", "| P-01 | Work"))
         result = self.row(2)
         self.assertNotEqual(result.stdout + result.stderr, b"")
@@ -170,7 +153,7 @@ class TaskIdentityTests(unittest.TestCase):
         self.fixture()
         (self.workspace / "points").mkdir()
         result = self.row(2)
-        self.assertIn(b"mixed task directories", result.stdout + result.stderr)
+        self.assertIn(b"mixed workspace paths", result.stdout + result.stderr)
 
     def test_invalid_t_status_is_checked(self):
         self.fixture(status="Invented")
@@ -184,8 +167,8 @@ class TaskIdentityTests(unittest.TestCase):
 
     def test_lite_workspace_rejects_full_tasks_directory(self):
         self.write("plan.md", "Gate: Lite\n# Small task\n")
-        self.write("log.md", "# Log\n")
-        self.write("usage.md", "# Usage\n")
+        self.write("history.md", "# History\n")
+        self.write("resource-usage.md", "# Resource usage\n")
         (self.workspace / "tasks").mkdir()
         result = self.row(1)
         self.assertIn(b"Lite has Full artifact", result.stdout + result.stderr)

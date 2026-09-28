@@ -20,14 +20,11 @@ Permanent, on the working tree:
 2. **Links** — every relative link in `SKILL.md`, `references/**`, `README.md`, `AGENTS.md`,
    `MAINTAINING.md`, `CHANGELOG.md`, `maintaining/**` and `extras/**` resolves to a file, and to
    an anchor where one is given.
-3. **Legacy templates** — the five frozen templates (`point.tmpl.md`, `log.tmpl.md`,
-   `usage.tmpl.md`, `board.tmpl.md`, `coordinator.tmpl.md`) keep the audit's pinned hashes.
-4. **Gates** — the eight self-lint gates, extracted from `MAINTAINING.md` the same way
+3. **Gates** — the eight self-lint gates, extracted from `MAINTAINING.md` the same way
    `eval/validation-integrity/acceptance.py`'s `canonical_gates` does, each run silent and exit 0.
-5. **Planted defects**, each built in a disposable temporary directory, never in this repository:
-   a link to a path the relocation removed, and a legacy template whose bytes changed. Each must
-   make the relevant check fail, naming the file.
-6. **Shipped entry point** — `SKILL.md`'s frontmatter and the absence of a nested `SKILL.md`, and
+4. **Planted defects**, each built in a disposable temporary directory, never in this repository:
+   a link to a path the relocation removed. It must make the relevant check fail, naming the file.
+5. **Shipped entry point** — `SKILL.md`'s frontmatter and the absence of a nested `SKILL.md`, and
    the shipped request tables never advertise a retired `/tackle-*` alias.
 
 The 8.4.1-era relocation's historical byte-preservation checks (`RELOCATION_REV` against

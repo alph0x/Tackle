@@ -4,5 +4,11 @@
   "statement_sha256": "d9392b25e54e308c090a82964f6802786ecd402f29b5540b6415c5a5b653c4fc",
   "reason": "The statement's added clause concerns a declared capability escalation, which never fires in a live episode this cohort dispatches, so the cohort's traps cannot give it honest evidence. It stays untested by design, not by oversight.",
   "accepted": "2026-09-26"
+ },
+ {
+  "rule_id": "R-STATE-01",
+  "statement_sha256": "e68637537f6cd1a459cf676007a709f0606ca77f1e045061552f188c97e27a96",
+  "reason": "The changed statement refuses a workspace below the current layout. That refusal is mechanical: planted lint fixtures and the migration's own tests prove it, and the release cohort measures planning outcomes, not the refusal, so its traps cannot give it honest evidence.",
+  "accepted": "2026-09-28"
  }
 ]

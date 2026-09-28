@@ -1,8 +1,8 @@
 # Codex native usage — optional capture recipe
 
 This recipe reads native Codex Desktop or `codex exec --json` records and appends exact
-session-scoped observations to `resource-usage.telemetry.jsonl` in new workspaces; historical
-`usage.telemetry.jsonl` remains readable. It is optional: an
+session-scoped observations to `resource-usage.telemetry.jsonl`; it refuses a workspace that still
+holds an older `usage.md` ledger or a `usage.telemetry.jsonl` sidecar. It is optional: an
 unavailable trace does not block task completion, and the provider-independent contract in
 [usage-observability.md](usage-observability.md) remains authoritative. It uses only Python's
 standard library, reads no authentication file, and does not copy prompt or tool content.
@@ -66,9 +66,9 @@ def metrics(native):
 if len(sys.argv) not in (2, 3):
     fail("use: python3 - <workspace> [native-jsonl]")
 workspace = Path(sys.argv[1]).expanduser().resolve()
-ledger = workspace / ("resource-usage.md" if (workspace / "resource-usage.md").is_file() else "usage.md")
-if (workspace / "resource-usage.md").is_file() and (workspace / "usage.md").exists():
-    fail("mixed resource usage paths")
+ledger = workspace / "resource-usage.md"
+if (workspace / "usage.md").exists():
+    fail("migrate first: older resource usage ledger usage.md (references/guides/migrate.md#forward-only)")
 if not workspace.is_dir() or not ledger.is_file():
     fail("workspace with resource usage ledger required")
 if "Schema: tackle-observability/2" not in ledger.read_text():
@@ -167,8 +167,8 @@ else:
 if not records:
     fail("native token fields unavailable")
 
-sidecar = workspace / ("resource-usage.telemetry.jsonl" if ledger.name == "resource-usage.md" else "usage.telemetry.jsonl")
-if ledger.name == "resource-usage.md" and (workspace / "usage.telemetry.jsonl").exists():
+sidecar = workspace / "resource-usage.telemetry.jsonl"
+if (workspace / "usage.telemetry.jsonl").exists():
     fail("mixed usage telemetry paths")
 if sidecar.is_symlink():
     fail("sidecar symlink rejected")

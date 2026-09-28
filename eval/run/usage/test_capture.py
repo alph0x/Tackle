@@ -27,7 +27,7 @@ class CaptureTests(unittest.TestCase):
         self.root = Path(self.temp.name)
         self.workspace = self.root / "workspace"
         self.workspace.mkdir()
-        (self.workspace / "usage.md").write_text("Schema: tackle-observability/2\n")
+        (self.workspace / "resource-usage.md").write_text("Schema: tackle-observability/2\n")
         self.trace = self.root / "events.jsonl"
 
     def write_events(self, *events):
@@ -44,7 +44,7 @@ class CaptureTests(unittest.TestCase):
         return subprocess.run(argv, text=True, capture_output=True, env=runtime)
 
     def observations(self):
-        return [json.loads(line) for line in (self.workspace / "usage.telemetry.jsonl").read_text().splitlines()]
+        return [json.loads(line) for line in (self.workspace / "resource-usage.telemetry.jsonl").read_text().splitlines()]
 
     def test_desktop_uses_child_thread_and_exposes_turn_metadata_without_prompt(self):
         child = "11111111-1111-4111-8111-111111111111"
@@ -68,19 +68,29 @@ class CaptureTests(unittest.TestCase):
         self.assertTrue(all(record["provenance"]["model_configured"] == "gpt-6-astra" for record in records))
         self.assertTrue(all(record["provenance"]["effort_configured"] == "ultra" for record in records))
         self.assertTrue(all(record["provenance"]["terminal_event_at"] == "2026-09-23T10:00:04Z" for record in records))
-        self.assertNotIn("SECRET PROMPT", (self.workspace / "usage.telemetry.jsonl").read_text() + result.stdout)
+        self.assertNotIn("SECRET PROMPT", (self.workspace / "resource-usage.telemetry.jsonl").read_text() + result.stdout)
 
     def test_new_workspace_writes_canonical_telemetry_sidecar(self):
-        (self.workspace / "usage.md").unlink()
-        (self.workspace / "resource-usage.md").write_text("Schema: tackle-observability/2\n")
         self.write_events({"type": "thread.started", "thread_id": "cli-thread"},
                           {"type": "turn.completed", "usage": {"input_tokens": 12, "output_tokens": 3}})
         result = self.run_recipe()
         self.assertEqual(result.returncode, 0, result.stderr)
         new_sidecar = self.workspace / "resource-usage.telemetry.jsonl"
         self.assertTrue(new_sidecar.is_file())
-        self.assertFalse((self.workspace / "usage.telemetry.jsonl").exists())
         self.assertEqual(json.loads(new_sidecar.read_text())['metrics']['input_tokens'], 12)
+
+    def test_an_older_ledger_or_sidecar_name_is_refused(self):
+        self.write_events({"type": "thread.started", "thread_id": "cli-thread"},
+                          {"type": "turn.completed", "usage": {"input_tokens": 12, "output_tokens": 3}})
+        for older, message in (("usage.md", "migrate first: older resource usage ledger"),
+                               ("usage.telemetry.jsonl", "mixed usage telemetry paths")):
+            with self.subTest(path=older):
+                (self.workspace / older).write_text("")
+                result = self.run_recipe()
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(message, result.stderr)
+                self.assertFalse((self.workspace / "resource-usage.telemetry.jsonl").exists())
+                (self.workspace / older).unlink()
 
     def test_cli_records_each_completed_turn_without_assigning_role(self):
         self.write_events(
@@ -120,9 +130,9 @@ class CaptureTests(unittest.TestCase):
         base = {"timestamp": "2026-09-23T10:00:01Z", "type": "token_usage_record", "payload": {"thread_id": thread, "turn_id": "turn-1", "response_id": "resp-1", "thread_token_usage": {"input_tokens": 10}, "turn_token_usage": {"input_tokens": 10}}}
         self.write_events(base)
         self.assertEqual(self.run_recipe().returncode, 0)
-        before = (self.workspace / "usage.telemetry.jsonl").read_bytes()
+        before = (self.workspace / "resource-usage.telemetry.jsonl").read_bytes()
         self.assertEqual(self.run_recipe().returncode, 0)
-        self.assertEqual((self.workspace / "usage.telemetry.jsonl").read_bytes(), before)
+        self.assertEqual((self.workspace / "resource-usage.telemetry.jsonl").read_bytes(), before)
         newer = {"timestamp": "2026-09-23T10:00:02Z", "type": "token_usage_record", "payload": {"thread_id": thread, "turn_id": "turn-1", "response_id": "resp-2", "thread_token_usage": {"input_tokens": 20}, "turn_token_usage": {"input_tokens": 20}}}
         self.write_events(base, newer)
         self.assertEqual(self.run_recipe().returncode, 0)
@@ -145,17 +155,17 @@ class CaptureTests(unittest.TestCase):
     def test_invalid_or_missing_trace_never_writes_sidecar(self):
         self.write_events({"type": "token_usage_record", "payload": {"thread_id": "t", "turn_id": "u", "thread_token_usage": {"input_tokens": -1}, "turn_token_usage": {"input_tokens": -1}}})
         self.assertNotEqual(self.run_recipe().returncode, 0)
-        self.assertFalse((self.workspace / "usage.telemetry.jsonl").exists())
+        self.assertFalse((self.workspace / "resource-usage.telemetry.jsonl").exists())
         self.trace.write_text("{bad json\n")
         self.assertNotEqual(self.run_recipe().returncode, 0)
-        self.assertFalse((self.workspace / "usage.telemetry.jsonl").exists())
+        self.assertFalse((self.workspace / "resource-usage.telemetry.jsonl").exists())
         self.trace.unlink()
         self.assertNotEqual(self.run_recipe().returncode, 0)
-        self.assertFalse((self.workspace / "usage.telemetry.jsonl").exists())
+        self.assertFalse((self.workspace / "resource-usage.telemetry.jsonl").exists())
 
     def test_existing_malformed_sidecar_and_symlink_are_rejected(self):
         self.write_events({"type": "thread.started", "thread_id": "t"}, {"type": "turn.completed", "usage": {"input_tokens": 1}})
-        sidecar = self.workspace / "usage.telemetry.jsonl"
+        sidecar = self.workspace / "resource-usage.telemetry.jsonl"
         sidecar.write_text("not json\n")
         self.assertNotEqual(self.run_recipe().returncode, 0)
         self.assertEqual(sidecar.read_text(), "not json\n")

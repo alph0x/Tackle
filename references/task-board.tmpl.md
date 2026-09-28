@@ -4,7 +4,8 @@ Schema: tackle-workspace/5
 
 **Canonical current task state.** `task-board.md` owns task status; the plan owns requirements and
 coverage; history records original events. The authorized coordinator updates this board. STATUS,
-Next and plain Resume inspect only. Read legacy boards through [terminology.md](terminology.md).
+Next and plain Resume inspect only. An older board is migrated before it runs
+([forward only](guides/migrate.md#forward-only)).
 
 States: Draft, Ready to run, In progress, Checking, Complete, Blocked, Interrupted, Skipped,
 Unverifiable, Waiting on owner. The Status cell contains exactly one state token, without a reason suffix;
@@ -16,8 +17,8 @@ stay Unverifiable. Interrupted work must be reconciled before repeating an effec
 names the awaited action in Verification as `waiting: <reference>` and differs from Blocked.
 
 Verification references the task report, which records method, result, actual actor/independence,
-input revisions and accessible raw records. A label is not a passing record. E0–E3 remain readable
-on legacy boards; never turn them into an ordinal quality scale or infer an independent reviewer.
+input revisions and accessible raw records. A label is not a passing record; never infer an
+independent reviewer from it.
 
 | Task | What | Brief | Depends on | Status | Verification |
 |---|---|---|---|---|---|
