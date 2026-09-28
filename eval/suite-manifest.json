@@ -229,6 +229,14 @@
         "test_report.py"
       ],
       "tests": 36
+    },
+    {
+      "path": "eval/cohorts/2026-09-third-candidate",
+      "files": [
+        "test_decision.py",
+        "test_report.py"
+      ],
+      "tests": 36
     }
   ]
 }

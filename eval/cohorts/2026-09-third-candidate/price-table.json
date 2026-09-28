@@ -1,0 +1,9 @@
+{
+ "schema": "tackle-price-table/1",
+ "source": "Anthropic's own published pricing page (https://platform.claude.com/docs/en/about-claude/pricing), read 2026-09-26; USD per million tokens.",
+ "unit": "usd_per_million_tokens",
+ "note": "A served model id is often dated (a snapshot id such as <id>-YYYYMMDD); decision.py strips one trailing 8-digit date suffix and retries once, pricing the dated snapshot at its base id's rate. Blended tokens_in (fresh input, cache write and roughly ten-times-cheaper cache read summed into one field, with no per-episode split recorded) is priced at the base input rate throughout: a disclosed, conservative approximation, not a precise dollar figure, and the report's own cache-aware column is the real spend instead. A model missing from this table refuses rather than guesses; every episode here is requested as claude-haiku-4-5, so this table carries that model only.",
+ "prices": {
+  "claude-haiku-4-5": {"input": 1, "output": 5}
+ }
+}

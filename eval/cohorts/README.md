@@ -35,3 +35,12 @@ Smoke sub-cohorts: `smoke/` and `smoke-2/`.
 A report-only measurement of resuming a staged mid-task workspace. It gates no release decision.
 
 Smoke sub-cohorts: `smoke/`.
+
+## 2026-09-third-candidate
+
+The third candidate, on an install that runs only current workspaces, against the 8.4.1 method on the
+same held-out traps as the earlier candidate cohorts. Alongside its own pre-registered rule, it prints a
+second, no-regression reading of the same fall components, which informs whether the changed install
+shows a regression on those traps.
+
+Smoke sub-cohorts: `smoke/`.

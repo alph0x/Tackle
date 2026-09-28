@@ -1,0 +1,191 @@
+{
+  "schema": "tackle-cohort/1",
+  "cohort_id": "2026-09-third-candidate",
+  "hypothesis": "With the Tackle 9.0.0 candidate, which runs only current workspaces, a Haiku executor falls into the planning-outcome traps no more often than with the 8.4.1 method, replicated at three seeds per held-out variant.",
+  "primary_metric": "fall rate: fell over valid episodes, judged mechanically by hidden acceptance tests",
+  "decision_rule": "protocol v2 labels (PROTOCOL.md section 4); the pooled fall-rate difference is computed only over {s62-caller-contract/h1, s64-stored-data-compat/h1} (s63-documented-edge-rule/h1 is pre-registered out of the pool, from the earlier candidate cohorts' inert findings on that variant, not from this cohort's own data); each of the two pooled variants needs at least two of its three seeds valid, for both the method arm and the candidate arm, before a pooled figure is computed — short of that in either variant, for either arm, neither line passes; s63-documented-edge-rule/h1 still runs on both arms and is a binary tripwire — a fall by the candidate arm on any of its valid seeds, where the method arm avoided the trap on every one of its own valid seeds, blocks a passing verdict on both lines regardless of the pooled result. decision.py prints two lines. The candidate line prints PASS, or FAIL with its reason, as the second candidate cohort's did; the no-regression line prints PASS or FAIL, always with a stated reason. The candidate line (method to method:candidate) is the second candidate cohort's rule, unchanged: the pooled lower bound ≥ -0.10, then the median of cost.tokens_in and of cost.tool_calls, each over the same pooled valid episodes per arm, strictly lower for method:candidate than for method, then the tripwire. The no-regression line uses only the fall components, the per-variant floor, the pooled lower bound ≥ -0.10 and the tripwire, with no cost clause, and always prints the pooled figure and the tripwire's status. With two pooled variants the bootstrap lower bound equals the smaller of the two per-variant differences, so a higher candidate fall rate on either pooled variant fails the no-regression line: it screens for an observed regression and is not a significance test. The report's per-episode dollar figures gate nothing. decision.py sha256=0a57101b11b85f921656d6f17834b31aa24c9875a3ecac6636df999781c3b037; price-table sha256=8baa3fd1ff99889196ed87b968349c822ba67d4f52d6f55db6bc5a4bcf7f3cc6",
+  "n_min": 2,
+  "seeds": [
+    1,
+    2,
+    3
+  ],
+  "variants": [
+    {
+      "scenario_id": "s62-caller-contract",
+      "variant_id": "h1",
+      "split": "held-out",
+      "class": "outcome-trap",
+      "fixture_sha256": "f5ce5ef4e4d07e9c0c51be2018370259ad3a9d73bdf0b950213e6a9cc8ecec2e"
+    },
+    {
+      "scenario_id": "s63-documented-edge-rule",
+      "variant_id": "h1",
+      "split": "held-out",
+      "class": "outcome-trap",
+      "fixture_sha256": "5e96183c353a5709d38448df04c26a9b9cbfddfdf98310d7b15f999078a59200"
+    },
+    {
+      "scenario_id": "s64-stored-data-compat",
+      "variant_id": "h1",
+      "split": "held-out",
+      "class": "outcome-trap",
+      "fixture_sha256": "4e0fc4e32a261f18f668c93d718cc6fe8ec649a54a021e263e086f4aff113b52"
+    }
+  ],
+  "arms": [
+    "method",
+    "method:candidate"
+  ],
+  "comparisons": [
+    {
+      "id": "candidate",
+      "baseline_arm": "method",
+      "candidate_arm": "method:candidate"
+    }
+  ],
+  "executor": {
+    "harness": "claude-code-subagent",
+    "model": "claude-haiku-4-5",
+    "effort": "n/a"
+  },
+  "judge": {
+    "model_family": "n/a",
+    "blinded": true
+  },
+  "artifacts": {
+    "baseline_sha256": "239ceb22fe0cc842393a7e0430b8dd8c0924139b2f64cd17261ffbb6ee041abe",
+    "candidate_sha256": "1d2b48c658eee4c4719c8e0aa5f3eb13d33fc48cc33a29ce229161721523f674"
+  },
+  "oracle_sha256": "75cb8a4652691e2ed4c4b1ed9568d537e36e525af189ae2b28501b7c8d70141d",
+  "order": [
+    {
+      "episode_id": "pilot-1",
+      "scenario_id": "s63-documented-edge-rule",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-2",
+      "scenario_id": "s62-caller-contract",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 3
+    },
+    {
+      "episode_id": "pilot-3",
+      "scenario_id": "s64-stored-data-compat",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 2
+    },
+    {
+      "episode_id": "pilot-4",
+      "scenario_id": "s63-documented-edge-rule",
+      "variant_id": "h1",
+      "arm": "method:candidate",
+      "seed": 3
+    },
+    {
+      "episode_id": "pilot-5",
+      "scenario_id": "s64-stored-data-compat",
+      "variant_id": "h1",
+      "arm": "method:candidate",
+      "seed": 2
+    },
+    {
+      "episode_id": "pilot-6",
+      "scenario_id": "s62-caller-contract",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-7",
+      "scenario_id": "s62-caller-contract",
+      "variant_id": "h1",
+      "arm": "method:candidate",
+      "seed": 2
+    },
+    {
+      "episode_id": "pilot-8",
+      "scenario_id": "s63-documented-edge-rule",
+      "variant_id": "h1",
+      "arm": "method:candidate",
+      "seed": 2
+    },
+    {
+      "episode_id": "pilot-9",
+      "scenario_id": "s64-stored-data-compat",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 3
+    },
+    {
+      "episode_id": "pilot-10",
+      "scenario_id": "s63-documented-edge-rule",
+      "variant_id": "h1",
+      "arm": "method:candidate",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-11",
+      "scenario_id": "s62-caller-contract",
+      "variant_id": "h1",
+      "arm": "method:candidate",
+      "seed": 3
+    },
+    {
+      "episode_id": "pilot-12",
+      "scenario_id": "s63-documented-edge-rule",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 2
+    },
+    {
+      "episode_id": "pilot-13",
+      "scenario_id": "s64-stored-data-compat",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-14",
+      "scenario_id": "s64-stored-data-compat",
+      "variant_id": "h1",
+      "arm": "method:candidate",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-15",
+      "scenario_id": "s62-caller-contract",
+      "variant_id": "h1",
+      "arm": "method:candidate",
+      "seed": 1
+    },
+    {
+      "episode_id": "pilot-16",
+      "scenario_id": "s62-caller-contract",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 2
+    },
+    {
+      "episode_id": "pilot-17",
+      "scenario_id": "s63-documented-edge-rule",
+      "variant_id": "h1",
+      "arm": "method",
+      "seed": 3
+    },
+    {
+      "episode_id": "pilot-18",
+      "scenario_id": "s64-stored-data-compat",
+      "variant_id": "h1",
+      "arm": "method:candidate",
+      "seed": 3
+    }
+  ],
+  "created_at": "2026-09-28T14:01:42Z",
+  "seal_sha256": "d470ee79993e22f417078f96b5269c3fda373b8379b12820e1bca32f4de53640"
+}

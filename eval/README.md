@@ -21,7 +21,7 @@ The deterministic families read by the part of the skill each one verifies.
 | Behavior | `behavior/` | the harness, and the planning and resume judges | `behavior/harness`, `behavior/judges/planning`, `behavior/judges/resume` |
 | Release acceptance | `validation-integrity/` | the release acceptance harness, and the lint-row and release-gate shell cells it runs | `validation-integrity` |
 | Protocol | `protocol-v2/` | the cohort manifest and episode-record checker | `protocol-v2` |
-| Evidence | `scenarios/`, `runs/`, `records/`, `cohorts/` | the scenario index, historical run records and sealed cohorts | `scenario-index`, `records`, `cohorts/2026-09-candidate`, `cohorts/2026-09-second-candidate`, `cohorts/2026-09-resume` |
+| Evidence | `scenarios/`, `runs/`, `records/`, `cohorts/` | the scenario index, historical run records and sealed cohorts | `scenario-index`, `records`, `cohorts/2026-09-candidate`, `cohorts/2026-09-second-candidate`, `cohorts/2026-09-resume`, `cohorts/2026-09-third-candidate` |
 
 ## Moved paths
 
