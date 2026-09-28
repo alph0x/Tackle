@@ -13,12 +13,11 @@
       "path": "eval/plan-run/tests",
       "files": [
         "test_contracts.py",
-        "test_measurement.py",
         "test_migration.py",
         "test_plan.py",
         "test_run.py"
       ],
-      "tests": 134
+      "tests": 16
     },
     {
       "path": "eval/lint/task-identity",
@@ -32,12 +31,10 @@
       "files": [
         "test_fields.py",
         "test_paths.py",
-        "test_release_fixtures.py",
         "test_dependency_and_scope_parsing.py",
-        "test_routing_fixtures.py",
         "test_workspace_compatibility.py"
       ],
-      "tests": 43
+      "tests": 39
     },
     {
       "path": "eval/run/execution",
@@ -69,13 +66,6 @@
       "tests": 8
     },
     {
-      "path": "eval/install/packaging",
-      "files": [
-        "test_packaging.py"
-      ],
-      "tests": 8
-    },
-    {
       "path": "eval/run/usage",
       "files": [
         "test_capture.py"
@@ -88,14 +78,7 @@
         "test_discovery.py",
         "test_credential_guard.py"
       ],
-      "tests": 29
-    },
-    {
-      "path": "eval/behavior/retired/clear-language",
-      "files": [
-        "test_cohort.py"
-      ],
-      "tests": 13
+      "tests": 27
     },
     {
       "path": "eval/lint/task-contracts",
@@ -181,7 +164,7 @@
       "files": [
         "test_install.py"
       ],
-      "tests": 30
+      "tests": 19
     },
     {
       "path": "eval/install/reading-budget",

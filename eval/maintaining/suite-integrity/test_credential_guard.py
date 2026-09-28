@@ -1,25 +1,17 @@
 """Registry guard: no tracked eval code may mount, copy or pass a credential into a
-participant environment, and no hard-coded home path may appear. Also proves the three legacy
-runners' `run` entry points are retired to eval/protocol-v2/PROTOCOL.md."""
+participant environment, and no hard-coded home path may appear."""
 from __future__ import annotations
 
-import importlib.util
-import io
-import json
 import re
 import subprocess
-import sys
 import tempfile
 import unittest
 from pathlib import Path
-from types import SimpleNamespace
-from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[3]
 SELF = Path(__file__).resolve()
 EXTENSIONS = ('.py', '.sh', '.js')
 EXCLUDED_PREFIXES = ('eval/scenarios/', 'eval/runs/')
-RETIRED = 'retired: model runs moved to the protocol v2 harness; see eval/protocol-v2/PROTOCOL.md'
 
 # A container mount or environment option that carries an auth file, a credential file or an API
 # key into a container.
@@ -85,13 +77,6 @@ def scan(root):
     return findings
 
 
-def load_module(name, path):
-    spec = importlib.util.spec_from_file_location(name, path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
 def init_repo(root):
     for args in (['init', '-q'], ['config', 'user.email', 'test@example.com'], ['config', 'user.name', 'Test']):
         subprocess.run(['git'] + args, cwd=root, check=True, capture_output=True)
@@ -110,10 +95,9 @@ class RepositoryGuardTests(unittest.TestCase):
 
     def test_guard_passes_on_the_repository(self):
         files = tracked_files(ROOT)
-        # No vacuous pass: the scan set must be real and must include the three retired runners.
+        # No vacuous pass: the scan set must be real and must include two current tracked executables.
         self.assertTrue(files, 'the scan set must not be empty')
-        for expected in ('eval/behavior/retired/clear-language/runner.py', 'eval/install/packaging/behavioral.py',
-                          'eval/validation-integrity/behavioral.py'):
+        for expected in ('eval/run_suites.py', 'eval/behavior/harness/harness.py'):
             self.assertIn(expected, files)
         findings = scan(ROOT)
         if findings:
@@ -233,68 +217,6 @@ class GitIntegrationTests(unittest.TestCase):
         commit(self.root, 'eval/scenarios/s1/bad.py', "x = '" + auth_target + "'\n")
         commit(self.root, 'eval/runs/bad.py', "x = '" + auth_target + "'\n")
         self.assertEqual(scan(self.root), [])
-
-
-def stage_minimal_clear_cohort(runner, root, auth_file):
-    cases = json.loads((runner.HERE / 'cases.json').read_text())
-    oracle = json.loads((runner.HERE / 'oracle.json').read_text())
-    cohort = root / 'cohort'
-    seal = runner.prepare(cohort, {'SKILL.md': b'baseline'}, {'SKILL.md': b'candidate'},
-                          cases, oracle, b'protocol', runner.SMOKE[:1])
-    auth_file.write_text('not a real credential')
-    return cohort, seal
-
-
-class ClearLanguageRetirementTests(unittest.TestCase):
-    """Case: 'CLEAR run retired' — runner.py run ...; exit 2, the pointer, no process started."""
-
-    def test_run_is_retired_and_starts_no_process(self):
-        runner = load_module('t31_guard_clear_runner', ROOT / 'eval/behavior/retired/clear-language/runner.py')
-        with tempfile.TemporaryDirectory(prefix='tackle-guard-clear-') as directory:
-            root = Path(directory)
-            cohort, seal = stage_minimal_clear_cohort(runner, root, root / 'dummy-auth.json')
-            argv = ['runner.py', 'run', str(cohort), '--seal', seal, '--output', str(root / 'out'),
-                    '--image', 'sha256:' + '0' * 64, '--model', 'test-model', '--effort', 'low',
-                    '--auth', str(root / 'dummy-auth.json'), '--authorized-model-usage']
-            fake_probe_result = SimpleNamespace(returncode=1, stdout=b'', stderr=b'')
-            captured = io.StringIO()
-            with patch.object(sys, 'argv', argv), \
-                 patch.object(runner.subprocess, 'run', return_value=fake_probe_result) as mock_run, \
-                 patch('sys.stderr', captured):
-                with self.assertRaises(SystemExit) as ctx:
-                    runner.main()
-        self.assertEqual(ctx.exception.code, 2)
-        self.assertIn(RETIRED, captured.getvalue())
-        mock_run.assert_not_called()
-
-
-class ValidationIntegrityRetirementTests(unittest.TestCase):
-    """Case: 'validation-integrity run retired' — the former run entry point; exit 2, the pointer.
-
-    No test_*.py file under eval/validation-integrity/ is in this task's write scope, so this
-    retirement case is proved here instead."""
-
-    def test_run_is_retired_and_starts_no_process(self):
-        behavioral = load_module('t31_guard_validation_integrity', ROOT / 'eval/validation-integrity/behavioral.py')
-        with tempfile.TemporaryDirectory(prefix='tackle-guard-validation-') as directory:
-            root = Path(directory)
-            destination = root / 'dest'
-            case = destination / 'case-01'
-            case.mkdir(parents=True)
-            (case / 'SKILL.md').write_text('test')
-            (destination / 'manifest.json').write_text(json.dumps(
-                {'cases': [{'id': 'case-01', 'family': 'routing', 'ordinal': 1}]}))
-            argv = ['behavioral.py', 'run', str(destination), '--output', str(root / 'out')]
-            fake_probe_result = SimpleNamespace(returncode=1, stdout=b'', stderr=b'')
-            captured = io.StringIO()
-            with patch.object(sys, 'argv', argv), \
-                 patch.object(behavioral.subprocess, 'run', return_value=fake_probe_result) as mock_run, \
-                 patch('sys.stderr', captured):
-                with self.assertRaises(SystemExit) as ctx:
-                    behavioral.main()
-        self.assertEqual(ctx.exception.code, 2)
-        self.assertIn(RETIRED, captured.getvalue())
-        mock_run.assert_not_called()
 
 
 if __name__ == '__main__':

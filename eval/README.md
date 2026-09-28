@@ -8,7 +8,7 @@ The deterministic families read by the part of the skill each one verifies.
 
 | Area | Folder | Verifies | Registry families |
 |---|---|---|---|
-| Install | `install/` | packaging, the thin install and its reading budget | `install/inventory`, `install/packaging`, `install/reading-budget` |
+| Install | `install/` | packaging, the thin install and its reading budget | `install/inventory`, `install/reading-budget` |
 | Templates | `templates/` | scaffold and template drift | `templates` |
 | Rules | `rules/` | the rule ledger and unit accounting | `rules` |
 | Lint | `lint/` | the workspace lint rows, task identity and task contracts | `lint/rows`, `lint/task-identity`, `lint/task-contracts` |
@@ -18,8 +18,8 @@ The deterministic families read by the part of the skill each one verifies.
 | Migration | `migration/` | the schema-keyed migration recipes | `migration` |
 | Lessons | `lessons/` | the learning-loop confidence, ids and coverage | `lessons` |
 | Maintaining | `maintaining/` | the field report and suite integrity | `maintaining/field-report`, `maintaining/suite-integrity` |
-| Behavior | `behavior/` | the harness, the planning and resume judges, and the retired manual protocol | `behavior/harness`, `behavior/judges/planning`, `behavior/judges/resume`, `behavior/retired/clear-language` |
-| Release acceptance | `validation-integrity/` | the release fixtures and routing checks | `validation-integrity` |
+| Behavior | `behavior/` | the harness, and the planning and resume judges | `behavior/harness`, `behavior/judges/planning`, `behavior/judges/resume` |
+| Release acceptance | `validation-integrity/` | the release acceptance harness, and the lint-row and release-gate shell cells it runs | `validation-integrity` |
 | Protocol | `protocol-v2/` | the cohort manifest and episode-record checker | `protocol-v2` |
 | Evidence | `scenarios/`, `runs/`, `records/`, `cohorts/` | the scenario index, historical run records and sealed cohorts | `scenario-index`, `records`, `cohorts/2026-09-candidate`, `cohorts/2026-09-second-candidate`, `cohorts/2026-09-resume` |
 
@@ -30,7 +30,7 @@ Every family below moved once, by skill area; a reader of an older record can fi
 | Old path | New path | Moved |
 |---|---|---|
 | `install-inventory/` | `install/inventory/` | 2026-09 |
-| `single-entry/` | `install/packaging/` | 2026-09 |
+| `single-entry/` | `install/packaging/` | 2026-09 (removed later) |
 | `hot-path/` | `install/reading-budget/` | 2026-09 |
 | `template-drift/` | `templates/` | 2026-09 |
 | `lint-rows/` | `lint/rows/` | 2026-09 |
@@ -50,7 +50,7 @@ Every family below moved once, by skill area; a reader of an older record can fi
 | `harness-v2/` | `behavior/harness/` | 2026-09 |
 | `planning-outcomes/` | `behavior/judges/planning/` | 2026-09 |
 | `resume-outcomes/` | `behavior/judges/resume/` | 2026-09 |
-| `clear-language/` | `behavior/retired/clear-language/` | 2026-09 |
+| `clear-language/` | `behavior/retired/clear-language/` | 2026-09 (removed later) |
 
 The template-drift golden test reads its fixtures from `run/usage/fixtures`, the one cross-area read in this layout.
 
@@ -70,14 +70,9 @@ numbered-scenario and local trial-output trees are excluded. The result director
 runtime, exit, count, input hashes and complete stdout/stderr. Disposable regression
 tests demonstrate that planted failures and omitted discovery do not turn green.
 
-**Historical.** The [CLEAR-EVAL-1 protocol](behavior/retired/clear-language/protocol.md) defined a separate frozen
-current-checkout baseline/candidate experiment, with English/Spanish tasks and a small default smoke.
-[Its runner](behavior/retired/clear-language/README.md) still stages oracle-free participant environments, verifies an
-externally retained seal and probes container isolation, but its model-calling `run` path is retired.
-It never started an episode: no behavioral improvement or release approval was claimed. The historical
-7.3/8.0 comparison and its recorded zero-started status remain unchanged. New cohorts use protocol v2
-and its harness (below). Deterministic harness tests, actual command behavior, agent decisions and
-integrated product acceptance are distinct kinds of evidence.
+**Historical.** The CLEAR-EVAL-1 protocol, a separate frozen current-checkout baseline/candidate
+experiment that never started an episode, was removed; git history keeps its record; new cohorts
+use protocol v2 and its harness (below).
 
 [Evaluation protocol v2](protocol-v2/PROTOCOL.md) defines how a behavioral claim is pre-registered,
 sealed, recorded and judged. `python3 eval/protocol-v2/check.py <cohort-dir>` rejects tampered,
@@ -280,9 +275,12 @@ Markdown-only.
 6. **Validate the record** — check that `eval/runs/YYYY-MM-DD-<scenario>.md` carries
    the verdict line, the four 0–2 scores, `files_changed`, and `verdict_summary`.
 
-## Plan → Run synthetic measurement fixtures
+## Plan → Run fixtures
 
-The refactor's nine synthetic families live under `eval/plan-run/`. They are development fixtures for validating rule inventories, contract checks, staging boundaries, and integrated acceptance; they are not additional numbered scenarios and are not included in the 50-scenario trap count. Their evaluator-only oracle must never be staged for an evaluated planner or executor. Run `python3 -m unittest discover eval/plan-run/tests -p 'test_*.py'` from the repository root for fixture-integrity checks. `eval/plan-run/protocol.md` is a historical protocol; new model comparisons use protocol v2 and its harness.
+`eval/plan-run/` covers the two-action PLAN/RUN surface: `test_contracts.py` validates lint-spec
+rows against legacy-schema fixtures, and `test_migration.py` validates the migration contract; the
+refactor's own one-time synthetic measurement of the historical Plan→Run rewrite was removed, and
+git history keeps it.
 
 The migration contract is covered by `test_migration.py`, which creates disposable filesystem
 fixtures during each run. It checks the two-action PLAN/RUN surface, read-only STATUS, copy-first

@@ -1,15 +1,9 @@
 # Install inventory
 
-Deterministic checks that the shipped install (`SKILL.md` plus `references/`) stays thin, and that
-the relocation of its maintainer-only content was correct. They verify the install and the
-relocation, not agent behavior.
+Deterministic checks that the shipped install (`SKILL.md` plus `references/`) stays thin. They
+verify the install, not agent behavior.
 
 - **Permanent checks** read the working tree. They hold for every later version.
-- **Historical checks** read commits only: `RELOCATION_REV`
-  (`b2bb990962096417548f1321964dbe2f4e35e1a9`, the commit that made the relocation) against
-  `BASE_REV` (`03b992e52b1b40faa5e3897a0d4729065f503c02`). Later edits to the moved files, the
-  stamps or the ledger cannot change their result, and one test checks that they never read the
-  working tree.
 
 ```sh
 python3 -m unittest discover -s eval/install/inventory -p 'test_*.py' -v
@@ -31,27 +25,11 @@ Permanent, on the working tree:
 4. **Gates** — the eight self-lint gates, extracted from `MAINTAINING.md` the same way
    `eval/validation-integrity/acceptance.py`'s `canonical_gates` does, each run silent and exit 0.
 5. **Planted defects**, each built in a disposable temporary directory, never in this repository:
-   a link to a path the relocation removed, a gate whose changelog path was never substituted, and
-   a legacy template whose bytes changed. Each must make the relevant check fail, naming the file.
+   a link to a path the relocation removed, and a legacy template whose bytes changed. Each must
+   make the relevant check fail, naming the file.
+6. **Shipped entry point** — `SKILL.md`'s frontmatter and the absence of a nested `SKILL.md`, and
+   the shipped request tables never advertise a retired `/tackle-*` alias.
 
-Historical, at `RELOCATION_REV`:
-
-6. **Byte preservation** — every moved file, and every extracted block landing in
-   `MAINTAINING.md` or `maintaining/migrations.md`, is byte-identical to its bytes at `BASE_REV`
-   once the enumerated substitutions (gate 3, gate 4, gate 7, and the five sibling-guide pointers a
-   relocation makes stale) are reversed. Reversal uses an exact-count check, so an unlisted
-   difference — including a substitution that was never applied — fails the comparison rather than
-   passing silently. The edited guides reconstruct exactly, and the ranges that stayed are verbatim.
-7. **Content kept** — `migrate.md` still held the current checklists and the pointer, and
-   `lint-spec.md` its score line.
-8. **Version** — the stamps and the changelog head were still 8.4.1.
-9. **Recipes and rules** — `candidate_board` loaded from `maintaining/migrations.md`, every
-   `test_task_contracts.py` reference to it pointed at the new home, and `eval/rules/ledger.json`'s
-   `R-MIGRATE-03` (and no other rule) was retired with its home updated.
-
-## Byte preservation, without hardcoded expected text
-
-The test file computes expected bytes from `git show 03b992e:<path>` plus the enumerated
-substitution table (also defined in the test), rather than hardcoding large expected strings.
-This keeps the substitution list itself the single source both the product edit and this test
-were built from.
+The 8.4.1-era relocation's historical byte-preservation checks (`RELOCATION_REV` against
+`BASE_REV`) were removed once the relocation aged out of scope for the working-tree checks above;
+git history keeps the commits they compared.

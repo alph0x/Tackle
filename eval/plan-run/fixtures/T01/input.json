@@ -1,7 +1,0 @@
-{
-  "csv": "name,score\nBo,3\nAda,2\n",
-  "json": {
-    "name": "Bo",
-    "score": 3
-  }
-}

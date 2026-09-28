@@ -6,12 +6,6 @@ These development-only checks stay outside the installed Markdown artifact
 - `test_fields.py`, `test_paths.py` and `test_dependency_and_scope_parsing.py` execute the
   canonical shell cells extracted from `references/guides/lint-spec.md` (lint rows) and
   `MAINTAINING.md` (release gates).
-- The routing/release fixture tests check oracle inventory only. They do not
-  implement the policy and do not prove that an agent follows the guides.
-- `behavioral.py` stages task-only inputs and captures fresh-agent method trials.
-  Oracle files remain outside the participant environment. A valid run needs
-  observed guide reads, effective isolation and unchanged protected inputs.
-  One seed per case is a smoke test, not an A/B benchmark.
 
 Run the focused suites from the repository root:
 
@@ -19,12 +13,9 @@ Run the focused suites from the repository root:
 python3 -m unittest discover -s eval/validation-integrity -p 'test_fields.py' -v
 python3 -m unittest discover -s eval/validation-integrity -p 'test_paths.py' -v
 python3 -m unittest discover -s eval/validation-integrity -p 'test_dependency_and_scope_parsing.py' -v
-python3 -m unittest discover -s eval/validation-integrity -p 'test_routing_fixtures.py' -v
-python3 -m unittest discover -s eval/validation-integrity -p 'test_release_fixtures.py' -v
 ```
 
 Negative expectations are fixed before testing the implementation. Canonical
-command regressions fail against the reviewed defective candidate; oracle
-inventory checks make no such behavioral claim. Raw results and environment
+command regressions fail against the reviewed defective candidate. Raw results and environment
 records stay local and never enter the install artifact; tracked run records,
 their hashes and the claim map live in [`eval/records/`](../records/README.md).

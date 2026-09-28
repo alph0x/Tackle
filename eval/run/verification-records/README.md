@@ -11,22 +11,10 @@ suites retain their original assertions; the latter two pass the newly required 
 Run the target with `python3 -m unittest discover -s eval/run/verification-records -p 'test_*.py' -v`.
 CI discovers this family through the central registry and checks its nonzero test count.
 
-`python3 eval/run/verification-records/measure.py /tmp/storage-measurement.json` compares the baseline
-recipe pinned at commit `61f9b4b` (8.1.0) to the current Markdown recipe. Each side executes
-three real checks of one unchanged 1 MiB input. It reports all stored file bytes, unique bytes,
-classes, aliases, allocated blocks where exposed, and observed capture wall time. The candidate
-then captures a changed input and retires the first three events under a disposable policy,
-preserving compact original event/outcome/provenance tombstones and the complete current record.
-It separately reports metadata reclaimed after tombstone cost and unchanged logical history. Maintenance time and resulting storage
-are included. Equal evidentiary scope matters more than any arbitrary reduction target.
+The storage-savings comparison script, measured against a fixed baseline commit, was removed;
+git history keeps its record.
 
-`--inventory /absolute/path/to/evidence` performs a read-only inventory instead. Hashes have no
-size cutoff. Classes derive from raw record mappings when available; shared bytes are counted
-once under the documented precedence. Unclassified artifacts and current/historical status
-remain explicit when a directory lacks a complete obligation/retention policy. Identical-copy
-bytes are a measurement, never authorization or proof that bytes can be deleted.
-
-These are deterministic recipe tests and synthetic measurements, not agent-decision evaluations
-or real-workspace savings estimates. Agent read telemetry and billed tokens remain unavailable.
-The recipe relies on filesystem symlinks, atomic same-filesystem publication and directory sync;
-unsupported hosts need a complete equivalent native capture rather than a false portability claim.
+These are deterministic recipe tests, not agent-decision evaluations or real-workspace savings
+estimates. Agent read telemetry and billed tokens remain unavailable. The recipe relies on
+filesystem symlinks, atomic same-filesystem publication and directory sync; unsupported hosts
+need a complete equivalent native capture rather than a false portability claim.

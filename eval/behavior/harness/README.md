@@ -1,7 +1,7 @@
 # Protocol v2 harness
 
 One harness for every new cohort. It supersedes CLEAR-EVAL-1, the manual trap path and
-`eval/plan-run/protocol.md` for new work; those stay as historical records. It does five things:
+the retired Plan → Run synthetic measurement for new work; git history keeps their record. It does five things:
 
 - stages a control arm (no skill) or a treated arm (the full install) from the sealed scenario index;
 - runs each prompt as a headless session under a temporary HOME;
