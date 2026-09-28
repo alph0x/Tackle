@@ -9,13 +9,18 @@
   ],
   "suites": [
     {
-      "path": "eval/plan-run/tests",
+      "path": "eval/plan",
       "files": [
-        "test_migration.py",
-        "test_plan.py",
+        "test_plan.py"
+      ],
+      "tests": 1
+    },
+    {
+      "path": "eval/run/card",
+      "files": [
         "test_run.py"
       ],
-      "tests": 11
+      "tests": 3
     },
     {
       "path": "eval/lint/task-identity",
@@ -178,9 +183,10 @@
       "path": "eval/migration",
       "files": [
         "test_migration_steps.py",
-        "test_unclosed_fence.py"
+        "test_unclosed_fence.py",
+        "test_migration.py"
       ],
-      "tests": 115
+      "tests": 122
     },
     {
       "path": "eval/maintaining/field-report",

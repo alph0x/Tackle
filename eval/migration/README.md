@@ -7,6 +7,8 @@ free-text `Methodology:` stamp — and reaches the current schema through one id
 detect → transform → verify recipe per step. The detection table, the steps and the read-compatibility
 and rollback promises are documented in
 [`references/guides/migrate.md`](../../references/guides/migrate.md#schema-keyed-migration).
+`test_migration.py` holds the migration contract of the two-action protocol, which a migrated workspace
+meets (Layout below).
 
 ```sh
 python3 -m unittest discover -s eval/migration -p 'test_*.py' -v
@@ -43,6 +45,7 @@ obligation.
 | Path | Content |
 |---|---|
 | `test_migration_steps.py` | Loads the four recipe files exactly as `eval/lint/task-contracts/test_task_contracts.py` and `eval/templates/test_template_drift.py` already load recipes: one file, one fenced Python block, `exec`'d into a namespace. `schema.md`'s namespace is loaded first and passed into each step, so every step calls the same `schema_of`/`parse_board`/... |
+| `test_migration.py` | The migration contract of the two-action protocol: the public surface a migrated workspace meets (PLAN, RUN and read-only STATUS, and the history of the retired aliases), copy-first migration of a disposable legacy world with byte-preserved history, its adoption and tamper guards, a rollback copy that equals the original, and a Markdown-only install whose relative links and anchors resolve. |
 | `census.py` | The local-workspace census; see above. Never registered, never run in CI. |
 | `fixtures/detect/<bucket>/` | One minimal workspace per bucket (`pre3`, `three`, `four`, `five`, `lite`), plus `four-with-legacy/` (a `/4` board beside an ignored `legacy-3/` snapshot) and three `unknown-*` shapes (both board files, a Lite plan beside a board, nothing recognizable) (C1). |
 | `fixtures/pre3-to-3/before/` | A complete pre-3 workspace (`plan.md`, `log.md`, an 8-column `usage.md`, `reference.md`, `decisions.md`, a `reports/` pair) with all five legacy states, mixed P- and T-ids, a fenced decoy row, and a Complete and a Blocked row each with its historical report and a sealed brief (C2). Chained through all three steps it is one of the two named lint-integration targets and passes all 16 real rows. |

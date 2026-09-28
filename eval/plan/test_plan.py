@@ -3,12 +3,12 @@ from pathlib import Path
 import unittest
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 
 
 class PlanProtocol(unittest.TestCase):
     def test_plan_template_keeps_stable_section_consumers(self):
-        template = (ROOT.parent.parent / "references/plan.tmpl.md").read_text()
+        template = (ROOT / "references/plan.tmpl.md").read_text()
         headings = [
             "## 5. Task decomposition",
             "## 6. Readiness and acceptance",
