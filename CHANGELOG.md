@@ -12,7 +12,9 @@
   aliases are retired; `references/terminology.md` maps each old name to its current request.
 - **A smaller install.** The release process, the migration checklists before 8.3 and the collector
   recipes moved to `MAINTAINING.md`, `maintaining/migrations.md` and `extras/`, and `CHANGELOG.md`
-  moved to the repository root; links to the old in-package paths break. The install holds 62,047
+  moved to the repository root; links to the old in-package paths break. With the five legacy
+  templates (`board.tmpl.md`, `coordinator.tmpl.md`, `log.tmpl.md`, `point.tmpl.md` and
+  `usage.tmpl.md`) and the compatible reading of older layouts removed, the install holds 58,400
   words, down from 77,324 in 8.4.1.
 - **Planning runs on a more capable tier than the Executor's** whenever the model map binds more
   than one tier; the Executor's default stays the cheapest bindable tier at low effort. The rule
@@ -32,19 +34,40 @@
   fixed line caps; lint row 8 reads a Write scope wrapped across lines; guide pointers name their
   current homes. A long history is archived only on an explicit request or a recorded policy, and
   lint row 13 warns past its threshold.
-- An 8.4 workspace adopts 9.0 through the
-  [8.4 → 9.0 checklist](references/guides/migrate.md#v84--v90-checklist). Nothing migrates
-  automatically.
+- **Only current workspaces run.** A workspace runs only on the current layout: a
+  `tackle-workspace/5` board with T-ids and `tasks/`, or a Focused plan whose history and usage are
+  `history.md` and `resource-usage.md`. PLAN, RUN and STATUS refuse an older one, 8.4's `/4`
+  included, with `migrate first`. The [migration](references/guides/migrate.md#forward-only) moves
+  it forward and stays the one bridge, still detecting and transforming every older schema. Adopt a
+  selected workspace through the
+  [8.4 → 9.0 checklist](references/guides/migrate.md#v84--v90-checklist), on a disposable copy at a
+  task boundary; nothing migrates automatically.
 - Evidence:
-  - Two pre-registered, development-grade cohorts compared 9.0.0 candidates with 8.4.1 on held-out
-    planning-outcome traps. In both, the fall-rate difference met its −0.10 lower-bound margin, but
-    the median input tokens and tool calls were not lower: 834k against 731k and 15.5 against 13.5,
-    then 1,020,971 against 868,690 and 18.5 against 16. The candidates did not meet the
-    pre-registered rule of non-inferior behavior at lower cost.
+  - Three pre-registered, development-grade cohorts compared 9.0.0 candidates with 8.4.1 on held-out
+    planning-outcome traps. In each, the fall-rate difference met its −0.10 lower-bound margin, but
+    in none were the candidate's median input tokens and tool calls both strictly lower: 834k
+    against 731k and 15.5 against 13.5, then 1,020,971 against 868,690 and 18.5 against 16, then
+    801,170 against 825,186 and 15 against 15. The candidates did not meet the pre-registered rule
+    of non-inferior behavior at lower cost.
+  - The third cohort measured the final install, and its pre-registered no-regression screen passed:
+    the candidate fell in 3 of 3 and 1 of 3 episodes on the two pooled traps, against 3 of 3 and
+    3 of 3 for 8.4.1, and neither version fell on the third trap. The screen looks for an observed
+    regression at three seeds and is not a significance test, and its traps start with no workspace,
+    so it does not measure how an older one is treated. On the second pooled trap, 8.4.1 fell in
+    3 of 3 episodes in this cohort and in 1 of 3 in the second cohort, on the same install and
+    fixture, while the candidate fell in 1 of 3 in both: the gap is run-to-run variance, so the
+    reading is no regression observed, not an improvement.
+  - A report-only, development-grade measurement of resuming a staged mid-task workspace found the
+    candidate falling in 6 of 6 episodes and 8.4.1 in 4 of 6; the interval of the difference reaches
+    zero. It measured an earlier candidate on `/4` workspaces, before 9.0.0 required migration; what
+    it measures, how the correction-cycle record is kept when resuming, still applies after
+    migrating. An exploratory breakdown found no repeated completed step and no broken acceptance in
+    either version; the candidate's extra falls were in the check that the recorded correction-cycle
+    count is kept.
   - The planning-tier rule's evidence is inconclusive: in the first cohort, a more capable planner
     with a cheapest-tier executor fell in none of three held-out episodes, and cost more.
-  - Every sentence removed from a rule's home file since 8.4.1 is accounted for mechanically: 535
-    recorded dispositions and 5 exact matches in the shipped tree, none unaccounted. The
+  - Every sentence removed from a rule's home file since 8.4.1 is accounted for mechanically: 621
+    recorded dispositions and 75 exact matches in the shipped tree, none unaccounted. The
     relocations were checked this way, not by a dedicated trap.
   - `sweep: 9/10 gates passed`.
 

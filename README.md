@@ -196,7 +196,7 @@ These requests remain available inside the same Tackle entry. They are not extra
 | `migrate` or `upgrade` | Prepare a selected workspace for migration on a disposable copy. |
 | **review lessons**, `retro [<workspace>]` | Review the initiative and propose improvements. |
 
-Visible sizing names map to existing routes: Direct (None), Focused (Lite), and Coordinated (Full). New workspaces use T-ids and `tasks/`; historical P-ids and paths remain readable. New validated boards distinguish Draft, Ready to run, In progress, Checking, and Complete; Blocked, Interrupted, Skipped, and Unverifiable remain separate.
+Visible sizing names map to existing routes: Direct (None), Focused (Lite), and Coordinated (Full). Workspaces use T-ids and `tasks/`; an older one, P-ids included, is migrated before it runs. New validated boards distinguish Draft, Ready to run, In progress, Checking, and Complete; Blocked, Interrupted, Skipped, and Unverifiable remain separate.
 
 Historical records retain their meanings: E1 for independent command verification, E2 for semantic review, E3 for an assertion, and E0 for unverifiable work. They are not an ordinal scale.
 
