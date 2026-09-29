@@ -10,6 +10,8 @@ __pycache__/
 
 docs/plans/
 docs/seeds/
+# The retro learning profile is local maintainer state, like plans and seeds.
+/.tackle/
 
 # graft's local graph cache — regenerable, not committed (run `graft build`).
 /graft/
