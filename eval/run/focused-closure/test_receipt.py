@@ -10,7 +10,11 @@ import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[3]
-RECIPE = (ROOT / 'references/guides/evidence-capture.md').read_text().split('```python\n', 1)[1].split('\n```', 1)[0]
+sys.path.insert(0, str(ROOT))
+from maintaining.install_root import current_root  # noqa: E402
+INSTALL = current_root(ROOT)
+
+RECIPE = (INSTALL / 'references/guides/evidence-capture.md').read_text().split('```python\n', 1)[1].split('\n```', 1)[0]
 
 
 class ReceiptTests(unittest.TestCase):

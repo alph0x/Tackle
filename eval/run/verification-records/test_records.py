@@ -16,11 +16,15 @@ import unittest
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT))
+from maintaining.install_root import current_root  # noqa: E402
+INSTALL = current_root(ROOT)
+
 
 
 def recipe(name):
     return re.findall(r'```python\n(.*?)\n```',
-                      (ROOT / 'references/guides' / name).read_text(), re.S)[0]
+                      (INSTALL / 'references/guides' / name).read_text(), re.S)[0]
 
 
 class Records(unittest.TestCase):
@@ -142,7 +146,7 @@ class Records(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     self.capture.read_record(out, require_pass=True)
         lint = re.findall(r'```python\n(.*?)\n```',
-                          (ROOT / 'references/guides/full-checks.md').read_text(), re.S)[1]
+                          (INSTALL / 'references/guides/full-checks.md').read_text(), re.S)[1]
         namespace = {}
         exec(lint, namespace)
         self.assertEqual(namespace['lint_verdict'](1, dict(record, child_exit=False), b'', b''), 'ERROR')
@@ -177,9 +181,9 @@ class Records(unittest.TestCase):
 
     def test_new_lint_specs_use_explicit_shared_workspace(self):
         lint = re.findall(r'```python\n(.*?)\n```',
-                          (ROOT / 'references/guides/full-checks.md').read_text(), re.S)[1]
+                          (INSTALL / 'references/guides/full-checks.md').read_text(), re.S)[1]
         (self.root / 'lint.py').write_text(lint)
-        source = ROOT / 'references/guides/lint-spec.md'
+        source = INSTALL / 'references/guides/lint-spec.md'
         config = dict(source=str(source), source_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
                       workspace='initiative', slug='demo', rows=[12], capture_script='capture.py',
                       selectors=[dict(glob='input.bin', required=True)], timeout_seconds=2)

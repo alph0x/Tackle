@@ -8,9 +8,14 @@ import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[3]
-GUIDE = ROOT / 'references/guides/full-checks.md'
+import sys
+sys.path.insert(0, str(ROOT))
+from maintaining.install_root import current_root  # noqa: E402
+INSTALL = current_root(ROOT)
+
+GUIDE = INSTALL / 'references/guides/full-checks.md'
 CAPTURE, LINT = re.findall(r'```python\n(.*?)\n```', GUIDE.read_text(), re.S)
-CANONICAL = (ROOT / 'references/guides/lint-spec.md').read_bytes()
+CANONICAL = (INSTALL / 'references/guides/lint-spec.md').read_bytes()
 DIGEST = hashlib.sha256(CANONICAL).hexdigest()
 NS = {}; exec(LINT, NS)
 

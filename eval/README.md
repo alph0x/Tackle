@@ -81,7 +81,7 @@ cohort. The harness stages a control arm with no skill, or a treated arm with th
 by its description alone, and runs every prompt as a headless session. Real runs go through a host-side
 broker and need `--allow-model-calls` and container isolation; no credential reaches a participant. The
 manual A/B workflow and its scoring rubric are the suite mode of the shipped
-[judge guide](../references/guides/judge.md). One seed per scenario is a smoke test, not a benchmark, and
+[judge guide](../skills/tackle/references/guides/judge.md). One seed per scenario is a smoke test, not a benchmark, and
 a null is as informative as a win.
 
 **Designing a trap.** A trap discriminates only when the no-skill control falls into it while the skill

@@ -7,13 +7,18 @@ import hashlib
 import re
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
-REF = ROOT / 'references'
+sys.path.insert(0, str(ROOT))
+from maintaining.install_root import current_root  # noqa: E402
+
+INSTALL = current_root(ROOT)
+REF = INSTALL / 'references'
 SLUG = 'demo'
 NAMESPACE = {'__name__': 'template_drift_test'}
 for _block in re.findall(r'```python\n(.*?)\n```', (REF / 'guides/full-checks.md').read_text(), re.S):
@@ -25,7 +30,7 @@ LEGACY_GLYPHS = ('\U0001F534', '\U0001F7E1', '⏸', '\U0001F7E2', '⚪')
 
 
 def skill_stamp():
-    return re.search(r'^\*\*Tackle (\d+\.\d+\.\d+)\*\*', (ROOT / 'SKILL.md').read_text(), re.M)[1]
+    return re.search(r'^\*\*Tackle (\d+\.\d+\.\d+)\*\*', (INSTALL / 'SKILL.md').read_text(), re.M)[1]
 
 
 def stale_stamps(texts):

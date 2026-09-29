@@ -7,8 +7,13 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[3]
-SOURCE = (ROOT / "references/guides/lint-spec.md").read_bytes()
-RECIPES = re.findall(r"```python\n(.*?)\n```", (ROOT / "references/guides/full-checks.md").read_text(), re.S)
+import sys
+sys.path.insert(0, str(ROOT))
+from maintaining.install_root import current_root  # noqa: E402
+INSTALL = current_root(ROOT)
+
+SOURCE = (INSTALL / "references/guides/lint-spec.md").read_bytes()
+RECIPES = re.findall(r"```python\n(.*?)\n```", (INSTALL / "references/guides/full-checks.md").read_text(), re.S)
 NAMESPACE = {"__name__": "task_identity_test"}
 exec(RECIPES[1], NAMESPACE)
 
@@ -41,19 +46,19 @@ class TaskIdentityTests(unittest.TestCase):
 
     def test_fresh_task_workspace_has_one_identity_across_real_lint_consumer(self):
         self.fixture()
-        task_template = (ROOT / "references/task.tmpl.md").read_text()
+        task_template = (INSTALL / "references/task.tmpl.md").read_text()
         self.assertIn("task-t-0n--title", task_template)
         self.assertNotIn("point-p-0n--title", task_template)
         result = self.row(2)
         self.assertEqual((result.returncode, result.stdout, result.stderr), (0, b"", b""))
 
     def test_fresh_usage_template_does_not_install_legacy_ledger(self):
-        scaffold = (ROOT / "references/guides/scaffold.md").read_text()
-        current = (ROOT / "references/resource-usage.tmpl.md").read_text()
+        scaffold = (INSTALL / "references/guides/scaffold.md").read_text()
+        current = (INSTALL / "references/resource-usage.tmpl.md").read_text()
         self.assertIn("`resource-usage.md` from `resource-usage.tmpl.md`", scaffold)
         self.assertIn("| Run ID | Event | Task | Role |", current)
         self.assertNotIn("| Point |", current)
-        self.assertFalse((ROOT / "references/usage.tmpl.md").exists())
+        self.assertFalse((INSTALL / "references/usage.tmpl.md").exists())
 
     def test_canonical_physical_workspace_paths_pass_real_lint(self):
         self.write("plan.md", "# Plan\n\n## 5. Task decomposition\n| Task | Responsibility |\n|---|---|\n| T-A | Work |\n")
@@ -69,7 +74,7 @@ class TaskIdentityTests(unittest.TestCase):
                 self.assertEqual((result.returncode, result.stdout, result.stderr), (expected_exit, b"", b""))
 
     def test_literal_scaffold_gate_catches_missing_new_core_file(self):
-        guide = (ROOT / "references/guides/scaffold.md").read_text()
+        guide = (INSTALL / "references/guides/scaffold.md").read_text()
         check = re.findall(r"```sh\n(.*?)\n```", guide, re.S)[0].replace("<initiative>", "probe")
         for name in ("README.md", "AGENTS.md", "plan.md", "task-board.md", "history.md", "questions.md", "decisions.md", "reference.md"):
             self.write(name, "# Test\n")
@@ -81,13 +86,13 @@ class TaskIdentityTests(unittest.TestCase):
         self.assertEqual((result.returncode, result.stdout, result.stderr), (0, b"", b""))
 
     def test_new_scaffold_templates_use_physical_names(self):
-        guide = (ROOT / "references/guides/scaffold.md").read_text()
-        file_map = (ROOT / "references/AGENTS.tmpl.md").read_text()
+        guide = (INSTALL / "references/guides/scaffold.md").read_text()
+        file_map = (INSTALL / "references/AGENTS.tmpl.md").read_text()
         for name in ("task-board.md", "history.md", "resource-usage.md"):
             self.assertIn(name, guide + file_map)
         for name in ("task-board.tmpl.md", "history.tmpl.md", "resource-usage.tmpl.md"):
-            self.assertTrue((ROOT / "references" / name).is_file(), name)
-        self.assertIn("bare token without trailing punctuation", (ROOT / "references/task.tmpl.md").read_text())
+            self.assertTrue((INSTALL / "references" / name).is_file(), name)
+        self.assertIn("bare token without trailing punctuation", (INSTALL / "references/task.tmpl.md").read_text())
 
     def test_focused_workspace_uses_new_history_and_usage_paths(self):
         self.write("plan.md", "Gate: Lite\n# Focused\n")

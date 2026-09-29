@@ -9,7 +9,11 @@ import tempfile
 import unittest
 
 REPO = Path(__file__).resolve().parents[3]
-RECIPE = (REPO / 'references/guides/evidence-capture.md').read_text().split('```python\n', 1)[1].split('\n```', 1)[0]
+sys.path.insert(0, str(REPO))
+from maintaining.install_root import current_root  # noqa: E402
+INSTALL = current_root(REPO)
+
+RECIPE = (INSTALL / 'references/guides/evidence-capture.md').read_text().split('```python\n', 1)[1].split('\n```', 1)[0]
 
 
 class CaptureTests(unittest.TestCase):

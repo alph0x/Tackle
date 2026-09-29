@@ -11,7 +11,12 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[3]
-LINT = (ROOT / 'references/guides/lint-spec.md').read_text()
+import sys
+sys.path.insert(0, str(ROOT))
+from maintaining.install_root import current_root  # noqa: E402
+INSTALL = current_root(ROOT)
+
+LINT = (INSTALL / 'references/guides/lint-spec.md').read_text()
 BOARD = ('Schema: tackle-workspace/5\n\n| Task | What | Brief | Depends on | Status | Verification |\n'
          '|---|---|---|---|---|---|\n| T-A | Work | tasks/T-A.md | none | Complete | reports/T-A-report.md |\n')
 HEADER = ('| Run ID | Event | Task | Role | Harness | Tier | Model | Effort | At | Outcome | Attempts | Rework | '

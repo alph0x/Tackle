@@ -14,6 +14,9 @@ import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from maintaining.install_root import current_path  # noqa: E402
+
 SECTIONS = ('Public surface', 'PLAN and RUN', 'Compatibility and state', 'Core conventions', 'Output')
 KEY_LENGTH = 48
 LEDGER = Path('eval/rules/ledger.json')
@@ -153,7 +156,7 @@ def load(repo, relative):
 
 
 def command_units(repo, uncovered_only):
-    found = units((repo / 'SKILL.md').read_text(encoding='utf-8'))
+    found = units(current_path(repo, 'SKILL.md').read_text(encoding='utf-8'))
     named = set()
     if uncovered_only:
         ledger = load(repo, LEDGER)

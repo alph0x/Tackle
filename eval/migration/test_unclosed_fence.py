@@ -19,7 +19,12 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-RECIPES = ROOT / 'references/recipes/migrate'
+import sys
+sys.path.insert(0, str(ROOT))
+from maintaining.install_root import current_root  # noqa: E402
+INSTALL = current_root(ROOT)
+
+RECIPES = INSTALL / 'references/recipes/migrate'
 
 OPEN_FENCE = '```\nan example that opens a fence and never closes it\n'
 

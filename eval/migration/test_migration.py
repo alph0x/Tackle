@@ -7,6 +7,11 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
+import sys
+sys.path.insert(0, str(ROOT))
+from maintaining.install_root import current_root  # noqa: E402
+INSTALL = current_root(ROOT)
+
 
 
 def heading_fragment(line):
@@ -150,7 +155,7 @@ def validate_history(trial, expected):
 
 class MigrationContract(unittest.TestCase):
     def test_public_surface_has_two_actions_and_readonly_status(self):
-        skill = (ROOT / "SKILL.md").read_text()
+        skill = (INSTALL / "SKILL.md").read_text()
         readme = (ROOT / "README.md").read_text()
         for text in (skill, readme):
             self.assertIn("PLAN", text)
@@ -161,23 +166,23 @@ class MigrationContract(unittest.TestCase):
         self.assertIsNotNone(version)
         self.assertIn("Tackle " + version.group(1), readme)
         self.assertIn("`run --one`", skill)
-        invocation = (ROOT / "references/guides/invocation.md").read_text()
+        invocation = (INSTALL / "references/guides/invocation.md").read_text()
         self.assertIn("/tackle-run --one", invocation)
         self.assertIn("aliases", skill)
-        terminology = (ROOT / "references/terminology.md").read_text()
+        terminology = (INSTALL / "references/terminology.md").read_text()
         self.assertIn("retired in 9.0", terminology)
         self.assertNotIn("public surface at eight commands", skill)
 
     def test_status_has_no_log_write_exception(self):
-        status = (ROOT / "references/guides/status.md").read_text()
+        status = (INSTALL / "references/guides/status.md").read_text()
         self.assertIn("never executes a task or edits source, task board,\nhistory", status)
         self.assertIn("Only an explicit handoff request may write", status)
         self.assertNotIn("only write allowed is an optional `log.md` entry", status)
         self.assertIn("STATUS never archives history or appends a status event", status)
 
     def test_aliases_preserve_query_and_execution_intent(self):
-        skill = (ROOT / "SKILL.md").read_text()
-        terminology = (ROOT / "references/terminology.md").read_text()
+        skill = (INSTALL / "SKILL.md").read_text()
+        terminology = (INSTALL / "references/terminology.md").read_text()
         self.assertIn("`implement` | RUN", terminology)
         self.assertIn("`ground`, `trace`, `drill` | PLAN validation", terminology)
         self.assertIn("`pulse` | STATUS", terminology)
@@ -298,8 +303,8 @@ class MigrationContract(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             install = Path(temp) / "skill"
             install.mkdir()
-            shutil.copy2(ROOT / "SKILL.md", install / "SKILL.md")
-            shutil.copytree(ROOT / "references", install / "references")
+            shutil.copy2(INSTALL / "SKILL.md", install / "SKILL.md")
+            shutil.copytree(INSTALL / "references", install / "references")
             files = list(install.rglob("*"))
             self.assertTrue(files)
             self.assertTrue(all(p.is_dir() or p.suffix == ".md" for p in files))

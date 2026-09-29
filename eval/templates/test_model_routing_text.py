@@ -8,15 +8,20 @@ only checks that the required words are there.
 """
 import unittest
 from pathlib import Path
+import sys
 
 ROOT = Path(__file__).resolve().parents[2]
-RUN_CARD = (ROOT / 'references/guides/run-card.md').read_text(encoding='utf-8')
-RUN_MD = (ROOT / 'references/guides/run.md').read_text(encoding='utf-8')
-DECOMPOSE = (ROOT / 'references/guides/decompose-and-lint.md').read_text(encoding='utf-8')
-TEAM = (ROOT / 'references/team.tmpl.md').read_text(encoding='utf-8')
-AGENTS = (ROOT / 'references/AGENTS.tmpl.md').read_text(encoding='utf-8')
-USAGE = (ROOT / 'references/guides/usage-observability.md').read_text(encoding='utf-8')
-TASK_TEMPLATE = (ROOT / 'references/task.tmpl.md').read_text(encoding='utf-8')
+sys.path.insert(0, str(ROOT))
+from maintaining.install_root import current_root  # noqa: E402
+
+INSTALL = current_root(ROOT)
+RUN_CARD = (INSTALL / 'references/guides/run-card.md').read_text(encoding='utf-8')
+RUN_MD = (INSTALL / 'references/guides/run.md').read_text(encoding='utf-8')
+DECOMPOSE = (INSTALL / 'references/guides/decompose-and-lint.md').read_text(encoding='utf-8')
+TEAM = (INSTALL / 'references/team.tmpl.md').read_text(encoding='utf-8')
+AGENTS = (INSTALL / 'references/AGENTS.tmpl.md').read_text(encoding='utf-8')
+USAGE = (INSTALL / 'references/guides/usage-observability.md').read_text(encoding='utf-8')
+TASK_TEMPLATE = (INSTALL / 'references/task.tmpl.md').read_text(encoding='utf-8')
 
 
 def escalation_limits_section():

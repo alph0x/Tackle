@@ -5,8 +5,13 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[3]
+import sys
+sys.path.insert(0, str(ROOT))
+from maintaining.install_root import current_root  # noqa: E402
+INSTALL = current_root(ROOT)
+
 # The RUN chain: the RUN card and its depth, run.md.
-RUN = "\n".join((ROOT / "references/guides" / name).read_text()
+RUN = "\n".join((INSTALL / "references/guides" / name).read_text()
                 for name in ("run-card.md", "run.md"))
 
 
@@ -22,9 +27,9 @@ class RunProtocol(unittest.TestCase):
         self.assertIn("All tasks passing is insufficient", RUN)
 
     def test_docs_bind_templates_to_run_without_competing_loops(self):
-        team = (ROOT / "references/team.tmpl.md").read_text()
-        agents = (ROOT / "references/AGENTS.tmpl.md").read_text()
-        current_work = (ROOT / "references/current-work.tmpl.md").read_text()
+        team = (INSTALL / "references/team.tmpl.md").read_text()
+        agents = (INSTALL / "references/AGENTS.tmpl.md").read_text()
+        current_work = (INSTALL / "references/current-work.tmpl.md").read_text()
         for text in [team, agents]:
             self.assertIn("references/guides/run.md", text)
             self.assertNotIn("Pre-wave verification gate", text)
@@ -34,7 +39,7 @@ class RunProtocol(unittest.TestCase):
         self.assertIn("Initiative unowned-integration cycles", current_work)
 
     def test_run_guidance_refuses_an_older_workspace_before_its_first_write(self):
-        references = ROOT / "references"
+        references = INSTALL / "references"
         card = " ".join((references / "guides/run-card.md").read_text().split())
         refusal = card.index("stop with `migrate first` before any write unless it declares `Schema: tackle-workspace/5`")
         self.assertLess(card.index("1. **Read.**"), refusal)

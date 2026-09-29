@@ -9,8 +9,12 @@ import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[3]
-CAPTURE, LINT = re.findall(r'```python\n(.*?)\n```', (ROOT/'references/guides/full-checks.md').read_text(), re.S)
-SOURCE = (ROOT/'references/guides/lint-spec.md').read_bytes()
+sys.path.insert(0, str(ROOT))
+from maintaining.install_root import current_root  # noqa: E402
+INSTALL = current_root(ROOT)
+
+CAPTURE, LINT = re.findall(r'```python\n(.*?)\n```', (INSTALL/'references/guides/full-checks.md').read_text(), re.S)
+SOURCE = (INSTALL/'references/guides/lint-spec.md').read_bytes()
 SHA = hashlib.sha256(SOURCE).hexdigest()
 NS = {'__name__': 'documented_lint'}
 exec(LINT, NS)
@@ -129,7 +133,7 @@ class IsolatedVeracity(unittest.TestCase):
                       destination='lint-evidence', timeout_seconds=2)
         (self.workspace/'AGENTS.md').write_text('Reference staleness window: 14\n')
         if external:
-            config['source'] = str(ROOT/'references/guides/lint-spec.md')
+            config['source'] = str(INSTALL/'references/guides/lint-spec.md')
         (self.root/'lint.json').write_text(json.dumps(config))
         run = subprocess.run([sys.executable, 'lint.py', 'lint.json'], cwd=self.root, capture_output=True, timeout=10)
         self.assertEqual(run.returncode, 1, run.stderr)

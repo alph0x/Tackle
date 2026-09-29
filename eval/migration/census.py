@@ -24,7 +24,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-RECIPES = HERE.parent.parent / 'references/recipes/migrate'
+REPO = HERE.parents[1]
+sys.path.insert(0, str(REPO))
+from maintaining.install_root import current_root  # noqa: E402
+
+INSTALL = current_root(REPO)
+RECIPES = INSTALL / 'references/recipes/migrate'
 
 
 def load_block(path, namespace=None):

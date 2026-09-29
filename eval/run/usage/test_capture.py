@@ -9,7 +9,11 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[3]
-GUIDE = ROOT / "references/guides/codex-native-usage.md"
+sys.path.insert(0, str(ROOT))
+from maintaining.install_root import current_root  # noqa: E402
+INSTALL = current_root(ROOT)
+
+GUIDE = INSTALL / "references/guides/codex-native-usage.md"
 
 
 def recipe():

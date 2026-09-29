@@ -36,6 +36,9 @@ import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
+from maintaining.install_root import current_path, current_root  # noqa: E402
+
 MIN_WORDS = 8
 THRESHOLD = 0.5
 FENCE = re.compile(r'^\s{0,3}(`{3,}|~{3,})')
@@ -207,14 +210,18 @@ def main(argv=None):
     parser.add_argument('--accept', help='path to an accepted-duplicates JSON file (see module docstring)')
     args = parser.parse_args(argv)
     repo = args.repo
-    names = chain_files(repo, args.chain) if args.chain else list(args.files)
-    entries = []
-    for name in names:
-        path = repo / name
-        if not path.is_file():
-            print('error: missing file: ' + name, file=sys.stderr)
-            return 2
-        entries.extend((name, unit) for unit in units(path.read_text(encoding='utf-8')))
+    try:
+        names = chain_files(repo, args.chain) if args.chain else list(args.files)
+        entries = []
+        for name in names:
+            path = current_path(repo, name)
+            if not path.is_file():
+                print('error: missing file: ' + name, file=sys.stderr)
+                return 2
+            entries.extend((name, unit) for unit in units(path.read_text(encoding='utf-8')))
+    except OSError as error:
+        print('error: ' + str(error), file=sys.stderr)
+        return 2
     found = pairs(entries)
     if not args.accept:
         for value, (left_name, left_line), (right_name, right_line) in found:
@@ -252,9 +259,10 @@ def chain_files(repo, chain):
     if chain != 'run':
         raise ValueError('unknown chain: ' + chain)
     names = ['references/guides/run-card.md', 'references/guides/run.md']
-    recipes = repo / 'references/recipes'
+    install = current_root(repo)
+    recipes = install / 'references/recipes'
     if recipes.is_dir():
-        names += sorted(path.relative_to(repo).as_posix() for path in recipes.glob('*.md') if path.is_file())
+        names += sorted(path.relative_to(install).as_posix() for path in recipes.glob('*.md') if path.is_file())
     return names
 
 

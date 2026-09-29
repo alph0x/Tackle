@@ -64,19 +64,30 @@ A scoped request such as “plan and implement this refactor” authorizes both 
 <details>
 <summary>Manual installation and updates</summary>
 
-From a checkout of this repository, copy `SKILL.md` and `references/` into your agent's skill directory. For Claude Code:
+From a checkout of this repository, copy `skills/tackle/SKILL.md` and `skills/tackle/references/` into your agent's skill directory. For Claude Code:
 
 ```sh
 mkdir -p ~/.claude/skills/tackle
-cp SKILL.md ~/.claude/skills/tackle/
-cp -r references ~/.claude/skills/tackle/
+cp skills/tackle/SKILL.md ~/.claude/skills/tackle/
+cp -R skills/tackle/references ~/.claude/skills/tackle/
 ```
 
 For Cursor, use `~/.cursor/skills/tackle/`. Other agents use their own skill directory. Tackle follows the [Agent Skills](https://github.com/anthropics/skills) format.
 
-The install contains only `SKILL.md` and `references/`. Repository branding, development tools, and evaluation fixtures are not part of the installed skill.
+The install contains only `SKILL.md` and `references/`, with 55 installation-relative files. Repository branding, development tools, and evaluation fixtures are not part of the installed skill.
+The checkout copy commands above copy those files into the selected directory and leave any other files already there.
 
-You control updates through the [manual update guide](references/guides/update.md). Ordinary invocation leaves the installation untouched and performs no network access. Restart your session after an update if your agent cannot reload skills.
+The update checks used skills@1.7.0 in controlled synthetic Git fixtures; they did not change a real installation or test the public GitHub API route. In a copy-mode reinstall using `--copy -a claude-code -y -g`, the selected Claude Code directory received the exact 55-file artifact. That route refreshed the selected agent copy and lock while leaving any old canonical `.agents/skills/tackle` directory untouched.
+
+In two fresh synthetic global fixtures, default symlink mode with `--skill tackle -a claude-code codex -y -g` replaced the canonical `.agents/skills/tackle` directory with the exact artifact and linked Claude Code to it. Codex resolves the canonical `.agents/skills` directory; this command does not create a separate `.codex/skills/tackle` link. Seeded floating and pinned ordinary updates exited successfully while retaining the old root-layout path and bytes; the pinned lock still named v9.0.0. These results do not establish automatic migration of older installs.
+
+After the v9.0.1 tag exists publicly, the tested flags can be used with this proposed source command:
+
+```sh
+npx --yes skills@1.7.0 add 'https://github.com/alph0x/Tackle.git#v9.0.1' --skill tackle -a claude-code codex -y -g
+```
+
+That public release reference and the GitHub API fast path have not been tested. The controlled source used `.invalid#packaging-preparation-02`, rewritten to a local clone, with synthetic old-lock seeds. An earlier parser-invalid root probe selected a same-name two-file fixture; the 1,476-file figure describes repository/package blast radius or conditional root-copy risk, not observed historical installed content. Restart your session after an update if your agent cannot reload skills.
 
 </details>
 
@@ -95,7 +106,7 @@ STATUS reads current progress without starting or changing work.
 
 **RUN** executes authorized, ready work in dependency order. It checks results, corrects within the allowed budget, and checks the final deliverable before closing the initiative. Verification is part of execution, not an extra step you must remember to request.
 
-For code, PLAN chooses the checks before implementation. Tackle prefers an end-to-end check through the real consumer as the sole new test when it covers the contract; complex integrated features require one when feasible. Any necessary isolated test starts with a failure-mode inventory and is written before its implementation. Every end-to-end run retains a [repeatable verification artifact](references/guides/testing.md#replayable-e2e-artifact).
+For code, PLAN chooses the checks before implementation. Tackle prefers an end-to-end check through the real consumer as the sole new test when it covers the contract; complex integrated features require one when feasible. Any necessary isolated test starts with a failure-mode inventory and is written before its implementation. Every end-to-end run retains a [repeatable verification artifact](skills/tackle/references/guides/testing.md#replayable-e2e-artifact).
 
 **STATUS** reads progress, lists plans, or identifies the next task. An unqualified “resume” is also read-only. Explicit execution intent enters RUN; `--handoff` writes only the requested handoff.
 
@@ -107,7 +118,7 @@ For code, PLAN chooses the checks before implementation. Tackle prefers an end-t
 | `status [<workspace>]`, `list`, or `next` | Read current progress or find the next task. |
 | `status <workspace> --handoff` | Write a handoff for the next session. |
 
-Status questions during an authorized run do not cancel that authorization. Unclear requests are clarified before action. See the [request guide](references/guides/invocation.md) for intent boundaries, and [terminology](references/terminology.md) for retired action-name aliases.
+Status questions during an authorized run do not cancel that authorization. Unclear requests are clarified before action. See the [request guide](skills/tackle/references/guides/invocation.md) for intent boundaries, and [terminology](skills/tackle/references/terminology.md) for retired action-name aliases.
 
 ### What makes a task ready to hand off?
 
@@ -152,7 +163,7 @@ Additional contracts, architecture notes, reports, and snapshots depend on the w
 
 Long initiatives can prepare current tasks while leaving later milestones at outcome/interface level. Current-work views are checked against their source revisions; original history and failed attempts remain recoverable. Optional retention policies manage verification records without treating retired data as current proof.
 
-See [workspace sizing](references/guides/intake-and-gate.md#step-2--gate-sizing-full--lite--none), [current-work context](references/guides/context-lifecycle.md), and [record lifecycle](references/guides/record-lifecycle.md).
+See [workspace sizing](skills/tackle/references/guides/intake-and-gate.md#step-2--gate-sizing-full--lite--none), [current-work context](skills/tackle/references/guides/context-lifecycle.md), and [record lifecycle](skills/tackle/references/guides/record-lifecycle.md).
 
 ## What counts as complete
 
@@ -166,20 +177,20 @@ A task allows at most three failed correction-validation cycles; two identical n
 
 Tackle is a method an agent follows. The agent still needs the tools, permissions, and reviewer capabilities required by the task. Verification records show what was actually checked; they do not establish correctness beyond those checks.
 
-See the [RUN card](references/guides/run-card.md) and [failure-modes catalog](references/failure-modes.md).
+See the [RUN card](skills/tackle/references/guides/run-card.md) and [failure-modes catalog](skills/tackle/references/failure-modes.md).
 
 ## Documentation
 
 | Need | Guide |
 |---|---|
-| Understand requests and authorization | [Invocation](references/guides/invocation.md) |
-| Choose the right planning scope | [Sizing](references/guides/intake-and-gate.md) |
-| Understand task checks and completion | [RUN card](references/guides/run-card.md) |
-| Keep a long initiative navigable | [Context lifecycle](references/guides/context-lifecycle.md) |
-| Manage retained verification records | [Record lifecycle](references/guides/record-lifecycle.md) |
-| Audit results or review lessons | [Audit](references/guides/judge.md) · [Retro](references/guides/retro.md) |
-| Read terminology or migrate existing plans | [Terminology](references/terminology.md) · [Migration](references/guides/migrate.md) |
-| Update the installed skill | [Owner-controlled updates](references/guides/update.md) |
+| Understand requests and authorization | [Invocation](skills/tackle/references/guides/invocation.md) |
+| Choose the right planning scope | [Sizing](skills/tackle/references/guides/intake-and-gate.md) |
+| Understand task checks and completion | [RUN card](skills/tackle/references/guides/run-card.md) |
+| Keep a long initiative navigable | [Context lifecycle](skills/tackle/references/guides/context-lifecycle.md) |
+| Manage retained verification records | [Record lifecycle](skills/tackle/references/guides/record-lifecycle.md) |
+| Audit results or review lessons | [Audit](skills/tackle/references/guides/judge.md) · [Retro](skills/tackle/references/guides/retro.md) |
+| Read terminology or migrate existing plans | [Terminology](skills/tackle/references/terminology.md) · [Migration](skills/tackle/references/guides/migrate.md) |
+| Update the installed skill | [Owner-controlled updates](skills/tackle/references/guides/update.md) |
 | Follow project changes | [Changelog](CHANGELOG.md) |
 
 <details>
@@ -200,20 +211,20 @@ Visible sizing names map to existing routes: Direct (None), Focused (Lite), and 
 
 Historical records retain their meanings: E1 for independent command verification, E2 for semantic review, E3 for an assertion, and E0 for unverifiable work. They are not an ordinal scale.
 
-During 8.x, documented slash forms such as `/tackle-run` and `/tackle-verify` preserve their intent boundaries when the host passes them as text; they do not register separate picker entries. The retiring 8.x action-name aliases keep their historical targets in [terminology.md](references/terminology.md).
+During 8.x, documented slash forms such as `/tackle-run` and `/tackle-verify` preserve their intent boundaries when the host passes them as text; they do not register separate picker entries. The retiring 8.x action-name aliases keep their historical targets in [terminology.md](skills/tackle/references/terminology.md).
 
-The install keeps the head of the checklist chain v2.0 → v9.0: [8.4 → 9.0](references/guides/migrate.md#v84--v90-checklist), [8.4.0 → 8.4.1](references/guides/migrate.md#v840--v841-checklist) and [8.3 → 8.4](references/guides/migrate.md#v83--v84-checklist). The historical checklists, v2.0 → v8.3, live in the repository's [`maintaining/migrations.md`](maintaining/migrations.md), including [8.2 → 8.3](maintaining/migrations.md#v82--v83-checklist), [8.1 → 8.2](maintaining/migrations.md#v81--v82-checklist), [8.0 → 8.1](maintaining/migrations.md#v80--v81-checklist), and the [copy-first 7.3 → 8.0 transition](maintaining/migrations.md#v73--v80-checklist).
+The install keeps the head of the checklist chain v2.0 → v9.0: [8.4 → 9.0](skills/tackle/references/guides/migrate.md#v84--v90-checklist), [8.4.0 → 8.4.1](skills/tackle/references/guides/migrate.md#v840--v841-checklist) and [8.3 → 8.4](skills/tackle/references/guides/migrate.md#v83--v84-checklist). The historical checklists, v2.0 → v8.3, live in the repository's [`maintaining/migrations.md`](maintaining/migrations.md), including [8.2 → 8.3](maintaining/migrations.md#v82--v83-checklist), [8.1 → 8.2](maintaining/migrations.md#v81--v82-checklist), [8.0 → 8.1](maintaining/migrations.md#v80--v81-checklist), and the [copy-first 7.3 → 8.0 transition](maintaining/migrations.md#v73--v80-checklist).
 
 </details>
 
 <details>
 <summary>Learning and usage records</summary>
 
-A retro reads the task board and history (`task-board.md` and `history.md`) to propose lessons. You confirm profile changes before they are written. “Stop evolving” pauses or removes that learning through the retro workflow. [Reference plans](references/archetypes/README.md) provide proven decomposition structures that the agent can propose during intake, stored under `.tackle/archetypes/` (project) or `~/.tackle/archetypes/` (user).
+A retro reads the task board and history (`task-board.md` and `history.md`) to propose lessons. You confirm profile changes before they are written. “Stop evolving” pauses or removes that learning through the retro workflow. [Reference plans](skills/tackle/references/archetypes/README.md) provide proven decomposition structures that the agent can propose during intake, stored under `.tackle/archetypes/` (project) or `~/.tackle/archetypes/` (user).
 
 The `resource-usage.md` ledger records observed role events even without token or cost data. Unknown values stay `n/a`. Optional `resource-usage.telemetry.jsonl` observations are never required to close a task.
 
-Totals and rankings require complete, comparable coverage; model-tier or effort recommendations also require three completed, comparable runs. See [usage observability](references/guides/usage-observability.md) and the optional [Codex native capture recipe](references/guides/codex-native-usage.md).
+Totals and rankings require complete, comparable coverage; model-tier or effort recommendations also require three completed, comparable runs. See [usage observability](skills/tackle/references/guides/usage-observability.md) and the optional [Codex native capture recipe](skills/tackle/references/guides/codex-native-usage.md).
 
 Optional capability profiles cover [Claude Code](extras/collectors/claude-code.md), [Oh My Pi](extras/collectors/oh-my-pi.md), [OpenAI Responses](extras/collectors/openai-responses.md), [Antigravity CLI](extras/collectors/antigravity-cli.md), [OpenCode](extras/collectors/opencode.md), [Kimi Code](extras/collectors/kimi-code.md), and [Cursor](extras/collectors/cursor.md). Profiles describe available data and its limits; they neither install integrations nor collect data automatically.
 
@@ -240,7 +251,7 @@ Before release, the [release sweep](MAINTAINING.md#release-sweep) runs 8 shipped
 
 Mechanical gate procedures cover `lint` rows, `catalog` integrity, each `done-signal`, the two-phase `ground` check, `eval` method arms, and `init` artifact completeness. Required independent review also gates completion. Release publication requires a separate owner request.
 
-For deeper changes, see [team capabilities](references/team.tmpl.md) and [discovery and experiment tasks](references/guides/decompose-and-lint.md).
+For deeper changes, see [team capabilities](skills/tackle/references/team.tmpl.md) and [discovery and experiment tasks](skills/tackle/references/guides/decompose-and-lint.md).
 
 </details>
 

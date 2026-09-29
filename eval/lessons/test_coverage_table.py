@@ -18,9 +18,14 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+import sys
+sys.path.insert(0, str(ROOT))
+from maintaining.install_root import current_root  # noqa: E402
+INSTALL = current_root(ROOT)
+
 HERE = Path(__file__).resolve().parent
-RETRO = ROOT / 'references/guides/retro.md'
-RETRO_TMPL = ROOT / 'references/retro.tmpl.md'
+RETRO = INSTALL / 'references/guides/retro.md'
+RETRO_TMPL = INSTALL / 'references/retro.tmpl.md'
 
 
 def extract_fixture_recipe_command(text=None):

@@ -1,6 +1,6 @@
 ---
 name: tackle
-description: Use for durable planning and explicit task execution of multi-session work: plan, run and status (planificar, ejecutar y estado), plus migration, validation and lessons.
+description: "Use for durable planning and explicit task execution of multi-session work: plan, run and status (planificar, ejecutar y estado), plus migration, validation and lessons."
 ---
 
 # Tackle

@@ -18,6 +18,9 @@ import subprocess
 import sys
 from pathlib import Path, PurePosixPath
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from maintaining.install_root import current_path  # noqa: E402
+
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import inventory  # noqa: E402
 
@@ -89,8 +92,12 @@ class Files:
 
     def lines(self, path_text):
         if path_text not in self.cache:
-            target = self.repo / path_text
-            self.cache[path_text] = target.read_text(encoding='utf-8').splitlines() if target.is_file() else None
+            try:
+                target = current_path(self.repo, path_text)
+            except OSError:
+                target = None
+            self.cache[path_text] = (target.read_text(encoding='utf-8').splitlines()
+                                     if target is not None and target.is_file() else None)
         return self.cache[path_text]
 
     def place(self, text):
@@ -602,7 +609,7 @@ def run_gate(report, repo, base_rev, evidence_cohort, candidate_ledger):
 
 def check_coverage(report, repo, rules, non_normative):
     try:
-        found = inventory.units((repo / 'SKILL.md').read_text(encoding='utf-8'))
+        found = inventory.units(current_path(repo, 'SKILL.md').read_text(encoding='utf-8'))
     except OSError:
         report.error('SKILL.md: missing')
         return

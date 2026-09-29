@@ -8,10 +8,16 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[3]
+import sys
+sys.path.insert(0, str(ROOT))
+from maintaining.install_root import current_root  # noqa: E402
+INSTALL = current_root(ROOT)
+
 
 
 def recipe(name, ordinal=0):
-    text = (ROOT / name).read_text()
+    root = ROOT if name == 'maintaining/migrations.md' else INSTALL
+    text = (root / name).read_text()
     block = text.split('```python\n')[ordinal + 1].split('\n```')[0]
     namespace = {'__name__': 'tested_recipe'}
     exec(compile(block, name, 'exec'), namespace)
@@ -42,7 +48,7 @@ def preparation(tasks=None, selected=None, available=None, requirements=None):
 
 
 def row(number, files):
-    source = (ROOT / 'references/guides/lint-spec.md').read_bytes()
+    source = (INSTALL / 'references/guides/lint-spec.md').read_bytes()
     commands = LINT['canonical_rows'](source, hashlib.sha256(source).hexdigest(), 'sample')
     with tempfile.TemporaryDirectory() as tmp:
         workspace = Path(tmp) / 'docs/plans/sample'
@@ -301,7 +307,7 @@ class TaskContracts(unittest.TestCase):
         self.assertTrue(result['exhausted'])
 
     def test_new_workspace_runs_all_canonical_rows(self):
-        source = (ROOT / 'references/guides/lint-spec.md').read_bytes()
+        source = (INSTALL / 'references/guides/lint-spec.md').read_bytes()
         commands = LINT['canonical_rows'](source, hashlib.sha256(source).hexdigest(), 'sample')
         files = layout(**{'task-board.md': task_board('Ready to run', 'ready: readiness record'),
                           'tasks/T-A.md': '# Task T-A\n- **Depends on**: none\n- **Write scope**: src/\n- **Effort**: low\n',
@@ -347,7 +353,7 @@ class TaskContracts(unittest.TestCase):
 
 
     def test_retro_queries_read_the_board_without_counting_other_columns(self):
-        template = (ROOT / 'references/retro.tmpl.md').read_text()
+        template = (INSTALL / 'references/retro.tmpl.md').read_text()
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             (root / 'task-board.md').write_text(task_board('Complete') +

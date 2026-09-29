@@ -7,7 +7,12 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-LINT_SPEC = ROOT / "references/guides/lint-spec.md"
+import sys
+sys.path.insert(0, str(ROOT))
+from maintaining.install_root import current_root  # noqa: E402
+INSTALL = current_root(ROOT)
+
+LINT_SPEC = INSTALL / "references/guides/lint-spec.md"
 
 
 def canonical_command(row: int) -> str:

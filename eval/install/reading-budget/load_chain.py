@@ -24,6 +24,9 @@ import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
+from maintaining.install_root import current_root  # noqa: E402
+
 CHAIN_LIMIT, CARD_LIMIT = 4000, 820
 CARD = 'references/guides/run-card.md'
 ENTRY, BRIEF_PROXY = 'SKILL.md', 'references/task.tmpl.md'
@@ -134,21 +137,22 @@ def section_lines(lines, fragment, name):
 
 def measure(repo, card=CARD):
     repo = Path(repo).resolve()
+    install = current_root(repo)
     for name in (ENTRY, card, BRIEF_PROXY):
-        if not (repo / name).is_file():
+        if not (install / name).is_file():
             raise ChainError('missing file: ' + name)
-    card_path = (repo / card).resolve()
+    card_path = (install / card).resolve()
     card_bytes = card_path.read_bytes()
-    counted = {(repo / ENTRY).resolve(), card_path, (repo / BRIEF_PROXY).resolve()}
-    words = count_words((repo / ENTRY).read_bytes()) + count_words(card_bytes) + \
-        count_words((repo / BRIEF_PROXY).read_bytes())
+    counted = {(install / ENTRY).resolve(), card_path, (install / BRIEF_PROXY).resolve()}
+    words = count_words((install / ENTRY).read_bytes()) + count_words(card_bytes) + \
+        count_words((install / BRIEF_PROXY).read_bytes())
     order, selected = [], {}
     for target in mandatory_targets(card_bytes.decode('utf-8')):
         if EXTERNAL.match(target) or target.startswith('#'):
             continue
         path_part, _, fragment = target.partition('#')
         path = (card_path.parent / path_part).resolve()
-        if not path.is_relative_to(repo):
+        if not path.is_relative_to(install):
             raise ChainError('link leaves the repository: ' + target)
         if not path.is_file():
             raise ChainError('link target missing: ' + target)
@@ -156,9 +160,9 @@ def measure(repo, card=CARD):
             continue
         lines = path.read_bytes().split(b'\n')
         text_lines = [line.decode('utf-8') for line in lines]
-        wanted = section_lines(text_lines, fragment, path.relative_to(repo).as_posix()) if fragment \
+        wanted = section_lines(text_lines, fragment, path.relative_to(install).as_posix()) if fragment \
             else set(range(len(lines)))
-        label = path.relative_to(repo).as_posix() + ('#' + fragment if fragment else '')
+        label = path.relative_to(install).as_posix() + ('#' + fragment if fragment else '')
         if path not in selected:
             selected[path] = set()
         if not wanted <= selected[path]:

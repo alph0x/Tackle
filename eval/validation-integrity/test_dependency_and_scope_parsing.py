@@ -1,11 +1,18 @@
 from __future__ import annotations
 
 import re
+import sys
 import tempfile
 import unittest
 from pathlib import Path
 
 from test_fields import board, canonical_command, run_command
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+from maintaining.install_root import current_root  # noqa: E402
+
+INSTALL = current_root(ROOT)
 
 LAYOUT = {"history.md": "# History\n", "resource-usage.md": "# Resource usage\n"}
 
@@ -52,7 +59,7 @@ class DependencyAndScopeParsingTests(unittest.TestCase):
         self.assertEqual("", self.observe(2, self.fields("- **Depends on**: T-A\n", plan, "T-A")))
 
     def test_official_template_task_cell(self):
-        template = (Path(__file__).resolve().parents[2] / "references/plan.tmpl.md").read_text()
+        template = (INSTALL / "references/plan.tmpl.md").read_text()
         cell = next(line for line in template.splitlines() if line.startswith("| **T-"))
         identity = re.match(r"\| \*\*(T-[A-Za-z0-9]+)", cell)[1]
         files = {"docs/plans/probe/" + name: text for name, text in LAYOUT.items()}

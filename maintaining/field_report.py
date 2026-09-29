@@ -461,7 +461,8 @@ _MAINTENANCE_DIRS = ('maintaining/', 'extras/', '.github/')
 
 
 def classify_path(path):
-    if path == 'SKILL.md' or path.startswith('references/'):
+    if (path == 'SKILL.md' or path.startswith('references/')
+            or path == 'skills/tackle/SKILL.md' or path.startswith('skills/tackle/references/')):
         return 'skill'
     if path.startswith('eval/'):
         return 'evaluation'

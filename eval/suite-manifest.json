@@ -161,9 +161,10 @@
     {
       "path": "eval/install/inventory",
       "files": [
-        "test_install.py"
+        "test_install.py",
+        "test_install_root.py"
       ],
-      "tests": 17
+      "tests": 26
     },
     {
       "path": "eval/install/reading-budget",

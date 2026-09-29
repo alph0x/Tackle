@@ -22,6 +22,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent.parent
 TOOL = HERE / 'check_unit_diff.py'
+sys.path.insert(0, str(REPO))
+from maintaining.install_root import revision_path  # noqa: E402
 
 GIT_ENV = {'GIT_AUTHOR_NAME': 'fixture', 'GIT_AUTHOR_EMAIL': 'fixture@invalid', 'GIT_COMMITTER_NAME': 'fixture',
            'GIT_COMMITTER_EMAIL': 'fixture@invalid', 'GIT_CONFIG_NOSYSTEM': '1', 'HOME': '/nonexistent'}
@@ -65,6 +67,9 @@ class GitRepoTestCase(unittest.TestCase):
         self.repo = Path(self.tmp.name) / 'repo'
         self.repo.mkdir()
         self.git('init', '-q', '-b', 'main')
+        # Inert installation shape; no sentence units or changed case semantics.
+        self.write('SKILL.md', '')
+        self.write('references/.keep', '')
 
     def git(self, *args):
         env = dict(os.environ, **GIT_ENV)
@@ -662,7 +667,8 @@ class RealDataEquivalenceFrozen(unittest.TestCase):
     }
 
     def git_show(self, revision):
-        result = subprocess.run(['git', '-C', str(REPO), 'show', '%s:references/guides/plan-card.md' % revision],
+        path = revision_path(REPO, revision, 'references/guides/plan-card.md')
+        result = subprocess.run(['git', '-C', str(REPO), 'show', '%s:%s' % (revision, path)],
                                  capture_output=True, text=True, check=True)
         return result.stdout
 

@@ -19,6 +19,11 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
+import sys
+sys.path.insert(0, str(ROOT))
+from maintaining.install_root import current_root  # noqa: E402
+INSTALL = current_root(ROOT)
+
 
 
 # ---------------------------------------------------------------------------
@@ -77,13 +82,17 @@ def anchors_of(path):
 def in_scope_files(root):
     """The published Markdown surface: the installed skill, top-level project docs, and the
     repository files a relocation can move content into or out of."""
+    root = Path(root)
+    install = INSTALL if root.resolve() == ROOT.resolve() else root
     out = []
-    for name in ('SKILL.md', 'README.md', 'AGENTS.md', 'MAINTAINING.md', 'CHANGELOG.md'):
+    candidate = install / 'SKILL.md'
+    if candidate.is_file():
+        out.append(candidate)
+    for name in ('README.md', 'AGENTS.md', 'MAINTAINING.md', 'CHANGELOG.md'):
         candidate = root / name
         if candidate.is_file():
             out.append(candidate)
-    for directory in ('references', 'maintaining', 'extras'):
-        base = root / directory
+    for base in (install / 'references', root / 'maintaining', root / 'extras'):
         if base.is_dir():
             out.extend(sorted(p for p in base.rglob('*.md') if p.is_file()))
     return out
@@ -92,6 +101,8 @@ def in_scope_files(root):
 def check_links(root):
     """Every relative markdown link in the in-scope files resolves to a file, and to an
     anchor where one is given. Returns a list of problem strings, naming the file."""
+    root = Path(root)
+    install = INSTALL if root.resolve() == ROOT.resolve() else root
     problems = []
     for source in in_scope_files(root):
         text = strip_fences(source.read_text(encoding='utf-8', errors='replace'))
@@ -100,7 +111,11 @@ def check_links(root):
             if not target or target.startswith(('http://', 'https://', 'mailto:', '#')):
                 continue
             path_part, _, fragment = target.partition('#')
-            resolved = (source.parent / path_part).resolve() if path_part else source
+            if (path_part in ('references', 'references/') or path_part.startswith('references/')) \
+                    and source.parent.resolve() == root.resolve() and root.resolve() == ROOT.resolve():
+                resolved = (install / path_part).resolve()
+            else:
+                resolved = (source.parent / path_part).resolve() if path_part else source
             if not resolved.exists():
                 problems.append('%s: target missing: %s' % (source.relative_to(root), target))
                 continue
@@ -134,6 +149,8 @@ def archetype_leaks(root, moved_names=MOVED_ARCHETYPES, moved_hashes=None):
     under ``root``'s shipped surface (``SKILL.md`` + ``references/**``), checked by a sha256 sweep
     -- not only the specific old/new path pair. ``moved_hashes`` defaults to hashing each moved
     file at its own new home (``maintaining/archetypes/``) under ``root``."""
+    root = Path(root)
+    install = INSTALL if root.resolve() == ROOT.resolve() else root
     if moved_hashes is None:
         moved_hashes = {}
         for name in moved_names:
@@ -141,7 +158,8 @@ def archetype_leaks(root, moved_names=MOVED_ARCHETYPES, moved_hashes=None):
             if target.is_file():
                 moved_hashes[sha256(target.read_bytes())] = name
     problems = []
-    shipped = [root / 'SKILL.md'] + (sorted((root / 'references').rglob('*')) if (root / 'references').is_dir() else [])
+    shipped = [install / 'SKILL.md'] + (sorted((install / 'references').rglob('*'))
+                                        if (install / 'references').is_dir() else [])
     for path in shipped:
         if not path.is_file():
             continue
@@ -164,25 +182,25 @@ class InstallInventoryTests(unittest.TestCase):
     maintaining files exist outside the install."""
 
     def test_changelog_is_not_in_the_install(self):
-        self.assertFalse((ROOT / 'references/CHANGELOG.md').exists())
+        self.assertFalse((INSTALL / 'references/CHANGELOG.md').exists())
         self.assertTrue((ROOT / 'CHANGELOG.md').is_file())
 
     def test_collectors_are_not_in_the_install(self):
-        self.assertFalse((ROOT / 'references/collectors').exists())
+        self.assertFalse((INSTALL / 'references/collectors').exists())
         self.assertTrue((ROOT / 'extras/collectors').is_dir())
 
     def test_validator_example_is_not_in_the_install(self):
-        self.assertFalse((ROOT / 'references/guides/validator-example.md').exists())
+        self.assertFalse((INSTALL / 'references/guides/validator-example.md').exists())
         self.assertTrue((ROOT / 'extras/validator-example.md').is_file())
 
     def test_historical_checklists_are_not_in_the_install(self):
-        text = (ROOT / 'references/guides/migrate.md').read_text(encoding='utf-8')
+        text = (INSTALL / 'references/guides/migrate.md').read_text(encoding='utf-8')
         for stale in ('## v8.2 → v8.3 checklist', '## v7.3 → v8.0 checklist',
                      '## v2.0 → v2.1.0 checklist', 'F-1 · Agent contract'):
             self.assertNotIn(stale, text, 'historical content still in the install: %r' % stale)
 
     def test_release_and_self_lint_gate_sections_are_not_in_the_install(self):
-        text = (ROOT / 'references/guides/lint-spec.md').read_text(encoding='utf-8')
+        text = (INSTALL / 'references/guides/lint-spec.md').read_text(encoding='utf-8')
         for stale in ('## Release sweep', '### Skill self-lint gates'):
             self.assertNotIn(stale, text, 'maintainer content still in the install: %r' % stale)
 
@@ -191,14 +209,14 @@ class InstallInventoryTests(unittest.TestCase):
         self.assertTrue((ROOT / 'maintaining/migrations.md').is_file())
         # Confirms the install artifact boundary is unaffected: update.md's own gate 6 scope is
         # exactly SKILL.md + references/, never repo-root MAINTAINING.md or maintaining/.
-        manifest = (ROOT / 'references/guides/update.md').read_text(encoding='utf-8')
+        manifest = (INSTALL / 'references/guides/update.md').read_text(encoding='utf-8')
         self.assertNotIn('MAINTAINING.md', manifest)
         self.assertNotIn('maintaining/', manifest)
 
     def test_archetypes_directory_holds_only_the_format_readme(self):
         """The three self-development example files leave the install; only the format/mechanism
         doc (README.md) stays in the shipped `references/archetypes/`."""
-        archetypes = ROOT / 'references/archetypes'
+        archetypes = INSTALL / 'references/archetypes'
         self.assertTrue(archetypes.is_dir())
         self.assertEqual(sorted(p.name for p in archetypes.iterdir()), ['README.md'])
 
@@ -236,13 +254,14 @@ class ShippedEntryPointTests(unittest.TestCase):
     """Case: shipped entry point -- SKILL.md's frontmatter and command tables."""
 
     def test_one_installed_entry(self):
-        skill = (ROOT / 'SKILL.md').read_text()
+        skill = (INSTALL / 'SKILL.md').read_text()
         self.assertRegex(skill, r'(?m)^name: tackle$')
-        self.assertFalse(list((ROOT / 'references').rglob('SKILL.md')))
+        self.assertFalse(list((INSTALL / 'references').rglob('SKILL.md')))
 
     def test_active_request_tables_do_not_advertise_legacy_commands(self):
-        for name in ('SKILL.md', 'README.md', 'references/guides/invocation.md'):
-            rows = [line for line in (ROOT / name).read_text().splitlines() if line.startswith('|')]
+        for source_root, name in ((INSTALL, 'SKILL.md'), (ROOT, 'README.md'),
+                                  (INSTALL, 'references/guides/invocation.md')):
+            rows = [line for line in (source_root / name).read_text().splitlines() if line.startswith('|')]
             self.assertFalse(any('/tackle-' in line for line in rows), name)
 
 

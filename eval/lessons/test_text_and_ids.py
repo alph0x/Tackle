@@ -9,10 +9,16 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+import sys
+sys.path.insert(0, str(ROOT))
+from maintaining.install_root import current_root  # noqa: E402
+INSTALL = current_root(ROOT)
+
 
 
 def read(relative):
-    return (ROOT / relative).read_text(encoding='utf-8')
+    root = ROOT if relative == 'README.md' else INSTALL
+    return (root / relative).read_text(encoding='utf-8')
 
 
 class ConfidenceIsComputedTests(unittest.TestCase):

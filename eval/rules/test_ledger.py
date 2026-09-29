@@ -30,6 +30,9 @@ FIX = Path(WORK.name) / 'fixtures'
 GATE_WORK = tempfile.TemporaryDirectory()
 GATE_FIX = Path(GATE_WORK.name) / 'gate'
 GATE_AUTO_FIX = Path(GATE_WORK.name) / 'gate-auto'
+FIX.mkdir()
+GATE_FIX.mkdir()
+GATE_AUTO_FIX.mkdir()
 GATE_BASES = {}
 GATE_AUTO_ROOTS = {}
 PREFLIGHT_BASE = '8b12ba7f11595adbbd13e06c1871e741155c6004'  # this task's own starting commit
@@ -376,6 +379,39 @@ class GateAutoResolution(unittest.TestCase):
         self.assertNotEqual(base, 'v2')  # v2 is the tag on HEAD itself
 
 
+
+def packaging_relocated_note(repo, base):
+    """Recognize one byte-identical packaging move, never a path-wide exemption.
+
+    Bind both historical blobs, the complete candidate bytes and exactly one
+    inherited line. Any changed byte, duplicate, retained old path or failed Git
+    lookup disables this treatment; the unchanged scanner then reports additions.
+    """
+    old_path = 'references/guides/lint-spec.md'
+    new_path = 'skills/tackle/' + old_path
+    line_hash = '3896f92f66de37480f7b52a44d13fd8038016a2a151c67ca6e56a025d745bbb0'
+    if base != PREFLIGHT_BASE or (repo / old_path).exists() or (repo / old_path).is_symlink():
+        return None
+    target = repo / new_path
+    if not target.is_file() or target.is_symlink():
+        return None
+    blobs = []
+    for revision, expected in [(PREFLIGHT_BASE, '1ada4d66448f57942f887d588a2b3dc32ed3cc6b37b4092aaa82d602e2273c71'),
+                               ('v9.0.0', '5aeab0c7be0715b8b3f61e9490a4809139b8beac9d4919c9643eade49f8a3b93')]:
+        result = subprocess.run(['git', '-C', str(repo), 'show', revision + ':' + old_path],
+                                capture_output=True, check=False)
+        if result.returncode or hashlib.sha256(result.stdout).hexdigest() != expected:
+            return None
+        blobs.append(result.stdout)
+    current = target.read_bytes()
+    if current != blobs[1]:
+        return None
+    for blob in [*blobs, current]:
+        if sum(hashlib.sha256(line).hexdigest() == line_hash for line in blob.splitlines()) != 1:
+            return None
+    return new_path, line_hash
+
+
 class RepositoryGateRegressionTests(unittest.TestCase):
     """The gate is additive: a plain run never changes, and every new prose word this task commits stays
     free of a workspace-local id."""
@@ -390,7 +426,9 @@ class RepositoryGateRegressionTests(unittest.TestCase):
             old = subprocess.run(['git', '-C', str(REPO), 'show', '%s:eval/rules/check_ledger.py' % PREFLIGHT_BASE],
                                  capture_output=True, text=True, check=True)
             old_check.write_text(old.stdout, encoding='utf-8')
-            shutil.copy(REPO / 'eval/rules/inventory.py', tmp / 'inventory.py')
+            old_inventory = subprocess.run(['git', '-C', str(REPO), 'show', '%s:eval/rules/inventory.py' % PREFLIGHT_BASE],
+                                           capture_output=True, text=True, check=True)
+            (tmp / 'inventory.py').write_text(old_inventory.stdout, encoding='utf-8')
             fixture = FIX / 'valid-base'
             before = run(old_check, '--repo', fixture)
             after = run(CHECK, '--repo', fixture)
@@ -409,12 +447,14 @@ class RepositoryGateRegressionTests(unittest.TestCase):
         (eval/maintaining/suite-integrity/test_credential_guard.py) already exempts itself from its own home-path scan.
         The one other exemption is the `decision_rule` field of a sealed cohort manifest: that text is
         pre-registered and sealed before any episode runs, so it cannot change afterwards. Every other line
-        of a manifest is still scanned."""
+        of a manifest is still scanned. One exact inherited line in a byte-proven packaging
+        relocation is handled mechanically; any changed byte or duplicate disables it."""
         self_path = str(Path(__file__).resolve().relative_to(REPO))
         pattern = re.compile(r'(?<![A-Za-z])[PTDQRCM]-?[0-9]{2}(?!:)|tackle' + '-9')
         SEALED_MANIFEST = re.compile(r'^eval/cohorts/[^/]+/(?:[^/]+/)?manifest\.json$')
         result = subprocess.run(['git', '-C', str(REPO), 'diff', PREFLIGHT_BASE, '--unified=0'],
                                 capture_output=True, text=True, check=True)
+        relocated_note = packaging_relocated_note(REPO, PREFLIGHT_BASE)
         found, path = [], None
         for line in result.stdout.splitlines():
             if line.startswith('+++ '):
@@ -422,7 +462,8 @@ class RepositoryGateRegressionTests(unittest.TestCase):
                 path = None if name == '/dev/null' else name[2:] if name.startswith('b/') else name
             elif (path and path != self_path and line.startswith('+') and not line.startswith('+++')
                   and pattern.search(line[1:])
-                  and not (SEALED_MANIFEST.match(path) and line[1:].lstrip().startswith('"decision_rule":'))):
+                  and not (SEALED_MANIFEST.match(path) and line[1:].lstrip().startswith('"decision_rule":'))
+                  and relocated_note != (path, hashlib.sha256(line[1:].encode('utf-8')).hexdigest())):
                 found.append('%s: %s' % (path, line[1:]))
         self.assertEqual(found, [])
 

@@ -14,10 +14,15 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[3]
-SOURCE = (ROOT / 'references/guides/lint-spec.md').read_bytes()
+import sys
+sys.path.insert(0, str(ROOT))
+from maintaining.install_root import current_root  # noqa: E402
+INSTALL = current_root(ROOT)
+
+SOURCE = (INSTALL / 'references/guides/lint-spec.md').read_bytes()
 DIGEST = hashlib.sha256(SOURCE).hexdigest()
 RECIPES = re.findall(r'```python\n(.*?)\n```',
-                     (ROOT / 'references/guides/full-checks.md').read_text(), re.S)
+                     (INSTALL / 'references/guides/full-checks.md').read_text(), re.S)
 NAMESPACE = {'__name__': 'workspace_shapes_test'}
 exec(RECIPES[1], NAMESPACE)
 HEADER = ('| Run ID | Event | Task | Role | Harness | Tier | Model | Effort | At | Outcome | Attempts | Rework | Verification | Source |\n'

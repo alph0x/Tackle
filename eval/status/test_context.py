@@ -9,7 +9,11 @@ import unittest
 from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[2]
-GUIDE = ROOT / "references/guides/context-lifecycle.md"
+sys.path.insert(0, str(ROOT))
+from maintaining.install_root import current_root  # noqa: E402
+INSTALL = current_root(ROOT)
+
+GUIDE = INSTALL / "references/guides/context-lifecycle.md"
 
 
 def recipe():
@@ -288,7 +292,7 @@ class ContextTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             runtime = Path(temp)
             for name, guide in [("capture", "full-checks.md"), ("lifecycle", "record-lifecycle.md")]:
-                code = (ROOT / "references/guides" / guide).read_text().split("```python\n", 1)[1].split("\n```", 1)[0]
+                code = (INSTALL / "references/guides" / guide).read_text().split("```python\n", 1)[1].split("\n```", 1)[0]
                 (runtime / (name + ".py")).write_text(code)
             (runtime / "initiative").mkdir()
             (runtime / "child.py").write_text("print('observed pass')\n")

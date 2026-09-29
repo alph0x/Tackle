@@ -14,12 +14,16 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
+sys.path.insert(0, str(ROOT))
+from maintaining.install_root import current_root  # noqa: E402
+INSTALL = current_root(ROOT)
+
 sys.path.insert(0, str(HERE))
 import duplicates  # noqa: E402
 import load_chain  # noqa: E402
 
-CARD = ROOT / 'references/guides/run-card.md'
-RUN_MD = ROOT / 'references/guides/run.md'
+CARD = INSTALL / 'references/guides/run-card.md'
+RUN_MD = INSTALL / 'references/guides/run.md'
 STATES = ('Draft', 'Ready to run', 'In progress', 'Checking', 'Complete', 'Blocked', 'Interrupted', 'Skipped',
           'Unverifiable', 'Waiting on owner')
 ENTRY_STATE = 'Entry state'

@@ -13,13 +13,18 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
+import sys
+sys.path.insert(0, str(ROOT))
+from maintaining.install_root import current_root  # noqa: E402
+INSTALL = current_root(ROOT)
+
 HERE = Path(__file__).resolve().parent
 FIXTURES = HERE / 'fixtures'
-SPEC = ROOT / 'references/guides/lint-spec.md'
-TEMPLATE = ROOT / 'references/task.tmpl.md'
+SPEC = INSTALL / 'references/guides/lint-spec.md'
+TEMPLATE = INSTALL / 'references/task.tmpl.md'
 SLUG = 'demo'
 NAMESPACE = {'__name__': 'lint_rows_test'}
-for _block in re.findall(r'```python\n(.*?)\n```', (ROOT / 'references/guides/full-checks.md').read_text(), re.S):
+for _block in re.findall(r'```python\n(.*?)\n```', (INSTALL / 'references/guides/full-checks.md').read_text(), re.S):
     if 'def canonical_rows' in _block:
         exec(_block, NAMESPACE)
 
@@ -190,7 +195,7 @@ def run_row(number, root, awk):
 
 
 def seal_command():
-    guide = (ROOT / 'references/guides/verify.md').read_text()
+    guide = (INSTALL / 'references/guides/verify.md').read_text()
     after = guide.split('<a id="seal-integrity-command"></a>', 1)[1]
     block = re.search(r'```sh\n(.*?)\n[ ]*```', after, re.S)[1]
     return '\n'.join(line[3:] if line.startswith('   ') else line for line in block.split('\n'))

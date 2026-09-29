@@ -18,7 +18,12 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-RECIPES = ROOT / 'references/recipes/migrate'
+import sys
+sys.path.insert(0, str(ROOT))
+from maintaining.install_root import current_root  # noqa: E402
+INSTALL = current_root(ROOT)
+
+RECIPES = INSTALL / 'references/recipes/migrate'
 FIXTURES = Path(__file__).resolve().parent / 'fixtures'
 
 
@@ -944,7 +949,7 @@ class MigrateGuideTests(unittest.TestCase):
     gates stay green."""
 
     def setUp(self):
-        self.text = (ROOT / 'references/guides/migrate.md').read_text(encoding='utf-8')
+        self.text = (INSTALL / 'references/guides/migrate.md').read_text(encoding='utf-8')
         self.lines = self.text.split('\n')
 
     def test_five_new_sections_appended_after_existing_content(self):
@@ -968,7 +973,7 @@ class MigrateGuideTests(unittest.TestCase):
     def test_recipe_links_resolve(self):
         for match in re.findall(r'\]\(([^)]+)\)', self.text):
             if match.startswith('../'):
-                target = (ROOT / 'references/guides' / match).resolve()
+                target = (INSTALL / 'references/guides' / match).resolve()
                 self.assertTrue(target.is_file(), match)
 
     def test_two_checklists_still_present_and_not_touched(self):

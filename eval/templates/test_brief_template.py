@@ -6,13 +6,18 @@ one's own acceptance command passes valid output and rejects invalid output.
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 
 
 ROOT = Path(__file__).resolve().parents[2]
-TEMPLATE = ROOT / 'references/task.tmpl.md'
-LINT = (ROOT / 'references/guides/lint-spec.md').read_text()
+sys.path.insert(0, str(ROOT))
+from maintaining.install_root import current_root  # noqa: E402
+
+INSTALL = current_root(ROOT)
+TEMPLATE = INSTALL / 'references/task.tmpl.md'
+LINT = (INSTALL / 'references/guides/lint-spec.md').read_text()
 FIXTURES = Path(__file__).resolve().parent / 'fixtures/compiled-brief'
 BOARD = ('Schema: tackle-workspace/5\n\n| Task | What | Brief | Depends on | Status | Verification |\n'
          '|---|---|---|---|---|---|\n| T-A | Work | tasks/T-A.md | none | Draft | pending |\n')

@@ -86,6 +86,10 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import inventory  # noqa: E402
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from maintaining.install_root import (InstallRootError, current_path,
+                                      revision_path)  # noqa: E402
+
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'install' / 'reading-budget'))
 import duplicates  # noqa: E402
 
@@ -245,20 +249,33 @@ def git_text(repo, *args):
 
 
 def git_show(repo, rev, path):
-    result = subprocess.run(['git', '-C', str(repo), 'show', '%s:%s' % (rev, path)], capture_output=True, text=True)
+    physical = revision_path(repo, rev, path)
+    result = subprocess.run(['git', '-C', str(repo), 'show', '%s:%s' % (rev, physical)],
+                            capture_output=True, text=True)
     return result.stdout if result.returncode == 0 else None
 
 
 def read_current(repo, path):
-    target = repo / path
+    target = current_path(repo, path)
     return target.read_text(encoding='utf-8') if target.is_file() else None
 
 
 def tracked_md(repo, prefix):
-    result = subprocess.run(['git', '-C', str(repo), 'ls-files', '--', prefix], capture_output=True, text=True)
+    logical_prefix = Path(prefix).as_posix()
+    prefixes = [logical_prefix]
+    if logical_prefix == 'references' or logical_prefix.startswith('references/'):
+        prefixes.append('skills/tackle/' + logical_prefix)
+    result = subprocess.run(['git', '-C', str(repo), 'ls-files', '--', *prefixes],
+                            capture_output=True, text=True)
     if result.returncode != 0:
         return []
-    return [line for line in result.stdout.splitlines() if line.endswith('.md')]
+    tracked = set()
+    for line in result.stdout.splitlines():
+        if line.startswith('skills/tackle/'):
+            line = line[len('skills/tackle/'):]
+        if line.endswith('.md') and (line == logical_prefix or line.startswith(logical_prefix + '/')):
+            tracked.add(line)
+    return sorted(tracked)
 
 
 def covered_files(ledger):
@@ -565,7 +582,7 @@ def main(argv=None):
     lines = []
     try:
         lines = run(report, repo, args.base)
-    except BaseError as problem:
+    except (BaseError, InstallRootError) as problem:
         report.error(str(problem))
     for line in lines:
         print(line)

@@ -22,6 +22,10 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
+sys.path.insert(0, str(ROOT))
+from maintaining.install_root import current_root  # noqa: E402
+INSTALL = current_root(ROOT)
+
 HARNESS = HERE / 'harness.py'
 CHECK = ROOT / 'eval' / 'protocol-v2' / 'check.py'
 FLAG = '--allow-model-calls'
@@ -60,10 +64,10 @@ def dir_files(root):
 
 
 def install_files():
-    files = {'SKILL.md': (ROOT / 'SKILL.md').read_bytes()}
-    for path in sorted((ROOT / 'references').rglob('*')):
+    files = {'SKILL.md': (INSTALL / 'SKILL.md').read_bytes()}
+    for path in sorted((INSTALL / 'references').rglob('*')):
         if path.is_file():
-            files[path.relative_to(ROOT).as_posix()] = path.read_bytes()
+            files[path.relative_to(INSTALL).as_posix()] = path.read_bytes()
     return files
 
 
@@ -212,7 +216,7 @@ class Base(unittest.TestCase):
         args = ['stage', '--scenario', scenario, '--variant', variant, '--arm', arm, '--host', host, '--out', out,
                 '--repo', repo or self.repo.root]
         if install:
-            args += ['--install', ROOT]
+            args += ['--install', INSTALL]
         result = self.run_harness(*args)
         self.assertEqual(result.returncode, expect, result.stdout + result.stderr)
         return out
@@ -879,7 +883,7 @@ class Probes(Base):
 
     def test_fake_probe_records_skill_loads_from_transcripts(self):
         out = self.tmp / 'probe-out'
-        result = self.run_harness('probe', '--adapter', 'fake', '--probes', HERE / 'probes.json', '--install', ROOT,
+        result = self.run_harness('probe', '--adapter', 'fake', '--probes', HERE / 'probes.json', '--install', INSTALL,
                                   '--out', out)
         self.assertEqual(result.returncode, 0, result.stderr)
         results = load(out / 'results.json')
