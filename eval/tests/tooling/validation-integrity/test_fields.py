@@ -1,0 +1,134 @@
+from __future__ import annotations
+
+import subprocess
+import tempfile
+import unittest
+import runpy
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[4]
+import sys
+sys.path.insert(0, str(ROOT))
+from maintaining.install_root import current_root  # noqa: E402
+from eval.support.lint import literal_command, write_files  # noqa: E402
+INSTALL = current_root(ROOT)
+
+LINT_SPEC = INSTALL / "references/guides/lint-spec.md"
+
+
+def canonical_command(row: int) -> str:
+    return literal_command(row, LINT_SPEC.read_text(encoding="utf-8"))
+
+
+def board(status: str = "Draft", title: str = "Fixture") -> str:
+    return (
+        "Schema: tackle-workspace/5\n\n"
+        "| Task | What | Brief | Depends on | Status | Verification |\n"
+        "|---|---|---|---|---|---|\n"
+        f"| T-A | {title} | tasks/T-A.md | none | {status} | pending |\n"
+    )
+
+
+def run_command(root: Path, command: str) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        ["/bin/sh", "-c", command],
+        cwd=root,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+
+class ExactFieldValidationTests(unittest.TestCase):
+    def test_acceptance_pins_executable_gate_cells(self) -> None:
+        loader = runpy.run_path(str(ROOT / 'eval/validation-integrity/acceptance.py'))['canonical_gates']
+        source = (ROOT / 'MAINTAINING.md').read_text(encoding='utf-8')  # the release gates moved there
+        self.assertEqual(len(loader(source)), 8)
+        altered = source.replace('SKILL.md over budget', 'SKILL.md changed by attacker', 1)
+        with self.assertRaisesRegex(ValueError, 'without trusted review'):
+            loader(altered)
+
+    def make_workspace(self, root: Path, files: dict[str, str]) -> None:
+        write_files(root / "docs/plans/probe", files)
+
+    def assert_finding(self, row: int, files: dict[str, str], fragment: str) -> None:
+        with tempfile.TemporaryDirectory(prefix="tackle-validation-fields-") as directory:
+            root = Path(directory)
+            self.make_workspace(root, files)
+            result = run_command(root, canonical_command(row).replace("<slug>", "probe"))
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(result.stderr, "")
+            self.assertIn(fragment, result.stdout)
+
+    def assert_clean(self, row: int, files: dict[str, str]) -> None:
+        with tempfile.TemporaryDirectory(prefix="tackle-validation-fields-") as directory:
+            root = Path(directory)
+            self.make_workspace(root, files)
+            result = run_command(root, canonical_command(row).replace("<slug>", "probe"))
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(result.stdout, "")
+            self.assertEqual(result.stderr, "")
+
+    def test_row_2_requires_exact_task_id_declaration(self) -> None:
+        layout = {"history.md": "# History\n", "resource-usage.md": "# Resource usage\n",
+                  "tasks/T-A.md": "# Task T-A — Work\n", "task-board.md": board()}
+        self.assert_clean(2, dict(layout, **{"plan.md": "## 5. Task decomposition\n| T-A | Work | RA | tasks/T-A.md | none |\n"}))
+        self.assert_finding(
+            2,
+            dict(layout, **{"plan.md": "## 5. Task decomposition\n| T-AA | Work | RA | tasks/T-AA.md | none |\n"}),
+            "unresolved: T-A",
+        )
+
+    def test_row_2_fails_closed_when_plan_is_missing(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="tackle-validation-fields-") as directory:
+            root = Path(directory)
+            self.make_workspace(
+                root,
+                {
+                    "tasks/T-A.md": "# Task T-A — Work\n",
+                    "task-board.md": board(),
+                    "history.md": "# History\n",
+                    "resource-usage.md": "# Resource usage\n",
+                },
+            )
+            result = run_command(root, canonical_command(2).replace("<slug>", "probe"))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("missing:", result.stdout)
+
+    def test_row_3_validates_status_field_not_any_emoji(self) -> None:
+        self.assert_clean(3, {"task-board.md": board("Complete", "Example 🟢 output")})
+        self.assert_finding(
+            3,
+            {"task-board.md": board("BROKEN", "Example 🟢 output")},
+            "bad status:",
+        )
+
+    def test_row_7_requires_exact_decision_heading(self) -> None:
+        self.assert_clean(
+            7,
+            {
+                "tasks/T-A.md": "## Acceptance <!-- SEALED: D-1 -->\n",
+                "decisions.md": "## D-1 — Accepted rule\n",
+            },
+        )
+        self.assert_finding(
+            7,
+            {
+                "tasks/T-A.md": "## Acceptance <!-- SEALED: D-1 -->\n",
+                "decisions.md": "## D-2 — Different decision\n",
+            },
+            "missing seal: D-1",
+        )
+
+    def test_row_12_closes_effort_token(self) -> None:
+        self.assert_clean(12, {"task-board.md": board(), "tasks/T-A.md": "- **Effort**:   low   \n"})
+        self.assert_finding(
+            12,
+            {"task-board.md": board(), "tasks/T-A.md": "- **Effort**: highXYZ\n"},
+            "highXYZ",
+        )
+
+
+if __name__ == "__main__":
+    unittest.main()

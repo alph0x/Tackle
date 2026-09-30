@@ -6,6 +6,9 @@ import json
 from pathlib import Path
 import tempfile
 import shutil
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'eval/tests/product/status'))
 from test_context import fixture, recipe
 
 

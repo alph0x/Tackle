@@ -7,7 +7,7 @@ held-out variant `h1`. They measure whether the method changes the outcome or th
 planning; they test no single rule. They verify fixtures and the judge, not agent behavior.
 
 ```sh
-python3 -m unittest discover -s eval/behavior/judges/planning -p 'test_*.py' -v
+python3 -m unittest discover -s eval/tests/tooling/behavior/judges/planning -p 'test_*.py' -v
 python3 eval/behavior/judges/planning/judge.py --episode <harness episode dir>
 python3 eval/behavior/judges/planning/judge.py --scenario <scenario_id> --variant <variant_id> --work <dir> --out <file>
 ```

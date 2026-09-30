@@ -9,96 +9,133 @@
   ],
   "suites": [
     {
-      "path": "eval/plan",
+      "path": "eval/tests/product/plan",
       "files": [
         "test_plan.py"
       ],
-      "tests": 1
+      "tests": 1,
+      "source": "eval/plan",
+      "category": "product",
+      "purpose": "Plan decomposition and acceptance section order."
     },
     {
-      "path": "eval/run/card",
+      "path": "eval/tests/product/run/card",
       "files": [
         "test_run.py"
       ],
-      "tests": 3
+      "tests": 3,
+      "source": "eval/run/card",
+      "category": "product",
+      "purpose": "Execution state transitions and template bindings."
     },
     {
-      "path": "eval/lint/task-identity",
+      "path": "eval/tests/product/lint/task-identity",
       "files": [
         "test_identity.py"
       ],
-      "tests": 16
+      "tests": 16,
+      "source": "eval/lint/task-identity",
+      "category": "product",
+      "purpose": "Task identity, scaffold paths and workspace naming."
     },
     {
-      "path": "eval/validation-integrity",
+      "path": "eval/tests/tooling/validation-integrity",
       "files": [
         "test_fields.py",
         "test_paths.py",
         "test_dependency_and_scope_parsing.py"
       ],
-      "tests": 22
+      "tests": 22,
+      "source": "eval/validation-integrity",
+      "category": "tooling",
+      "purpose": "Validation fields, dependency parsing and write-scope integrity."
     },
     {
-      "path": "eval/run/execution",
+      "path": "eval/tests/product/run/execution",
       "files": [
         "test_controls.py",
         "test_isolated_veracity.py"
       ],
-      "tests": 40
+      "tests": 40,
+      "source": "eval/run/execution",
+      "category": "product",
+      "purpose": "Literal execution recipes, identity and verdict capture."
     },
     {
-      "path": "eval/run/focused-closure",
+      "path": "eval/tests/product/run/focused-closure",
       "files": [
         "test_receipt.py"
       ],
-      "tests": 6
+      "tests": 6,
+      "source": "eval/run/focused-closure",
+      "category": "product",
+      "purpose": "Focused completion receipts and artifact hashing."
     },
     {
-      "path": "eval/run/evidence-capture",
+      "path": "eval/tests/product/run/evidence-capture",
       "files": [
         "test_evidence_capture.py"
       ],
-      "tests": 8
+      "tests": 8,
+      "source": "eval/run/evidence-capture",
+      "category": "product",
+      "purpose": "Child execution, streams, timeouts and evidence capture."
     },
     {
-      "path": "eval/run/usage",
+      "path": "eval/tests/product/run/usage",
       "files": [
         "test_capture.py"
       ],
-      "tests": 9
+      "tests": 9,
+      "source": "eval/run/usage",
+      "category": "product",
+      "purpose": "Native usage-event capture and lifecycle accounting."
     },
     {
-      "path": "eval/maintaining/suite-integrity",
+      "path": "eval/tests/tooling/maintaining/suite-integrity",
       "files": [
         "test_discovery.py",
-        "test_credential_guard.py"
+        "test_credential_guard.py",
+        "test_selection.py"
       ],
-      "tests": 27
+      "tests": 36,
+      "source": "eval/maintaining/suite-integrity",
+      "category": "tooling",
+      "purpose": "Complete discovery, conservative selection and credential guards."
     },
     {
-      "path": "eval/lint/task-contracts",
+      "path": "eval/tests/product/lint/task-contracts",
       "files": [
         "test_task_contracts.py"
       ],
-      "tests": 32
+      "tests": 32,
+      "source": "eval/lint/task-contracts",
+      "category": "product",
+      "purpose": "Task contracts, readiness and acceptance fields."
     },
     {
-      "path": "eval/run/verification-records",
+      "path": "eval/tests/product/run/verification-records",
       "files": [
         "test_records.py"
       ],
-      "tests": 25
+      "tests": 25,
+      "source": "eval/run/verification-records",
+      "category": "product",
+      "purpose": "Verification-record integrity, export, concurrency and maintenance."
     },
     {
-      "path": "eval/status",
+      "path": "eval/tests/product/status",
       "files": [
         "test_context.py",
         "test_measurement.py"
       ],
-      "tests": 30
+      "tests": 30,
+      "source": "eval/status",
+      "category": "product",
+      "purpose": "Context projections, archives, resume and handoff costs."
     },
     {
-      "path": "eval/lint/rows",
+      "path": "eval/tests/product/lint/rows",
       "files": [
         "test_lint_rows.py",
         "test_row8_wrap.py",
@@ -108,142 +145,196 @@
         "test_workspace_shapes.py",
         "test_row_contracts.py"
       ],
-      "tests": 75
+      "tests": 75,
+      "source": "eval/lint/rows",
+      "category": "product",
+      "purpose": "Canonical lint rows, formats, severities and AWK variants."
     },
     {
-      "path": "eval/templates",
+      "path": "eval/tests/product/templates",
       "files": [
         "test_template_drift.py",
         "test_model_routing_text.py",
         "test_tier_model_collision.py",
         "test_brief_template.py"
       ],
-      "tests": 37
+      "tests": 37,
+      "source": "eval/templates",
+      "category": "product",
+      "purpose": "Template fields, model routing and compiled briefs."
     },
     {
-      "path": "eval/protocol-v2",
+      "path": "eval/tests/tooling/protocol-v2",
       "files": [
         "test_check.py"
       ],
-      "tests": 8
+      "tests": 8,
+      "source": "eval/protocol-v2",
+      "category": "tooling",
+      "purpose": "Evaluation protocol records and numerical verdict oracles."
     },
     {
-      "path": "eval/rules",
+      "path": "eval/tests/tooling/rules",
       "files": [
         "test_ledger.py",
         "test_unit_diff.py"
       ],
-      "tests": 81
+      "tests": 81,
+      "source": "eval/rules",
+      "category": "tooling",
+      "purpose": "Normative inventory, ledger gates and removed-unit accounting."
     },
     {
-      "path": "eval/records",
+      "path": "eval/tests/tooling/records",
       "files": [
         "test_currency.py"
       ],
-      "tests": 47
+      "tests": 47,
+      "source": "eval/records",
+      "category": "tooling",
+      "purpose": "Record currency, pinned claims and publication sanitization."
     },
     {
-      "path": "eval/scenario-index",
+      "path": "eval/tests/tooling/scenario-index",
       "files": [
         "test_index.py"
       ],
-      "tests": 32
+      "tests": 32,
+      "source": "eval/scenario-index",
+      "category": "tooling",
+      "purpose": "Scenario catalog consistency and variant registration."
     },
     {
-      "path": "eval/behavior/harness",
+      "path": "eval/tests/tooling/behavior/harness",
       "files": [
         "test_components.py",
         "test_harness.py",
         "test_subagent.py"
       ],
-      "tests": 199
+      "tests": 199,
+      "source": "eval/behavior/harness",
+      "category": "tooling",
+      "purpose": "Agent adapters, usage parsing, broker isolation and harness commands."
     },
     {
-      "path": "eval/install/inventory",
+      "path": "eval/tests/product/install/inventory",
       "files": [
         "test_install.py",
         "test_install_root.py"
       ],
-      "tests": 26
+      "tests": 26,
+      "source": "eval/install/inventory",
+      "category": "product",
+      "purpose": "Installed artifact inventory, links and root resolution."
     },
     {
-      "path": "eval/install/reading-budget",
+      "path": "eval/tests/tooling/install/reading-budget",
       "files": [
         "test_hot_path.py"
       ],
-      "tests": 24
+      "tests": 24,
+      "source": "eval/install/reading-budget",
+      "category": "tooling",
+      "purpose": "Reading costs, load chains and duplication floors."
     },
     {
-      "path": "eval/behavior/judges/planning",
+      "path": "eval/tests/tooling/behavior/judges/planning",
       "files": [
         "test_judge.py"
       ],
-      "tests": 33
+      "tests": 33,
+      "source": "eval/behavior/judges/planning",
+      "category": "tooling",
+      "purpose": "Planning judgments, hidden acceptance boundaries and runner integrity."
     },
     {
-      "path": "eval/migration",
+      "path": "eval/tests/product/migration",
       "files": [
         "test_migration_steps.py",
         "test_unclosed_fence.py",
         "test_migration.py"
       ],
-      "tests": 122
+      "tests": 122,
+      "source": "eval/migration",
+      "category": "product",
+      "purpose": "Workspace schema migration, recipes and census refusal."
     },
     {
-      "path": "eval/maintaining/field-report",
+      "path": "eval/tests/tooling/maintaining/field-report",
       "files": [
         "test_field_report.py",
         "test_unclosed_fence.py"
       ],
-      "tests": 28
+      "tests": 28,
+      "source": "eval/maintaining/field-report",
+      "category": "tooling",
+      "purpose": "Field-report aggregation, scope and malformed-input refusal."
     },
     {
-      "path": "eval/lessons",
+      "path": "eval/tests/product/lessons",
       "files": [
         "test_confidence.py",
         "test_coverage_table.py",
         "test_text_and_ids.py"
       ],
-      "tests": 43
+      "tests": 43,
+      "source": "eval/lessons",
+      "category": "product",
+      "purpose": "Learning confidence, coverage tables and retrospective identifiers."
     },
     {
-      "path": "eval/cohorts/2026-09-candidate",
+      "path": "eval/tests/historical/verdicts/cost-and-fall-rate",
       "files": [
         "test_decision.py",
         "test_report.py"
       ],
-      "tests": 27
+      "tests": 27,
+      "source": "eval/cohorts/2026-09-candidate",
+      "category": "historical",
+      "purpose": "Cost medians, fall-rate bounds, tripwires and routed-planning recommendations."
     },
     {
-      "path": "eval/cohorts/2026-09-second-candidate",
+      "path": "eval/tests/historical/verdicts/escalation-and-completeness",
       "files": [
         "test_decision.py",
         "test_report.py"
       ],
-      "tests": 41
+      "tests": 41,
+      "source": "eval/cohorts/2026-09-second-candidate",
+      "category": "historical",
+      "purpose": "Minimum sample counts, escalation model routing and report-only split summaries."
     },
     {
-      "path": "eval/behavior/judges/resume",
+      "path": "eval/tests/tooling/behavior/judges/resume",
       "files": [
         "test_fixtures.py"
       ],
-      "tests": 40
+      "tests": 40,
+      "source": "eval/behavior/judges/resume",
+      "category": "tooling",
+      "purpose": "Resume ordering, migrated workspaces and portable verification records."
     },
     {
-      "path": "eval/cohorts/2026-09-resume",
+      "path": "eval/tests/historical/verdicts/resume-comparison",
       "files": [
         "test_decision.py",
         "test_report.py"
       ],
-      "tests": 36
+      "tests": 36,
+      "source": "eval/cohorts/2026-09-resume",
+      "category": "historical",
+      "purpose": "Resume comparison, ordered records, cost summaries and report-only guarantees."
     },
     {
-      "path": "eval/cohorts/2026-09-third-candidate",
+      "path": "eval/tests/historical/verdicts/no-regression",
       "files": [
         "test_decision.py",
         "test_report.py"
       ],
-      "tests": 36
+      "tests": 36,
+      "source": "eval/cohorts/2026-09-third-candidate",
+      "category": "historical",
+      "purpose": "Non-regression verdicts, current-workspace comparisons and artifact ties."
     }
   ]
 }

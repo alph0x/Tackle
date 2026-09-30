@@ -1,6 +1,6 @@
 # Context lifecycle regression and synthetic measurements
 
-Run `python3 -m unittest discover -s eval/status -p 'test_*.py' -v` from the
+Run `python3 -m unittest discover -s eval/tests/product/status -p 'test_*.py' -v` from the
 repository root. Tests extract and execute the Python block in the installed
 `references/guides/context-lifecycle.md`; no separately maintained surrogate implements it.
 Run `python3 eval/status/benchmark.py` to reproduce `measurements.json`.

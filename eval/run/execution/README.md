@@ -1,6 +1,6 @@
 # Full execution-control regressions
 
-Run `python3 -m unittest discover -s eval/run/execution -v` from the repository root.
+Run `python3 -m unittest discover -s eval/tests/product/run/execution -v` from the repository root.
 The suite executes the Python blocks extracted from `references/guides/full-checks.md`.
 It checks real child failures, binary streams, timeouts/signals, input/script snapshots,
 missing and additive tests, immutable observations, literal canonical command extraction,

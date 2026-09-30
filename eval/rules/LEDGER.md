@@ -8,7 +8,7 @@ against the repository:
 
 ```sh
 python3 eval/rules/check_ledger.py --repo .
-python3 -m unittest discover -s eval/rules -p 'test_*.py' -v
+python3 -m unittest discover -s eval/tests/tooling/rules -p 'test_*.py' -v
 ```
 
 Exit 0 prints one warning per hot-path rule that is neither a safety invariant nor `discriminates`,

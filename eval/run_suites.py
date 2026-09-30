@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 from datetime import datetime, timezone
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 import platform
@@ -63,12 +64,33 @@ def validate(root, manifest):
     return expected
 
 
-def run(root, manifest, output):
+def plan(root, manifest, *, changed=None, phase='development'):
     root = root.resolve()
-    files = validate(root, manifest)
+    validate(root, manifest)
+    spec = importlib.util.spec_from_file_location('check_selection', Path(__file__).with_name('check_selection.py'))
+    selection = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(selection)
+    return selection.select(root, manifest, changed, phase)
+
+
+def run(root, manifest, output, *, changed=None, phase='development', dry_run=False):
+    root = root.resolve()
+    selection = plan(root, manifest, changed=changed, phase=phase)
+    files = {root / suite['path'] / filename for suite in manifest['suites'] for filename in suite['files']}
+    files.update(path for path in (Path(__file__).resolve(), Path(__file__).with_name('check_selection.py'),
+                                  root / 'eval/check-selection.json') if path.is_file())
     output.mkdir(parents=True, exist_ok=False)
+    if dry_run or not selection['selected']:
+        report = dict(passed=None, tests=0, suites=[], selection=selection,
+                      complete=False, registered_tests=selection['registered_tests'],
+                      scope='dry-run' if dry_run else 'no affected suites')
+        (output / 'results.json').write_text(json.dumps(report, indent=2) + '\n')
+        print(json.dumps(report, indent=2), flush=True)
+        return report
     results = []
     for suite in manifest['suites']:
+        if suite['path'] not in selection['selected']:
+            continue
         command = [sys.executable, '-m', 'unittest', 'discover', '-s', suite['path'], '-p', 'test_*.py', '-v']
         start = stamp()
         child = subprocess.run(command, cwd=root, capture_output=True)
@@ -88,9 +110,12 @@ def run(root, manifest, output):
         results.append(record)
         print(name, 'PASS' if record['passed'] else 'FAIL', 'tests=' + str(count), 'expected=' + str(suite['tests']), flush=True)
     report = dict(passed=all(item['passed'] for item in results), tests=sum(item['tests'] for item in results),
+                  complete=selection['complete'], registered_tests=selection['registered_tests'], selection=selection,
+                  scope='complete registry' if selection['complete'] else 'selected families only',
                   runtime=platform.platform(), python=platform.python_version(),
                   registry_sha256=digest(json.dumps(manifest, sort_keys=True).encode()),
-                  inputs={str(path.relative_to(root)): digest(path.read_bytes()) for path in sorted(files)}, suites=results)
+                  inputs={str(path.relative_to(root)) if path.is_relative_to(root) else str(path):
+                          digest(path.read_bytes()) for path in sorted(files)}, suites=results)
     (output / 'results.json').write_text(json.dumps(report, indent=2) + '\n')
     return report
 
@@ -100,10 +125,14 @@ def main():
     parser.add_argument('--root', type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument('--manifest', type=Path)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--changed', action='append', help='Repository-relative changed path; repeat for the full change set')
+    parser.add_argument('--phase', choices=['development', 'integration', 'release'], default='development')
+    parser.add_argument('--dry-run', action='store_true', help='Validate and explain selection without executing tests')
     args = parser.parse_args()
     manifest = args.manifest or args.root / 'eval/suite-manifest.json'
     try:
-        report = run(args.root, json.loads(manifest.read_text()), args.output)
+        report = run(args.root, json.loads(manifest.read_text()), args.output,
+                     changed=args.changed, phase=args.phase, dry_run=args.dry_run)
     except (ValueError, KeyError, OSError) as error:
         message = 'suite discovery rejected: ' + str(error) + '\n'
         if not args.output.exists():
@@ -114,7 +143,7 @@ def main():
                 'command': [sys.executable] + sys.argv, 'cwd': str(Path.cwd()),
                 'stderr': 'discovery.stderr', 'exit': 2}, indent=2) + '\n')
         parser.exit(2, message)
-    raise SystemExit(0 if report['passed'] else 1)
+    raise SystemExit(0 if report['passed'] is not False else 1)
 
 
 if __name__ == '__main__':

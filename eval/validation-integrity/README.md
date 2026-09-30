@@ -10,9 +10,9 @@ These development-only checks stay outside the installed Markdown artifact
 Run the focused suites from the repository root:
 
 ```sh
-python3 -m unittest discover -s eval/validation-integrity -p 'test_fields.py' -v
-python3 -m unittest discover -s eval/validation-integrity -p 'test_paths.py' -v
-python3 -m unittest discover -s eval/validation-integrity -p 'test_dependency_and_scope_parsing.py' -v
+python3 -m unittest discover -s eval/tests/tooling/validation-integrity -p 'test_fields.py' -v
+python3 -m unittest discover -s eval/tests/tooling/validation-integrity -p 'test_paths.py' -v
+python3 -m unittest discover -s eval/tests/tooling/validation-integrity -p 'test_dependency_and_scope_parsing.py' -v
 ```
 
 Negative expectations are fixed before testing the implementation. Canonical

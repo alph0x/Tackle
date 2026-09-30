@@ -6,7 +6,7 @@ record of an actual run exists.
 
 ```sh
 python3 eval/records/check_currency.py --repo .
-python3 -m unittest discover -s eval/records -p 'test_*.py' -v
+python3 -m unittest discover -s eval/tests/tooling/records -p 'test_*.py' -v
 ```
 
 The checker reads tracked files from the git index, so it checks what a commit would contain; only

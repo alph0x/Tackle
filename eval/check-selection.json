@@ -1,0 +1,616 @@
+{
+  "version": 1,
+  "families": [
+    "eval/tests/product/plan",
+    "eval/tests/product/run/card",
+    "eval/tests/product/lint/task-identity",
+    "eval/tests/tooling/validation-integrity",
+    "eval/tests/product/run/execution",
+    "eval/tests/product/run/focused-closure",
+    "eval/tests/product/run/evidence-capture",
+    "eval/tests/product/run/usage",
+    "eval/tests/tooling/maintaining/suite-integrity",
+    "eval/tests/product/lint/task-contracts",
+    "eval/tests/product/run/verification-records",
+    "eval/tests/product/status",
+    "eval/tests/product/lint/rows",
+    "eval/tests/product/templates",
+    "eval/tests/tooling/protocol-v2",
+    "eval/tests/tooling/rules",
+    "eval/tests/tooling/records",
+    "eval/tests/tooling/scenario-index",
+    "eval/tests/tooling/behavior/harness",
+    "eval/tests/product/install/inventory",
+    "eval/tests/tooling/install/reading-budget",
+    "eval/tests/tooling/behavior/judges/planning",
+    "eval/tests/product/migration",
+    "eval/tests/tooling/maintaining/field-report",
+    "eval/tests/product/lessons",
+    "eval/tests/historical/verdicts/cost-and-fall-rate",
+    "eval/tests/historical/verdicts/escalation-and-completeness",
+    "eval/tests/tooling/behavior/judges/resume",
+    "eval/tests/historical/verdicts/resume-comparison",
+    "eval/tests/historical/verdicts/no-regression"
+  ],
+  "rules": [
+    {
+      "patterns": [
+        "eval/plan/**",
+        "skills/tackle/references/plan.tmpl.md"
+      ],
+      "families": [
+        "eval/tests/product/plan"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/run/card/**",
+        "skills/tackle/references/AGENTS.tmpl.md",
+        "skills/tackle/references/current-work.tmpl.md",
+        "skills/tackle/references/guides/run-card.md",
+        "skills/tackle/references/guides/run.md",
+        "skills/tackle/references/guides/status.md",
+        "skills/tackle/references/lite-plan.tmpl.md",
+        "skills/tackle/references/team.tmpl.md"
+      ],
+      "families": [
+        "eval/tests/product/run/card"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/lint/task-identity/**",
+        "skills/tackle/references/AGENTS.tmpl.md",
+        "skills/tackle/references/guides/lint-spec.md",
+        "skills/tackle/references/guides/scaffold.md",
+        "skills/tackle/references/history.tmpl.md",
+        "skills/tackle/references/resource-usage.tmpl.md",
+        "skills/tackle/references/task-board.tmpl.md",
+        "skills/tackle/references/task.tmpl.md"
+      ],
+      "families": [
+        "eval/tests/product/lint/task-identity"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "MAINTAINING.md",
+        "eval/validation-integrity/**",
+        "skills/tackle/references/guides/lint-spec.md",
+        "skills/tackle/references/plan.tmpl.md"
+      ],
+      "families": [
+        "eval/tests/tooling/validation-integrity"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/run/execution/**",
+        "skills/tackle/references/guides/full-checks.md",
+        "skills/tackle/references/guides/lint-spec.md"
+      ],
+      "families": [
+        "eval/tests/product/run/execution"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/run/focused-closure/**",
+        "skills/tackle/references/guides/evidence-capture.md"
+      ],
+      "families": [
+        "eval/tests/product/run/focused-closure"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/run/evidence-capture/**",
+        "skills/tackle/references/guides/evidence-capture.md"
+      ],
+      "families": [
+        "eval/tests/product/run/evidence-capture"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/run/usage/**",
+        "skills/tackle/references/guides/codex-native-usage.md"
+      ],
+      "families": [
+        "eval/tests/product/run/usage"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/maintaining/suite-integrity/**",
+        "eval/run_suites.py",
+        "eval/suite-manifest.json"
+      ],
+      "families": [
+        "eval/tests/tooling/maintaining/suite-integrity"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/lint/task-contracts/**",
+        "skills/tackle/references/guides/decompose-and-lint.md",
+        "skills/tackle/references/guides/lint-spec.md",
+        "skills/tackle/references/recipes/**",
+        "skills/tackle/references/recipes/correction-lineage.md",
+        "skills/tackle/references/retro.tmpl.md"
+      ],
+      "families": [
+        "eval/tests/product/lint/task-contracts"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/run/verification-records/**",
+        "skills/tackle/references/guides/evidence-capture.md",
+        "skills/tackle/references/guides/full-checks.md",
+        "skills/tackle/references/guides/lint-spec.md",
+        "skills/tackle/references/guides/record-lifecycle.md"
+      ],
+      "families": [
+        "eval/tests/product/run/verification-records"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/status/**",
+        "skills/tackle/references/guides/context-lifecycle.md",
+        "skills/tackle/references/guides/full-checks.md",
+        "skills/tackle/references/guides/record-lifecycle.md"
+      ],
+      "families": [
+        "eval/tests/product/status"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/lint/rows/**",
+        "skills/tackle/references/guides/full-checks.md",
+        "skills/tackle/references/guides/lint-spec.md",
+        "skills/tackle/references/guides/verify.md",
+        "skills/tackle/references/task.tmpl.md"
+      ],
+      "families": [
+        "eval/tests/product/lint/rows"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/templates/**",
+        "skills/tackle/references/*.tmpl.md",
+        "skills/tackle/references/AGENTS.tmpl.md",
+        "skills/tackle/references/design-contract.tmpl.md",
+        "skills/tackle/references/guides/decompose-and-lint.md",
+        "skills/tackle/references/guides/lint-spec.md",
+        "skills/tackle/references/guides/migrate.md",
+        "skills/tackle/references/guides/quality-dimensions.md",
+        "skills/tackle/references/guides/retro.md",
+        "skills/tackle/references/guides/run-card.md",
+        "skills/tackle/references/guides/run.md",
+        "skills/tackle/references/guides/scaffold.md",
+        "skills/tackle/references/guides/usage-observability.md",
+        "skills/tackle/references/guides/verify.md",
+        "skills/tackle/references/history.tmpl.md",
+        "skills/tackle/references/questions.tmpl.md",
+        "skills/tackle/references/recipes/migrate/schema.md",
+        "skills/tackle/references/recipes/migrate/step-4-to-5.md",
+        "skills/tackle/references/retro.tmpl.md",
+        "skills/tackle/references/task.tmpl.md",
+        "skills/tackle/references/team.tmpl.md",
+        "skills/tackle/references/terminology.md"
+      ],
+      "families": [
+        "eval/tests/product/templates"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/protocol-v2/**"
+      ],
+      "families": [
+        "eval/tests/tooling/protocol-v2"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "MAINTAINING.md",
+        "eval/rules/**",
+        "skills/tackle/references/guides/lint-spec.md",
+        "skills/tackle/references/guides/plan-card.md"
+      ],
+      "families": [
+        "eval/tests/tooling/rules"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        ".github/workflows/ci.yml",
+        "eval/records/**"
+      ],
+      "families": [
+        "eval/tests/tooling/records"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/scenario-index/**",
+        "eval/scenarios/INDEX.json"
+      ],
+      "families": [
+        "eval/tests/tooling/scenario-index"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/behavior/harness/**"
+      ],
+      "families": [
+        "eval/tests/tooling/behavior/harness"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "MAINTAINING.md",
+        "eval/install/inventory/**",
+        "maintaining/install_root.py",
+        "skills/tackle/**",
+        "skills/tackle/references/guides/invocation.md",
+        "skills/tackle/references/guides/lint-spec.md",
+        "skills/tackle/references/guides/migrate.md",
+        "skills/tackle/references/guides/update.md"
+      ],
+      "families": [
+        "eval/tests/product/install/inventory"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/install/reading-budget/**",
+        "skills/tackle/references/guides/run-card.md",
+        "skills/tackle/references/guides/run.md",
+        "skills/tackle/references/task.tmpl.md"
+      ],
+      "families": [
+        "eval/tests/tooling/install/reading-budget"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/behavior/judges/planning/**",
+        "eval/scenarios/INDEX.json"
+      ],
+      "families": [
+        "eval/tests/tooling/behavior/judges/planning"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/migration/**",
+        "maintaining/**",
+        "skills/tackle/references/guides/invocation.md",
+        "skills/tackle/references/guides/migrate.md",
+        "skills/tackle/references/guides/status.md",
+        "skills/tackle/references/recipes/migrate/**",
+        "skills/tackle/references/recipes/migrate/schema.md",
+        "skills/tackle/references/recipes/migrate/step-3-to-4.md",
+        "skills/tackle/references/recipes/migrate/step-4-to-5.md",
+        "skills/tackle/references/recipes/migrate/step-pre3-to-3.md",
+        "skills/tackle/references/terminology.md"
+      ],
+      "families": [
+        "eval/tests/product/migration"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/maintaining/field-report/**",
+        "maintaining/**",
+        "maintaining/field_report.py",
+        "skills/tackle/references/guides/usage-observability.md"
+      ],
+      "families": [
+        "eval/tests/tooling/maintaining/field-report"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/lessons/**",
+        "skills/tackle/references/archetypes/README.md",
+        "skills/tackle/references/guides/intake-and-gate.md",
+        "skills/tackle/references/guides/plan-card.md",
+        "skills/tackle/references/guides/retro.md",
+        "skills/tackle/references/profile.tmpl.md",
+        "skills/tackle/references/retro.tmpl.md",
+        "skills/tackle/references/terminology.md"
+      ],
+      "families": [
+        "eval/tests/product/lessons"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/cohorts/2026-09-candidate/**"
+      ],
+      "families": [
+        "eval/tests/historical/verdicts/cost-and-fall-rate"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/cohorts/2026-09-second-candidate/**"
+      ],
+      "families": [
+        "eval/tests/historical/verdicts/escalation-and-completeness"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/behavior/judges/resume/**",
+        "eval/scenarios/INDEX.json"
+      ],
+      "families": [
+        "eval/tests/tooling/behavior/judges/resume"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/cohorts/2026-09-resume/**"
+      ],
+      "families": [
+        "eval/tests/historical/verdicts/resume-comparison"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/cohorts/2026-09-third-candidate/**"
+      ],
+      "families": [
+        "eval/tests/historical/verdicts/no-regression"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "skills/tackle/**"
+      ],
+      "families": [
+        "eval/tests/product/install/inventory",
+        "eval/tests/tooling/install/reading-budget",
+        "eval/tests/tooling/rules"
+      ],
+      "exclude": [],
+      "reason": "Install surface, load-chain and normative-tool contracts span the shipped tree."
+    },
+    {
+      "patterns": [
+        "eval/support/lint.py"
+      ],
+      "families": [
+        "eval/tests/product/lint/rows",
+        "eval/tests/product/lint/task-contracts",
+        "eval/tests/product/lint/task-identity",
+        "eval/tests/tooling/maintaining/suite-integrity",
+        "eval/tests/product/run/execution",
+        "eval/tests/product/templates",
+        "eval/tests/tooling/validation-integrity"
+      ],
+      "exclude": [],
+      "reason": "Five direct consumer families plus discovery and independent shipped extractor/verdict regression."
+    },
+    {
+      "patterns": [
+        "eval/protocol-v2/check.py"
+      ],
+      "families": [
+        "eval/tests/tooling/behavior/harness",
+        "eval/tests/tooling/behavior/judges/planning",
+        "eval/tests/tooling/behavior/judges/resume",
+        "eval/tests/historical/verdicts/cost-and-fall-rate",
+        "eval/tests/historical/verdicts/resume-comparison",
+        "eval/tests/historical/verdicts/escalation-and-completeness",
+        "eval/tests/historical/verdicts/no-regression",
+        "eval/tests/product/install/inventory",
+        "eval/tests/tooling/protocol-v2",
+        "eval/tests/tooling/records"
+      ],
+      "exclude": [],
+      "reason": "Live check, report mirrors and harness/judge consumers; install library import retained conservatively."
+    },
+    {
+      "patterns": [
+        "eval/protocol-v2/verdict.py"
+      ],
+      "families": [
+        "eval/tests/tooling/behavior/harness",
+        "eval/tests/tooling/behavior/judges/planning",
+        "eval/tests/tooling/behavior/judges/resume",
+        "eval/tests/historical/verdicts/cost-and-fall-rate",
+        "eval/tests/historical/verdicts/resume-comparison",
+        "eval/tests/historical/verdicts/escalation-and-completeness",
+        "eval/tests/historical/verdicts/no-regression",
+        "eval/tests/product/install/inventory",
+        "eval/tests/product/lessons",
+        "eval/tests/tooling/protocol-v2",
+        "eval/tests/tooling/records"
+      ],
+      "exclude": [],
+      "reason": "check.py imports verdict; the Wilson oracle also loads verdict directly."
+    },
+    {
+      "patterns": [
+        "eval/protocol-v2/fixtures/**"
+      ],
+      "families": [
+        "eval/tests/historical/verdicts/cost-and-fall-rate",
+        "eval/tests/historical/verdicts/resume-comparison",
+        "eval/tests/historical/verdicts/escalation-and-completeness",
+        "eval/tests/historical/verdicts/no-regression",
+        "eval/tests/tooling/protocol-v2",
+        "eval/tests/tooling/records"
+      ],
+      "exclude": [],
+      "reason": "Shared synthetic protocol fixtures and builders copied by current/historical checks."
+    },
+    {
+      "patterns": [
+        "eval/behavior/harness/*.py"
+      ],
+      "families": [
+        "eval/tests/tooling/behavior/harness",
+        "eval/tests/tooling/behavior/judges/planning",
+        "eval/tests/tooling/behavior/judges/resume",
+        "eval/tests/product/install/inventory"
+      ],
+      "exclude": [
+        "*/test_*.py",
+        "*/fixtures/**"
+      ],
+      "reason": "Harness implementation consumers; unit test edits do not traverse producer edges."
+    },
+    {
+      "patterns": [
+        "eval/scenarios/**"
+      ],
+      "families": [
+        "eval/tests/tooling/behavior/harness",
+        "eval/tests/tooling/behavior/judges/planning",
+        "eval/tests/tooling/behavior/judges/resume",
+        "eval/tests/tooling/records",
+        "eval/tests/tooling/scenario-index"
+      ],
+      "exclude": [],
+      "reason": "Scenario/catalog changes select tools only; never select live episodes or open held-out inputs."
+    },
+    {
+      "patterns": [
+        "eval/rules/check_unit_diff.py"
+      ],
+      "families": [
+        "eval/tests/product/install/inventory",
+        "eval/tests/tooling/rules"
+      ],
+      "exclude": [],
+      "reason": "Install-root tests exercise the real unit diff checker."
+    },
+    {
+      "patterns": [
+        "eval/install/reading-budget/duplicates.py"
+      ],
+      "families": [
+        "eval/tests/product/install/inventory",
+        "eval/tests/tooling/install/reading-budget",
+        "eval/tests/tooling/rules"
+      ],
+      "exclude": [],
+      "reason": "Duplicate floor is consumed by unit diff; include its install-root consumer."
+    },
+    {
+      "patterns": [
+        "README.md"
+      ],
+      "families": [
+        "eval/tests/product/install/inventory",
+        "eval/tests/tooling/install/reading-budget",
+        "eval/tests/product/lessons",
+        "eval/tests/tooling/records"
+      ],
+      "exclude": [],
+      "reason": "Root install/link/readme and public-record assertions; not ignored as generic prose."
+    },
+    {
+      "patterns": [
+        "CHANGELOG.md"
+      ],
+      "families": [
+        "eval/tests/product/install/inventory",
+        "eval/tests/tooling/records"
+      ],
+      "exclude": [],
+      "reason": "Public changelog/link and record currency consumers."
+    }
+  ],
+  "global_patterns": [
+    "eval/run_suites.py",
+    "eval/suite-manifest.json",
+    "maintaining/install_root.py",
+    ".github/**",
+    "AGENTS.md",
+    "pyproject.toml",
+    "requirements*.txt",
+    "setup.py",
+    "setup.cfg",
+    "eval/check_selection.py",
+    "eval/check-selection.json"
+  ],
+  "ignored_patterns": [
+    "docs/plans/**",
+    "docs/seeds/**",
+    "graft/**"
+  ],
+  "test_source_regressions": [
+    "eval/tests/tooling/maintaining/suite-integrity"
+  ]
+}

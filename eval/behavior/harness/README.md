@@ -16,7 +16,7 @@ python3 eval/behavior/harness/harness.py dispatch --episode <dir> --role <role> 
 python3 eval/behavior/harness/harness.py record  --episode <dir> --cohort <dir> --episode-id <id> --judgment <file>
 python3 eval/behavior/harness/harness.py packet  --cohort <dir> --episodes <dir>... --seed <n> --out <dir> --labels <dir> [--repo <dir>]
 python3 eval/behavior/harness/harness.py probe   --adapter <name> --probes eval/behavior/harness/probes.json --install <dir> --out <dir> [run's isolation and credential options]
-python3 -m unittest discover -s eval/behavior/harness -p 'test_*.py' -v
+python3 -m unittest discover -s eval/tests/tooling/behavior/harness -p 'test_*.py' -v
 ```
 
 Exit codes:

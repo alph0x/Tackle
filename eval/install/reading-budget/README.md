@@ -6,7 +6,7 @@ fixtures and then applies them to this repository. Standard library only; no net
 ```sh
 python3 eval/install/reading-budget/load_chain.py --repo .
 python3 eval/install/reading-budget/duplicates.py --repo . --chain run
-python3 -m unittest discover -s eval/install/reading-budget -p 'test_*.py' -v
+python3 -m unittest discover -s eval/tests/tooling/install/reading-budget -p 'test_*.py' -v
 ```
 
 ## The RUN chain (`load_chain.py`)

@@ -6,7 +6,7 @@ that a cohort may run. `check_index.py` verifies it:
 ```sh
 python3 eval/scenario-index/check_index.py --repo .
 python3 eval/scenario-index/check_index.py --digest <directory>
-python3 -m unittest discover -s eval/scenario-index -p 'test_*.py' -v
+python3 -m unittest discover -s eval/tests/tooling/scenario-index -p 'test_*.py' -v
 ```
 
 The checker only reads. With `--repo`, exit 0 prints one summary line

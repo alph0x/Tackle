@@ -2,7 +2,7 @@
 
 Development-only checks; not part of the installed Markdown artifact.
 
-`python3 eval/run/evidence-capture/test_evidence_capture.py` executes the literal code fence from
+`python3 eval/tests/product/run/evidence-capture/test_evidence_capture.py` executes the literal code fence from
 `references/guides/evidence-capture.md` against controlled success, child failure, binary output,
 timeout, signal, changed inputs, missing artifacts and repeated-capture cases. It validates the
 recipe, not model obedience. CI runs the same command.

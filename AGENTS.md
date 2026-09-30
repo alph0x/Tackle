@@ -61,3 +61,11 @@ re-read whole files.
 After big code changes, refresh the graph with `graft build` (deterministic,
 no API key, $0).
 <!-- graft:end -->
+
+## Test maintenance
+
+- Name test suites for the functionality or guarantee they verify, never a date, coding session or candidate ordinal. Keep a functional `purpose` in the registry and [suite index](eval/tests/README.md); archival identifiers belong to sealed evidence provenance, not suite names.
+- Use [eval/TESTING.md](eval/TESTING.md) for the organization and verification workflow. Tests live in `eval/tests/product/`, `eval/tests/tooling/` and `eval/tests/historical/`; tools and fixtures retain their source paths. Register every new or moved test in the complete `eval/suite-manifest.json`.
+- Before adding coverage, state the guarantee, concrete failure, consumer and valid alternative. Inspect existing cases/helpers; extend a matrix when sufficient. Consolidate only while retaining its inputs, oracles and consumers. Identical historical bodies can exercise different sealed implementations.
+- During development, run affected whole families through `eval/run_suites.py --changed <repo-relative-path> --output <new-directory>`; provide every changed path, including both sides of renames. Review `eval/check-selection.json` for new consumers/loaders, and use full execution if dependencies are uncertain. A selective green result approves only its recorded scope; dry-run is no execution evidence.
+- Run the full registry on the final integrated tree. Default execution, integration/release phases and CI remain full; existing MAINTAINING release gates still apply. Do not repeat unchanged checks without a new failure, input change or unresolved concern, or turn a mechanical refactor into an unsolicited model/cost experiment.

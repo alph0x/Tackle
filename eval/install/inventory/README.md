@@ -6,7 +6,7 @@ verify the install, not agent behavior.
 - **Permanent checks** read the working tree. They hold for every later version.
 
 ```sh
-python3 -m unittest discover -s eval/install/inventory -p 'test_*.py' -v
+python3 -m unittest discover -s eval/tests/product/install/inventory -p 'test_*.py' -v
 ```
 
 ## What it checks

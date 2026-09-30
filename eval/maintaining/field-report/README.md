@@ -8,7 +8,7 @@ the effort went. It lives in the repository, not the install: it reads local wor
 ```sh
 python3 maintaining/field_report.py --plans <dir> --repo <dir> --since <rev> [--until <rev>] \
     [--workspace <slug> ...] --json <file> --markdown <file>
-python3 -m unittest discover -s eval/maintaining/field-report -p 'test_*.py' -v
+python3 -m unittest discover -s eval/tests/tooling/maintaining/field-report -p 'test_*.py' -v
 ```
 
 Exit 0 writes both output files. Exit 2 is a usage error (`--repo` is not a git work tree, `--plans`

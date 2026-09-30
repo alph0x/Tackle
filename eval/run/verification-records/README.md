@@ -8,7 +8,7 @@ storage failure/interruption, concurrency, protected-reference retention, retire
 reads and portable export/restoration. Existing execution-controls, grey-fixes and lite-closure
 suites retain their original assertions; the latter two pass the newly required workspace.
 
-Run the target with `python3 -m unittest discover -s eval/run/verification-records -p 'test_*.py' -v`.
+Run the target with `python3 -m unittest discover -s eval/tests/product/run/verification-records -p 'test_*.py' -v`.
 CI discovers this family through the central registry and checks its nonzero test count.
 
 The storage-savings comparison script, measured against a fixed baseline commit, was removed;

@@ -5,7 +5,7 @@ Deterministic checks of the RUN card, `references/guides/run-card.md`, and its d
 repository root:
 
 ```sh
-python3 -m unittest discover -s eval/run/card -p 'test_*.py' -v
+python3 -m unittest discover -s eval/tests/product/run/card -p 'test_*.py' -v
 ```
 
 - `test_run.py` checks that the card and its guide hold one state machine with an integrated close bar;

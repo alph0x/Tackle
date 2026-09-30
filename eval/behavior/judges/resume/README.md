@@ -7,7 +7,7 @@ They measure whether a participant reconciles the workspace's own state before c
 whether the remaining work gets done; they test no single rule.
 
 ```sh
-python3 -m unittest discover -s eval/behavior/judges/resume -p 'test_*.py' -v
+python3 -m unittest discover -s eval/tests/tooling/behavior/judges/resume -p 'test_*.py' -v
 python3 eval/behavior/judges/planning/judge.py --scenario <scenario_id> --variant <variant_id> --work <dir> --out <file>
 python3 eval/behavior/judges/resume/order_check.py --repo <dir> --scenario <scenario_id> --variant <variant_id> \
     --transcript <file>
