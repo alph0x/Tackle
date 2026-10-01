@@ -43,7 +43,7 @@ authorization.
 A Coordinated RUN follows the [RUN card](references/guides/run-card.md); Focused RUN stays inside
 [lite-plan.tmpl.md](references/lite-plan.tmpl.md). Distinct executions remain distinct
 events even when immutable bytes are shared. Classify other (non-implementation) failures and stop affected work with
-records, absent a capability escalation declared in the brief, capped as the RUN card states; do not silently replan or upgrade a model.
+records, absent a capability escalation declared in the brief, capped as the RUN card states; do not silently replan or upgrade a model. For blocker reports, use the bounded choices and affected-only wait in the shared communication policy; refusal and time passing do not authorize work.
 
 <a id="migration-and-distribution"></a>
 ## Compatibility and state
@@ -62,7 +62,7 @@ STATUS never archives or cleans up.
 
 Migrate only selected active workspaces on a disposable copy first, preserve history and correction
 lineage, and adopt at an explicit task boundary. Ordinary invocation performs no network access or
-installation mutation.
+installation mutation. Same-release adoption of the selected active copy is held when a required lifecycle row fails; closed records and neighboring workspaces remain untouched.
 
 ## Core conventions
 
@@ -71,12 +71,12 @@ installation mutation.
 3. **Scope** — write only declared task scope and authorized workspace artifacts; preserve unrelated edits.
 4. **Task contract** — include observable purpose, requirements, interfaces, cases, constraints, non-goals, approach, checks and recovery; omit only inapplicable fields.
 5. **One responsibility** — one task has one coherent observable acceptance target; use an honest command or named review rubric and actual reviewer. Preserve valid alternatives.
-6. **Run discipline** — explicit intent precedes mutation; pin procedure, classify failures and preserve shared correction budgets. Apply [code style](references/guides/design-and-contract.md#code-style).
-7. **Records and independence** — capture actual command, cwd, runtime, actor, revisions, complete streams, exit/timeout/signal and artifact hashes. Every required assertion must propagate failure; `set -u`, `pipefail` or a final PASS alone cannot. Wrapper success cannot hide child failure; reconstructed prose is not raw evidence.
+6. **Run discipline** — explicit intent precedes mutation; pin procedure, classify failures and preserve shared correction budgets. Apply [code style](references/guides/design-and-contract.md#code-style). Positive Attempts need task-linked failed correction-validation evidence or one task-authorized declared capability escalation; initial checks, dispatch, repeated tests and duplicate events do not add cycles, while unsupported counts stay `n/a`.
+7. **Records and independence** — capture actual command, cwd, runtime, actor, revisions, complete streams, exit/timeout/signal and artifact hashes. Every required assertion must propagate failure; `set -u`, `pipefail` or a final PASS alone cannot. Wrapper success cannot hide child failure; reconstructed prose is not raw evidence. Lifecycle Outcome is `running` at start, `success`/`failed`/`blocked`/`aborted` at finish, or `incomplete` on observe-incomplete; product verdict belongs in Verification or Source.
 8. **State ownership** — board is current state; log is history; questions and decisions retain their sources. Reconcile `observe-incomplete` before repeating effects; grades derive from records.
 9. **Decision ownership** — user owns product choices; reversible technical choices are delegated within scope. Changed acceptance needs a superseding decision.
 10. **Learning consent** — select applicable, current lessons; incompatible hypotheses remain historical. Only retro writes profiles after confirmation; backlog ideas are deliberate writes.
-11. **Provider independence** — report actual capabilities, model, effort and telemetry; never invent bindings or assume a vendor mechanism.
+11. **Provider independence** — report actual capabilities, model, effort and telemetry; never invent bindings or assume a vendor mechanism. Observe host model names, tier capabilities, binding and effort controls, telemetry and their source before routing; use only actual available models, distinguish supported/unsupported/unknown, keep portable fields separate from host controls, and record unexposed telemetry as `n/a`.
 
 ## Output
 

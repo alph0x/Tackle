@@ -24,12 +24,15 @@ for the result. Do not include inventories, other file reads or guide searches i
 If a prerequisite is missing, the next action for that scope is the blocker report; otherwise
 continue with named inputs, retained records and route selection. Do not prepare or dispatch
 dependent discovery before making this decision.
-A confirmed missing owner prerequisite takes precedence over route selection: report affected work
-and the needed owner input, then stop that scope. Do not read intake or run workspace inventories,
-implementation searches or capability probes afterward. Only required state/evidence recording and
-independently authorized work continue. Never enumerate speculative later prerequisites to expand
-that blocker. On resume, read the named current inputs and retained observations before any other
-guide; an already sufficient check needs no equivalent auxiliary assertion or unchanged closure rerun.
+A confirmed missing owner prerequisite takes precedence over route selection. Use the
+[actionable blocker recovery](communication.md#actionable-blocker-recovery) policy to report the
+expected and observed state with evidence, identify affected work and the smallest owner choice, and
+offer viable options with a recommendation and consequences. Stop that scope and wait only for its
+required answer. Do not read intake or run workspace inventories, implementation searches or
+capability probes afterward. Only required state/evidence recording and independently authorized
+work continue. Never enumerate speculative later prerequisites to expand that blocker. On resume,
+read the named current inputs and retained observations before any other guide; an already sufficient
+check needs no equivalent auxiliary assertion or unchanged closure rerun.
 
 Extract or confirm:
 - Problem

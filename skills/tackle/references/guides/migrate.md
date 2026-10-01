@@ -124,6 +124,37 @@ the current layout and refuses a workspace that has not been migrated
 8. Adopt only the validated copy at the boundary. Record the path mapping, the checks and the
    rollback result; a failed check leaves the original active and unchanged.
 
+<a id="v900-v901-checklist"></a>
+## v9.0.0 → v9.0.1 checklist
+
+An active 9.0.0 workspace adopts 9.0.1 at a task boundary with the same-release checklist below.
+
+Adopt only for a selected active workspace, on a disposable copy at a task boundary. This patch
+updates the role-routing inputs and blocker recovery guidance; it does not rewrite closed tasks or
+historical records.
+
+1. Record the pinned procedure, current lint result (`lint: N/16`), and hashes of the board, briefs,
+   `AGENTS.md` model map, and history. Preserve neighboring workspaces.
+2. Refresh the model map from the host's exposed model names, tier capabilities, binding and effort
+   controls, telemetry, and observed sources. Mark each capability `supported`, `unsupported`, or
+   `unknown`; use `n/a` for telemetry the host does not expose. Keep portable Effort tokens separate
+   from actual host controls.
+3. Recompile open task roles from suitable supported tiers and observed model names. Use a stronger
+   planner only when more than one suitable tier binds; record the limitation when only one tier is
+   suitable. For an unavailable exact model, offer an observed alternative with its consequences or
+   report it unavailable. Never invent a binding.
+4. Update only active blocker reports with expected and observed behavior, evidence, the affected
+   work, viable options, a recommendation, consequences, and an affected-only wait. Continue
+   independent authorized work; preserve closed task records.
+5. Run rows 1–16 and the installed capability/recovery consumer on the copy. Record the adoption
+   decision and bump the `Methodology:` stamp to 9.0.1. Roll back by restoring the checkpoint copy.
+6. On the selected active copy, review new lifecycle writes against the legal role Outcome states,
+   trace-backed positive Attempts, truthful `n/a`/observed-zero counts and externally observed role
+   terminal clocks. Run row 16 and the installed retro lifecycle recipe; retain their exact result
+   and any Run ID diagnosis. An unsupported known old row is a record defect: hold adoption and keep
+   the original workspace active, without rewriting closed rows or neighboring workspaces. Adopt the
+   copy only after its required checks pass and record the rollback path at this task boundary.
+
 <a id="schema-keyed-migration"></a>
 ## Schema-keyed migration (9.0.0)
 

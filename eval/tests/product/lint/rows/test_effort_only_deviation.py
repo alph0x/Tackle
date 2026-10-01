@@ -54,13 +54,13 @@ class EffortOnlyDeviationTests(unittest.TestCase):
         self.assertEqual(len(lines), 1, out)
         self.assertTrue(lines[0].endswith(suffix), out)
 
-    # --- C1: /5, deviates, unreasoned ---
+    # --- /5, deviates, unreasoned ---
     def test_v5_deviation_without_tier_or_reason_fails(self):
         verdict, child = self.run12(DEVIATING)
         self.assertEqual(verdict, 'FAIL', child.stdout)
         self.assert_single_finding(child.stdout, 'demo.md' + MESSAGE)
 
-    # --- C2: the identical brief on a /4 board, a board with no Schema: line,
+    # --- The identical brief on a /4 board, a board with no Schema: line,
     # and a workspace with no board file at all: each is refused before any brief is read ---
     def test_older_and_boardless_workspaces_are_refused(self):
         for label, kwargs in (('v4', dict(schema='Schema: tackle-workspace/4')),
@@ -72,12 +72,12 @@ class EffortOnlyDeviationTests(unittest.TestCase):
                 self.assertIn(b'migrate first', child.stdout)
                 self.assertNotIn(MESSAGE.encode(), child.stdout)
 
-    # --- C3: /5, at the default ---
+    # --- /5, at the default ---
     def test_v5_default_effort_is_clean(self):
         verdict, child = self.run12(DEFAULT_EFFORT)
         self.assertEqual(verdict, 'PASS', child.stdout)
 
-    # --- C4: /5, Tier present with its own reason has no new finding; the same
+    # --- /5, Tier present with its own reason has no new finding; the same
     # Tier with no reason still hits only the pre-existing orphan path, never
     # the new one (proves the new check's !tier guard is load-bearing) ---
     def test_v5_tier_present_governs_independently_of_the_new_check(self):
@@ -89,18 +89,18 @@ class EffortOnlyDeviationTests(unittest.TestCase):
         self.assert_single_finding(child.stdout, 'demo.md: Tier without Tier reason')
         self.assertNotIn('Effort without Tier reason', child.stdout.decode())
 
-    # --- C5: /5, Tier reason alone (incl. the literal word "default") ---
+    # --- /5, Tier reason alone (incl. the literal word "default") ---
     def test_v5_tier_reason_alone_has_no_new_finding(self):
         verdict, child = self.run12(brief_with('T-A', effort='- **Effort**: high', tier_reason='default'))
         self.assertEqual(verdict, 'PASS', child.stdout)
 
-    # --- C6: /5, deviation only inside a fenced example ---
+    # --- /5, deviation only inside a fenced example ---
     def test_v5_fenced_deviation_is_not_a_real_declaration(self):
         trailer = '\n```text\n- **Effort**: high\n```\n'
         verdict, child = self.run12(brief_with('T-A', effort='- **Effort**: low', trailer=trailer))
         self.assertEqual(verdict, 'PASS', child.stdout)
 
-    # --- C7: attribution names only the deviating file, in either file order ---
+    # --- Attribution names only the deviating file, in either file order ---
     def test_attribution_names_only_the_deviating_file(self):
         for first, second, wanted in (('low', 'high', 'zzz-second.md'), ('high', 'low', 'aaa-first.md')):
             with self.subTest(deviates=wanted):
@@ -117,7 +117,7 @@ class EffortOnlyDeviationTests(unittest.TestCase):
                 self.assertEqual(verdict, 'FAIL', child.stdout)
                 self.assert_single_finding(child.stdout, wanted + MESSAGE)
 
-    # --- C9: awk coverage, split so the /5 half and the legacy half each carry
+    # --- Awk coverage, split so the /5 half and the legacy half each carry
     # their own assertion (test_lint_rows.awk_variants reports whatever this
     # host has installed; CI's four-awk installation is authoritative for full
     # coverage where a variant is missing here) ---
@@ -137,7 +137,7 @@ class EffortOnlyDeviationTests(unittest.TestCase):
                     self.assertEqual(verdict, 'ERROR', child.stdout)
                     self.assertIn(b'migrate first', child.stdout)
 
-    # --- C10: a closed task's brief is skipped; every other state is checked ---
+    # --- A closed task's brief is skipped; every other state is checked ---
     def test_closed_tasks_are_skipped_and_open_ones_checked(self):
         for status in ('Complete', 'Skipped', 'Unverifiable'):
             with self.subTest(status=status):
@@ -150,7 +150,7 @@ class EffortOnlyDeviationTests(unittest.TestCase):
                 self.assertEqual(verdict, 'FAIL', child.stdout)
                 self.assert_single_finding(child.stdout, 'demo.md' + MESSAGE)
 
-    # --- C11: a closed task keeps an older Effort token; an open one does not ---
+    # --- A closed task keeps an older Effort token; an open one does not ---
     def test_closed_task_keeps_an_older_effort_token(self):
         older = brief_with('T-A', effort='- **Effort**: inherit')
         verdict, child = self.run12(older, status='Complete')
@@ -159,7 +159,7 @@ class EffortOnlyDeviationTests(unittest.TestCase):
         self.assertEqual(verdict, 'FAIL', child.stdout)
         self.assertIn(b'Effort**: inherit', child.stdout)
 
-    # --- C12: a closed brief the board names in backticks is skipped too ---
+    # --- A closed brief the board names in backticks is skipped too ---
     def test_closed_brief_named_in_backticks_is_skipped(self):
         root = self.workspace(DEVIATING, status='Complete')
         board = root / 'docs/plans' / base.SLUG / 'task-board.md'
@@ -167,7 +167,7 @@ class EffortOnlyDeviationTests(unittest.TestCase):
         verdict, child = base.run_row(12, root, None)
         self.assertEqual(verdict, 'PASS', child.stdout)
 
-    # --- C13: only the task's own closed row exempts its brief, and an open row always wins ---
+    # --- Only the task's own closed row exempts its brief, and an open row always wins ---
     def test_a_closed_decoy_row_exempts_neither_an_open_nor_an_unlisted_brief(self):
         decoy = '| T-B | decoy | tasks/demo.md | none | Complete | reports/T-B-report.md |\n'
         for label, status, keep in (('open task', 'In progress', True), ('unlisted task', 'Draft', False)):

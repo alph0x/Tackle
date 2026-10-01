@@ -89,10 +89,14 @@ class RunMdEscalationLimitsTests(unittest.TestCase):
                 self.assertIn(token, section.lower())
 
     def test_never_appears_for_each_of_unbound_topmost_and_control(self):
-        section = escalation_limits_section().lower()
-        # The unbound-tier stop, the topmost-tier ceiling and the control-arm exclusion are each
-        # their own "never", not one word shared across all three.
-        self.assertGreaterEqual(section.count('never'), 3)
+        section = ' '.join(escalation_limits_section().lower().split())
+        # These are text contracts, not proof of agent compliance. Bind each prohibition to its
+        # subject; unrelated repetitions of "never" cannot satisfy them. Wrapping is immaterial.
+        for clause in ('never applied to an unbound tier',
+                       'never above the topmost tier',
+                       'never available to an evaluation control arm'):
+            with self.subTest(clause=clause):
+                self.assertIn(clause, section)
 
     def test_states_the_recording_shape(self):
         section = escalation_limits_section()
@@ -102,7 +106,7 @@ class RunMdEscalationLimitsTests(unittest.TestCase):
 
 
 class DecomposeAndLintWordingTests(unittest.TestCase):
-    """C5: the tier proposal states the planning-tier rule, with no plan-id leak."""
+    """The tier proposal states the planning-tier rule and contains no plan ID."""
 
     def test_model_and_tier_proposal_section_exists(self):
         self.assertIn('## Model and tier proposal (compile time)', DECOMPOSE)

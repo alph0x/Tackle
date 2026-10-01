@@ -271,7 +271,7 @@ class PlantedDefectTests(unittest.TestCase):
     repository."""
 
     def test_a_dangling_link_is_caught(self):
-        with tempfile.TemporaryDirectory(prefix='tackle-t32-defect-') as scratch:
+        with tempfile.TemporaryDirectory(prefix='install-defect-link-') as scratch:
             root = Path(scratch)
             (root / 'references/guides').mkdir(parents=True)
             (root / 'references/guides/lint-spec.md').write_text('# Lint spec\n')
@@ -283,9 +283,9 @@ class PlantedDefectTests(unittest.TestCase):
             self.assertIn('references/CHANGELOG.md', problems[0])
 
     def test_a_leaked_archetype_copy_under_the_shipped_surface_is_caught_by_content(self):
-        """C6's negative fixture: byte-identical content under `references/**`, at a different
+        """Negative fixture: byte-identical content under `references/**`, at a different
         basename, is still a leak (a content-only sweep, distinct from the old/new-path pair)."""
-        with tempfile.TemporaryDirectory(prefix='tackle-t11-defect-content-') as scratch:
+        with tempfile.TemporaryDirectory(prefix='install-defect-content-') as scratch:
             root = Path(scratch)
             (root / 'references/guides').mkdir(parents=True)
             (root / 'references/guides/reintroduced-copy.md').write_text('moved content\n')
@@ -296,7 +296,7 @@ class PlantedDefectTests(unittest.TestCase):
     def test_a_leaked_archetype_basename_under_the_shipped_surface_is_caught_by_name(self):
         """Same basename as a moved file reappearing under `references/**`, even with unrelated
         content, is still flagged (a basename-only sweep)."""
-        with tempfile.TemporaryDirectory(prefix='tackle-t11-defect-name-') as scratch:
+        with tempfile.TemporaryDirectory(prefix='install-defect-name-') as scratch:
             root = Path(scratch)
             (root / 'references/guides').mkdir(parents=True)
             (root / 'references/guides/eval-driven-method-fix.md').write_text('a different file, same name\n')
@@ -305,7 +305,7 @@ class PlantedDefectTests(unittest.TestCase):
             self.assertIn('eval-driven-method-fix.md', problems[0])
 
     def test_a_clean_tree_with_no_leak_passes(self):
-        with tempfile.TemporaryDirectory(prefix='tackle-t11-clean-') as scratch:
+        with tempfile.TemporaryDirectory(prefix='install-clean-tree-') as scratch:
             root = Path(scratch)
             (root / 'references/guides').mkdir(parents=True)
             (root / 'references/guides/unrelated.md').write_text('nothing to see here\n')

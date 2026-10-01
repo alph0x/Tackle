@@ -30,7 +30,8 @@
     "eval/tests/historical/verdicts/escalation-and-completeness",
     "eval/tests/tooling/behavior/judges/resume",
     "eval/tests/historical/verdicts/resume-comparison",
-    "eval/tests/historical/verdicts/no-regression"
+    "eval/tests/historical/verdicts/no-regression",
+    "eval/tests/historical/migration/copy-and-adoption"
   ],
   "rules": [
     {
@@ -227,7 +228,10 @@
         "skills/tackle/references/retro.tmpl.md",
         "skills/tackle/references/task.tmpl.md",
         "skills/tackle/references/team.tmpl.md",
-        "skills/tackle/references/terminology.md"
+        "skills/tackle/references/terminology.md",
+        "skills/tackle/SKILL.md",
+        "skills/tackle/references/guides/intake-and-gate.md",
+        "skills/tackle/references/guides/communication.md"
       ],
       "families": [
         "eval/tests/product/templates"
@@ -257,6 +261,67 @@
       ],
       "exclude": [],
       "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/rules/committed_text.py"
+      ],
+      "families": [
+        "eval/tests/tooling/rules"
+      ],
+      "exclude": [],
+      "reason": "Committed-text leak detection is implemented by the scanner helper and verified through its real consumer cases."
+    },
+    {
+      "patterns": [
+        "eval/scenarios/s65-migration-replay/**",
+        "eval/scenarios/s66-notice-replay/**",
+        "eval/scenarios/INDEX.json",
+        "eval/scenario-index/check_index.py",
+        "eval/behavior/harness/harness.py",
+        "eval/behavior/judges/planning/judge.py",
+        "eval/behavior/judges/planning/runner.py",
+        "eval/tests/tooling/behavior/judges/resume/test_fixtures.py"
+      ],
+      "families": [
+        "eval/tests/tooling/rules"
+      ],
+      "exclude": [],
+      "reason": "The committed-text scanner reads the indexed scenario fixture roles and the real consumer linkage for its narrow scenario-field exceptions."
+    },
+    {
+      "patterns": [
+        "eval/tests/tooling/maintaining/field-report/test_unclosed_fence.py",
+        "eval/tests/product/lint/rows/test_workspace_shapes.py",
+        "eval/tests/tooling/validation-integrity/test_fields.py"
+      ],
+      "families": [
+        "eval/tests/tooling/rules"
+      ],
+      "exclude": [],
+      "reason": "The committed-text matrix loads these exact tracked document-fixture producers from the current repository."
+    },
+    {
+      "patterns": [
+        "eval/lint/rows/fixtures/pass-full/docs/plans/demo/task-board.md",
+        "eval/lint/rows/fixtures/pass-full/docs/plans/demo/resource-usage.md",
+        "eval/lint/rows/fixtures/pass-full/docs/plans/demo/history.md",
+        "eval/lint/rows/fixtures/pass-full-5/docs/plans/demo/task-board.md",
+        "eval/lint/rows/fixtures/pass-full-5/docs/plans/demo/resource-usage.md",
+        "eval/lint/rows/fixtures/pass-full-5/docs/plans/demo/history.md",
+        "eval/lint/rows/fixtures/pass-lite/docs/plans/demo/plan.md",
+        "eval/lint/rows/fixtures/pass-lite/docs/plans/demo/resource-usage.md",
+        "eval/lint/rows/fixtures/pass-lite/docs/plans/demo/history.md",
+        "eval/lint/rows/fixtures/fail-16-unsupported-lite/docs/plans/demo/resource-usage.md",
+        "eval/tests/product/lint/rows/test_lint_rows.py",
+        "eval/tests/product/lessons/test_coverage_table.py",
+        "eval/lessons/fixtures/coverage-lifecycle.md"
+      ],
+      "families": [
+        "eval/tests/tooling/rules"
+      ],
+      "exclude": [],
+      "reason": "The committed-text matrix reads these exact Full and Lite lifecycle fixtures, the preserved Lite negative, their row-16 consumer, and the linked coverage mutation producer and fixture from the current repository."
     },
     {
       "patterns": [
@@ -380,6 +445,16 @@
       ],
       "exclude": [],
       "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/tests/product/lessons/test_coverage_table.py"
+      ],
+      "exclude": [],
+      "families": [
+        "eval/tests/product/lint/rows"
+      ],
+      "reason": "Lifecycle semantics tests reuse the live retro recipe extractor and disposable-workspace runner from this test module."
     },
     {
       "patterns": [

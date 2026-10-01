@@ -140,6 +140,10 @@ contain this v2 table only. Unknown fields
 are n/a, never guessed. Tier is the observed model binding (fast/standard/frontier), not Lite/Full;
 an unavailable binding is n/a. Attempts counts failed implementation correction-validation cycles
 shared across actors/resumptions: initial validation, dispatches and repeated tests do not count.
+One task-authorized declared capability escalation counts once, including on first validation.
+A positive Attempts count links a task-matched failed correction-validation event or that authorized
+escalation by a relative evidence path/anchor or stable event ID; a count label or existing path alone
+does not establish the event. Preserve distinct cycles across roles and do not count a duplicated ID.
 Rework uses a separately defined observed rework counter, otherwise n/a; neither counter resets
 on resume. Zero requires observed absence, not missing history.
 Verification/Source link the existing receipt and outcome; don't transcribe its metadata here.

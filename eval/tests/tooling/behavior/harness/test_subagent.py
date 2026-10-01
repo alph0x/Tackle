@@ -1108,7 +1108,7 @@ class SplitEpisodeCases(Base):
 
 
 class MultiSessionArmRefusals(Base):
-    """C7-C9: the multi-session mechanism refuses every non-multi-session arm, generalizing the existing
+    """The multi-session mechanism refuses every non-multi-session arm, generalizing the existing
     control-only and routed-only fixtures to MULTI_SESSION_ARMS."""
 
     def test_c7_close_refuses_a_non_multi_session_arm(self):

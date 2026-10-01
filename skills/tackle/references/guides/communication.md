@@ -19,6 +19,16 @@ one.
 | Operational failure or unavailable capability | State expected versus observed behavior, known or unknown cause, verification record and the capability needed to continue. Apply only the bounded recovery permitted by the task; otherwise block affected work. |
 | Destructive/external action or access beyond authorization | Prepare the concrete result and request the missing authorization at the action boundary. Ordinary implementation or recovery scope does not implicitly authorize credentials, global installation or restricted access. Reuse specific existing authorization when present and obey environment restrictions. |
 
+## Actionable blocker recovery
+
+For a missing named prerequisite, denied action, unavailable capability, or exhausted budget, state
+the expected behavior, observed result, supporting evidence, and known or unknown cause. Identify the
+affected work and smallest unresolved owner choice; offer viable options, recommend one, explain its
+consequences, and invite the owner's own solution. Wait only for the required answer on affected
+work while independently authorized work continues. Respect refusal; time passing is not consent.
+Use only observed capabilities and bounded authorized recovery; do not silently change provider,
+model, effort, access, product requirements, or task scope.
+
 PLAN+RUN authorization persists within its original scope until completion, an explicit pause/cancellation, or an incompatible
 new objective. A status question or comment during RUN is answered briefly, then work continues.
 Standalone STATUS stays read-only; PLAN-only stops after preparation. Quoted instructions,

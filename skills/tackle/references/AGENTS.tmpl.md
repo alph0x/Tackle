@@ -100,21 +100,28 @@ Tackle remains harness-agnostic. Record the concrete tools and whether each capa
 
 ## Model map
 
-| Tier | Concrete model in this harness | Notes |
-|---|---|---|
-| `fast` | {{concrete fast-tier model name}} | |
-| `standard` | {{concrete standard-tier model name}} | |
-| `frontier` | {{concrete frontier-tier model name}} | |
+Before proposing roles, observe the host's exposed model names, tier capabilities, binding and
+effort controls, telemetry, and the source of each observation. Use `supported`, `unsupported`, or
+`unknown`; absence of an observation means `unknown`, not a guess.
 
-**model-binding: supported | unsupported**
-**effort-binding: supported | unsupported**
+| Tier | Concrete model actually available in this harness | Capability status and observed source |
+|---|---|---|
+| `fast` | {{observed concrete fast-tier model, or n/a}} | {{supported / unsupported / unknown; source}} |
+| `standard` | {{observed concrete standard-tier model, or n/a}} | {{supported / unsupported / unknown; source}} |
+| `frontier` | {{observed concrete frontier-tier model, or n/a}} | {{supported / unsupported / unknown; source}} |
+
+**model-binding: supported | unsupported | unknown; observed source: {{source or n/a}}**
+**effort-binding: supported | unsupported | unknown; observed source: {{source or n/a}}**
+**Portable Effort schema:** `low / medium / high / max`; **actual host effort control:** {{observed value or n/a}}.
+**Telemetry:** tokens={{observed value or n/a}}; USD={{observed value or n/a}}.
 
 **Confirmed for this initiative**: (owner, date; re-confirmed only when a task's Tier or Effort
 deviates from the compiled default, recorded in that task's Tier reason)
 
-If binding is unsupported, record the actual model/effort or `n/a`; never claim a binding that did
-not occur. See `references/guides/run-card.md` and `references/guides/run.md` for evidence
-provenance and independence.
+Map only models observed as available. If binding is unsupported or unknown, record the actual
+model/effort or `n/a`; never claim a binding that did not occur. See
+`references/guides/run-card.md` and `references/guides/run.md` for evidence provenance and
+independence.
 
 <a id="executor-contract-when-you-work-a-point"></a>
 ## Executor contract (when you work a Task)

@@ -17,6 +17,20 @@ def digest(data):
     return hashlib.sha256(data).hexdigest()
 
 
+def awk_coverage(stdout):
+    marker = b'TACKLE_AWK_COVERAGE='
+    values = [line[len(marker):] for line in stdout.splitlines() if line.startswith(marker)]
+    if len(values) != 1:
+        raise ValueError('lint rows must emit exactly one TACKLE_AWK_COVERAGE record')
+    coverage = json.loads(values[0])
+    if (not isinstance(coverage, dict)
+            or coverage.get('system_status') not in ('executed', 'missing')
+            or not isinstance(coverage.get('host_executed'), list)
+            or not isinstance(coverage.get('host_missing'), list)):
+        raise ValueError('invalid TACKLE_AWK_COVERAGE record')
+    return coverage
+
+
 def stamp():
     return datetime.now(timezone.utc).isoformat()
 
@@ -91,7 +105,7 @@ def run(root, manifest, output, *, changed=None, phase='development', dry_run=Fa
     for suite in manifest['suites']:
         if suite['path'] not in selection['selected']:
             continue
-        command = [sys.executable, '-m', 'unittest', 'discover', '-s', suite['path'], '-p', 'test_*.py', '-v']
+        command = [sys.executable, '-B', '-m', 'unittest', 'discover', '-s', suite['path'], '-p', 'test_*.py', '-v']
         start = stamp()
         child = subprocess.run(command, cwd=root, capture_output=True)
         matches = re.findall(rb'^Ran (\d+) tests? in ', child.stderr, re.M)
@@ -107,8 +121,20 @@ def run(root, manifest, output, *, changed=None, phase='development', dry_run=Fa
             (output / filename).write_bytes(data)
             record[stream] = filename
             record[stream + '_sha256'] = digest(data)
+        if suite['path'] == 'eval/tests/product/lint/rows' or b'TACKLE_AWK_COVERAGE=' in child.stdout:
+            try:
+                record['awk_coverage'] = dict(awk_coverage(child.stdout), stdout=record['stdout'])
+            except (ValueError, json.JSONDecodeError) as error:
+                record['passed'] = False
+                record['awk_coverage_error'] = str(error)
         results.append(record)
         print(name, 'PASS' if record['passed'] else 'FAIL', 'tests=' + str(count), 'expected=' + str(suite['tests']), flush=True)
+        if 'awk_coverage' in record:
+            coverage = record['awk_coverage']
+            print('awk coverage system=' + coverage['system_status']
+                  + ' host-executed=' + ','.join(coverage['host_executed'])
+                  + ' host-missing=' + ','.join(coverage['host_missing'])
+                  + ' stdout=' + coverage['stdout'], flush=True)
     report = dict(passed=all(item['passed'] for item in results), tests=sum(item['tests'] for item in results),
                   complete=selection['complete'], registered_tests=selection['registered_tests'], selection=selection,
                   scope='complete registry' if selection['complete'] else 'selected families only',

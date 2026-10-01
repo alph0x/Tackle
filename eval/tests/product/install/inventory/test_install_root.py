@@ -123,7 +123,7 @@ class InstallRootTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             repo, base, _ = build_crossing_repo(temp)
             with self.assertRaises(InstallRootError):
-                revision_prefix(repo, "no-such-t01-revision")
+                revision_prefix(repo, "no-such-install-revision")
             with self.assertRaises(InstallRootError):
                 revision_prefix(Path(temp) / "not-a-repository", base)
 

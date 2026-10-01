@@ -688,7 +688,7 @@ def build_gate_auto(out):
         git_run(root, 'init', '-q', '-b', 'main')
         return root
 
-    # (a) only tags predate the ledger: c0 (tag v1, no ledger) -> c1 (adds the ledger) = HEAD.
+    # (a) only tags predate the ledger: initial commit (tag v1, no ledger) -> second commit (adds the ledger) = HEAD.
     root = repo_root('c28a-only-tags-predate-ledger')
     write_tree(root, {'README.md': 'no ledger yet\n'})
     commit_gate(root, 'no ledger', '2026-01-01T00:00:00')
@@ -697,8 +697,8 @@ def build_gate_auto(out):
     commit_gate(root, 'adds the ledger', '2026-01-02T00:00:00')
     cases['c28a-only-tags-predate-ledger'] = root
 
-    # (b) a ledger-bearing tag behind HEAD: c0 (no ledger) -> c1 (adds ledger, tag v1) -> c2 (tag v2) ->
-    # c3 = HEAD (untagged).
+    # (b) a ledger-bearing tag behind HEAD: initial commit (no ledger) -> second commit (adds ledger, tag v1) -> third commit (tag v2) ->
+    # fourth commit = HEAD (untagged).
     root = repo_root('c28b-ledger-tag-behind-head')
     write_tree(root, {'README.md': 'no ledger yet\n'})
     commit_gate(root, 'no ledger', '2026-01-01T00:00:00')
@@ -713,8 +713,8 @@ def build_gate_auto(out):
     commit_gate(root, 'untagged change', '2026-01-04T00:00:00')
     cases['c28b-ledger-tag-behind-head'] = root
 
-    # (c) a tag on HEAD itself, with an older ledger-bearing tag behind it: c0 (no ledger) -> c1 (adds
-    # ledger, tag v1) -> c2 = HEAD (tag v2, on HEAD itself, never the resolved base).
+    # (c) a tag on HEAD itself, with an older ledger-bearing tag behind it: initial commit (no ledger) -> second commit (adds
+    # ledger, tag v1) -> third commit = HEAD (tag v2, on HEAD itself, never the resolved base).
     root = repo_root('c28c-tag-on-head-itself')
     write_tree(root, {'README.md': 'no ledger yet\n'})
     commit_gate(root, 'no ledger', '2026-01-01T00:00:00')

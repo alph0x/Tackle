@@ -46,7 +46,7 @@ class RealRepoFixture:
     """--repo needs a real git work tree; the Tackle repository itself always is one, and an empty
     HEAD..HEAD range is cheap, valid regardless of the live branch state, and never touched (see
     test_own_test_family_directory_is_never_modified below, which hashes this test family's own
-    directory tree, fixtures included, before and after a real run)."""
+    directory and the separate source/fixture tree before and after a real run)."""
     path = ROOT
     since = 'HEAD'
     until = 'HEAD'
@@ -319,16 +319,20 @@ class ReadOnlyAndDeterminismTests(unittest.TestCase):
         self.assertNotIn('generated', text.lower())
 
     def test_own_test_family_directory_is_never_modified(self):
-        # A real --repo argument is used above; hash this test family's own directory (fixtures
-        # included) before and after, so a bug that wrote into it would be caught here too.
-        before = hash_tree(ROOT / 'eval' / 'maintaining' / 'field-report')
+        # Tests and fixtures now live separately. Keep the original source/fixture protection
+        # and also protect the directory containing this test, wherever it is registered.
+        protected = (Path(__file__).resolve().parent,
+                     ROOT / 'eval' / 'maintaining' / 'field-report')
+        for directory in protected:
+            self.assertTrue(directory.is_dir(), directory)
+        before = {str(directory): hash_tree(directory) for directory in protected}
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp) / 'out'
             out.mkdir()
             child = run_cli(['--plans', FIXTURES, '--repo', RealRepoFixture.path, '--since', RealRepoFixture.since,
                              '--until', RealRepoFixture.until, '--json', out / 'r.json', '--markdown', out / 'r.md'])
             self.assertEqual(child.returncode, 0, child.stderr)
-        after = hash_tree(ROOT / 'eval' / 'maintaining' / 'field-report')
+        after = {str(directory): hash_tree(directory) for directory in protected}
         self.assertEqual(before, after)
 
 

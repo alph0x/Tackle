@@ -6,6 +6,7 @@ same recipes a Full run uses, and executed with ``sh`` against disposable copies
 import hashlib
 import os
 import re
+import shlex
 import shutil
 import subprocess
 import tempfile
@@ -146,7 +147,8 @@ FAILS = [
     ('fail-15', 'pass-full', 15, 'stale reference-doc', 'WARN'),
     ('fail-16', 'pass-full', 16, 'duplicate start', 'FAIL'),
     ('fail-16b', 'pass-full', 16, 'unknown Event', 'FAIL'),
-    # /5 cases. C3: an uncited Ready to run row fails row 10's citation check.
+    ('fail-16-unsupported-lite', 'pass-lite', 16, 'invalid finish Outcome', 'FAIL'),
+    # /5 cases. An uncited Ready to run row fails row 10's citation check.
     ('fail-10-uncited-ready-v5', 'pass-full-5', 10, 'ready-to-run task missing ready citation', 'FAIL'),
     # C4: two /5 workspaces, one In progress and the other Waiting on owner, with colliding scope.
     ('fail-8-waiting-v5', 'pass-full-5', 8, 'collision', 'WARN'),
@@ -170,11 +172,15 @@ def materialize(root, name, base=None):
 
 def run_row(number, root, awk):
     env = dict(os.environ)
-    if awk:
+    tracker = env.get('TACKLE_AWK_INVOCATIONS')
+    command = list(awk) if awk else ([shutil.which('awk')] if tracker and shutil.which('awk') else None)
+    if command:
         bin_dir = root.parent / 'bin'
         bin_dir.mkdir(exist_ok=True)
         wrapper = bin_dir / 'awk'
-        wrapper.write_text('#!/bin/sh\nexec ' + ' '.join(awk) + ' "$@"\n')
+        variant = Path(command[0]).name if awk else 'system'
+        invocation = ('printf "%s\\n" ' + shlex.quote(variant) + ' >> "$TACKLE_AWK_INVOCATIONS"\n') if tracker else ''
+        wrapper.write_text('#!/bin/sh\n' + invocation + 'exec ' + ' '.join(shlex.quote(part) for part in command) + ' "$@"\n')
         wrapper.chmod(0o755)
         env['PATH'] = str(bin_dir) + os.pathsep + env['PATH']
     child = run_lint_row(root, number, slug=SLUG, source=SPEC.read_bytes(), env=env, timeout=30)

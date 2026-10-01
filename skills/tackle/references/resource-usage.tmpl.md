@@ -19,6 +19,13 @@ observed; never invent an end time or duration. `Run ID` defaults to
 Harness, Model, Effort, Attempts, Rework, and Verification values are `n/a`, never estimated.
 Attempts and rework retain the shared Run counters across actors and resumptions; they never reset
 for a new role or session. Lifecycle recording is informative and never gates task closure.
+Write `running` for start, `success`/`failed`/`blocked`/`aborted` for finish, and `incomplete`
+for observe-incomplete. Keep product acceptance prose in Verification/Source, even when the role
+finishes successfully. A positive Attempts count needs a relative trace reference or stable event
+identifier for task-matched failed correction validation or one declared authorized escalation;
+count labels, initial checks, dispatches and repeated tests alone do not support it. Preserve
+distinct cycles across actors, and count a duplicate event only once. `0` requires observed
+absence with its source; use `n/a` when support is unknown.
 
 Optional exact telemetry is an additive `resource-usage.telemetry.jsonl` sidecar described in
 `references/guides/usage-observability.md`; the lifecycle table remains useful when the sidecar is

@@ -167,7 +167,7 @@ class DuplicateHypothesisTests(unittest.TestCase):
         self.assertEqual((rows['HY'].n_check, rows['HY'].n_cross), (4, 0))
 
     def test_an_assumed_observation_in_one_duplicate_never_blocks_a_later_real_one(self):
-        """C3: an `assumed` token for an initiative must never occupy that
+        """An `assumed` token for an initiative must never occupy that
         (hypothesis, initiative) union slot, so a later duplicate bullet's real check/cross for
         the same initiative still counts."""
         text = (
@@ -239,7 +239,7 @@ class SectionScopingTests(unittest.TestCase):
 
 
 class LegacyReadCompatTests(unittest.TestCase):
-    """C5: the same shipped recipe reads three old-format shapes without crashing or
+    """The shipped recipe also reads three old-format shapes without crashing or
     rewriting: plain N-check/M-cross, N-check/M-null (the null bucket excluded from n entirely),
     and a confidence/evidence-less directive (n/a, unranked)."""
 

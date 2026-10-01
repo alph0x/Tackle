@@ -26,7 +26,7 @@ Legal flow:
 
 ```text
 absent -> start(running) -> finish(success|failed|blocked|aborted)
-                         -> observe-incomplete(incomplete)
+                         \-> observe-incomplete(incomplete)
 ```
 
 Exactly one start and at most one terminal event are valid. An orphan terminal, duplicate start,
@@ -38,10 +38,21 @@ Tier records an observed fast/standard/frontier model binding, never the Lite/Fu
 Attempts records shared failed implementation correction-validation cycles, plus one declared
 capability escalation per task, counted once as its own event, always, including on the task's first
 validation; initial validation, dispatch and repeated tests of an implementation fault do not count.
+For a nonzero Attempts value, Verification or Source links a task-matched failed correction-validation
+record or one task-authorized declared capability escalation. A relative path and anchor, or a stable
+event identifier resolving in the task history, is sufficient when the cited record gives the event
+identity, fault or unavailable capability, observed result, correction or authorization, and validation.
+Do not substitute a count label, a path that merely exists, or an unrelated task's event for those facts.
+Keep the shared count across actors; two distinct failed correction events may count two, while a repeated
+test or duplicate event identifier never adds a cycle. The labels and ordering of those facts are not a
+new history schema. When no correction was observed, record zero with the observation source; when the
+history or observation is unavailable, record `n/a` rather than inventing zero.
 Rework uses a separately defined observed rework counter,
 otherwise `n/a`. Preserve counters across actors/resumptions; zero requires observed absence.
 A role outcome describes that role: a reviewer may finish successfully while reporting a blocked
-product. Verification/Source identifies that scope; it cannot imply initiative completion.
+product. Verification/Source identifies that scope; it cannot imply initiative completion. Outcome
+contains only `running` on start, `success`/`failed`/`blocked`/`aborted` on finish, or `incomplete`
+on observe-incomplete; product verdict prose belongs in Verification/Source.
 Lifecycle recording is informative and never
 gates task closure. The execution sequence and correction limits are owned by the [RUN
 card](run-card.md), with depth in `references/guides/run.md`.

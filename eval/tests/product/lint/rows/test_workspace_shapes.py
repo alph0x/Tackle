@@ -26,8 +26,13 @@ NAMESPACE = lint_namespace()
 
 HEADER = ('| Run ID | Event | Task | Role | Harness | Tier | Model | Effort | At | Outcome | Attempts | Rework | Verification | Source |\n'
           '|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n')
-START = '| trial | start | n/a | executor | test | n/a | n/a | n/a | n/a | running | 0 | n/a | pending | observed |\n'
-FINISH = '| trial | finish | n/a | executor | test | n/a | n/a | n/a | n/a | complete | 0 | n/a | check | observed |\n'
+UNSUPPORTED_START = '| trial | start | n/a | executor | test | n/a | n/a | n/a | n/a | running | 0 | n/a | pending | observed |\n'
+UNSUPPORTED_FINISH = '| trial | finish | n/a | executor | test | n/a | n/a | n/a | n/a | complete | 0 | n/a | check | observed |\n'
+START = UNSUPPORTED_START.replace('| n/a | executor |', '| T-A | executor |').replace('| observed |', '| history.md#absence-trial |')
+FINISH = (UNSUPPORTED_FINISH.replace('| n/a | executor |', '| T-A | executor |')
+          .replace('| complete |', '| success |').replace('| observed |', '| history.md#absence-trial |'))
+ABSENCE = ('### Event absence-trial\nTask ID: T-A\nRun ID: trial\n'
+           'Kind: observed-absence\nObserved: no correction or escalation in this run\n')
 
 
 class ShapeCase(unittest.TestCase):
@@ -46,7 +51,7 @@ class ShapeCase(unittest.TestCase):
 
     def focused(self):
         self.write('plan.md', 'Gate: Lite\n# Task\n\n- State: complete\n')
-        self.write('history.md', '# History\n\n## 2026-09-20 · session 1\nObserved.\n')
+        self.write('history.md', '# History\n\n## 2026-09-20 · session 1\nObserved.\n\n' + ABSENCE)
         self.write('resource-usage.md', '# Resource usage\n\nSchema: tackle-observability/2\n\n' + HEADER + START + FINISH)
 
     def coordinated(self):
@@ -182,7 +187,8 @@ class FocusedWorkspaceTests(ShapeCase):
         self.focused()
         self.write('history.md', '# History\n## 2026-09-20\n## 2026-09-19\n')
         self.assert_blocked(6)
-        for contents in [HEADER + FINISH, HEADER + START + START + FINISH,
+        for contents in [HEADER + UNSUPPORTED_START + UNSUPPORTED_FINISH,
+                         HEADER + FINISH, HEADER + START + START + FINISH,
                          HEADER + START + FINISH.replace('| 0 |', '| -1 |')]:
             with self.subTest(contents=contents):
                 self.write('resource-usage.md', contents)

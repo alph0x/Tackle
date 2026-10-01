@@ -9,7 +9,9 @@ coordination.
 
 ## Model binding
 
-Teams bind roles to abstract, harness-agnostic tiers, never vendor models:
+Teams bind roles to abstract, harness-agnostic tiers, never vendor models. The defaults below are
+proposals until the observed model map is read; use only supported tiers and concrete models
+listed there. A static role table never supplies a host binding:
 
 - **`fast`** — grounding reads, searches, lint and drift checks.
 - **`standard`** — implementation, coordination and ordinary review.
@@ -32,6 +34,11 @@ model binding is unsupported, record the actual binding and `n/a` values honestl
 upgrade a role to resolve a Run failure. An independent session or human fallback is selected only
 when the Run risk requires semantic independence; a renamed role or tier does not itself establish
 independence.
+
+When more than one suitable tier binds, propose a planner on a stronger tier than the Executor. If
+only one suitable tier binds, state the one-tier limitation. An unavailable exact model requires an
+observed supported alternative with its consequences or an explicit unavailability report; never
+invent an equivalent.
 
 ## Team sizing
 

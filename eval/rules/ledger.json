@@ -242,8 +242,8 @@
     },
     {
       "rule_id": "R-INTAKE-03",
-      "statement": "A missing prerequisite stops its scope with a report of the affected work and the owner action; no further discovery follows, and only required recording and independently authorized work continue.",
-      "statement_sha256": "1b986f9a0426f7cb922318dc4cee923123938423b80d383fc6b3dff6e2be4c0a",
+      "statement": "Before dependent discovery, report a missing named prerequisite with its expected and observed state, evidence, affected work and smallest owner choice, including viable options, a recommendation and consequences; wait only on the scope decision and continue independent authorized work.",
+      "statement_sha256": "4ee369e1b40d33047a1b396888a6d70a618a3706ebc51af638f120ee9c31094c",
       "home": "references/guides/intake-and-gate.md:27",
       "home_fragment": "A confirmed missing owner prerequisite takes precedence",
       "units": [],
@@ -357,7 +357,7 @@
       "rule_id": "R-INTAKE-07",
       "statement": "The four intake anchors are the intent contract and precede any solution.",
       "statement_sha256": "054882bb554f8555fcf538e325aab93bd76eb766afc92ffaa76ce0725a4853a1",
-      "home": "references/guides/intake-and-gate.md:42",
+      "home": "references/guides/intake-and-gate.md:45",
       "home_fragment": "The four anchors are the intent contract.",
       "units": [],
       "mirrors": [],
@@ -521,7 +521,7 @@
       "rule_id": "R-PLAN-05",
       "statement": "Separate requirements from delegated choices; missing product behavior blocks its consumers instead of being invented.",
       "statement_sha256": "57d086928fc278917836a2a04debd1d7984046080acf0594205207ed66d73550",
-      "home": "references/guides/intake-and-gate.md:72",
+      "home": "references/guides/intake-and-gate.md:75",
       "home_fragment": "Material product ambiguity blocks the affected criterion",
       "units": [],
       "mirrors": [],
@@ -818,9 +818,9 @@
     },
     {
       "rule_id": "R-PLAN-12",
-      "statement": "Planning always runs on a more capable tier than the Executor's, whenever the model map binds more than one tier.",
-      "statement_sha256": "1111ad59dc43254533ed02df4f320ab2e2bf78eba119ca4463f3866cb3733baa",
-      "home": "references/guides/decompose-and-lint.md:239",
+      "statement": "Planning always runs on a more capable tier than the Executor's whenever more than one suitable tier binds; a one-tier harness records its limitation. These are role proposals, not claims that a host binding occurred.",
+      "statement_sha256": "f2516914cd7def40bbf47bf3973d6b24cd128e5ac88a7d378b148c84cc53d2ff",
+      "home": "references/guides/decompose-and-lint.md:248",
       "home_fragment": "Planning always runs on a more capable tier",
       "units": [],
       "mirrors": [],
@@ -872,7 +872,7 @@
       "rule_id": "R-RUN-02",
       "statement": "Explicit PLAN+RUN authorization persists within scope: status questions during active work are answered and work continues without asking for execution permission again.",
       "statement_sha256": "46477588c66873c870e3dfd4772be0273d3545585e33a4e7e04bfb3190ef9bd0",
-      "home": "references/guides/communication.md:22",
+      "home": "references/guides/communication.md:32",
       "home_fragment": "an explicit pause/cancellation, or an incompatible",
       "units": [],
       "mirrors": [],
@@ -1075,12 +1075,13 @@
     },
     {
       "rule_id": "R-RUN-10",
-      "statement": "Classify other, non-implementation failures and stop the affected work with records, absent a capability escalation declared in the brief and capped as the RUN card states; never silently replan or upgrade a model.",
-      "statement_sha256": "d9392b25e54e308c090a82964f6802786ecd402f29b5540b6415c5a5b653c4fc",
+      "statement": "Classify other, non-implementation failures and stop the affected work with records, absent a capability escalation declared in the brief and capped as the RUN card states; never silently replan or upgrade a model. For blockers, offer bounded choices and wait only on affected work; refusal and time passing do not authorize work.",
+      "statement_sha256": "f023d40f8fa1a0a4b7060af391e8e1a38733c39aceee4a1c57f2b7db195c3041",
       "home": "SKILL.md:45",
       "home_fragment": "failures and stop affected work with",
       "units": [
-        "Classify other (non-implementation) failures and"
+        "Classify other (non-implementation) failures and",
+        "For blocker reports, use the bounded choices and"
       ],
       "mirrors": [],
       "class": "safety-invariant",
@@ -1624,12 +1625,13 @@
     },
     {
       "rule_id": "R-EVID-08",
-      "statement": "Report actual capabilities, model, effort and telemetry; never invent bindings or assume a vendor mechanism.",
-      "statement_sha256": "d54337c0fcca19af2ff34b9808e56e80ce2e7969a064defa89a65ace1dd19d22",
+      "statement": "Observe host model names, tier capabilities, model- and effort-binding controls, telemetry and their source before routing; use only actually available models, distinguish supported, unsupported and unknown, separate portable fields from host controls, and record unexposed telemetry as n/a. Report actual capabilities, model and effort; never invent bindings or assume a vendor mechanism.",
+      "statement_sha256": "3cf4c76d73a9e6ca1bca63fed18daef19f2e8b6b386d448fbea0e40c07a45500",
       "home": "SKILL.md:79",
       "home_fragment": "**Provider independence** — report actual capabilities",
       "units": [
-        "**Provider independence** — report actual capabi"
+        "**Provider independence** — report actual capabi",
+        "Observe host model names, tier capabilities, bin"
       ],
       "mirrors": [],
       "class": "safety-invariant",
@@ -1786,7 +1788,7 @@
       "rule_id": "R-EVID-12",
       "statement": "Role-scoped telemetry joins only on an exact run id; a native provider id without an explicit mapping stays unjoined.",
       "statement_sha256": "5e395c05016c5291504026a85194d85f9c599201d4547b9b400ec229d8baa585",
-      "home": "references/guides/usage-observability.md:80",
+      "home": "references/guides/usage-observability.md:91",
       "home_fragment": "Role-scoped sidecar observations join only on an exact",
       "units": [],
       "mirrors": [],
@@ -2917,7 +2919,7 @@
       "rule_id": "R-LEARN-05",
       "statement": "A profile entry's confidence is computed from its own recorded observations (Wilson lower bound, z=1.96), never picked or typed by hand.",
       "statement_sha256": "ec9bda2c95baf971dffc0dff1721e1e9a8bd1fe93abf71286bfff28867a65dbe",
-      "home": "references/guides/retro.md:109",
+      "home": "references/guides/retro.md:112",
       "home_fragment": "No step in this workflow asks a human or agent to pick",
       "units": [],
       "mirrors": [],
@@ -2940,7 +2942,7 @@
       "rule_id": "R-LEARN-06",
       "statement": "An accepted suggestion counts toward a hypothesis's N/M/n only when this retro's own mining independently surfaced supporting or contradicting evidence; a bare acceptance is recorded assumed and never counted.",
       "statement_sha256": "62cbbca2054b62e08955d87c8398b29353cdeaf557443accfcc9fd42031585fd",
-      "home": "references/guides/retro.md:218",
+      "home": "references/guides/retro.md:221",
       "home_fragment": "recorded `assumed` instead (kept for audit, never counted",
       "units": [],
       "mirrors": [],
@@ -2963,7 +2965,7 @@
       "rule_id": "R-LEARN-07",
       "statement": "A profile entry retires when its cross count is at least 3 and its own computed, raw confidence is below 0.3.",
       "statement_sha256": "2013662cc5798c60df4042aa8329b5a11ff5b7517fd35afa1cb90e2578e22a5e",
-      "home": "references/guides/retro.md:221",
+      "home": "references/guides/retro.md:224",
       "home_fragment": "If ✗ ≥ 3 and the entry's *computed* confidence",
       "units": [],
       "mirrors": [],
@@ -3009,7 +3011,7 @@
       "rule_id": "R-LEARN-09",
       "statement": "Retro's batch-confirmed writes (profile, archetype, retro.md and its history entry) are all outside the installed skill; none is a write under references/ or SKILL.md.",
       "statement_sha256": "8f761085fce505e3e7f9cec27d1d1d30f83934e2f6ca6b01212ae0351ea05371",
-      "home": "references/guides/retro.md:267",
+      "home": "references/guides/retro.md:270",
       "home_fragment": "are outside the installed skill; none is a write under",
       "units": [],
       "mirrors": [],
@@ -3048,6 +3050,110 @@
         "scenarios": [],
         "cohort_id": null,
         "as_of": "2026-09-26"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-EVID-14",
+      "statement": "A role lifecycle event uses its legal Outcome state and keeps a product verdict in Verification or Source, including when a successful reviewer reports a blocked product.",
+      "statement_sha256": "d2440f57913cd008f4990379cf43acf0a8ff7cdb478632dec0660c613bd6df70",
+      "home": "SKILL.md:75",
+      "home_fragment": "Lifecycle Outcome is `running` at start",
+      "units": [
+        "Lifecycle Outcome is `running` at start, `succes"
+      ],
+      "mirrors": [
+        "references/guides/usage-observability.md:54"
+      ],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "9.0.1",
+        "trigger": "Same-release lifecycle and evidence-backed Attempts",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-30"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-EVID-15",
+      "statement": "Positive Attempts require task-linked failed correction-validation evidence or one authorized declared capability escalation; initial checks, dispatch, repeated tests and duplicate events do not inflate it, and unknown support stays n/a.",
+      "statement_sha256": "001ce9a66a264d0ded9508ee69421e328fe875d6456b268f2746f9c18c128373",
+      "home": "SKILL.md:74",
+      "home_fragment": "Positive Attempts need task-linked failed",
+      "units": [
+        "Positive Attempts need task-linked failed correc"
+      ],
+      "mirrors": [
+        "references/guides/usage-observability.md:41"
+      ],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "9.0.1",
+        "trigger": "Same-release lifecycle and evidence-backed Attempts",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-30"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-LEARN-11",
+      "statement": "Retro measures successful-role duration only from a valid externally observed start and finish clock pair for the exact Run ID; unknown or malformed clocks are unmeasured.",
+      "statement_sha256": "18a7a075ba541127f2a0090a8332b49efe937cacbf2d18c4c40481292c00af1f",
+      "home": "references/guides/retro.md:48",
+      "home_fragment": "The successful role finish must be externally observed;",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.0.1",
+        "trigger": "Same-release lifecycle and evidence-backed Attempts",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-30"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-MIGRATE-04",
+      "statement": "Same-release lifecycle adoption checks a selected active workspace copy and holds a failed required row without rewriting closed records or neighboring workspaces.",
+      "statement_sha256": "521b9758ad6a3646faf9efd04b735f2744e364f81a7aeaace55e2e4e70c2277e",
+      "home": "SKILL.md:65",
+      "home_fragment": "Same-release adoption of the selected active copy is held",
+      "units": [
+        "Same-release adoption of the selected active cop"
+      ],
+      "mirrors": [
+        "references/guides/migrate.md:151"
+      ],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "9.0.1",
+        "trigger": "Same-release lifecycle and evidence-backed Attempts",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-09-30"
       },
       "historical": []
     }

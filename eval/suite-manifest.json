@@ -138,17 +138,19 @@
       "path": "eval/tests/product/lint/rows",
       "files": [
         "test_lint_rows.py",
+        "test_awk_coverage.py",
         "test_row8_wrap.py",
         "test_tier_escalation.py",
         "test_effort_only_deviation.py",
         "test_forward_only.py",
         "test_workspace_shapes.py",
-        "test_row_contracts.py"
+        "test_row_contracts.py",
+        "test_lifecycle_semantics.py"
       ],
-      "tests": 75,
+      "tests": 84,
       "source": "eval/lint/rows",
       "category": "product",
-      "purpose": "Canonical lint rows, formats, severities and AWK variants."
+      "purpose": "Canonical lint rows, formats, severities, AWK variants, lifecycle outcomes, clock coverage and Attempts evidence."
     },
     {
       "path": "eval/tests/product/templates",
@@ -156,12 +158,13 @@
         "test_template_drift.py",
         "test_model_routing_text.py",
         "test_tier_model_collision.py",
-        "test_brief_template.py"
+        "test_brief_template.py",
+        "test_capability_recovery.py"
       ],
-      "tests": 37,
+      "tests": 48,
       "source": "eval/templates",
       "category": "product",
-      "purpose": "Template fields, model routing and compiled briefs."
+      "purpose": "Template fields, observed model routing, capability recovery and compiled briefs."
     },
     {
       "path": "eval/tests/tooling/protocol-v2",
@@ -176,13 +179,14 @@
     {
       "path": "eval/tests/tooling/rules",
       "files": [
+        "test_committed_text.py",
         "test_ledger.py",
         "test_unit_diff.py"
       ],
-      "tests": 81,
+      "tests": 92,
       "source": "eval/rules",
       "category": "tooling",
-      "purpose": "Normative inventory, ledger gates and removed-unit accounting."
+      "purpose": "Normative inventory, ledger gates, committed-text leak scanning and removed-unit accounting."
     },
     {
       "path": "eval/tests/tooling/records",
@@ -254,7 +258,7 @@
         "test_unclosed_fence.py",
         "test_migration.py"
       ],
-      "tests": 122,
+      "tests": 119,
       "source": "eval/migration",
       "category": "product",
       "purpose": "Workspace schema migration, recipes and census refusal."
@@ -335,6 +339,16 @@
       "source": "eval/cohorts/2026-09-third-candidate",
       "category": "historical",
       "purpose": "Non-regression verdicts, current-workspace comparisons and artifact ties."
+    },
+    {
+      "path": "eval/tests/historical/migration/copy-and-adoption",
+      "files": [
+        "test_copy_adoption.py"
+      ],
+      "tests": 2,
+      "source": "eval/migration",
+      "category": "historical",
+      "purpose": "Historical local simulation of copy-first migration, checkpoint copies and selective adoption; not current migration recipes."
     }
   ]
 }

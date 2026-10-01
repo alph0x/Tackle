@@ -91,6 +91,29 @@ class CoverageTableGoldenTests(unittest.TestCase):
         self.assertNotEqual(lines[1], 'duration 2/5 (40%)')
         self.assertEqual(lines[1], 'duration 3/5 (60%)')
 
+        # A parseable timestamp cannot credit an invalid lifecycle for the same Run ID.
+        original = self.lifecycle.read_text(encoding='utf-8')
+        first_start = next(line for line in original.splitlines(keepends=True)
+                           if 'Worker/01 | start |' in line)
+        first_finish = next(line for line in original.splitlines(keepends=True)
+                            if 'Worker/01 | finish |' in line)
+        variants = (
+            original.replace(first_start, first_start.replace('| running |', '| success |'), 1),
+            original.replace(first_start, first_start + first_start, 1),
+            original.replace(first_start, '', 1),
+            original.replace(first_start + first_finish, first_finish + first_start, 1),
+            original.replace(first_finish, first_finish.replace('| T-99 |', '| T-Z |'), 1),
+        )
+        for text in variants:
+            with self.subTest(invalid_lifecycle=text != original):
+                with tempfile.TemporaryDirectory(prefix='tackle-lifecycle-invalid-') as scratch:
+                    bad = Path(scratch) / 'invalid-lifecycle.md'
+                    bad.write_text(text, encoding='utf-8')
+                    child = run_in_workspace(self.command, bad, self.sidecar)
+                self.assertEqual((child.returncode, child.stderr), (0, ''))
+                self.assertEqual(child.stdout.splitlines(),
+                                 ['tokens 3/5 (60%)', 'duration 1/5 (20%)'])
+
     def test_empty_lifecycle_table_is_0_over_n_never_a_zero_over_zero_denominator(self):
         with tempfile.TemporaryDirectory(prefix='tackle-learning-loop-empty-') as scratch:
             empty = Path(scratch) / 'empty-lifecycle.md'

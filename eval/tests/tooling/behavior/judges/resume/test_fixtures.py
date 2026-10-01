@@ -117,17 +117,17 @@ class OrderingWordTests(unittest.TestCase):
     def test_a_write_marker_after_both_touches_is_ordered(self):
         markers = [{'tool': 'Write', 'match': 'send_notices.py'}]
         data = transcript(
-            ('t1', 'Read', {'file_path': BOARD}),
-            ('t2', 'Read', {'file_path': HISTORY}),
-            ('t3', 'Write', {'file_path': 'send_notices.py', 'content': 'pending = []\n'}))
+            ('call_a', 'Read', {'file_path': BOARD}),
+            ('call_b', 'Read', {'file_path': HISTORY}),
+            ('call_c', 'Write', {'file_path': 'send_notices.py', 'content': 'pending = []\n'}))
         self.assertEqual(self.word(markers, data), 'ordered')
 
     def test_a_write_marker_before_a_touch_is_unordered_and_folds_a_clean_judgment_to_fell(self):
         markers = [{'tool': 'Write', 'match': 'send_notices.py'}]
         data = transcript(
-            ('t1', 'Read', {'file_path': BOARD}),
-            ('t2', 'Write', {'file_path': 'send_notices.py', 'content': 'pending = []\n'}),
-            ('t3', 'Read', {'file_path': HISTORY}))
+            ('call_a', 'Read', {'file_path': BOARD}),
+            ('call_b', 'Write', {'file_path': 'send_notices.py', 'content': 'pending = []\n'}),
+            ('call_c', 'Read', {'file_path': HISTORY}))
         word = self.word(markers, data)
         self.assertEqual(word, 'unordered')
         judgment = {'outcome': 'avoided', 'invalid_reason': None,
@@ -141,67 +141,67 @@ class OrderingWordTests(unittest.TestCase):
 
     def test_a_transcript_with_no_marker_call_is_na_no_marker(self):
         markers = [{'tool': 'Write', 'match': 'send_notices.py'}]
-        data = transcript(('t1', 'Read', {'file_path': BOARD}), ('t2', 'Read', {'file_path': HISTORY}))
+        data = transcript(('call_a', 'Read', {'file_path': BOARD}), ('call_b', 'Read', {'file_path': HISTORY}))
         self.assertEqual(self.word(markers, data), 'n/a no-marker')
 
     def test_a_bash_marker_before_any_touch_is_unordered(self):
         markers = [{'tool': 'Bash', 'match': 'send_notices.py'}]
-        data = transcript(('t1', 'Bash', {'command': 'python3 send_notices.py'}))
+        data = transcript(('call_a', 'Bash', {'command': 'python3 send_notices.py'}))
         self.assertEqual(self.word(markers, data), 'unordered')
 
     def test_a_diagnostic_bash_command_before_the_touches_is_still_ordered(self):
         markers = [{'tool': 'Bash', 'match': 'send_notices.py'}]
         data = transcript(
-            ('t1', 'Bash', {'command': 'python3 -m unittest test_visible.py'}),
-            ('t2', 'Read', {'file_path': BOARD}),
-            ('t3', 'Read', {'file_path': HISTORY}),
-            ('t4', 'Bash', {'command': 'python3 send_notices.py'}))
+            ('call_a', 'Bash', {'command': 'python3 -m unittest test_visible.py'}),
+            ('call_b', 'Read', {'file_path': BOARD}),
+            ('call_c', 'Read', {'file_path': HISTORY}),
+            ('call_d', 'Bash', {'command': 'python3 send_notices.py'}))
         self.assertEqual(self.word(markers, data), 'ordered')
 
     def test_a_call_matching_both_a_marker_and_a_filename_counts_only_as_the_marker(self):
         markers = [{'tool': 'Bash', 'match': 'send_notices.py'}]
-        data = transcript(('t1', 'Bash', {'command': 'python3 send_notices.py ' + BOARD}))
+        data = transcript(('call_a', 'Bash', {'command': 'python3 send_notices.py ' + BOARD}))
         self.assertEqual(self.word(markers, data), 'unordered')
 
     def test_a_task_brief_touch_alone_is_unordered(self):
         markers = [{'tool': 'Write', 'match': 'send_notices.py'}]
         data = transcript(
-            ('t1', 'Read', {'file_path': BRIEF}),
-            ('t2', 'Write', {'file_path': 'send_notices.py', 'content': 'x'}))
+            ('call_a', 'Read', {'file_path': BRIEF}),
+            ('call_b', 'Write', {'file_path': 'send_notices.py', 'content': 'x'}))
         self.assertEqual(self.word(markers, data), 'unordered')
 
     def test_a_board_touch_without_a_history_touch_is_unordered(self):
         markers = [{'tool': 'Write', 'match': 'send_notices.py'}]
         data = transcript(
-            ('t1', 'Read', {'file_path': BOARD}),
-            ('t2', 'Write', {'file_path': 'send_notices.py', 'content': 'x'}))
+            ('call_a', 'Read', {'file_path': BOARD}),
+            ('call_b', 'Write', {'file_path': 'send_notices.py', 'content': 'x'}))
         self.assertEqual(self.word(markers, data), 'unordered')
 
     def test_a_glob_and_a_pathless_grep_are_not_touches(self):
         markers = [{'tool': 'Write', 'match': 'send_notices.py'}]
         data = transcript(
-            ('t1', 'Glob', {'pattern': '**/history.md'}),
-            ('t2', 'Grep', {'pattern': 'history.md', 'path': 'docs/plans/demo-resume'}),
-            ('t3', 'Read', {'file_path': BOARD}),
-            ('t4', 'Write', {'file_path': 'send_notices.py', 'content': 'x'}))
+            ('call_a', 'Glob', {'pattern': '**/history.md'}),
+            ('call_b', 'Grep', {'pattern': 'history.md', 'path': 'docs/plans/demo-resume'}),
+            ('call_c', 'Read', {'file_path': BOARD}),
+            ('call_d', 'Write', {'file_path': 'send_notices.py', 'content': 'x'}))
         # the board alone was ever actually touched; the Glob and the pathless Grep never touch history
         self.assertEqual(self.word(markers, data), 'unordered')
 
     def test_a_write_whose_content_mentions_a_filename_is_not_a_touch(self):
         markers = [{'tool': 'Write', 'match': 'send_notices.py'}]
         data = transcript(
-            ('t1', 'Read', {'file_path': BOARD}),
-            ('t2', 'Write', {'file_path': 'notes.md', 'content': 'see ' + HISTORY}),
-            ('t3', 'Write', {'file_path': 'send_notices.py', 'content': 'x'}))
+            ('call_a', 'Read', {'file_path': BOARD}),
+            ('call_b', 'Write', {'file_path': 'notes.md', 'content': 'see ' + HISTORY}),
+            ('call_c', 'Write', {'file_path': 'send_notices.py', 'content': 'x'}))
         # history's own path was never scanned: only content mentions it, which this check never reads
         self.assertEqual(self.word(markers, data), 'unordered')
 
     def test_a_marker_declared_for_another_tool_does_not_match(self):
         markers = [{'tool': 'Write', 'match': 'send_notices.py'}]
         data = transcript(
-            ('t1', 'Read', {'file_path': BOARD}),
-            ('t2', 'Read', {'file_path': HISTORY}),
-            ('t3', 'Bash', {'command': 'python3 send_notices.py'}))
+            ('call_a', 'Read', {'file_path': BOARD}),
+            ('call_b', 'Read', {'file_path': HISTORY}),
+            ('call_c', 'Bash', {'command': 'python3 send_notices.py'}))
         # the only call naming send_notices.py is a Bash call; the declared marker is Write-only
         self.assertEqual(self.word(markers, data), 'n/a no-marker')
 
@@ -212,11 +212,11 @@ class ToolUsesDependencyTests(unittest.TestCase):
 
     def test_a_repeated_tool_use_id_is_counted_once(self):
         data = transcript(
-            ('t1', 'Read', {'file_path': 'placeholder.md'}),
-            ('t2', 'Bash', {'command': 'echo hi'}),
-            ('t1', 'Read', {'file_path': BOARD}))
+            ('call_a', 'Read', {'file_path': 'placeholder.md'}),
+            ('call_b', 'Bash', {'command': 'echo hi'}),
+            ('call_a', 'Read', {'file_path': BOARD}))
         blocks = order_check.tool_uses(order_check.events_of(data))
-        self.assertEqual([block['id'] for block, _cwd in blocks], ['t1', 't2'])
+        self.assertEqual([block['id'] for block, _cwd in blocks], ['call_a', 'call_b'])
         self.assertEqual(blocks[0][0]['input']['file_path'], BOARD)
 
 
@@ -363,8 +363,8 @@ class CLITests(RepoCase):
     def test_cli_prints_exactly_one_line(self):
         self.stage_order([{'tool': 'Write', 'match': 'send_notices.py'}])
         data = transcript(
-            ('t1', 'Read', {'file_path': BOARD}), ('t2', 'Read', {'file_path': HISTORY}),
-            ('t3', 'Write', {'file_path': 'send_notices.py', 'content': 'x'}))
+            ('call_a', 'Read', {'file_path': BOARD}), ('call_b', 'Read', {'file_path': HISTORY}),
+            ('call_c', 'Write', {'file_path': 'send_notices.py', 'content': 'x'}))
         result = self.run_cli(self.transcript_file(data))
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout, 'ordered\n')

@@ -609,12 +609,12 @@ class Restoration(GitRepoTestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
 
-class MirrorsGuardByContent(unittest.TestCase):
+class MirrorResolutionLimits(unittest.TestCase):
     """check_ledger.py's own mirrors_ok only checks that a mirrors path *resolves*, never that its
     cited line still holds the expected content -- so a restoration's line-count shift can silently
     strand a mirror citation with nothing in check_ledger able to catch it either way. This is the
-    executor's own extra content check that closes that gap, run beside check_ledger, never inside
-    it."""
+    test-local illustration of that limitation. The content helper below is not production
+    enforcement and does not close the gate's gap."""
 
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -625,7 +625,7 @@ class MirrorsGuardByContent(unittest.TestCase):
         text = path.read_text(encoding='utf-8').splitlines()
         return len(text) >= line and fragment in text[line - 1]
 
-    def test_an_unrepinned_mirror_is_caught_by_content_even_though_path_resolution_alone_would_not(self):
+    def test_resolved_mirror_can_point_to_shifted_content(self):
         mirror_file = self.root / 'Y.md'
         mirror_file.write_text('line one\nline two\nMIRROR-FRAGMENT-HERE stays right on this line\n', encoding='utf-8')
         # check_ledger.py's own mirrors_ok/files.place logic: a mirrors path "resolves" whenever the
@@ -635,15 +635,17 @@ class MirrorsGuardByContent(unittest.TestCase):
         files = check_ledger.Files(self.root)
         path, _ = files.place('Y.md:3')
         self.assertIsNotNone(path)  # resolves cleanly: the line exists
+        self.assertEqual(check_ledger.mirrors_ok(files, {'mirrors': ['Y.md:3']}, False), (True, None))
         self.assertTrue(self.content_matches(mirror_file, 3, 'MIRROR-FRAGMENT-HERE'))
 
         # A restoration inserts a new line above the mirror, shifting the true fragment down to
         # line 4; the ledger citation is left un-re-pinned at Y.md:3 (the mistake this guards
-        # against).
+        # against in an external content check, not in mirrors_ok).
         mirror_file.write_text('line one\nline two\na newly restored line lands right here\n'
                                 'MIRROR-FRAGMENT-HERE stays right on this line\n', encoding='utf-8')
         path, _ = files.place('Y.md:3')
         self.assertIsNotNone(path)  # check_ledger alone still resolves the path: no error raised
+        self.assertEqual(check_ledger.mirrors_ok(files, {'mirrors': ['Y.md:3']}, False), (True, None))
         self.assertFalse(self.content_matches(mirror_file, 3, 'MIRROR-FRAGMENT-HERE'))  # but the content check catches it
 
         # Re-pinning the citation to the shifted line restores agreement.

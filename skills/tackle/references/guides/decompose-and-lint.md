@@ -233,11 +233,22 @@ behind a requirement ID still fails the required semantic counterexample review.
 <a id="model-and-tier-proposal-compile-time"></a>
 ## Model and tier proposal (compile time)
 
-At the step above that compiles sufficient task briefs, also: read the workspace `AGENTS.md` model
-map once per initiative — confirmed there at intake, re-confirmed only on a deviation — and, per
-task, propose a **Tier** (`fast`/`standard`/`frontier`) and **Effort** for the Executor role,
-defaulting to the cheapest bindable tier at low effort. Planning always runs on a more capable tier
-than the Executor's, whenever the model map binds more than one tier. A deviation from the routine
-default, of Tier or Effort, needs a reason in that task's `**Tier reason**`, confirmed by the owner
-like any other material decision ([communication.md](communication.md)); the routine default itself
-needs no confirmation beyond the once-per-initiative one.
+At the step above that compiles sufficient task briefs, read the workspace `AGENTS.md` model map
+once per initiative — confirm it at intake, then reconfirm only on a deviation — and observe the
+host's model names, tier capabilities, model-binding controls, effort-binding controls, telemetry,
+and the source of those observations before proposing roles. Mark availability as `supported`,
+`unsupported`, or `unknown`; map generic tiers only to actual available models. An unavailable exact
+request needs a concrete viable alternative with its consequences or an explicit unavailability
+report; never invent a vendor equivalent. Per task, propose a **Tier** (`fast`/`standard`/`frontier`)
+and **Effort** for the Executor. When observed binding supports it, default the Executor to the
+cheapest bindable tier at low effort: the cheapest suitable supported tier mapped to an actually
+available model. If model-binding support is `unknown` or `unsupported`, do not claim this default is
+bindable; report the limitation and offer an observed viable alternative with its consequences or an
+explicit unavailability.
+Planning always runs on a more capable tier than the Executor's whenever more than one suitable tier
+binds; a one-tier harness records its limitation. These are role proposals, not claims that a host
+binding occurred. Keep portable schema Effort tokens separate from actual host controls, and leave
+unexposed telemetry as `n/a`. A deviation from the routine default, of Tier or Effort, needs a
+reason in that task's `**Tier reason**`, confirmed by the owner like any other material decision
+([communication.md](communication.md)); the routine default itself needs no confirmation beyond the
+once-per-initiative one.

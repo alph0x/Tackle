@@ -1,14 +1,38 @@
 [
  {
-  "rule_id": "R-RUN-10",
-  "statement_sha256": "d9392b25e54e308c090a82964f6802786ecd402f29b5540b6415c5a5b653c4fc",
-  "reason": "The statement's added clause concerns a declared capability escalation, which never fires in a live episode this cohort dispatches, so the cohort's traps cannot give it honest evidence. It stays untested by design, not by oversight.",
-  "accepted": "2026-09-26"
- },
- {
   "rule_id": "R-STATE-01",
   "statement_sha256": "e68637537f6cd1a459cf676007a709f0606ca77f1e045061552f188c97e27a96",
   "reason": "The changed statement refuses a workspace below the current layout. That refusal is mechanical: planted lint fixtures and the migration's own tests prove it, and the release cohort measures planning outcomes, not the refusal, so its traps cannot give it honest evidence.",
   "accepted": "2026-09-28"
+ },
+ {
+  "rule_id": "R-EVID-08",
+  "statement_sha256": "3cf4c76d73a9e6ca1bca63fed18daef19f2e8b6b386d448fbea0e40c07a45500",
+  "reason": "The changed statement requires observing host model names, tier and binding capabilities and telemetry before routing. The one completed development comparison passed in both the method and control arms, so it does not show this rule's effect. This release could not collect held-out behavioral evidence: the evaluation route became unavailable during the campaign. Mechanical checks, the lint and recipe consumers and the install inventory cover the text; behavior is unproven.",
+  "accepted": "2026-10-01"
+ },
+ {
+  "rule_id": "R-RUN-10",
+  "statement_sha256": "f023d40f8fa1a0a4b7060af391e8e1a38733c39aceee4a1c57f2b7db195c3041",
+  "reason": "The changed statement routes blocker reports through the bounded owner-choice and affected-only wait policy. No development or held-out comparison for it completed. This release could not collect held-out behavioral evidence: the evaluation route became unavailable during the campaign. Mechanical checks, the lint and recipe consumers and the install inventory cover the text; behavior is unproven.",
+  "accepted": "2026-10-01"
+ },
+ {
+  "rule_id": "R-EVID-14",
+  "statement_sha256": "d2440f57913cd008f4990379cf43acf0a8ff7cdb478632dec0660c613bd6df70",
+  "reason": "The added statement fixes the legal lifecycle Outcome values and keeps product verdicts in Verification or Source; lint row 16 checks written records. No development or held-out comparison for it completed. This release could not collect held-out behavioral evidence: the evaluation route became unavailable during the campaign. Mechanical checks, the lint and recipe consumers and the install inventory cover the text; behavior is unproven.",
+  "accepted": "2026-10-01"
+ },
+ {
+  "rule_id": "R-EVID-15",
+  "statement_sha256": "001ce9a66a264d0ded9508ee69421e328fe875d6456b268f2746f9c18c128373",
+  "reason": "The added statement requires task-linked evidence for a positive Attempts count; lint row 16 and the usage guidance check written records. No development or held-out comparison for it completed. This release could not collect held-out behavioral evidence: the evaluation route became unavailable during the campaign. Mechanical checks, the lint and recipe consumers and the install inventory cover the text; behavior is unproven.",
+  "accepted": "2026-10-01"
+ },
+ {
+  "rule_id": "R-MIGRATE-04",
+  "statement_sha256": "521b9758ad6a3646faf9efd04b735f2744e364f81a7aeaace55e2e4e70c2277e",
+  "reason": "The added statement holds same-release adoption of the selected active copy when a required lifecycle row fails; the v9.0.0 to v9.0.1 checklist carries the procedure. No development or held-out comparison for it completed. This release could not collect held-out behavioral evidence: the evaluation route became unavailable during the campaign. Mechanical checks, the lint and recipe consumers and the install inventory cover the text; behavior is unproven.",
+  "accepted": "2026-10-01"
  }
 ]

@@ -26,9 +26,13 @@ CARRIED = ('| Point | Role | Tier | Model | Effort | Tokens in | Tokens out | Se
            '| T-A | Driver | standard | model | high | n/a | n/a | old-session |\n')
 
 
-def event(kind='start', *, run='run-1', task='T-A', role='Driver', attempts='n/a', rework='n/a'):
-    return (f'| {run} | {kind} | {task} | {role} | harness | standard | model | n/a | n/a | observed | {attempts} | '
-            f'{rework} | n/a | fixture |\n')
+def event(kind='start', *, run='run-1', task='T-A', role='Driver', attempts='n/a', rework='n/a',
+          outcome=None, verification='n/a', source='fixture'):
+    if outcome is None:
+        outcome = {'start': 'running', 'finish': 'success',
+                   'observe-incomplete': 'incomplete'}.get(kind, 'running')
+    return (f'| {run} | {kind} | {task} | {role} | harness | standard | model | n/a | n/a | {outcome} | {attempts} | '
+            f'{rework} | {verification} | {source} |\n')
 
 
 def literal_row(number):
@@ -79,25 +83,49 @@ class UsageRowTests(unittest.TestCase):
 
 
 class LifecycleRowTests(unittest.TestCase):
-    def check(self, body):
-        return run_row(16, {'resource-usage.md': body})
+    def check(self, body, extra=None):
+        return run_row(16, {'resource-usage.md': body, **(extra or {})})
 
-    def assert_valid(self, body):
-        result = self.check(body)
+    def assert_valid(self, body, extra=None):
+        result = self.check(body, extra)
         self.assertEqual((result.returncode, result.stdout, result.stderr), (0, '', ''))
 
-    def assert_invalid(self, body, diagnostic):
-        result = self.check(body)
+    def assert_invalid(self, body, diagnostic, extra=None):
+        result = self.check(body, extra)
         self.assertNotEqual(result.returncode, 0)
         self.assertEqual(result.stderr, '')
         self.assertIn(diagnostic, result.stdout)
         return result
 
     def test_valid_invalid_and_malformed_ledgers_and_a_missing_one(self):
-        self.assert_valid(HEADER + '# prose with no data row is valid and ignored\n'
-                          + event(attempts='0', rework='0') + event('finish', attempts='1', rework='0')
+        trace = ('### Event cycle-alpha\nTask ID: T-A\nFault: fault-alpha\n'
+                 'Observed: the corrected output omitted a required marker\n'
+                 'Repair: added the missing marker\nCheck: python3 check.py; exit 1\n'
+                 'Counted cycle: 1\n')
+        old_unobserved_zero = (HEADER + '# prose with no data row is valid and ignored\n'
+                          + event(attempts='0', rework='0')
+                          + event('finish', attempts='1', rework='0', source='history.md#cycle-alpha')
                           + event(run='run-2', task='T-B', attempts='0', rework='0')
                           + event('observe-incomplete', run='run-2', task='T-B', attempts='0', rework='0'))
+        self.assert_invalid(old_unobserved_zero, 'zero Attempts lacks observed absence',
+                            {'history.md': trace})
+        absence = ('### Event absence-run-1\nTask ID: T-A\nRun ID: run-1\n'
+                   'Kind: observed-absence\nObserved: no correction or escalation at start\n\n'
+                   '### Event absence-run-2\nTask ID: T-B\nRun ID: run-2\n'
+                   'Kind: observed-absence\nObserved: no correction or escalation in this run\n\n')
+        self.assert_valid(HEADER + '# prose with no data row is valid and ignored\n'
+                          + event(attempts='0', rework='0', source='history.md#absence-run-1')
+                          + event('finish', attempts='1', rework='0', source='history.md#cycle-alpha')
+                          + event(run='run-2', task='T-B', attempts='0', rework='0',
+                                  source='history.md#absence-run-2')
+                          + event('observe-incomplete', run='run-2', task='T-B', attempts='0',
+                                  rework='0', source='history.md#absence-run-2'),
+                          {'history.md': absence + trace})
+        self.assert_invalid(HEADER + event(outcome='observed') + event('finish'),
+                            'invalid start Outcome')
+        self.assert_invalid(HEADER + event() + event('finish', outcome='complete'),
+                            'invalid finish Outcome')
+        self.assert_invalid(HEADER + event() + event('finish', attempts='1'), 'Attempts')
         invalid = self.assert_invalid(HEADER + event('finish', attempts='-1', rework='0')
                                       + event(task='T-B', attempts='0', rework='0')
                                       + event(attempts='0', rework='0'), 'terminal before start')

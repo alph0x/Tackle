@@ -671,6 +671,11 @@ class OriginalsPreservedTests(unittest.TestCase):
     is byte-identical to it; every legacy-*/ present before a step is still present and byte-identical
     after it."""
 
+    def assert_legacy_preserved(self, before, after):
+        expected = {path: data for path, data in before.items() if path.startswith('legacy-')}
+        self.assertTrue(expected, 'the fixture must contain a pre-existing legacy snapshot')
+        self.assertEqual({path: after.get(path) for path in expected}, expected)
+
     def test_input_mapping_is_unchanged_by_transform(self):
         for step, fixture in ((STEP_PRE3_TO_3, 'pre3-to-3/before'), (STEP_3_TO_4, '3-to-4/before'),
                                (STEP_4_TO_5, '4-to-5/before')):
@@ -685,7 +690,7 @@ class OriginalsPreservedTests(unittest.TestCase):
         before_with_legacy = dict(before)
         before_with_legacy['legacy-8.3/board.md'] = b'ancient snapshot, must survive untouched\n'
         adopted, _ = SCHEMA['adopt'](before_with_legacy, CONTEXT_84, STEP_PRE3_TO_3['transform'])
-        self.assertEqual(adopted['legacy-8.3/board.md'], b'ancient snapshot, must survive untouched\n')
+        self.assert_legacy_preserved(before_with_legacy, adopted)
         for path, data in before.items():
             self.assertEqual(adopted['legacy-pre-3/' + path], data)
         self.assertEqual(SCHEMA['schema_of'](adopted), '3')
@@ -704,8 +709,7 @@ class OriginalsPreservedTests(unittest.TestCase):
         self.assertIn('legacy-4/task-board.md', adopted5)
 
     def test_mutation_dropping_legacy_preservation_during_adoption_is_caught(self):
-        """A broken adopt() that forgets to carry forward pre-existing legacy-*/ content loses it --
-        the case this test would fail against if the real adopt() regressed to this shape."""
+        """The same oracle used on real adopt() rejects missing and changed legacy bytes."""
         before = load_files(FIXTURES / 'pre3-to-3/before')
         before_with_legacy = dict(before)
         before_with_legacy['legacy-8.3/board.md'] = b'must survive\n'
@@ -716,15 +720,19 @@ class OriginalsPreservedTests(unittest.TestCase):
             return dict(new_files), renames  # forgets every legacy-*/ directory
 
         broken_result, _ = broken_adopt(before_with_legacy, CONTEXT_84, STEP_PRE3_TO_3['transform'])
-        self.assertNotIn('legacy-8.3/board.md', broken_result)
         real_result, _ = SCHEMA['adopt'](before_with_legacy, CONTEXT_84, STEP_PRE3_TO_3['transform'])
-        self.assertIn('legacy-8.3/board.md', real_result)
+        self.assert_legacy_preserved(before_with_legacy, real_result)
+        corrupt_result = dict(real_result, **{'legacy-8.3/board.md': b'changed snapshot\n'})
+        for label, mutant in (('missing', broken_result), ('changed', corrupt_result)):
+            with self.subTest(mutant=label):
+                with self.assertRaises(AssertionError):
+                    self.assert_legacy_preserved(before_with_legacy, mutant)
 
 
-class RollbackTests(unittest.TestCase):
-    """C8: a candidate, then the checkpoint restored -- byte-identical to the original."""
+class CheckpointTests(unittest.TestCase):
+    """An in-memory checkpoint remains unchanged by transform; no disk rollback is exercised."""
 
-    def test_restoring_the_checkpoint_is_byte_identical(self):
+    def test_transform_preserves_checkpoint_bytes_and_original_schema(self):
         before = load_files(FIXTURES / '3-to-4/before')
         checkpoint = dict(before)  # the checkpoint IS the pre-transform files mapping
         candidate, _ = STEP_3_TO_4['transform'](before, CONTEXT_84)
@@ -827,20 +835,6 @@ class MutationTests(unittest.TestCase):
         mutant_ns['transform'] = non_idempotent_transform
         result = mutant_ns['verify'](before, after)
         self.assertIn('second transform is not a byte-identical no-op', result['errors'])
-
-    def test_dropping_a_legacy_dir_during_adoption_is_caught(self):
-        before = load_files(FIXTURES / 'pre3-to-3/before')
-        before_with_legacy = dict(before)
-        before_with_legacy['legacy-8.3/board.md'] = b'must survive\n'
-
-        def broken_adopt(files, context, transform):
-            scoped = SCHEMA['workspace_files'](files)
-            new_files, renames = transform(scoped, context)
-            return dict(new_files), renames
-
-        broken_result, _ = broken_adopt(before_with_legacy, CONTEXT_84, STEP_PRE3_TO_3['transform'])
-        self.assertNotIn('legacy-8.3/board.md', broken_result,
-                          'the mutant is expected to lose the pre-existing legacy directory')
 
     def test_inferring_ready_from_not_started_is_caught_by_verify(self):
         before = load_files(FIXTURES / 'pre3-to-3/before')

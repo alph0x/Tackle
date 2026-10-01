@@ -1,6 +1,8 @@
 """Exercise discovery and child outcomes using disposable real test suites."""
 import importlib.util
 import json
+from contextlib import redirect_stdout
+from io import StringIO
 from pathlib import Path
 import tempfile
 import subprocess
@@ -21,7 +23,7 @@ class DiscoveryTests(unittest.TestCase):
         self.directory = self.root / 'eval/example'
         self.directory.mkdir(parents=True)
         self.test = self.directory / 'test_example.py'
-        self.test.write_text('import unittest\nclass Example(unittest.TestCase):\n    def test_real(self):\n        self.assertEqual(2 + 2, 4)\n')
+        self.test.write_text('import unittest\nclass Example(unittest.TestCase):\n    def test_real(self):\n        print(\'TACKLE_AWK_COVERAGE={ "host_missing": ["busybox"], "system_status": "executed", "host_executed": ["gawk"] }\')\n        self.assertEqual(2 + 2, 4)\n')
         self.manifest = {'version': 1, 'excluded_directories': ['eval/scenarios', 'eval/example/fixtures'], 'suites': [
             {'path': 'eval/example', 'files': ['test_example.py'], 'tests': 1}]}
 
@@ -29,12 +31,20 @@ class DiscoveryTests(unittest.TestCase):
         return runner.run(self.root, self.manifest, self.root / 'output')
 
     def test_real_nonempty_suite_passes_and_retains_streams(self):
-        result = self.execute()
+        console = StringIO()
+        with redirect_stdout(console):
+            result = self.execute()
         self.assertTrue(result['passed'])
         self.assertEqual(result['tests'], 1)
         record = result['suites'][0]
         self.assertEqual(record['exit'], 0)
         self.assertIn('test_real', (self.root / 'output' / record['stderr']).read_text())
+        self.assertEqual(record['awk_coverage']['system_status'], 'executed')
+        self.assertEqual(record['awk_coverage']['host_executed'], ['gawk'])
+        self.assertEqual(record['awk_coverage']['host_missing'], ['busybox'])
+        self.assertEqual(record['awk_coverage']['stdout'], record['stdout'])
+        self.assertIn('TACKLE_AWK_COVERAGE=', (self.root / 'output' / record['stdout']).read_text())
+        self.assertIn('awk coverage system=executed', console.getvalue())
         self.assertIn('python', result)
 
     def test_planted_regression_is_not_green(self):

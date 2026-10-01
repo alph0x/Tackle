@@ -14,6 +14,8 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
 
 HERE = (Path(__file__).resolve().parents[4] / 'eval/rules')
 REPO = HERE.parent.parent
@@ -21,6 +23,10 @@ CHECK = HERE / 'check_ledger.py'
 INVENTORY = HERE / 'inventory.py'
 BUILD = HERE / 'fixtures/build.py'
 SUMMARY = re.compile(r'rules=\d+ hot_path=\d+ untested=\d+ warnings=\d+')
+
+sys.path.insert(0, str(HERE))
+import committed_text as committed_text_module
+from committed_text import format_findings, packaging_relocated_note, scan_committed_text
 
 spec = importlib.util.spec_from_file_location('ledger_fixture_builder', BUILD)
 builder = importlib.util.module_from_spec(spec)
@@ -380,38 +386,6 @@ class GateAutoResolution(unittest.TestCase):
 
 
 
-def packaging_relocated_note(repo, base):
-    """Recognize one byte-identical packaging move, never a path-wide exemption.
-
-    Bind both historical blobs, the complete candidate bytes and exactly one
-    inherited line. Any changed byte, duplicate, retained old path or failed Git
-    lookup disables this treatment; the unchanged scanner then reports additions.
-    """
-    old_path = 'references/guides/lint-spec.md'
-    new_path = 'skills/tackle/' + old_path
-    line_hash = '3896f92f66de37480f7b52a44d13fd8038016a2a151c67ca6e56a025d745bbb0'
-    if base != PREFLIGHT_BASE or (repo / old_path).exists() or (repo / old_path).is_symlink():
-        return None
-    target = repo / new_path
-    if not target.is_file() or target.is_symlink():
-        return None
-    blobs = []
-    for revision, expected in [(PREFLIGHT_BASE, '1ada4d66448f57942f887d588a2b3dc32ed3cc6b37b4092aaa82d602e2273c71'),
-                               ('v9.0.0', '5aeab0c7be0715b8b3f61e9490a4809139b8beac9d4919c9643eade49f8a3b93')]:
-        result = subprocess.run(['git', '-C', str(repo), 'show', revision + ':' + old_path],
-                                capture_output=True, check=False)
-        if result.returncode or hashlib.sha256(result.stdout).hexdigest() != expected:
-            return None
-        blobs.append(result.stdout)
-    current = target.read_bytes()
-    if current != blobs[1]:
-        return None
-    for blob in [*blobs, current]:
-        if sum(hashlib.sha256(line).hexdigest() == line_hash for line in blob.splitlines()) != 1:
-            return None
-    return new_path, line_hash
-
-
 class RepositoryGateRegressionTests(unittest.TestCase):
     """The gate is additive: a plain run never changes, and every new prose word this task commits stays
     free of a workspace-local id."""
@@ -436,36 +410,57 @@ class RepositoryGateRegressionTests(unittest.TestCase):
             self.assertEqual(before.stderr, after.stderr)
 
     def test_no_staged_addition_carries_a_workspace_id_or_slug(self):
-        """A grep over every '+'-prefixed line of the diff between this task's own starting commit and the
-        working tree, repo-wide (not only the files this task's brief names): a bare `<letter><NN>` token
-        for the seven letters this repository's workspace ids use, or the workspace's own directory slug.
-        Refined with two guards a blind sweep would need in this codebase: a rule id such as R-EVID-01 or
-        R-COMM-03 is not a leak (the letter sits mid-word, preceded by another letter), and an ISO timestamp
+        """Scan every '+'-prefixed line from this task's pinned base across the full tracked tree.
+
+        The workspace-ID classes accept an optional hyphen and one through three digits. A rule id
+        such as R-EVID-01 or R-COMM-03 is not a leak (its final letter is mid-word), and an ISO timestamp
         such the ones this test suite writes (`...T00:00:00`) is not a leak (immediately followed by a
-        colon, never true of a real workspace id). This check's own source is exempt: it must spell out
-        the pattern and the slug literally to define them, exactly as the pre-existing credential guard
-        (eval/maintaining/suite-integrity/test_credential_guard.py) already exempts itself from its own home-path scan.
-        The one other exemption is the `decision_rule` field of a sealed cohort manifest: that text is
-        pre-registered and sealed before any episode runs, so it cannot change afterwards. Every other line
-        of a manifest is still scanned. One exact inherited line in a byte-proven packaging
-        relocation is handled mechanically; any changed byte or duplicate disables it."""
-        self_path = str(Path(__file__).resolve().relative_to(REPO))
-        pattern = re.compile(r'(?<![A-Za-z])[PTDQRCM]-?[0-9]{2}(?!:)|tackle' + '-9')
-        SEALED_MANIFEST = re.compile(r'^eval/cohorts/[^/]+/(?:[^/]+/)?manifest\.json$')
-        result = subprocess.run(['git', '-C', str(REPO), 'diff', PREFLIGHT_BASE, '--unified=0'],
-                                capture_output=True, text=True, check=True)
-        relocated_note = packaging_relocated_note(REPO, PREFLIGHT_BASE)
-        found, path = [], None
-        for line in result.stdout.splitlines():
-            if line.startswith('+++ '):
-                name = line[4:]
-                path = None if name == '/dev/null' else name[2:] if name.startswith('b/') else name
-            elif (path and path != self_path and line.startswith('+') and not line.startswith('+++')
-                  and pattern.search(line[1:])
-                  and not (SEALED_MANIFEST.match(path) and line[1:].lstrip().startswith('"decision_rule":'))
-                  and relocated_note != (path, hashlib.sha256(line[1:].encode('utf-8')).hexdigest())):
-                found.append('%s: %s' % (path, line[1:]))
-        self.assertEqual(found, [])
+        colon, never true of a real workspace id). Every file is scanned: only typed fixture fields
+        and exact path/content-hash historical contexts have narrow allowances. The packaging note
+        remains bound to its original and moved blobs. Diagnostics never echo added source text."""
+        slug = 'tackle' + '-9.0.1'
+        findings = scan_committed_text(REPO, PREFLIGHT_BASE, slug)
+        self.assertEqual(findings, [], format_findings(findings))
+
+    def test_packaging_note_requires_the_exact_historical_relocation(self):
+        expected = ('skills/tackle/references/guides/lint-spec.md',
+                    '3896f92f66de37480f7b52a44d13fd8038016a2a151c67ca6e56a025d745bbb0')
+        historical_path = 'references/guides/lint-spec.md'
+        digests = {
+            PREFLIGHT_BASE: '1ada4d66448f57942f887d588a2b3dc32ed3cc6b37b4092aaa82d602e2273c71',
+            'v9.0.0': '5aeab0c7be0715b8b3f61e9490a4809139b8beac9d4919c9643eade49f8a3b93',
+        }
+        historical = {}
+        for revision, digest in digests.items():
+            result = subprocess.run(['git', '-C', str(REPO), 'show', revision + ':' + historical_path],
+                                    capture_output=True, check=True, timeout=120)
+            self.assertEqual(hashlib.sha256(result.stdout).hexdigest(), digest)
+            historical[revision] = result.stdout
+
+        with tempfile.TemporaryDirectory() as scratch:
+            fixture = Path(scratch)
+            subprocess.run(['git', 'init', '-q', str(fixture)], capture_output=True, check=True, timeout=120)
+            moved = fixture / expected[0]
+            moved.parent.mkdir(parents=True)
+            moved.write_bytes(historical['v9.0.0'])
+            supplied = dict(historical)
+
+            def exact_history_show(command, **kwargs):
+                self.assertEqual(command[:4], ['git', '-C', str(fixture), 'show'])
+                revision, separator, path = command[4].partition(':')
+                self.assertEqual(separator, ':')
+                self.assertEqual(path, historical_path)
+                self.assertIn(revision, supplied)
+                return subprocess.CompletedProcess(command, 0, supplied[revision], b'')
+
+            with patch.object(committed_text_module, 'subprocess', SimpleNamespace(run=exact_history_show)):
+                self.assertEqual(packaging_relocated_note(fixture, PREFLIGHT_BASE), expected)
+                moved.write_bytes(historical['v9.0.0'] + b'\n')
+                self.assertIsNone(packaging_relocated_note(fixture, PREFLIGHT_BASE))
+                moved.write_bytes(historical['v9.0.0'])
+                supplied['v9.0.0'] = historical['v9.0.0'] + b'\n'
+                self.assertIsNone(packaging_relocated_note(fixture, PREFLIGHT_BASE))
+        self.assertIsNone(packaging_relocated_note(REPO, PREFLIGHT_BASE))
 
 
 if __name__ == '__main__':

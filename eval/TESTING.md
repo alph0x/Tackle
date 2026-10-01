@@ -13,7 +13,7 @@ Sealed evidence keeps its archival identifiers in source metadata.
 |---|---|---|
 | `tests/product/` | Shipped instructions, templates, lint contracts, installation and migration | Their artifact or consumer changes; final integration |
 | `tests/tooling/` | Harnesses, judges, protocol, records, normative auditors and discovery | Their implementation, resources or consumers change; final integration |
-| `tests/historical/` | Distinct frozen cohort decision/report implementations | Their dependencies change or an explicit audit; final integration |
+| `tests/historical/` | Frozen cohort implementations and retained legacy simulations | Their dependencies change or an explicit audit; final integration |
 | `support/` | Shared test mechanics, without a copied product implementation | Any consumer changes; independent extractor regressions retained |
 
 These are deterministic tests of artifacts and tools. Behavioral experiments using
@@ -66,6 +66,19 @@ alternative. Inspect existing cases and shared helpers. Expand or parameterize a
 existing matrix when it can observe the new failure; create another method when
 it protects a distinct guarantee. Avoid assertions that merely repeat the
 implementation, and give tests names that match their actual oracle.
+
+Trace the function, extracted recipe or artifact that each assertion actually
+observes. A test-local implementation is a simulation, even when its output
+resembles the product. Keep retained legacy simulations under `historical/`;
+current migration tests execute the shipped recipes. A text-presence check
+protects wording or structure, not an agent's obedience to it. An in-memory
+checkpoint check does not demonstrate disk rollback.
+
+For a weak oracle, use a concrete fault witness and a valid alternative within
+its declared scope. Reuse the assertion used on the real consumer so a planted
+defect must fail it; merely confirming that a deliberately broken helper produced
+bad output is insufficient. Do not turn this into an exhaustive mutation quota.
+Record what was reviewed statically, what was executed and what remains unproved.
 
 When consolidating, preserve the input cases, fixtures, failure discrimination,
 positive alternatives and consumers. Identical bodies alone do not establish
