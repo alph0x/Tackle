@@ -6,9 +6,9 @@ on:
 
 jobs:
   sweep:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Run the documented mechanical release checks
@@ -48,7 +48,7 @@ jobs:
         run: python3 eval/rules/check_unit_diff.py --repo . --base auto
       - name: Preserve deterministic outcomes and raw command streams
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: deterministic-suite-results
           path: ${{ runner.temp }}/tackle-suite-results
