@@ -8,31 +8,31 @@
  {
   "rule_id": "R-EVID-08",
   "statement_sha256": "3cf4c76d73a9e6ca1bca63fed18daef19f2e8b6b386d448fbea0e40c07a45500",
-  "reason": "The changed statement requires observing host model names, tier and binding capabilities and telemetry before routing. The one completed development comparison passed in both the method and control arms, so it does not show this rule's effect. This release could not collect held-out behavioral evidence: the evaluation route became unavailable during the campaign. Mechanical checks, the lint and recipe consumers and the install inventory cover the text; behavior is unproven.",
+  "reason": "The changed statement requires observing host model names, tier and binding capabilities and telemetry before routing. Held-out behavioral measurement on the Claude Code harness (two capability cases, one seed per arm, blind same-family judging) found both the method and control arms passing, so the rule is inert on these cases: no measured effect, and none against it. The evidence is directional, not a formal cohort, so the rule ships under this exception rather than a ledger evidence status. Mechanical checks, the lint and recipe consumers and the install inventory cover the text.",
   "accepted": "2026-10-01"
  },
  {
   "rule_id": "R-RUN-10",
   "statement_sha256": "f023d40f8fa1a0a4b7060af391e8e1a38733c39aceee4a1c57f2b7db195c3041",
-  "reason": "The changed statement routes blocker reports through the bounded owner-choice and affected-only wait policy. No development or held-out comparison for it completed. This release could not collect held-out behavioral evidence: the evaluation route became unavailable during the campaign. Mechanical checks, the lint and recipe consumers and the install inventory cover the text; behavior is unproven.",
+  "reason": "The changed statement routes blocker reports through the bounded owner-choice and affected-only wait policy. Held-out behavioral measurement (two recovery cases, one seed per arm, blind same-family judging) was inconclusive: on one case the method arm passed where the control arm failed, on the other both arms failed. The evidence is directional, not a formal cohort, so the rule ships under this exception rather than a ledger evidence status. Mechanical checks and the lint and recipe consumers cover the text.",
   "accepted": "2026-10-01"
  },
  {
   "rule_id": "R-EVID-14",
   "statement_sha256": "d2440f57913cd008f4990379cf43acf0a8ff7cdb478632dec0660c613bd6df70",
-  "reason": "The added statement fixes the legal lifecycle Outcome values and keeps product verdicts in Verification or Source; lint row 16 checks written records. No development or held-out comparison for it completed. This release could not collect held-out behavioral evidence: the evaluation route became unavailable during the campaign. Mechanical checks, the lint and recipe consumers and the install inventory cover the text; behavior is unproven.",
+  "reason": "The added statement fixes the legal lifecycle Outcome values and keeps product verdicts in Verification or Source; lint row 16 checks written records. Held-out behavioral measurement (one lifecycle case, one seed per arm, blind same-family judging) discriminated: the method arm passed where the control arm failed. The evidence is directional, a single same-family case rather than a formal cohort, so the rule ships under this exception rather than a ledger evidence status.",
   "accepted": "2026-10-01"
  },
  {
   "rule_id": "R-EVID-15",
   "statement_sha256": "001ce9a66a264d0ded9508ee69421e328fe875d6456b268f2746f9c18c128373",
-  "reason": "The added statement requires task-linked evidence for a positive Attempts count; lint row 16 and the usage guidance check written records. No development or held-out comparison for it completed. This release could not collect held-out behavioral evidence: the evaluation route became unavailable during the campaign. Mechanical checks, the lint and recipe consumers and the install inventory cover the text; behavior is unproven.",
+  "reason": "The added statement requires task-linked evidence for a positive Attempts count; lint row 16 and the usage guidance check written records. Held-out behavioral measurement (the same single lifecycle case, one seed per arm, blind same-family judging) discriminated: the method arm passed where the control arm failed. The evidence is directional, not a formal cohort, so the rule ships under this exception rather than a ledger evidence status.",
   "accepted": "2026-10-01"
  },
  {
   "rule_id": "R-MIGRATE-04",
   "statement_sha256": "521b9758ad6a3646faf9efd04b735f2744e364f81a7aeaace55e2e4e70c2277e",
-  "reason": "The added statement holds same-release adoption of the selected active copy when a required lifecycle row fails; the v9.0.0 to v9.0.1 checklist carries the procedure. No development or held-out comparison for it completed. This release could not collect held-out behavioral evidence: the evaluation route became unavailable during the campaign. Mechanical checks, the lint and recipe consumers and the install inventory cover the text; behavior is unproven.",
+  "reason": "The added statement holds same-release adoption of the selected active copy when a required lifecycle row fails; the v9.0.0 to v9.0.1 checklist carries the procedure. Held-out behavioral measurement (one migration case, one seed per arm, blind same-family judging) found both arms failing, so the rule is inert on that case: no measured effect, and none against it. The evidence is directional, not a formal cohort, so the rule ships under this exception rather than a ledger evidence status.",
   "accepted": "2026-10-01"
  }
 ]

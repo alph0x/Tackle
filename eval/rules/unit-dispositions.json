@@ -5262,7 +5262,7 @@
       "unit_sha256": "04cd1ade3881b4659f64cf70ff86d8ffcf4f927a1c51b6f3da5d46b1f3cf7959",
       "disposition": "reworded",
       "destination": "SKILL.md",
-      "note": "**Tackle 9.0.0** is a model-agnostic planning and execution method.",
+      "note": "is a model-agnostic planning and execution method.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -6596,6 +6596,25 @@
         {
           "token": "04",
           "reason": "The removed number identified an obsolete local decision citation, not a row-1 condition; the fenced-block rule remains unchanged."
+        }
+      ]
+    },
+    {
+      "path": "SKILL.md",
+      "line": 4,
+      "unit_sha256": "3cd090477361b079302d19d391f0b302de1197b7b8c5ba353535c0af6450b4d2",
+      "disposition": "reworded",
+      "destination": "SKILL.md",
+      "note": "is a model-agnostic planning and execution method.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "9.0",
+          "reason": "version stamp bump for the 9.0.1 release"
+        },
+        {
+          "token": "0",
+          "reason": "version stamp bump for the 9.0.1 release"
         }
       ]
     }

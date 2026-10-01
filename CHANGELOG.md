@@ -1,5 +1,49 @@
 # Tackle changelog
 
+## Tackle 9.0.1
+
+- **The skill installs from `skills/tackle/`.** The repository root no longer carries `SKILL.md`;
+  installers select the `skills/tackle` directory, which holds exactly the 55 Markdown files that
+  ship (`SKILL.md` plus `references/`). The frontmatter description is now quoted, with no wording
+  change. An existing 9.0.0 install does not move on `skills update` alone: floating and pinned
+  updates exit successfully but keep the old root-layout path and bytes. Reinstall explicitly with
+  the command the README documents.
+- **Host capabilities are observed before routing.** Planning reads the host's exposed model names,
+  tier capabilities, model- and effort-binding controls and telemetry, with the source of each,
+  before proposing roles. Each capability is `supported`, `unsupported` or `unknown`, and unexposed
+  telemetry stays `n/a`. The model-map template, team defaults and decomposition guidance map tiers
+  only to models actually available, propose a stronger planner only when more than one suitable
+  tier binds, and report an unavailable exact model with an observed alternative or as unavailable.
+- **Blocker reports offer actionable recovery.** A missing prerequisite, denied action, unavailable
+  capability or exhausted budget is reported with expected and observed behavior, evidence, the
+  affected work, the smallest owner choice and viable options with a recommendation and
+  consequences. Only the affected work waits, and refusal or elapsed time is never consent.
+- **Lifecycle records keep role outcome and product verdict apart.** Outcome is `running` at start,
+  `success`, `failed`, `blocked` or `aborted` at finish, or `incomplete` on observe-incomplete;
+  product verdicts belong in Verification or Source. A positive Attempts count must link a
+  task-matched failed correction or one authorized capability escalation; `0` needs an observed
+  absence and `n/a` stays valid when unknown. Lint row 16 and the retro lifecycle recipe check these
+  rules, and the recipe requires well-formed, externally observed finish clocks.
+- **Same-release adoption is held on a failing lifecycle row.** The new `v9.0.0 → v9.0.1` migration
+  checklist adopts a selected active workspace on a disposable copy at a task boundary; when a
+  required lifecycle row fails, adoption is held and closed records and neighboring workspaces stay
+  untouched.
+- **Five hot-path safety rules ship under recorded change-gate exceptions that cite a held-out
+  measurement.** R-EVID-08, R-RUN-10, R-EVID-14, R-EVID-15 and R-MIGRATE-04 were measured on the
+  Claude Code harness with one seed per arm per case and blind same-family judging (the method arm
+  has the skill installed, the control arm does not). R-EVID-14 and R-EVID-15 discriminated: the
+  method arm passed where the control arm failed on the lifecycle case. R-RUN-10 was inconclusive:
+  the method arm passed where the control failed on one recovery case, and both arms failed the
+  other. R-EVID-08 and R-MIGRATE-04 were inert, with both arms alike. The evidence is directional,
+  not a formal cohort, and a `discriminates` ledger status would require publishing the sealed
+  cases, so each exception in `eval/rules/gate-exceptions.json` stays pinned to the rule's current
+  statement hash and records its measured outcome.
+- **Maintenance.** CI uses `actions/checkout` and `actions/upload-artifact` v7 (Node 24) on a pinned
+  `ubuntu-24.04` runner. Suites report which awk variants actually ran and which were missing. A
+  committed-text guard rejects workspace identifiers and the initiative slug in added lines.
+  Evaluations are organized by the feature they verify, `eval/run_suites.py --changed` selects the
+  affected suites, and the local learning profile is no longer tracked.
+
 ## Tackle 9.0.0
 
 - **Archetypes leave the install.** Before updating, move any file you added under
