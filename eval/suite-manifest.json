@@ -98,7 +98,7 @@
         "test_credential_guard.py",
         "test_selection.py"
       ],
-      "tests": 36,
+      "tests": 38,
       "source": "eval/maintaining/suite-integrity",
       "category": "tooling",
       "purpose": "Complete discovery, conservative selection and credential guards."
