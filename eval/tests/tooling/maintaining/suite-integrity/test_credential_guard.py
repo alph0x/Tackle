@@ -256,6 +256,12 @@ class RouteTokenGuardTests(unittest.TestCase):
         self.assertEqual(findings_for(self.root, self.ROUTE_MODULE), [item % self.ROUTE_MODULE for item in others])
 
 
+    def test_the_route_test_file_is_scanned_and_names_no_variable(self):
+        self.assertIn(self.ROUTE_TEST, tracked_files(ROOT))
+        self.assertEqual(findings_for(ROOT, self.ROUTE_TEST), [])
+        self.assertNotIn(self.VARIABLE, (ROOT / self.ROUTE_TEST).read_text())
+
+
 class GitIntegrationTests(unittest.TestCase):
     """The guard reads the git path list but the working-tree bytes, over a real, disposable repo."""
 
