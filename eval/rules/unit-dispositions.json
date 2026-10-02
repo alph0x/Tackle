@@ -59,10 +59,10 @@
       "path": "references/guides/lint-spec.md",
       "line": 54,
       "unit_sha256": "1a54bdf402a4fec935c0ea3bef5baf038bf6f8ddebb3f788dc7bc732234f71de",
-      "disposition": "merged",
+      "disposition": "reworded",
       "destination": "MAINTAINING.md",
-      "note": null,
-      "destination_unit_sha256": "1a54bdf402a4fec935c0ea3bef5baf038bf6f8ddebb3f788dc7bc732234f71de"
+      "note": "The release sweep is a direct, ordered procedure: (1) record the explicit release scope and run self-lint gates 1\u20138 below; (2) run catalog integrity checks over `eval/scenarios/` and answer-sheet roots; (3) run rows 1\u201317 over every workspace; (4) run each initiative's done-signal; (5) apply the release-scope rule: every active or selected workspace must pass its mandatory rows and done-signal.",
+      "destination_unit_sha256": null
     },
     {
       "path": "references/guides/lint-spec.md",
@@ -3277,7 +3277,7 @@
       "unit_sha256": "67fc903a87d69a822836aac7d233f8e2949158f11830d6dbca17390a71a88669",
       "disposition": "reworded",
       "destination": "references/guides/plan-card.md",
-      "note": "**Lint.** Run every row of `lint-spec.md` \u2014 the 16 mechanical, copy-paste checks that decide wiring, grounding, statuses, citations, seals and collisions \u2014 and report the agent-computed summary.",
+      "note": "**Lint.** Run every row of `lint-spec.md` \u2014 the 17 mechanical, copy-paste checks that decide wiring, grounding, statuses, citations, seals and collisions \u2014 and report the agent-computed summary.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -4539,7 +4539,7 @@
       "unit_sha256": "f32ff0a6c6f8dfe937d1dffd24b0545b975ca020d6729b850036490e8a21da0c",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "Task boards declare `Schema: tackle-workspace/5` in `task-board.md`; rows 2, 3, 5, 10, 11, 12 and 14 refuse a Coordinated workspace without one with `migrate first`, and row 3 validates the ten `/5` states, including `Waiting on owner`.",
+      "note": "Task boards declare `Schema: tackle-workspace/5` in `task-board.md`; rows 2, 3, 5, 10, 11, 12, 14 and 17 refuse a Coordinated workspace without one with `migrate first`, and row 3 validates the ten `/5` states, including `Waiting on owner`.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -5669,7 +5669,7 @@
       "unit_sha256": "f4b733883aea7c79e29ed3bcc1e3d951b2c06757c028a934367c493c0475898e",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 13 \u00b7 History over archive threshold \u2014 `history.md` exceeds the archive threshold (default 400 lines; workspace-overridable via `Log archive threshold: N` in the workspace `AGENTS.md`); fix path: the archive protocol (`status.md` \u00a7Archive) | ` ws=docs/plans/<slug>; history=\"$ws/history.md\"; t=; if ! { [ ! -e docs/plans/<slug>/AGENTS.md ] && [ ! -L docs/plans/<slug>/AGENTS.md ]; }; then t=$(awk '/^Log archive threshold: [0-9]+/{print $NF; exit}' docs/plans/<slug>/AGENTS.md); fi; t=${t:-400}; if [ \"$(wc -l < \"$history\")\" -le \"$t\" ]; then :; else echo \"$history over archive threshold ($t)\"; fi ` | 0 lines of output \u2014 any line is a **warn** |",
+      "note": "| 13 \u00b7 History over archive threshold or entry budget \u2014 `history.md` exceeds the archive threshold (default 400 lines; workspace-overridable via `Log archive threshold: N` in the workspace `AGENTS.md`), or a session entry (from its `## YYYY-MM-DD` heading through the line before the next `## ` heading, trailing blank lines excluded, `###` lines inside) runs past the entry budget (default 120 lines; workspace-overridable via `History entry budget: N`); a missing `history.md` is an error; fix path: RUN archives or shortens under the workspace's maintenance policy (default in `AGENTS.md`, recoverable maintenance in `context-lifecycle.md`), never STATUS | ` ws=docs/plans/<slug>; history=\"$ws/history.md\"; if [ -f \"$history\" ]; then :; else echo \"row13: missing ${history##*/}\"; exit 1; fi; t=; b=; if ! { [ ! -e docs/plans/<slug>/AGENTS.md ] && [ ! -L docs/plans/<slug>/AGENTS.md ]; }; then t=$(awk '/^Log archive threshold: [0-9]+/{print $NF; exit}' docs/plans/<slug>/AGENTS.md); b=$(awk '/^History entry budget: [0-9]+/{print $4; exit}' docs/plans/<slug>/AGENTS.md); fi; t=${t:-400}; b=${b:-120}; if [ \"$(wc -l < \"$history\")\" -le \"$t\" ]; then :; else echo \"$history over archive threshold ($t)\"; fi; awk -v f=\"$history\" -v b=\"$b\" 'BEGIN{m=b+0} function flush(n){n=last-start+1; if(open && n>m) print f \":\" start \": entry over budget (\" n \" > \" m \")\"} /^## /{flush(); open=($0 ~ /^## 20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]/); start=NR; last=NR; next} open && $0 !~ /^[[:space:]]*$/ {last=NR} END{flush()}' \"$history\" ` | 0 lines of output \u2014 any line is a **warn** |",
       "destination_unit_sha256": null
     },
     {
@@ -5678,7 +5678,7 @@
       "unit_sha256": "177523d6927fefb13599438da1a443f7b5803a2537f566ee596fcc2827a34c84",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 14 \u00b7 Closure reports for done tasks \u2014 every `task-board.md` row whose status is Complete has `reports/T-0N-report.md` (the report may be a stub naming its reviewer, per `team.tmpl.md` \u00a7Closure report); explicit Lite workspaces guard-skip after row 1 validates their shape; an older board is refused | ` ws=docs/plans/<slug>; board=\"$ws/task-board.md\"; if [ -f docs/plans/<slug>/plan.md ] && [ \"$(sed -n '1p' docs/plans/<slug>/plan.md)\" = 'Gate: Lite' ]; then exit 0; fi; if [ -f \"$ws/task-board.md\" ] && grep -Eq '^Schema: tackle-workspace/5$' \"$ws/task-board.md\"; then :; else echo \"migrate first: $ws has no tackle-workspace/5 task-board.md with LF line endings (references/guides/migrate.md)\"; exit 1; fi; for id in $(awk 'BEGIN{FS=sprintf(\"%c\",124)} function cell(i,c){c=$i; sub(/^[[:space:]]+/,\"\",c); sub(/[[:space:]]+$/,\"\",c); return c} function colof(name,i){for(i=2;i<=NF;i++) if(cell(i)==name) return i; return 0} FNR==1{col=0; pend=0} pend && $2 ~ /^[[:space:]]*:?-+:?[[:space:]]*$/ {col=pend} {pend=0} $2 !~ /[PT]-[A-Za-z0-9]/ && colof(\"Status\"){pend=colof(\"Status\")} $2 ~ /[PT]-[A-Za-z0-9]/ && NF>3 {status=cell(col ? col : 6); if(status==\"Complete\") print cell(2)}' \"$board\"); do if [ -f \"docs/plans/<slug>/reports/$id-report.md\" ]; then :; else echo \"done task without closure report: $id\"; fi; done ` | 0 lines of output |",
+      "note": "| 14 \u00b7 Closure reports for done tasks \u2014 every `task-board.md` row whose status is Complete has `reports/T-0N-report.md` (the report may be a stub naming its reviewer, ending with the receipt described in `run.md` \u00a7Run record); explicit Lite workspaces guard-skip after row 1 validates their shape; an older board is refused | ` ws=docs/plans/<slug>; board=\"$ws/task-board.md\"; if [ -f docs/plans/<slug>/plan.md ] && [ \"$(sed -n '1p' docs/plans/<slug>/plan.md)\" = 'Gate: Lite' ]; then exit 0; fi; if [ -f \"$ws/task-board.md\" ] && grep -Eq '^Schema: tackle-workspace/5$' \"$ws/task-board.md\"; then :; else echo \"migrate first: $ws has no tackle-workspace/5 task-board.md with LF line endings (references/guides/migrate.md)\"; exit 1; fi; for id in $(awk 'BEGIN{FS=sprintf(\"%c\",124)} function cell(i,c){c=$i; sub(/^[[:space:]]+/,\"\",c); sub(/[[:space:]]+$/,\"\",c); return c} function colof(name,i){for(i=2;i<=NF;i++) if(cell(i)==name) return i; return 0} FNR==1{col=0; pend=0} pend && $2 ~ /^[[:space:]]*:?-+:?[[:space:]]*$/ {col=pend} {pend=0} $2 !~ /[PT]-[A-Za-z0-9]/ && colof(\"Status\"){pend=colof(\"Status\")} $2 ~ /[PT]-[A-Za-z0-9]/ && NF>3 {status=cell(col ? col : 6); if(status==\"Complete\") print cell(2)}' \"$board\"); do if [ -f \"docs/plans/<slug>/reports/$id-report.md\" ]; then :; else echo \"done task without closure report: $id\"; fi; done ` | 0 lines of output |",
       "destination_unit_sha256": null
     },
     {
@@ -5696,7 +5696,7 @@
       "unit_sha256": "f2df5659e45c3841e6320a9fe38e9feb422cd6cb3b988a61250d6956cc33dab9",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "Task boards declare `Schema: tackle-workspace/5` in `task-board.md`; rows 2, 3, 5, 10, 11, 12 and 14 refuse a Coordinated workspace without one with `migrate first`, and row 3 validates the ten `/5` states, including `Waiting on owner`.",
+      "note": "Task boards declare `Schema: tackle-workspace/5` in `task-board.md`; rows 2, 3, 5, 10, 11, 12, 14 and 17 refuse a Coordinated workspace without one with `migrate first`, and row 3 validates the ten `/5` states, including `Waiting on owner`.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -6617,6 +6617,177 @@
           "reason": "version stamp bump for the 9.0.1 release"
         }
       ]
+    },
+    {
+      "path": "MAINTAINING.md",
+      "line": 16,
+      "unit_sha256": "1a54bdf402a4fec935c0ea3bef5baf038bf6f8ddebb3f788dc7bc732234f71de",
+      "disposition": "reworded",
+      "destination": "MAINTAINING.md",
+      "note": "The release sweep is a direct, ordered procedure: (1) record the explicit release scope and run self-lint gates 1\u20138 below; (2) run catalog integrity checks over `eval/scenarios/` and answer-sheet roots; (3) run rows 1\u201317 over every workspace; (4) run each initiative's done-signal; (5) apply the release-scope rule: every active or selected workspace must pass its mandatory rows and done-signal.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "16",
+          "reason": "the lint table gained a seventeenth row, so the count is now seventeen"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 55,
+      "unit_sha256": "f5b060ffe3d3c9a3963b416d49575e5675ce935739391b3d463520f52b9ded70",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "Run all 17 rows.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "16",
+          "reason": "the lint table gained a seventeenth row, so the count is now seventeen"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 60,
+      "unit_sha256": "f027b0486830190455b39b11a9594c5b71784b866489463f6abf8332ecce1ad5",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "**M** = rows run (17 for this table; more if the workspace adds rows).",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "16",
+          "reason": "the lint table gained a seventeenth row, so the count is now seventeen"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 65,
+      "unit_sha256": "190adfaa4f0c584c29099a90baa0cd8e87ad554726044ce003f8b46430205e43",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "Rows 8, 13 and 15 are warn-severity: they lower N and are reported, but block nothing by themselves; a failure in rows 1\u20137, 9\u201312, 14, 16 and 17 blocks execution until fixed or explicitly waived by the user.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 81,
+      "unit_sha256": "7a4bb2778482de576661b5720a171d56f2e90c25cf686931ddafd77e1077bc5d",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "Run it before accepting the checked Lite skips in rows 2, 3, 5, 9, 10, 11, 12, 14 and 17.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 82,
+      "unit_sha256": "d66feeed9b26d4afdaf9c526fbbfaa0fe7866004efa3846f0a60f57c76bc2bb0",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "All seventeen commands still execute; row 5 retains its empty-output exit 1.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 235,
+      "unit_sha256": "46bced260c6ecae5ad5c4b3ee8470f7dd69fc7a06310ea3a469af4521b5e2a24",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "PLAN, RUN and STATUS refuse any other workspace with `migrate first` and point here, and lint rows 1, 2, 3, 5, 10, 11, 12, 14 and 17 print that refusal.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-card.md",
+      "line": 66,
+      "unit_sha256": "a24ab0eeaa64730e11e976de7e1d9ba6f21732c8ec3702a8e5fc910f475373a5",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-card.md",
+      "note": "**Lint.** Run every row of `lint-spec.md` \u2014 the 17 mechanical, copy-paste checks that decide wiring, grounding, statuses, citations, seals and collisions \u2014 and report the agent-computed summary.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "16",
+          "reason": "the lint table gained a seventeenth row, so the count is now seventeen"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/retro.md",
+      "line": 14,
+      "unit_sha256": "efa2c500a0f07e62a0c86588fd726317cb3d39bf71077d4c034a55fcfc45df79",
+      "disposition": "reworded",
+      "destination": "references/guides/retro.md",
+      "note": "**Attempts over budget** \u2014 count `attempt N:` journal lines per task in `history.md` against the RUN card's fixed cap of three failed correction-validation cycles per task.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "agent",
+          "reason": "the attempt cap is the RUN card's fixed three, so the workspace instructions no longer declare it"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/retro.md",
+      "line": 22,
+      "unit_sha256": "e5623289df27bf13e7f70cd89dda22a1bb7948a97a8f92a9a3974377f1353381",
+      "disposition": "reworded",
+      "destination": "references/guides/retro.md",
+      "note": "**History growth** \u2014 lines per session entry, over `history-archive.md` and then `history.md` (recipe in `retro.tmpl.md`): resume cost compounds across every future session, unlike execution cost which is paid once per task; a rising trend routes narrative back to `decisions.md`/`reference-docs/`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run-card.md",
+      "line": 40,
+      "unit_sha256": "d38f3f48461bd3ad0325cc25fc3ec585f47ba32c496cd96c69c30c9cdeeb3c1d",
+      "disposition": "reworded",
+      "destination": "references/guides/run-card.md",
+      "note": "The report ends with a receipt: what is complete, what remains (the `**Remains**:` line), and who owns the next step.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/scaffold.md",
+      "line": 71,
+      "unit_sha256": "f869ce87836fc3351dc2aca5753581d7d0b724bc914f28488ad74a893dab96a3",
+      "disposition": "reworded",
+      "destination": "references/guides/scaffold.md",
+      "note": "After completing the brief and core files, run all 17 direct lint rows in `lint-spec.md` before any PLAN handoff, including when a task remains Draft or a product question is unanswered.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "16",
+          "reason": "the lint table gained a seventeenth row, so the count is now seventeen"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 39,
+      "unit_sha256": "e9c55d68b5f765facbe420e1b664b6f00b20e03d52fd2e410b5755476f0b7778",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "| 13 \u00b7 History over archive threshold or entry budget \u2014 `history.md` exceeds the archive threshold (default 400 lines; workspace-overridable via `Log archive threshold: N` in the workspace `AGENTS.md`), or a session entry (from its `## YYYY-MM-DD` heading through the line before the next `## ` heading, trailing blank lines excluded, `###` lines inside) runs past the entry budget (default 120 lines; workspace-overridable via `History entry budget: N`); a missing `history.md` is an error; fix path: RUN archives or shortens under the workspace's maintenance policy (default in `AGENTS.md`, recoverable maintenance in `context-lifecycle.md`), never STATUS | ` ws=docs/plans/<slug>; history=\"$ws/history.md\"; if [ -f \"$history\" ]; then :; else echo \"row13: missing ${history##*/}\"; exit 1; fi; t=; b=; if ! { [ ! -e docs/plans/<slug>/AGENTS.md ] && [ ! -L docs/plans/<slug>/AGENTS.md ]; }; then t=$(awk '/^Log archive threshold: [0-9]+/{print $NF; exit}' docs/plans/<slug>/AGENTS.md); b=$(awk '/^History entry budget: [0-9]+/{print $4; exit}' docs/plans/<slug>/AGENTS.md); fi; t=${t:-400}; b=${b:-120}; if [ \"$(wc -l < \"$history\")\" -le \"$t\" ]; then :; else echo \"$history over archive threshold ($t)\"; fi; awk -v f=\"$history\" -v b=\"$b\" 'BEGIN{m=b+0} function flush(n){n=last-start+1; if(open && n>m) print f \":\" start \": entry over budget (\" n \" > \" m \")\"} /^## /{flush(); open=($0 ~ /^## 20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]/); start=NR; last=NR; next} open && $0 !~ /^[[:space:]]*$/ {last=NR} END{flush()}' \"$history\" ` | 0 lines of output \u2014 any line is a **warn** |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 40,
+      "unit_sha256": "cd6a7a7b33e9f32901861c946a5d5995dbb198d63db1c99c41eed7657e4cb31a",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "| 14 \u00b7 Closure reports for done tasks \u2014 every `task-board.md` row whose status is Complete has `reports/T-0N-report.md` (the report may be a stub naming its reviewer, ending with the receipt described in `run.md` \u00a7Run record); explicit Lite workspaces guard-skip after row 1 validates their shape; an older board is refused | ` ws=docs/plans/<slug>; board=\"$ws/task-board.md\"; if [ -f docs/plans/<slug>/plan.md ] && [ \"$(sed -n '1p' docs/plans/<slug>/plan.md)\" = 'Gate: Lite' ]; then exit 0; fi; if [ -f \"$ws/task-board.md\" ] && grep -Eq '^Schema: tackle-workspace/5$' \"$ws/task-board.md\"; then :; else echo \"migrate first: $ws has no tackle-workspace/5 task-board.md with LF line endings (references/guides/migrate.md)\"; exit 1; fi; for id in $(awk 'BEGIN{FS=sprintf(\"%c\",124)} function cell(i,c){c=$i; sub(/^[[:space:]]+/,\"\",c); sub(/[[:space:]]+$/,\"\",c); return c} function colof(name,i){for(i=2;i<=NF;i++) if(cell(i)==name) return i; return 0} FNR==1{col=0; pend=0} pend && $2 ~ /^[[:space:]]*:?-+:?[[:space:]]*$/ {col=pend} {pend=0} $2 !~ /[PT]-[A-Za-z0-9]/ && colof(\"Status\"){pend=colof(\"Status\")} $2 ~ /[PT]-[A-Za-z0-9]/ && NF>3 {status=cell(col ? col : 6); if(status==\"Complete\") print cell(2)}' \"$board\"); do if [ -f \"docs/plans/<slug>/reports/$id-report.md\" ]; then :; else echo \"done task without closure report: $id\"; fi; done ` | 0 lines of output |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 70,
+      "unit_sha256": "32f026d69fd75c6e7ebf1a765dcd31ad9644b336e8afde0a45bc7be64f799f28",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "Task boards declare `Schema: tackle-workspace/5` in `task-board.md`; rows 2, 3, 5, 10, 11, 12, 14 and 17 refuse a Coordinated workspace without one with `migrate first`, and row 3 validates the ten `/5` states, including `Waiting on owner`.",
+      "destination_unit_sha256": null
     }
   ]
 }
