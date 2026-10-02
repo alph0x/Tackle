@@ -80,7 +80,7 @@ control episode whose transcript shows a skill load is recorded `invalid` with `
 
 ## Credentials
 
-No credential is mounted, copied or passed into a participant's container, HOME, environment or prompt.
+No credential is mounted, copied or passed into a participant's container, HOME, environment or prompt on the broker routes.
 
 - **The broker.** A real adapter starts a host-side broker (`broker.py`) that reads
   `--credential-file`, which holds either the bare key or a JSON object with a `"key"` string.

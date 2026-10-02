@@ -3,7 +3,7 @@
 Usage: python3 eval/behavior/harness/harness.py stage|run|dispatch|record|packet|probe [options]
 (see eval/behavior/harness/README.md). Exit 0 success, 1 refusal or failed check, 2 usage error or a real adapter
 without --allow-model-calls or without container isolation. The fake adapter needs no flag, and tests never
-pass it. A participant never receives a credential: a real adapter reaches its one upstream through a
+pass it. On the broker routes a participant never receives a credential: a real adapter reaches its one upstream through a
 host-side broker that holds the credential and checks a per-episode dummy token.
 """
 import argparse

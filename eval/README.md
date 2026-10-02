@@ -78,9 +78,9 @@ These folders hold behavioral runs and what judges them. Each keeps its name for
 A behavioral claim is pre-registered, sealed, recorded and judged under the protocol, and
 `python3 eval/protocol-v2/check.py <cohort-dir>` rejects a tampered, incomplete or placeholder-filled
 cohort. The harness stages a control arm with no skill, or a treated arm with the full install triggered
-by its description alone, and runs every prompt as a headless session. Real runs go through a host-side
-broker and need `--allow-model-calls` and container isolation; no credential reaches a participant. The
-manual A/B workflow and its scoring rubric are the suite mode of the shipped
+by its description alone, and runs every prompt as a headless session. On the broker routes, real runs go
+through a host-side broker and need `--allow-model-calls` and container isolation, and no credential reaches
+a participant. The manual A/B workflow and its scoring rubric are the suite mode of the shipped
 [judge guide](../skills/tackle/references/guides/judge.md). One seed per scenario is a smoke test, not a benchmark, and
 a null is as informative as a win.
 
