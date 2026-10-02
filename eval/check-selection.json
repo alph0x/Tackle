@@ -437,13 +437,14 @@
         "MAINTAINING.md",
         "README.md",
         "skills/tackle/references/guides/full-checks.md",
-        "skills/tackle/references/guides/plan-card.md"
+        "skills/tackle/references/guides/plan-card.md",
+        "skills/tackle/references/guides/status.md"
       ],
       "families": [
         "eval/tests/product/templates"
       ],
       "exclude": [],
-      "reason": "The row-count agreement test reads these documents beside the lint spec."
+      "reason": "The row-count agreement test and the STATUS obligations check read these documents beside the lint spec."
     },
     {
       "patterns": [
