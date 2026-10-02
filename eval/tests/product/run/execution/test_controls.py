@@ -106,7 +106,7 @@ class CanonicalTests(unittest.TestCase):
         r=dict(child_exit=code,timeout=False,launch_error=None,signal=None,inputs_stable=True,artifacts_present=True)
         r.update(changes);return NS['lint_verdict'](row,r,out,err)
     def test_all_literal_cells_preserved(self):
-        rows=self.rows();self.assertEqual(len(rows),16)
+        rows=self.rows();self.assertEqual(len(rows),17)
         for line in CANONICAL.decode().splitlines():
             if not re.match(r'^\| [0-9]+ ·',line):continue
             head,cell,_=line.split(' | ',2);n=int(head[2:].split(' ·')[0])
