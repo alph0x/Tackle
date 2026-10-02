@@ -175,8 +175,10 @@ no neighboring workspace.
    line; never edit an older snapshot.
 5. Copy the default policy line from `AGENTS.tmpl.md` into the workspace `AGENTS.md`, unless the
    workspace already records its own maintenance policy. History is append-only, so an entry already over
-   the budget stays as written: archive it under the policy, or set `History entry budget: N` in
-   `AGENTS.md` to fit it.
+   the budget stays as written. The policy archives it only when `history.md` is over the archive
+   threshold and the entry is older than the newest five sessions. When that does not apply (a recent
+   entry in a short history is the usual case), set `History entry budget: N` in `AGENTS.md` to fit it,
+   or adopt with the row 13 warning, which blocks nothing by itself.
 6. Run rows 1–17 again. Adopt only the validated copy: record the adoption and the rollback result, bump
    the `Methodology:` stamp to 9.1.0, and roll back by restoring the checkpoint copy.
 
