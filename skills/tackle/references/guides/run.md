@@ -185,7 +185,9 @@ runtime does not establish compatibility with another. An unverified required ta
 or global obligation that owns it; an outstanding mandatory global obligation prevents initiative
 completion. Optional targets remain unverified without blocking the authorized narrower scope.
 Independent unaffected work may proceed. A cross-runtime discrepancy keeps both observations and
-their environments visible.
+their environments visible. An obligation that outlives its task is recorded when it is created
+as an `O-NN` row of the board's obligations table, and it prevents initiative completion while it
+is `Open`, unless the owner withdrew it.
 
 Deliverable acceptance then checks the final integrated flows, every required global obligation,
 final artifacts, packaging, source/install boundary, reproducibility, and the complete acceptance
@@ -245,3 +247,12 @@ closed by the receipt. Each observation links to its immutable raw record. Raw r
 append-never/overwrite-never artifacts named with a unique Run, Task, validation ordinal, and observed
 timestamp. Record unknown telemetry as `n/a`; do not infer duration, tokens, cost, actor,
 independence, or success.
+
+The receipt ends with one `**Remains**:` line, on its own line outside any code fence: `none`, or the
+`O-NN` ids the task leaves `Open`, comma-separated. Each id is also a row of the board's obligations
+table and is named in the newest State snapshot; lint row 17 reads this line. A report ends like this:
+
+```text
+Final status: Complete. Next owner: the coordinator.
+**Remains**: O-02
+```

@@ -17,10 +17,12 @@ RUN; a standalone status/resume request does not authorize execution.
   Answer the question first. Include stale reference verification, failed checks, blockers, or
   missing records when they affect that answer; observations grant no mutation permission. List
   any `Waiting on owner` row with its owner action (`waiting: <Q-id or prerequisite>`); RUN itself
-  skips those rows when picking the next task.
+  skips those rows when picking the next task. List every `Open` obligation (`O-NN`) with its owner
+  and trigger.
 - **List** scans available workspaces and gives one line per plan.
 - **Next** selects a Ready task and provides its purpose, dependencies, write scope, and starting
-  prompt. Selection is not execution. Draft tasks cannot be selected as Ready.
+  prompt. Selection is not execution. Draft tasks cannot be selected as Ready. When no task is
+  Ready, Next reports the open obligations (id, owner, trigger) rather than nothing.
 - **Resume** reads workspace instructions, verified current work, the relevant task brief and
   named inputs/depth artifacts. Report current state, reusable verification records, relevant
   changes, and the next authorized action. Ask only when a user-owned decision actually blocks
@@ -60,7 +62,8 @@ not make context portable. Regeneration may replace the projection, never its au
 
 Archive only under an explicit user request or an initiative-scoped maintenance policy already
 covered by authorized RUN. The policy names paths, observable triggers, retained active sessions,
-and recovery. STATUS may recommend maintenance but never performs it.
+and recovery. A new workspace's `AGENTS.md` carries that policy as a default line, so RUN may
+archive without a separate request. STATUS may recommend maintenance but never performs it.
 
 Preserve closed entries verbatim, ascending, including failed attempts. The ordinary legacy path
 keeps the newest five sessions in `history.md` and older entries in `history-archive.md`; do not silently
