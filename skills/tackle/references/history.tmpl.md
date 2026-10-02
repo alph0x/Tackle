@@ -14,6 +14,7 @@ order, headings, event references, failed attempts and budgets; never edit moved
 the newest State snapshot and record before/after sizes once. Follow
 [recoverable maintenance](guides/context-lifecycle.md#maintenance-and-interruption); archival is
 not permission to retire verification data. Measure read, rewrite, and retained bytes separately.
+A session entry longer than the entry budget (120 lines, or `History entry budget: N` in `AGENTS.md`) is a lint row 13 warning: keep the entry to its compact block and route narrative to `decisions.md`.
 
 **Verification entries** — every "acceptance check passed/failed" claim carries:
 
@@ -79,7 +80,7 @@ output), the task becomes Blocked and the entry carries the escalation packet:
 - Resume from: {{the one concrete next action}}
 
 - Checkpoint: {{authoritative state revision; last fully recorded event and hash; source membership}}
-- Active obligations: {{applicable old decisions, blockers, failure lineage and spent cycles}}
+- Active obligations: {{every `Open` `O-NN` id of the board's obligations table, comma-separated on this one line (`none` when there is none), then applicable old decisions, blockers, failure lineage and spent cycles}}
 
 Append a uniquely labelled continuation when a session resumes; do not duplicate session headings.
 Write changed events once, with stable references. Do not append the full plan, task board, repeated
