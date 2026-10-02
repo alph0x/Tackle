@@ -252,9 +252,12 @@ class TemplateDriftTests(unittest.TestCase):
                 text = re.sub(r'(- \*\*Effort\*\*: (?!low\n).*\n)', r'\1- **Tier reason**: kept its Effort through migration\n',
                               brief.read_text())
                 brief.write_text(text)
-        # 9.1 asks every Complete task's report for its receipt line (the receipt step of the 9.0 to 9.1 checklist).
-        for report in sorted((self.ws / 'reports').glob('*-report.md')):
-            report.write_text(report.read_text() + '\n**Remains**: none\n')
+        # 9.1 asks each Complete task's report for its receipt line (step 3 of the 9.0 to 9.1 checklist).
+        for line in board.read_text().split('\n'):
+            cells = [cell.strip() for cell in line.split('|')[1:-1]]
+            if len(cells) == 6 and re.fullmatch(r'T-\d+', cells[0]) and cells[4] == 'Complete':
+                report = self.ws / 'reports' / (cells[0] + '-report.md')
+                report.write_text(report.read_text() + '\n**Remains**: none\n')
         for number, (verdict, out_text, err) in lint(self.root).items():
             with self.subTest(row=number):
                 self.assertEqual(verdict, 'PASS', (out_text, err))

@@ -228,7 +228,8 @@ class ObligationTests(Workspace):
 
     def test_each_planted_defect_is_reported_with_the_id_the_brief_names(self):
         cases = (('fail-17', ['O-01']), ('fail-17b', ['O-02']), ('fail-17c', ['O-01']), ('fail-17d', ['O-03']),
-                 ('fail-17e', ['Done']), ('fail-17f', ['T-A']), ('fail-17g', ['T-A']))
+                 ('fail-17e', ['Done']), ('fail-17f', ['T-A']), ('fail-17g', ['T-A']),
+                 ('fail-17i', ['**O-01**', 'malformed']))
         for fixture, fragments in cases:
             root = self.workspace(fixture, 'pass-obligations')
             lines = self.findings(root, fixture)
@@ -238,6 +239,60 @@ class ObligationTests(Workspace):
         root = self.workspace('fail-17h', 'pass-obligations')
         lines = self.findings(root, 'fail-17h')
         self.assertTrue(any('O-01 (T-A)' in line and 'malformed' in line for line in lines), lines)
+
+    def test_every_row_of_the_obligations_table_is_registered_whatever_its_first_cell(self):
+        # An Open row whose first cell is not exactly an id used to be skipped when the cell did not start with
+        # the id: the newest snapshot says none and the receipt says none, so nothing else could flag it.
+        for first in ('**O-01**', 'o-01', '[O-01](#o-01)', '`O-01`', '_O-01_', '(O-01)', '~~O-01~~', '- O-01', '# O-01',
+                      'O1', 'OB-01', '01', '', 'Obligation 1', 'O-1', 'O-001', 'O-01 (T-A)'):
+            root = self.workspace('fail-17i', 'pass-obligations')
+            self.write(root, BOARD, with_cell(self.read(root, BOARD), '**O-01**', 0, first))
+            lines = self.findings(root, repr(first))
+            self.assertEqual(len(lines), 1, (first, lines))
+            self.assertIn('malformed', lines[0], first)
+            self.assertIn(first, lines[0], first)
+
+    def test_a_decorated_id_is_reported_even_when_the_table_header_is_not_named_obligation(self):
+        for first in ('**O-01**', 'o-01', '[O-01](#o-01)', '`O-01`'):
+            root = self.workspace('fail-17i', 'pass-obligations')
+            board = self.read(root, BOARD).replace('| Obligation | What |', '| ID | What |')
+            self.write(root, BOARD, with_cell(board, '**O-01**', 0, first))
+            lines = self.findings(root, 'header ID, first cell ' + first)
+            self.assertEqual(len(lines), 1, (first, lines))
+            self.assertIn('malformed', lines[0], first)
+
+    def test_a_decorated_id_with_a_correct_snapshot_is_still_reported_as_malformed_first(self):
+        root = self.workspace('fail-17i', 'pass-obligations')
+        self.write(root, 'history.md', self.read(root, 'history.md').replace('- Active obligations: none',
+                                                                             '- Active obligations: O-01'))
+        lines = self.findings(root, 'bold id, snapshot names it')
+        self.assertIn('malformed', lines[0])
+        self.assertTrue(any('O-01' in line and 'no row' in line for line in lines[1:]), lines)
+
+    def test_only_the_obligations_table_and_o_prefixed_rows_are_registered(self):
+        root = self.obligations()
+        board = self.read(root, BOARD)
+        # A task whose id merely contains O-01, a second table after a blank line, and rows right after a heading.
+        board = board.replace('| T-B | More work |', '| T-NO-01 | Boundary | tasks/T-NO-01.md | T-A | Draft | pending |\n| T-B | More work |')
+        board += '\n| Symbol | Meaning |\n|---|---|\n| x | not an obligation |\n| open | still not one |\n'
+        board = board.rstrip('\n') + '\n## Notes\n| Topic | Detail |\n|---|---|\n| first | row |\n'
+        self.write(root, BOARD, board)
+        self.assertEqual(self.findings(root, 'other tables and a boundary id', 'PASS'), [])
+        root = self.obligations()
+        self.write(root, BOARD, self.read(root, BOARD).rstrip('\n') + '\n## Notes\n| x | not a row |\n')
+        self.assertEqual(self.findings(root, 'a heading ends the table', 'PASS'), [])
+
+    def test_the_board_is_read_the_way_rows_2_and_3_read_it_fenced_rows_included(self):
+        root = self.obligations()
+        fenced = '\n```markdown\n| O-09 | example | owner | never | Open | none | |\n```\n'
+        self.write(root, BOARD, self.read(root, BOARD) + fenced)
+        self.assertIn('O-09', ' '.join(self.findings(root, 'a fenced example row on the board')))
+
+    def test_the_row_17_note_states_what_the_cell_registers_and_where_fences_are_skipped(self):
+        note = next(line for line in base.SPEC.read_text(encoding='utf-8').splitlines() if line.startswith('- Row 17 reads'))
+        flat = ' '.join(note.split())
+        for phrase in ('headed `Obligation`', '`**O-01**`', 'reported as malformed', 'Reports and `history.md`', 'rows 2 and 3'):
+            self.assertIn(phrase, flat)
 
     def test_a_keyword_only_checker_passes_what_the_row_reports(self):
         clean = self.obligations()

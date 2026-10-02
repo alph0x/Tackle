@@ -148,7 +148,7 @@
         "test_lifecycle_semantics.py",
         "test_obligations_and_entry_budget.py"
       ],
-      "tests": 107,
+      "tests": 113,
       "source": "eval/lint/rows",
       "category": "product",
       "purpose": "Canonical lint rows, formats, severities, AWK variants, lifecycle outcomes, clock coverage and Attempts evidence."
@@ -163,7 +163,7 @@
         "test_capability_recovery.py",
         "test_history_and_obligation_templates.py"
       ],
-      "tests": 60,
+      "tests": 63,
       "source": "eval/templates",
       "category": "product",
       "purpose": "Template fields, observed model routing, capability recovery and compiled briefs."
@@ -261,7 +261,7 @@
         "test_migration.py",
         "test_v90_v91_checklist.py"
       ],
-      "tests": 124,
+      "tests": 127,
       "source": "eval/migration",
       "category": "product",
       "purpose": "Workspace schema migration, recipes and census refusal."

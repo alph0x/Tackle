@@ -5,6 +5,8 @@ supplies the obligations table that row 17 reads; the retro template's recipes r
 every document that states how many lint rows exist agrees with the lint spec. Text checks protect wording and
 structure only: they do not show that an agent obeys the policy.
 """
+import importlib.util
+import json
 import re
 import shutil
 import subprocess
@@ -30,6 +32,47 @@ def text(path):
 
 def one_line(value):
     return ' '.join(value.split())
+
+
+STATUS_LISTING = 'List every `Open` obligation (`O-NN`) with its owner and trigger.'
+NEXT_REPORT = 'When no task is Ready, Next reports the open obligations (id, owner, trigger) rather than nothing.'
+
+
+def status_bullets(guide):
+    """{label: one-line text} of the bullets under `## Queries` in status.md."""
+    section = guide.split('## Queries', 1)[1].split('\n## ', 1)[0]
+    found = {}
+    for chunk in re.split(r'\n(?=- \*\*)', section):
+        match = re.match(r'- \*\*([A-Za-z]+)\*\*', chunk)
+        if match:
+            found[match[1]] = one_line(chunk)
+    return found
+
+
+def status_problems(guide):
+    """What the STATUS bullet of the post-task obligations contract finds missing in a status guide."""
+    bullets = status_bullets(guide)
+    problems = []
+    if STATUS_LISTING not in bullets.get('Status', ''):
+        problems.append('the Status bullet does not list the Open obligations with owner and trigger')
+    if NEXT_REPORT not in bullets.get('Next', ''):
+        problems.append('the Next bullet does not report the open obligations when no task is Ready')
+    return problems
+
+
+def plant(guide, sentence, replacement):
+    """`guide` with `sentence`, however the guide wraps it, replaced."""
+    pattern = r'\s+'.join(re.escape(word) for word in sentence.split())
+    planted, count = re.subn(pattern, lambda match: replacement, guide)
+    assert count == 1, (sentence, count)
+    return planted
+
+
+def load_runner():
+    spec = importlib.util.spec_from_file_location('tackle_run_suites', ROOT / 'eval/run_suites.py')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 class ScaffoldPolicyTests(unittest.TestCase):
@@ -163,6 +206,31 @@ class RetroRecipeTests(unittest.TestCase):
         self.assertIn('history-archive.md', growth)
         self.assertIn('retro.tmpl.md', growth)
         self.assertIn('At most three failed correction-validation cycles per task', one_line(text(GUIDES / 'run-card.md')))
+
+
+class StatusObligationTests(unittest.TestCase):
+    def test_the_status_guide_lists_open_obligations_and_next_reports_them_when_nothing_is_ready(self):
+        self.assertEqual(status_problems(text(GUIDES / 'status.md')), [])
+
+    def test_the_check_fails_when_those_sentences_are_negated_removed_or_moved(self):
+        guide = text(GUIDES / 'status.md')
+        list_sentence = 'scans available workspaces and gives one line per plan.'
+        planted = {
+            'listing removed': plant(guide, STATUS_LISTING, ''),
+            'listing negated': plant(guide, STATUS_LISTING, 'Never list an `Open` obligation with its owner and trigger.'),
+            'next sentence removed': plant(guide, NEXT_REPORT, ''),
+            'next sentence negated': plant(guide, NEXT_REPORT, 'When no task is Ready, Next reports nothing.'),
+            'next sentence moved to the List bullet': plant(plant(guide, NEXT_REPORT, ''), list_sentence,
+                                                           list_sentence + ' ' + NEXT_REPORT),
+        }
+        for label, variant in planted.items():
+            with self.subTest(case=label):
+                self.assertNotEqual(status_problems(variant), [], label)
+
+    def test_a_status_guide_change_selects_the_family_that_checks_it(self):
+        manifest = json.loads((ROOT / 'eval/suite-manifest.json').read_text(encoding='utf-8'))
+        plan = load_runner().plan(ROOT, manifest, changed=['skills/tackle/references/guides/status.md'])
+        self.assertIn('eval/tests/product/templates', plan['selected'])
 
 
 class CountAgreementTests(unittest.TestCase):

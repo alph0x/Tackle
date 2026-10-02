@@ -159,6 +159,7 @@ FAILS = [
     ('fail-17f', 'pass-obligations', 17, 'T-A', 'FAIL'),
     ('fail-17g', 'pass-obligations', 17, 'T-A', 'FAIL'),
     ('fail-17h', 'pass-obligations', 17, 'O-01 (T-A)', 'FAIL'),
+    ('fail-17i', 'pass-obligations', 17, '**O-01**', 'FAIL'),
     # /5 cases. An uncited Ready to run row fails row 10's citation check.
     ('fail-10-uncited-ready-v5', 'pass-full-5', 10, 'ready-to-run task missing ready citation', 'FAIL'),
     # C4: two /5 workspaces, one In progress and the other Waiting on owner, with colliding scope.
