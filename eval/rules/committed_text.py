@@ -633,7 +633,7 @@ def _lifecycle_lite_typed_spans(repo, path):
                     if isinstance(node, ast.For) and _name(node.target, 'number') and
                     isinstance(node.iter, ast.Call) and _name(node.iter.func, 'range') and
                     len(node.iter.args) == 2 and all(isinstance(arg, ast.Constant)
-                    for arg in node.iter.args) and [arg.value for arg in node.iter.args] == [1, 17]), ())
+                    for arg in node.iter.args) and [arg.value for arg in node.iter.args] == [1, 18]), ())
                 for block in scope:
                     if not isinstance(block, ast.With):
                         continue
@@ -813,7 +813,7 @@ def _lifecycle_fixture_typed_spans(repo, path):
                             _name(row_loop.iter.func, 'range') and
                             len(row_loop.iter.args) == 2 and
                             all(isinstance(arg, ast.Constant) for arg in row_loop.iter.args) and
-                            [arg.value for arg in row_loop.iter.args] == [1, 17]):
+                            [arg.value for arg in row_loop.iter.args] == [1, 18]):
                         continue
                     for subtest in row_loop.body:
                         if not isinstance(subtest, ast.With):
