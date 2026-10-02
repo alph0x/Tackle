@@ -418,6 +418,35 @@
     },
     {
       "patterns": [
+        "MAINTAINING.md",
+        "eval/validation-integrity/acceptance.py",
+        "eval/lint/rows/fixtures/pass-obligations/**",
+        "skills/tackle/references/AGENTS.tmpl.md",
+        "skills/tackle/references/guides/full-checks.md",
+        "skills/tackle/references/guides/lint-spec.md",
+        "skills/tackle/references/task-board.tmpl.md"
+      ],
+      "families": [
+        "eval/tests/product/migration"
+      ],
+      "exclude": [],
+      "reason": "The 9.0 to 9.1 adoption test applies the shipped board and AGENTS templates to a copy of the obligations fixture, extracts the migrate-chain gate from MAINTAINING.md and judges the copy with the lint recipe and rows."
+    },
+    {
+      "patterns": [
+        "MAINTAINING.md",
+        "README.md",
+        "skills/tackle/references/guides/full-checks.md",
+        "skills/tackle/references/guides/plan-card.md"
+      ],
+      "families": [
+        "eval/tests/product/templates"
+      ],
+      "exclude": [],
+      "reason": "The row-count agreement test reads these documents beside the lint spec."
+    },
+    {
+      "patterns": [
         "eval/maintaining/field-report/**",
         "maintaining/**",
         "maintaining/field_report.py",

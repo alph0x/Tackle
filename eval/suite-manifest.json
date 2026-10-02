@@ -145,9 +145,10 @@
         "test_forward_only.py",
         "test_workspace_shapes.py",
         "test_row_contracts.py",
-        "test_lifecycle_semantics.py"
+        "test_lifecycle_semantics.py",
+        "test_obligations_and_entry_budget.py"
       ],
-      "tests": 84,
+      "tests": 107,
       "source": "eval/lint/rows",
       "category": "product",
       "purpose": "Canonical lint rows, formats, severities, AWK variants, lifecycle outcomes, clock coverage and Attempts evidence."
@@ -159,9 +160,10 @@
         "test_model_routing_text.py",
         "test_tier_model_collision.py",
         "test_brief_template.py",
-        "test_capability_recovery.py"
+        "test_capability_recovery.py",
+        "test_history_and_obligation_templates.py"
       ],
-      "tests": 48,
+      "tests": 60,
       "source": "eval/templates",
       "category": "product",
       "purpose": "Template fields, observed model routing, capability recovery and compiled briefs."
@@ -256,9 +258,10 @@
       "files": [
         "test_migration_steps.py",
         "test_unclosed_fence.py",
-        "test_migration.py"
+        "test_migration.py",
+        "test_v90_v91_checklist.py"
       ],
-      "tests": 119,
+      "tests": 124,
       "source": "eval/migration",
       "category": "product",
       "purpose": "Workspace schema migration, recipes and census refusal."

@@ -142,12 +142,23 @@ FAILS = [
     ('fail-12', 'pass-full', 12, 'inherit', 'FAIL'),
     ('fail-12b', 'pass-full', 12, 'extreme', 'FAIL'),
     ('fail-13', 'pass-full', 13, 'over archive threshold', 'WARN'),
+    ('fail-13b', 'pass-full', 13, '121 > 120', 'WARN'),
+    ('fail-13c', 'pass-full', 13, '121 > 120', 'WARN'),
     ('fail-14', 'pass-full', 14, 'done task without closure report: T-02', 'FAIL'),
     ('fail-14b', 'pass-full', 14, 'done task without closure report: T-02', 'FAIL'),
     ('fail-15', 'pass-full', 15, 'stale reference-doc', 'WARN'),
     ('fail-16', 'pass-full', 16, 'duplicate start', 'FAIL'),
     ('fail-16b', 'pass-full', 16, 'unknown Event', 'FAIL'),
     ('fail-16-unsupported-lite', 'pass-lite', 16, 'invalid finish Outcome', 'FAIL'),
+    # Row 17: one defect per overlay of the obligations workspace.
+    ('fail-17', 'pass-obligations', 17, 'O-01', 'FAIL'),
+    ('fail-17b', 'pass-obligations', 17, 'O-02', 'FAIL'),
+    ('fail-17c', 'pass-obligations', 17, 'O-01', 'FAIL'),
+    ('fail-17d', 'pass-obligations', 17, 'O-03', 'FAIL'),
+    ('fail-17e', 'pass-obligations', 17, 'Done', 'FAIL'),
+    ('fail-17f', 'pass-obligations', 17, 'T-A', 'FAIL'),
+    ('fail-17g', 'pass-obligations', 17, 'T-A', 'FAIL'),
+    ('fail-17h', 'pass-obligations', 17, 'O-01 (T-A)', 'FAIL'),
     # /5 cases. An uncited Ready to run row fails row 10's citation check.
     ('fail-10-uncited-ready-v5', 'pass-full-5', 10, 'ready-to-run task missing ready citation', 'FAIL'),
     # C4: two /5 workspaces, one In progress and the other Waiting on owner, with colliding scope.
@@ -210,7 +221,7 @@ class LintRowTests(unittest.TestCase):
         for awk_name, awk in awk_variants():
             for fixture, base in PASSES:
                 root = self.workspace(fixture, base)
-                for number in range(1, 17):
+                for number in range(1, 18):
                     with self.subTest(awk=awk_name, fixture=fixture, row=number):
                         verdict, child = run_row(number, root, awk)
                         self.assertEqual(verdict, 'PASS', (child.returncode, child.stdout[:400], child.stderr[:400]))
@@ -225,7 +236,7 @@ class LintRowTests(unittest.TestCase):
                     self.assertIn(expected, child.stdout.decode())
 
     def test_every_row_has_a_planted_defect(self):
-        self.assertEqual({number for _, _, number, _, _ in FAILS}, set(range(1, 17)))
+        self.assertEqual({number for _, _, number, _, _ in FAILS}, set(range(1, 18)))
         self.assertTrue(all(wanted == ('WARN' if number in WARN_ROWS else wanted) for _, _, number, _, wanted in FAILS))
 
     def test_template_faithful_brief_passes_row_2(self):
@@ -252,7 +263,7 @@ class LintRowTests(unittest.TestCase):
         blocking = set()
         for low, high in re.findall(r'(\d+)(?:–(\d+))?', line.split('a failure in rows', 1)[1].split('blocks', 1)[0]):
             blocking.update(range(int(low), int(high or low) + 1))
-        self.assertEqual(blocking, set(range(1, 17)) - WARN_ROWS)
+        self.assertEqual(blocking, set(range(1, 18)) - WARN_ROWS)
 
     def test_seal_integrity_command(self):
         command = seal_command().replace('<slug>', SLUG)

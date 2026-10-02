@@ -60,7 +60,7 @@ class TaskIdentityTests(unittest.TestCase):
         self.write("resource-usage.md", "Schema: tackle-observability/2\n\n| Run ID | Event | Task | Role | Harness | Tier | Model | Effort | At | Outcome | Attempts | Rework | Verification | Source |\n")
         self.write("tasks/T-A.md", "# Task T-A — Work\n\n- **Depends on**: none\n- **Effort**: low\n")
         self.write("reference.md", "# Sources\n")
-        for number in range(1, 17):
+        for number in range(1, 18):
             with self.subTest(row=number):
                 result = self.row(number)
                 expected_exit = 1 if number == 5 else 0

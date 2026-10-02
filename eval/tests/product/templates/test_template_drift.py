@@ -86,7 +86,7 @@ def clause_bytes(contract, cid):
 def lint(root):
     source = (REF / 'guides/lint-spec.md').read_bytes()
     verdicts = {}
-    for number in range(1, 17):
+    for number in range(1, 18):
         child = run_lint_row(root, number, slug=SLUG, source=source, timeout=60)
         record = dict(child_exit=child.returncode, timeout=False, launch_error=None,
                       signal=(-child.returncode if child.returncode < 0 else None), inputs_stable=True, artifacts_present=True)
@@ -252,6 +252,9 @@ class TemplateDriftTests(unittest.TestCase):
                 text = re.sub(r'(- \*\*Effort\*\*: (?!low\n).*\n)', r'\1- **Tier reason**: kept its Effort through migration\n',
                               brief.read_text())
                 brief.write_text(text)
+        # 9.1 asks every Complete task's report for its receipt line (the receipt step of the 9.0 to 9.1 checklist).
+        for report in sorted((self.ws / 'reports').glob('*-report.md')):
+            report.write_text(report.read_text() + '\n**Remains**: none\n')
         for number, (verdict, out_text, err) in lint(self.root).items():
             with self.subTest(row=number):
                 self.assertEqual(verdict, 'PASS', (out_text, err))

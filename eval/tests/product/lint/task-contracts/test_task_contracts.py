@@ -308,13 +308,13 @@ class TaskContracts(unittest.TestCase):
         files = layout(**{'task-board.md': task_board('Ready to run', 'ready: readiness record'),
                           'tasks/T-A.md': '# Task T-A\n- **Depends on**: none\n- **Write scope**: src/\n- **Effort**: low\n',
                           'decisions.md': '# Decisions\n', 'reference.md': '# References\n'})
-        for number in range(1, 17):
+        for number in range(1, 18):
             result = row(number, files)
             record = dict(child_exit=result.returncode, timeout=False, launch_error=None,
                           signal=None, inputs_stable=True, artifacts_present=True)
             verdict = LINT['lint_verdict'](number, record, result.stdout.encode(), result.stderr.encode())
             self.assertEqual(verdict, 'PASS', (number, result.stdout, result.stderr))
-        self.assertEqual(set(commands), set(range(1, 17)))
+        self.assertEqual(set(commands), set(range(1, 18)))
 
     def test_new_status_declaration_outside_board_is_rejected(self):
         files = {'plan.md': '# Plan\n', 'task-board.md': task_board('Draft'),
