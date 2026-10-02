@@ -282,6 +282,17 @@ class ObligationTests(Workspace):
         self.write(root, BOARD, self.read(root, BOARD).rstrip('\n') + '\n## Notes\n| x | not a row |\n')
         self.assertEqual(self.findings(root, 'a heading ends the table', 'PASS'), [])
 
+    def test_rows_below_the_templates_comment_line_are_still_part_of_the_table(self):
+        root = self.workspace('fail-17i', 'pass-obligations')
+        delimiter = '|---|---|---|---|---|---|---|\n'
+        board = self.read(root, BOARD)
+        self.assertEqual(board.count(delimiter), 1)
+        board = board.replace(delimiter, delimiter + '<!-- Add O-NN rows only when an obligation outlives its task. -->\n')
+        self.write(root, BOARD, with_cell(board, '**O-01**', 0, '01'))
+        lines = self.findings(root, 'a malformed first cell below the comment line')
+        self.assertEqual(len(lines), 1, lines)
+        self.assertIn('malformed', lines[0])
+
     def test_the_board_is_read_the_way_rows_2_and_3_read_it_fenced_rows_included(self):
         root = self.obligations()
         fenced = '\n```markdown\n| O-09 | example | owner | never | Open | none | |\n```\n'

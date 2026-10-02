@@ -148,7 +148,7 @@
         "test_lifecycle_semantics.py",
         "test_obligations_and_entry_budget.py"
       ],
-      "tests": 113,
+      "tests": 114,
       "source": "eval/lint/rows",
       "category": "product",
       "purpose": "Canonical lint rows, formats, severities, AWK variants, lifecycle outcomes, clock coverage and Attempts evidence."
