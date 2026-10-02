@@ -15,7 +15,7 @@ Before any version tag, the owner names the workspace path(s) explicitly include
 
 The release sweep is a direct, ordered procedure: (1) record the explicit release scope and run self-lint gates 1–8 below;
 (2) run catalog integrity checks over `eval/scenarios/` and answer-sheet roots;
-(3) run rows 1–16 over every workspace; (4) run each initiative's done-signal;
+(3) run rows 1–17 over every workspace; (4) run each initiative's done-signal;
 (5) apply the release-scope rule: every active or selected workspace must pass its mandatory rows
 and done-signal. Each selected workspace must additionally pass current global acceptance even
 when its board has no active data row or every task is Complete (legacy 🟢); stale evidence must be revalidated against

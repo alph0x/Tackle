@@ -68,7 +68,7 @@ No other brief template exists: an older `P-` workspace is migrated before it ru
 Write each brief's `**Effort**:` as one bare vocabulary token with no trailing punctuation;
 row 12 validates the exact value.
 
-After completing the brief and core files, run all 16 direct lint rows in `lint-spec.md`
+After completing the brief and core files, run all 17 direct lint rows in `lint-spec.md`
 before any PLAN handoff, including when a task remains Draft or a product question is unanswered.
 Structural lint does not establish readiness: report that blocker separately. A missing
 `resource-usage.md`, malformed status cell or invalid effort field is a failed scaffold.
