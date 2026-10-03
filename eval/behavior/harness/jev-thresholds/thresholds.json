@@ -1,0 +1,26 @@
+{
+  "calibration": {
+    "avoided_false_alarms": 5,
+    "cause_hits": 4,
+    "cause_matches_diagnosis": 0,
+    "fell": 4,
+    "records": 12,
+    "records_sha256": "fd2745da9ce88fd51f49e65112b7d61ea42ee25e0a6cb7a10229b8ccc18a0e66",
+    "scored": 12,
+    "scores_sha256": "b53e33407aa7801f278980a501c85aa4b74f6a090d3f8526145643f7f5520afd",
+    "split": "development"
+  },
+  "derivation": {
+    "dimension": "label is the highest level L whose cumulative mass P(level >= L) reaches the threshold; the threshold is the median, over the scored calibration lines, of P(level = 2), rounded to 4 places and clamped to [0.05, 0.95]; the oracles leave these dimensions null, so there is no ground truth and the cut splits the calibration records by top-level mass",
+    "failure_cause": "review fires on an avoided record when JEV names a cause other than none at or above the threshold; hits are fell records where JEV names a cause other than none, false alarms are avoided records where JEV names a cause other than none; separated: midpoint of the highest false alarm and the lowest hit; no false alarm: the lowest hit; overlap: the highest false alarm plus 0.01; rounded to 4 places and clamped to [0.01, 0.99]"
+  },
+  "model": "jev-1.13.0",
+  "questions_sha256": "89da46763d0454875569ed21113a024409c442d317d4e0694af8be8ce04af3b1",
+  "schema": "tackle-jev-thresholds/1",
+  "thresholds": {
+    "evidence": 0.355,
+    "failure_cause": 0.7,
+    "report_quality": 0.7,
+    "verification_honesty": 0.57
+  }
+}
