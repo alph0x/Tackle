@@ -11,3 +11,4 @@ or changes a recipe adds or updates its row.
 | [migrate/step-pre3-to-3.md](migrate/step-pre3-to-3.md) | `b1427b156fc32007af77d318e43081b71c94a2abfc2815e7aeb51876a3a02db8` |
 | [migrate/step-3-to-4.md](migrate/step-3-to-4.md) | `5ce06c10488ad25e3cc467beccb4068735b5ce4d184709cc2213b5377d0336cb` |
 | [migrate/step-4-to-5.md](migrate/step-4-to-5.md) | `62cc9a0ed90b5389f4c4b45d827119d1621edc99992a6da773877d5f0455b182` |
+| [plan-view.md](plan-view.md) | `8600f177cd4594499835fab1be7c42c17c261a379e5a3b1bcfb724207488c12a` |
