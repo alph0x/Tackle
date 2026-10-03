@@ -415,10 +415,11 @@ class RepositoryGateRegressionTests(unittest.TestCase):
         The workspace-ID classes accept an optional hyphen and one through three digits. A rule id
         such as R-EVID-01 or R-COMM-03 is not a leak (its final letter is mid-word), and an ISO timestamp
         such the ones this test suite writes (`...T00:00:00`) is not a leak (immediately followed by a
-        colon, never true of a real workspace id). Every file is scanned: only typed fixture fields
-        and exact path/content-hash historical contexts have narrow allowances. The packaging note
+        colon, never true of a real workspace id). Every file is scanned: only typed fixture fields,
+        exact path/content-hash historical contexts, and sealed blind-authored scenario trees have
+        narrow allowances. The packaging note
         remains bound to its original and moved blobs. Diagnostics never echo added source text."""
-        slug = 'tackle' + '-9.0.1'
+        slug = 'tackle' + '-9.1'
         findings = scan_committed_text(REPO, PREFLIGHT_BASE, slug)
         self.assertEqual(findings, [], format_findings(findings))
 

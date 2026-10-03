@@ -183,12 +183,13 @@
       "files": [
         "test_committed_text.py",
         "test_ledger.py",
+        "test_sealed_scenario_admission.py",
         "test_unit_diff.py"
       ],
-      "tests": 92,
+      "tests": 108,
       "source": "eval/rules",
       "category": "tooling",
-      "purpose": "Normative inventory, ledger gates, committed-text leak scanning and removed-unit accounting."
+      "purpose": "Normative inventory, ledger gates, committed-text leak scanning (including digest-keyed admission of sealed scenario trees) and removed-unit accounting."
     },
     {
       "path": "eval/tests/tooling/records",
@@ -203,12 +204,13 @@
     {
       "path": "eval/tests/tooling/scenario-index",
       "files": [
-        "test_index.py"
+        "test_index.py",
+        "test_oracle_digest.py"
       ],
-      "tests": 32,
+      "tests": 38,
       "source": "eval/scenario-index",
       "category": "tooling",
-      "purpose": "Scenario catalog consistency and variant registration."
+      "purpose": "Scenario catalog consistency, variant registration and answer-sheet/oracle digests."
     },
     {
       "path": "eval/tests/tooling/behavior/harness",

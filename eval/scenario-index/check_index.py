@@ -1,4 +1,4 @@
-"""Check the scenario index: every scenario classified, every input tree sealed, held-out variants sealed first.
+"""Check the scenario index: every scenario classified, every input tree and oracle set sealed, held-out variants sealed first.
 
 Usage: python3 eval/scenario-index/check_index.py --repo <dir>
        python3 eval/scenario-index/check_index.py --digest <dir>
@@ -19,6 +19,8 @@ CLASSES = ('outcome-trap', 'procedure', 'tripwire', 'retired')
 GAPS = ('invocation-help-aliases', 'sizing', 'correction-budget-stop', 'resume-across-sessions',
         'communication-policy', 'coordinated-independence')
 ENTRY_FIELDS = {'scenario_id', 'class', 'harm', 'covers', 'authored', 'variants'}
+OPTIONAL_ENTRY_FIELDS = {'oracle_sha256'}
+ORACLE_SET = re.compile(r'(GROUND-TRUTH\.md|variants/[^/]+/GROUND-TRUTH\.md|variants/[^/]+/oracle/.+)')
 VARIANT_FIELDS = {'variant_id', 'split', 'path', 'prompts', 'fixture', 'stageable', 'fixture_sha256', 'control_exposure'}
 VARIANT_ID = re.compile(r'([vh])[0-9]+')
 HEX = re.compile(r'[0-9a-f]{64}')
@@ -124,6 +126,35 @@ def input_tree(tracked, variant):
     return files
 
 
+def oracle_tree(tracked, scenario):
+    """The scenario's staged answer sheets and oracle files, {path relative to the scenario: bytes}.
+
+    The root GROUND-TRUTH.md, every variants/<id>/GROUND-TRUTH.md and every file under variants/<id>/oracle/.
+    Raises Symlink. The second result says whether any oracle/ file exists."""
+    root = 'eval/scenarios/%s/' % scenario
+    names = [name for name in tracked.under(root) if ORACLE_SET.fullmatch(name[len(root):])]
+    tracked.load(names)
+    files = {name[len(root):]: tracked.read(name) for name in names}
+    return files, any(name.startswith('variants/') and '/oracle/' in name for name in files)
+
+
+def check_oracle(tracked, entry, errors):
+    scenario = entry['scenario_id']
+    try:
+        files, has_oracle = oracle_tree(tracked, scenario)
+    except Symlink as link:
+        errors.add(scenario, 'symlink', 'an answer sheet or oracle file is a symlink: %s' % link)
+        return
+    recorded = entry.get('oracle_sha256')
+    if recorded is None:
+        if has_oracle:
+            errors.add(scenario, 'digest', 'oracle_sha256 is null but the scenario holds oracle directories')
+    elif not has_oracle:
+        errors.add(scenario, 'digest', 'oracle_sha256 is set but the scenario holds no oracle directory')
+    elif mapping_digest({name: hashlib.sha256(data).hexdigest() for name, data in files.items()}) != recorded:
+        errors.add(scenario, 'digest', 'oracle_sha256 does not match the answer sheets and oracle directories')
+
+
 def untracked_input(repo, tracked, variant):
     """Input files on disk that the index does not hold (runtime caches excepted)."""
     root = repo / variant['path']
@@ -166,7 +197,11 @@ def rule_fragments(ledger):
 
 
 def valid_entry(entry):
-    if not isinstance(entry, dict) or set(entry) != ENTRY_FIELDS or not isinstance(entry['scenario_id'], str):
+    if not isinstance(entry, dict) or not ENTRY_FIELDS <= set(entry) <= ENTRY_FIELDS | OPTIONAL_ENTRY_FIELDS \
+            or not isinstance(entry['scenario_id'], str):
+        return False
+    oracle = entry.get('oracle_sha256')
+    if oracle is not None and not (isinstance(oracle, str) and HEX.fullmatch(oracle)):
         return False
     authored = entry['authored']
     return (isinstance(entry['harm'], str) and isinstance(entry['covers'], list) and isinstance(entry['variants'], list)
@@ -293,7 +328,7 @@ def working_records(path, scenario, variant):
     return False
 
 
-def check_seals(repo, variants, errors):
+def check_seals(repo, variants, oracles, errors):
     for manifest_path in sorted((repo / 'eval/cohorts').glob('*/manifest.json')):
         cohort = manifest_path.parent
         try:
@@ -321,6 +356,13 @@ def check_seals(repo, variants, errors):
                 errors.add(where, 'seal', 'a record naming the variant was committed before its sealed digest (%s)' % recorded[:12])
             elif not sealed and working_records(cohort / 'episodes.jsonl', *key):
                 errors.add(where, 'seal', 'records name the variant but its digest is not committed')
+            oracle = oracles.get(key[0])
+            if recorded and oracle:
+                oracle_sealed = first_commit(repo, oracle)
+                if not oracle_sealed or oracle_sealed == recorded \
+                        or git(repo, 'merge-base', '--is-ancestor', oracle_sealed, recorded).returncode != 0:
+                    errors.add(where, 'seal', 'a record naming the variant was committed before its sealed oracle digest (%s)'
+                               % recorded[:12])
 
 
 def check(repo):
@@ -336,7 +378,7 @@ def check(repo):
     tracked = Tracked(repo)
     tracked.load(tracked.under('eval/scenarios/'))
     directories = {p.name for p in (repo / 'eval/scenarios').iterdir() if p.is_dir()} if (repo / 'eval/scenarios').is_dir() else set()
-    seen, variants_by_key, covered = set(), {}, set()
+    seen, variants_by_key, covered, oracles = set(), {}, set(), {}
     counts = dict(scenarios=0, outcome_traps=0, held_out=0, stageable=0, exposed=0)
     held_out_traps = 0
     for number, entry in enumerate(index['scenarios']):
@@ -381,6 +423,8 @@ def check(repo):
                 held += variant['stageable']
             if variant['split'] == 'development' and variant['stageable'] and found == {'install': False, 'fragments': []}:
                 clean_development = True
+        oracles[scenario] = entry.get('oracle_sha256')
+        check_oracle(tracked, entry, errors)
         if not ids:
             errors.add(scenario, 'schema', 'an entry lists at least one variant')
         if entry['class'] == 'outcome-trap' and held >= 2:
@@ -396,7 +440,7 @@ def check(repo):
     missing = [gap for gap in GAPS if gap not in covered]
     if missing:
         errors.add('index', 'coverage', 'uncovered gaps: %s' % ', '.join(missing))
-    check_seals(repo, variants_by_key, errors)
+    check_seals(repo, variants_by_key, oracles, errors)
     summary = 'scenarios=%d outcome_traps=%d held_out=%d stageable=%d exposed=%d gaps=%d/%d' % (
         counts['scenarios'], counts['outcome_traps'], counts['held_out'], counts['stageable'], counts['exposed'],
         len(covered), len(GAPS))

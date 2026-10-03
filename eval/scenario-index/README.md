@@ -1,7 +1,7 @@
 # Scenario index
 
 `eval/scenarios/INDEX.json` classifies every scenario directory and seals the input of every variant
-that a cohort may run. `check_index.py` verifies it:
+that a cohort may run, and the answer sheets and oracle directories of every scenario that has them. `check_index.py` verifies it:
 
 ```sh
 python3 eval/scenario-index/check_index.py --repo .
@@ -17,7 +17,7 @@ checker lives outside `eval/scenarios/`, which is excluded from suite discovery.
 
 ## Entries
 
-An entry is `{scenario_id, class, harm, covers, authored, variants}`:
+An entry is `{scenario_id, class, harm, covers, authored, variants, oracle_sha256}`:
 
 - `class` is `outcome-trap` (the wrong action harms the user or project on its own terms, so no
   method vocabulary is needed to call it wrong), `procedure` (the right action is compliance with a
@@ -29,6 +29,14 @@ An entry is `{scenario_id, class, harm, covers, authored, variants}`:
   `resume-across-sessions`, `communication-policy`, `coordinated-independence`. All six are covered.
 - `authored` is `{actors, blind}`: who classified the entry and wrote its new variants, and whether they
   worked without access to prior run results.
+
+- `oracle_sha256` is the tree digest of the scenario's answer sheets and oracle directories, computed
+  with the same function as `fixture_sha256` over `{path relative to the scenario directory: sha256 of
+  its bytes}` for `GROUND-TRUTH.md`, every `variants/<id>/GROUND-TRUTH.md` and every file under
+  `variants/<id>/oracle/`. It is null when no variant directory holds `oracle/` (every scenario that
+  predates oracle directories; a missing field reads as null). It is a per-scenario value: a set-wide seal
+  manifest that digests several scenarios with scenario-prefixed keys records a different value built from
+  the same per-file hashes.
 
 The rules a scenario tests come from `eval/rules/ledger.json` (`evidence.scenarios`); the index keeps no
 second copy.
@@ -66,6 +74,17 @@ A variant is `{variant_id, split, path, prompts, fixture, stageable, fixture_sha
    strictly before the first commit that adds an `episodes.jsonl` line naming the variant.
 7. A new variant's prompt quotes no statement or home fragment of its scenario's rules.
 8. All six coverage tags are covered.
+9. `oracle_sha256` matches the staged answer sheets and oracle files; it is null exactly when the
+   scenario holds no `oracle/` directory, and no answer sheet or oracle file is a symlink.
+
+For rule 6, the commit that first adds the entry's non-null `oracle_sha256` must also come strictly
+before the first `episodes.jsonl` line naming a held-out variant of that scenario.
+
+The committed-text guard (`eval/rules/committed_text.py`) reads these digests: for a blind-authored entry
+it admits workspace-id-shaped tokens inside a variant's input tree (prompts and fixture) while the
+working-tree bytes digest to `fixture_sha256`, and inside the scenario's answer sheets and oracle
+directories while they digest to `oracle_sha256`. Any edit, null digest, symlink or non-blind entry
+withdraws the admission for the whole tree; the initiative-slug scan is never relaxed.
 
 Paraphrased contamination and leading prompts that avoid the exact text are beyond a mechanical check;
 new variants therefore get a fresh reader's review before they are sealed.
