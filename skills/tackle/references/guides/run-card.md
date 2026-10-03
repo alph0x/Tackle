@@ -37,7 +37,7 @@ RUN starts only after explicit execution intent, including a scoped PLAN+RUN req
      assertion and normalized output, with timestamps, paths and durations removed.
    - **Other causes** produce an escalation packet. The task becomes Blocked, or `Waiting on owner` when
      the owner must act.
-8. **Close.** A reviewer's verdict is its own artifact; the coordinator decides. The report ends with
+8. **Close.** A [reviewer's verdict](run.md#adversary-checkpoints) is its own artifact; the coordinator decides. The report ends with
    a receipt: what is complete, what remains (the `**Remains**:` line), and who owns the next step. Update the board with
    hash-before-write, then append one history line and the usage row. Loop. When no task remains,
    deliverable acceptance precedes initiative completion.

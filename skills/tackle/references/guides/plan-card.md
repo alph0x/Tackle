@@ -95,6 +95,7 @@ tasks and stops before source execution.`
    never runs source execution or claims a product PASS. Handoff carries the matrix, the global
    obligations, the Ready fingerprints and the explicit execution boundary; RUN records its own
    intent before it may mutate source.
+   A brief locks only after its `lock` [adversary checkpoint](run.md#adversary-checkpoints).
 
 **Stop rule.** PLAN exists to unblock execution. When the next step is small and clear, do it; do
 not re-plan a plan, and do not open a second planning session to restate a decision this one
