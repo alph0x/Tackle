@@ -248,6 +248,8 @@ append-never/overwrite-never artifacts named with a unique Run, Task, validation
 timestamp. Record unknown telemetry as `n/a`; do not infer duration, tokens, cost, actor,
 independence, or success.
 
+Before RUN writes a receipt or a blocker report, it runs the [controlled-writing](controlled-writing.md) check on the text. It fixes each finding or records the owner's acceptance.
+
 The receipt ends with one `**Remains**:` line, on its own line outside any code fence: `none`, or the
 `O-NN` ids the task leaves `Open`, comma-separated. Each id is also a row of the board's obligations
 table and is named in the newest State snapshot; lint row 17 reads this line. A report ends like this:

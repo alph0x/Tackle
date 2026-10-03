@@ -86,6 +86,8 @@ Set a selected prepared task **Ready to run** only when all of these are true:
 - the relevant clause, code, configuration, dependency, and input fingerprints are recorded;
 - no material contradiction or unowned global obligation remains.
 
+PLAN also runs the [controlled-writing](controlled-writing.md) check over `plan.md`, the briefs and `design-contract.md`. A finding blocks Ready until the text is fixed or the owner accepts it.
+
 Preparation records readiness evidence; it does not run source execution or claim product PASS.
 Handoff contains the final Ready fingerprints and validated Task contracts. RUN alone may execute
 source after explicit execution intent.

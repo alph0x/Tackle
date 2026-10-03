@@ -52,6 +52,7 @@ checking, blocked work and accepted delivery must agree with the task board and 
 Editorial reference: [no-ai-slop](https://github.com/petergyang/no-ai-slop). Use concrete language,
 preserve meaning and uncertainty, and remove repeated narration. This guidance incorporates no
 literal source material, dependency, installation requirement, word blacklist or per-message model call.
+The [controlled-writing](controlled-writing.md) guide holds the checked sentences and word list for owner texts and specifications.
 
 ## Examples and comprehension review
 

@@ -90,3 +90,4 @@ STATUS: [status](references/guides/status.md). Explicit [audit](references/guide
 [lessons](references/guides/retro.md),
 [migration](references/guides/migrate.md#schema-keyed-migration),
 [owner-controlled updates](references/guides/update.md).
+Owner texts and specifications: [controlled writing](references/guides/controlled-writing.md).
