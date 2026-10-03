@@ -144,5 +144,77 @@ class PlanViewTests(unittest.TestCase):
             self.assertFalse(out.exists())
 
 
+BOARD_HEAD = ('# Board\n\nStates: %s.\n\n| Task | What | Brief | Depends on | Status | Verification |\n|---|---|---|---|---|---|\n' % STATES)
+
+
+def small_files(plan, rows, extra_board=''):
+    first, second = task_id(1), task_id(2)
+    files = {'plan.md': plan, 'task-board.md': BOARD_HEAD + ''.join(rows) + extra_board}
+    for task in (first, second):
+        files['tasks/%s.md' % task] = '# Task\n\n- **Traces to**: %s\n' % req_id(1)
+    return files
+
+
+def plain_rows(title_a='a', brief_a=None):
+    first, second = task_id(1), task_id(2)
+    brief_a = brief_a or '`tasks/%s.md`' % first
+    return ['| %s | %s | %s | none | Draft | v |\n' % (first, title_a, brief_a),
+            '| %s | b | `tasks/%s.md` | %s | Draft | v |\n' % (second, second, first)]
+
+
+def lite_plan():
+    a, b = req_id(1), req_id(2)
+    return ('Gate: Lite\n# Fix the parser\n\n- Purpose / requirements: %s the parser accepts quoted commas; %s it rejects a bare quote.\n'
+            '- Cases → checks: %s → `pytest -k quoted`; %s → `pytest -k bare`.\n- Validation: pytest tests/test_parser.py\n- State: Ready\n' % (a, b, a, b))
+
+
+def page_of(tmp, files, case):
+    result, out = run_recipe(tmp, files, case)
+    return result, (out.read_text(encoding='utf-8') if out.exists() else '')
+
+
+class PlanViewFindingsTests(unittest.TestCase):
+    def test_a_focused_plan_in_the_lite_template_shape_shows_its_requirements_and_checks(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            result, page = page_of(tmp, {'plan.md': lite_plan(), 'history.md': '# History\n'}, 'lite')
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            data = json.loads(re.search(r'id="plan-view-data">(.*?)</script>', page, re.S).group(1))
+            self.assertIs(data['focused'], True)
+            self.assertEqual(sorted(data['requirements']), [req_id(1), req_id(2)])
+            self.assertIn('<title>Fix the parser</title>', page)
+            self.assertNotIn('Gate: Lite', re.sub(r'<script\b.*?</script>', '', page, flags=re.S))
+            self.assertIn('pytest -k quoted', page)
+            self.assertIn('the parser accepts quoted commas', page)
+            result, page = page_of(tmp, {'plan.md': 'Gate: Lite\n# Empty\n\n- Purpose / requirements: nothing named\n'}, 'lite-empty')
+            self.assertEqual(result.returncode, 1)
+            self.assertTrue(any('Focused' in line for line in result.stdout.splitlines() if line.startswith('refused: ')))
+
+    def test_the_page_language_follows_positive_evidence_and_defaults_to_english(self):
+        plans = {
+            'fr': ('# Plan — Réécriture\n\nLe plan décrit les étapes. Chaque tâche a une vérification. Le système est prêt après la révision.\n', 'en'),
+            'pt': ('# Plano — Migração\n\nO plano descreve as etapas da migração. Cada tarefa tem uma verificação. A configuração está pronta após a revisão.\n', 'en'),
+            'de': ('# Plan — Umbau\n\nDer Plan beschreibt die Schritte. Jede Aufgabe hat eine Prüfung. Das System ist nach der Prüfung bereit.\n', 'en'),
+            'es': ('# Plan — Migración\n\nEl plan describe los pasos de la migración. Cada tarea tiene una verificación. La configuración queda lista después de la revisión.\n', 'es'),
+            'en': ('# Plan — Migration\n\nThe plan describes the steps of the migration. Each task has a check.\n', 'en')}
+        with tempfile.TemporaryDirectory() as tmp:
+            for code, (plan, expected) in plans.items():
+                result, page = page_of(tmp, small_files(plan, plain_rows()), 'lang-' + code)
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn('<html lang="%s"' % expected, page, code)
+
+    def test_only_the_task_table_is_read_as_tasks_and_cells_keep_escaped_pipes(self):
+        plan = '# Plan — demo\n\n| Criterion | Behavior |\n|---|---|\n| `%s` | one |\n' % req_id(1)
+        notes = '\n## Notes\n\n| Task | Note |\n|---|---|\n| %s | waits for review |\n' % task_id(1)
+        with tempfile.TemporaryDirectory() as tmp:
+            result, page = page_of(tmp, small_files(plan, plain_rows('parse a \\| b'), notes), 'second-table')
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn('parse a | b', page)
+            result, page = page_of(tmp, small_files(plan, plain_rows(brief_a='[brief](tasks/%s.md)' % task_id(1))), 'link-brief')
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            result, page = page_of(tmp, small_files(plan, plain_rows(brief_a='`../outside.md`')), 'outside-brief')
+            self.assertEqual(result.returncode, 1)
+            self.assertIn('outside the workspace', result.stdout)
+
+
 if __name__ == '__main__':
     unittest.main()
