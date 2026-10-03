@@ -276,8 +276,39 @@ def assert_safe_run_root(cfg):
                 raise Refusal('%s could reach a child' % (ancestor / name))
 
 
+INCIDENT = 'incident.json'
+
+
+def scrub_tree(path):
+    """Delete a tree the participant may have made unwritable or unreadable, never following a link."""
+    if stat.S_ISDIR(os.lstat(path).st_mode):
+        os.chmod(path, 0o700)
+        for name in os.listdir(path):
+            scrub_tree(os.path.join(path, name))
+        os.rmdir(path)
+    else:
+        os.unlink(path)
+
+
+def retire_after_hit(cfg, root, name):
+    """After a credential hit: record the incident in the state directory, then delete the whole root, so no token-bearing
+    byte stays. Later runs refuse on the marker. A root that cannot be deleted stays and refuses them as a leftover."""
+    cfg.state_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
+    marker = cfg.state_dir / INCIDENT
+    try:
+        temporary = marker.with_name(INCIDENT + '.tmp')
+        temporary.write_text(json.dumps({'schema': 'tackle-route-incident/1', 'episode_id': name, 'recorded_at': harness.now()}) + '\n')
+        os.replace(temporary, marker)
+        scrub_tree(root)
+    except (OSError, RecursionError):
+        pass
+
+
 def prepare_run_root(cfg):
     """Create the run root, then require it safe, short enough for the CLI's temp path and empty: one root at a time."""
+    if (cfg.state_dir / INCIDENT).exists():
+        raise Refusal('a credential incident is recorded in the state directory; the owner must review it and remove %s '
+                      'before another run' % INCIDENT)
     root = Path(cfg.run_root)
     longest = os.path.join(str(root / ('p' + '0' * 6) / 'tmp'), 'claude-%d' % os.getuid())
     if len(os.fsencode(longest)) > cfg.cli_tmp_limit:
@@ -1272,6 +1303,8 @@ def run_episode(stage, entry, position):
         pairs += [(str(root / name), '<%s>' % name) for name in ('home', 'work', 'tmp')] + [(str(root), '<runtime>')]
     neutral = Neutral(cfg, pairs)
     locations = find_token(stage, seen)
+    if locations and root is not None:
+        retire_after_hit(cfg, root, entry['episode_id'])
     complete = root is not None and '(scan failed)' not in locations
     clean = not locations and not seen.interrupted and complete
     decision = classify(stage, seen, locations, arm)
@@ -1469,6 +1502,8 @@ def probe_child(stage, arm, name, sentinels, content):
                 locations += token_hits(root, stage.token)
             except Exception:
                 locations.append('(scan failed)')
+        if locations and root is not None:
+            retire_after_hit(cfg, root, name)
     cost = (stream['result'] or {}).get('total_cost_usd')
     stage.ledger.settle(claim, cost, cfg.probe_child_usd)
     clean = child is not None and root is not None and not locations and not child.interrupted

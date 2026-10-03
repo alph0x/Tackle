@@ -334,8 +334,10 @@ sandbox or model.
   CLI process environment only, never into argv, a prompt, a staged file or a record. Before anything is kept,
   every stream, and every name, link target and file under the run root, is scanned for the token and its
   base64, hex, URL-encoded and JSON-escaped forms, and `episode.json` and the protocol line are each scanned again before they are kept. A hit
-  makes the episode `invalid` with the reason `credential`, retains no stream bytes and no final tree, and
-  leaves the run root in place. Every later run refuses until the owner clears it.
+  makes the episode `invalid` with the reason `credential`, retains no stream bytes and no final tree, deletes
+  the whole run root (a directory the participant made unwritable included), and writes `incident.json` to the
+  state directory. Every later run, probe and judge refuses until the owner has reviewed it and removed that
+  file. A probe child's hit is handled the same way.
 - **Isolation.** Each session's init event must show the configured model, no API key, exactly the seven tools,
   no MCP server, only built-in plugins, `dontAsk`, memory only inside the run root, and the skill listed in the
   method arm only. A fault is `invalid` with the reason `isolation`. A control arm that lists or uses the skill

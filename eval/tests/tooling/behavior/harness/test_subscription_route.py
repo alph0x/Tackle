@@ -160,6 +160,12 @@ class Env:
         self.write_config()
 
     def close(self):
+        for base, dirs, _ in os.walk(self.tmp):  # a participant may have closed a directory
+            for name in dirs:
+                try:
+                    os.chmod(os.path.join(base, name), 0o700)
+                except OSError:
+                    pass
         shutil.rmtree(self.tmp, ignore_errors=True)
 
     def make_install(self):
@@ -616,11 +622,10 @@ class CredentialIncidents(Base):
         self.assertEqual(sorted(path.name for path in (self.env.out / 'one').iterdir()), ['episode.json'])
         self.assert_no_token(self.env.out, self.env.cohort, self.env.state, self.env.config_path.parent)
         self.assertNotIn(self.env.token, process.stdout + process.stderr)
-        self.assertEqual(len(list(self.env.run_root.iterdir())), 1, 'the run root stays in place')
+        self.assertEqual(list(self.env.run_root.iterdir()), [], 'the hit root is scrubbed: no token-bearing byte stays')
         self.assertEqual(stat.S_IMODE(self.env.run_root.stat().st_mode), 0o700)
-        left, = self.env.run_root.iterdir()
-        for name in ('', 'home', 'work', 'tmp'):
-            self.assertEqual(stat.S_IMODE((left / name).stat().st_mode), 0o700, name)
+        incident = load(self.env.state / 'incident.json')
+        self.assertEqual((incident['schema'], incident['episode_id']), ('tackle-route-incident/1', 'one'))
         episode = self.env.episode('one')
         self.assertIs(episode['credential']['hit'], True)
         self.assertEqual(self.env.check().returncode, 0)
@@ -653,7 +658,21 @@ class CredentialIncidents(Base):
                 self.new_env(token='syn/"' + secrets.token_hex(12) + '/end')
                 self.assertEqual(self.incident(mode)['credential']['locations'], ['stdout'])
 
-    def test_a_credential_hit_leaves_the_root_and_refuses_later_runs(self):
+    def test_a_hit_scrubs_a_root_the_participant_made_hard_to_delete(self):
+        write(self.env.tmp / 'outside' / 'keep.txt', 'not the participant\'s\n')
+        episode = self.incident('workro')
+        self.assertIn('work/ro/env.txt', episode['credential']['locations'])
+        self.assertEqual((self.env.tmp / 'outside' / 'keep.txt').read_text(), 'not the participant\'s\n', 'a link is never followed')
+
+    def test_a_probe_child_with_a_token_hit_is_scrubbed_and_recorded_as_an_incident(self):
+        process, out = self.env.probe('probeleak')
+        self.assertEqual(process.returncode, 1, process.stdout + process.stderr)
+        self.assertIs(load(out / 'result.json')['token_scan_clean'], False)
+        self.assertEqual(list(self.env.run_root.iterdir()), [])
+        self.assertTrue((self.env.state / 'incident.json').exists())
+        self.assert_no_token(out, self.env.state, self.env.run_root)
+
+    def test_a_credential_hit_scrubs_the_root_and_refuses_later_runs_through_a_marker(self):
         self.env.package('syn-one', 'v1', fixture={'mode.txt': 'work'})
         self.env.seal_cohort([('first', 'syn-one', 'v1', 'method', 1), ('second', 'syn-one', 'v1', 'control', 1)])
         process = self.env.run()
@@ -662,9 +681,15 @@ class CredentialIncidents(Base):
         calls = len(self.env.model_calls())
         again = self.env.run()
         self.assertEqual(again.returncode, 1)
-        self.assertIn('previous run root', again.stderr)
+        self.assertIn('credential incident', again.stderr)
         self.assertEqual(len(self.env.model_calls()), calls)
         self.assertEqual(len(self.env.records()), 1)
+        self.assertEqual(self.env.probe()[0].returncode, 1, 'a probe refuses too')
+        self.assertEqual(len(self.env.model_calls()), calls)
+        (self.env.state / 'incident.json').unlink()
+        self.assertEqual(list(self.env.run_root.iterdir()), [])
+        self.env.run()
+        self.assertGreater(len(self.env.model_calls()), calls, 'once the owner clears the marker a run proceeds')
 
 
 class RecordScan(Base):

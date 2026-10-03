@@ -106,6 +106,8 @@ def result(subtype='success', denials=(), cost=0.02, turns=2):
 
 def run_probe():
     commands = re.findall(r'(?m)^\d+\. (.+)$', prompt)
+    if 'probeleak' in modes:
+        (cwd / 'leak.txt').write_text(token)
     reads = re.findall(r'(?m)^- (\S+)$', prompt)
     denials = []
     names = [name for name in sorted(os.environ) if name != TOKEN_VARIABLE or 'visible' in modes]
@@ -202,6 +204,14 @@ if 'split' in modes:
     # The token in two halves, each a form no scan looks for.
     (cwd / 'part-a.txt').write_text(token[:len(token) // 2])
     (cwd / 'part-b.txt').write_text(token[len(token) // 2:])
+if 'workro' in modes:
+    # Token-bearing bytes the participant made hard to delete: in a read-only directory, beside a closed one.
+    (cwd / 'ro').mkdir()
+    (cwd / 'ro' / 'env.txt').write_text(token)
+    os.chmod(cwd / 'ro', 0o500)
+    (cwd / 'closed').mkdir()
+    os.chmod(cwd / 'closed', 0)
+    os.symlink(cwd.parent.parent.parent / 'outside', cwd / 'escape')
 if 'name' in modes:
     (cwd / ('f-' + token)).write_text('named\n')
 if 'fail' in modes:
