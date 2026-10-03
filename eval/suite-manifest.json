@@ -128,14 +128,15 @@
     {
       "path": "eval/tests/product/status",
       "files": [
+        "test_architecture_map.py",
         "test_context.py",
         "test_measurement.py",
         "test_plan_view.py"
       ],
-      "tests": 37,
+      "tests": 41,
       "source": "eval/status",
       "category": "product",
-      "purpose": "Context projections, archives, resume and handoff costs, and the plan view recipe."
+      "purpose": "Context projections, archives, resume and handoff costs, the plan view recipe and the architecture map."
     },
     {
       "path": "eval/tests/product/lint/rows",

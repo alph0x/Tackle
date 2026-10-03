@@ -13,4 +13,5 @@ or changes a recipe adds or updates its row.
 | [migrate/step-pre3-to-3.md](migrate/step-pre3-to-3.md) | `b1427b156fc32007af77d318e43081b71c94a2abfc2815e7aeb51876a3a02db8` |
 | [migrate/step-3-to-4.md](migrate/step-3-to-4.md) | `5ce06c10488ad25e3cc467beccb4068735b5ce4d184709cc2213b5377d0336cb` |
 | [migrate/step-4-to-5.md](migrate/step-4-to-5.md) | `62cc9a0ed90b5389f4c4b45d827119d1621edc99992a6da773877d5f0455b182` |
-| [plan-view.md](plan-view.md) | `0273b4822532ac9728dd9b5164024e8e720ca85af86b3a21d1d98709375266d4` |
+| [plan-view.md](plan-view.md) | `586d8b023d29ebd659e6f88209e0ecfb91f6ba860ae256c5dfeef57161825cf4` |
+| [architecture-map.md](architecture-map.md) | `04c298bc77900556375304fe5d01768373cb94e49faddee2fe4278078cdb094b` |
