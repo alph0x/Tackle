@@ -8,8 +8,8 @@ VAGUE = {
     'en': [
         r'leverag(?:e|es|ed|ing)', r'utili[sz](?:e|es|ed|ing)', r'various', r'robust', r'synerg(?:y|ies|istic)',
         r'seamless(?:ly)?', r'holistic(?:ally)?', r'cutting-edge', r'best-in-class', r'game-changing',
-        r'delv(?:e|es|ed|ing)', r'myriad', r'plethora', r'etc', r'and so on', r'and so forth', r'and more',
-        r'in order to', r'a number of', r'a wide range of', r'a variety of', r'it is worth noting',
+        r'delv(?:e|es|ed|ing)', r'myriad', r'plethora', r'etc', r'and so on', r'and so forth', r'and more(?=\s*(?:[.,;:!?)]|$))',
+        r'in order to', r'a number of(?!\s*\d)', r'a wide range of', r'a variety of', r'it is worth noting',
         r'it should be noted', r'needless to say', r'at the end of the day', r'basically', r'essentially',
         r'really', r'very', r'stuff', r'and the like',
     ],
@@ -28,8 +28,9 @@ END = re.compile(r'[.!?:;]+["\'”’)\]*_]*(?=\s|$)')
 HEADING = re.compile(r'^\s{0,3}#{1,6}(?:\s+|$)')
 ITEM = re.compile(r'^\s*(?:[-*+]|\d+[.)])\s+')
 INLINE_CODE = re.compile(r'(`+)(?:(?!\1).)+?\1')
-QUOTED = re.compile(r'"[^"\n]*"|“[^”\n]*”')
+QUOTED = re.compile(r'(?<!\w)"[^"\n]*"(?!\w)|“[^”\n]*”')
 LINK_TARGET = re.compile(r'\]\([^)]*\)')
+ANCHOR = re.compile(r'\s*<a\b[^>]*>(?:\s*</a>)?')
 ID = re.compile(r'^(?:[A-Za-z]{1,4}-\d+(?:\.\d+)*|[0-9a-f]{32,}|v?\d+(?:\.\d+)+)$')
 
 
@@ -65,21 +66,31 @@ def blocks(text):
     for number, raw in enumerate(text.splitlines(), 1):
         stripped = raw.strip()
         if fence:
-            if stripped.startswith(fence):
+            if re.fullmatch(re.escape(fence[0]) + '{%d,}' % len(fence), stripped):
                 fence = None
             continue
         if comment:
-            comment = '-->' not in stripped
-            continue
-        if stripped.startswith(('```', '~~~')):
+            if '-->' not in stripped:
+                continue
+            comment = False
+            raw = stripped = stripped.split('-->', 1)[1].strip()
             yield from flush()
-            fence = stripped[:3]
-            continue
-        if stripped.startswith('<!--'):
+        elif stripped.startswith('<!--'):
             yield from flush()
-            comment = '-->' not in stripped
+            if '-->' not in stripped:
+                comment = True
+                continue
+            raw = stripped = stripped.split('-->', 1)[1].strip()
+        elif stripped.startswith(('<a ', '<a>')):
+            yield from flush()
+            raw = ANCHOR.sub('', raw, count=1)
+            stripped = raw.strip()
+        marker = re.match(r'(`{3,}|~{3,})', stripped)
+        if marker:
+            yield from flush()
+            fence = marker.group(1)
             continue
-        if not stripped or stripped.startswith(('>', '<a ', '<a>')):
+        if not stripped or stripped.startswith('>'):
             yield from flush()
             continue
         if HEADING.match(raw):
