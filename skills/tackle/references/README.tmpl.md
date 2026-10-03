@@ -40,15 +40,7 @@ Add appendices here too (descriptive name, not numbered). -->
 
 ## Reading order (new agent / human)
 
-Read in the order of `references/guides/status.md#cold-resume-read-order`:
-
-1. `AGENTS.md` — rules of the workspace.
-2. `task-board.md` — current state of every task, with its obligations table.
-3. `history.md` — the newest State snapshot, for how the board got there.
-4. The relevant `tasks/T-0N-*.md` — self-contained brief for the work you're picking up — and its report.
-5. The named inputs of that brief.
-
-`plan.md` (objective, non-goals, task decomposition) and `decisions.md` / `questions.md` (what's settled / still open) are depth: read them when the brief or the board cites them.
+Read in the order of `references/guides/status.md#cold-resume-read-order`: it starts at `AGENTS.md` and the current `task-board.md`. `plan.md` (objective, non-goals, task decomposition) and `decisions.md` / `questions.md` (what's settled / still open) are depth: read them when the brief or the board cites them.
 
 ## Next step
 

@@ -128,7 +128,7 @@ integration fault, its cycle consumes the initiative's unowned-integration pool.
 identifies an owner, transfer the cycles already spent exactly once to that owner's Task; the
 initiative pool and Task counter both retain the spent count, which survives resume.
 
-The spent count comes from the task-linked failed correction-validation records, whoever or whichever session wrote them; the State snapshot only projects it. A resume starts from that count, never from zero: when the records disagree or are missing, it makes no further attempt until the count is reconciled from them, and blocks and reports the discrepancy if it cannot be.
+The spent count comes from the task-linked failed correction-validation records, whoever or whichever session wrote them; the State snapshot only projects it. A resume never assumes zero; zero requires records showing no failure: when the records disagree or are missing, it makes no further attempt until the count is reconciled from them, and blocks and reports the discrepancy if it cannot be.
 
 Each failed implementation correction appends an attempt-journal entry before another attempt and
 re-reads the earlier entries. The entry names the observed failure, correction, validation command,

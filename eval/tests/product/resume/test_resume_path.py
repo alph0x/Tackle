@@ -155,7 +155,9 @@ class ResumePathTests(unittest.TestCase):
         self.assertRegex(read("guides/intake-and-gate.md"), link)
         named = re.compile(r"`[^`\s]*status\.md#%s`" % ANCHOR)
         self.assertRegex(read("AGENTS.tmpl.md"), named)
-        self.assertRegex(section(read("README.tmpl.md"), "Reading order (new agent / human)"), named)
+        reading = section(read("README.tmpl.md"), "Reading order (new agent / human)")
+        self.assertRegex(reading, named)
+        self.assertNotRegex(reading, re.compile(r"^\s*\d+\.", re.M), "the README keeps no read order of its own")
 
     def test_closure_and_cold_resume_list_every_open_obligation(self):
         run = read("guides/run.md")

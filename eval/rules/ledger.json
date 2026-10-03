@@ -3357,8 +3357,8 @@
     },
     {
       "rule_id": "R-RUN-21",
-      "statement": "The spent correction count comes from the task-linked failed correction-validation records, whoever wrote them, the State snapshot only projects it, and a resume never starts from zero.",
-      "statement_sha256": "9277a646320d5e9e6e9ef62c24cd00d646a2e115c489bbd65bf906f12b0147dc",
+      "statement": "The spent correction count comes from the task-linked failed correction-validation records, whoever wrote them, the State snapshot only projects it, and a resume never assumes zero: zero requires records showing no failure.",
+      "statement_sha256": "6221975721f94893108f8666f7f45bba55da011825b1862a7add60f8531e745c",
       "home": "references/guides/run.md:131",
       "home_fragment": "The spent count comes from the task-linked failed corr",
       "units": [],
@@ -3387,7 +3387,9 @@
       "home": "references/guides/run.md:214",
       "home_fragment": "Before an initiative is declared closed, and at every cold",
       "units": [],
-      "mirrors": [],
+      "mirrors": [
+        "references/guides/status.md:71"
+      ],
       "class": "behavioral",
       "hot_path": false,
       "origin": {
