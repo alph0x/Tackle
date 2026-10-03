@@ -241,6 +241,14 @@ class ArchitectureMapTests(unittest.TestCase):
                 self.assertTrue(any(line.startswith('refused: ') and needle in line for line in result.stdout.splitlines()), name)
                 self.assertFalse(out.exists(), name)
             result, page, out = run_view(tmp, 'missing-base', delta_of(), base_map(), ['--map', str(Path(tmp) / 'nowhere.json')])
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn('data-map="none"', static_part(page))
+            self.assertIn('No base map yet', static_part(page))
+            self.assertIsNone(island_of(page)['map'])
+            broken = Path(tmp) / 'broken'
+            broken.mkdir()
+            (broken / 'base.json').write_text('{not json', encoding='utf-8')
+            result, page, out = run_view(tmp, 'broken-base', delta_of(), None, ['--map', str(broken / 'base.json')])
             self.assertEqual(result.returncode, 1)
             self.assertFalse(out.exists())
 
@@ -271,6 +279,141 @@ class ArchitectureMapTests(unittest.TestCase):
             self.assertIn('En curso', re.sub(r'<[^>]*>', ' ', static))
             result, page, _ = run_view(tmp, 'en', None, running=True)
             self.assertIn('<span class="live">Live</span>', static_part(page))
+
+
+def wide_base():
+    """Five groups of four components with relations that skip columns, loop inside a column and fan in."""
+    groups = ['alpha', 'beta', 'gamma', 'delta', 'omega']
+    names = ['%s-%s' % (g, k) for g in groups for k in ('north', 'south', 'east', 'west')]
+    relations, seen = [], set()
+    for i, source in enumerate(names):
+        for target in (names[(i * 3 + 5) % len(names)], names[(i + 7) % len(names)], names[(i * 2 + 1) % len(names)], names[(i + 1) % len(names)]):
+            if target != source and (source, target) not in seen:
+                seen.add((source, target))
+                relations.append([source, target, 'uses %s' % target])
+    return {'schema': 'tackle-map/1', 'project': 'Wide', 'summary': 'Wide.',
+            'verified_at': {'revision': 'v1.0.0', 'commit': 'abc1234', 'date': '2026-10-01'},
+            'groups': [{'id': g, 'title': g.title()} for g in groups],
+            'components': [{'id': n, 'group': n.split('-')[0], 'title': n, 'text': 't', 'sources': ['src/' + n]} for n in names],
+            'relations': relations}
+
+
+def wide_delta():
+    return {'schema': 'tackle-map-delta/1', 'plan': 'Wide two', 'base_revision': 'v1.0.0',
+            'changes': [{'op': 'add', 'id': 'alpha-extra', 'group': 'alpha', 'title': 'Extra', 'text': 'x', 'task': task_id(1), 'state': 'planned',
+                         'relations': [['alpha-extra', 'omega-west', 'feeds'], ['delta-north', 'alpha-extra', 'reads']]},
+                        {'op': 'change', 'id': 'gamma-east', 'text': 'changed', 'task': task_id(2), 'state': 'done'}]}
+
+
+def diagram_of(page, pic):
+    block = re.search(r'<div class="arch-pic" data-pic="%s">(.*?)(?=<div class="arch-pic"|</section>)' % pic, static_part(page), re.S).group(1)
+    svg = re.search(r'<svg.*?</svg>', block, re.S).group(0)
+    nodes = {}
+    for match in re.finditer(r'<g class="anode" [^>]*?data-cid="([^"]*)".*?<rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)"', svg, re.S):
+        nodes[match.group(1)] = tuple(float(v) for v in match.groups()[1:])
+    edges = []
+    for match in re.finditer(r'<path class="aedge[^"]*" data-from="([^"]*)" data-to="([^"]*)" d="([^"]*)"', svg):
+        numbers = [float(v) for v in re.findall(r'-?\d+(?:\.\d+)?', match.group(3))]
+        edges.append((match.group(1), match.group(2), list(zip(numbers[0::2], numbers[1::2]))))
+    labels = re.findall(r'<text class="aelabel[^"]*" data-from="([^"]*)" data-to="([^"]*)"[^>]*>([^<]*)</text>', svg)
+    return nodes, edges, labels
+
+
+def segment_enters(a, b, rect):
+    left, top, width, height = rect
+    low_x, high_x = sorted((a[0], b[0]))
+    low_y, high_y = sorted((a[1], b[1]))
+    return low_x < left + width and high_x > left and low_y < top + height and high_y > top
+
+
+class ArchitectureDiagramTests(unittest.TestCase):
+    def test_diagram_arrows_clear_every_component_and_never_share_an_arrowhead(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            result, page, _ = run_view(tmp, 'wide', wide_delta(), wide_base())
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            for pic, expected in (('today', len(wide_base()['relations'])), ('after', len(wide_base()['relations']) + 2)):
+                nodes, edges, labels = diagram_of(page, pic)
+                self.assertEqual(len(edges), expected, pic)
+                crossings = []
+                for source, target, points in edges:
+                    self.assertIn(source, nodes)
+                    self.assertIn(target, nodes)
+                    for start, end in zip(points, points[1:]):
+                        self.assertTrue(start[0] == end[0] or start[1] == end[1], 'a slanted segment in %s -> %s' % (source, target))
+                        crossings += [(source, target, name) for name, rect in nodes.items() if segment_enters(start, end, rect)]
+                self.assertEqual(crossings, [], pic)
+                ends = [points[-1] for _, _, points in edges]
+                self.assertEqual(len(ends), len(set(ends)), 'two arrowheads share a point in ' + pic)
+                starts = [points[0] for _, _, points in edges]
+                self.assertEqual(len(starts), len(set(starts)), 'two arrows leave one point in ' + pic)
+                self.assertEqual(sorted((a, b) for a, b, _ in edges), sorted((a, b) for a, b, _ in labels), pic)
+
+
+class ArchitectureFindingsTests(unittest.TestCase):
+    def test_a_source_glob_is_stale_only_when_it_matches_nothing(self):
+        m = load_map_recipe()
+        base = base_map()
+        base['components'][0]['sources'] = ['src/*.py']
+        base['components'][1]['sources'] = ['nothing/*.py']
+        base['components'][3]['sources'] = ['tools/**/*.py', '../outside.py']
+        with tempfile.TemporaryDirectory() as tmp:
+            lay_out_sources(Path(tmp))
+            self.assertEqual(m['stale'](base, Path(tmp)), ['lint', 'report', 'store'])
+
+    def test_bad_field_types_are_refused_with_the_field_named(self):
+        m = load_map_recipe()
+        cases = []
+        broken = base_map()
+        broken['verified_at'] = 'v1'
+        cases.append(('verified_at', broken, delta_of()))
+        broken = base_map()
+        del broken['components'][0]['title']
+        cases.append(('title', broken, delta_of()))
+        broken = base_map()
+        broken['components'][0]['sources'] = 'src/intake.py'
+        cases.append(('sources', broken, delta_of()))
+        later = delta_of()
+        later['changes'][0]['title'] = 5
+        cases.append(('title', base_map(), later))
+        later = delta_of()
+        later['changes'][0]['title'] = ''
+        cases.append(('title', base_map(), later))
+        later = delta_of()
+        later['changes'][1]['sources'] = [4]
+        cases.append(('sources', base_map(), later))
+        later = delta_of()
+        later['changes'][0]['text'] = {'a': 1}
+        cases.append(('text', base_map(), later))
+        broken = base_map()
+        broken['groups'][0]['title'] = None
+        cases.append(('title', broken, delta_of()))
+        with tempfile.TemporaryDirectory() as tmp:
+            for index, (field, base, delta) in enumerate(cases):
+                problems = m['validate'](base, delta)
+                self.assertTrue(any(field in line for line in problems), (index, problems))
+                result, page, out = run_view(tmp, 'types-%d' % index, delta, base)
+                self.assertEqual(result.returncode, 1, (index, result.stdout))
+                self.assertTrue(any(line.startswith('refused: ') and field in line for line in result.stdout.splitlines()), (index, result.stdout))
+                self.assertNotIn('Traceback', result.stderr)
+                self.assertFalse(out.exists())
+
+    def test_an_empty_change_set_shows_one_sentence_when_only_the_changes_are_asked_for(self):
+        empty = {'schema': 'tackle-map-delta/1', 'plan': 'Empty', 'base_revision': 'v1.0.0', 'changes': []}
+        with tempfile.TemporaryDirectory() as tmp:
+            result, page, _ = run_view(tmp, 'empty', empty, base_map(), ['--map-scope', 'changed'])
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            static = static_part(page)
+            self.assertIn('This plan changes nothing in the map.', static)
+            self.assertNotIn('class="arch-pic"', static)
+            self.assertEqual(island_of(page)['map'], {'today': [], 'after': [], 'changed': [], 'stale': []})
+            result, page, _ = run_view(tmp, 'empty-all', empty, base_map())
+            self.assertIn('data-pic="today"', static_part(page))
+
+    def test_the_tab_lists_answer_the_arrow_keys(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            result, page, _ = run_view(tmp, 'keys', delta_of(), base_map())
+            for key in ('ArrowRight', 'ArrowLeft', 'Home', 'End'):
+                self.assertIn(key, page)
 
 
 if __name__ == '__main__':
