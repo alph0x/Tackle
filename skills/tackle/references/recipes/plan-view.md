@@ -530,7 +530,7 @@ def arch_svg(shown, groups, comps, rels, marks, stale_ids, fresh, pic, ui):
     spread along a box side, so no two share a point."""
     columns = [[cid for cid in shown if comps[cid]['group'] == g['id']] for g in groups]
     columns = [c for c in columns if c]
-    node_w, node_h, gap_y, pad, step, head = 190, 56, 14, 14, 12, 14
+    node_w, gap_y, pad, step, head = 190, 14, 14, 12, 14
     band_w = node_w + 2 * pad
     col_of = {cid: k for k, column in enumerate(columns) for cid in column}
     row_of = {cid: j for column in columns for j, cid in enumerate(column)}
@@ -548,6 +548,11 @@ def arch_svg(shown, groups, comps, rels, marks, stale_ids, fresh, pic, ui):
         uses.setdefault(item['ge'], []).append((item['k'], 'ge'))
         if item['far']:
             uses.setdefault(item['gt'], []).append((item['k'], 'gt'))
+    per_side = {}
+    for item in plan:
+        for key in ((item['a'], item['out']), (item['b'], item['into'])):
+            per_side[key] = per_side.get(key, 0) + 1
+    node_h = min(220, max(56, 6 * (max(per_side.values(), default=0) + 1)))
     count = len(columns)
     width_of = [max(60 if 0 < g < count else 24, (len(uses.get(g, [])) + 1) * step) for g in range(count + 1)]
     far = [item for item in plan if item['far']]
@@ -567,6 +572,16 @@ def arch_svg(shown, groups, comps, rels, marks, stale_ids, fresh, pic, ui):
     for (cid, side), listed in ends.items():
         for n, (_, k, role) in enumerate(sorted(listed)):
             slot[(k, role)] = where[cid][1] + (n + 1) * node_h / (len(listed) + 1)
+    by_gutter = {}
+    for item in plan:
+        by_gutter.setdefault(item['ge'], []).append((item['k'], 'from', item['a']))
+        by_gutter.setdefault(item['gt'], []).append((item['k'], 'to', item['b']))
+    for listed in by_gutter.values():
+        previous = None
+        for k, role, cid in sorted(listed, key=lambda u: (slot[(u[0], u[1])], u[0], u[1])):
+            if previous is not None and slot[(k, role)] < previous + 3:
+                slot[(k, role)] = min(previous + 3, where[cid][1] + node_h - 2)
+            previous = slot[(k, role)]
     rail = {}
     for g, listed in uses.items():
         ordered = sorted(listed, key=lambda u: min(slot[(u[0], 'from')], slot[(u[0], 'to')]))
