@@ -319,6 +319,40 @@ def diagram_of(page, pic):
     return nodes, edges, labels
 
 
+def dense_base():
+    """A wide map where one hub joins a dozen components in both directions."""
+    base = wide_base()
+    hub = 'alpha-north'
+    others = [c['id'] for c in base['components'] if c['id'] != hub]
+    have = {(a, b) for a, b, _ in base['relations']}
+    for n, other in enumerate(others[:14]):
+        pair = (hub, other) if n % 4 else (other, hub)
+        if pair not in have:
+            have.add(pair)
+            base['relations'].append([pair[0], pair[1], 'joins'])
+    return base
+
+
+def shared_lines(edges):
+    """Pairs of arrows that run along one horizontal or vertical line for more than a pixel."""
+    pieces = []
+    for source, target, points in edges:
+        for start, end in zip(points, points[1:]):
+            pieces.append(((source, target), start, end))
+    found = []
+    for n, (one, a1, a2) in enumerate(pieces):
+        for other, b1, b2 in pieces[n + 1:]:
+            if one == other:
+                continue
+            for axis, across in ((1, 0), (0, 1)):
+                if a1[axis] == a2[axis] == b1[axis] == b2[axis]:
+                    low = max(min(a1[across], a2[across]), min(b1[across], b2[across]))
+                    high = min(max(a1[across], a2[across]), max(b1[across], b2[across]))
+                    if high - low > 1:
+                        found.append((one, other))
+    return found
+
+
 def segment_enters(a, b, rect):
     left, top, width, height = rect
     low_x, high_x = sorted((a[0], b[0]))
@@ -347,6 +381,15 @@ class ArchitectureDiagramTests(unittest.TestCase):
                 starts = [points[0] for _, _, points in edges]
                 self.assertEqual(len(starts), len(set(starts)), 'two arrows leave one point in ' + pic)
                 self.assertEqual(sorted((a, b) for a, b, _ in edges), sorted((a, b) for a, b, _ in labels), pic)
+                self.assertEqual(shared_lines(edges), [], 'two arrows run along one line in ' + pic)
+            result, page, _ = run_view(tmp, 'dense', None, dense_base())
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            nodes, edges, _ = diagram_of(page, 'today')
+            self.assertGreater(len(edges), len(wide_base()['relations']))
+            self.assertEqual(shared_lines(edges), [], 'dense')
+            self.assertEqual([(s, t, n) for s, t, pts in edges for a, b in zip(pts, pts[1:]) for n, r in nodes.items() if segment_enters(a, b, r)], [])
+            ends = [pts[-1] for _, _, pts in edges]
+            self.assertEqual(len(ends), len(set(ends)))
 
 
 class ArchitectureFindingsTests(unittest.TestCase):
@@ -387,6 +430,21 @@ class ArchitectureFindingsTests(unittest.TestCase):
         broken = base_map()
         broken['groups'][0]['title'] = None
         cases.append(('title', broken, delta_of()))
+        later = delta_of()
+        later['changes'][0]['task'] = 7
+        cases.append(('task', base_map(), later))
+        later = delta_of()
+        later['changes'][0]['task'] = ['T']
+        cases.append(('task', base_map(), later))
+        broken = base_map()
+        broken['components'][0]['id'] = 5
+        cases.append(('id', broken, delta_of()))
+        broken = base_map()
+        broken['groups'][0]['id'] = ['core']
+        cases.append(('id', broken, delta_of()))
+        broken = base_map()
+        broken['components'][0]['sources'] = ['src/**x/*.py']
+        cases.append(('sources', broken, delta_of()))
         with tempfile.TemporaryDirectory() as tmp:
             for index, (field, base, delta) in enumerate(cases):
                 problems = m['validate'](base, delta)
