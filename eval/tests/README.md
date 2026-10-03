@@ -25,7 +25,7 @@ consumer; dates and experiment identifiers belong to evidence provenance.
 | product | [product/run/verification-records](product/run/verification-records/) | Verification-record integrity, export, concurrency and maintenance. |
 | product | [product/status](product/status/) | Context projections, archives, resume and handoff costs, and the plan view recipe. |
 | product | [product/templates](product/templates/) | Template fields, observed model routing, capability recovery and compiled briefs. |
-| tooling | [tooling/behavior/harness](tooling/behavior/harness/) | Agent adapters, usage parsing, broker isolation, harness commands and the subscription route: isolation, judging and records. |
+| tooling | [tooling/behavior/harness](tooling/behavior/harness/) | Agent adapters, usage parsing, broker isolation, harness commands and the subscription route: isolation, judging, records and its loopback network listener. |
 | tooling | [tooling/behavior/judges/planning](tooling/behavior/judges/planning/) | Planning judgments, hidden acceptance boundaries and runner integrity. |
 | tooling | [tooling/behavior/judges/resume](tooling/behavior/judges/resume/) | Resume ordering, migrated workspaces and portable verification records. |
 | tooling | [tooling/install/reading-budget](tooling/install/reading-budget/) | Reading costs, load chains and duplication floors. |

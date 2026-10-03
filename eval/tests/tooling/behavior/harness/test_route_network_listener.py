@@ -132,7 +132,7 @@ class Listener(unittest.TestCase):
         self.assertNotIn(body.encode(), (self.env.out / 'one' / 'network.jsonl').read_bytes())
         self.assertEqual([r['status'] for r in self.env.net_results()], [STATUS, STATUS])
         # The log lives beside work/ and tmp/, in the run root, and the participant's settings let it write only in those two.
-        first = self.env.invocations()[0]
+        first = self.env.model_calls()[0]
         root = Path(first['cwd']).parent
         self.assertIn('network.jsonl', first['root_files'])
         self.assertNotIn('network.jsonl', first['work_files'])
@@ -144,7 +144,7 @@ class Listener(unittest.TestCase):
     def test_variants_without_network_json_keep_settings(self):
         process = self.env.episode_run(plan(), declared=False)
         self.ok(process)
-        item = self.env.invocations()[0]
+        item = self.env.model_calls()[0]
         root = Path(item['cwd']).parent
         self.assertEqual(json.dumps(item['settings'], sort_keys=True), json.dumps(route.sandbox_settings(root), sort_keys=True))
         self.assertEqual(item['settings']['sandbox']['network'], {'allowedDomains': []})
@@ -159,7 +159,7 @@ class Listener(unittest.TestCase):
         def shape(invocation):
             return json.loads(json.dumps(invocation['settings']).replace(str(Path(invocation['cwd']).parent), '<root>'))
 
-        plain, declared = shape(item), shape(self.env.invocations()[-1])
+        plain, declared = shape(item), shape(self.env.model_calls()[-1])
         self.assertEqual(declared['sandbox'].pop('network'),
                          {'allowedDomains': [], 'httpProxyPort': self.env.port, 'socksProxyPort': self.env.port})
         self.assertEqual(plain['sandbox'].pop('network'), {'allowedDomains': []})
@@ -191,7 +191,7 @@ class Listener(unittest.TestCase):
                     NO_PROXY='*')
         process = self.env.episode_run(plan(s1=[{'do': 'http', 'path': '/'}]), env=loud)
         self.ok(process)
-        for item in self.env.invocations():
+        for item in self.env.model_calls():
             self.assertEqual([name for name in item['env_names'] if 'proxy' in name.lower()], [], item['env_names'])
         cfg = route.load_config(self.env.config_path)
         built = route.child_env(cfg, Path(self.env.run_root) / 'p', 'tok')

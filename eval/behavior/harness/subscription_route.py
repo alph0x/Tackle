@@ -31,6 +31,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import credscan  # noqa: E402
 import harness  # noqa: E402
+import network_listener  # noqa: E402
 import usage  # noqa: E402
 from harness import Refusal, Usage  # noqa: E402
 
@@ -54,6 +55,10 @@ ARCHIVE = 'history-archive.md'
 PROBE_URL = 'https://example.com'
 PROBE_INSIDE = 'probe-inside.txt'
 SCAN_CHUNK = 1 << 20
+NETWORK_LOG = 'network.jsonl'
+LISTENER_WAIT_SECONDS = 2
+SERVICE_HOST = 'api.typesafe.ai'
+LISTENER_PROBE_SCHEMA = 'tackle-route-listener-probe/1'
 SAFE_ID = re.compile(r'[A-Za-z0-9][A-Za-z0-9._-]{0,63}')
 SESSION_PROMPT = re.compile(r'sessions/([0-9]+)\.md')
 HEX = re.compile(r'[0-9a-f]{64}')
@@ -844,7 +849,7 @@ def launch(argv, cwd, env, prompt, seconds):
     return child
 
 
-def sandbox_settings(root):
+def sandbox_settings(root, port=None):
     """Bash runs sandboxed: no network, writes only in work and tmp, reads denied outside the run root.
 
     File tools may read the run root (the method arm's skill lives in its HOME) and edit only the working directory;
@@ -852,8 +857,12 @@ def sandbox_settings(root):
     A deny rule outranks every allow rule, so the file tools' deny rules leave out each tree that holds the run root:
     the root sits under a tree that Bash is denied and allowRead re-allows, and a rule for that tree would refuse the
     participant its own files.
+
+    ``port`` is the harness-owned loopback port of a variant that declares one. The CLI then starts no filtering proxy
+    of its own, opens outbound traffic only to that port and points the sandboxed commands' proxy variables at it.
+    ``allowedDomains`` stays empty and ``allowLocalBinding`` is never set, which would open every loopback port.
     """
-    return {
+    settings = {
         'sandbox': {
             'enabled': True,
             'failIfUnavailable': True,
@@ -872,6 +881,9 @@ def sandbox_settings(root):
                     + ['WebFetch', 'WebSearch'],
         },
     }
+    if port is not None:
+        settings['sandbox']['network'].update(httpProxyPort=port, socksProxyPort=port)
+    return settings
 
 
 def participant_argv(cli, cfg, settings, turns, budget):
@@ -963,6 +975,8 @@ def judged_digest(root):
             if path.is_file():
                 files[path.relative_to(root).as_posix()] = sha(path.read_bytes())
     files['transcript.jsonl'] = sha((root / 'transcript.jsonl').read_bytes())
+    if (root / NETWORK_LOG).is_file():
+        files[NETWORK_LOG] = sha((root / NETWORK_LOG).read_bytes())
     return harness.mapping_digest(files)
 
 
@@ -982,8 +996,11 @@ def parse_verdict(stdout):
     return {'outcome': outcome, 'invalid_reason': reason, 'scores': scores}
 
 
-def judge(cfg, oracle_dir, final_dir, transcript):
+def judge(cfg, oracle_dir, final_dir, transcript, network_log=None):
     """Run the oracle on copies of the final tree and transcript, under the platform launcher, outside the participant.
+
+    ``network_log`` (bytes) is the listener's log of a declared variant: it is copied beside the transcript, and the
+    oracle is given ``--network-log``. Without it the command is exactly what it was.
 
     Returns the verdict. Raises Refusal when there is no safe way to judge and OracleError when the oracle fails.
     """
@@ -996,10 +1013,14 @@ def judge(cfg, oracle_dir, final_dir, transcript):
         copy_tree(oracle_dir, root / 'oracle')
         copy_tree(final_dir, root / 'final')
         (root / 'transcript.jsonl').write_bytes(transcript)
+        if network_log is not None:
+            (root / NETWORK_LOG).write_bytes(network_log)
         before = judged_digest(root)
         scratch = root / 'scratch'
         argv = [launcher, '-p', judge_profile(root), cfg.oracle_python, '-B', str(root / 'oracle' / 'check.py'),
                 '--final', str(root / 'final'), '--transcript', str(root / 'transcript.jsonl')]
+        if network_log is not None:
+            argv += ['--network-log', str(root / NETWORK_LOG)]
         env = {'PATH': '/usr/bin:/bin', 'HOME': str(scratch), 'TMPDIR': str(scratch), 'LANG': 'en_US.UTF-8'}
         child = launch(argv, scratch, env, b'', cfg.oracle_seconds)
         if child.interrupted:
@@ -1019,6 +1040,30 @@ def judge(cfg, oracle_dir, final_dir, transcript):
 
 
 # --- the cohort ---------------------------------------------------------------------------------------------------------
+
+def load_network(path, scenario, variant):
+    """The oracle's network declaration (port, status, consent session, service hosts), or None when it has none."""
+    if not path.exists():
+        return None
+    name = '%s/%s' % (scenario, variant)
+    try:
+        raw = json.loads(path.read_text(encoding='utf-8'))
+    except (OSError, ValueError):
+        raise Refusal('the network declaration of %s is unreadable' % name)
+    if not isinstance(raw, dict) or set(raw) != {'port', 'status', 'allowed_from_session', 'service_hosts'}:
+        raise Refusal('the network declaration of %s must hold exactly port, status, allowed_from_session and service_hosts' % name)
+    whole_number = lambda value: type(value) is int  # noqa: E731
+    hosts = raw['service_hosts']
+    if not (whole_number(raw['port']) and 1024 <= raw['port'] <= 65535):
+        raise Refusal('the network port of %s must lie from 1024 to 65535' % name)
+    if not (whole_number(raw['status']) and 400 <= raw['status'] <= 599):
+        raise Refusal('the network status of %s must be an error status' % name)
+    if not (raw['allowed_from_session'] is None or (whole_number(raw['allowed_from_session']) and raw['allowed_from_session'] >= 2)):
+        raise Refusal('allowed_from_session of %s must be null or 2 or more' % name)
+    if not (isinstance(hosts, list) and hosts and all(isinstance(host, str) and host for host in hosts)):
+        raise Refusal('service_hosts of %s must be a non-empty list of names' % name)
+    return SimpleNamespace(port=raw['port'], status=raw['status'])
+
 
 def load_package(repo, scenario, variant, sealed):
     """A committed scenario package: prompts and fixture under input/, the oracle beside it, checked against its seal."""
@@ -1048,7 +1093,7 @@ def load_package(repo, scenario, variant, sealed):
     except UnicodeDecodeError:
         raise Refusal('a prompt of %s/%s is not UTF-8' % (scenario, variant))
     return SimpleNamespace(scenario=scenario, variant=variant, oracle=base / 'oracle', prompts=prompts, fixture=fixture,
-                           digest=sealed)
+                           digest=sealed, network=load_network(base / 'oracle' / 'network.json', scenario, variant))
 
 
 def load_cohort(cohort_dir, repo, install):
@@ -1147,11 +1192,22 @@ def append_unobserved(stage, entry, position, reason):
 
 # --- one episode -------------------------------------------------------------------------------------------------------
 
+def start_listener(network, root):
+    """The harness-owned port of a declared variant, listening before the first session; the log sits in the run root, beside
+    work/ and tmp/, which are the only trees the participant may write."""
+    listener = network_listener.Listener(network.port, network.status, root / NETWORK_LOG)
+    try:
+        listener.start()
+    except network_listener.PortUnavailable as problem:
+        raise Refusal('the declared network %s' % problem)
+    return listener
+
+
 def observe(stage, entry, package):
     """Stage a fresh root and run the sessions in order. Interruptions and controller faults are reported, not raised."""
     cfg, arm = stage.cfg, entry['arm']
     seen = SimpleNamespace(root=None, sessions=[], limit=None, error=None, interrupted=False, baseline={}, argv=None,
-                           settings_text=None)
+                           settings_text=None, listener=None)
     try:
         seen.root = root = new_root(cfg, 'p')
         for relative, data in package.fixture.items():
@@ -1163,7 +1219,10 @@ def observe(stage, entry, package):
             stage_skill(root / 'home', stage.cohort.install_files, stage.cohort.install_digest)
         elif (root / 'home' / '.claude').exists():
             raise Refusal('the control HOME holds a .claude directory')
-        settings = sandbox_settings(root)
+        network = package.network
+        if network is not None:
+            seen.listener = start_listener(network, root)
+        settings = sandbox_settings(root, network.port if network is not None else None)
         seen.settings_text = json.dumps(settings, sort_keys=True)
         env = child_env(cfg, root, stage.token)
         deadline = time.monotonic() + cfg.episode_seconds
@@ -1179,6 +1238,8 @@ def observe(stage, entry, package):
                 break
             argv = participant_argv(stage.cli, cfg, settings, turns_left, usd_left)
             seen.argv = seen.argv or argv
+            if seen.listener is not None:
+                seen.listener.session = index
             child = launch(argv, root / 'work', env, text.encode(), seconds_left)
             session = SimpleNamespace(index=index, prompt=name, child=child, stream=parse_stream(child.stdout))
             seen.sessions.append(session)
@@ -1199,6 +1260,11 @@ def observe(stage, entry, package):
     except Exception as problem:
         seen.error = 'controller_' + type(problem).__name__
     seen.interrupted = seen.interrupted or any(s.child.interrupted for s in seen.sessions)
+    if seen.listener is not None:
+        # A process left running after the last session may still send for two seconds; a later request leaves no line.
+        if seen.sessions and not seen.interrupted:
+            time.sleep(LISTENER_WAIT_SECONDS)
+        seen.listener.stop()
     return seen
 
 
@@ -1378,13 +1444,19 @@ def run_episode(stage, entry, position):
             (session_dir / 'stderr.txt').write_bytes(session.child.stderr)
         final_files, other = preserve_tree(root / 'work', directory / 'final')
         record['final_tree'] = {'files': len(final_files), 'other': other}
+        network_log = None
+        if package.network is not None:
+            # The root was scanned for the token with the log in it; the copy is evidence and the oracle's input.
+            log_path = root / NETWORK_LOG
+            network_log = log_path.read_bytes() if log_path.is_file() else b''
+            (directory / NETWORK_LOG).write_bytes(network_log)
         retire_root(root)
         if outcome is None and other:
             # A link, a special file or an unreadable entry is not in the copy: the oracle is never given a partial tree.
             outcome, reason = 'invalid', REASON_TREE
         elif outcome is None:
             try:
-                verdict = judge(cfg, package.oracle, directory / 'final', transcript)
+                verdict = judge(cfg, package.oracle, directory / 'final', transcript, network_log)
             except OracleError as problem:
                 outcome, error, decision.stop = 'error', problem.code, True
             except Refusal:
@@ -1448,6 +1520,12 @@ def cmd_run(args):
         for _, entry in pending:
             if (out / entry['episode_id']).exists():
                 raise Refusal('the episode directory already exists: %s' % entry['episode_id'])
+            network = cohort.packages[(entry['scenario_id'], entry['variant_id'])].network
+            if network is not None:
+                try:
+                    network_listener.ensure_free(network.port)
+                except network_listener.PortUnavailable as problem:
+                    raise Refusal('the declared network %s' % problem)
         stage = SimpleNamespace(cfg=cfg, name=args.stage, stage_cap=cfg.stage_usd[args.stage], cli=cli, token=None,
                                 ledger=Ledger(cfg.state_dir), cohort=cohort, out=out, paths=episode_paths(args))
         ran = stopped = None
@@ -1673,6 +1751,200 @@ def cmd_probe(args):
         lock.close()
 
 
+# --- the listener probe -------------------------------------------------------------------------------------------------
+
+LISTENER_PROBE_STATUS = 503
+CURL = "curl -sS -m 5 -o /dev/null -w '%{http_code}' "
+
+
+def listener_probe_commands(port, decoy):
+    """The probe's fixed commands as (key, command), in the order they are asked for, each once."""
+    python = '/usr/bin/python3 -c "import urllib.request as u; print(u.urlopen(\'%s\', timeout=5).status)"'
+    return [
+        ('curl_ipv4', CURL + 'http://127.0.0.1:%d/probe/curl-ipv4' % port),
+        ('curl_localhost', CURL + 'http://localhost:%d/probe/curl-localhost' % port),
+        ('curl_ipv6', CURL.replace('curl ', 'curl -g ', 1) + "'http://[::1]:%d/probe/curl-ipv6'" % port),
+        ('python', python % ('http://127.0.0.1:%d/probe/python' % port)),
+        ('raw_socket', "printf 'probe-raw\\n' | nc -w 3 127.0.0.1 %d" % port),
+        ('curl_service_host', CURL + 'https://%s/' % SERVICE_HOST),
+        ('python_service_host', python % ('https://%s/' % SERVICE_HOST)),
+        ('curl_example_com', CURL + 'https://example.com/'),
+        ('socks_service_host', CURL + '--socks5-hostname 127.0.0.1:%d https://%s/' % (port, SERVICE_HOST)),
+        ('raw_socket_public', 'nc -w 3 -z %s 443' % SERVICE_HOST),
+        ('decoy', CURL + 'http://127.0.0.1:%d/' % decoy)]
+
+
+def listener_probe_prompt(commands):
+    return ('This is a technical sandbox listener probe for a test harness. Run each numbered shell command below with the '
+            'Bash tool, one command per call, exactly as written, once each and without any retry, even if it fails, and '
+            'run nothing else:\n' + ''.join('%d. %s\n' % (number, command) for number, (_, command) in enumerate(commands, 1))
+            + 'Finally reply with the word DONE.\n')
+
+
+def read_log(path):
+    """The listener's log lines; an unreadable or malformed line makes the whole log unreadable (None)."""
+    try:
+        return [json.loads(line) for line in Path(path).read_text(encoding='utf-8').splitlines() if line.strip()]
+    except (OSError, ValueError):
+        return None
+
+
+def listener_probe_facts(log, calls, commands, port, status):
+    """What the log and the recorded commands show: which client reached the endpoint, which request the proxy recorded, and
+    whether anything else was logged. Each fact needs its command to have run and its own line in the log."""
+    ran = {key: any(isinstance(c['input'], dict) and c['input'].get('command') == command for c in calls) for key, command in commands}
+    texts = {key: next((str(c['text']) for c in calls if isinstance(c['input'], dict) and c['input'].get('command') == command), '')
+             for key, command in commands}
+    ipv4, ipv6 = '127.0.0.1:%d' % port, '[::1]:%d' % port
+    used = set()
+
+    def claim(key, test, nth=0):
+        found = [i for i, line in enumerate(log) if i not in used and test(line)]
+        if ran[key] and len(found) > nth:
+            used.add(found[nth])
+            return True
+        return False
+
+    def endpoint(path, hosts):
+        return lambda line: line.get('kind') == 'endpoint' and line.get('path') == path and line.get('host') in hosts
+
+    def target(kind, host):
+        return lambda line: line.get('kind') == kind and str(line.get('host')).lower().rstrip('.') == host
+
+    service = target('connect', '%s:443' % SERVICE_HOST)
+    reached = {'curl_ipv4': claim('curl_ipv4', endpoint('/probe/curl-ipv4', (ipv4,))),
+               'curl_localhost': claim('curl_localhost', endpoint('/probe/curl-localhost', (ipv4, ipv6))),
+               'curl_ipv6': claim('curl_ipv6', endpoint('/probe/curl-ipv6', (ipv6,))),
+               'python': claim('python', endpoint('/probe/python', (ipv4, ipv6))),
+               'raw_socket': claim('raw_socket', lambda line: line.get('kind') == 'raw' and line.get('host') == ipv4
+                                   and isinstance(line.get('bytes'), int) and line['bytes'] > 0)}
+    recorded = {'curl_service_host': claim('curl_service_host', service),
+                'python_service_host': claim('python_service_host', service, 0),
+                'curl_example_com': claim('curl_example_com', target('connect', 'example.com:443')),
+                'socks_service_host': claim('socks_service_host', target('socks', '%s:443' % SERVICE_HOST))}
+    public_raw = any(line.get('kind') == 'raw' for i, line in enumerate(log) if i not in used)
+    answered = [texts[key] for key in ('curl_ipv4', 'curl_localhost', 'curl_ipv6') if ran[key]]
+    refused_all = bool(log) and all(str(status) in text for text in answered) and not any(
+        re.match(r'\s*[23][0-9][0-9]\b', texts[key]) for key in ('curl_service_host', 'curl_example_com', 'socks_service_host'))
+    return reached, recorded, refused_all, not public_raw
+
+
+def listener_probe_child(stage, name, port, decoy):
+    """One participant-configured child, with the declared port listening, that runs the fixed commands; returns what its
+    stream and the log show."""
+    cfg = stage.cfg
+    commands = listener_probe_commands(port, decoy.port)
+    claim = stage.ledger.claim(name, 'probe', 'probe', cfg.probe_child_usd, cfg.probe_total_usd, cfg.total_usd)
+    child, root, listener, locations = None, None, None, []
+    stream = {'init': None, 'result': None, 'denials': []}
+    env = {}
+    try:
+        root = new_root(cfg, 'p')
+        stage_skill(root / 'home', stage.install_files, stage.install_digest)
+        listener = network_listener.Listener(port, LISTENER_PROBE_STATUS, root / NETWORK_LOG)
+        try:
+            listener.start()
+        except network_listener.PortUnavailable as problem:
+            raise Refusal('the probe %s' % problem)
+        listener.session = 1
+        settings = sandbox_settings(root, port)
+        argv = participant_argv(stage.cli, cfg, settings, cfg.probe_child_turns, cfg.probe_child_usd)
+        env = child_env(cfg, root, stage.token)
+        child = launch(argv, root / 'work', env, listener_probe_prompt(commands).encode(), cfg.probe_child_seconds)
+        stream = parse_stream(child.stdout)
+        if not child.interrupted:
+            time.sleep(LISTENER_WAIT_SECONDS)
+    except (KeyboardInterrupt, SystemExit):
+        child = child or Child()
+        child.interrupted = True
+    finally:
+        if listener is not None:
+            listener.stop()
+        found = needles(stage.token)
+        if child is not None:
+            locations = [label for label in ('stdout', 'stderr') if contains(getattr(child, label), found)]
+        if root is not None:
+            try:
+                locations += token_hits(root, stage.token)
+            except Exception:
+                locations.append('(scan failed)')
+        if locations and root is not None:
+            retire_after_hit(cfg, root, name)
+    cost = (stream['result'] or {}).get('total_cost_usd')
+    stage.ledger.settle(claim, cost, cfg.probe_child_usd)
+    clean = child is not None and root is not None and not locations and not child.interrupted
+    log = read_log(root / NETWORK_LOG) if clean else None
+    return SimpleNamespace(child=child, stream=stream, calls=tool_calls(child.stdout) if child else [], commands=commands, env=env,
+                           locations=locations, cost=cost if isinstance(cost, (int, float)) else cfg.probe_child_usd,
+                           problems=isolation_problems(stream['init'], root, 'method', cfg.model) if root is not None else ['no_root'],
+                           refused=unexpected_denials(stream['denials'], root, 'method') if root is not None else [],
+                           faults=harness_faults(child.stdout) if child else 0, root=root, clean=clean, log=log,
+                           log_bytes=(root / NETWORK_LOG).read_bytes() if clean and (root / NETWORK_LOG).is_file() else b'')
+
+
+def summarize_listener_probe(cfg, cli, probe, port, decoy):
+    """The result the acceptance reader takes: every fact is true only when its own command ran and its own line is in the log."""
+    log = probe.log if probe.log is not None else []
+    reached, recorded, refused_all, unrecorded = listener_probe_facts(log, probe.calls, probe.commands, port, LISTENER_PROBE_STATUS)
+    expected = sum(reached.values()) + sum(recorded.values()) + (not unrecorded)
+    proxy_free = not any('proxy' in name.lower() for name in probe.env)
+    version = re.match(r'[0-9]+(?:\.[0-9]+)*', cli['version'] or '')
+    observed = (probe.stream['init'] or {}).get('model')
+    problems = [p for p in probe.problems if p != 'skill_listing' or 'tackle' not in ((probe.stream['init'] or {}).get('skills') or [])]
+    sound = (probe.log is not None and all(reached.values()) and all(recorded.values()) and refused_all and proxy_free
+             and not problems and not probe.refused and not probe.faults and probe.clean and len(log) == expected)
+    return {'schema': LISTENER_PROBE_SCHEMA, 'passed': sound, 'model': observed, 'cost_usd': round(probe.cost, 6),
+            'endpoint_reached': reached, 'proxy_recorded': recorded, 'refused_all': refused_all,
+            'raw_socket_public_unrecorded': unrecorded, 'decoy_port_reachable': decoy.accepted > 0,
+            'cli_env_proxy_free': proxy_free, 'cli_version': version.group() if version else cli['version'],
+            'decoy_port': decoy.port, 'requests_logged': len(log), 'token_scan_clean': not probe.locations,
+            'isolation_problems': problems, 'commands_run': sum(1 for _, command in probe.commands if any(
+                isinstance(c['input'], dict) and c['input'].get('command') == command for c in probe.calls))}
+
+
+def cmd_probe_listener(args):
+    cfg = load_config(args.config)
+    lock = hold_lock(cfg)
+    try:
+        cli = verify_cli(cfg)
+        prepare_run_root(cfg)
+        install_files = harness.read_install(args.install)
+        install_digest = harness.files_digest(install_files)
+        out = Path(args.out).absolute()
+        if out.exists():
+            raise Refusal('the probe directory already exists')
+        ledger = Ledger(cfg.state_dir)
+        try:
+            ledger.check('probe', cfg.probe_child_usd, cfg.probe_total_usd, cfg.total_usd)
+        except CapReached as problem:
+            raise Refusal('probe cap reached: %s' % problem)
+        token = read_token(cfg.token_file)
+        stage = SimpleNamespace(cfg=cfg, cli=cli, token=token, ledger=ledger, install_files=install_files,
+                                install_digest=install_digest)
+        port = network_listener.free_port()
+        decoy = network_listener.Decoy()
+        decoy.start()
+        try:
+            probe = listener_probe_child(stage, 'listener-probe-%s' % out.name, port, decoy)
+        finally:
+            decoy.stop()
+        if probe.child is None or probe.child.interrupted:
+            return 130
+        result = summarize_listener_probe(cfg, cli, probe, port, decoy)
+        neutral = Neutral(cfg, [(str(out), '<out>')])
+        out.mkdir(parents=True, mode=0o700)
+        if probe.clean:
+            (out / 'stdout.jsonl').write_bytes(probe.child.stdout)
+            (out / 'stderr.txt').write_bytes(probe.child.stderr)
+            (out / NETWORK_LOG).write_bytes(probe.log_bytes)
+            retire_root(probe.root)
+        dump(out / 'result.json', neutral.apply(result))
+        print(json.dumps({'passed': result['passed'], 'cost_usd': result['cost_usd']}))
+        return 0 if result['passed'] else 1
+    finally:
+        lock.close()
+
+
 # --- the judge command and the entry point ------------------------------------------------------------------------------
 
 def cmd_judge(args):
@@ -1686,8 +1958,11 @@ def cmd_judge(args):
         oracle, final, transcript = Path(args.oracle), Path(args.final), Path(args.transcript)
         if not (oracle / 'check.py').is_file() or not final.is_dir() or not transcript.is_file():
             raise Refusal('--oracle needs a check.py, --final a directory and --transcript a file')
+        log = Path(args.network_log) if args.network_log else None
+        if log is not None and not log.is_file():
+            raise Refusal('--network-log needs a file')
         try:
-            verdict = judge(cfg, oracle, final, transcript.read_bytes())
+            verdict = judge(cfg, oracle, final, transcript.read_bytes(), log.read_bytes() if log else None)
         except OracleError as problem:
             raise Refusal('the oracle failed: %s' % problem.code)
         print(json.dumps(verdict))
@@ -1706,6 +1981,10 @@ def parser():
     run.add_argument('--install', help='the skill tree (SKILL.md and references/) of the method arm')
     run.add_argument('--out', required=True, help='directory for each episode\'s retained evidence')
     run.add_argument('--stage', required=True, help='the configured stage whose cap bounds this run')
+    listener = commands.add_parser('probe-listener', help='run one probe of the loopback listener and the recording proxy')
+    listener.add_argument('--config', required=True)
+    listener.add_argument('--install', required=True)
+    listener.add_argument('--out', required=True)
     probe = commands.add_parser('probe', help='run one route probe and write result.json')
     probe.add_argument('--config', required=True)
     probe.add_argument('--repo', required=True, help='directory that must stay unreadable to the model\'s tools')
@@ -1717,6 +1996,7 @@ def parser():
     judge_command.add_argument('--oracle', required=True)
     judge_command.add_argument('--final', required=True)
     judge_command.add_argument('--transcript', required=True)
+    judge_command.add_argument('--network-log', help='the listener log of a declared variant, given to the oracle')
     return top
 
 
@@ -1724,7 +2004,7 @@ def main(argv=None):
     args = parser().parse_args(argv)
     install_signal_handlers()
     try:
-        return {'run': cmd_run, 'probe': cmd_probe, 'judge': cmd_judge}[args.command](args)
+        return {'run': cmd_run, 'probe': cmd_probe, 'probe-listener': cmd_probe_listener, 'judge': cmd_judge}[args.command](args)
     except Refusal as problem:
         print('refused: %s' % problem, file=sys.stderr)
         return 1
