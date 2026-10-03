@@ -372,7 +372,7 @@ def graph_svg(tasks, stage, edges, live, ui):
             where[n] = (x, y, size)
             y += size + gap_y
     out = ['<svg viewBox="0 0 %d %d" width="%d" height="%d" role="group" aria-label="%s"><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">'
-           '<path class="arrowhead" d="M0 1 L10 5 L0 9 z"/></marker></defs>' % (total_w, total_h, total_w, total_h, esc(ui['graph']))]
+           '<path class="arrowhead" d="M 0 1 L 10 5 L 0 9 z"/></marker></defs>' % (total_w, total_h, total_w, total_h, esc(ui['graph']))]
     for c, col in enumerate(order):
         x = 6 + c * (band_w + gap_x)
         done = sum(1 for n in col if n in title and state[n] == 'Complete')
