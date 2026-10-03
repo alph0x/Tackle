@@ -276,4 +276,7 @@ if 'maxturns' in modes:
 if 'maxbudget' in modes:
     result('error_max_budget_usd', cost=1.0)
     sys.exit(1)
-result(denials=denials)
+leave = next((float(item[len('leave='):]) for item in modes if item.startswith('leave=')), None)
+# leave=N spends all but N of the budget this session was given.
+spent = 0.02 if leave is None else max(0.0, float(argv[argv.index('--max-budget-usd') + 1]) - leave)
+result(denials=denials, cost=spent)

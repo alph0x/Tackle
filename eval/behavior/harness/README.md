@@ -322,7 +322,7 @@ sandbox or model.
   an answer sheet.
 - **Running.** Each session is a headless run of the pinned CLI with `--model` from the configuration, in the
   same work tree and HOME. The wall-clock, turn and dollar limits are per episode, and a later session gets what
-  is left. The child's environment holds `PATH`, `HOME`, `TMPDIR`, `LANG`, `TERM`, a few CLI switches and the
+  is left; a session whose remaining dollars round to zero at four places is not launched. The child's environment holds `PATH`, `HOME`, `TMPDIR`, `LANG`, `TERM`, a few CLI switches and the
   token variable, and nothing else. The CLI's sandbox settings allow no network, deny reads under the home and
   temporary trees except the run root, allow writes only to `work/` and `tmp/`, and deny writes to
   `work/.claude`. The tools are `Bash`, `Read`, `Write`, `Edit`, `Glob`, `Grep` and `Skill`, in `dontAsk` mode.

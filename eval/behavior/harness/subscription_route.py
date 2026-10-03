@@ -1149,7 +1149,7 @@ def observe(stage, entry, package):
             if seconds_left <= 0:
                 seen.limit = 'wall_clock'
                 break
-            if turns_left <= 0 or usd_left <= 0:
+            if turns_left <= 0 or round(usd_left, 4) <= 0:  # the CLI is given the budget rounded to four places
                 seen.limit = 'error_max_turns' if turns_left <= 0 else 'error_max_budget_usd'
                 break
             argv = participant_argv(stage.cli, cfg, settings, turns_left, usd_left)

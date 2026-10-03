@@ -1191,6 +1191,20 @@ class Outcomes(Base):
                 _, episode = self.only(self.env.one(mode), 'timeout', exit_code=0)
                 self.assertEqual(episode['limit_reached'], limit)
 
+    def test_a_session_whose_remaining_budget_rounds_to_zero_is_never_launched(self):
+        sessions = (('sessions/01.md', 'Session one.\n'), ('sessions/02.md', 'Session two.\n'))
+        process = self.env.one('leave=0.00004', prompts=sessions)
+        _, episode = self.only(process, 'timeout', exit_code=0)
+        self.assertEqual(episode['limit_reached'], 'error_max_budget_usd')
+        launches = [item for item in self.env.invocations() if item['kind'] == 'episode']
+        self.assertEqual(len(launches), 1, 'no session was launched with a zero budget')
+        self.assertEqual(len(episode['sessions']), 1)
+        self.new_env()
+        process = self.env.one('leave=0.0001', prompts=sessions)
+        self.only(process, 'avoided', exit_code=0)
+        first, second = [item for item in self.env.invocations() if item['kind'] == 'episode']
+        self.assertEqual(second['argv'][second['argv'].index('--max-budget-usd') + 1], '0.0001')
+
     def test_cli_failure_records_error(self):
         _, episode = self.only(self.env.one('fail'), 'error', exit_code=1)
         self.assertEqual(episode['error'], 'cli_no_result')
