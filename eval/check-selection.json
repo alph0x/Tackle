@@ -37,7 +37,9 @@
     {
       "patterns": [
         "eval/plan/**",
-        "skills/tackle/references/plan.tmpl.md"
+        "skills/tackle/references/guides/controlled-writing.md",
+        "skills/tackle/references/plan.tmpl.md",
+        "skills/tackle/references/recipes/controlled-writing.md"
       ],
       "families": [
         "eval/tests/product/plan"

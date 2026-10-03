@@ -92,3 +92,4 @@ STATUS: [status](references/guides/status.md). Explicit [audit](references/guide
 [owner-controlled updates](references/guides/update.md).
 
 Explicit [plan view](references/guides/plan-view.md).
+Owner texts and specifications: [controlled writing](references/guides/controlled-writing.md).

@@ -30,7 +30,7 @@ RUN; a standalone status/resume request does not authorize execution.
 
 Write a digest the reader can take in at a glance: lead with what changes their next action (a
 blocker, a failure, an owner decision, the next authorized task), and never omit a material
-failure or constraint.
+failure or constraint. Digest text follows [controlled writing](controlled-writing.md).
 When requested or relevant, report reference age, checks actually run, task/blocker counts,
 weakest required verification, resource coverage, and history size. Missing telemetry is `n/a`.
 Report a workspace's migration bucket from its board's `Schema:` line, per

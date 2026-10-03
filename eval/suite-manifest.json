@@ -11,12 +11,13 @@
     {
       "path": "eval/tests/product/plan",
       "files": [
+        "test_controlled_writing.py",
         "test_plan.py"
       ],
-      "tests": 1,
+      "tests": 4,
       "source": "eval/plan",
       "category": "product",
-      "purpose": "Plan decomposition and acceptance section order."
+      "purpose": "Plan section order, and the controlled-writing recipe and guide for owner texts and specifications."
     },
     {
       "path": "eval/tests/product/run/card",
