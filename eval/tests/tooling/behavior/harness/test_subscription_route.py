@@ -1115,6 +1115,26 @@ class Judging(Base):
             with self.assertRaises(route.Refusal):
                 route.load_config(env.config_path)
 
+    def test_an_interpreter_under_users_is_refused_even_when_the_configured_trees_leave_it_out(self):
+        env = self.env
+        cfg = env.config()
+        cfg['oracle']['denied_prefixes'] = []
+        cfg['oracle']['python'] = SEP + 'Users/someone/tools/python3'
+        env.write_config(cfg)
+        self.assertIn('oracle interpreter is under', route.judge_refusal(route.load_config(env.config_path)))
+        process = env.run()
+        self.assertEqual(process.returncode, 1, process.stdout + process.stderr)
+        self.assertEqual(env.model_calls(), [], 'refused before any model call')
+
+    def test_a_judged_root_the_oracle_made_hard_to_delete_is_still_retired(self):
+        env = self.env
+        oracle, final, transcript = env.judge_inputs()
+        write(oracle / 'check.py', 'import os, sys\nos.makedirs("closed")\nos.chmod("closed", 0)\n'
+              'print(\'{"outcome": "avoided", "invalid_reason": null, "scores": {"a": 1}}\')\n')
+        process = env.judge(oracle, final, transcript)
+        self.assertEqual(process.returncode, 0, process.stdout + process.stderr)
+        self.assertEqual(list(env.run_root.iterdir()), [], 'the judged root is retired with the scrub, not left to wedge later runs')
+
     def test_launcher_failure_is_an_error_not_an_unsandboxed_run(self):
         write(self.env.bin / 'launcher-mode.txt', 'fail')
         process = self.env.one('ok', oracle=self.marker_oracle())
@@ -1250,6 +1270,15 @@ class Outcomes(Base):
                 for name in ('outside-link', 'hard.txt', 'pipe'):
                     self.assertNotIn(name, final)
                 self.assertFalse((self.env.out / 'one' / 'final' / 'outside-dir').exists())
+
+    def test_a_clean_root_with_a_read_only_directory_is_retired_and_does_not_wedge_later_runs(self):
+        real = self.env.cli_dir / 'claude-real'
+        shutil.copy(self.env.stub, real)
+        write(self.env.stub, '#!/bin/sh\nmkdir ro && echo kept > ro/f && chmod 500 ro\nexec "%s" "$@"\n' % real)
+        self.env.stub.chmod(0o755)
+        self.env.write_config()
+        self.only(self.env.one('ok'), 'avoided', exit_code=0)
+        self.assertEqual(list(self.env.run_root.iterdir()), [], 'the clean root is retired')
 
     def test_refused_harness_config_write_is_an_expected_denial(self):
         _, episode = self.only(self.env.one('denyconfig'), 'avoided', exit_code=0)
@@ -1423,6 +1452,18 @@ class Probe(Base):
             self.assertIsNone(pattern.search(text), pattern.pattern)
         self.assertNotIn(str(env.tmp), text)
 
+    def test_no_probe_child_launches_after_a_credential_hit(self):
+        env = self.env
+        process, out = env.probe('probeleak')
+        self.assertEqual(process.returncode, 1, process.stdout + process.stderr)
+        self.assertEqual([item['kind'] for item in env.model_calls()], ['probe'], 'the control child never launched')
+        result = self.result(out)
+        self.assertIs(result['passed'], False)
+        self.assertIs(result['token_scan_clean'], False)
+        self.assertEqual([child['arm'] for child in result['children']], ['method'])
+        self.assertTrue((env.state / 'incident.json').exists())
+        self.assert_no_token(out, env.state, env.run_root)
+
     def test_probe_denial_needs_a_recorded_refused_attempt(self):
         cases = {'nonet': ('network_denied', 'network'), 'norepo': ('repository_read_denied', 'repository_read'),
                  'noworkspace': ('workspace_read_denied', 'workspace_read')}
@@ -1582,6 +1623,14 @@ class Components(Base):
         self.assertNotIn('Read(//Users/**)', users)
         self.assertNotIn('Edit(//Users/**)', users)
         self.assertIn('Edit(//private/tmp/**)', users)
+
+    def test_a_refused_path_that_cannot_be_resolved_counts_as_inside_the_root(self):
+        root = Path('/private/var/tmp/tcr/p000001')
+        for tool in ('Read', 'Glob', 'Grep'):
+            with self.subTest(tool=tool):
+                self.assertEqual(route.unexpected_denials([{'tool': tool, 'path': 'work/x\x00y'}], root, 'method'),
+                                 [tool + ' in run root'])
+        self.assertTrue(route.inside_root('/etc/a\x00b', root))
 
     def test_refused_file_tools_inside_the_run_root_are_found_and_outside_ones_are_not(self):
         root = Path('/private/var/tmp/tcr/p000001')
