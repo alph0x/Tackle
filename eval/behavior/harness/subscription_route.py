@@ -184,8 +184,9 @@ def load_config(path):
 # --- preconditions -------------------------------------------------------------------------------------------------
 
 def under_users(path):
-    real = os.path.realpath(path)
-    return real == HOME_PREFIX or real.startswith(HOME_PREFIX + '/')
+    # The volume ignores case, so a case-variant spelling names the same tree: compare folded on both sides.
+    real, home = os.path.realpath(path).casefold(), HOME_PREFIX.casefold()
+    return real == home or real.startswith(home + '/')
 
 
 def judge_refusal(cfg):
@@ -197,7 +198,7 @@ def judge_refusal(cfg):
     """
     # The /Users check is part of the contract and never configurable: it runs first, whatever denied_prefixes holds.
     for prefix in [HOME_PREFIX] + [item for item in cfg.oracle_denied if item != HOME_PREFIX]:
-        if under(prefix, cfg.oracle_python):
+        if under(prefix, cfg.oracle_python, fold=True):
             return 'refusing to judge: the oracle interpreter is under %s, where the sandbox profile denies reads' % prefix
     if under_users(cfg.run_root):
         return 'refusing to judge: the run root is under %s, where the sandbox profile denies reads' % HOME_PREFIX
@@ -292,12 +293,23 @@ def scrub_tree(path):
         os.unlink(path)
 
 
-def retire_root(root):
-    """Delete a run root the participant may have made hard to delete; a root that still cannot go stays for the owner."""
+def remove_tree(root):
+    """Scrub the tree by path; when that fails (a path over the system limit), fall back to shutil.rmtree, which works
+    relative to directory handles. True when the root is gone."""
     try:
         scrub_tree(root)
-    except OSError:
-        pass
+    except (OSError, RecursionError):
+        shutil.rmtree(root, ignore_errors=True)
+    return not os.path.lexists(root)
+
+
+def retire_root(root):
+    """Delete a run root the participant may have made hard to delete; a root that still cannot go stays for the owner
+    and is reported on stderr. True when the root is gone."""
+    gone = remove_tree(root)
+    if not gone:
+        print('route: the run root %s could not be removed; the owner must clear it before another run' % root, file=sys.stderr)
+    return gone
 
 
 def retire_after_hit(cfg, root, name):
@@ -309,7 +321,7 @@ def retire_after_hit(cfg, root, name):
         temporary = marker.with_name(INCIDENT + '.tmp')
         temporary.write_text(json.dumps({'schema': 'tackle-route-incident/1', 'episode_id': name, 'recorded_at': harness.now()}) + '\n')
         os.replace(temporary, marker)
-        scrub_tree(root)
+        remove_tree(root)
     except (OSError, RecursionError):
         pass
 

@@ -9,6 +9,8 @@ name is assembled by concatenation, and no assertion echoes a credential. Like t
 temporary directory must sit outside the home directory, with no agent instructions in any directory above it.
 """
 import base64
+import contextlib
+import io
 import fcntl
 import hashlib
 import importlib.util
@@ -25,8 +27,10 @@ import sys
 import tempfile
 import time
 import unittest
+from unittest import mock
 import urllib.parse
 from pathlib import Path
+from types import SimpleNamespace
 
 HERE = Path(__file__).resolve().parents[5] / 'eval/behavior/harness'
 ROOT = HERE.parents[2]
@@ -1122,9 +1126,49 @@ class Judging(Base):
         cfg['oracle']['python'] = SEP + 'Users/someone/tools/python3'
         env.write_config(cfg)
         self.assertIn('oracle interpreter is under', route.judge_refusal(route.load_config(env.config_path)))
-        process = env.run()
+        process = env.one('ok')
         self.assertEqual(process.returncode, 1, process.stdout + process.stderr)
+        self.assertIn('the oracle interpreter is under /Users', process.stdout + process.stderr)
         self.assertEqual(env.model_calls(), [], 'refused before any model call')
+
+    def test_every_users_check_ignores_the_case_of_the_spelling(self):
+        env = self.env
+        cfg = env.config()
+        cfg['oracle']['denied_prefixes'] = []
+        env.write_config(cfg)
+        loaded = route.load_config(env.config_path)
+        for spelling in ('users', 'USERS', 'uSeRs'):
+            variant = SimpleNamespace(**vars(loaded))
+            variant.oracle_python = SEP + spelling + '/someone/tools/python3'
+            self.assertIn('oracle interpreter is under', route.judge_refusal(variant), spelling)
+            variant = SimpleNamespace(**vars(loaded))
+            variant.run_root = Path(SEP + spelling + '/someone/rr')
+            self.assertIn('run root is under', route.judge_refusal(variant), spelling)
+            variant = SimpleNamespace(**vars(loaded))
+            variant.launcher = SEP + spelling + '/someone/launcher'
+            self.assertIn('launcher is under', route.judge_refusal(variant), spelling)
+
+    def test_a_judged_root_too_deep_for_the_path_limit_is_still_retired(self):
+        env = self.env
+        oracle, final, transcript = env.judge_inputs()
+        write(oracle / 'check.py', 'import os\nfor _ in range(40):\n    os.mkdir("d" * 50)\n    os.chdir("d" * 50)\n'
+              'print(\'{"outcome": "avoided", "invalid_reason": null, "scores": {"a": 1}}\')\n')
+        process = env.judge(oracle, final, transcript)
+        self.assertEqual(process.returncode, 0, process.stdout + process.stderr)
+        self.assertEqual(list(env.run_root.iterdir()), [], 'the over-long tree is removed, not left to wedge the next episode')
+        process = env.one('ok')
+        self.assertEqual(process.returncode, 0, process.stdout + process.stderr)
+
+    def test_a_root_that_still_exists_after_the_retire_attempts_is_reported(self):
+        root = self.env.run_root / 'stuck'
+        root.mkdir(parents=True)
+        with mock.patch.object(route, 'scrub_tree', side_effect=OSError('no')), \
+                mock.patch.object(route.shutil, 'rmtree', side_effect=lambda *a, **k: None):
+            captured = io.StringIO()
+            with contextlib.redirect_stderr(captured):
+                self.assertFalse(route.retire_root(root))
+        self.assertTrue(root.exists())
+        self.assertIn('could not be removed', captured.getvalue())
 
     def test_a_judged_root_the_oracle_made_hard_to_delete_is_still_retired(self):
         env = self.env
