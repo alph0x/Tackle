@@ -16,7 +16,7 @@ this table or in the two sections after it.
 |---|---|---|
 | **Entry and routing**: one entry, help without writes, request interpretation and sizing | `install/inventory`, `migration` | `s1`, `s4`, `s56`, `s57` |
 | **PLAN**: intake, requirements, contracts, task decomposition and planning outcomes | `plan` | `s3`, `s5`, `s11`, `s22`, `s24`, `s42`, `s43`, `s62`, `s63`, `s64` |
-| **Readiness lint**: lint rows 1–16, task identity, task contracts and citation grounding | `lint/rows`, `lint/task-identity`, `lint/task-contracts` | `s7`, `s29`, `s35`, `s46` |
+| **Readiness lint**: lint rows 1–17, task identity, task contracts and citation grounding | `lint/rows`, `lint/task-identity`, `lint/task-contracts` | `s7`, `s29`, `s35`, `s46` |
 | **Templates and scaffold**: the workspace templates and `init` | `templates` | `s31`, `s49` |
 | **RUN**: the RUN card, execution controls, evidence capture, verification records, Focused closure and resumed work | `run/card`, `run/execution`, `run/evidence-capture`, `run/verification-records`, `run/focused-closure`, `templates`, `install/reading-budget` | `s9`, `s12`, `s17`, `s23`, `s27`, `s40`, `s55`, `s58`, `s59`, `s65`, `s66` |
 | **Decisions and communication**: authority order, decision ownership and the communication policy | none | `s2`, `s14`, `s60` |

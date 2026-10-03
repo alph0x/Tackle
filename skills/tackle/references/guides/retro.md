@@ -11,7 +11,7 @@ not replace RUN closure or create an autonomy loop.
 Every metric carries a copy-paste recipe; the recipes live in the template's Metrics table. What each one measures:
 
 - **Tasks by status** — count exact task rows and their Status field in `task-board.md`, using its declared schema.
-- **Attempts over budget** — count `attempt N:` journal lines per task in `history.md` against the attempt budget declared in the workspace `AGENTS.md`.
+- **Attempts over budget** — count `attempt N:` journal lines per task in `history.md` against the RUN card's fixed cap of three failed correction-validation cycles per task.
 - **Blocked durations** — dates between the log entry that marks a task Blocked (legacy ⏸) and the entry that unblocks it.
 - **Reopened tasks** — `Complete → In progress` or legacy `🟢 → 🟡` transitions in `history.md` (regression-sweep reopenings included).
 - **Comprehension debt** — tasks recorded Complete with no human review recorded in the log: mechanically done, humanly unread. High comprehension debt is a warning even when the board is all green.
@@ -19,7 +19,7 @@ Every metric carries a copy-paste recipe; the recipes live in the template's Met
 - **Exact-token coverage** — measured/eligible by metric and comparable scope, with `n/a` rows visible before any arithmetic.
 - **Coverage-gated totals** — cohort totals and rankings only after 100% comparable coverage; otherwise report labeled observations and suppress the aggregate.
 - **Coverage-gated recommendations** — tier/effort recommendations only after 100% coverage plus at least three like-for-like completed runs.
-- **History growth** — lines per `history.md` session entry (recipe in `retro.tmpl.md`): resume cost compounds across every future session, unlike execution cost which is paid once per task; a rising trend routes narrative back to `decisions.md`/`reference-docs/`.
+- **History growth** — lines per session entry, over `history-archive.md` and then `history.md` (recipe in `retro.tmpl.md`): resume cost compounds across every future session, unlike execution cost which is paid once per task; a rising trend routes narrative back to `decisions.md`/`reference-docs/`.
 
 ## Lifecycle-first coverage
 

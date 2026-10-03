@@ -161,6 +161,8 @@ board state, and other plan-local documents support coordination but are not wor
 
 ## 10. Working context and maintenance (only when justified)
 
+The default maintenance policy is the `History maintenance policy` line of the workspace `AGENTS.md`; record here only a departure from it.
+
 {{Observed read/rewrite/retained-byte costs; optional milestone/size trigger; authorized history
 paths; retained active sessions; segment target; recovery owner. Omit for small work.}}
 

@@ -38,7 +38,10 @@ trigger (measured growth or milestone boundary), retained active sessions, segme
 recovery owner. The legacy 400-line warning is a prompt to assess cost, not permission to delete
 history. RUN may refresh projections and perform reversible archival within that recorded policy.
 STATUS is read-only; explicit handoff writes its projection/export only. Without a policy or an
-explicit archive request, report the need without archiving.
+explicit archive request, report the need without archiving. A new workspace's `AGENTS.md` carries
+a default policy line (the trigger is history over the archive threshold at a RUN session boundary,
+the newest five sessions stay active, and recovery follows this section); record a different policy
+only to depart from it.
 
 Archive **original bytes in chronological order**. `history/index.md` routes stable event numbers
 and original headings to immutable segments; `history.md` retains its introduction and active tail.

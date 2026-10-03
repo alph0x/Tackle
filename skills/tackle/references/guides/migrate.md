@@ -155,6 +155,33 @@ historical records.
    the original workspace active, without rewriting closed rows or neighboring workspaces. Adopt the
    copy only after its required checks pass and record the rollback path at this task boundary.
 
+<a id="v90--v91-checklist"></a>
+## v9.0 → v9.1 checklist
+
+An active 9.0.x workspace adopts 9.1 at a task boundary with this checklist. Adopt only for a selected
+active workspace, on a disposable copy at a task boundary. This release bounds history growth and keeps
+every post-task obligation visible until it closes; it rewrites no closed task, no historical record and
+no neighboring workspace.
+
+1. Record the pinned procedure, the current lint result under it, and hashes of the board, briefs,
+   reports, `AGENTS.md` and history. Preserve neighboring workspaces.
+2. Run rows 1–17 on the copy. Two kinds of finding are expected: row 17 names each Complete task whose
+   report has no `**Remains**:` line, and row 13 warns on each session entry over the entry budget.
+3. End each Complete task's report with its receipt line: `**Remains**: none`, or `**Remains**:`
+   followed by the `O-NN` ids of the obligations the task left behind.
+4. Copy the obligations section of `task-board.tmpl.md` below the task table of the board. Record each
+   obligation that outlived its task as an `O-NN` row (owner, trigger, state `Open`, discharge check),
+   and append a history entry whose State snapshot names every `Open` id in its `Active obligations`
+   line; never edit an older snapshot.
+5. Copy the default policy line from `AGENTS.tmpl.md` into the workspace `AGENTS.md`, unless the
+   workspace already records its own maintenance policy. History is append-only, so an entry already over
+   the budget stays as written. The policy archives it only when `history.md` is over the archive
+   threshold and the entry is older than the newest five sessions. When that does not apply (a recent
+   entry in a short history is the usual case), set `History entry budget: N` in `AGENTS.md` to fit it,
+   or adopt with the row 13 warning, which blocks nothing by itself.
+6. Run rows 1–17 again. Adopt only the validated copy: record the adoption and the rollback result, bump
+   the `Methodology:` stamp to 9.1.0, and roll back by restoring the checkpoint copy.
+
 <a id="schema-keyed-migration"></a>
 ## Schema-keyed migration (9.0.0)
 
@@ -233,7 +260,7 @@ adoption, for example a stray id mention in rewritten prose.
 
 The install runs only a workspace in bucket `5`, or a Focused `plan.md` whose history and usage
 are `history.md` and `resource-usage.md`. PLAN, RUN and STATUS refuse any other workspace with
-`migrate first` and point here, and lint rows 1, 2, 3, 5, 10, 11, 12 and 14 print that refusal.
+`migrate first` and point here, and lint rows 1, 2, 3, 5, 10, 11, 12, 14 and 17 print that refusal.
 A board saved with CRLF line endings reads as older: convert it to LF first, because the rows, the
 recipes and this migration read LF only. This guide, its recipes and their fixtures are the one
 bridge: they keep detecting and transforming every bucket above. The readability statements in the 8.x checklists above describe 8.x installs.

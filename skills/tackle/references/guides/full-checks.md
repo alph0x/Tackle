@@ -351,7 +351,7 @@ review of the declared selectors establishes whether those bytes cover the oblig
 
 ## Execute canonical lint faithfully
 
-Run all 16 rows during PLAN before Ready. Read the current `lint-spec.md`; extract the literal
+Run all 17 rows during PLAN before Ready. Read the current `lint-spec.md`; extract the literal
 command cell of each numbered row, respecting its backtick delimiter (some use two or four), and
 substitute only a validated single-component slug (`[a-z0-9][a-z0-9.-]*`). Save the canonical source snapshot/hash,
 row number, command bytes and pass condition. Reject missing/duplicate rows, malformed cells and
@@ -368,7 +368,7 @@ running the Python recipe; it is executable code with the caller's filesystem pe
 For an existing orchestrator, these two pure Python functions provide exact extraction and row
 interpretation. Save the extracted UTF-8 bytes verbatim as each script; capture that saved script
 with the recipe above. Supply the canonical source hash recorded at preflight, not a hash silently
-recomputed after a change. Check that all 16 returned rows are scheduled before initial execution.
+recomputed after a change. Check that all 17 returned rows are scheduled before initial execution.
 Each result carries `row`, `command_sha256`, `source_sha256`, raw check record path and verdict;
 build the index from those records. Equivalent harness automation is valid.
 
@@ -380,7 +380,7 @@ below is pinned by the lint recipe; only final newlines may vary. Review both re
 before changing that pin. The workspace must already exist. Legacy `destination`-only
 configurations are still accepted as an explicit workspace location; newly generated
 configurations name workspace. Optional `rows` selects
-affected checks; omission runs all 16. Initial PLAN still requires all 16. Include citation targets
+affected checks; omission runs all 17. Initial PLAN still requires all 17. Include citation targets
 and other actual dependencies in selectors. An authorized read-only source outside cwd is read
 and hash-verified, then snapshotted locally; helpers and outputs remain inside cwd. The recipe extracts, saves, captures and verifies
 each command itself; do not manually transcribe command cells into another script. A custom
@@ -419,13 +419,13 @@ def canonical_rows(source, expected_sha256, slug):
         command = command.replace('<slug>', slug).encode('utf-8')
         rows[number] = dict(command=command, condition=condition[:-2],
                             command_sha256=hashlib.sha256(command).hexdigest())
-    if sorted(rows) != list(range(1, 17)):
-        raise ValueError('expected exactly rows 1 through 16')
+    if sorted(rows) != list(range(1, 18)):
+        raise ValueError('expected exactly rows 1 through 17')
     return rows
 
 
 def lint_verdict(row, record, stdout, stderr):
-    if row not in range(1, 17):
+    if row not in range(1, 18):
         raise ValueError('unknown row')
     code = record['child_exit']
     if type(code) is not int or any(type(record.get(key)) is not bool
@@ -540,7 +540,7 @@ def run_lint(config_path):
                                observation=str(observation.relative_to(root)) if observation else None)
     summary = dict(rows=results, total=len(results),
                    passed=sum(r['verdict'] == 'PASS' for r in results.values()),
-                   complete=len(results) == 16 and all(r['verdict'] in ('PASS', 'WARN') for r in results.values()))
+                   complete=len(results) == 17 and all(r['verdict'] in ('PASS', 'WARN') for r in results.values()))
     summary_path = batch / 'summary.json'
     summary_path.write_text(json.dumps(summary, indent=2))
     print(summary_path)
@@ -560,6 +560,8 @@ Interpret **stdout, stderr and real exit together** using the canonical conditio
 | 8, 13 | stdout/stderr empty, exit 0 | stdout with exit 0: WARN | stderr, timeout, signal or nonzero exit: ERROR |
 | 6, 11, 16 | stdout/stderr empty, exit 0 | stdout with exit 0 or 1: FAIL | stderr, timeout, signal, unexpected exit or empty-output exit 1: ERROR |
 | All other rows | stdout/stderr empty, exit 0 | stdout with exit 0: FAIL | stderr, timeout, signal or nonzero exit: ERROR |
+
+Row 17 belongs to the last line: its findings print with exit 0 (FAIL), and its structural refusals, `migrate first` and a missing `history.md`, exit 1 (ERROR).
 
 Report every finding verbatim, including findings printed with exit zero. WARN keeps its existing
 nonblocking severity; ERROR means the row was not validly observed, never PASS. Preserve failures
@@ -583,26 +585,27 @@ Use this dependency map conservatively when selecting affected lint rows:
 |---|---|
 | Workspace top-level or one-level Markdown content/membership | 1 |
 | Task briefs or plan, including id/dependency membership | 2, 5; task briefs also 7, 9, 12 |
-| Task board (`task-board.md`) | 2, 3, 10, 11, 14; every initiative board also 8 |
+| Task board (`task-board.md`) | 2, 3, 10, 11, 14, 17; every initiative board also 8 |
 | Task brief/plan/reference citations or their target bytes | 4 |
-| History (`history.md` or `history-archive.md`) content/membership | 6; active history also 13 |
+| History (`history.md` or `history-archive.md`) content/membership | 6; active history also 13 and 17 |
 | Design contract or decisions | 7 |
 | Any initiative's task brief/Write scope membership or content | 8 |
 | Resource usage (`resource-usage.md`) membership/content | 11, 16 |
-| Closure report membership | 14 |
+| Closure report membership | 14, 17 |
+| A Complete task's report content (its `**Remains**:` line) | 17 |
 | Workspace AGENTS | 13, 15 |
 | Reference-doc membership/content, current time crossing freshness window | 15 |
-| Lint source, command interpreter/tools or policy relevant to its execution | All affected rows; all 16 if impact cannot be established |
+| Lint source, command interpreter/tools or policy relevant to its execution | All affected rows; all 17 if impact cannot be established |
 
 Union dependencies; the same edit can match several rows. Track glob membership, citation target
 files and time as well as hashes of known files. Do not reuse row 15 without a verified expiry
 boundary; rerun this inexpensive row when freshness is uncertain. Unknown dependencies invalidate
 the potentially affected records. Product checks have their own input map.
 
-The final index still accounts for all 16 canonical rows, distinguishing fresh executions from
-reused current records; report `lint: N/16 checks passed` from their actual pass conditions
+The final index still accounts for all 17 canonical rows, distinguishing fresh executions from
+reused current records; report `lint: N/17 checks passed` from their actual pass conditions
 (and any additional workspace rows in the denominator). This is a current coverage summary;
-also report how many rows were executed versus reused. A selection of custom checks is not 16/16.
+also report how many rows were executed versus reused. A selection of custom checks is not 17/17.
 The release sweep still executes every prescribed row and gate; this reuse rule does not waive it.
 
 Finish with complete only when all mandatory obligations have current accessible evidence.
@@ -614,5 +617,5 @@ unchanged preparation merely because a new heading or session begins.
 
 Explicit Focused applicability uses the first-line marker and shape checks in `lint-spec.md`, not
 absence of Coordinated files. Include plan.md in selectors for every row: route changes invalidate all
-applicability records. During release, execute all sixteen commands even for Focused and accept
+applicability records. During release, execute all seventeen commands even for Focused and accept
 Coordinated-only checked skips only after row 1 passes. This does not waive selected global acceptance.

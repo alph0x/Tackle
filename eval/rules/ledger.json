@@ -660,10 +660,10 @@
     },
     {
       "rule_id": "R-PLAN-07",
-      "statement": "A workspace PLAN verifies its scaffold files and all 16 lint rows, and reports and fixes failures before handoff.",
-      "statement_sha256": "1f3de7163fbeca8c7da1b7af648d0780cc741f0578e4f9935fe6b4366261649d",
+      "statement": "A workspace PLAN verifies its scaffold files and all 17 lint rows, and reports and fixes failures before handoff.",
+      "statement_sha256": "7ece37d90a3d0cccc6f7a66bcc1747b545c1dc9e5bba0a09de3c4922f9ebe8ec",
       "home": "references/guides/plan-card.md:66",
-      "home_fragment": "16 mechanical, copy-paste checks",
+      "home_fragment": "17 mechanical, copy-paste checks",
       "units": [],
       "mirrors": [],
       "class": "behavioral",
@@ -945,7 +945,7 @@
       "rule_id": "R-RUN-05",
       "statement": "Reuse verified current state and sufficient existing checks; do not append equivalent assertions or unchanged closure reruns.",
       "statement_sha256": "d9beacfc73bfe0717bd839e70c569c8c6a2133391f0bbffcb8e6877522d2ff55",
-      "home": "references/guides/run.md:238",
+      "home": "references/guides/run.md:240",
       "home_fragment": "Reuse unchanged PLAN readiness checks",
       "units": [],
       "mirrors": [],
@@ -1303,11 +1303,11 @@
       "rule_id": "R-RUN-17",
       "statement": "Every task the board shows as done has its closure report.",
       "statement_sha256": "9083b7da6a59b2a9bde0d19581b4cc6db02a6a8b56cb05916afa9fc3ad5c64f8",
-      "home": "references/guides/lint-spec.md:40",
+      "home": "references/guides/lint-spec.md:42",
       "home_fragment": "Closure reports for done tasks",
       "units": [],
       "mirrors": [
-        "references/guides/run.md:224"
+        "references/guides/run.md:226"
       ],
       "class": "safety-invariant",
       "hot_path": false,
@@ -2202,7 +2202,7 @@
       "rule_id": "R-STATUS-05",
       "statement": "A portable handoff carries its context inline; local paths alone are insufficient.",
       "statement_sha256": "eef171ef8533ddcac9a89f0dfb733a3027ed36cdd351e4496a44da68925c8b34",
-      "home": "references/guides/context-lifecycle.md:74",
+      "home": "references/guides/context-lifecycle.md:77",
       "home_fragment": "Local paths alone are insufficient.",
       "units": [],
       "mirrors": [],
@@ -3154,6 +3154,77 @@
         "scenarios": [],
         "cohort_id": null,
         "as_of": "2026-09-30"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-19",
+      "statement": "An obligation that outlives its task is recorded when it is created as an O-NN row of the board's obligations table and prevents initiative completion while it is Open, unless the owner withdrew it.",
+      "statement_sha256": "6d1baf55e5ae97b57a522eb306cc74f95574013a45a9a47e4800fd2267c2978a",
+      "home": "references/guides/run.md:188",
+      "home_fragment": "An obligation that outlives its task is recorded when it is",
+      "units": [],
+      "mirrors": [
+        "references/guides/lint-spec.md:45"
+      ],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.0",
+        "trigger": "Post-task obligations stay visible until they close.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-02"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATE-10",
+      "statement": "A history session entry stays within its line budget (120 lines by default, or History entry budget: N in the workspace AGENTS.md), and lint row 13 warns on each entry over it.",
+      "statement_sha256": "7b2e75a31d78564efe83a1304310d8d4173a762d378cbfded291533d4bdaad91",
+      "home": "references/guides/lint-spec.md:41",
+      "home_fragment": "13 · History over archive threshold or entry budget",
+      "units": [],
+      "mirrors": [],
+      "class": "format",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.0",
+        "trigger": "History entries stay bounded.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-02"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATE-11",
+      "statement": "A new workspace's AGENTS.md carries a default history-maintenance policy that authorizes RUN, never STATUS, to archive entries older than the newest five sessions verbatim from history.md to history-archive.md when it is over the archive threshold at a session boundary.",
+      "statement_sha256": "3d55bf36b57e762f849dd892f2da30d37ba1933074bd3289782eefbccb623aaa",
+      "home": "references/AGENTS.tmpl.md:72",
+      "home_fragment": "**History maintenance policy**",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.0",
+        "trigger": "Every new workspace carries a default history-maintenance policy.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-02"
       },
       "historical": []
     }

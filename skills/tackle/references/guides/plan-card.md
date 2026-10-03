@@ -63,7 +63,7 @@ tasks and stops before source execution.`
    [model and tier proposal](decompose-and-lint.md#model-and-tier-proposal-compile-time) are in
    [decompose-and-lint.md](decompose-and-lint.md#step-6--decompose-into-loop-runnable-points-and-delivery-obligations),
    Step 6 and [Step 6.6](decompose-and-lint.md#step-66--right-size-the-plan).
-6. **Lint.** Run every row of `lint-spec.md` — the 16 mechanical, copy-paste checks that decide
+6. **Lint.** Run every row of `lint-spec.md` — the 17 mechanical, copy-paste checks that decide
    wiring, grounding, statuses, citations, seals and collisions — and report the agent-computed
    summary. Structural lint does not by itself establish readiness: a passing board can still hold a
    Draft task or an unanswered product question, reported as a separate blocker, not a lint finding.

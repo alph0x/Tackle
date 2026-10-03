@@ -27,3 +27,13 @@ independent reviewer from it.
 
 <a id="dependency-graph"></a>
 The dependency graph remains in `plan.md` §5; this board records its task dependencies without duplicating the graph.
+
+<a id="obligations"></a>
+## Obligations
+
+An obligation that outlives its task, or belongs to the initiative with no task, is recorded here when it is created. The first cell is its stable `O-NN` id (two digits). State is `Open`, `Discharged` or `Withdrawn`; a `Discharged` or `Withdrawn` row cites a Reference: a decision id, a report path or a record path. Name every `Open` id in the `Active obligations` line of the newest State snapshot in `history.md`, and in the `**Remains**:` receipt of the report that leaves it open. Initiative completion requires that no obligation is `Open`, unless the owner withdrew it.
+
+| Obligation | What | Owner | Trigger | State | Discharge check | Reference |
+|---|---|---|---|---|---|---|
+<!-- Add O-NN rows only when an obligation outlives its task. No column is named Status, so the task readers skip these rows. -->
+

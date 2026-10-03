@@ -99,21 +99,21 @@ class DottedSlugTests(ShapeCase):
         for slug in ['demo', 'release-8.1', 'v8.1.0', 'a..b']:
             with self.subTest(slug=slug):
                 rows = NAMESPACE['canonical_rows'](SOURCE, DIGEST, slug)
-                self.assertEqual(set(rows), set(range(1, 17)))
+                self.assertEqual(set(rows), set(range(1, 18)))
                 self.assertIn(('ws=docs/plans/' + slug + '; usage="$ws/resource-usage.md"').encode(), rows[16]['command'])
                 self.assertEqual(rows[16]['command_sha256'], hashlib.sha256(rows[16]['command']).hexdigest())
 
     def test_dotted_coordinated_workspace_passes_every_row(self):
         self.coordinated()
         self.rename('release-8.1')
-        for number in range(1, 17):
+        for number in range(1, 18):
             with self.subTest(row=number):
                 self.assert_pass(number)
 
     def test_dotted_focused_workspace_passes_every_row(self):
         self.focused()
         self.rename('release-8.1')
-        for number in range(1, 17):
+        for number in range(1, 18):
             with self.subTest(row=number):
                 self.assert_pass(number)
 
@@ -122,7 +122,7 @@ class FocusedWorkspaceTests(ShapeCase):
     def test_minimal_focused_workspace_passes_every_row_and_is_left_unchanged(self):
         self.focused()
         before = {p.name: p.read_bytes() for p in self.workspace.iterdir()}
-        for number in range(1, 17):
+        for number in range(1, 18):
             with self.subTest(row=number):
                 self.assert_pass(number)
         self.assertEqual(before, {p.name: p.read_bytes() for p in self.workspace.iterdir()})
