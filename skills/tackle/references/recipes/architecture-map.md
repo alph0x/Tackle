@@ -13,6 +13,24 @@ STATES = ('planned', 'done')
 PLAIN = ('op', 'id', 'task', 'state', 'relations')
 
 
+def _text(value):
+    return isinstance(value, str) and bool(value.strip())
+
+
+def _field_problems(item, where, need_title):
+    """Type problems of one component, group or change, each naming the field."""
+    problems = []
+    if 'title' in item or need_title:
+        if not _text(item.get('title')):
+            problems.append('%s has a title that is not a non-empty string' % where)
+    for field in ('text', 'group'):
+        if field in item and not isinstance(item[field], str):
+            problems.append('%s has a %s that is not a string' % (where, field))
+    if 'sources' in item and not (isinstance(item['sources'], list) and all(_text(x) for x in item['sources'])):
+        problems.append('%s has sources that are not a list of path strings' % where)
+    return problems
+
+
 def _relation_problems(relations, known, where):
     problems = []
     for rel in relations or []:
@@ -28,9 +46,19 @@ def _relation_problems(relations, known, where):
 def validate(base, delta):
     """Return every problem found in the base and the delta, as sentences that name the id."""
     problems = []
+    if not isinstance(base, dict):
+        return ['the base is not an object']
+    shaped = all(isinstance(base.get(k), list) for k in ('groups', 'components', 'relations'))
+    if not shaped or not all(isinstance(x, dict) for k in ('groups', 'components') for x in base[k]):
+        return ['the base needs groups, components and relations as lists, with groups and components as objects']
+    if 'verified_at' in base and not isinstance(base['verified_at'], dict):
+        problems.append('the base has a verified_at that is not an object')
+    for group in base['groups']:
+        problems += _field_problems(group, 'base group %s' % group.get('id'), True)
     groups = {g.get('id') for g in base.get('groups', [])}
     known = set()
     for comp in base.get('components', []):
+        problems += _field_problems(comp, 'base component %s' % comp.get('id'), True)
         if comp.get('id') in known:
             problems.append('the base lists component %s twice' % comp.get('id'))
         known.add(comp.get('id'))
@@ -49,6 +77,7 @@ def validate(base, delta):
             continue
         cid = change['id']
         where = 'change %s' % cid
+        problems += _field_problems(change, where, False)
         if change.get('op') not in OPS:
             problems.append('%s has op %s, outside %s' % (where, change.get('op'), ', '.join(OPS)))
         if change.get('state') not in STATES:
@@ -117,13 +146,20 @@ def neighbors(map_, ids):
 
 
 def stale(map_, root):
-    """Sorted ids of components with a source path missing under root. Nothing is deleted."""
+    """Sorted ids of components with a source path missing under root. Nothing is deleted.
+    A source with a glob character (* ? [) is missing only when it matches no path."""
     base = Path(root)
     missing = []
     for comp in map_.get('components', []):
         for source in comp.get('sources', []):
             path = Path(source)
-            if path.is_absolute() or '..' in path.parts or not (base / path).exists():
+            if path.is_absolute() or '..' in path.parts:
+                found = False
+            elif any(c in source for c in '*?['):
+                found = next(base.glob(source), None) is not None
+            else:
+                found = (base / path).exists()
+            if not found:
                 missing.append(comp['id'])
                 break
     return sorted(missing)
