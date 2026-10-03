@@ -13,6 +13,17 @@ STATES = ('planned', 'done')
 PLAIN = ('op', 'id', 'task', 'state', 'relations')
 
 
+GLOB = '*?['
+
+
+def _glob_ok(pattern):
+    try:
+        next(Path('glob-probe-missing-dir').glob(pattern), None)
+    except (ValueError, NotImplementedError):
+        return False
+    return True
+
+
 def _text(value):
     return isinstance(value, str) and bool(value.strip())
 
@@ -28,6 +39,10 @@ def _field_problems(item, where, need_title):
             problems.append('%s has a %s that is not a string' % (where, field))
     if 'sources' in item and not (isinstance(item['sources'], list) and all(_text(x) for x in item['sources'])):
         problems.append('%s has sources that are not a list of path strings' % where)
+    else:
+        for source in item.get('sources', []):
+            if any(c in source for c in GLOB) and not _glob_ok(source):
+                problems.append('%s has a sources entry that is not a valid glob pattern: %s' % (where, source))
     return problems
 
 
@@ -53,6 +68,11 @@ def validate(base, delta):
         return ['the base needs groups, components and relations as lists, with groups and components as objects']
     if 'verified_at' in base and not isinstance(base['verified_at'], dict):
         problems.append('the base has a verified_at that is not an object')
+    for kind in ('groups', 'components'):
+        if not all(_text(x.get('id')) for x in base[kind]):
+            problems.append('a base %s entry has an id that is not a non-empty string' % kind[:-1])
+    if problems:
+        return problems
     for group in base['groups']:
         problems += _field_problems(group, 'base group %s' % group.get('id'), True)
     groups = {g.get('id') for g in base.get('groups', [])}
@@ -82,8 +102,8 @@ def validate(base, delta):
             problems.append('%s has op %s, outside %s' % (where, change.get('op'), ', '.join(OPS)))
         if change.get('state') not in STATES:
             problems.append('%s has state %s, outside %s' % (where, change.get('state'), ', '.join(STATES)))
-        if not change.get('task'):
-            problems.append('%s names no owning task' % where)
+        if not _text(change.get('task')):
+            problems.append('%s has a task that is not a non-empty string' % where)
         if change.get('op') == 'add':
             if cid in known:
                 problems.append('%s adds a component that already exists' % where)
@@ -155,8 +175,11 @@ def stale(map_, root):
             path = Path(source)
             if path.is_absolute() or '..' in path.parts:
                 found = False
-            elif any(c in source for c in '*?['):
-                found = next(base.glob(source), None) is not None
+            elif any(c in source for c in GLOB):
+                try:
+                    found = next(base.glob(source), None) is not None
+                except (ValueError, NotImplementedError):
+                    found = False
             else:
                 found = (base / path).exists()
             if not found:
