@@ -7,7 +7,7 @@ a recorded signal only: it never changes an oracle outcome, a record's ``scores`
 Subcommands (every one takes ``--config``; there is no default path):
 
     jev_signal.py questions
-    jev_signal.py calibrate --config F --cohort D --evidence D --diagnosis F --out F --scores-out F [--repo D]
+    jev_signal.py calibrate --config F --cohort D --evidence D --diagnosis F --out F (--scores-out F | --scores-in F) [--repo D]
     jev_signal.py score     --config F --cohort D --evidence D --thresholds F --out F [--repo D]
 
 Guarantees:
@@ -494,18 +494,18 @@ def clamp(value, low, high):
 
 
 def dimension_threshold(lines, name):
-    """The median, over the scored calibration lines, of the mass JEV puts on levels 1 and 2 together."""
-    masses = []
-    for line in lines:
-        probs = line['scores'][name]['probabilities']
-        masses.append(float(probs['1']) + float(probs['2']))
-    return clamp(median(masses), 0.05, 0.95)
+    """The median, over the scored calibration lines, of the mass JEV puts on the top level (2).
+
+    The oracles leave these dimensions null, so no ground truth exists; the cut splits the calibration records
+    in half by top-level mass."""
+    return clamp(median([float(line['scores'][name]['probabilities']['2']) for line in lines]), 0.05, 0.95)
 
 
 def cause_threshold(hit_confidences, false_alarm_confidences):
     """Confidence above which JEV naming a cause on an avoided episode goes to review.
 
-    hits: confidence on a fell record whose cause matches the diagnosis. false alarms: confidence on a cause
+    hits: confidence on a fell record where JEV names a cause other than none (the review rule asks only
+    none or not none, so a hit is what keeps a fell record out of review). False alarms: confidence on a cause
     other than none for an avoided record. Separated: the midpoint. No false alarm: the lowest hit. Overlap:
     just above the highest false alarm, so the calibration records raise no review. No hit: not derivable."""
     if not hit_confidences:
@@ -546,7 +546,8 @@ def write_lines(path, lines):
 
 def cmd_calibrate(args):
     for target in (args.out, args.scores_out):
-        fresh(target)
+        if target:
+            fresh(target)
     manifest, records = load_cohort(args.cohort)
     variants = manifest.get('variants')
     if not variants or any(v.get('split') != 'development' for v in variants) or \
@@ -557,48 +558,62 @@ def cmd_calibrate(args):
         causes = {k: v['cause'] for k, v in verdict['causes'].items()}
     except (OSError, ValueError, KeyError, TypeError):
         raise Refused('the diagnosis verdict is missing or malformed', 2)
-    cfg = load_config(args.config)
-    session = Session(cfg, args.evidence, args.repo)
-    lines = []
-    for record in records:
-        data, reason = session.judge(record)
-        lines.append(na_line(record, reason) if reason else raw_line(record, data))
-    lines = safe_lines(lines, session.needles)
-    write_lines(args.scores_out, lines)
+    calls = 0
+    if args.scores_in:
+        # Derive from scores already recorded: no key is read and no call is made.
+        try:
+            lines = [json.loads(l) for l in Path(args.scores_in).read_text(encoding='utf-8').splitlines() if l.strip()]
+        except (OSError, ValueError):
+            raise Refused('the calibration scores are missing or not JSON', 2)
+        if [l.get('episode_id') for l in lines] != [r['episode_id'] for r in records]:
+            raise Refused('the calibration scores do not hold one line per record, in order', 2)
+        scores_path = args.scores_in
+    else:
+        cfg = load_config(args.config)
+        session = Session(cfg, args.evidence, args.repo)
+        lines = []
+        for record in records:
+            data, reason = session.judge(record)
+            lines.append(na_line(record, reason) if reason else raw_line(record, data))
+        lines = safe_lines(lines, session.needles)
+        write_lines(args.scores_out, lines)
+        scores_path, calls = args.scores_out, session.budget.state['calls']
     scored = [l for l in lines if l['model'] == MODEL]
     fell = [r['episode_id'] for r in records if r.get('outcome') == 'fell']
     by_id = {l['episode_id']: l for l in lines}
     unscored = [e for e in fell if by_id[e]['model'] != MODEL]
-    print('calibration: %d of %d records scored, %d calls used' % (len(scored), len(lines), session.budget.state['calls']))
+    print('calibration: %d of %d records scored, %d calls used' % (len(scored), len(lines), calls))
     if not fell or unscored:
         print('no thresholds: %s' % ('no fell record' if not fell else '%d fell record(s) have no JEV score' % len(unscored)))
         return 0
     outcomes = {r['episode_id']: r.get('outcome') for r in records}
-    hits = [l['failure_cause']['confidence'] for l in scored
-            if outcomes[l['episode_id']] == 'fell' and l['failure_cause']['choice'] == causes.get(l['episode_id'])]
+    named = [l for l in scored if outcomes[l['episode_id']] == 'fell' and l['failure_cause']['choice'] != 'none']
+    hits = [l['failure_cause']['confidence'] for l in named]
+    matches = sum(1 for l in named if l['failure_cause']['choice'] == causes.get(l['episode_id']))
     false_alarms = [l['failure_cause']['confidence'] for l in scored
                     if outcomes[l['episode_id']] == 'avoided' and l['failure_cause']['choice'] != 'none']
     cut = cause_threshold(hits, false_alarms)
     if cut is None:
-        print('no thresholds: JEV named no fell record\'s diagnosed cause, so the cause threshold is not derivable')
+        print('no thresholds: JEV named a cause for no fell record, so the cause threshold is not derivable')
         return 1
     values = {name: dimension_threshold(scored, name) for name in DIMENSIONS}
     values['failure_cause'] = cut
     body = {
         'schema': THRESHOLDS_SCHEMA, 'model': MODEL, 'questions_sha256': questions_sha256(), 'thresholds': values,
         'calibration': {'split': 'development', 'records_sha256': records_digest(args.cohort, args.diagnosis),
-                        'scores_sha256': sha_file(args.scores_out), 'records': len(lines), 'scored': len(scored),
-                        'fell': len(fell), 'cause_hits': len(hits), 'avoided_false_alarms': len(false_alarms)},
+                        'scores_sha256': sha_file(scores_path), 'records': len(lines), 'scored': len(scored),
+                        'fell': len(fell), 'cause_hits': len(hits), 'cause_matches_diagnosis': matches,
+                        'avoided_false_alarms': len(false_alarms)},
         'derivation': {
             'dimension': 'label is the highest level L whose cumulative mass P(level >= L) reaches the threshold; '
-                         'the threshold is the median, over the scored calibration lines, of P(level >= 1); '
-                         'rounded to 4 places and clamped to [0.05, 0.95]; the oracles leave these dimensions '
-                         'null, so there is no ground truth and the cut is a distribution median',
+                         'the threshold is the median, over the scored calibration lines, of P(level = 2), rounded '
+                         'to 4 places and clamped to [0.05, 0.95]; the oracles leave these dimensions null, so '
+                         'there is no ground truth and the cut splits the calibration records by top-level mass',
             'failure_cause': 'review fires on an avoided record when JEV names a cause other than none at or above '
-                             'the threshold; hits are fell records whose JEV cause equals the diagnosis, false '
-                             'alarms are avoided records where JEV names a cause; separated: midpoint of the highest '
-                             'false alarm and the lowest hit; no false alarm: the lowest hit; overlap: the highest '
-                             'false alarm plus 0.01; rounded to 4 places and clamped to [0.01, 0.99]'},
+                             'the threshold; hits are fell records where JEV names a cause other than none, false '
+                             'alarms are avoided records where JEV names a cause other than none; separated: midpoint '
+                             'of the highest false alarm and the lowest hit; no false alarm: the lowest hit; overlap: '
+                             'the highest false alarm plus 0.01; rounded to 4 places and clamped to [0.01, 0.99]'},
     }
     Path(args.out).write_text(json.dumps(body, indent=2, sort_keys=True) + '\n', encoding='utf-8')
     print('thresholds written: %s' % ', '.join('%s=%s' % (k, values[k]) for k in sorted(values)))
@@ -685,7 +700,9 @@ def main(argv=None):
         p.add_argument('--repo', default=str(HERE.parents[2]), help='repository holding eval/scenarios')
         if name == 'calibrate':
             p.add_argument('--diagnosis', required=True)
-            p.add_argument('--scores-out', required=True)
+            where = p.add_mutually_exclusive_group(required=True)
+            where.add_argument('--scores-out', help='write the JEV lines the thresholds derive from, calling JEV')
+            where.add_argument('--scores-in', help='derive from recorded calibration lines; makes no call')
         else:
             p.add_argument('--thresholds', required=True)
     args = parser.parse_args(argv)

@@ -173,15 +173,46 @@ class Calibration(Base):
             # (0.6) and the lowest confidence of a correct cause on a fell record (0.9)
             self.assertEqual(body['thresholds']['failure_cause'], 0.75)
 
-    def test_dimension_thresholds_are_the_median_mass_on_the_upper_levels(self):
+    def test_dimension_thresholds_are_the_median_mass_on_the_top_level(self):
         module = load_module()
-        lines = [{'scores': {d: {'probabilities': {'0': 1 - m, '1': m, '2': 0.0}} for d in module.DIMENSIONS}}
-                 for m in (0.2, 0.4, 0.6, 0.8)]
-        self.assertEqual(module.dimension_threshold(lines, 'evidence'), 0.5)
-        lines = [{'scores': {d: {'probabilities': {'0': 0.0, '1': 0.0, '2': 1.0}} for d in module.DIMENSIONS}}]
-        self.assertEqual(module.dimension_threshold(lines, 'evidence'), 0.95)
-        lines = [{'scores': {d: {'probabilities': {'0': 1.0, '1': 0.0, '2': 0.0}} for d in module.DIMENSIONS}}]
-        self.assertEqual(module.dimension_threshold(lines, 'evidence'), 0.05)
+        mass = lambda m: {'scores': {d: {'probabilities': {'0': 1 - m, '1': 0.0, '2': m}} for d in module.DIMENSIONS}}
+        self.assertEqual(module.dimension_threshold([mass(m) for m in (0.2, 0.4, 0.6, 0.8)], 'evidence'), 0.5)
+        self.assertEqual(module.dimension_threshold([mass(1.0)], 'evidence'), 0.95)
+        self.assertEqual(module.dimension_threshold([mass(0.0)], 'evidence'), 0.05)
+        # a label takes the highest level whose cumulative mass reaches the threshold
+        self.assertEqual(module.label_of({'0': 0.1, '1': 0.3, '2': 0.6}, 0.5), 2)
+        self.assertEqual(module.label_of({'0': 0.1, '1': 0.6, '2': 0.3}, 0.5), 1)
+        self.assertEqual(module.label_of({'0': 0.7, '1': 0.2, '2': 0.1}, 0.5), 0)
+
+    def test_the_cause_threshold_needs_a_named_cause_not_the_diagnosed_one(self):
+        # JEV names a neighbouring cause on every fell record: the threshold still derives, and the count of
+        # matches with the diagnosis is recorded beside it
+        self.verdict.write_text(json.dumps({'causes': {e: {'cause': 'other'} for e in VERDICT['causes']}}), encoding='utf-8')
+        with Stub(self.key) as stub:
+            config = self.config(stub.url)
+            self.assertEqual(self.calibrate(config).returncode, 0)
+        body = json.loads((self.tmp / 'thresholds.json').read_text(encoding='utf-8'))
+        self.assertEqual(body['thresholds']['failure_cause'], 0.75)
+        self.assertEqual(body['calibration']['cause_hits'], 2)
+        self.assertEqual(body['calibration']['cause_matches_diagnosis'], 0)
+
+    def test_thresholds_derive_from_recorded_scores_without_a_key_or_a_call(self):
+        with Stub(self.key) as stub:
+            config, thresholds = self.calibrated(stub)
+            calls = len(stub.requests)
+            again = self.run_cli('calibrate', '--config', self.tmp / 'absent.json', '--cohort', self.work_a['cohort'],
+                                 '--evidence', self.work_a['evidence'], '--diagnosis', self.verdict,
+                                 '--out', self.tmp / 'again.json', '--scores-in', self.tmp / 'scores.jsonl')
+            self.assertEqual(again.returncode, 0, again.stderr)
+            self.assertEqual(len(stub.requests), calls)
+        self.assertEqual((self.tmp / 'again.json').read_text(encoding='utf-8'), thresholds.read_text(encoding='utf-8'))
+        stale = self.tmp / 'stale.jsonl'
+        stale.write_text('', encoding='utf-8')
+        refused = self.run_cli('calibrate', '--config', self.tmp / 'absent.json', '--cohort', self.work_a['cohort'],
+                               '--evidence', self.work_a['evidence'], '--diagnosis', self.verdict,
+                               '--out', self.tmp / 'stale.json', '--scores-in', stale)
+        self.assertEqual(refused.returncode, 2)
+        self.assertFalse((self.tmp / 'stale.json').exists())
 
     def test_cause_threshold_rules_cover_separation_overlap_and_no_hit(self):
         module = load_module()
