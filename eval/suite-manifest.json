@@ -14,7 +14,7 @@
         "test_controlled_writing.py",
         "test_plan.py"
       ],
-      "tests": 3,
+      "tests": 4,
       "source": "eval/plan",
       "category": "product",
       "purpose": "Plan section order, and the controlled-writing recipe and guide for owner texts and specifications."
