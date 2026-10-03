@@ -75,7 +75,7 @@ def spent_count(sentence, records):
     """Count the task's failed correction validations from `records`; a missing source is not zero."""
     if "record" not in sentence.lower() or records is None:
         return None
-    seen = {r["event"] for r in records if r["task"] == "T-9" and r["failed"]}
+    seen = {r["event"] for r in records if r["task"] == "task-a" and r["failed"]}
     return len(seen)
 
 
@@ -117,7 +117,7 @@ class ResumePathTests(unittest.TestCase):
             has(s, "every", "open", "obligation", "receipt") for s in status), "cold-resume half missing")
         board = ("| Obligation | What | Owner | Trigger | State | Discharge check | Reference |\n"
                  "|---|---|---|---|---|---|---|\n| O-01 | a | owner | t | Open | c | - |\n"
-                 "| O-03 | b | owner | t | Discharged | c | D-01 |\n")
+                 "| O-03 | b | owner | t | Discharged | c | a/ref.md |\n")
         reports = ["Final status: Complete.\n**Remains**: O-02\n", "Final status: Complete.\n**Remains**: none\n"]
         listed = list_open_obligations(sentence, board, reports)
         self.assertEqual(listed, {"O-01", "O-02"})
@@ -130,10 +130,10 @@ class ResumePathTests(unittest.TestCase):
         self.assertTrue(has(sentence, "failed"), sentence)
         self.assertTrue(any(has(s, "never", "zero") for s in sentences(lineage)))
         self.assertTrue(any(has(s, "snapshot", "project") for s in sentences(lineage)))
-        records = [{"task": "T-9", "event": "E-1", "failed": True, "actor": "executor"},
-                   {"task": "T-9", "event": "E-2", "failed": True, "actor": "coordinator"},
-                   {"task": "T-9", "event": "E-2", "failed": True, "actor": "coordinator"},
-                   {"task": "T-8", "event": "E-3", "failed": True, "actor": "executor"}]
+        records = [{"task": "task-a", "event": "E-1", "failed": True, "actor": "executor"},
+                   {"task": "task-a", "event": "E-2", "failed": True, "actor": "coordinator"},
+                   {"task": "task-a", "event": "E-2", "failed": True, "actor": "coordinator"},
+                   {"task": "task-b", "event": "E-3", "failed": True, "actor": "executor"}]
         self.assertEqual(spent_count(sentence, records), 2)
         self.assertIsNone(spent_count(sentence, None), "missing records never read as zero")
         self.assertTrue(any(has(s, "reconcil") for s in sentences(lineage)))
