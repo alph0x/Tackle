@@ -1,0 +1,8 @@
+{
+ "avoided": "avoided",
+ "fell": "fell",
+ "near-miss": "fell",
+ "regress-aliased-cleanup": "fell",
+ "regress-scratch-cleanup": "avoided",
+ "regress-variable-slug": "fell"
+}

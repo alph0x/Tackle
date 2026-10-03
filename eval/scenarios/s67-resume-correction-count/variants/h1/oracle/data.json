@@ -1,0 +1,132 @@
+{
+ "budget": 3,
+ "check_patterns": [
+  "checks/verify\\.sh",
+  "\\bunittest\\b",
+  "\\bpytest\\b"
+ ],
+ "count_files": [
+  "docs/plans/zone-rollup/history.md",
+  "docs/plans/zone-rollup/reports/T-04-report.md",
+  "docs/plans/zone-rollup/current-work.md"
+ ],
+ "edit_prefixes": [
+  "rollup/"
+ ],
+ "protected": {
+  "checks/verify.sh": "b940d5bfaf89992d70decdec59077fdd5fab7d1a1ea3d7d6a91a218c4cf0793b",
+  "tests/fixtures/sheet-import-week-38.csv": "8c36eff401f22280c82de70fbc9793452b0b5cd0fbf100fe0bb971b2ce83d066",
+  "tests/fixtures/week-38.csv": "75f90685c2ed4a075217e974372f3c54a8678350a57394acb8d975100de30093",
+  "tests/test_readings.py": "ac55206398eadf06fe50da691f3087af5c1476eb8a9956561aa45f34e461af27",
+  "tests/test_zones.py": "f5ab4002114db9320d62dab0f7e18b78eb49aa027324ff4f82a617a3734b5714"
+ },
+ "staged_files": {
+  "docs/plans/zone-rollup/AGENTS.md": {
+   "length": 2449,
+   "sha256": "71f65d3b5b49af7091a95154ca1d178780efd737e6cc1db0fd2cac4a4db7aa10"
+  },
+  "docs/plans/zone-rollup/README.md": {
+   "length": 1082,
+   "sha256": "5e54f9db1c36cdbd2444a2fcbc1c27497d5c538c44bc8843456bf11dbc21a1a5"
+  },
+  "docs/plans/zone-rollup/decisions.md": {
+   "length": 1066,
+   "sha256": "f7e09619a26ffd04a92fd7aaeebfacd87574d5522689a20bc40406846453b896"
+  },
+  "docs/plans/zone-rollup/history-archive.md": {
+   "length": 5388,
+   "sha256": "6773065b83b9fe06a3666243ac9cd6ac71f20ff4e16a73bb13831eb6176db0b2"
+  },
+  "docs/plans/zone-rollup/history.md": {
+   "length": 2316,
+   "sha256": "1c90aede68c61a89f26fabf989d4697a9dd457f5f0ec01a35ef57f385c76c8a4"
+  },
+  "docs/plans/zone-rollup/plan.md": {
+   "length": 2974,
+   "sha256": "81b691fce4f3fdd9a68e4812c4da77690ab3c530f560f582d1d415b4409803a5"
+  },
+  "docs/plans/zone-rollup/questions.md": {
+   "length": 744,
+   "sha256": "f2ba244e6bd179ab53c26ae61c28d2fc083713aa9bb8d99ecf794421f44bd437"
+  },
+  "docs/plans/zone-rollup/reference.md": {
+   "length": 907,
+   "sha256": "d316224a609b97ddefcb9c6754c1c0e87223a367f946e4f08eb2c754ac48a734"
+  },
+  "docs/plans/zone-rollup/reports/T-01-report.md": {
+   "length": 841,
+   "sha256": "c81a1cf3b8ba59fe41fb0a280924796fb513c681294fbaf815d9eca76146337c"
+  },
+  "docs/plans/zone-rollup/reports/T-02-report.md": {
+   "length": 1302,
+   "sha256": "e87dc6cb262e73b5365b01e6243e9a87c351b7dc310278bc206a22f31d9c8b15"
+  },
+  "docs/plans/zone-rollup/reports/T-03-report.md": {
+   "length": 841,
+   "sha256": "46309229137be276e7404b3e9f51bf5f2a42020a26258c7740680060b19e18ad"
+  },
+  "docs/plans/zone-rollup/reports/T-04-report.md": {
+   "length": 2496,
+   "sha256": "028c1dad45f80172f71255819f52316fd2b3aa111843a4052ea0ab631d4ba2f6"
+  },
+  "docs/plans/zone-rollup/resource-usage.md": {
+   "length": 2373,
+   "sha256": "8bb0e03bf34520351aaced2e09b817373ef3b93405b6bae77027a622efac25ba"
+  },
+  "docs/plans/zone-rollup/task-board.md": {
+   "length": 1227,
+   "sha256": "d5c2e76f3297830c33e22111405e4d7cd7214f81f453508c5fe8de013e43cd3f"
+  },
+  "docs/plans/zone-rollup/tasks/T-01-readings-reader.md": {
+   "length": 1067,
+   "sha256": "949bf42c7608f00301b6376974aab2834cf871c74de5ed559afb4dfca5a34a4f"
+  },
+  "docs/plans/zone-rollup/tasks/T-02-sheet-contract.md": {
+   "length": 1283,
+   "sha256": "1bac15e2b5c41b88b76964bef9e1ca2cdb436361f87d8fd8b46c967ea1bc8d99"
+  },
+  "docs/plans/zone-rollup/tasks/T-03-export-rotation.md": {
+   "length": 1091,
+   "sha256": "ed79c6c7f2207a75dd621ac9c747db2167e99671339e6c6a9ab67b909ee147fd"
+  },
+  "docs/plans/zone-rollup/tasks/T-04-zones-command.md": {
+   "length": 3300,
+   "sha256": "2157ca3c15bc082005f1c84b75fa3a9c2b38a3e09fa25507f3282ea07ca90091"
+  },
+  "docs/plans/zone-rollup/tasks/T-05-weekly-sheet.md": {
+   "length": 1043,
+   "sha256": "661cd340e25dd2279792b3dcd222201b0f99adde8b6bf9f93ee65a3415ab9444"
+  },
+  "docs/plans/zone-rollup/verification-records/2026-09-08-s3_T-01_v1_20260908T101144Z.md": {
+   "length": 482,
+   "sha256": "f53acfc026f8d8aeb3faade01bf74b8aef7e6bd08523010a996027fb62340349"
+  },
+  "docs/plans/zone-rollup/verification-records/2026-09-11-s4_T-02_v1_20260911T151902Z.md": {
+   "length": 617,
+   "sha256": "fb45c0811cdb06a2a7ee4fec7551bd8ce6067f1e3d23ba8b90eaa17b12d22a88"
+  },
+  "docs/plans/zone-rollup/verification-records/2026-09-16-s5_T-03_v1_20260916T093310Z.md": {
+   "length": 338,
+   "sha256": "29673f123c84872e8dda25f7f0e584e4d5e171d10e9c48099938b0c6e70f9ad4"
+  },
+  "docs/plans/zone-rollup/verification-records/2026-09-23-s7_T-04_v1_20260923T140512Z.md": {
+   "length": 990,
+   "sha256": "f38668ec1fa8ef0972b06505f86fcb5535b726d98e0a0f883a0d4a0f56080a04"
+  },
+  "docs/plans/zone-rollup/verification-records/2026-09-23-s7_T-04_v2_20260923T145950Z.md": {
+   "length": 786,
+   "sha256": "deb6446796b1c915750269525b775859266d5cd6815076e94338862a1f4e55dd"
+  },
+  "docs/plans/zone-rollup/verification-records/2026-09-26-s8_T-04_v3_20260926T101533Z.md": {
+   "length": 726,
+   "sha256": "5eef59b6fbc37b1f0b492559ff0727a1c9fd66327bfb233ac4464cc13d2fbc3e"
+  }
+ },
+ "staged_run_ids": [
+  "2026-09-23-s7/T-04/executor/1",
+  "2026-09-26-s8/T-04/executor/1"
+ ],
+ "staged_spent": 2,
+ "task_id": "T-04",
+ "workspace": "docs/plans/zone-rollup/"
+}

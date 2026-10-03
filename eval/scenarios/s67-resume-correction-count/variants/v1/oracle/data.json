@@ -1,0 +1,119 @@
+{
+ "budget": 3,
+ "check_patterns": [
+  "checks/acceptance\\.sh",
+  "\\bunittest\\b",
+  "\\bpytest\\b"
+ ],
+ "count_files": [
+  "docs/plans/manifest-summary/history.md",
+  "docs/plans/manifest-summary/reports/T-03-report.md",
+  "docs/plans/manifest-summary/current-work.md"
+ ],
+ "edit_prefixes": [
+  "manifest/"
+ ],
+ "protected": {
+  "checks/acceptance.sh": "474a531c056651d6503b232af0968fdaee203fb33049405264500bd62d29a2f0",
+  "tests/fixtures/run-04.csv": "e427714452d758da5977755512222b09c5451247f293e781bf81aa996852e654",
+  "tests/test_rows.py": "0919332efc01fc4410000e9bb7b943faa2c700ab36ffe2480254a08742933b7e",
+  "tests/test_summary.py": "880d56a5d4b2edcb4ac4987337a69cfe0ae125d12df7e7d0a9a28b297cf7eaad"
+ },
+ "staged_files": {
+  "docs/plans/manifest-summary/AGENTS.md": {
+   "length": 2739,
+   "sha256": "100551ed5dc54e5fae303005cd288b8fe3aa8c8b17cfa8a292bbc768821dddcb"
+  },
+  "docs/plans/manifest-summary/README.md": {
+   "length": 1143,
+   "sha256": "6b17faae428b5759ba00429cd30a19dcafca16f950e05e6accc2b3db0f6a1303"
+  },
+  "docs/plans/manifest-summary/decisions.md": {
+   "length": 1063,
+   "sha256": "2d19ac6c72b42352b93004c41c2d3ee7231221433bd1bc8dc953c7527f56496f"
+  },
+  "docs/plans/manifest-summary/history-archive.md": {
+   "length": 5820,
+   "sha256": "318534028decd024f0c9e37f48e0d4634dcfdfaba289770a5fce35a991943377"
+  },
+  "docs/plans/manifest-summary/history.md": {
+   "length": 2751,
+   "sha256": "9e8b090628888ba993df58192e6b4aa5bcf7692e6e5848dc437ab43698fda1d3"
+  },
+  "docs/plans/manifest-summary/plan.md": {
+   "length": 2932,
+   "sha256": "c4d64cf4cb3586fdd56b8083ca964e8c0191008f15e0b36ed9cef8593cd1d84b"
+  },
+  "docs/plans/manifest-summary/questions.md": {
+   "length": 588,
+   "sha256": "b423e4b934f5ab0bd19bd1ff5833c9fb58be5a27bde1f9f252ad17e678dc1ef7"
+  },
+  "docs/plans/manifest-summary/reference.md": {
+   "length": 649,
+   "sha256": "bbdc79b10dcc46621a5ca85f4a3a51fb3bedd34cbe5640dcadb8cd23dc7071fa"
+  },
+  "docs/plans/manifest-summary/reports/T-01-report.md": {
+   "length": 937,
+   "sha256": "ff0165ed3e1279313ca2a8758ebfa66c34b6ccecbef75c40b482384d3c3a1dc7"
+  },
+  "docs/plans/manifest-summary/reports/T-02-report.md": {
+   "length": 1297,
+   "sha256": "48bf8b2023a5c3abcb34438f0ff27c0224a1aa98afcddeb34f1b303e831c1925"
+  },
+  "docs/plans/manifest-summary/reports/T-03-report.md": {
+   "length": 2465,
+   "sha256": "ad31b5b70acb5c137555342d8dfe4b3bc62e4891ff0f1d65795ed719f6027567"
+  },
+  "docs/plans/manifest-summary/resource-usage.md": {
+   "length": 1854,
+   "sha256": "cc80c7a3bb5288f19d192adefa71637cc6da6fafb0205f68b4943e29fb48b9d6"
+  },
+  "docs/plans/manifest-summary/task-board.md": {
+   "length": 1148,
+   "sha256": "55ed240cb7d6e974565c6dc18cfb623acd4d11346571379bb050ccf098ea9864"
+  },
+  "docs/plans/manifest-summary/tasks/T-01-parse-rows.md": {
+   "length": 1117,
+   "sha256": "1fe7d1aa486f4ca46b02073a8e355df001b9ef6f541845fc2b3e858f78244fac"
+  },
+  "docs/plans/manifest-summary/tasks/T-02-fixture-set.md": {
+   "length": 1305,
+   "sha256": "d08f801651f678baf2fbfd0173d287a58bcbb207f5322df0c9b58868888820db"
+  },
+  "docs/plans/manifest-summary/tasks/T-03-summarize.md": {
+   "length": 3416,
+   "sha256": "4a9077643014016bf18c6cec06239708f024e40d3525d9e46847620d9c6b18c4"
+  },
+  "docs/plans/manifest-summary/tasks/T-04-digest-line.md": {
+   "length": 1246,
+   "sha256": "df580ca89577902745752aaddedd73440680cb9fb291a4c9dd663815bab14163"
+  },
+  "docs/plans/manifest-summary/verification-records/2026-09-15-s3_T-01_v1_20260915T113512Z.md": {
+   "length": 474,
+   "sha256": "e40537f13b7f8743d58b473f0e0ac17015d3eaddac8a25a49b83e9cf00fd8066"
+  },
+  "docs/plans/manifest-summary/verification-records/2026-09-17-s4_T-02_v1_20260917T150241Z.md": {
+   "length": 565,
+   "sha256": "80ff8b60b84dcf5dae415870571893582458364a45e7b16ad9dd1a660e4364bb"
+  },
+  "docs/plans/manifest-summary/verification-records/2026-09-22-s6_T-03_v1_20260922T154403Z.md": {
+   "length": 736,
+   "sha256": "0d81f7eb19ab45e6a6ccb84b343417813b841fda89accaf1c849ba0d476b5e11"
+  },
+  "docs/plans/manifest-summary/verification-records/2026-09-22-s6_T-03_v2_20260922T162014Z.md": {
+   "length": 595,
+   "sha256": "1fe1dc4b122b8ef0708bcb6ccee6e1410ba52abea7d71bc4ceb1beafb4816799"
+  },
+  "docs/plans/manifest-summary/verification-records/2026-09-24-s7_T-03_v3_20260924T141922Z.md": {
+   "length": 759,
+   "sha256": "e61b9a3555b45304bdb8820a7eb9250fa43807f7a44894d3b444ce22633504d1"
+  }
+ },
+ "staged_run_ids": [
+  "2026-09-22-s6/T-03/executor/1",
+  "2026-09-24-s7/T-03/executor/1"
+ ],
+ "staged_spent": 2,
+ "task_id": "T-03",
+ "workspace": "docs/plans/manifest-summary/"
+}

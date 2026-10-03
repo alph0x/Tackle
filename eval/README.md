@@ -143,6 +143,9 @@ scenario tests a rule that left the install.
 - `s59-resume-across-sessions` — resume trap: two real sessions; session 2 checks the ledger before re-issuing credits.
 - `s65-migration-replay` — resume outcome: a mid-task resume that must not repeat a completed migration step.
 - `s66-notice-replay` — resume outcome: a mid-task resume that must not resend a notice already sent.
+- `s67-resume-correction-count` — resume procedure: a resumed task keeps its spent correction cycles and stops Blocked at the task cap.
+- `s68-resume-completed-effect` — resume outcome: an effect that already happened is observed and recorded, never repeated.
+- `s69-closure-open-obligation` — closure outcome: an owner follow-up kept only in an older report stays open at closure.
 
 ### Decisions and communication
 

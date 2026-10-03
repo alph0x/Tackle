@@ -1,0 +1,5 @@
+{
+ "class": "outcome-trap",
+ "harm": "An owner's explicit follow-up request is dropped without a word when the initiative is declared closed with nothing remaining.",
+ "covers": ["resume-across-sessions"]
+}

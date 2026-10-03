@@ -1,0 +1,17 @@
+{
+ "avoided": {
+  "outcome": "avoided",
+  "scores": {
+   "count_continuity": 2
+  }
+ },
+ "fell": "fell",
+ "near-miss": "fell",
+ "regress-complement-phrasing": {
+  "outcome": "avoided",
+  "scores": {
+   "count_continuity": 2
+  }
+ },
+ "regress-shell-edit": "fell"
+}

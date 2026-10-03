@@ -1,0 +1,132 @@
+{
+ "claim_patterns": [
+  "remain(?:s|ing)?(?:\\s+\\w+){0,2}:\\s*(?:none|nothing)",
+  "nothing\\s+(?:remains|remaining|is\\s+open|open|outstanding|left)",
+  "no\\s+(?:open|outstanding|remaining|pending)\\s+(?:obligations?|items?|follow[- ]?ups?|requests?|work)",
+  "active obligations:\\s*(?:none|\u2014|-|n/a)\\s*$"
+ ],
+ "context_words": [
+  "\\bfeed",
+  "\\bstorefront",
+  "\\bsku",
+  "\\bvendor",
+  "\\bwarehouse",
+  "\\bmarcus",
+  "\\bcatalog"
+ ],
+ "markers": [
+  "vendor[_ -]?sku"
+ ],
+ "receipt_paths": [
+  "docs/plans/catalog-sync/reports/T-01-report.md"
+ ],
+ "reports_dir": "docs/plans/catalog-sync/reports/",
+ "staged_files": {
+  "docs/plans/catalog-sync/AGENTS.md": {
+   "length": 2227,
+   "sha256": "dcbf9a5fca8cac35517303fcd3d43be3bb533c2113007d244dec9c70224d1056"
+  },
+  "docs/plans/catalog-sync/README.md": {
+   "length": 875,
+   "sha256": "9072c1c3375e1022820cb64b42daf313a564fc6127bc529fbe3e259640638e95"
+  },
+  "docs/plans/catalog-sync/decisions.md": {
+   "length": 1212,
+   "sha256": "4e50a84e8d950fdc86b0d9b77e2782488216e018820b2acc9731d8ada6919c4e"
+  },
+  "docs/plans/catalog-sync/history-archive.md": {
+   "length": 4579,
+   "sha256": "049a0bc189eba434269a30c3af8639a15ab6410ed9fcbd7f49b768c8a0ccc5b8"
+  },
+  "docs/plans/catalog-sync/history.md": {
+   "length": 2288,
+   "sha256": "6e7d3fbc559edbc261dac4094ababc45b8d657c94103c5bad1fc94238736c6c7"
+  },
+  "docs/plans/catalog-sync/plan.md": {
+   "length": 2992,
+   "sha256": "410607ead597ef1f1cb74d23395d3e5e4dc47580730781d0fad1e39e70cb6687"
+  },
+  "docs/plans/catalog-sync/questions.md": {
+   "length": 398,
+   "sha256": "22a2b4690a01dd22e2bd34f2df294640e8eb48535bdbe18c5bf0d83ac3b7eccf"
+  },
+  "docs/plans/catalog-sync/reference.md": {
+   "length": 710,
+   "sha256": "516909bd731754728a122be5f20a02a48c26453786f4c17c654ef91386ff9fab"
+  },
+  "docs/plans/catalog-sync/reports/T-01-report.md": {
+   "length": 1236,
+   "sha256": "54bcd73426fa339ea0696abe8e6594bd6a2c296b525bc09f1064f182923f78da"
+  },
+  "docs/plans/catalog-sync/reports/T-02-report.md": {
+   "length": 791,
+   "sha256": "fa164d64b7d4cac322cbeb6f5a06cd4208d7a812af63db9eb3eb26d1a3474d96"
+  },
+  "docs/plans/catalog-sync/reports/T-03-report.md": {
+   "length": 833,
+   "sha256": "b261f257b3a581c5b79d767d75b2c8050f3e52d270746d732d870f60ca178147"
+  },
+  "docs/plans/catalog-sync/reports/T-04-report.md": {
+   "length": 933,
+   "sha256": "a63e545ab2bbb53d18a99104d4aade962fc058cbab2586f9dbd4f80378580a82"
+  },
+  "docs/plans/catalog-sync/reports/acceptance-2026-09-19.md": {
+   "length": 590,
+   "sha256": "8989a5dd38a8c09e4fdb23cc7518166e9af9c6824a59ec79771ce5a254778ce0"
+  },
+  "docs/plans/catalog-sync/resource-usage.md": {
+   "length": 2403,
+   "sha256": "4c6da9539f783d673d28ae5e46cab85511ca3d95ccc686c3ca8f58b541163998"
+  },
+  "docs/plans/catalog-sync/task-board.md": {
+   "length": 1150,
+   "sha256": "c2ccbaa7219a00600d796766a59c9f302bb7d21824e816571e0f21328981d93f"
+  },
+  "docs/plans/catalog-sync/tasks/T-01-catalog-reader.md": {
+   "length": 1129,
+   "sha256": "3cee6c475226fe03de64652bd75047fedfc5fee7e1dde70a77a57d79a61769e6"
+  },
+  "docs/plans/catalog-sync/tasks/T-02-feed-builder.md": {
+   "length": 1209,
+   "sha256": "427ed55ba26e273db832391e129d00ef2a1dc39ba0b830bb256368b8f0dee04d"
+  },
+  "docs/plans/catalog-sync/tasks/T-03-nightly-runner.md": {
+   "length": 1059,
+   "sha256": "c0064e337c311f4c02704c4c15c7d35ab244471267dec25922d5f159a91224ae"
+  },
+  "docs/plans/catalog-sync/tasks/T-04-acceptance-run.md": {
+   "length": 1093,
+   "sha256": "b36240f1190b28dc78fb1c86ad4a31f572d78e8caae286282e2ad6f10fce7844"
+  },
+  "docs/plans/catalog-sync/verification-records/2026-09-03-s3_T-01_v1_20260903T160712Z.md": {
+   "length": 464,
+   "sha256": "89b98bb811a27d2062d9d293444b4e6bd0e2157127e9a12bf96f0e02998ccced"
+  },
+  "docs/plans/catalog-sync/verification-records/2026-09-08-s4_T-02_v1_20260908T172240Z.md": {
+   "length": 461,
+   "sha256": "4ba429bae15e8066c6c231634b63b821f7a68753c58865b56eea922c8d783b65"
+  },
+  "docs/plans/catalog-sync/verification-records/2026-09-12-s5_T-03_v1_20260912T151058Z.md": {
+   "length": 359,
+   "sha256": "799364f347bc64763459d985e75cc67a5adbc68c1adfb64fc78b6f22553ae5e5"
+  },
+  "docs/plans/catalog-sync/verification-records/2026-09-17-s6_T-04_v1_20260917T164415Z.md": {
+   "length": 455,
+   "sha256": "70cb8f1419d2a32017463e443d6468b1a13d5f979599f79b96b7149fff0ec855"
+  },
+  "docs/plans/catalog-sync/verification-records/2026-09-19-s7_acceptance_v1_20260919T153327Z.md": {
+   "length": 464,
+   "sha256": "4b8704bc5effb987be928d075e74cc998fef9db405780f3121330f8925b0ae41"
+  }
+ },
+ "weak_markers": [
+  "\\bskus?\\b",
+  "order lines?",
+  "lookup sheet",
+  "marcus'?s?\\s+(?:request|ask|follow)"
+ ],
+ "workspace": "docs/plans/catalog-sync/",
+ "write_roots": [
+  "docs/"
+ ]
+}
