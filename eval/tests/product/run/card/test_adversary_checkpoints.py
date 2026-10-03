@@ -14,8 +14,8 @@ RECIPE = INSTALL / 'references/recipes/adversary-checkpoints.md'
 GUIDES = INSTALL / 'references/guides'
 
 ONE, TWO = 'T-%02d' % 1, 'T-%02d' % 2
-PATHS = {'reviews/one-adversary.json', 'reviews/two-adversary.json', 'reviews/lock.json', 'decisions.md',
-         'decisions.md#D-12'}
+LIVE, ABSENT = 'decisions.md#D' + '-%d' % 12, 'decisions.md#D' + '-%d' % 999
+PATHS = {'reviews/one-adversary.json', 'reviews/two-adversary.json', 'reviews/lock.json', 'decisions.md', LIVE}
 F, A = ('failure', 'cmd=x; class=implementation; assert=a; out=h1'), ('attempt', None)
 G = ('failure', 'cmd=x; class=implementation; assert=b; out=h2')
 
@@ -40,7 +40,7 @@ CASES = [
     ('p04-repeat-reviewed-before-attempt', {ONE: task('Checking', report(line('repeat-failure')), [F, A, F, ('review', 'repeat-failure'), A])}, None),
     ('p05-repeat-not-yet-attempted', {ONE: task('Checking', '', [F, A, F])}, None),
     ('p06-two-tasks-one-signature-each', {ONE: task('In progress', '', [F, A]), TWO: task('In progress', '', [F, A])}, None),
-    ('p07-waived-complete', {ONE: task('Complete', report(line('complete', 'decisions.md#D-12', 'waived')), [])}, None),
+    ('p07-waived-complete', {ONE: task('Complete', report(line('complete', LIVE, 'waived')), [])}, None),
     ('p08-completed-before-adoption', {ONE: task('Complete', report(), [], before_adoption=True)}, None),
     ('n01-complete-without-review', {ONE: task('Complete', report(), [])}, ONE),
     ('n02-complete-with-lock-only', {ONE: task('Complete', report(line('lock', 'reviews/lock.json')), [('review', 'lock')])}, ONE),
@@ -56,7 +56,7 @@ CASES = [
     ('n12-moment-is-a-superstring', {ONE: task('Complete', report(line('incomplete')), [])}, ONE),
     ('n13-empty-independence-cell', {ONE: task('Complete', report(line('complete', independence='')), [])}, ONE),
     ('n14-waiver-without-decision', {ONE: task('Complete', report(line('complete', 'reviews/one-adversary.json', 'waived')), [])}, ONE),
-    ('n15-waiver-unknown-decision', {ONE: task('Complete', report(line('complete', 'decisions.md#D-999', 'waived')), [])}, ONE),
+    ('n15-waiver-unknown-decision', {ONE: task('Complete', report(line('complete', ABSENT, 'waived')), [])}, ONE),
 ]
 
 
