@@ -50,10 +50,12 @@
         "eval/run/card/**",
         "skills/tackle/references/AGENTS.tmpl.md",
         "skills/tackle/references/current-work.tmpl.md",
+        "skills/tackle/references/guides/plan-card.md",
         "skills/tackle/references/guides/run-card.md",
         "skills/tackle/references/guides/run.md",
         "skills/tackle/references/guides/status.md",
         "skills/tackle/references/lite-plan.tmpl.md",
+        "skills/tackle/references/recipes/adversary-checkpoints.md",
         "skills/tackle/references/team.tmpl.md"
       ],
       "families": [

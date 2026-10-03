@@ -945,7 +945,7 @@
       "rule_id": "R-RUN-05",
       "statement": "Reuse verified current state and sufficient existing checks; do not append equivalent assertions or unchanged closure reruns.",
       "statement_sha256": "d9beacfc73bfe0717bd839e70c569c8c6a2133391f0bbffcb8e6877522d2ff55",
-      "home": "references/guides/run.md:240",
+      "home": "references/guides/run.md:262",
       "home_fragment": "Reuse unchanged PLAN readiness checks",
       "units": [],
       "mirrors": [],
@@ -968,7 +968,7 @@
       "rule_id": "R-RUN-06",
       "statement": "Changed content, selector membership, configuration, interfaces, runtime or freshness invalidate affected consumers, and unknown dependencies require conservative checks.",
       "statement_sha256": "1c1280f74aeef7eb7f7257c0cd7e6857d1cdb14607295e70d0e2dac102a2fd0e",
-      "home": "references/guides/run.md:175",
+      "home": "references/guides/run.md:197",
       "home_fragment": "only the dependent checks; re-ground and revalidate",
       "units": [],
       "mirrors": [],
@@ -1307,7 +1307,7 @@
       "home_fragment": "Closure reports for done tasks",
       "units": [],
       "mirrors": [
-        "references/guides/run.md:226"
+        "references/guides/run.md:248"
       ],
       "class": "safety-invariant",
       "hot_path": false,
@@ -1909,7 +1909,7 @@
       "home_fragment": "Historical E0–E3 codes",
       "units": [],
       "mirrors": [
-        "references/guides/run.md:164"
+        "references/guides/run.md:165"
       ],
       "class": "format",
       "hot_path": false,
@@ -3161,7 +3161,7 @@
       "rule_id": "R-RUN-19",
       "statement": "An obligation that outlives its task is recorded when it is created as an O-NN row of the board's obligations table and prevents initiative completion while it is Open, unless the owner withdrew it.",
       "statement_sha256": "6d1baf55e5ae97b57a522eb306cc74f95574013a45a9a47e4800fd2267c2978a",
-      "home": "references/guides/run.md:188",
+      "home": "references/guides/run.md:210",
       "home_fragment": "An obligation that outlives its task is recorded when it is",
       "units": [],
       "mirrors": [
@@ -3179,6 +3179,31 @@
         "scenarios": [],
         "cohort_id": null,
         "as_of": "2026-10-02"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-20",
+      "statement": "RUN calls a fresh, independent adversarial review at three moments only (lock, repeat-failure and complete), the reviewer records its actual independence, and a moment with no independent reviewer stops the task Waiting on owner unless a recorded owner decision waives it.",
+      "statement_sha256": "6a7f89f981c2bda43e934d6c4f5fd7152fb97189fb55cc785b7e81e2ec579da8",
+      "home": "references/guides/run.md:171",
+      "home_fragment": "Run calls an independent adversarial review at three moments",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.0",
+        "trigger": "Review before a lock, before a repeated failure is corrected again, and before completion is independent and recorded.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s71-adversary-checkpoint"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-10-03"
       },
       "historical": []
     },

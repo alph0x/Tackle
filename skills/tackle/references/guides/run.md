@@ -153,8 +153,9 @@ actual provenance, while its own review remains self-review and is not independe
 independent session or human fallback only when the risk or obligation requires semantic
 independence; record the actual actor, profile, context and isolation. If the required isolation is
 unavailable, mark that evidence obligation unavailable/blocked and do not claim independent E1. A
-renamed role or a fresh label is not proof of independence. Routine Run has no universal frontier
-checker, majority vote, or audit. A vote cannot erase a confirmed correctness failure. Freeze the
+renamed role or a fresh label is not proof of independence. Routine Run has no universal
+frontier checker or majority vote; its only routine independent reviews are the three [adversary
+checkpoints](#adversary-checkpoints). A vote cannot erase a confirmed correctness failure. Freeze the
 source and protected expectations at the review boundary.
 
 The Task state is distinct from evidence grades and from the board's current execution status.
@@ -163,6 +164,27 @@ E1 is command-verified evidence from an actually independent checker; E2 is a na
 gate when no honest command exists; E0 is explicitly unverifiable; E3 is an assertion. Grades are
 derived from the evidence, never self-declared, and E2 is not numerically ordered against E3. Missing
 capability is not zero evidence.
+
+<a id="adversary-checkpoints"></a>
+### Adversary checkpoints
+
+Run calls an independent adversarial review at three moments:
+
+- `lock`: before a contract clause or task brief locks; a brief locks when its task first enters
+  `Ready to run` and after each change.
+- `repeat-failure`: on a repeated same-signature failure. The no-progress stop applies first;
+  the review, before any further correction, judges whether it removes or hides the cause.
+- `complete`: before a task is Complete.
+
+The reviewer is a fresh session that authored none of the work and sees only the artifacts under review.
+It writes a verdict, recording model, session, inputs and shared model family; a
+non-independent one is reported and never counts. With no independent reviewer, the task stops
+`Waiting on owner`, not `Ready to run` or Complete, unless an owner decision waives it.
+
+Each review leaves one report line:
+`**Adversary**: <moment> · <verdict path> · <reviewer model and session> · <independence>`.
+Paths are workspace-relative; a waiver cites `decisions.md#D-<n>` and reads `waived`. A review spends no
+correction cycle. Tasks completed before adopting 9.1 are outside the [check](../recipes/adversary-checkpoints.md).
 
 <a id="integration-global-acceptance-and-close"></a>
 <a id="integration-deliverable-acceptance-and-close"></a>
