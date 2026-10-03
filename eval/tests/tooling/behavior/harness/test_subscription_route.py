@@ -176,7 +176,14 @@ class Env:
                 'state_dir': str(self.state), 'cli_tmp_limit': 4096,
                 'caps': {'total_usd': 50, 'episode': {'usd': 1.0, 'seconds': 60, 'turns': 10}, 'stages': {'stage': 20},
                          'probe': {'total_usd': 4, 'child_usd': 1.0, 'child_seconds': 60, 'child_turns': 12}},
-                'oracle': {'python': str(self.oracle_python), 'seconds': 30}, 'launcher': str(self.launcher)}
+                'oracle': {'python': str(self.oracle_python), 'seconds': 30, 'denied_prefixes': self.denied_prefixes()},
+                'launcher': str(self.launcher)}
+
+    def denied_prefixes(self):
+        """The built-in denied trees minus those holding this scratch tree, where the fake launcher's interpreter wrapper lives."""
+        trees = [SEP + 'Users'] + [SEP + name for name in ('private/tmp', 'tmp', 'Volumes', 'private/var/folders', 'var/folders',
+                                                           'private/var/tmp')]
+        return [tree for tree in trees if not covers(tree, self.tmp)]
 
     def write_config(self, cfg=None):
         write(self.config_path, json.dumps(cfg or self.config(), indent=1))
@@ -999,6 +1006,50 @@ class Judging(Base):
                 self.assertIn('launcher', process.stderr)
                 self.assertIn('executable', process.stderr)
                 self.assertFalse(env.marker.exists())
+
+    def test_an_interpreter_under_any_denied_tree_refuses_with_its_own_reason(self):
+        for prefix in DENIED_READS + [SEP + 'tmp', SEP + 'var/folders']:
+            with self.subTest(prefix=prefix):
+                env = self.new_env()
+                oracle, final, transcript = env.judge_inputs(oracle=self.marker_oracle())
+                cfg = env.config()
+                cfg['oracle'].pop('denied_prefixes', None)
+                cfg['oracle']['python'] = prefix + '/tools/python3'
+                env.write_config(cfg)
+                process = env.judge(oracle, final, transcript)
+                self.assertEqual(process.returncode, 1, process.stdout + process.stderr)
+                named = {prefix, os.path.realpath(prefix)} | {p for p in DENIED_READS if covers(p, prefix)}  # an alias names its twin
+                self.assertTrue(any('refusing to judge: the oracle interpreter is under %s,' % name in process.stderr for name in named),
+                                process.stderr)
+                self.assertFalse(env.marker.exists())
+                self.assertEqual(env.launcher_log(), [])
+        env = self.new_env()
+        env.cohort_of(['method'])
+        cfg = env.config()
+        cfg['oracle'].pop('denied_prefixes', None)
+        cfg['oracle']['python'] = SEP + 'private/var/tmp/tools/python3'
+        env.write_config(cfg)
+        process = env.run()
+        self.assertEqual(process.returncode, 1, process.stdout + process.stderr)
+        self.assertIn('oracle interpreter is under', process.stderr)
+        self.assertEqual(env.model_calls(), [], 'refused before any model call')
+
+    def test_the_denied_trees_for_the_interpreter_check_are_configurable_and_validated(self):
+        env = self.env
+        cfg = env.config()
+        cfg['oracle']['denied_prefixes'] = [SEP + 'Volumes']
+        cfg['oracle']['python'] = SEP + 'Volumes/tools/python3'
+        env.write_config(cfg)
+        loaded = route.load_config(env.config_path)
+        self.assertIn('oracle interpreter is under', route.judge_refusal(loaded))
+        cfg['oracle']['python'] = SEP + 'private/var/tmp/tools/python3'
+        env.write_config(cfg)
+        self.assertIsNone(route.judge_refusal(route.load_config(env.config_path)), 'only the configured trees are checked')
+        for bad in ('/Users', ['relative'], [3], ['/ok', '']):
+            cfg['oracle']['denied_prefixes'] = bad
+            env.write_config(cfg)
+            with self.assertRaises(route.Refusal):
+                route.load_config(env.config_path)
 
     def test_launcher_failure_is_an_error_not_an_unsandboxed_run(self):
         write(self.env.bin / 'launcher-mode.txt', 'fail')

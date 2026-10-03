@@ -299,12 +299,14 @@ sandbox or model.
   - `model`, `run_root`, `state_dir`, and `token_file`, which is a path and never a value;
   - `caps`: `total_usd`, `episode` (`usd`, `seconds`, `turns`), `stages` (a USD cap per stage name) and `probe`
     (`total_usd`, and per child `child_usd`, `child_seconds`, `child_turns`);
-  - `oracle`: the interpreter's `python` path and its `seconds`;
+  - `oracle`: the interpreter's `python` path and its `seconds`, and optionally `denied_prefixes`, the trees the
+    interpreter must stay out of (default: the profile's own list, below). It narrows only that pre-flight check,
+    for a launcher that enforces no profile; the profile never changes;
   - `launcher`: the absolute path of the sandbox launcher (`/usr/bin/sandbox-exec`), which the route runs and never
     looks up on PATH; it must be an executable file outside `/Users`;
   - optionally `child_path` and `cli_tmp_limit`, which defaults to the CLI's 44-byte temporary-path limit.
 - **Before any model call** the route refuses, with an explicit reason, for any of these: a malformed
-  configuration, a launcher that is not an executable file or sits under `/Users`, an interpreter or run root under `/Users`, a held lock, a CLI whose
+  configuration, a launcher that is not an executable file or sits under `/Users`, an interpreter under a tree the oracle profile denies or a run root under `/Users`, a held lock, a CLI whose
   sha256 or version differs from the pin, a run root over the temporary-path limit, a leftover run root, an
   ancestor of the run root that holds `AGENTS.md`, `CLAUDE.md` or `.claude`, an input or skill tree whose digest
   differs from the sealed manifest, an arm other than `control` and `method`, a missing oracle, an unsafe fixture
@@ -348,7 +350,7 @@ sandbox or model.
   canonical root and runs it through `sandbox-exec` with a profile that allows no network, denies reads under
   `/Users`, `/private/tmp`, `/Volumes`, `/private/var/folders` and `/private/var/tmp` except that root, and
   allows writes only to a scratch directory in it. The oracle's environment holds no token. Without
-  the configured launcher, or with the interpreter or run root under `/Users`, the route refuses to judge with an explicit
+  the configured launcher, or with the interpreter under a denied tree or the run root under `/Users`, the route refuses to judge with an explicit
   reason; it never judges unsandboxed, and a launcher that cannot start the oracle is an `error`. An oracle that
   exits non-zero, hangs, prints a malformed verdict or modifies its input is an `error`. `judge` runs this step
   alone and prints the verdict.

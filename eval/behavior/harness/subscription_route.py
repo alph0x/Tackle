@@ -155,8 +155,11 @@ def load_config(path):
     stages = caps['stages']
     need(isinstance(stages, dict) and all(SAFE_ID.fullmatch(name) and number(value) for name, value in stages.items()),
          'caps.stages maps a stage name to a positive cap')
-    oracle = keys(raw['oracle'], ('python', 'seconds'), (), 'oracle')
+    oracle = keys(raw['oracle'], ('python', 'seconds'), ('denied_prefixes',), 'oracle')
     need(whole(oracle['seconds']), 'oracle seconds must be a positive integer')
+    denied = oracle.get('denied_prefixes', DENY_READ)
+    need(isinstance(denied, list) and all(isinstance(item, str) and item.startswith('/') and '\0' not in item for item in denied),
+         'oracle denied_prefixes must be a list of absolute paths')
     limit = raw.get('cli_tmp_limit', 44)
     need(whole(limit), 'cli_tmp_limit must be a positive integer')
     child_path = raw.get('child_path', CHILD_PATH)
@@ -173,7 +176,7 @@ def load_config(path):
         episode_seconds=episode['seconds'], episode_turns=episode['turns'], stage_usd={k: float(v) for k, v in stages.items()},
         probe_total_usd=float(probe['total_usd']), probe_child_usd=float(probe['child_usd']),
         probe_child_seconds=probe['child_seconds'], probe_child_turns=probe['child_turns'],
-        oracle_python=absolute(oracle['python'], 'oracle python'), oracle_seconds=oracle['seconds'],
+        oracle_python=absolute(oracle['python'], 'oracle python'), oracle_seconds=oracle['seconds'], oracle_denied=list(denied),
         launcher=absolute(raw['launcher'], 'launcher'))
 
 
@@ -185,9 +188,15 @@ def under_users(path):
 
 
 def judge_refusal(cfg):
-    """None when the oracle may be judged, otherwise the explicit reason. The route never judges unsandboxed."""
-    if under_users(cfg.oracle_python):
-        return 'refusing to judge: the oracle interpreter is under %s, where the sandbox profile denies reads' % HOME_PREFIX
+    """None when the oracle may be judged, otherwise the explicit reason. The route never judges unsandboxed.
+
+    The profile always denies every tree in DENY_READ and re-allows only the judged root, so an interpreter anywhere
+    under one of them could not start. ``oracle.denied_prefixes`` narrows this courtesy check alone, for a launcher that
+    enforces no profile (the suite's fake).
+    """
+    for prefix in cfg.oracle_denied:
+        if under(prefix, cfg.oracle_python):
+            return 'refusing to judge: the oracle interpreter is under %s, where the sandbox profile denies reads' % prefix
     if under_users(cfg.run_root):
         return 'refusing to judge: the run root is under %s, where the sandbox profile denies reads' % HOME_PREFIX
     if under_users(cfg.launcher):
