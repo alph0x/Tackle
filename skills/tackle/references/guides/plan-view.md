@@ -16,7 +16,8 @@ request at any time by saying stop.
 
 When a view exists for the workspace, the coordinator rebuilds it after each board status change and after
 each role start or finish. The coordinator rebuilds only a view that already exists. The standing request
-covers these rebuilds until the owner says stop.
+covers these rebuilds until the owner says stop. When a rebuild is refused, the coordinator reports the refusal
+lines to the owner, and the earlier view keeps its earlier build time.
 
 ## Build
 
@@ -41,19 +42,25 @@ The problems are:
 
 ## Focused plans
 
-A Focused plan has a `Gate: Lite` line and no board. The view lists its requirements and checks. It says
-that the plan has no board and draws no graph. It invents no board.
+A Focused plan has a `Gate: Lite` line and no board. The recipe reads its requirement ids from the
+`Purpose / requirements` line of the Lite plan body, or from a criteria table, and its checks from the
+`Cases → checks` line. The view lists them, says that the plan has no board and draws no graph. When the plan
+names no requirement id, the recipe refuses with the Focused reason. It invents no board.
 
 ## The page
 
-- The graph is drawn by the page itself. It needs no network. A click opens a task, and the trace buttons
-  follow what the task needs and what it unblocks.
+- The graph is drawn by the page itself, in stage bands. Each arrow joins adjacent stages, and the recipe
+  orders the cards to cut crossings. It needs no network. A click opens a task, and the trace buttons follow
+  what the task needs and what it unblocks.
 - Status filters, the coverage table and the decision log work with the same data.
 - The page marks the tasks that a role run works on now, and it lists every open run. A run is open
   when its `start` row has no `finish` or `observe-incomplete` row.
 - The footer shows the build time and the Methodology version of the workspace.
 - The page escapes every workspace string. No workspace text runs as script.
-- The text of the page follows the language of the plan: English or Spanish.
+- The interface has English and Spanish text. The recipe picks Spanish only on clear Spanish evidence in the
+  plan. Any other plan gets English, and `lang` says `en`.
+- A light and dark toggle and the system font stack keep the page local. Motion stops under
+  `prefers-reduced-motion`.
 
 ## Publishing
 
