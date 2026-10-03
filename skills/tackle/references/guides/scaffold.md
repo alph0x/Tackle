@@ -39,6 +39,8 @@ Apply the selected gate before copying: None creates no workspace. Lite creates 
 `history.md`, and `resource-usage.md`, with decisions/questions files when needed; it does not load or instantiate
 Full templates. Its complete bodies and lifecycle rules are in `../lite-plan.tmpl.md`. The core copying procedure below applies to Full only. These gate-specific rules
 also govern the file maps in the generic workspace templates.
+When the plan changes how the project is put together and `.tackle/map/architecture.json` does not exist,
+offer once to create it, as the [architecture map guide](architecture-map.md) states, and write nothing without a yes.
 
 Create the workspace by copying the core set from the §File map: nine artifacts from
 `AGENTS.tmpl.md` plus an empty `tasks/`. Select `task-board.tmpl.md`, `history.tmpl.md` and
