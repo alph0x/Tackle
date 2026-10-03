@@ -181,6 +181,9 @@
     {
       "patterns": [
         "eval/status/**",
+        "skills/tackle/references/guides/plan-view.md",
+        "skills/tackle/references/plan-view.template.md",
+        "skills/tackle/references/recipes/plan-view.md",
         "skills/tackle/references/guides/context-lifecycle.md",
         "skills/tackle/references/guides/full-checks.md",
         "skills/tackle/references/guides/record-lifecycle.md"

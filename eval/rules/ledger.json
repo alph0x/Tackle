@@ -3227,6 +3227,29 @@
         "as_of": "2026-10-02"
       },
       "historical": []
+    },
+    {
+      "rule_id": "R-STATUS-06",
+      "statement": "An explicit view request creates the plan view and stands for its workspace, and the coordinator rebuilds an existing view after each board status change and each role start or finish.",
+      "statement_sha256": "6a321eb934a01f6ae10ddf87051f8a48a1a0473aa95371533a4feee220423189",
+      "home": "references/guides/plan-view.md:12",
+      "home_fragment": "creates the view and stands for its workspace",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.0",
+        "trigger": "The owner asks for a local view of a workspace and expects it to stay current.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-03"
+      },
+      "historical": []
     }
   ],
   "non_normative": [
