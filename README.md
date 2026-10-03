@@ -117,6 +117,7 @@ For code, PLAN chooses the checks before implementation. Tackle prefers an end-t
 | `run --one` or `run <T-id>` | Execute one task. |
 | `status [<workspace>]`, `list`, or `next` | Read current progress or find the next task. |
 | `status <workspace> --handoff` | Write a handoff for the next session. |
+| “show the plan view” | Write a local, interactive HTML view of the workspace. |
 
 Status questions during an authorized run do not cancel that authorization. Unclear requests are clarified before action. See the [request guide](skills/tackle/references/guides/invocation.md) for intent boundaries, and [terminology](skills/tackle/references/terminology.md) for retired action-name aliases.
 
