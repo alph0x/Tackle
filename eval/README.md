@@ -149,6 +149,7 @@ scenario tests a rule that left the install.
 - `s67-resume-correction-count` — resume procedure: a resumed task keeps its spent correction cycles and stops Blocked at the task cap.
 - `s68-resume-completed-effect` — resume outcome: an effect that already happened is observed and recorded, never repeated.
 - `s69-closure-open-obligation` — closure outcome: an owner follow-up kept only in an older report stays open at closure.
+- `s71-adversary-checkpoint` — review procedure: after the second identical check failure and before Complete, an independent review is called and recorded.
 
 ### Decisions and communication
 
