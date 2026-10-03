@@ -220,13 +220,14 @@
       "files": [
         "test_components.py",
         "test_harness.py",
+        "test_jev_signal.py",
         "test_subagent.py",
         "test_subscription_route.py"
       ],
-      "tests": 300,
+      "tests": 326,
       "source": "eval/behavior/harness",
       "category": "tooling",
-      "purpose": "Agent adapters, usage parsing, broker isolation, harness commands and the subscription route: isolation, judging and records."
+      "purpose": "Agent adapters, usage parsing, broker isolation, harness commands, the subscription route (isolation, judging and records) and the JEV secondary signal (calibration, sidecar, key containment)."
     },
     {
       "path": "eval/tests/product/install/inventory",

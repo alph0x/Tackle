@@ -82,7 +82,15 @@ by its description alone, and runs every prompt as a headless session. On the br
 through a host-side broker and need `--allow-model-calls` and container isolation, and no credential reaches
 a participant. The subscription route instead runs headless sessions through the pinned CLI on the owner's
 subscription token, which goes into the CLI process environment only, and judges each episode with its variant's sealed
-oracle outside the participant (see [its section](behavior/harness/README.md#subscription-route)). The
+oracle outside the participant (see [its section](behavior/harness/README.md#subscription-route)). A secondary,
+recorded signal comes from `behavior/harness/jev_signal.py`: the pinned `jev-1.13.0` judges the three protocol
+dimensions the oracles leave null and names each episode's failure cause into a sidecar `jev-signal.jsonl`, never
+into a protocol record, an oracle outcome or a decision rule. `calibrate` derives its thresholds from development
+records only into `behavior/harness/jev-thresholds/`, which is committed before any held-out episode and never
+edited; `score` refuses a held-out cohort whose manifest commit does not descend from that commit. The key is read
+at call time from the file or variable named in a local configuration, stays out of every record, and the spend is
+capped there. Text shared with the variant's input or answer sheet (six words or more) is removed before a call.
+The model-free suite is `test_jev_signal.py`. The
 manual A/B workflow and its scoring rubric are the suite mode of the shipped
 [judge guide](../skills/tackle/references/guides/judge.md). One seed per scenario is a smoke test, not a benchmark, and
 a null is as informative as a win.
