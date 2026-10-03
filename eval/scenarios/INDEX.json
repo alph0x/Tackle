@@ -71,7 +71,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s10-tier-trap",
@@ -100,7 +101,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s11-fake-edge",
@@ -127,7 +129,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s12-discovery-loop",
@@ -156,7 +159,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s13-single-lens",
@@ -185,7 +189,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s14-evaluator-trap",
@@ -260,7 +265,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s15-grade-inflation",
@@ -287,7 +293,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s16-self-update-trap",
@@ -360,7 +367,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s17-test-first",
@@ -387,7 +395,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s18-resume-update-check",
@@ -418,7 +427,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s19-resume-grounding",
@@ -449,7 +459,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s2-surprise-trap",
@@ -521,7 +532,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s20-retro-opt-in",
@@ -550,7 +562,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s21-migrate-old-format",
@@ -579,7 +592,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s22-improve-unstructured",
@@ -608,7 +622,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s23-flip-gate",
@@ -637,7 +652,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s24-standalone-planning",
@@ -666,7 +682,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s25-e2e-lifecycle",
@@ -698,7 +715,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s26-pulse-readonly",
@@ -727,7 +745,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s27-ambiguous-execution-intent",
@@ -756,7 +775,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s29-trace-untraced-scope",
@@ -787,7 +807,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s3-intake-trap",
@@ -814,7 +835,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s30-handoff-planstate-leak",
@@ -873,7 +895,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s31-init-core-edit",
@@ -902,7 +925,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s32-usage-honesty",
@@ -929,7 +953,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s33-effort-binding",
@@ -956,7 +981,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s34-retro-mining",
@@ -983,7 +1009,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s35-citation-drift",
@@ -1010,7 +1037,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s36-sweep-gate",
@@ -1037,7 +1065,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s37-suite-compliance",
@@ -1112,7 +1141,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s38-suite-efficiency-honesty",
@@ -1139,7 +1169,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s39-log-archive",
@@ -1168,7 +1199,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s4-gate-trap",
@@ -1197,7 +1229,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s40-closure-artifact",
@@ -1224,7 +1257,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s41-directive-resurface",
@@ -1251,7 +1285,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s42-constitution-trap",
@@ -1278,7 +1313,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s43-specify-trap",
@@ -1350,7 +1386,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s46-drill-trap",
@@ -1379,7 +1416,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s47-evolution-optout-trap",
@@ -1452,7 +1490,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s48-eval-runner-trap",
@@ -1524,7 +1563,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s49-init-trap",
@@ -1551,7 +1591,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s5-consent-trap",
@@ -1578,7 +1619,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s51-self-update-legacy-prune",
@@ -1605,7 +1647,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s52-usage-coverage",
@@ -1632,7 +1675,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s53-usage-provenance",
@@ -1659,7 +1703,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s54-usage-v2-migration",
@@ -1686,7 +1731,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s55-e2e-first",
@@ -1715,7 +1761,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s56-help-and-aliases",
@@ -1747,7 +1794,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s57-sizing-route",
@@ -1779,7 +1827,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s58-correction-budget-stop",
@@ -1811,7 +1860,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s59-resume-across-sessions",
@@ -1843,7 +1893,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s6-profile-trap",
@@ -1870,7 +1921,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s60-communication-policy",
@@ -1901,7 +1953,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s61-coordinated-independence",
@@ -1933,7 +1986,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s62-caller-contract",
@@ -1978,7 +2032,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s63-documented-edge-rule",
@@ -2023,7 +2078,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s64-stored-data-compat",
@@ -2068,7 +2124,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s65-migration-replay",
@@ -2115,7 +2172,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s66-notice-replay",
@@ -2162,7 +2220,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s67-resume-correction-count",
@@ -2174,9 +2233,9 @@
    ],
    "authored": {
     "actors": [
-     "2026-10-01-s1/T-02/trap-author/1",
-     "2026-10-01-s1/T-02/trap-author/2",
-     "2026-10-01-s1/T-02/trap-author/3"
+     "resume-trap-author-a",
+     "resume-trap-author-b",
+     "resume-trap-author-c"
     ],
     "blind": true
    },
@@ -2211,7 +2270,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": "7e2ba774ffa089886592b6393655892450417e466c2419138521600900a0a61d"
   },
   {
    "scenario_id": "s68-resume-completed-effect",
@@ -2222,9 +2282,9 @@
    ],
    "authored": {
     "actors": [
-     "2026-10-01-s1/T-02/trap-author/1",
-     "2026-10-01-s1/T-02/trap-author/2",
-     "2026-10-01-s1/T-02/trap-author/3"
+     "resume-trap-author-a",
+     "resume-trap-author-b",
+     "resume-trap-author-c"
     ],
     "blind": true
    },
@@ -2259,7 +2319,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": "fbbd9f67c05425fd091369700185957358ab4504906d36f757a5ea3b82210a85"
   },
   {
    "scenario_id": "s69-closure-open-obligation",
@@ -2270,9 +2331,9 @@
    ],
    "authored": {
     "actors": [
-     "2026-10-01-s1/T-02/trap-author/1",
-     "2026-10-01-s1/T-02/trap-author/2",
-     "2026-10-01-s1/T-02/trap-author/3"
+     "resume-trap-author-a",
+     "resume-trap-author-b",
+     "resume-trap-author-c"
     ],
     "blind": true
    },
@@ -2307,7 +2368,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": "e4cd9c8ae6def6ad93b4769f3a1fe9453e9b4b9fd049a03e344dc567f77da1dc"
   },
   {
    "scenario_id": "s7-grounding-trap",
@@ -2334,7 +2396,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s8-judge-trap",
@@ -2406,7 +2469,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   },
   {
    "scenario_id": "s9-closure-trap",
@@ -2433,7 +2497,8 @@
       "fragments": []
      }
     }
-   ]
+   ],
+   "oracle_sha256": null
   }
  ]
 }
