@@ -1,5 +1,6 @@
 """Registry guard: no tracked eval code may mount, copy or pass a credential into a
-participant environment, and no hard-coded home path may appear."""
+participant environment, and no hard-coded home path may appear. The subscription token's
+variable may be named in one module only, the subscription route's."""
 from __future__ import annotations
 
 import re
@@ -14,6 +15,10 @@ SELF = Path(__file__).resolve()
 EXTENSIONS = ('.py', '.sh', '.js')
 EXCLUDED_PREFIXES = ('eval/scenarios/', 'eval/runs/')
 
+# The variable that carries the owner's subscription token into the CLI process. Built by
+# concatenation, so a search for the variable's name finds the route module alone.
+TOKEN_VARIABLE = 'CLAUDE_CODE_' + 'OAUTH_TOKEN'
+
 # A container mount or environment option that carries an auth file, a credential file or an API
 # key into a container.
 CREDENTIAL_PATTERNS = (
@@ -22,7 +27,14 @@ CREDENTIAL_PATTERNS = (
     (re.compile(r'dst=[^,\s\'"]*auth[^,\s\'"]*', re.IGNORECASE), 'auth-destination-mount'),
     (re.compile(r'ANTHROPIC_API_KEY|OPENAI_API_KEY'), 'named-api-key'),
     (re.compile(r'[A-Z][A-Z0-9_]*_API_KEY\s*='), 'api-key-assignment'),
+    (re.compile(TOKEN_VARIABLE), 'subscription-token-variable'),
 )
+# Exact (path, rule) pairs a module is allowed to trip. The subscription route reads the owner's
+# token from a file into the CLI's environment, so its module alone may name the variable; every
+# other rule still applies to it.
+RULE_EXEMPTIONS = {
+    ('eval/behavior/harness/subscription_route.py', 'subscription-token-variable'),
+}
 # A hard-coded home path.
 HOME_PATH_PATTERN = re.compile(r'/Users/[A-Za-z0-9_.-]+|/home/[A-Za-z0-9_.-]+')
 
@@ -74,7 +86,7 @@ def findings_for(root, relative):
     findings = []
     for number, line in enumerate(text.splitlines(), 1):
         for pattern, rule in CREDENTIAL_PATTERNS:
-            if pattern.search(line):
+            if pattern.search(line) and (relative, rule) not in RULE_EXEMPTIONS:
                 findings.append('%s:%d: %s' % (relative, number, rule))
         for match in HOME_PATH_PATTERN.finditer(line):
             if (relative, match.group(0)) not in HOME_PATH_EXEMPTIONS:
@@ -200,6 +212,54 @@ class GuardTeethTests(unittest.TestCase):
         relative = self.plant('eval/example/copycat.py', "note = '/Users/somebody/.tackle/cache'\n")
         findings = findings_for(self.root, relative)
         self.assertTrue(findings, 'an exempted literal must not be exempt outside its own file')
+
+
+class RouteTokenGuardTests(unittest.TestCase):
+    """Case: 'subscription token' — the token variable is flagged in every tracked eval module except the route's."""
+
+    ROUTE_MODULE = 'eval/behavior/harness/subscription_route.py'
+    ROUTE_TEST = 'eval/tests/tooling/behavior/harness/test_subscription_route.py'
+    # Built by concatenation, so no tracked file other than the route module spells the variable.
+    VARIABLE = 'CLAUDE_CODE_' + 'OAUTH_TOKEN'
+
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory(prefix='tackle-credential-guard-')
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+
+    def plant(self, relative, text):
+        path = self.root / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+        return relative
+
+    def test_the_token_variable_in_another_eval_module_fails(self):
+        for relative in ('eval/behavior/harness/other_route.py', 'eval/behavior/harness/subscription_route_copy.py',
+                         'eval/tests/tooling/behavior/harness/test_other.py'):
+            with self.subTest(relative=relative):
+                self.plant(relative, "import os\ntoken = os.environ.get('" + self.VARIABLE + "')\n")
+                findings = findings_for(self.root, relative)
+                self.assertEqual(findings, ['%s:2: subscription-token-variable' % relative])
+
+    def test_only_the_route_module_may_name_the_variable_and_every_other_rule_still_applies_there(self):
+        key_name = 'MY_CUSTOM' + '_API_KEY'
+        home_like = '/Users/' + 'example/project'
+        body = ("env = {'" + self.VARIABLE + "': 'x'}\n"
+                "export = '" + key_name + "=value'\n"
+                "path = '" + home_like + "'\n")
+        copy = 'eval/behavior/harness/subscription_route_copy.py'
+        self.plant(copy, body)
+        self.plant(self.ROUTE_MODULE, body)
+        others = ['%s:2: api-key-assignment', '%s:3: home-path-literal']
+        self.assertEqual(findings_for(self.root, copy),
+                         ['%s:1: subscription-token-variable' % copy] + [item % copy for item in others])
+        self.assertEqual(findings_for(self.root, self.ROUTE_MODULE), [item % self.ROUTE_MODULE for item in others])
+
+
+    def test_the_route_test_file_is_scanned_and_names_no_variable(self):
+        self.assertIn(self.ROUTE_TEST, tracked_files(ROOT))
+        self.assertEqual(findings_for(ROOT, self.ROUTE_TEST), [])
+        self.assertNotIn(self.VARIABLE, (ROOT / self.ROUTE_TEST).read_text())
 
 
 class GitIntegrationTests(unittest.TestCase):

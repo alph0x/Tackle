@@ -1,0 +1,283 @@
+#!/usr/bin/env python3
+"""Model-free stand-in for the claude CLI, used only by the subscription-route suite.
+
+The synthetic fixture picks the behavior. An episode reads ``mode.txt`` in its working directory, and a
+probe reads ``probe-mode.txt`` beside this file. A mode is one word, or several joined by ``+`` when a case
+needs two behaviors at once. Every invocation is logged beside this file, never in the work tree, so a work
+tree holds only what a participant could have written.
+"""
+import base64
+import hashlib
+import json
+import os
+import re
+import sys
+import time
+import urllib.parse
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+TOKEN_VARIABLE = 'CLAUDE_CODE_' + 'OAUTH_TOKEN'
+TOOLS = ['Bash', 'Read', 'Write', 'Edit', 'Glob', 'Grep', 'Skill']
+BUILTIN = {'name': 'cc-plugin-agents-md', 'path': 'builtin', 'source': 'cc-plugin-agents-md@builtin'}
+
+
+def tree(root):
+    files = {}
+    if root.is_dir():
+        for path in sorted(root.rglob('*')):
+            if path.is_file():
+                files[path.relative_to(root).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
+    return files
+
+
+def digest(files):
+    return hashlib.sha256(json.dumps(files, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()).hexdigest()
+
+
+def log(record):
+    with open(HERE / 'invocations.log', 'a') as handle:
+        handle.write(json.dumps(record) + '\n')
+
+
+def emit(event):
+    print(json.dumps(event), flush=True)
+
+
+def tool(use_id, name, tool_input, text, is_error=False):
+    emit({'type': 'assistant', 'message': {'content': [{'type': 'tool_use', 'id': use_id, 'name': name, 'input': tool_input}]}})
+    emit({'type': 'user', 'message': {'content': [{'type': 'tool_result', 'tool_use_id': use_id, 'content': text,
+                                                   'is_error': is_error}]}})
+
+
+argv = sys.argv[1:]
+if argv == ['--version']:
+    log({'kind': 'version'})
+    print('0.0.0 (stub)')
+    sys.exit(0)
+
+prompt = sys.stdin.read()
+cwd = Path.cwd()
+home = Path(os.environ['HOME'])
+token = os.environ.get(TOKEN_VARIABLE, '')
+settings = json.loads(argv[argv.index('--settings') + 1]) if '--settings' in argv else None
+shown = list(argv)
+if '--settings' in argv:
+    shown[argv.index('--settings') + 1] = '<settings>'
+model = argv[argv.index('--model') + 1] if '--model' in argv else 'stub-model'
+probe = 'technical sandbox probe' in prompt
+skill_root = home / '.claude' / 'skills' / 'tackle'
+if probe:
+    mode_file = HERE / 'probe-mode.txt'
+else:
+    mode_file = cwd / 'mode.txt'
+mode = mode_file.read_text().strip() if mode_file.exists() else 'ok'
+modes = set(mode.split('+'))
+log({'kind': 'probe' if probe else 'episode', 'argv': shown, 'settings': settings, 'cwd': str(cwd), 'home': str(home),
+     'env': {key: os.environ.get(key) for key in ('PATH', 'HOME', 'TMPDIR', 'CLAUDE_CODE_TMPDIR', 'LANG', 'TERM')},
+     'env_names': sorted(os.environ), 'token_present': bool(token),
+     'token_in_argv': bool(token) and token in ' '.join(argv), 'home_files': sorted(tree(home)),
+     'skill_digest': digest(tree(skill_root)) if skill_root.is_dir() else None, 'mode': mode, 'prompt': prompt,
+     'work_claude': sorted(tree(cwd / '.claude'))})
+(cwd / '.claude' / '.cc-writes').mkdir(parents=True, exist_ok=True)
+
+skills = ['verify']
+if (skill_root / 'SKILL.md').is_file() and 'noskill' not in modes:
+    skills.append('tackle')
+if 'controlskill' in modes and 'tackle' not in skills:
+    skills.append('tackle')
+if 'noinit' not in modes:
+    init = {'type': 'system', 'subtype': 'init', 'model': 'other-model' if 'badmodel' in modes else model,
+            'permissionMode': 'default' if 'permmode' in modes else 'dontAsk',
+            'apiKeySource': 'env' if 'apikey' in modes else 'none',
+            'tools': TOOLS[:-1] if 'badtools' in modes else TOOLS,
+            'mcp_servers': [{'name': 'injected'}] if 'mcp' in modes else [], 'skills': skills,
+            'plugins': [BUILTIN] + ([{'name': 'user-plugin', 'path': 'elsewhere', 'source': 'user-plugin@market'}]
+                                    if 'plugin' in modes else []),
+            'memory_paths': {'auto': '/memory-elsewhere/' if 'memoryout' in modes else str(home / '.claude/projects/stub/memory/')}}
+    emit(init)
+
+
+def result(subtype='success', denials=(), cost=0.02, turns=2):
+    emit({'type': 'result', 'subtype': subtype, 'is_error': subtype != 'success', 'num_turns': turns,
+          'total_cost_usd': cost, 'usage': {'input_tokens': 10, 'output_tokens': 5, 'cache_creation_input_tokens': 0,
+                                            'cache_read_input_tokens': 0},
+          'duration_ms': 5, 'session_id': 'stub-session', 'permission_denials': list(denials), 'modelUsage': {model: {}}})
+
+
+def run_probe():
+    commands = re.findall(r'(?m)^\d+\. (.+)$', prompt)
+    if 'probeleak' in modes:
+        (cwd / 'leak.txt').write_text(token)
+    reads = re.findall(r'(?m)^- (\S+)$', prompt)
+    denials = []
+    names = [name for name in sorted(os.environ) if name != TOKEN_VARIABLE or 'visible' in modes]
+
+    def sentinel(path):
+        leaks = ('repoleak' if 'repository' in path else 'workspaceleak')
+        skipped = ('norepo' if 'repository' in path else 'noworkspace')
+        return leaks, skipped
+
+    for number, command in enumerate(commands, 1):
+        use = 'toolu_probe_%d' % number
+        if command.startswith('printenv | cut'):
+            tool(use, 'Bash', {'command': command}, ' '.join(names) + ' ')
+        elif command.startswith('printenv ') and 'wc -c' in command:
+            if 'notoken' in modes:
+                continue
+            count = len(token) + 1 if 'visible' in modes else 0
+            tool(use, 'Bash', {'command': command}, '%8d' % count)
+        elif command.startswith('cat '):
+            path = command[4:].strip()
+            leaks, skipped = sentinel(path)
+            if skipped in modes:
+                continue
+            if leaks in modes:
+                tool(use, 'Bash', {'command': command}, Path(path).read_text())
+            else:
+                tool(use, 'Bash', {'command': command}, 'Exit code 1\ncat: %s: Operation not permitted' % path, True)
+        elif command.startswith('curl '):
+            if 'nonet' in modes:
+                continue
+            if 'netopen' in modes:
+                tool(use, 'Bash', {'command': command}, '200')
+            elif 'netpartial' in modes:
+                tool(use, 'Bash', {'command': command}, '200\nExit code 23\ncurl: (23) Failure writing output', True)
+            else:
+                tool(use, 'Bash', {'command': command}, 'Exit code 6\ncurl: (6) Could not resolve host: example.com', True)
+        elif command.startswith('echo '):
+            if 'insidewritefail' in modes:
+                tool(use, 'Bash', {'command': command}, 'Exit code 1\nbash: probe-inside.txt: Operation not permitted', True)
+            else:
+                (cwd / 'probe-inside.txt').write_text(command[len('echo '):].split(' > ')[0] + '\n')
+                tool(use, 'Bash', {'command': command}, 'probe-inside.txt')
+    for number, path in enumerate(reads, 1):
+        use = 'toolu_probe_read_%d' % number
+        if path == str(cwd / 'probe-inside.txt'):
+            if 'noinsideread' in modes:
+                continue
+            if 'insidedenied' in modes:
+                tool(use, 'Read', {'file_path': path}, 'Permission to read this file has been denied.', True)
+                denials.append({'tool_name': 'Read', 'tool_use_id': use, 'tool_input': {'file_path': path}})
+            elif Path(path).is_file():
+                body = 'something else\n' if 'insidewrong' in modes else Path(path).read_text()
+                tool(use, 'Read', {'file_path': path}, '     1\u2192' + body, 'insideerror' in modes)
+            else:
+                tool(use, 'Read', {'file_path': path}, 'File does not exist.', True)
+            continue
+        leaks, skipped = sentinel(path)
+        if skipped in modes:
+            continue
+        if leaks in modes:
+            tool(use, 'Read', {'file_path': path}, Path(path).read_text())
+        else:
+            tool(use, 'Read', {'file_path': path}, 'Permission to read this file has been denied.', True)
+    emit({'type': 'assistant', 'message': {'content': [{'type': 'text', 'text': 'DONE'}]}})
+    result(denials=denials, cost=0.05, turns=9)
+
+
+if probe:
+    run_probe()
+    sys.exit(0)
+
+if 'sleep' in modes:
+    (cwd / 'stub.pid').write_text(str(os.getpid()))
+    time.sleep(30)
+if 'leak' in modes:
+    emit({'type': 'assistant', 'message': {'content': [{'type': 'text', 'text': 'token ' + token}]}})
+if 'leakb64' in modes:
+    emit({'type': 'assistant', 'message': {'content': [{'type': 'text', 'text': base64.b64encode(token.encode()).decode()}]}})
+if 'leakhex' in modes:
+    emit({'type': 'assistant', 'message': {'content': [{'type': 'text', 'text': token.encode().hex()}]}})
+if 'leakurl' in modes:
+    emit({'type': 'assistant', 'message': {'content': [{'type': 'text', 'text': urllib.parse.quote(token, safe='')}]}})
+if 'leakerr' in modes:
+    print(token, file=sys.stderr, flush=True)
+if 'links' in modes:
+    os.symlink('/etc/hosts', cwd / 'outside-link')
+    os.symlink('/etc', cwd / 'outside-dir')
+    os.link(cwd / 'mode.txt', cwd / 'hard.txt')
+if 'hardlink' in modes:
+    os.link(cwd / 'mode.txt', cwd / 'hard.txt')
+if 'symlink' in modes:
+    os.symlink('/etc/hosts', cwd / 'outside-link')
+if 'fifo' in modes:
+    os.mkfifo(cwd / 'pipe')
+if 'rest' in modes:
+    (home / '.stub-cache').write_text(token)
+if 'work' in modes:
+    (cwd / 'env.txt').write_text(TOKEN_VARIABLE + '=' + token + '\n')
+if 'split' in modes:
+    # The token in two halves, each a form no scan looks for.
+    (cwd / 'part-a.txt').write_text(token[:len(token) // 2])
+    (cwd / 'part-b.txt').write_text(token[len(token) // 2:])
+if 'workro' in modes:
+    # Token-bearing bytes the participant made hard to delete: in a read-only directory, beside a closed one.
+    (cwd / 'ro').mkdir()
+    (cwd / 'ro' / 'env.txt').write_text(token)
+    os.chmod(cwd / 'ro', 0o500)
+    (cwd / 'closed').mkdir()
+    os.chmod(cwd / 'closed', 0)
+    os.symlink(cwd.parent.parent.parent / 'outside', cwd / 'escape')
+if 'name' in modes:
+    (cwd / ('f-' + token)).write_text('named\n')
+if 'fail' in modes:
+    sys.exit(1)
+if 'config' in modes:
+    (cwd / '.claude' / 'settings.json').write_text('{}')
+if 'stagingdeep' in modes:
+    (cwd / 'svc' / '.claude' / '.cc-writes').mkdir(parents=True, exist_ok=True)
+if 'oracleinvalid' in modes:
+    (cwd / 'invalid.flag').write_text('flag\n')
+if 'echo' in modes:
+    tool('toolu_echo', 'Bash', {'command': 'echo'}, 'Exit code 1\necho: operation not permitted: /tmp/claude-notes', True)
+if 'wrapper' in modes:
+    tool('toolu_wrapper', 'Bash', {'command': 'true'}, 'Exit code 1\nzsh:1: operation not permitted: /tmp/claude-501/cwd-0000', True)
+
+trail = cwd / 'trail.txt'
+number = len(trail.read_text().splitlines()) + 1 if trail.exists() else 1
+first = prompt.strip().splitlines()[0] if prompt.strip() else ''
+with trail.open('a') as handle:
+    handle.write('session %d previous=%s prompt=%s\n' % (number, (cwd / 'result.md').exists(), first))
+
+emit({'type': 'assistant', 'message': {'content': [{'type': 'text', 'text': 'Working in ' + str(cwd)}]}})
+tool('toolu_ls', 'Bash', {'command': 'ls ' + str(cwd)}, 'mode.txt')
+denials = []
+if 'rich' in modes:
+    tool('toolu_archive_read', 'Read', {'file_path': 'workspace/history-archive.md'}, 'A' * 1000)
+    tool('toolu_archive_sed', 'Bash', {'command': "sed -n '1,40p' workspace/history-archive.md"}, 'B' * 400)
+    tool('toolu_history_read', 'Read', {'file_path': 'workspace/history.md'}, 'C' * 777)
+    tool('toolu_history_cat', 'Bash', {'command': 'cat workspace/history.md'}, 'D' * 333)
+    tool('toolu_archive_wc', 'Bash', {'command': 'wc -c workspace/history.md workspace/history-archive.md'}, 'E' * 60)
+    # Refusals outside this episode's root are the sandbox working as intended, whichever file tool made the attempt.
+    denials = [{'tool_name': 'Read', 'tool_use_id': 'toolu_denied', 'tool_input': {'file_path': str(cwd.parent.parent / 'elsewhere.md')}},
+               {'tool_name': 'Glob', 'tool_use_id': 'toolu_denied_glob', 'tool_input': {'pattern': '/etc/*.conf'}},
+               {'tool_name': 'Grep', 'tool_use_id': 'toolu_denied_grep', 'tool_input': {'pattern': 'x', 'path': '/etc'}}]
+# A refused file tool inside the episode's own root means the permission rules cover files the participant must reach.
+if 'readdeny' in modes:
+    denials = [{'tool_name': 'Read', 'tool_use_id': 'toolu_denied', 'tool_input': {'file_path': str(cwd / 'mode.txt')}}]
+if 'homedeny' in modes:
+    denials = [{'tool_name': 'Read', 'tool_use_id': 'toolu_denied', 'tool_input': {'file_path': str(skill_root / 'SKILL.md')}}]
+if 'globdeny' in modes:
+    denials = [{'tool_name': 'Glob', 'tool_use_id': 'toolu_denied', 'tool_input': {'pattern': '**/*.md', 'path': str(cwd)}}]
+if 'grepdeny' in modes:
+    denials = [{'tool_name': 'Grep', 'tool_use_id': 'toolu_denied', 'tool_input': {'pattern': 'x'}}]
+if 'deny' in modes:
+    denials = [{'tool_name': 'Write', 'tool_use_id': 'toolu_denied', 'tool_input': {'file_path': str(cwd / 'x.txt')}}]
+if 'denyconfig' in modes:
+    denials = [{'tool_name': 'Write', 'tool_use_id': 'toolu_denied', 'tool_input': {'file_path': str(cwd / '.claude' / 'settings.json')}}]
+if 'controlskilluse' in modes:
+    tool('toolu_skill', 'Skill', {'skill': 'tackle'}, 'Launching skill: tackle')
+if 'denyskill' in modes:
+    denials = [{'tool_name': 'Skill', 'tool_use_id': 'toolu_denied', 'tool_input': {}}]
+(cwd / 'result.md').write_text('stub result for ' + ('method' if 'tackle' in skills else 'control') + '\n')
+if 'maxturns' in modes:
+    result('error_max_turns', turns=60, cost=0.03)
+    sys.exit(1)
+if 'maxbudget' in modes:
+    result('error_max_budget_usd', cost=1.0)
+    sys.exit(1)
+leave = next((float(item[len('leave='):]) for item in modes if item.startswith('leave=')), None)
+# leave=N spends all but N of the budget this session was given.
+spent = 0.02 if leave is None else max(0.0, float(argv[argv.index('--max-budget-usd') + 1]) - leave)
+result(denials=denials, cost=spent)

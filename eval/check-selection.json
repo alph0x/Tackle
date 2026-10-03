@@ -357,6 +357,16 @@
     },
     {
       "patterns": [
+        "eval/behavior/harness/subscription_route.py"
+      ],
+      "families": [
+        "eval/tests/tooling/maintaining/suite-integrity"
+      ],
+      "exclude": [],
+      "reason": "The credential guard exempts this module's path from the token-variable rule and scans it for every other rule."
+    },
+    {
+      "patterns": [
         "MAINTAINING.md",
         "eval/install/inventory/**",
         "maintaining/install_root.py",

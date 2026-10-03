@@ -98,7 +98,7 @@
         "test_credential_guard.py",
         "test_selection.py"
       ],
-      "tests": 36,
+      "tests": 39,
       "source": "eval/maintaining/suite-integrity",
       "category": "tooling",
       "purpose": "Complete discovery, conservative selection and credential guards."
@@ -215,12 +215,13 @@
       "files": [
         "test_components.py",
         "test_harness.py",
-        "test_subagent.py"
+        "test_subagent.py",
+        "test_subscription_route.py"
       ],
-      "tests": 199,
+      "tests": 292,
       "source": "eval/behavior/harness",
       "category": "tooling",
-      "purpose": "Agent adapters, usage parsing, broker isolation and harness commands."
+      "purpose": "Agent adapters, usage parsing, broker isolation, harness commands and the subscription route: isolation, judging and records."
     },
     {
       "path": "eval/tests/product/install/inventory",

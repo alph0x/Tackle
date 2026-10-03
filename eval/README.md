@@ -68,7 +68,7 @@ These folders hold behavioral runs and what judges them. Each keeps its name for
 
 | Folder | Holds | Why the name stays |
 |---|---|---|
-| `behavior/` | `behavior/harness`, [the harness](behavior/harness/README.md) and the one current path for episodes, and `behavior/judges/planning` and `behavior/judges/resume`, the [planning](behavior/judges/planning/README.md) and [resume](behavior/judges/resume/README.md) judges | it runs episodes over the whole install, so no single feature names it |
+| `behavior/` | `behavior/harness`, [the harness](behavior/harness/README.md) and the current paths for episodes (the broker routes and the [subscription route](behavior/harness/README.md#subscription-route)), and `behavior/judges/planning` and `behavior/judges/resume`, the [planning](behavior/judges/planning/README.md) and [resume](behavior/judges/resume/README.md) judges | it runs episodes over the whole install, so no single feature names it |
 | `protocol-v2/` | [the protocol](protocol-v2/PROTOCOL.md) and `check.py` | sealed cohort code imports it by relative path |
 | `scenarios/` | every scenario and its answer sheet, and `INDEX.json` | the shipped judge guide and CI cite it, so renaming it would change the install |
 | `cohorts/` | the sealed cohorts ([cohorts](cohorts/README.md)), with the registry families `cohorts/2026-09-candidate`, `cohorts/2026-09-second-candidate`, `cohorts/2026-09-resume` and `cohorts/2026-09-third-candidate` | each directory name is a sealed `cohort_id` |
@@ -78,8 +78,11 @@ These folders hold behavioral runs and what judges them. Each keeps its name for
 A behavioral claim is pre-registered, sealed, recorded and judged under the protocol, and
 `python3 eval/protocol-v2/check.py <cohort-dir>` rejects a tampered, incomplete or placeholder-filled
 cohort. The harness stages a control arm with no skill, or a treated arm with the full install triggered
-by its description alone, and runs every prompt as a headless session. Real runs go through a host-side
-broker and need `--allow-model-calls` and container isolation; no credential reaches a participant. The
+by its description alone, and runs every prompt as a headless session. On the broker routes, real runs go
+through a host-side broker and need `--allow-model-calls` and container isolation, and no credential reaches
+a participant. The subscription route instead runs headless sessions through the pinned CLI on the owner's
+subscription token, which goes into the CLI process environment only, and judges each episode with its variant's sealed
+oracle outside the participant (see [its section](behavior/harness/README.md#subscription-route)). The
 manual A/B workflow and its scoring rubric are the suite mode of the shipped
 [judge guide](../skills/tackle/references/guides/judge.md). One seed per scenario is a smoke test, not a benchmark, and
 a null is as informative as a win.
