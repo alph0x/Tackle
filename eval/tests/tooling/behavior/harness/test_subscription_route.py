@@ -1313,6 +1313,15 @@ class Outcomes(Base):
         _, episode = self.only(self.env.one('stagingdeep'), 'avoided', exit_code=0)
         self.assertEqual(episode['harness_config_paths'], [])
 
+    def test_participant_configuration_planted_in_one_session_stops_the_next_one(self):
+        sessions = (('sessions/01.md', 'Session one.\n'), ('sessions/02.md', 'Session two.\n'))
+        process = self.env.one('config', prompts=sessions)
+        _, episode = self.only(process, 'invalid', 'harness configuration written', exit_code=1)
+        self.assertEqual(episode['harness_config_paths'], ['.claude'])
+        launches = [item for item in self.env.invocations() if item['kind'] == 'episode']
+        self.assertEqual(len(launches), 1, 'the second session never loaded the planted settings')
+        self.assertEqual(len(episode['sessions']), 1)
+
     def test_a_second_run_appends_only_the_missing_episodes(self):
         env = self.env
         env.cohort_of(['control', 'method', 'control'])

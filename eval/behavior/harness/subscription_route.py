@@ -1165,6 +1165,8 @@ def observe(stage, entry, package):
             if child.interrupted or child.timed_out or child.error or child.exit != 0 \
                     or result.get('subtype') != 'success' or result.get('is_error') is not False:
                 break
+            if harness_config_paths(root / 'work'):
+                break  # the next session would load what the participant planted; classify records the episode invalid
     except (KeyboardInterrupt, SystemExit):
         seen.interrupted = True
     except Refusal:

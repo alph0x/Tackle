@@ -77,7 +77,8 @@ log({'kind': 'probe' if probe else 'episode', 'argv': shown, 'settings': setting
      'env': {key: os.environ.get(key) for key in ('PATH', 'HOME', 'TMPDIR', 'CLAUDE_CODE_TMPDIR', 'LANG', 'TERM')},
      'env_names': sorted(os.environ), 'token_present': bool(token),
      'token_in_argv': bool(token) and token in ' '.join(argv), 'home_files': sorted(tree(home)),
-     'skill_digest': digest(tree(skill_root)) if skill_root.is_dir() else None, 'mode': mode, 'prompt': prompt})
+     'skill_digest': digest(tree(skill_root)) if skill_root.is_dir() else None, 'mode': mode, 'prompt': prompt,
+     'work_claude': sorted(tree(cwd / '.claude'))})
 (cwd / '.claude' / '.cc-writes').mkdir(parents=True, exist_ok=True)
 
 skills = ['verify']

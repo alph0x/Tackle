@@ -342,7 +342,8 @@ sandbox or model.
   no MCP server, only built-in plugins, `dontAsk`, memory only inside the run root, and the skill listed in the
   method arm only. A fault is `invalid` with the reason `isolation`. A control arm that lists or uses the skill
   is `invalid` with `rule_exposure` true, a method arm without it is `invalid`, and a participant-made
-  `.claude` is `invalid` (the CLI's own empty `.claude/.cc-writes` staging is tolerated at any depth). The
+  `.claude` is `invalid` and ends the episode before the next session (the CLI's own empty `.claude/.cc-writes` staging is
+  tolerated at any depth). The
   CLI wrapper's refused temporary write and a refused workspace write are instrument faults, recorded `error`.
   An isolation fault or a control arm's skill use outranks a reached limit or timeout: the episode is `invalid` and
   the stage stops.
