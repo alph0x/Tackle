@@ -203,12 +203,13 @@
     {
       "path": "eval/tests/tooling/scenario-index",
       "files": [
-        "test_index.py"
+        "test_index.py",
+        "test_oracle_digest.py"
       ],
-      "tests": 32,
+      "tests": 38,
       "source": "eval/scenario-index",
       "category": "tooling",
-      "purpose": "Scenario catalog consistency and variant registration."
+      "purpose": "Scenario catalog consistency, variant registration and answer-sheet/oracle digests."
     },
     {
       "path": "eval/tests/tooling/behavior/harness",
