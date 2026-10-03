@@ -25,7 +25,7 @@ Schema `tackle-map/1`:
 }
 ```
 
-A component's `sources` are repository-relative paths. A relation is `[from, to, label]`, and both ends are
+A component's `sources` are repository-relative paths or glob patterns. A relation is `[from, to, label]`, and both ends are
 component ids.
 
 ## No base
@@ -81,11 +81,12 @@ python3 -I plan-view.py --template plan-view.template.md --map .tackle/map/archi
 
 The page gains a Before and after section with a Cards tab and a Diagram tab, for Today and for After this
 plan. New and changed components carry their task and state. With no delta, the section shows only today.
-Without `--map` the island's `map` is null, and a workspace that has a delta but no base gets a note that no
-map exists.
+Without `--map`, or when the `--map` file does not exist, the island's `map` is null, and a workspace that has
+a delta or a `--map` gets a note that there is no base map yet. An unreadable base or a wrong field type refuses,
+and the refusal names the field.
 
 The recipe reads `<workspace>/map-delta.json` and resolves source paths against the repository root, three
-levels above the workspace. A component whose source path no longer exists shows as stale. The view
+levels above the workspace. A component whose source path no longer exists, or whose glob pattern matches nothing, shows as stale. The view
 refuses an invalid delta, names the problem and writes no file.
 
 ## Large project
