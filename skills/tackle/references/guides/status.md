@@ -6,7 +6,7 @@ Ready task, or a cold-session resume. It never executes a task or edits source, 
 history, decisions, questions, verification records, or readiness.
 
 Only an explicit handoff request may write `handoff-brief.md` and its requested portable export. This
-projection changes no canonical state. STATUS never archives history or appends a status event.
+projection changes no canonical state. STATUS never writes the [plan view](plan-view.md). STATUS never archives history or appends a status event.
 A status question during an already authorized RUN answers the question without cancelling that
 RUN; a standalone status/resume request does not authorize execution.
 
