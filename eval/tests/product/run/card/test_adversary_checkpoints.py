@@ -57,6 +57,12 @@ CASES = [
     ('neg13-empty-independence-cell', {ONE: task('Complete', report(line('complete', independence='')), [])}, ONE),
     ('neg14-waiver-without-decision', {ONE: task('Complete', report(line('complete', 'reviews/one-adversary.json', 'waived')), [])}, ONE),
     ('neg15-waiver-unknown-decision', {ONE: task('Complete', report(line('complete', ABSENT, 'waived')), [])}, ONE),
+    ('neg16-another-moment-does-not-clear-a-repeat', {ONE: task('In progress', report(line('lock', 'reviews/lock.json')), [F, A, F, ('review', 'lock'), A])}, ONE),
+    ('neg17-moment-is-a-prefix-match', {ONE: task('Complete', report(line('completed')), [])}, ONE),
+    ('neg18-a-non-independent-review-does-not-satisfy', {ONE: task('Complete', report(line('complete', independence='not independent: same session')), [])}, ONE),
+    ('neg19-indented-line-with-a-bad-moment', {ONE: task('In progress', '  ' + line('final'), [])}, ONE),
+    ('neg20-list-item-line-with-a-dead-verdict', {ONE: task('In progress', '- ' + line('lock', 'reviews/absent.json'), [])}, ONE),
+    ('pos09-list-item-complete-line-counts', {ONE: task('Complete', '- ' + line('complete'), [])}, None),
 ]
 
 
@@ -72,7 +78,7 @@ def load_recipe():
 class AdversaryCheckpoints(unittest.TestCase):
     def test_fixture_workspaces_are_judged_by_the_shipped_recipe(self):
         findings_of = load_recipe()['adversary_findings']
-        self.assertEqual(len(CASES), 23)
+        self.assertEqual(len(CASES), 29)
         for case, tasks, expected in CASES:
             with self.subTest(case=case):
                 found = findings_of(tasks, set(PATHS))

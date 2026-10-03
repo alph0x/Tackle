@@ -3187,7 +3187,7 @@
       "statement": "RUN calls a fresh, independent adversarial review at three moments only (lock, repeat-failure and complete), the reviewer records its actual independence, and a moment with no independent reviewer stops the task Waiting on owner unless a recorded owner decision waives it.",
       "statement_sha256": "6a7f89f981c2bda43e934d6c4f5fd7152fb97189fb55cc785b7e81e2ec579da8",
       "home": "references/guides/run.md:171",
-      "home_fragment": "Run calls an adversarial review at three moments",
+      "home_fragment": "Run calls an independent adversarial review at three moments",
       "units": [],
       "mirrors": [],
       "class": "behavioral",
