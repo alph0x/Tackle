@@ -6806,6 +6806,42 @@
       "destination": "references/guides/run.md",
       "note": "Routine Run has no universal frontier checker or majority vote; its only routine independent reviews are the three [adversary checkpoints](#adversary-checkpoints).",
       "destination_unit_sha256": null
+    },
+    {
+      "path": "references/AGENTS.tmpl.md",
+      "line": 147,
+      "unit_sha256": "f5918407d7764b73548e5fae55e5b70a00af0e762011f382490ebc109cc32ea3",
+      "disposition": "reworded",
+      "destination": "references/AGENTS.tmpl.md",
+      "note": "Resume in the order of `references/guides/status.md#cold-resume-read-order`; see the Run guide for resuming an interrupted execution.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 148,
+      "unit_sha256": "9f282a2b482b63c9b85a7ec1494747b61a45915b88665db9a9d69df1bb26c8ff",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "A resume triggered by memory of a workspace has the same gate, [read-first](status.md#cold-resume-read-order) and consent as one the user typed.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run-card.md",
+      "line": 74,
+      "unit_sha256": "a28cfd18c2ecd798fd1623a7410825ca3a0530c58294b68cc86af20e6544e772",
+      "disposition": "reworded",
+      "destination": "references/guides/run-card.md",
+      "note": "[waiting-on-owner citation](status.md#queries), [resume](status.md#cold-resume-read-order).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/status.md",
+      "line": 26,
+      "unit_sha256": "a9184af0b5f019b17bac1891fb68bc6ab38bc372f9468413111927479effab4d",
+      "disposition": "reworded",
+      "destination": "references/guides/status.md",
+      "note": "**Resume** follows the [cold resume read order](#cold-resume-read-order).",
+      "destination_unit_sha256": null
     }
   ]
 }
