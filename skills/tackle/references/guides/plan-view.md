@@ -38,7 +38,15 @@ The problems are:
 - a board with no task rows, or a duplicate task id;
 - a dependency on an unknown task, or a dependency cycle;
 - a missing brief;
-- a status outside the board's vocabulary.
+- a status outside the board's vocabulary;
+- with `--map`, a base that cannot be read, or a map delta that the [architecture map](architecture-map.md) recipe
+  rejects.
+
+## Architecture map
+
+With `--map <base>` and `--map-scope all|changed`, the view also draws the [architecture map](architecture-map.md)
+twice: as the project is today, and after the plan. It reads `<workspace>/map-delta.json`, and each picture has
+a Cards tab and a Diagram tab. Without `--map`, the page holds no map and its data island says `"map": null`.
 
 ## Focused plans
 
@@ -56,6 +64,8 @@ names no requirement id, the recipe refuses with the Focused reason. It invents 
 - Status filters, the coverage table and the decision log work with the same data.
 - The page marks the tasks that a role run works on now, and it lists every open run. A run is open
   when its `start` row has no `finish` or `observe-incomplete` row.
+- The page names a running role `Live`, or `En marcha` on a Spanish page, so the badge never reads like the
+  In progress state.
 - The footer shows the build time and the Methodology version of the workspace.
 - The page escapes every workspace string. No workspace text runs as script.
 - The interface has English and Spanish text. The recipe picks Spanish only on clear Spanish evidence in the
