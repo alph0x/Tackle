@@ -1,4 +1,8 @@
-"""Scan the repository-wide tracked diff for workspace-shaped IDs and its initiative slug."""
+"""Scan the repository-wide tracked diff for workspace-shaped IDs and its initiative slug.
+
+Narrow allowances only: typed fixture fields, exact path/content-hash historical contexts, and sealed
+blind-authored scenario trees, admitted while their bytes match the committed digest in the scenario index.
+"""
 
 from dataclasses import dataclass, field
 import ast
@@ -1047,7 +1051,10 @@ _SCENARIO_OVERLAYS = {'a', 'b', 'fails-acceptance', 'repeats-effect', 'reset-cyc
 
 
 def _scenario_role(path):
-    """Name one exact scenario model role; never grant a directory-wide exception."""
+    """Name one exact scenario model role; never grant a path-only exception.
+
+    A scenario tree is admitted only while its bytes match the committed sealed digest of a blind-authored
+    entry (see ``_sealed_scenario_admissions``)."""
     for (scenario, variant), workspace in _SCENARIO_WORKSPACES.items():
         root = 'eval/scenarios/' + scenario + '/variants/' + variant + '/'
         if not path.startswith(root):
@@ -1366,6 +1373,117 @@ def _scenario_typed_spans(repo, path):
     return lines, spans
 
 
+_SEALED_SCENARIO_ID = re.compile(r'[A-Za-z0-9][A-Za-z0-9._-]*')
+_SEALED_VARIANT_ID = re.compile(r'[vh][0-9]+')
+_SEALED_HEX = re.compile(r'[0-9a-f]{64}')
+_SEALED_ORACLE = re.compile(r'(GROUND-TRUTH\.md|variants/[^/]+/GROUND-TRUTH\.md|variants/[^/]+/oracle/.+)')
+
+
+def _sealed_mapping_digest(mapping):
+    """The scenario-index tree digest (check_index.mapping_digest), kept here as one pinned expression."""
+    return hashlib.sha256(json.dumps(mapping, sort_keys=True, separators=(',', ':'),
+                                     ensure_ascii=False).encode()).hexdigest()
+
+
+def _sealed_tracked(repo, prefix):
+    result = subprocess.run(['git', '-C', str(repo), 'ls-files', '-z', '--', prefix],
+                            capture_output=True, check=False)
+    if result.returncode:
+        return None
+    return [item.decode('utf-8', 'surrogateescape') for item in result.stdout.split(b'\0') if item]
+
+
+def _sealed_digest(repo, names, key):
+    """Digest working-tree bytes of tracked ``names`` under ``key``; None when any is a symlink or unreadable."""
+    mapping = {}
+    for name in names:
+        path = repo / name
+        if path.is_symlink() or not path.is_file():
+            return None
+        mapping[key(name)] = hashlib.sha256(path.read_bytes()).hexdigest()
+    return _sealed_mapping_digest(mapping)
+
+
+def _sealed_scenario_tree(repo, entry, scenario):
+    """{path: tier} admitted for one blind-authored entry, or {} when a tree fails any condition."""
+    authored = entry.get('authored')
+    if not isinstance(authored, dict) or authored.get('blind') is not True:
+        return {}
+    scenario_root = 'eval/scenarios/' + scenario + '/'
+    tracked = _sealed_tracked(repo, scenario_root)
+    if not tracked:
+        return {}
+    tracked_set = set(tracked)
+    admitted = {}
+    variants = entry.get('variants')
+    for variant in variants if isinstance(variants, list) else []:
+        if not isinstance(variant, dict) or not isinstance(variant.get('variant_id'), str):
+            continue
+        vid = variant['variant_id']
+        if not _SEALED_VARIANT_ID.fullmatch(vid) or sum(
+                isinstance(item, dict) and item.get('variant_id') == vid for item in variants) != 1:
+            continue
+        root = scenario_root + 'variants/' + vid + '/input'
+        digest = variant.get('fixture_sha256')
+        prompts, fixture = variant.get('prompts'), variant.get('fixture')
+        if (variant.get('stageable') is not True or variant.get('split') not in ('development', 'held-out') or
+                variant.get('path') != root or not isinstance(digest, str) or not _SEALED_HEX.fullmatch(digest) or
+                not isinstance(prompts, list) or not prompts or
+                not all(isinstance(item, str) and item for item in prompts) or
+                not isinstance(fixture, str) or not fixture or '/' in fixture):
+            continue
+        fixture_root = root + '/' + fixture + '/'
+        names = [root + '/' + item for item in prompts]
+        if not all(name in tracked_set for name in names):
+            continue
+        names += [name for name in tracked if name.startswith(fixture_root)]
+        if len(names) == len(prompts):
+            continue
+        actual = _sealed_digest(repo, names, lambda name: name[len(root) + 1:])
+        if actual == digest:
+            admitted.update({name: 'input' for name in names})
+    oracle_names = [name for name in tracked if _SEALED_ORACLE.fullmatch(name[len(scenario_root):])]
+    oracle_digest = entry.get('oracle_sha256')
+    if (any('/oracle/' in name for name in oracle_names) and isinstance(oracle_digest, str) and
+            _SEALED_HEX.fullmatch(oracle_digest) and
+            _sealed_digest(repo, oracle_names, lambda name: name[len(scenario_root):]) == oracle_digest):
+        admitted.update({name: 'oracle' for name in oracle_names})
+    return admitted
+
+
+def _sealed_scenario_admissions(repo, paths):
+    """Map each admitted path to its tier ('input' or 'oracle'), for scenarios that ``paths`` touch.
+
+    A tree is admitted only when the scenario index holds exactly one blind-authored entry for it and the
+    working-tree digest of the tree equals the digest the index records; any other state (unreadable index,
+    missing or null digest, symlink, edited byte) admits nothing and never raises."""
+    touched = set()
+    for path in paths:
+        parts = path.split('/')
+        if len(parts) > 3 and parts[0] == 'eval' and parts[1] == 'scenarios' and _SEALED_SCENARIO_ID.fullmatch(parts[2]):
+            touched.add(parts[2])
+    if not touched:
+        return {}
+    try:
+        index = json.loads((repo / 'eval/scenarios/INDEX.json').read_text(encoding='utf-8'))
+    except (OSError, UnicodeError, ValueError):
+        return {}
+    if (not isinstance(index, dict) or index.get('schema') != 'tackle-scenario-index/1' or
+            not isinstance(index.get('scenarios'), list)):
+        return {}
+    admitted = {}
+    for scenario in sorted(touched):
+        entries = [item for item in index['scenarios'] if isinstance(item, dict) and
+                   item.get('scenario_id') == scenario]
+        if len(entries) != 1:
+            continue
+        try:
+            admitted.update(_sealed_scenario_tree(repo, entries[0], scenario))
+        except (OSError, ValueError, TypeError, AttributeError):
+            continue
+    return admitted
+
+
 def _static_exception(path, line, counts):
     if counts.get((path, line.digest), 0) != 1:
         return False
@@ -1419,6 +1537,7 @@ def scan_committed_text(repo, base_revision, initiative_slug):
         key = (line.path, line.digest)
         counts[key] = counts.get(key, 0) + 1
     relocated_note = packaging_relocated_note(repo, base_revision)
+    sealed = _sealed_scenario_admissions(repo, {line.path for line in additions})
     slug_pattern = re.compile(
         r'(?<![A-Za-z0-9_])' + re.escape(initiative_slug) + r'(?![A-Za-z0-9_-]|\.[0-9])', re.IGNORECASE)
     findings = []
@@ -1502,7 +1621,7 @@ def scan_committed_text(repo, base_revision, initiative_slug):
                               counts.get((line.path, line.digest), 0) == 1)
         for match in ID_PATTERN.finditer(line.text):
             span = match.span('token')
-            if span in typed_spans or exact_exception or inherited_exception:
+            if span in typed_spans or exact_exception or inherited_exception or line.path in sealed:
                 continue
             findings.append(Finding(line.path, line.line, 'workspace-id', match.group('token'), line.digest))
         for match in slug_pattern.finditer(line.text):

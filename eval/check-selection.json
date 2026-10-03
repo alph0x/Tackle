@@ -654,10 +654,11 @@
         "eval/tests/tooling/behavior/judges/planning",
         "eval/tests/tooling/behavior/judges/resume",
         "eval/tests/tooling/records",
+        "eval/tests/tooling/rules",
         "eval/tests/tooling/scenario-index"
       ],
       "exclude": [],
-      "reason": "Scenario/catalog changes select tools only; never select live episodes or open held-out inputs."
+      "reason": "Scenario/catalog changes select tools only, including the committed-text guard that digests sealed scenario trees; never select live episodes or open held-out inputs."
     },
     {
       "patterns": [

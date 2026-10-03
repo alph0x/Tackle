@@ -183,12 +183,13 @@
       "files": [
         "test_committed_text.py",
         "test_ledger.py",
+        "test_sealed_scenario_admission.py",
         "test_unit_diff.py"
       ],
-      "tests": 92,
+      "tests": 108,
       "source": "eval/rules",
       "category": "tooling",
-      "purpose": "Normative inventory, ledger gates, committed-text leak scanning and removed-unit accounting."
+      "purpose": "Normative inventory, ledger gates, committed-text leak scanning (including digest-keyed admission of sealed scenario trees) and removed-unit accounting."
     },
     {
       "path": "eval/tests/tooling/records",

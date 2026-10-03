@@ -33,8 +33,8 @@ consumer; dates and experiment identifiers belong to evidence provenance.
 | tooling | [tooling/maintaining/suite-integrity](tooling/maintaining/suite-integrity/) | Complete discovery, conservative selection and credential guards. |
 | tooling | [tooling/protocol-v2](tooling/protocol-v2/) | Evaluation protocol records and numerical verdict oracles. |
 | tooling | [tooling/records](tooling/records/) | Record currency, pinned claims and publication sanitization. |
-| tooling | [tooling/rules](tooling/rules/) | Normative inventory, ledger gates, committed-text leak scanning and removed-unit accounting. |
-| tooling | [tooling/scenario-index](tooling/scenario-index/) | Scenario catalog consistency and variant registration. |
+| tooling | [tooling/rules](tooling/rules/) | Normative inventory, ledger gates, committed-text leak scanning (including digest-keyed admission of sealed scenario trees) and removed-unit accounting. |
+| tooling | [tooling/scenario-index](tooling/scenario-index/) | Scenario catalog consistency, variant registration and answer-sheet/oracle digests. |
 | tooling | [tooling/validation-integrity](tooling/validation-integrity/) | Validation fields, dependency parsing and write-scope integrity. |
 
 Historical verdict suites exercise distinct sealed implementations. Their source
