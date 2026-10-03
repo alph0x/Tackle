@@ -362,15 +362,17 @@ sandbox or model.
     `invalid` with the reason `oracle: <reason>`, sanitized, and `correct_action` is null. The other three
     scores are always null, and the oracle's own named scores are kept in the episode's `oracle.json`.
   - Route-made `invalid` reasons are a closed set: `credential`, `isolation`, `harness configuration written`,
-    `control arm exposed to the skill` and `method arm skill not listed`.
+    `control arm exposed to the skill`, `method arm skill not listed` and `final tree not preserved`.
   - `timeout` is a reached wall clock, or the CLI's own turn or dollar limit. The protocol names `timeout` for the
     harness budget only, so reporting the CLI's limits the same way is a choice of this route.
   - `error` is a CLI failure without a result, an instrument fault, an oracle failure or an interruption.
   - `unobserved` is a planned episode that a reached cap stopped. There are no re-runs: an observed cohort is
     never amended.
   - Each episode keeps `episode.json`, `oracle.json`, the byte-exact `sessions/NN/stdout.jsonl` and
-    `stderr.txt`, and a copy of `final/` under `--out/<episode_id>/`. Links and special files in the work tree
-    are recorded by path and kind and never followed. The route's records carry neutral tokens (`<runtime>`,
+    `stderr.txt`, and a copy of `final/` under `--out/<episode_id>/`. A link, a hard-linked file, a special file
+    or an unreadable entry in the work tree is recorded by path and kind and never followed or copied, and the
+    episode is then `invalid` with the reason `final tree not preserved`: the oracle never runs on a partial tree,
+    and the stage goes on. The route's records carry neutral tokens (`<runtime>`,
     `<home>`, `<work>`, `<tmp>`, `<cli>`, `<repo>`) instead of absolute paths. The retained streams and tree are
     evidence, not records, and keep the paths the participant saw.
   - `episode.json` also holds `metrics.archive_bytes_read`: the bytes of `history-archive.md` returned to the

@@ -196,6 +196,12 @@ if 'links' in modes:
     os.symlink('/etc/hosts', cwd / 'outside-link')
     os.symlink('/etc', cwd / 'outside-dir')
     os.link(cwd / 'mode.txt', cwd / 'hard.txt')
+if 'hardlink' in modes:
+    os.link(cwd / 'mode.txt', cwd / 'hard.txt')
+if 'symlink' in modes:
+    os.symlink('/etc/hosts', cwd / 'outside-link')
+if 'fifo' in modes:
+    os.mkfifo(cwd / 'pipe')
 if 'rest' in modes:
     (home / '.stub-cache').write_text(token)
 if 'work' in modes:

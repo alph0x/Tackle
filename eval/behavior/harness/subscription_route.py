@@ -65,6 +65,7 @@ REASON_ISOLATION = 'isolation'
 REASON_CONFIG = 'harness configuration written'
 REASON_CONTROL = 'control arm exposed to the skill'
 REASON_METHOD = 'method arm skill not listed'
+REASON_TREE = 'final tree not preserved'
 # Only the CLI wrapper's own refusal counts: the trailing line of an "Exit code" result naming its cwd-tracking file.
 HARNESS_FAULT = re.compile(r'(?m)^(?:zsh|bash|sh):\d+: operation not permitted: \S*/claude-\d+/cwd-[0-9a-f]+\s*\Z')
 
@@ -677,7 +678,8 @@ def work_hashes(work):
 
 
 def preserve_tree(work, final):
-    """Copy regular single-link files only; links and special entries are recorded by path and kind, never followed."""
+    """Copy regular single-link files only; links and special entries are recorded by path and kind, never followed.
+    The caller must not judge a tree whose ``other`` is not empty: the copy is then partial."""
     files, other = {}, []
 
     def unreadable(error):
@@ -1350,7 +1352,10 @@ def run_episode(stage, entry, position):
         final_files, other = preserve_tree(root / 'work', directory / 'final')
         record['final_tree'] = {'files': len(final_files), 'other': other}
         shutil.rmtree(root, ignore_errors=True)
-        if outcome is None:
+        if outcome is None and other:
+            # A link, a special file or an unreadable entry is not in the copy: the oracle is never given a partial tree.
+            outcome, reason = 'invalid', REASON_TREE
+        elif outcome is None:
             try:
                 verdict = judge(cfg, package.oracle, directory / 'final', transcript)
             except OracleError as problem:

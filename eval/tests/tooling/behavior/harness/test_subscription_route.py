@@ -1219,16 +1219,23 @@ class Outcomes(Base):
         _, episode = self.only(self.env.one('echo'), 'avoided', exit_code=0)
         self.assertEqual(episode['sessions'][0]['harness_faults'], 0)
 
-    def test_links_and_special_files_are_recorded_not_followed(self):
-        _, episode = self.only(self.env.one('links'), 'avoided', exit_code=0)
-        final = dir_files(self.env.out / 'one' / 'final')
-        for name in ('outside-link', 'hard.txt', 'mode.txt'):
-            self.assertNotIn(name, final)
-        self.assertIn('result.md', final)
-        self.assertEqual(episode['final_tree']['other'],
-                         [{'path': 'hard.txt', 'kind': 'hardlink'}, {'path': 'mode.txt', 'kind': 'hardlink'},
-                          {'path': 'outside-dir', 'kind': 'symlink'}, {'path': 'outside-link', 'kind': 'symlink'}])
-        self.assertFalse((self.env.out / 'one' / 'final' / 'outside-dir').exists())
+    def test_a_tree_the_copy_cannot_preserve_is_refused_and_never_judged_partially(self):
+        hard = [{'path': 'hard.txt', 'kind': 'hardlink'}, {'path': 'mode.txt', 'kind': 'hardlink'}]
+        symlink = [{'path': 'outside-link', 'kind': 'symlink'}]
+        cases = {'hardlink': hard, 'symlink': symlink, 'fifo': [{'path': 'pipe', 'kind': 'special'}],
+                 'links': hard + [{'path': 'outside-dir', 'kind': 'symlink'}] + symlink}
+        for mode, other in sorted(cases.items()):
+            with self.subTest(mode=mode):
+                self.new_env()
+                _, episode = self.only(self.env.one(mode), 'invalid', 'final tree not preserved', exit_code=0)
+                self.assertEqual(episode['final_tree']['other'], sorted(other, key=lambda item: item['path']))
+                self.assertEqual(self.env.launcher_log(), [], 'the oracle never saw the partial tree')
+                self.assertFalse((self.env.out / 'one' / 'oracle.json').exists())
+                final = dir_files(self.env.out / 'one' / 'final')
+                self.assertIn('result.md', final)
+                for name in ('outside-link', 'hard.txt', 'pipe'):
+                    self.assertNotIn(name, final)
+                self.assertFalse((self.env.out / 'one' / 'final' / 'outside-dir').exists())
 
     def test_refused_harness_config_write_is_an_expected_denial(self):
         _, episode = self.only(self.env.one('denyconfig'), 'avoided', exit_code=0)
