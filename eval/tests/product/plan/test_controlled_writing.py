@@ -49,6 +49,22 @@ class ControlledWriting(unittest.TestCase):
                     self.assertTrue(set(expected) <= got, (expected, found))
                     self.assertTrue({kind for kind, _ in got} <= {kind for kind, _ in expected}, found)
 
+    def test_the_guide_word_lists_equal_the_recipe_lists(self):
+        import re
+        namespace = load_recipe()
+        guide = (INSTALL / "references/guides/controlled-writing.md").read_text(encoding="utf-8")
+        for label, language in (("English", "en"), ("Spanish", "es")):
+            line = next(row for row in guide.splitlines() if row.startswith(label + ": "))
+            phrases = re.findall(r"`([^`]+)`", line)
+            self.assertGreater(len(phrases), 10)
+            for phrase in phrases:
+                with self.subTest(language=language, phrase=phrase):
+                    found = namespace["findings"]("We note %s.\n" % phrase, language)
+                    self.assertEqual([item["kind"] for item in found], ["vague"], found)
+            for pattern in namespace["VAGUE"][language]:
+                with self.subTest(language=language, pattern=pattern):
+                    self.assertTrue(any(re.fullmatch(pattern, phrase, re.IGNORECASE) for phrase in phrases))
+
     def test_the_guide_passes_its_own_check(self):
         findings = load_recipe()["findings"]
         guide = (INSTALL / "references/guides/controlled-writing.md").read_text(encoding="utf-8")
