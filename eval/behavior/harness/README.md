@@ -338,6 +338,8 @@ sandbox or model.
   is `invalid` with `rule_exposure` true, a method arm without it is `invalid`, and a participant-made
   `.claude` is `invalid` (the CLI's own empty `.claude/.cc-writes` staging is tolerated at any depth). The
   CLI wrapper's refused temporary write and a refused workspace write are instrument faults, recorded `error`.
+  An isolation fault or a control arm's skill use outranks a reached limit or timeout: the episode is `invalid` and
+  the stage stops.
 - **Judging.** The oracle is `python3 check.py --final <dir> --transcript <file>`: standard library only, one
   JSON object `{"outcome", "invalid_reason", "scores"}`, exit 0 with a verdict, 1 on an internal error and 2 on a
   usage error. The route copies the oracle, the final tree and the concatenated session streams under one

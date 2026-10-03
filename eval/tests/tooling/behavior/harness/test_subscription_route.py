@@ -1089,6 +1089,31 @@ class Outcomes(Base):
                 self.assertIn(problem, episode['isolation_problems'])
                 self.assertEqual(self.env.launcher_log(), [])
 
+    def test_an_isolation_fault_outranks_a_limit_or_a_timeout_and_stops_the_stage(self):
+        cases = (('badmodel+maxturns', 'method', 'isolation', 'model'), ('apikey+maxbudget', 'method', 'isolation', 'api_key_source'),
+                 ('mcp+maxturns', 'control', 'isolation', 'mcp_servers'),
+                 ('controlskill+maxturns', 'control', 'control arm exposed to the skill', 'skill_listing'),
+                 ('badmodel+sleep', 'method', 'isolation', 'model'))
+        for mode, arm, reason, problem in cases:
+            with self.subTest(mode=mode):
+                env = self.new_env()
+                if 'sleep' in mode:
+                    cfg = env.config()
+                    cfg['caps']['episode']['seconds'] = 4
+                    env.write_config(cfg)
+                env.cohort_of([arm, arm], mode=mode)
+                process = env.run()
+                self.assertEqual(process.returncode, 1, process.stdout + process.stderr)
+                record, = env.records()[:1]
+                self.assertEqual((record['outcome'], record['invalid_reason']), ('invalid', reason))
+                self.assertIn(problem, env.episode(record['episode_id'])['isolation_problems'])
+                self.assertEqual(len(env.model_calls()), 1, 'the stage stopped after the faulty episode')
+                self.assertEqual(len(env.records()), 1, 'a stopped stage leaves the cohort incomplete')
+
+    def test_a_limit_without_an_init_event_is_still_a_timeout(self):
+        _, episode = self.only(self.env.one('noinit+maxturns'), 'timeout', exit_code=0)
+        self.assertEqual(episode['limit_reached'], 'error_max_turns')
+
     def test_a_control_that_lists_the_skill_is_invalid_with_rule_exposure(self):
         record, episode = self.only(self.env.one('controlskill', arm='control'), 'invalid',
                                     'control arm exposed to the skill', exit_code=1)

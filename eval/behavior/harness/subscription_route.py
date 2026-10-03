@@ -1141,6 +1141,16 @@ def find_token(stage, seen):
     return locations
 
 
+def invalid_reason(arm, problems, used_skill, listed):
+    """The closed reason of an isolation-class invalid episode."""
+    others = [p for p in problems if p != 'skill_listing']
+    if arm == 'control' and (used_skill or listed) and not others:
+        return REASON_CONTROL
+    if arm == 'method' and problems == ['skill_listing']:
+        return REASON_METHOD
+    return REASON_ISOLATION
+
+
 def classify(stage, seen, locations, arm):
     """The episode's outcome from what was observed, in a fixed order. ``outcome`` None means the oracle decides."""
     cfg, sessions, root = stage.cfg, seen.sessions, seen.root
@@ -1170,6 +1180,9 @@ def classify(stage, seen, locations, arm):
         stop('invalid', reason=REASON_CREDENTIAL)
     elif seen.error:
         stop('error')
+    elif (set(decision.problems) - {'no_init_event'}) or used_skill:
+        # An observed isolation fault or a control arm's skill use outranks a limit or a timeout: the stage must stop.
+        stop('invalid', reason=invalid_reason(arm, decision.problems, used_skill, listed))
     elif seen.limit == 'wall_clock' or (last and last.child.timed_out):
         decision.outcome, decision.limit = 'timeout', 'wall_clock'
     elif seen.limit or result.get('subtype') in LIMITS:
@@ -1177,14 +1190,8 @@ def classify(stage, seen, locations, arm):
     elif not sessions or last.child.exit != 0 or last.child.error or result.get('subtype') != 'success' \
             or result.get('is_error') is not False:
         stop('error', 'cli_' + str(result.get('subtype') or 'no_result'))
-    elif decision.problems or used_skill:
-        others = [p for p in decision.problems if p != 'skill_listing']
-        if arm == 'control' and (used_skill or listed) and not others:
-            stop('invalid', reason=REASON_CONTROL)
-        elif arm == 'method' and decision.problems == ['skill_listing']:
-            stop('invalid', reason=REASON_METHOD)
-        else:
-            stop('invalid', reason=REASON_ISOLATION)
+    elif decision.problems:
+        stop('invalid', reason=invalid_reason(arm, decision.problems, used_skill, listed))
     elif refused:
         stop('error', 'unexpected_denial')
     elif faults:
