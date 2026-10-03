@@ -1754,12 +1754,14 @@ def cmd_probe(args):
 # --- the listener probe -------------------------------------------------------------------------------------------------
 
 LISTENER_PROBE_STATUS = 503
+PROBE_CLIENT = 'probe_client.py'
+PROBE_CLIENT_SOURCE = 'import sys\nimport urllib.request as u\nprint(u.urlopen(sys.argv[1], timeout=5).status)\n'
 CURL = "curl -sS -m 5 -o /dev/null -w '%{http_code}' "
 
 
 def listener_probe_commands(port, decoy):
     """The probe's fixed commands as (key, command), in the order they are asked for, each once."""
-    python = '/usr/bin/python3 -c "import urllib.request as u; print(u.urlopen(\'%s\', timeout=5).status)"'
+    python = '/usr/bin/python3 %s %%s' % PROBE_CLIENT
     return [
         ('curl_ipv4', CURL + 'http://127.0.0.1:%d/probe/curl-ipv4' % port),
         ('curl_localhost', CURL + 'http://localhost:%d/probe/curl-localhost' % port),
@@ -1777,7 +1779,8 @@ def listener_probe_commands(port, decoy):
 def listener_probe_prompt(commands):
     return ('This is a technical sandbox listener probe for a test harness. Run each numbered shell command below with the '
             'Bash tool, one command per call, exactly as written, once each and without any retry, even if it fails, and '
-            'run nothing else:\n' + ''.join('%d. %s\n' % (number, command) for number, (_, command) in enumerate(commands, 1))
+            'run nothing else. First use the Write tool once to create the file %s in the current directory with exactly '
+            'this content:\n%s\nThen run the commands:\n' % (PROBE_CLIENT, PROBE_CLIENT_SOURCE) + ''.join('%d. %s\n' % (number, command) for number, (_, command) in enumerate(commands, 1))
             + 'Finally reply with the word DONE.\n')
 
 

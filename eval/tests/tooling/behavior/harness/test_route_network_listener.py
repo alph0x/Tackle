@@ -340,6 +340,10 @@ class ListenerProbe(unittest.TestCase):
         self.assertGreater(result['cost_usd'], 0)
         self.assertEqual(len(lines(out / 'network.jsonl')), 9)
         self.assertEqual(json.loads(process.stdout)['passed'], True)
+        # The interpreter runs a script the model writes first: an inline program is refused by the CLI in don't-ask mode.
+        asked = self.env.model_calls()[-1]['prompt']
+        self.assertIn('probe_client.py', asked)
+        self.assertNotIn('python3 -c', asked)
 
     def test_a_reachable_decoy_and_a_recorded_public_raw_socket_are_reported(self):
         process, out = self.probe('decoyopen+rawpublic')
