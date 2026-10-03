@@ -133,7 +133,7 @@
         "test_measurement.py",
         "test_plan_view.py"
       ],
-      "tests": 41,
+      "tests": 46,
       "source": "eval/status",
       "category": "product",
       "purpose": "Context projections, archives, resume and handoff costs, the plan view recipe and the architecture map."
