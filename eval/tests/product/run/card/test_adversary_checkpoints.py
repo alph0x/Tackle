@@ -21,7 +21,7 @@ G = ('failure', 'cmd=x; class=implementation; assert=b; out=h2')
 
 
 def line(moment, verdict='reviews/one-adversary.json', independence='fresh session, same model family'):
-    return '**Adversary**: %s · %s · claude-opus-5-5 session r-7 · %s\n' % (moment, verdict, independence)
+    return '**Adversary**: %s · %s · claude-opus-5-5 session sess7 · %s\n' % (moment, verdict, independence)
 
 
 def report(*lines):
@@ -34,29 +34,29 @@ def task(status, text, events, **extra):
 
 # (case id, tasks, None when no finding is expected, else the one task id every finding names)
 CASES = [
-    ('p01-complete-with-review', {ONE: task('Complete', report(line('lock', 'reviews/lock.json'), line('complete')), [('review', 'lock')])}, None),
-    ('p02-new-signature-needs-none', {ONE: task('Complete', report(line('complete')), [F, A, G, A])}, None),
-    ('p03-open-task-needs-no-complete-line', {ONE: task('In progress', '', [F, A])}, None),
-    ('p04-repeat-reviewed-before-attempt', {ONE: task('Checking', report(line('repeat-failure')), [F, A, F, ('review', 'repeat-failure'), A])}, None),
-    ('p05-repeat-not-yet-attempted', {ONE: task('Checking', '', [F, A, F])}, None),
-    ('p06-two-tasks-one-signature-each', {ONE: task('In progress', '', [F, A]), TWO: task('In progress', '', [F, A])}, None),
-    ('p07-waived-complete', {ONE: task('Complete', report(line('complete', LIVE, 'waived')), [])}, None),
-    ('p08-completed-before-adoption', {ONE: task('Complete', report(), [], before_adoption=True)}, None),
-    ('n01-complete-without-review', {ONE: task('Complete', report(), [])}, ONE),
-    ('n02-complete-with-lock-only', {ONE: task('Complete', report(line('lock', 'reviews/lock.json')), [('review', 'lock')])}, ONE),
-    ('n03-repeat-attempted-without-review', {ONE: task('In progress', '', [F, A, F, A])}, ONE),
-    ('n04-review-after-the-attempt', {ONE: task('In progress', report(line('repeat-failure')), [F, A, F, A, ('review', 'repeat-failure')])}, ONE),
-    ('n05-unknown-moment', {ONE: task('In progress', report(line('final')), [])}, ONE),
-    ('n06-verdict-path-missing', {ONE: task('Complete', report(line('complete', 'reviews/absent.json')), [])}, ONE),
-    ('n07-complete-repeat-never-reviewed', {ONE: task('Complete', report(line('complete')), [F, A, F, A])}, ONE),
-    ('n08-only-the-offending-task-is-named', {ONE: task('Complete', report(line('complete')), []), TWO: task('Complete', report(), [])}, TWO),
-    ('n09-repeat-not-adjacent', {ONE: task('In progress', '', [F, A, G, A, F, A])}, ONE),
-    ('n10-review-before-the-repeat', {ONE: task('In progress', report(line('repeat-failure')), [F, A, ('review', 'repeat-failure'), F, A])}, ONE),
-    ('n11-lock-line-verdict-missing', {ONE: task('In progress', report(line('lock', 'reviews/absent.json')), [('review', 'lock')])}, ONE),
-    ('n12-moment-is-a-superstring', {ONE: task('Complete', report(line('incomplete')), [])}, ONE),
-    ('n13-empty-independence-cell', {ONE: task('Complete', report(line('complete', independence='')), [])}, ONE),
-    ('n14-waiver-without-decision', {ONE: task('Complete', report(line('complete', 'reviews/one-adversary.json', 'waived')), [])}, ONE),
-    ('n15-waiver-unknown-decision', {ONE: task('Complete', report(line('complete', ABSENT, 'waived')), [])}, ONE),
+    ('pos01-complete-with-review', {ONE: task('Complete', report(line('lock', 'reviews/lock.json'), line('complete')), [('review', 'lock')])}, None),
+    ('pos02-new-signature-needs-none', {ONE: task('Complete', report(line('complete')), [F, A, G, A])}, None),
+    ('pos03-open-task-needs-no-complete-line', {ONE: task('In progress', '', [F, A])}, None),
+    ('pos04-repeat-reviewed-before-attempt', {ONE: task('Checking', report(line('repeat-failure')), [F, A, F, ('review', 'repeat-failure'), A])}, None),
+    ('pos05-repeat-not-yet-attempted', {ONE: task('Checking', '', [F, A, F])}, None),
+    ('pos06-two-tasks-one-signature-each', {ONE: task('In progress', '', [F, A]), TWO: task('In progress', '', [F, A])}, None),
+    ('pos07-waived-complete', {ONE: task('Complete', report(line('complete', LIVE, 'waived')), [])}, None),
+    ('pos08-completed-before-adoption', {ONE: task('Complete', report(), [], before_adoption=True)}, None),
+    ('neg01-complete-without-review', {ONE: task('Complete', report(), [])}, ONE),
+    ('neg02-complete-with-lock-only', {ONE: task('Complete', report(line('lock', 'reviews/lock.json')), [('review', 'lock')])}, ONE),
+    ('neg03-repeat-attempted-without-review', {ONE: task('In progress', '', [F, A, F, A])}, ONE),
+    ('neg04-review-after-the-attempt', {ONE: task('In progress', report(line('repeat-failure')), [F, A, F, A, ('review', 'repeat-failure')])}, ONE),
+    ('neg05-unknown-moment', {ONE: task('In progress', report(line('final')), [])}, ONE),
+    ('neg06-verdict-path-missing', {ONE: task('Complete', report(line('complete', 'reviews/absent.json')), [])}, ONE),
+    ('neg07-complete-repeat-never-reviewed', {ONE: task('Complete', report(line('complete')), [F, A, F, A])}, ONE),
+    ('neg08-only-the-offending-task-is-named', {ONE: task('Complete', report(line('complete')), []), TWO: task('Complete', report(), [])}, TWO),
+    ('neg09-repeat-not-adjacent', {ONE: task('In progress', '', [F, A, G, A, F, A])}, ONE),
+    ('neg10-review-before-the-repeat', {ONE: task('In progress', report(line('repeat-failure')), [F, A, ('review', 'repeat-failure'), F, A])}, ONE),
+    ('neg11-lock-line-verdict-missing', {ONE: task('In progress', report(line('lock', 'reviews/absent.json')), [('review', 'lock')])}, ONE),
+    ('neg12-moment-is-a-superstring', {ONE: task('Complete', report(line('incomplete')), [])}, ONE),
+    ('neg13-empty-independence-cell', {ONE: task('Complete', report(line('complete', independence='')), [])}, ONE),
+    ('neg14-waiver-without-decision', {ONE: task('Complete', report(line('complete', 'reviews/one-adversary.json', 'waived')), [])}, ONE),
+    ('neg15-waiver-unknown-decision', {ONE: task('Complete', report(line('complete', ABSENT, 'waived')), [])}, ONE),
 ]
 
 
