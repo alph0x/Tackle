@@ -2843,8 +2843,8 @@
     },
     {
       "rule_id": "R-COMM-09",
-      "statement": "Owner texts and specifications use sentences of at most 25 words and avoid the vague words of the controlled-writing guide, and a mechanical check runs before readiness and before a receipt or blocker report is written.",
-      "statement_sha256": "739d29bc9640b1516355b3f3b7a0ed5aaa613969979c9db9f015fbca5d6a01af",
+      "statement": "Owner texts and specifications use sentences of at most 25 words. They avoid the vague words of the controlled-writing guide. A mechanical check runs before readiness and before RUN writes a receipt or a blocker report.",
+      "statement_sha256": "b88960480b49a6ae4fdd6108cb06cdbd603b54a79a0c44e25859e4ed744e30bc",
       "home": "references/guides/controlled-writing.md:19",
       "home_fragment": "Keep sentences short, at most 25 words.",
       "units": [],
