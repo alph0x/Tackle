@@ -1231,6 +1231,30 @@ def session_record(neutral, session, withheld):
     return neutral.apply(record)
 
 
+def holds_token(value, found):
+    """Whether the JSON of a record carries the token or an encoding of it, in either JSON spelling."""
+    return any(contains(json.dumps(value, ensure_ascii=ascii_only).encode(), found) for ascii_only in (True, False))
+
+
+def seal_record(token, directory, neutral, record, line):
+    """The episode.json content and the protocol line to keep, and whether the episode was withheld.
+
+    Both are scanned, because the line is not the neutralized record: one that carries the token is never kept. The
+    episode becomes a credential hit with nothing retained.
+    """
+    found = needles(token)
+    written = neutral.apply(record)
+    if not (holds_token(written, found) or holds_token(line, found)):
+        return written, line, False
+    shutil.rmtree(directory, ignore_errors=True)
+    directory.mkdir(mode=0o700)
+    written = {'schema': EPISODE_SCHEMA, 'episode_id': line['episode_id'], 'outcome': 'invalid',
+               'credential': {'hit': True, 'locations': ['record']}}
+    line = dict(line, outcome='invalid', invalid_reason=REASON_CREDENTIAL, scores={name: None for name in SCORE_FIELDS},
+                rule_exposure=False)
+    return written, line, True
+
+
 def run_episode(stage, entry, position):
     """Run, scan, classify, judge and record one episode. Returns the protocol line, whether the stage must stop,
     and whether the run was interrupted."""
@@ -1325,16 +1349,8 @@ def run_episode(stage, entry, position):
             'files_written': sum(1 for key, digest in final_files.items() if seen.baseline.get(key) != digest) if clean else NA}
     line = dict(base_line(stage, entry, position), rule_exposure=decision.exposure, outcome=outcome, invalid_reason=reason,
                 scores=scores, cost=cost, transcript_sha256=transcript_sha, started_at=started, finished_at=finished)
-    written = neutral.apply(record)
-    if contains(json.dumps(written).encode(), needles(stage.token)):
-        # A record that carries the token is never kept: the episode becomes a credential hit with nothing retained.
-        shutil.rmtree(directory, ignore_errors=True)
-        directory.mkdir(mode=0o700)
-        written = {'schema': EPISODE_SCHEMA, 'episode_id': entry['episode_id'], 'outcome': 'invalid',
-                   'credential': {'hit': True, 'locations': ['record']}}
-        line.update(outcome='invalid', invalid_reason=REASON_CREDENTIAL, scores={name: None for name in SCORE_FIELDS},
-                    rule_exposure=False)
-        decision.stop = True
+    written, line, withheld = seal_record(stage.token, directory, neutral, record, line)
+    decision.stop = decision.stop or withheld
     dump(directory / 'episode.json', written)
     append_record(cohort, line)
     return line, decision.stop, seen.interrupted

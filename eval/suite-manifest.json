@@ -216,7 +216,7 @@
         "test_subagent.py",
         "test_subscription_route.py"
       ],
-      "tests": 286,
+      "tests": 288,
       "source": "eval/behavior/harness",
       "category": "tooling",
       "purpose": "Agent adapters, usage parsing, broker isolation, harness commands and the subscription route: isolation, judging and records."

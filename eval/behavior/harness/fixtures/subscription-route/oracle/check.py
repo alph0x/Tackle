@@ -49,6 +49,10 @@ def main():
     if mode == 'badoutcome':
         print(json.dumps({'outcome': 'maybe', 'invalid_reason': None, 'scores': {'restraint': 1}}))
         return 0
+    if mode == 'join':
+        text = ''.join(path.read_text() for path in sorted(final.glob('part-*.txt')))
+        print(json.dumps({'outcome': 'invalid', 'invalid_reason': 'saw ' + text, 'scores': {'restraint': 1}}))
+        return 0
     if mode == 'leakyreason':
         print(json.dumps({'outcome': 'invalid', 'invalid_reason': 'saw ' + str(final) + ' and user ' + 'someone' + '@example.org',
                           'scores': {'restraint': 1}}))

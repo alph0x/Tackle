@@ -333,7 +333,7 @@ sandbox or model.
   be a regular file owned by the user; it is tightened to owner-only and must hold one value. It goes into the
   CLI process environment only, never into argv, a prompt, a staged file or a record. Before anything is kept,
   every stream, and every name, link target and file under the run root, is scanned for the token and its
-  base64, hex, URL-encoded and JSON-escaped forms, and each record is scanned again as it is written. A hit
+  base64, hex, URL-encoded and JSON-escaped forms, and `episode.json` and the protocol line are each scanned again before they are kept. A hit
   makes the episode `invalid` with the reason `credential`, retains no stream bytes and no final tree, and
   leaves the run root in place. Every later run refuses until the owner clears it.
 - **Isolation.** Each session's init event must show the configured model, no API key, exactly the seven tools,

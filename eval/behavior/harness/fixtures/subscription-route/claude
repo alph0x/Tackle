@@ -198,6 +198,10 @@ if 'rest' in modes:
     (home / '.stub-cache').write_text(token)
 if 'work' in modes:
     (cwd / 'env.txt').write_text(TOKEN_VARIABLE + '=' + token + '\n')
+if 'split' in modes:
+    # The token in two halves, each a form no scan looks for.
+    (cwd / 'part-a.txt').write_text(token[:len(token) // 2])
+    (cwd / 'part-b.txt').write_text(token[len(token) // 2:])
 if 'name' in modes:
     (cwd / ('f-' + token)).write_text('named\n')
 if 'fail' in modes:

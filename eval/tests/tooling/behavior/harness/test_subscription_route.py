@@ -667,6 +667,45 @@ class CredentialIncidents(Base):
         self.assertEqual(len(self.env.records()), 1)
 
 
+class RecordScan(Base):
+    def test_a_token_an_oracle_reassembles_into_its_reason_withholds_the_record_and_stops_the_stage(self):
+        process = self.env.one('split', oracle={'mode': 'join'})
+        self.assertEqual(process.returncode, 1, process.stdout + process.stderr)
+        record, = self.env.records()
+        self.assertEqual((record['outcome'], record['invalid_reason'], record['scores']), ('invalid', 'credential', NO_SCORES))
+        self.assertEqual(sorted(path.name for path in (self.env.out / 'one').iterdir()), ['episode.json'])
+        self.assertEqual(self.env.episode('one')['credential'], {'hit': True, 'locations': ['record']})
+        self.assert_no_token(self.env.out, self.env.cohort, self.env.state, self.env.config_path.parent)
+        self.assertEqual(self.env.check().returncode, 0)
+
+    def test_the_protocol_line_is_scanned_on_its_own_before_it_is_kept(self):
+        env = self.env
+        cfg = route.load_config(env.config_path)
+        neutral = route.Neutral(cfg)
+        directory = env.tmp / 'episode'
+        base = {'episode_id': 'one', 'outcome': 'invalid', 'scores': dict(NO_SCORES, correct_action=1), 'rule_exposure': True}
+        leaky = dict(base, invalid_reason='oracle: saw ' + env.token)
+        clean = dict(base, invalid_reason='oracle: fine')
+        cases = {'line only': (clean, leaky), 'record only': (leaky, clean), 'both': (leaky, leaky)}
+        for label, (record, line) in cases.items():
+            with self.subTest(label=label):
+                shutil.rmtree(directory, ignore_errors=True)
+                write(directory / 'oracle.json', 'kept?')
+                written, kept, withheld = route.seal_record(env.token, directory, neutral, record, line)
+                self.assertIs(withheld, True)
+                self.assertEqual(list(directory.iterdir()), [], 'nothing of the episode is retained')
+                self.assertEqual(written, {'schema': route.EPISODE_SCHEMA, 'episode_id': 'one', 'outcome': 'invalid',
+                                           'credential': {'hit': True, 'locations': ['record']}})
+                self.assertEqual((kept['outcome'], kept['invalid_reason'], kept['scores'], kept['rule_exposure']),
+                                 ('invalid', 'credential', NO_SCORES, False))
+                self.assertNotIn(env.token, json.dumps([written, kept]))
+        shutil.rmtree(directory, ignore_errors=True)
+        write(directory / 'oracle.json', 'kept')
+        written, kept, withheld = route.seal_record(env.token, directory, neutral, clean, clean)
+        self.assertEqual((withheld, kept, (directory / 'oracle.json').read_text()), (False, clean, 'kept'))
+        self.assertEqual(written['invalid_reason'], 'oracle: fine')
+
+
 class Refusals(Base):
     def test_cli_hash_mismatch_refuses_before_any_model_call(self):
         for field, value, word in (('sha256', '0' * 64, 'sha256'), ('version', '9.9.9 (other)', 'version')):
