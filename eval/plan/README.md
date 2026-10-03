@@ -10,5 +10,7 @@ python3 -m unittest discover -s eval/tests/product/plan -p 'test_*.py' -v
 - `test_plan.py` checks that the plan template keeps the section order its consumers read: behavior and
   acceptance strategy before the task decomposition, then readiness and the per-task and initiative-level
   acceptance sections, in that order.
+- `test_controlled_writing.py` runs the shipped controlled-writing recipe over the fixture texts in
+  `controlled_writing_cases.py` and checks that the guide passes its own check.
 
 The brief template and the readiness lint have their own families, `eval/templates/` and `eval/lint/`.
