@@ -135,6 +135,8 @@ h1{font-family:var(--serif);font-weight:400;font-size:clamp(40px,8vw,104px);line
 .aedge{fill:none;stroke:var(--edge);stroke-width:1.6;transition:opacity .3s,stroke .2s}
 .aedge.new{stroke:var(--accent);stroke-dasharray:6 4}
 .aedge.on{stroke:var(--accent);stroke-width:2.6}
+.aelabel{display:none;fill:var(--accent-ink);font:550 11px var(--sans);paint-order:stroke;stroke:var(--surface);stroke-width:4px;pointer-events:none}
+.aelabel.on{display:block}
 .anode{cursor:pointer;transition:opacity .3s}
 .anode rect{fill:var(--surface);stroke:var(--line2);stroke-width:1.4}
 .anode[data-change="add"] rect{stroke:var(--accent);stroke-width:2.4}
@@ -362,15 +364,33 @@ footer p{margin:2px 0}
       el.classList.toggle('rel', id !== null && related.indexOf(key) >= 0);
       el.classList.toggle('dim', id !== null && key !== id && related.indexOf(key) < 0);
     });
-    Array.prototype.forEach.call(shown.querySelectorAll('.aedge'), function (edge) {
+    Array.prototype.forEach.call(shown.querySelectorAll('.aedge, .aelabel'), function (edge) {
       var linked = id !== null && (same(edge, 'data-from', id) || same(edge, 'data-to', id));
       edge.classList.toggle('on', linked);
-      edge.classList.toggle('dim', id !== null && !linked);
+      if (edge.classList.contains('aedge')) { edge.classList.toggle('dim', id !== null && !linked); }
     });
     while (info.firstChild) { info.removeChild(info.firstChild); }
-    if (card) { info.appendChild(card.cloneNode(true)); }
+    if (card) {
+      var copy = card.cloneNode(true);
+      copy.removeAttribute('tabindex');
+      info.appendChild(copy);
+    }
     else { info.textContent = info.getAttribute('data-empty') || ''; }
   }
+  function arrows(list) {
+    list.forEach(function (el, at) {
+      el.addEventListener('keydown', function (ev) {
+        var to = ev.key === 'ArrowRight' ? at + 1 : ev.key === 'ArrowLeft' ? at - 1 : ev.key === 'Home' ? 0 : ev.key === 'End' ? list.length - 1 : null;
+        if (to === null) { return; }
+        ev.preventDefault();
+        var next = list[(to + list.length) % list.length];
+        next.click();
+        next.focus();
+      });
+    });
+  }
+  arrows(tabs);
+  arrows(radios);
   tabs.forEach(function (el) { el.addEventListener('click', function () { view = el.getAttribute('data-view'); show(); }); });
   radios.forEach(function (el) { el.addEventListener('click', function () { pic = el.getAttribute('data-pic'); show(); }); });
   Array.prototype.forEach.call(section.querySelectorAll('.acard, .anode'), function (el) {

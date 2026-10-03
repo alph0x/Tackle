@@ -28,7 +28,7 @@ UI = {
         a_after='After this plan', a_whole='Showing: the whole project', a_changed_only='Showing: only what changes, with its neighbors',
         a_new='New', a_change='Changed', a_stale='Source missing', a_planned='Planned', a_done='Done', a_uses='Uses', a_used='Used by',
         a_sources='Sources', a_count='Components', a_changes='Changes', a_nochange='This plan changes nothing in the map.',
-        a_none='No project map exists yet. Ask for one and this section shows the project before and after the plan.',
+        a_none='No base map yet. Ask for one and this section shows the project before and after the plan.',
         a_mismatch='The map was verified at {have}, and the delta expects {want}.', a_pick='Select a component to see what it connects to.',
         states={},
         tasks='Tasks', all='All', needs='Needs', unblocks='Unblocks', nothing='nothing', requirements='Requirements',
@@ -62,7 +62,7 @@ UI = {
         a_after='Después de este plan', a_whole='Se muestra: todo el proyecto', a_changed_only='Se muestra: solo lo que cambia, con sus vecinos',
         a_new='Nuevo', a_change='Cambiado', a_stale='Falta la fuente', a_planned='Planificado', a_done='Hecho', a_uses='Usa', a_used='Lo usa',
         a_sources='Fuentes', a_count='Componentes', a_changes='Cambios', a_nochange='Este plan no cambia nada del mapa.',
-        a_none='Todavía no hay un mapa del proyecto. Pídelo y esta sección muestra el proyecto antes y después del plan.',
+        a_none='Todavía no hay un mapa base. Pídelo y esta sección muestra el proyecto antes y después del plan.',
         a_mismatch='El mapa se verificó en {have}, y el delta espera {want}.', a_pick='Elige un componente para ver con qué se conecta.',
         states={'Draft': 'Borrador', 'Ready to run': 'Lista para ejecutar', 'In progress': 'En curso', 'Checking': 'En verificación',
                 'Complete': 'Completa', 'Blocked': 'Bloqueada', 'Interrupted': 'Interrumpida', 'Skipped': 'Omitida',
@@ -525,40 +525,77 @@ def arch_cards(shown, groups, comps, rels, marks, stale_ids, pic, ui):
 
 
 def arch_svg(shown, groups, comps, rels, marks, stale_ids, fresh, pic, ui):
+    """Boxes in group columns. Arrows run along rails in the gutters between columns, and an arrow that skips a
+    column runs along a channel above them, so none passes behind a box it does not join. Arrow ends are
+    spread along a box side, so no two share a point."""
     columns = [[cid for cid in shown if comps[cid]['group'] == g['id']] for g in groups]
     columns = [c for c in columns if c]
-    node_w, node_h, gap_y, gap_x, pad, head = 190, 56, 14, 96, 14, 14
+    node_w, node_h, gap_y, pad, step, head = 190, 56, 14, 14, 12, 14
     band_w = node_w + 2 * pad
+    col_of = {cid: k for k, column in enumerate(columns) for cid in column}
+    row_of = {cid: j for column in columns for j, cid in enumerate(column)}
+    plan = []
+    for a, b, label in rels:
+        out = 'R' if col_of[a] <= col_of[b] else 'L'
+        into = 'L' if col_of[a] < col_of[b] else 'R'
+        plan.append(dict(a=a, b=b, label=label, out=out, into=into, ge=col_of[a] + (1 if out == 'R' else 0),
+                         gt=col_of[b] + (1 if into == 'R' else 0)))
+    for k, item in enumerate(plan):
+        item['far'] = item['ge'] != item['gt']
+        item['k'] = k
+    uses = {}
+    for item in plan:
+        uses.setdefault(item['ge'], []).append((item['k'], 'ge'))
+        if item['far']:
+            uses.setdefault(item['gt'], []).append((item['k'], 'gt'))
+    count = len(columns)
+    width_of = [max(60 if 0 < g < count else 24, (len(uses.get(g, [])) + 1) * step) for g in range(count + 1)]
+    far = [item for item in plan if item['far']]
+    channel = (len(far) + 1) * step + 8 if far else 0
+    gutter_x = [6 + sum(width_of[:g]) + g * band_w for g in range(count + 1)]
     top = max(len(c) * node_h + (len(c) - 1) * gap_y for c in columns) if columns else 0
-    total_w = len(columns) * band_w + max(len(columns) - 1, 0) * gap_x + 12
-    total_h = head + top + 2 * pad
-    where, col_of = {}, {}
+    total_w = gutter_x[count] + width_of[count] + 6 if columns else 12
+    total_h = channel + head + top + 2 * pad
+    where = {}
+    for cid in col_of:
+        where[cid] = (gutter_x[col_of[cid]] + width_of[col_of[cid]] + pad, channel + head + pad + row_of[cid] * (node_h + gap_y))
+    ends = {}
+    for item in plan:
+        ends.setdefault((item['a'], item['out']), []).append((where[item['b']][1], item['k'], 'from'))
+        ends.setdefault((item['b'], item['into']), []).append((where[item['a']][1], item['k'], 'to'))
+    slot = {}
+    for (cid, side), listed in ends.items():
+        for n, (_, k, role) in enumerate(sorted(listed)):
+            slot[(k, role)] = where[cid][1] + (n + 1) * node_h / (len(listed) + 1)
+    rail = {}
+    for g, listed in uses.items():
+        ordered = sorted(listed, key=lambda u: min(slot[(u[0], 'from')], slot[(u[0], 'to')]))
+        for n, (k, which) in enumerate(ordered):
+            rail[(k, which)] = gutter_x[g] + (n + 1) * width_of[g] / (len(ordered) + 1)
+    lane = {item['k']: channel - (n + 1) * step for n, item in enumerate(sorted(far, key=lambda i: (i['ge'], i['gt'], i['k'])))}
     out = ['<svg viewBox="0 0 %d %d" width="%d" height="%d" role="group" aria-label="%s"><defs><marker id="arrow-%s" viewBox="0 0 10 10" refX="9" refY="5" '
            'markerWidth="8" markerHeight="8" orient="auto"><path class="arrowhead" d="M 0 1 L 10 5 L 0 9 z"/></marker></defs>' % (
                total_w, total_h, total_w, total_h, esc(ui['a_diagram']), pic)]
-    group_title = {g['id']: g['title'] for g in groups}
     for k, column in enumerate(columns):
-        x = 6 + k * (band_w + gap_x)
-        out.append('<rect class="band" x="%d" y="0" width="%d" height="%d" rx="16"><title>%s</title></rect>' % (
-            x, band_w, total_h, esc(group_title[comps[column[0]]['group']])))
-        for j, cid in enumerate(column):
-            where[cid] = (x + pad, head + pad + j * (node_h + gap_y))
-            col_of[cid] = k
-    for a, b, label in rels:
-        (xa, ya), (xb, yb) = where[a], where[b]
-        ya, yb = ya + node_h / 2, yb + node_h / 2
-        if col_of[a] < col_of[b]:
-            start, end = (xa + node_w, ya), (xb, yb)
-            way = (start[0] + (end[0] - start[0]) / 2, start[1], end[0] - (end[0] - start[0]) / 2, end[1])
-        elif col_of[a] > col_of[b]:
-            start, end = (xa, ya), (xb + node_w, yb)
-            way = (start[0] - (start[0] - end[0]) / 2, start[1], end[0] + (start[0] - end[0]) / 2, end[1])
+        out.append('<rect class="band" x="%d" y="%d" width="%d" height="%d" rx="16"><title>%s</title></rect>' % (
+            gutter_x[k] + width_of[k], channel, band_w, total_h - channel, esc(next(g['title'] for g in groups if g['id'] == comps[column[0]]['group']))))
+    labels = []
+    for item in plan:
+        a, b, k = item['a'], item['b'], item['k']
+        start = (where[a][0] + (node_w if item['out'] == 'R' else 0), slot[(k, 'from')])
+        end = (where[b][0] + (0 if item['into'] == 'L' else node_w), slot[(k, 'to')])
+        if item['far']:
+            points = [start, (rail[(k, 'ge')], start[1]), (rail[(k, 'ge')], lane[k]), (rail[(k, 'gt')], lane[k]), (rail[(k, 'gt')], end[1]), end]
+            spot = ((rail[(k, 'ge')] + rail[(k, 'gt')]) / 2, lane[k] - 3, 'middle')
         else:
-            start, end = (xa + node_w, ya), (xb + node_w, yb)
-            way = (start[0] + 60, start[1], end[0] + 60, end[1])
-        out.append('<path class="aedge%s" data-from="%s" data-to="%s" d="M%.1f %.1f C%.1f %.1f %.1f %.1f %.1f %.1f" marker-end="url(#arrow-%s)"><title>%s</title></path>' % (
-            ' new' if (a, b, label) in fresh else '', esc(a), esc(b), start[0], start[1], way[0], way[1], way[2], way[3], end[0], end[1], pic,
-            esc('%s → %s: %s' % (comps[a]['title'], comps[b]['title'], label))))
+            points = [start, (rail[(k, 'ge')], start[1]), (rail[(k, 'ge')], end[1]), end]
+            spot = (rail[(k, 'ge')] + 4, (start[1] + end[1]) / 2 - 3, 'start')
+        path = 'M%.1f %.1f' % points[0] + ''.join(' L%.1f %.1f' % p for p, q in zip(points[1:], points) if p != q)
+        out.append('<path class="aedge%s" data-from="%s" data-to="%s" d="%s" marker-end="url(#arrow-%s)"><title>%s</title></path>' % (
+            ' new' if (a, b, item['label']) in fresh else '', esc(a), esc(b), path, pic,
+            esc('%s → %s: %s' % (comps[a]['title'], comps[b]['title'], item['label']))))
+        labels.append('<text class="aelabel" data-from="%s" data-to="%s" x="%.1f" y="%.1f" text-anchor="%s">%s</text>' % (
+            esc(a), esc(b), spot[0], spot[1], spot[2], esc(item['label'])))
     for cid in shown:
         x, y = where[cid]
         lines = wrap(comps[cid]['title'], 24)
@@ -573,6 +610,7 @@ def arch_svg(shown, groups, comps, rels, marks, stale_ids, fresh, pic, ui):
                        arch_attrs(cid, rels, marks if pic == 'after' else {}, stale_ids), esc(comps[cid]['title']), esc(comps[cid]['title']),
                        x, y, node_w, node_h, x + 12, y + 22, text,
                        '<text class="ang" x="%d" y="%.1f" text-anchor="end">%s</text>' % (x + node_w - 10, y + node_h - 8, esc(tag)) if tag else ''))
+    out += labels
     out.append('</svg>')
     return ''.join(out)
 
@@ -591,6 +629,9 @@ def arch_section(mapm, base, delta, scope, root, ui):
         today_ids = base_ids
     stale_ids = set(mapm['stale'](base, root)) & set(today_ids)
     island = dict(today=today_ids, after=after_ids, changed=changed, stale=sorted(stale_ids))
+    if scope == 'changed' and not changes:
+        return ('<section class="sec" id="architecture" data-map="shown" data-reveal><div class="sh"><h2>%s</h2><p>%s</p></div></section>' % (
+            esc(ui['a_title']), esc(ui['a_nochange']))), island
     marks = arch_marks(changes)
     fresh = {rel3(r) for c in changes for r in c.get('relations', [])}
     groups = base['groups']
@@ -706,27 +747,29 @@ def main():
                         found = re.search(r'^- \*\*Traces to\*\*: (.+)$', path.read_text(encoding='utf-8'), re.M)
                         traces = found.group(1) if found else ''
             t['traces'] = traces
-    arch = None
+    arch, missing_base = None, False
     if args.map_base:
         try:
             mapm = load_map_recipe(args.template)
         except (OSError, ValueError, SyntaxError) as problem:
             print('cannot load the architecture map recipe: %s' % problem, file=sys.stderr)
             return 2
-        base, trouble = read_json(args.map_base)
-        if trouble:
+        base, trouble = (None, None) if not Path(args.map_base).exists() else read_json(args.map_base)
+        if not Path(args.map_base).exists():
+            missing_base = True
+        elif trouble:
             problems.append('cannot read the base map %s' % trouble)
         elif not isinstance(base, dict) or base.get('schema') != 'tackle-map/1':
             problems.append('the base map is not schema tackle-map/1')
             base = None
         delta = dict(schema='tackle-map-delta/1', changes=[])
-        if (ws / 'map-delta.json').is_file():
+        if (ws / 'map-delta.json').is_file() and not missing_base:
             delta, trouble = read_json(ws / 'map-delta.json')
             if trouble:
                 problems.append('cannot read the map delta %s' % trouble)
         if base is not None and not any(p.startswith('cannot read the map delta') for p in problems):
             problems += ['map: ' + line for line in mapm['validate'](base, delta)]
-        arch = (base, delta, mapm)
+        arch = (base, delta, mapm) if base is not None else None
     stage = None
     if tasks and not problems:
         stage = stages_of([t['id'] for t in tasks], {t['id']: list(t['deps']) for t in tasks})
@@ -748,7 +791,7 @@ def main():
         above = Path(os.path.abspath(ws)).parents
         root = above[2] if len(above) > 2 else above[-1]
         map_html, map_island = arch_section(arch[2], arch[0], arch[1], args.map_scope, root, ui)
-    elif (ws / 'map-delta.json').is_file():
+    elif missing_base or (ws / 'map-delta.json').is_file():
         map_html = arch_none(ui)
     snapshot = newest_snapshot(read(ws, 'history.md')) or fields.get('state', '')
     working = open_runs(read(ws, 'resource-usage.md'))
