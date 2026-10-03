@@ -107,6 +107,18 @@ def token_forms(token):
             urllib.parse.quote(token, safe=''), json.dumps(token)[1:-1]]
 
 
+def rule_prefix(rule):
+    """The directory a Read(//dir/**) or Edit(//dir/**) rule covers, or None for any other rule."""
+    match = re.fullmatch(r'(?:Read|Edit)\(/(/.+)/\*\*\)', rule)
+    return match.group(1) if match else None
+
+
+def covers(prefix, path):
+    """Whether path lies in the tree that prefix names, with symlinked spellings (/tmp, /var) resolved on both sides."""
+    prefix, path = os.path.realpath(prefix), os.path.realpath(path)
+    return path == prefix or path.startswith(prefix.rstrip(SEP) + SEP)
+
+
 def wait_for(found, timeout=30):
     end = time.monotonic() + timeout
     while time.monotonic() < end:
@@ -478,6 +490,12 @@ class StubCohort(Base):
             self.assertEqual(set(permissions['allow']), {'Read(/%s/**)' % root, 'Edit(/%s/work/**)' % root, 'Skill'})
             for rule in ('Read(/%s/**)' % DENIED_READS[0], 'Edit(/%s/work/.claude/**)' % root, 'WebFetch', 'WebSearch'):
                 self.assertIn(rule, permissions['deny'])
+            # A deny rule outranks the allow rules, so none may cover the episode's own root (the suite's roots sit under
+            # a denied temporary tree on every platform).
+            prefixes = [prefix for prefix in map(rule_prefix, permissions['deny']) if prefix is not None]
+            self.assertGreaterEqual(len(prefixes), 3)
+            for prefix in prefixes:
+                self.assertFalse(covers(prefix, root), 'a deny rule for %s covers the run root' % prefix)
         first, second = [item for item in launches if 'Session' in item['prompt']][0:2]
         self.assertEqual(first['argv'][first['argv'].index('--max-turns') + 1], '10')
         self.assertEqual(second['argv'][second['argv'].index('--max-turns') + 1], '8')
@@ -502,7 +520,8 @@ class StubCohort(Base):
         self.assert_neutral()
         episode = self.env.episode('trap-method')
         first = episode['sessions'][0]
-        self.assertEqual(first['permission_denials'], [{'tool': 'Read', 'path': '<home>/elsewhere.md'}])
+        self.assertEqual(first['permission_denials'], [{'tool': 'Read', 'path': '<run-root>/elsewhere.md'},
+                                                       {'tool': 'Glob', 'path': '/etc/*.conf'}, {'tool': 'Grep', 'path': '/etc'}])
         for paths in first['memory_sources'].values():
             self.assertTrue(all(path.startswith('<home>/') for path in paths), paths)
         self.assertEqual(episode['argv'][0], '<cli>')
@@ -1030,6 +1049,17 @@ class Outcomes(Base):
                 _, episode = self.only(self.env.one(mode, arm=arm), 'error', exit_code=1)
                 self.assertEqual(episode['error'], error)
 
+    def test_a_refused_file_tool_inside_the_run_root_is_an_instrument_fault(self):
+        # The permission rules must never refuse the participant its own files: Read, Glob and Grep count like Write and Edit.
+        cases = (('readdeny', 'control'), ('readdeny', 'method'), ('homedeny', 'method'), ('globdeny', 'control'),
+                 ('grepdeny', 'method'))
+        for mode, arm in cases:
+            with self.subTest(mode=mode, arm=arm):
+                self.new_env()
+                _, episode = self.only(self.env.one(mode, arm=arm), 'error', exit_code=1)
+                self.assertEqual(episode['error'], 'unexpected_denial')
+                self.assertEqual(self.env.launcher_log(), [])
+
     def test_participant_output_never_counts_as_a_harness_fault(self):
         _, episode = self.only(self.env.one('echo'), 'avoided', exit_code=0)
         self.assertEqual(episode['sessions'][0]['harness_faults'], 0)
@@ -1154,9 +1184,11 @@ class Probe(Base):
         self.assertEqual(process.returncode, 0, process.stdout + process.stderr)
         result = self.result(out)
         expected_true = ('passed', 'network_denied', 'repository_read_denied', 'workspace_read_denied',
-                         'method_arm_skill_loaded', 'control_arm_skill_absent', 'token_scan_clean')
+                         'method_arm_skill_loaded', 'control_arm_skill_absent', 'token_scan_clean', 'work_tree_write_allowed',
+                         'work_tree_read_allowed')
         for key in expected_true:
             self.assertIs(result[key], True, key)
+        self.assertEqual(result['work_tree_read_attempts'], 2, 'one Read of the run root\'s own file per arm')
         self.assertIs(result['token_visible_to_tools'], False)
         self.assertEqual(set(result['attempts']), {'network', 'repository_read', 'workspace_read'})
         self.assertTrue(all(isinstance(count, int) and count >= 2 for count in result['attempts'].values()), result['attempts'])
@@ -1164,6 +1196,11 @@ class Probe(Base):
         self.assertAlmostEqual(result['cost_usd'], 0.10, places=6)
         calls = env.model_calls()
         self.assertEqual([item['kind'] for item in calls], ['probe', 'probe'])
+        inside = [item['cwd'] + SEP + 'probe-inside.txt' for item in calls]
+        self.assertEqual(len(set(inside)), 2, 'each arm is asked about the file in its own root')
+        for item, path in zip(calls, inside):
+            self.assertIn('\n- %s\n' % path, item['prompt'])
+            self.assertIn('echo INSIDE-', item['prompt'])
         self.assertEqual(sorted(item['skill_digest'] is not None for item in calls), [False, True])
         staged = next(item for item in calls if item['skill_digest'])
         self.assertEqual(staged['skill_digest'], env.install_digest)
@@ -1188,6 +1225,22 @@ class Probe(Base):
                 self.assertIs(result[flag], False)
                 self.assertEqual(result['attempts'][attempt], 0)
                 self.assertIs(result['passed'], False)
+
+    def test_probe_requires_the_run_roots_own_files_to_be_writable_and_readable(self):
+        cases = {'noinsideread': ('work_tree_read_allowed', 0), 'insidedenied': ('work_tree_read_allowed', 2),
+                 'insidewrong': ('work_tree_read_allowed', 2), 'insideerror': ('work_tree_read_allowed', 2),
+                 'insidewritefail': ('work_tree_write_allowed', 2)}
+        for mode, (flag, attempts) in cases.items():
+            with self.subTest(mode=mode):
+                env = self.new_env()
+                process, out = env.probe(mode)
+                self.assertEqual(process.returncode, 1, process.stdout + process.stderr)
+                result = self.result(out)
+                self.assertIs(result[flag], False)
+                self.assertIs(result['passed'], False)
+                self.assertEqual(result['work_tree_read_attempts'], attempts)
+                for key in ('network_denied', 'repository_read_denied', 'workspace_read_denied', 'token_scan_clean'):
+                    self.assertIs(result[key], True, key)
 
     def test_probe_fails_when_the_network_is_open_or_a_sentinel_is_readable(self):
         cases = {'netopen': 'network_denied', 'netpartial': 'network_denied', 'repoleak': 'repository_read_denied',
@@ -1295,6 +1348,64 @@ class Components(Base):
         self.assertEqual(route.harness_config_paths(work), ['.claude'])
         (work / 'docs/.Claude').mkdir(parents=True)
         self.assertEqual(route.harness_config_paths(work), ['.claude', 'docs/.Claude'])
+
+    def test_the_file_tool_deny_rules_leave_the_run_root_open_wherever_it_sits(self):
+        everywhere = [SEP + 'Users'] + [SEP + name for name in ('private/tmp', 'tmp', 'Volumes', 'private/var/folders', 'var/folders', 'private/var/tmp')]
+        production = Path('/private/var/tmp/tcr/p000000')  # the layout of the run configuration: a denied tree holds the root
+        settings = route.sandbox_settings(production)
+        deny = settings['permissions']['deny']
+        self.assertEqual([rule for rule in deny if rule.startswith('Read(')],
+                         ['Read(//Users/**)', 'Read(//private/tmp/**)', 'Read(//tmp/**)', 'Read(//Volumes/**)',
+                          'Read(//private/var/folders/**)', 'Read(//var/folders/**)'])
+        self.assertEqual([rule for rule in deny if rule.startswith('Edit(')],
+                         ['Edit(//private/var/tmp/tcr/p000000/work/.claude/**)', 'Edit(//Users/**)', 'Edit(//private/tmp/**)'])
+        self.assertEqual(settings['permissions']['allow'], ['Read(//private/var/tmp/tcr/p000000/**)',
+                                                           'Edit(//private/var/tmp/tcr/p000000/work/**)', 'Skill'])
+        filesystem = settings['sandbox']['filesystem']
+        self.assertEqual(filesystem['denyRead'], everywhere, 'the sandbox keeps every tree: allowRead re-allows the root')
+        self.assertEqual(filesystem['allowRead'], [str(production)])
+        volumes = route.sandbox_settings(Path('/Volumes/data/tcr/p000000'))['permissions']['deny']
+        self.assertEqual([rule for rule in volumes if rule.startswith('Read(')],
+                         ['Read(//Users/**)', 'Read(//private/tmp/**)', 'Read(//tmp/**)', 'Read(//private/var/folders/**)',
+                          'Read(//var/folders/**)', 'Read(//private/var/tmp/**)'])
+        users = route.sandbox_settings(Path(HOME_PREFIX + 'someone/tcr/p000000'))['permissions']['deny']
+        self.assertNotIn('Read(//Users/**)', users)
+        self.assertNotIn('Edit(//Users/**)', users)
+        self.assertIn('Edit(//private/tmp/**)', users)
+
+    def test_refused_file_tools_inside_the_run_root_are_found_and_outside_ones_are_not(self):
+        root = Path('/private/var/tmp/tcr/p000001')
+
+        def faults(*items, arm='method'):
+            return route.unexpected_denials([{'tool': tool, 'path': path} for tool, path in items], root, arm)
+
+        inside = str(root)
+        self.assertEqual(faults(('Read', inside + '/work/a.md')), ['Read in run root'])
+        self.assertEqual(faults(('Read', inside + SEP + 'home' + '/.claude/skills/tackle/SKILL.md')), ['Read in run root'])
+        self.assertEqual(faults(('Glob', inside + '/work')), ['Glob in run root'])
+        self.assertEqual(faults(('Grep', '')), ['Grep in run root'], 'a search without a path runs in the work directory')
+        self.assertEqual(faults(('Read', 'notes/a.md'), ('Read', '~/x.md')), ['Read in run root'] * 2, 'relative to the work directory')
+        self.assertEqual(faults(('Read', inside + '/work/.claude/settings.json')), ['Read in run root'])
+        self.assertEqual(faults(('Read', inside.upper() + '/WORK/A.MD')), ['Read in run root'], 'the volume ignores case')
+        self.assertEqual(faults(('Read', inside + '/work/../../elsewhere.md')), [], 'normalized, it leaves the root')
+        self.assertEqual(faults(('Read', '/private/var/tmp/tcr/elsewhere.md'), ('Read', inside + '-other/x.md')), [])
+        self.assertEqual(faults(('Read', HOME_PREFIX + 'someone/notes.md'), ('Glob', '/etc/*.conf'), ('Grep', '/etc')), [])
+        self.assertEqual(faults(('Write', inside + '/work/.claude/settings.json')), [], 'refused on purpose')
+        self.assertEqual(faults(('Write', inside + '/work/x.txt'), ('Edit', '')), ['Write in workspace', 'Edit in workspace'])
+        self.assertEqual(faults(('Skill', '')), ['Skill'])
+        self.assertEqual(faults(('Skill', ''), arm='control'), [])
+
+    def test_denial_paths_come_from_the_file_or_the_search_path(self):
+        def denial(tool, **given):
+            return {'tool_name': tool, 'tool_use_id': 'use', 'tool_input': given}
+
+        denials = [denial('Read', file_path='/a/b.md'), denial('Write', file_path='/a/w.md'), denial('Glob', pattern='*.md', path='/a'),
+                   denial('Glob', pattern='/etc/*.conf'), denial('Glob', pattern='*.md'), denial('Grep', pattern='x', path='/g'),
+                   denial('Grep', pattern='/not-a-path'), denial('Bash', command='ls')]
+        raw = json.dumps({'type': 'result', 'subtype': 'success', 'is_error': False, 'permission_denials': denials}).encode()
+        self.assertEqual([(d['tool'], d['path']) for d in route.parse_stream(raw)['denials']],
+                         [('Read', '/a/b.md'), ('Write', '/a/w.md'), ('Glob', '/a'), ('Glob', '/etc/*.conf'), ('Glob', ''),
+                          ('Grep', '/g'), ('Grep', ''), ('Bash', '')])
 
     def test_general_credential_invariant_names_the_broker_routes(self):
         import harness

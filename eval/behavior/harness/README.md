@@ -322,6 +322,9 @@ sandbox or model.
   token variable, and nothing else. The CLI's sandbox settings allow no network, deny reads under the home and
   temporary trees except the run root, allow writes only to `work/` and `tmp/`, and deny writes to
   `work/.claude`. The tools are `Bash`, `Read`, `Write`, `Edit`, `Glob`, `Grep` and `Skill`, in `dontAsk` mode.
+  The file tools' permission rules allow reading the run root and editing `work/`, and refuse reads under the home
+  and temporary trees; a deny rule outranks an allow rule, so no deny rule covers the run root itself, which sits
+  under `/private/var/tmp`. A refused `Read`, `Glob` or `Grep` inside the run root is an instrument fault.
 - **Token.** The owner's subscription token is read at launch from the file the configuration names, which must
   be a regular file owned by the user; it is tightened to owner-only and must hold one value. It goes into the
   CLI process environment only, never into argv, a prompt, a staged file or a record. Before anything is kept,
@@ -374,10 +377,13 @@ sandbox or model.
   lock in `state_dir`.
 - **Probe.** `probe` runs the method arm and the control arm once each with fixed commands, and writes
   `result.json`: the booleans `passed`, `network_denied`, `repository_read_denied`, `workspace_read_denied`,
-  `method_arm_skill_loaded`, `control_arm_skill_absent`, `token_scan_clean` and `token_visible_to_tools`; the
-  `attempts` (counts of recorded tool calls that tried the network, the repository and the workspace); the
-  `model`; and `cost_usd`. A denial is true only when its attempt was recorded and refused. Sentinel files are
-  planted in `--repo` and `--workspace` and removed afterwards. The probe learns whether the tools can see the
+  `method_arm_skill_loaded`, `control_arm_skill_absent`, `token_scan_clean`, `work_tree_write_allowed`,
+  `work_tree_read_allowed` and `token_visible_to_tools`; the `attempts` (counts of recorded tool calls that tried
+  the network, the repository and the workspace) and `work_tree_read_attempts` (the `Read` calls on the file in the
+  child's own work tree); the `model`; and `cost_usd`. A denial is true only when its attempt was recorded and
+  refused, and an allowance only when its attempt was recorded and succeeded: each child writes a file in its
+  work tree with `Bash` and must then `Read` it, so rules that refuse the child its own files fail the probe.
+  Sentinel files are planted in `--repo` and `--workspace` and removed afterwards. The probe learns whether the tools can see the
   token only through a count, never by printing it. Every probe's cost counts against the configured probe cap.
 - **Control.** `token_visible_to_tools` decides which control applies. With `prevention` the model's tools
   cannot read the token. With `detection` they can, and containment is the sandbox without network plus the

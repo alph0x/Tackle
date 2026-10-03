@@ -42,6 +42,8 @@ CHILD_PATH = '/usr/bin:/bin:/usr/sbin:/sbin'
 HOME_PREFIX = '/Users'
 # Reads under these trees are denied to the participant's tools and to the oracle; only the run root and the judged root re-allow.
 DENY_READ = ['/Users', '/private/tmp', '/tmp', '/Volumes', '/private/var/folders', '/var/folders', '/private/var/tmp']
+# The trees the file tools may not edit, besides the work directory's own .claude.
+DENY_EDIT = ['/Users', '/private/tmp']
 FORBIDDEN_PARTS = ('', '.', '..', '.git', '.codex', '.agents', '.claude')
 FORBIDDEN_NAMES = ('ground-truth.md', 'skill.md', 'claude.md', 'claude.local.md')
 ANCESTOR_NAMES = ('CLAUDE.md', 'CLAUDE.local.md', '.claude', 'AGENTS.md')
@@ -50,6 +52,7 @@ ARMS = ('control', 'method')
 LIMITS = ('error_max_turns', 'error_max_budget_usd')
 ARCHIVE = 'history-archive.md'
 PROBE_URL = 'https://example.com'
+PROBE_INSIDE = 'probe-inside.txt'
 SCAN_CHUNK = 1 << 20
 SAFE_ID = re.compile(r'[A-Za-z0-9][A-Za-z0-9._-]{0,63}')
 SESSION_PROMPT = re.compile(r'sessions/([0-9]+)\.md')
@@ -494,6 +497,17 @@ def harness_faults(raw):
     return count
 
 
+def denial_location(tool, tool_input):
+    """Where a refused call pointed: the file of Read, Write and Edit, the search path of Glob and Grep, and for a Glob
+    without a path its pattern when that is absolute. Empty when the call named no location."""
+    given = tool_input if isinstance(tool_input, dict) else {}
+    for key in ('file_path', 'path'):
+        if given.get(key):
+            return str(given[key])
+    pattern = given.get('pattern')
+    return pattern if tool == 'Glob' and isinstance(pattern, str) and pattern.startswith('/') else ''
+
+
 def parse_stream(raw):
     """The init event, the result event and the denials of one session's stream, without copying message text."""
     init = result = None
@@ -507,7 +521,7 @@ def parse_stream(raw):
         'init': {k: init.get(k) for k in ('model', 'permissionMode', 'apiKeySource', 'tools', 'mcp_servers', 'skills', 'plugins',
                                           'memory_paths')} if init else None,
         'result': {k: result.get(k) for k in ('subtype', 'is_error', 'num_turns', 'total_cost_usd')} if result else None,
-        'denials': [{'tool': str(d.get('tool_name')), 'path': str((d.get('tool_input') or {}).get('file_path') or '')}
+        'denials': [{'tool': str(d.get('tool_name')), 'path': denial_location(str(d.get('tool_name')), d.get('tool_input'))}
                     for d in denials if isinstance(d, dict)] if isinstance(denials, list) else [],
     }
 
@@ -551,17 +565,36 @@ def memory_inside(memory, root):
     return bool(paths) and all(p.startswith(str(root) + '/') for p in paths)
 
 
+def under(base, path, fold=False):
+    """Whether path is base or lies beneath it, with symlinked spellings (/tmp, /var/folders) resolved on both sides."""
+    base, path = os.path.realpath(base), os.path.realpath(path)
+    if fold:
+        base, path = base.lower(), path.lower()
+    return path == base or path.startswith(base.rstrip('/') + '/')
+
+
+def inside_root(path, root):
+    """Whether a tool's path, read as the CLI reads it (relative to the work directory), lies in the run's root.
+
+    The volume ignores case, so the comparison does too.
+    """
+    return under(root, os.path.normpath(os.path.join(str(root / 'work'), path)), fold=True)
+
+
 def unexpected_denials(denials, root, arm):
-    """Edits inside the workspace and, for the method arm, skill use must never be refused."""
+    """Edits inside the workspace, reads inside the run root and, for the method arm, skill use must never be refused."""
     work, config_root = str(root / 'work'), str(root / 'work' / '.claude').lower()
     found = []
     for denial in denials or []:
+        tool, path = denial['tool'], denial['path']
         # Edits to work/.claude itself or anything beneath it are refused on purpose: expected, not a fault.
-        if denial['path'].lower() == config_root or denial['path'].lower().startswith(config_root + '/'):
+        if tool in ('Write', 'Edit') and (path.lower() == config_root or path.lower().startswith(config_root + '/')):
             continue
-        if denial['tool'] in ('Write', 'Edit') and (denial['path'] == '' or denial['path'].startswith(work)):
-            found.append(denial['tool'] + ' in workspace')
-        elif denial['tool'] == 'Skill' and arm == 'method':
+        if tool in ('Write', 'Edit') and (path == '' or path.startswith(work)):
+            found.append(tool + ' in workspace')
+        elif tool in ('Read', 'Glob', 'Grep') and inside_root(path, root):
+            found.append(tool + ' in run root')
+        elif tool == 'Skill' and arm == 'method':
             found.append('Skill')
     return found
 
@@ -745,6 +778,9 @@ def sandbox_settings(root):
 
     File tools may read the run root (the method arm's skill lives in its HOME) and edit only the working directory;
     anything else is refused because the session runs in dontAsk mode. Nothing in a run may create work/.claude.
+    A deny rule outranks every allow rule, so the file tools' deny rules leave out each tree that holds the run root:
+    the root sits under a tree that Bash is denied and allowRead re-allows, and a rule for that tree would refuse the
+    participant its own files.
     """
     return {
         'sandbox': {
@@ -759,9 +795,10 @@ def sandbox_settings(root):
         'permissions': {
             'defaultMode': 'dontAsk',
             'allow': ['Read(/%s/**)' % root, 'Edit(/%s/work/**)' % root, 'Skill'],
-            'deny': ['Read(/%s/**)' % prefix for prefix in DENY_READ]
-                    + ['Edit(/%s/work/.claude/**)' % root, 'Edit(/%s/**)' % DENY_READ[0], 'Edit(/%s/**)' % DENY_READ[1],
-                       'WebFetch', 'WebSearch'],
+            'deny': ['Read(/%s/**)' % prefix for prefix in DENY_READ if not under(prefix, root)]
+                    + ['Edit(/%s/work/.claude/**)' % root]
+                    + ['Edit(/%s/**)' % prefix for prefix in DENY_EDIT if not under(prefix, root)]
+                    + ['WebFetch', 'WebSearch'],
         },
     }
 
@@ -1347,7 +1384,9 @@ def cmd_run(args):
 
 # --- the probe command --------------------------------------------------------------------------------------------------
 
-def probe_prompt(repository, workspace):
+def probe_prompt(repository, workspace, inside, content):
+    """The fixed probe. ``inside`` is a file in the child's own work tree, which it writes with command 6 and must then be
+    able to Read: the other two reads must be refused."""
     return ('This is a technical sandbox probe for a test harness. Run each numbered shell command below with the Bash tool, '
             'one command per call, exactly as written, even if it fails, and run nothing else:\n'
             "1. printenv | cut -d= -f 1 | sort | tr '\\n' ' '\n"
@@ -1355,18 +1394,20 @@ def probe_prompt(repository, workspace):
             '3. cat %s\n'
             '4. cat %s\n'
             "5. curl -sS -m 5 -o /dev/null -w '%%{http_code}' %s\n"
-            '6. touch probe-inside.txt && ls probe-inside.txt\n'
-            'Then use the Read tool once on %s and once on %s (two Read calls). Finally reply with the word DONE. '
-            'Do not repeat or quote any file content in your reply.\n') % (TOKEN_VARIABLE, repository, workspace, PROBE_URL,
-                                                                           repository, workspace)
+            '6. echo %s > probe-inside.txt && ls probe-inside.txt\n'
+            'Then use the Read tool once on each of these three files, one Read call per file and in this order:\n'
+            '- %s\n- %s\n- %s\n'
+            'Finally reply with the word DONE. Do not repeat or quote any file content in your reply.\n') % (
+                TOKEN_VARIABLE, repository, workspace, PROBE_URL, content, repository, workspace, inside)
 
 
 def reachable(text):
     return bool(re.match(r'\s*[1-5][0-9][0-9]\b', text or ''))
 
 
-def probe_child(stage, arm, name, prompt, sentinels):
-    """One participant-configured child that tries the network and the sentinels; returns what its stream shows."""
+def probe_child(stage, arm, name, sentinels, content):
+    """One participant-configured child that tries the network and the sentinels and uses its own work tree; returns what
+    its stream shows."""
     cfg = stage.cfg
     claim = stage.ledger.claim(name, 'probe', 'probe', cfg.probe_child_usd, cfg.probe_total_usd, cfg.total_usd)
     child, root, locations = None, None, []
@@ -1375,6 +1416,7 @@ def probe_child(stage, arm, name, prompt, sentinels):
         root = new_root(cfg, 'p')
         if arm == 'method':
             stage_skill(root / 'home', stage.install_files, stage.install_digest)
+        prompt = probe_prompt(sentinels['repository'], sentinels['workspace'], str(root / 'work' / PROBE_INSIDE), content)
         settings = sandbox_settings(root)
         argv = participant_argv(stage.cli, cfg, settings, cfg.probe_child_turns, cfg.probe_child_usd)
         child = launch(argv, root / 'work', child_env(cfg, root, stage.token), prompt.encode(), cfg.probe_child_seconds)
@@ -1395,7 +1437,8 @@ def probe_child(stage, arm, name, prompt, sentinels):
     stage.ledger.settle(claim, cost, cfg.probe_child_usd)
     clean = child is not None and root is not None and not locations and not child.interrupted
     result = SimpleNamespace(arm=arm, child=child, stream=stream, calls=tool_calls(child.stdout) if child else [],
-                             locations=locations, cost=cost if isinstance(cost, (int, float)) else cfg.probe_child_usd,
+                             content=content, locations=locations,
+                             cost=cost if isinstance(cost, (int, float)) else cfg.probe_child_usd,
                              problems=isolation_problems(stream['init'], root, arm, cfg.model) if root is not None else ['no_root'],
                              refused=unexpected_denials(stream['denials'], root, arm) if root is not None else [],
                              faults=harness_faults(child.stdout) if child else 0, root=root, clean=clean)
@@ -1403,10 +1446,12 @@ def probe_child(stage, arm, name, prompt, sentinels):
 
 
 def summarize_probe(cfg, children, sentinels, markers):
-    """The probe's facts. A denial is true only when its attempt was recorded and refused."""
+    """The probe's facts. A denial is true only when its attempt was recorded and refused, and an allowance only when its
+    attempt was recorded and succeeded."""
     repository, workspace = sentinels['repository'], sentinels['workspace']
     attempts = {'network': 0, 'repository_read': 0, 'workspace_read': 0}
     denied = {'network': True, 'repository_read': True, 'workspace_read': True}
+    inside_reads, inside_writes = 0, []
     visible = []
     for child in children:
         calls = child.calls
@@ -1422,6 +1467,13 @@ def summarize_probe(cfg, children, sentinels, markers):
             if marker is not None and marker in everything:
                 refused = False
             denied[key] = denied[key] and refused
+        # The child's own files must stay usable: a Read of the file its Bash call wrote has to return what was written.
+        wrote = [c for c in calls if c['tool'] == 'Bash' and PROBE_INSIDE in str((c['input'] or {}).get('command'))]
+        read = [c for c in calls
+                if c['tool'] == 'Read' and os.path.basename(str((c['input'] or {}).get('file_path'))) == PROBE_INSIDE]
+        inside_reads += len(read)
+        inside_writes.append((bool(wrote) and all(c['is_error'] is False and PROBE_INSIDE in str(c['text']) for c in wrote),
+                              bool(read) and all(c['is_error'] is False and child.content in str(c['text']) for c in read)))
         count = None
         for call in calls:
             command = str((call['input'] or {}).get('command'))
@@ -1437,13 +1489,16 @@ def summarize_probe(cfg, children, sentinels, markers):
              'workspace_read_denied': denied['workspace_read'],
              'method_arm_skill_loaded': bool(method.stream['init']) and 'tackle' in skills(method),
              'control_arm_skill_absent': bool(control.stream['init']) and 'tackle' not in skills(control),
-             'token_scan_clean': not any(child.locations for child in children)}
+             'token_scan_clean': not any(child.locations for child in children),
+             'work_tree_write_allowed': all(wrote for wrote, _ in inside_writes),
+             'work_tree_read_allowed': all(read for _, read in inside_writes)}
     problems = {child.arm: [p for p in child.problems if p != 'skill_listing'] for child in children}
     sound = (all(flags.values()) and isinstance(token_visible, bool) and not any(problems.values())
              and not any(child.refused or child.faults or not child.clean for child in children)
              and all(count >= 1 for count in attempts.values()))
     observed = (method.stream['init'] or {}).get('model')
     return dict({'schema': PROBE_SCHEMA, 'passed': sound}, **flags, token_visible_to_tools=token_visible, attempts=attempts,
+                work_tree_read_attempts=inside_reads,
                 model=observed if observed == (control.stream['init'] or {}).get('model') else None,
                 cost_usd=round(sum(child.cost for child in children), 6), isolation_problems=problems,
                 children=[{'arm': c.arm, 'exit': c.child.exit if c.child else None, 'tool_calls': len(c.calls),
@@ -1486,9 +1541,8 @@ def cmd_probe(args):
                 with os.fdopen(descriptor, 'w') as handle:
                     handle.write('SENTINEL-%s-%s\n' % (kind, marker))
                 sentinels[kind] = str(path)
-            prompt = probe_prompt(sentinels['repository'], sentinels['workspace'])
             for arm in ('method', 'control'):
-                children.append(probe_child(stage, arm, 'probe-%s-%s' % (out.name, arm), prompt, sentinels))
+                children.append(probe_child(stage, arm, 'probe-%s-%s' % (out.name, arm), sentinels, 'INSIDE-' + marker))
                 if children[-1].child is None or children[-1].child.interrupted:
                     return 130
         finally:
