@@ -721,7 +721,7 @@
       "rule_id": "R-PLAN-09",
       "statement": "Long initiatives may prepare milestones; every requirement keeps an owner, and deferred tasks stay Draft until verified Ready.",
       "statement_sha256": "69a94acb2074238280e8a2ac7a65098bcad79386d4384fc83f55ce0c84a13d05",
-      "home": "references/guides/decompose-and-lint.md:95",
+      "home": "references/guides/decompose-and-lint.md:97",
       "home_fragment": "Long initiatives may use optional milestones",
       "units": [],
       "mirrors": [],
@@ -820,7 +820,7 @@
       "rule_id": "R-PLAN-12",
       "statement": "Planning always runs on a more capable tier than the Executor's whenever more than one suitable tier binds; a one-tier harness records its limitation. These are role proposals, not claims that a host binding occurred.",
       "statement_sha256": "f2516914cd7def40bbf47bf3973d6b24cd128e5ac88a7d378b148c84cc53d2ff",
-      "home": "references/guides/decompose-and-lint.md:248",
+      "home": "references/guides/decompose-and-lint.md:250",
       "home_fragment": "Planning always runs on a more capable tier",
       "units": [],
       "mirrors": [],
@@ -2838,6 +2838,29 @@
         "scenarios": [],
         "cohort_id": null,
         "as_of": "2026-09-24"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-COMM-09",
+      "statement": "Owner texts and specifications use sentences of at most 25 words and avoid the vague words of the controlled-writing guide, and a mechanical check runs before readiness and before a receipt or blocker report is written.",
+      "statement_sha256": "739d29bc9640b1516355b3f3b7a0ed5aaa613969979c9db9f015fbca5d6a01af",
+      "home": "references/guides/controlled-writing.md:19",
+      "home_fragment": "Keep sentences short, at most 25 words.",
+      "units": [],
+      "mirrors": [],
+      "class": "format",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.0",
+        "trigger": "Owner texts and specifications stay short and concrete.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-03"
       },
       "historical": []
     },
