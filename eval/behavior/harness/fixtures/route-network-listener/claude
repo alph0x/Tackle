@@ -96,9 +96,18 @@ def perform(action, port, token):
                     break
                 first += chunk
             result['status'] = status_of(first)
+            head, _, rest = first.partition(b'\r\n\r\n')
+            size = re.search(rb'(?i)content-length: *([0-9]+)', head)
+            want = int(size.group(1)) if size else 0
+            while len(rest) < want:
+                chunk = sock.recv(4096)
+                if not chunk:
+                    break
+                rest += chunk
+            extra = rest[want:]  # bytes the listener sent after its refusal
             sock.sendall(b'\x16\x03\x01\x02\x00\x01\x00\x01\xfc\x03\x03')  # the start of a TLS hello
-            result['after_hello'] = read_all(sock).decode('latin-1').split('\r\n\r\n', 1)[-1] if first.count(b'\r\n\r\n') else ''
-            result['after_hello_bytes'] = len(read_all(sock))
+            extra += read_all(sock)
+            result.update(after_hello=extra.hex(), after_hello_bytes=len(extra))
         elif kind == 'socks':
             host, _, number = action['target'].rpartition(':')
             sock.sendall(b'\x05\x01\x00')
