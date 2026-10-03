@@ -49,8 +49,9 @@ names no requirement id, the recipe refuses with the Focused reason. It invents 
 
 ## The page
 
-- The graph is drawn by the page itself, in stage bands. Each arrow joins adjacent stages, and the recipe
-  orders the cards to cut crossings. It needs no network. A click opens a task, and the trace buttons follow
+- The graph is drawn by the page itself, in stage bands. A stage is a column, not an order of work. The recipe
+  orders the cards with a bounded search, so the lines cross few times. A long arrow passes through the bands
+  between its ends. It needs no network. A click opens a task, and the trace buttons follow
   what the task needs and what it unblocks.
 - Status filters, the coverage table and the decision log work with the same data.
 - The page marks the tasks that a role run works on now, and it lists every open run. A run is open

@@ -21,7 +21,8 @@ UI = {
         graph_note='Each arrow points from a task to the work that needs it. Select a task to trace it.',
         graph_reduced='An arrow that a longer path already implies is left out. Each task lists everything it needs.',
         graph_none='This plan has no task board, so the view shows no graph.', clear='Clear the trace',
-        stage='Stage {n}', stage_count='{done} of {total} complete',
+        stage='Stage {n}', stage_count='{done} of {total} complete', stage_note='A stage is a column of the graph, not an order of work.',
+        states={},
         tasks='Tasks', all='All', needs='Needs', unblocks='Unblocks', nothing='nothing', requirements='Requirements',
         brief='Brief', trace_up='Trace what it needs', trace_down='Trace what it unblocks',
         coverage='Requirement coverage', req='Requirement', check='What you can observe', check_lite='How it is checked',
@@ -47,7 +48,10 @@ UI = {
         graph_note='Cada flecha va de una tarea al trabajo que la necesita. Elige una tarea para seguir su traza.',
         graph_reduced='Se omite la flecha que un camino más largo ya implica. Cada tarea lista todo lo que necesita.',
         graph_none='Este plan no tiene tablero de tareas, así que la vista no muestra grafo.', clear='Quitar la traza',
-        stage='Etapa {n}', stage_count='{done} de {total} completas',
+        stage='Etapa {n}', stage_count='{done} de {total} completas', stage_note='Una etapa es una columna del grafo, no un orden de trabajo.',
+        states={'Draft': 'Borrador', 'Ready to run': 'Lista para ejecutar', 'In progress': 'En curso', 'Checking': 'En verificación',
+                'Complete': 'Completa', 'Blocked': 'Bloqueada', 'Interrupted': 'Interrumpida', 'Skipped': 'Omitida',
+                'Unverifiable': 'No verificable', 'Waiting on owner': 'Esperando al responsable'},
         tasks='Tareas', all='Todas', needs='Necesita', unblocks='Habilita', nothing='nada', requirements='Requisitos',
         brief='Brief', trace_up='Seguir lo que necesita', trace_down='Seguir lo que habilita',
         coverage='Cobertura de requisitos', req='Requisito', check='Qué se puede observar', check_lite='Cómo se comprueba',
@@ -257,12 +261,17 @@ def reduce_edges(ids, deps):
     return [(d, i) for i in ids for d in sorted(deps[i]) if not any(d in ancestors(o) for o in deps[i] if o != d)]
 
 
-def crossings(order, links):
+WORK_LIMIT = 600000
+
+
+def crossings(order, by_column, spent=None):
     total = 0
     for column in range(len(order) - 1):
         pos = {n: k for k, n in enumerate(order[column + 1])}
         left = {n: k for k, n in enumerate(order[column])}
-        pairs = [(left[a], pos[b]) for a, b in links if a in left and b in pos]
+        pairs = [(left[a], pos[b]) for a, b in by_column[column]]
+        if spent is not None:
+            spent[0] += len(pairs) * len(pairs) // 2 + len(pairs)
         for i in range(len(pairs)):
             for j in range(i + 1, len(pairs)):
                 if (pairs[i][0] - pairs[j][0]) * (pairs[i][1] - pairs[j][1]) < 0:
@@ -283,14 +292,22 @@ def layered(ids, stage, edges):
         for s in range(stage[a] + 1, stage[b]):
             order[s].append(chain[s - stage[a]])
         links += list(zip(chain, chain[1:]))
+    column_of = {n: c for c, col in enumerate(order) for n in col}
+    by_column = [[] for _ in order]
+    for a, b in links:
+        by_column[column_of[a]].append((a, b))
     up, down = {}, {}
     for a, b in links:
         down.setdefault(a, []).append(b)
         up.setdefault(b, []).append(a)
+    spent = [0]
+
     def improve(start):
         order = [list(c) for c in start]
-        best, best_score = [list(c) for c in order], crossings(order, links)
+        best, best_score = [list(c) for c in order], crossings(order, by_column, spent)
         for sweep in range(24):
+            if spent[0] > WORK_LIMIT:
+                break
             columns = range(1, len(order)) if sweep % 2 == 0 else range(len(order) - 2, -1, -1)
             for c in columns:
                 ref = order[c - 1 if sweep % 2 == 0 else c + 1]
@@ -299,16 +316,18 @@ def layered(ids, stage, edges):
                 keep = {n: k for k, n in enumerate(order[c])}
                 order[c].sort(key=lambda n: (sum(where[m] for m in near.get(n, []) if m in where) / len(near[n])
                                             if any(m in where for m in near.get(n, [])) else keep[n], keep[n]))
-            score = crossings(order, links)
+            score = crossings(order, by_column, spent)
             if score < best_score:
                 best, best_score = [list(c) for c in order], score
         order, better = best, True
-        while better and best_score:
+        while better and best_score and spent[0] <= WORK_LIMIT:
             better = False
             for c in range(len(order)):
                 for k in range(len(order[c]) - 1):
+                    if spent[0] > WORK_LIMIT:
+                        break
                     order[c][k], order[c][k + 1] = order[c][k + 1], order[c][k]
-                    score = crossings(order, links)
+                    score = crossings(order, by_column, spent)
                     if score < best_score:
                         best_score, better = score, True
                     else:
@@ -409,7 +428,7 @@ def graph_svg(tasks, stage, edges, live, ui):
                    '<rect x="%d" y="%.1f" width="%d" height="%d" rx="12"/><circle cx="%d" cy="%.1f" r="4" class="dot-%s"/>'
                    '<text class="nid" x="%d" y="%.1f">%s</text><text class="nt" x="%d" y="%.1f">%s</text></g>' % (
                        STATE_CLASS.get(t['status'], 'draft'), t['id'], esc(t['status']), ' data-live="true"' if t['id'] in live else '',
-                       esc('%s · %s' % (t['id'], t['title'])), esc('%s · %s · %s' % (t['id'], t['title'], t['status'])),
+                       esc('%s · %s' % (t['id'], t['title'])), esc('%s · %s · %s' % (t['id'], t['title'], ui['states'].get(t['status'], t['status']))),
                        x, y, node_w, node_h, x + 16, y + 17, STATE_CLASS.get(t['status'], 'draft'),
                        x + 26, y + 21, t['id'], x + 12, y + 41, text))
     out.append('</svg>')
@@ -540,8 +559,8 @@ def main():
         for t in tasks:
             counts[t['status']] = counts.get(t['status'], 0) + 1
         present = [s for s in states if s in counts]
-        segs = ''.join('<i class="%s" style="flex:%d" title="%s · %d"></i>' % (STATE_CLASS.get(s, 'draft'), counts[s], esc(s), counts[s]) for s in present)
-        legend = ''.join('<li><i class="dot %s" aria-hidden="true"></i><span>%s</span><b>%d</b></li>' % (STATE_CLASS.get(s, 'draft'), esc(s), counts[s]) for s in present)
+        segs = ''.join('<i class="%s" style="flex:%d" title="%s · %d"></i>' % (STATE_CLASS.get(s, 'draft'), counts[s], esc(ui['states'].get(s, s)), counts[s]) for s in present)
+        legend = ''.join('<li><i class="dot %s" aria-hidden="true"></i><span>%s</span><b>%d</b></li>' % (STATE_CLASS.get(s, 'draft'), esc(ui['states'].get(s, s)), counts[s]) for s in present)
         progress = ('<div class="ring" style="--off:%.1f"><svg viewBox="0 0 148 148" width="148" height="148" aria-hidden="true"><circle class="track" cx="74" cy="74" r="62"/>'
                     '<circle class="val" cx="74" cy="74" r="62"/></svg><div class="num"><b>%d%%</b><small>%s</small></div></div><p class="cap">%s</p>'
                     '<div class="segbar">%s</div><ul class="seglegend">%s</ul>') % (
@@ -553,11 +572,11 @@ def main():
         graph_html = ('<section class="sec" id="graph" data-reveal><div class="sh"><h2>%s</h2><p>%s</p></div><div class="map">'
                       '<div class="map-bar"><span>%s</span><button type="button" class="chip" id="clear-trace">%s</button></div>'
                       '<div class="gscroll">%s</div></div></section>') % (
-            esc(ui['graph']), esc(ui['graph_note']), esc(ui['graph_reduced']), esc(ui['clear']),
+            esc(ui['graph']), esc(ui['graph_note'] + ' ' + ui['stage_note']), esc(ui['graph_reduced']), esc(ui['clear']),
             graph_svg(tasks, stage, edges, live, ui))
         bar = '<button type="button" class="chip" data-filter="all" aria-pressed="true">%s <b>%d</b></button>' % (esc(ui['all']), len(tasks))
         bar += ''.join('<button type="button" class="chip" data-filter="%s" aria-pressed="false"><i class="dot %s" aria-hidden="true"></i>%s <b>%d</b></button>' % (
-            esc(s), STATE_CLASS.get(s, 'draft'), esc(s), counts[s]) for s in present)
+            esc(s), STATE_CLASS.get(s, 'draft'), esc(ui['states'].get(s, s)), counts[s]) for s in present)
         cards = []
         for t in tasks:
             traced = [r for r in cover if t['id'] in cover[r]]
@@ -569,7 +588,7 @@ def main():
                 '<p><button type="button" data-trace="up">%s</button> <button type="button" data-trace="down">%s</button></p></div></article>' % (
                     t['id'], esc(t['status']), ' '.join(sorted(t['deps'])), ' '.join(sorted(down[t['id']])),
                     ' data-live="true"' if t['id'] in live else '', t['id'],
-                    ' <span class="live">%s</span>' % esc(ui['live']) if t['id'] in live else '', STATE_CLASS.get(t['status'], 'draft'), esc(t['status']),
+                    ' <span class="live">%s</span>' % esc(ui['live']) if t['id'] in live else '', STATE_CLASS.get(t['status'], 'draft'), esc(ui['states'].get(t['status'], t['status'])),
                     esc(t['title']), esc(ui['needs']), esc(', '.join(sorted(t['deps'])) or ui['nothing']),
                     esc(ui['unblocks']), esc(', '.join(sorted(down[t['id']])) or ui['nothing']),
                     esc(ui['requirements']), esc(', '.join(traced) or ui['nothing']), esc(ui['brief']), esc(t['brief']),
