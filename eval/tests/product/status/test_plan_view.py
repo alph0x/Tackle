@@ -46,29 +46,29 @@ def usage_row(run, event, scope, role):
 
 
 def workspace_files(deps_of_last=None):
-    t1, t2, t3 = task_id(1), task_id(2), task_id(3)
-    r1, r2, r3, r4 = (req_id(n) for n in (1, 2, 3, 4))
-    d1, d2 = decision_id(1), decision_id(2)
-    deps_of_last = deps_of_last if deps_of_last is not None else '%s, %s' % (t1, t2)
-    rows = [(t1, 'First ' + ATTR, 'none', 'Complete'),
-            (t2, 'Second ' + PAYLOADS[0], t1, 'In progress'),
-            (t3, 'Third', deps_of_last, 'Draft')]
+    first_task, second_task, third_task = task_id(1), task_id(2), task_id(3)
+    req_a, req_b, req_c, req_d = (req_id(n) for n in (1, 2, 3, 4))
+    dec_a, dec_b = decision_id(1), decision_id(2)
+    deps_of_last = deps_of_last if deps_of_last is not None else '%s, %s' % (first_task, second_task)
+    rows = [(first_task, 'First ' + ATTR, 'none', 'Complete'),
+            (second_task, 'Second ' + PAYLOADS[0], first_task, 'In progress'),
+            (third_task, 'Third', deps_of_last, 'Draft')]
     board = ('# Task board\n\nStates: %s.\n\n| Task | What | Brief | Depends on | Status | Verification |\n|---|---|---|---|---|---|\n'
              % STATES + ''.join('| %s | %s | `tasks/%s.md` | %s | %s | v |\n' % (i, w, i, d, s) for i, w, d, s in rows))
     plan = ('# Action plan — demo\n\n## 2. Expected result\n\nThe plan says what ships and how each need is checked.\n\n'
             '| Criterion | Required behavior |\n|---|---|\n| `%s` | one |\n| `%s` | %s |\n| `%s` | three |\n| `%s` | four |\n'
-            % (r1, r2, PAYLOADS[3], r3, r4))
-    briefs = {t1: r1, t2: r2, t3: '%s–%s' % (r2, r3)}
+            % (req_a, req_b, PAYLOADS[3], req_c, req_d))
+    briefs = {first_task: req_a, second_task: req_b, third_task: '%s–%s' % (req_b, req_c)}
     files = {'task-board.md': board, 'plan.md': plan,
              'decisions.md': '# Decisions\n\n## %s · Scope · ✅ active · 2026-10-01\n\nText.\n\n## %s · Route %s · ✅ active · 2026-10-02\n\nText.\n'
-                             % (d1, d2, PAYLOADS[1]),
+                             % (dec_a, dec_b, PAYLOADS[1]),
              'history.md': '# History\n\n### State snapshot\n- old-marker\n\n## later\n\n### State snapshot\n- newest-marker %s %s\n'
                            % (PAYLOADS[2], PAYLOADS[4]),
              'AGENTS.md': '# AGENTS\n\n**Methodology: Tackle 9.1.0**\n',
              'resource-usage.md': '# Usage\n\n| Run ID | Event | Task | Role | Harness | Tier | Model | Effort | At | Outcome | Attempts | Rework | Verification | Source |\n'
                                   '|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n'
-                                  + usage_row('run/a', 'start', t1, 'executor') + usage_row('run/a', 'finish', t1, 'executor')
-                                  + usage_row('run/b', 'start', t2, 'executor')}
+                                  + usage_row('run/a', 'start', first_task, 'executor') + usage_row('run/a', 'finish', first_task, 'executor')
+                                  + usage_row('run/b', 'start', second_task, 'executor')}
     for task, traces in briefs.items():
         files['tasks/%s.md' % task] = '# Task\n\n- **Traces to**: %s\n- **Goal**: demo.\n' % traces
     return files
@@ -90,7 +90,7 @@ def run_recipe(tmp, files, case):
 
 class PlanViewTests(unittest.TestCase):
     def test_the_shipped_recipe_writes_a_faithful_view_of_a_fixture_workspace(self):
-        t1, t2, t3 = task_id(1), task_id(2), task_id(3)
+        first_task, second_task, third_task = task_id(1), task_id(2), task_id(3)
         with tempfile.TemporaryDirectory() as tmp:
             result, out = run_recipe(tmp, workspace_files(), 'coordinated')
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
@@ -101,22 +101,22 @@ class PlanViewTests(unittest.TestCase):
             self.assertEqual(data['schema'], 'tackle-plan-view/1')
             self.assertIs(data['focused'], False)
             self.assertEqual({t['id']: (t['status'], sorted(t['deps'])) for t in data['tasks']},
-                             {t1: ('Complete', []), t2: ('In progress', [t1]), t3: ('Draft', [t1, t2])})
+                             {first_task: ('Complete', []), second_task: ('In progress', [first_task]), third_task: ('Draft', [first_task, second_task])})
             self.assertEqual({k: sorted(v) for k, v in data['requirements'].items()},
-                             {req_id(1): [t1], req_id(2): [t2, t3], req_id(3): [t3], req_id(4): []})
+                             {req_id(1): [first_task], req_id(2): [second_task, third_task], req_id(3): [third_task], req_id(4): []})
             self.assertEqual(sorted(data['decisions']), [decision_id(1), decision_id(2)])
             self.assertIn('newest-marker', data['snapshot'])
             self.assertNotIn('old-marker', data['snapshot'])
-            self.assertEqual([(w['scope'], w['role']) for w in data['working']], [(t2, 'executor')])
+            self.assertEqual([(w['scope'], w['role']) for w in data['working']], [(second_task, 'executor')])
             for payload in PAYLOADS + (ATTR,):
                 self.assertNotIn(payload, page)
             self.assertNotIn('onmouseover="', page)
             static = re.sub(r'<script\b.*?</script>', '', page, flags=re.S)
-            for task, up, down in ((t1, '', '%s %s' % (t2, t3)), (t2, t1, t3), (t3, '%s %s' % (t1, t2), '')):
+            for task, up, down in ((first_task, '', '%s %s' % (second_task, third_task)), (second_task, first_task, third_task), (third_task, '%s %s' % (first_task, second_task), '')):
                 node = re.search(r'<[a-z]+\b[^>]*\bid="task-%s"[^>]*>' % task, static).group(0)
                 self.assertIn('data-upstream="%s"' % up, node)
                 self.assertIn('data-downstream="%s"' % down, node)
-                self.assertEqual('data-live="true"' in node, task == t2)
+                self.assertEqual('data-live="true"' in node, task == second_task)
             for status in ('Complete', 'In progress', 'Draft'):
                 self.assertIn('data-filter="%s"' % status, static)
             for needle in ('<details', decision_id(1), decision_id(2), 'newest-marker', 'id="working-now"',
