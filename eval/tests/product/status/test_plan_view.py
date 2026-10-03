@@ -9,6 +9,7 @@ import re
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 from pathlib import Path
 
@@ -214,6 +215,57 @@ class PlanViewFindingsTests(unittest.TestCase):
             result, page = page_of(tmp, small_files(plan, plain_rows(brief_a='`../outside.md`')), 'outside-brief')
             self.assertEqual(result.returncode, 1)
             self.assertIn('outside the workspace', result.stdout)
+
+
+SPANISH_PLAN = ('# Plan — Migración\n\nEl plan describe los pasos de la migración. Cada tarea tiene una verificación. '
+                'La configuración queda lista después de la revisión.\n')
+
+
+def visible_text(page):
+    """Text a reader sees outside the folded technical section: no tags, no attribute values."""
+    page = re.sub(r'<script\b.*?</script>|<style\b.*?</style>|<details\b.*?</details>', '', page, flags=re.S)
+    return re.sub(r'<[^>]*>', ' ', page)
+
+
+class PlanViewReadingTests(unittest.TestCase):
+    def test_a_stage_sentence_and_translated_board_states_follow_the_plan_language(self):
+        rows = ['| %s | a | `tasks/%s.md` | none | In progress | v |\n' % (task_id(1), task_id(1)),
+                '| %s | b | `tasks/%s.md` | %s | Complete | v |\n' % (task_id(2), task_id(2), task_id(1))]
+        english = '# Plan — Migration\n\nThe plan describes the steps of the migration. Each task has a check.\n'
+        with tempfile.TemporaryDirectory() as tmp:
+            result, page = page_of(tmp, small_files(SPANISH_PLAN, rows), 'es-states')
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn('Una etapa es una columna del grafo, no un orden de trabajo.', page)
+            text = visible_text(page)
+            self.assertNotIn('In progress', text)
+            self.assertNotIn('Complete ', text)
+            self.assertIn('En curso', text)
+            self.assertIn('Completa', text)
+            self.assertIn('data-filter="In progress"', page)
+            self.assertIn('data-status="Complete"', page)
+            result, page = page_of(tmp, small_files(english, rows), 'en-states')
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn('A stage is a column of the graph, not an order of work.', page)
+            self.assertIn('In progress', visible_text(page))
+
+    def test_a_board_of_two_hundred_tasks_builds_in_a_few_seconds(self):
+        count = 200
+        rows = []
+        width = 20
+        for n in range(1, count + 1):
+            column, row = divmod(n - 1, width)
+            before = [(column - 1, row), (column - 1, (row + 3) % width), (column - 1, (row * 7 + 1) % width), (column - 2, (row + 5) % width)]
+            deps = sorted({task_id(c * width + r + 1) for c, r in before if c >= 0}, key=lambda t: int(t[2:]))
+            rows.append('| %s | task %d | `tasks/brief.md` | %s | Draft | v |\n' % (task_id(n), n, ', '.join(deps) or 'none'))
+        files = {'plan.md': '# Plan — Large\n\nThe plan lists many tasks.\n', 'task-board.md': BOARD_HEAD + ''.join(rows),
+                 'tasks/brief.md': '# Task\n\n- **Traces to**: none\n'}
+        with tempfile.TemporaryDirectory() as tmp:
+            started = time.monotonic()
+            result, page = page_of(tmp, files, 'large')
+            elapsed = time.monotonic() - started
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertEqual(len(re.findall(r'<g class="node ', page)), count)
+            self.assertLess(elapsed, 8, 'the layout took %.1f seconds' % elapsed)
 
 
 if __name__ == '__main__':
