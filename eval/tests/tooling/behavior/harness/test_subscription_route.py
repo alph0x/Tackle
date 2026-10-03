@@ -176,7 +176,7 @@ class Env:
                 'state_dir': str(self.state), 'cli_tmp_limit': 4096,
                 'caps': {'total_usd': 50, 'episode': {'usd': 1.0, 'seconds': 60, 'turns': 10}, 'stages': {'stage': 20},
                          'probe': {'total_usd': 4, 'child_usd': 1.0, 'child_seconds': 60, 'child_turns': 12}},
-                'oracle': {'python': str(self.oracle_python), 'seconds': 30}}
+                'oracle': {'python': str(self.oracle_python), 'seconds': 30}, 'launcher': str(self.launcher)}
 
     def write_config(self, cfg=None):
         write(self.config_path, json.dumps(cfg or self.config(), indent=1))
@@ -787,8 +787,10 @@ class Refusals(Base):
 
     def test_a_run_without_a_launcher_refuses_before_any_model_call(self):
         self.env.cohort_of(['method'])
-        process = self.env.run(env=self.env.process_env(path=str(self.env.tmp / 'emptybin')))
-        self.assert_refused(process, 'sandbox-exec')
+        cfg = self.env.config()
+        cfg['launcher'] = str(self.env.tmp / 'nowhere' / 'sandbox-exec')
+        self.env.write_config(cfg)
+        self.assert_refused(self.env.run(), 'refusing to judge', 'launcher', 'executable')
 
     def test_configuration_errors_refuse(self):
         def drop(key):
@@ -801,7 +803,8 @@ class Refusals(Base):
                  'bad sha256': lambda cfg: cfg['cli'].update(sha256='abc'),
                  'negative cap': lambda cfg: cfg['caps']['episode'].update(usd=-1),
                  'zero turns': lambda cfg: cfg['caps']['episode'].update(turns=0),
-                 'relative oracle python': lambda cfg: cfg['oracle'].update(python='python3')}
+                 'relative oracle python': lambda cfg: cfg['oracle'].update(python='python3'),
+                 'missing launcher': drop('launcher'), 'relative launcher': lambda cfg: cfg.update(launcher='sandbox-exec')}
         for label, mutate in cases.items():
             with self.subTest(label=label):
                 self.new_env()
@@ -931,19 +934,26 @@ class Judging(Base):
     def test_no_launcher_refuses_to_judge_and_nothing_is_judged_unsandboxed(self):
         env = self.env
         oracle, final, transcript = env.judge_inputs(oracle=self.marker_oracle())
-        process = env.judge(oracle, final, transcript, env=env.process_env(path=str(env.tmp / 'emptybin')))
+        good = env.config()
+        cfg = env.config()
+        cfg['launcher'] = str(env.tmp / 'nowhere' / 'sandbox-exec')
+        env.write_config(cfg)
+        process = env.judge(oracle, final, transcript)
         self.assertEqual(process.returncode, 1, process.stdout + process.stderr)
         self.assertIn('refusing to judge', process.stderr)
-        self.assertIn('sandbox-exec', process.stderr)
+        self.assertIn('launcher', process.stderr)
+        self.assertIn('executable', process.stderr)
         self.assertFalse(env.marker.exists(), 'the oracle never ran')
         self.assertEqual(env.launcher_log(), [])
+        env.write_config(good)
         env.judge(oracle, final, transcript)
         self.assertTrue(env.marker.exists(), 'with a launcher the same marker oracle does run')
 
     def test_interpreter_or_run_root_under_users_refuses_to_judge(self):
         home_like = HOME_PREFIX + 'someone' + SEP
         cases = {'interpreter': lambda cfg: cfg['oracle'].update(python=home_like + 'bin/python3'),
-                 'run root': lambda cfg: cfg.update(run_root=home_like + 'runroot')}
+                 'run root': lambda cfg: cfg.update(run_root=home_like + 'runroot'),
+                 'launcher': lambda cfg: cfg.update(launcher=home_like + 'bin/sandbox-exec')}
         for label, mutate in cases.items():
             with self.subTest(label=label):
                 env = self.new_env()
@@ -959,6 +969,36 @@ class Judging(Base):
                 self.assertFalse(env.marker.exists())
                 self.assertEqual(env.launcher_log(), [])
                 self.assertFalse(Path(home_like + 'runroot').exists())
+
+    def test_the_configured_launcher_is_used_and_one_earlier_on_path_never_is(self):
+        env = self.env
+        decoy = env.tmp / 'decoy' / 'sandbox-exec'
+        write(decoy, '#!/bin/sh\necho ran > "$(dirname "$0")/decoy-ran.txt"\n')
+        decoy.chmod(0o755)
+        oracle, final, transcript = env.judge_inputs(oracle=self.marker_oracle())
+        for path in (str(decoy.parent), str(decoy.parent) + ':' + str(env.bin)):
+            process = env.judge(oracle, final, transcript, env=env.process_env(path=path))
+            self.assertEqual(process.returncode, 0, process.stdout + process.stderr)
+            self.assertEqual(json.loads(process.stdout)['outcome'], 'avoided')
+        self.assertEqual(len(env.launcher_log()), 2, 'the configured launcher judged both times')
+        self.assertFalse((decoy.parent / 'decoy-ran.txt').exists(), 'a launcher found through PATH never ran')
+
+    def test_a_launcher_that_is_not_an_executable_file_refuses_to_judge(self):
+        env = self.env
+        oracle, final, transcript = env.judge_inputs(oracle=self.marker_oracle())
+        (env.tmp / 'adir').mkdir()
+        write(env.tmp / 'plain', 'not executable\n')
+        for label, target in (('missing', env.tmp / 'nowhere'), ('directory', env.tmp / 'adir'), ('not executable', env.tmp / 'plain')):
+            with self.subTest(label=label):
+                cfg = env.config()
+                cfg['launcher'] = str(target)
+                env.write_config(cfg)
+                process = env.judge(oracle, final, transcript)
+                self.assertEqual(process.returncode, 1, process.stdout + process.stderr)
+                self.assertIn('refusing to judge', process.stderr)
+                self.assertIn('launcher', process.stderr)
+                self.assertIn('executable', process.stderr)
+                self.assertFalse(env.marker.exists())
 
     def test_launcher_failure_is_an_error_not_an_unsandboxed_run(self):
         write(self.env.bin / 'launcher-mode.txt', 'fail')

@@ -138,7 +138,7 @@ def load_config(path):
         raw = json.loads(Path(path).read_text(encoding='utf-8'))
     except (OSError, ValueError) as problem:
         raise Refusal('configuration: unreadable (%s)' % problem.__class__.__name__)
-    raw = keys(raw, ('schema', 'cli', 'model', 'run_root', 'token_file', 'state_dir', 'caps', 'oracle'),
+    raw = keys(raw, ('schema', 'cli', 'model', 'run_root', 'token_file', 'state_dir', 'caps', 'oracle', 'launcher'),
                ('child_path', 'cli_tmp_limit'), 'the configuration')
     need(raw['schema'] == CONFIG_SCHEMA, 'schema must be ' + CONFIG_SCHEMA)
     cli = keys(raw['cli'], ('path', 'sha256'), ('version',), 'cli')
@@ -173,7 +173,8 @@ def load_config(path):
         episode_seconds=episode['seconds'], episode_turns=episode['turns'], stage_usd={k: float(v) for k, v in stages.items()},
         probe_total_usd=float(probe['total_usd']), probe_child_usd=float(probe['child_usd']),
         probe_child_seconds=probe['child_seconds'], probe_child_turns=probe['child_turns'],
-        oracle_python=absolute(oracle['python'], 'oracle python'), oracle_seconds=oracle['seconds'])
+        oracle_python=absolute(oracle['python'], 'oracle python'), oracle_seconds=oracle['seconds'],
+        launcher=absolute(raw['launcher'], 'launcher'))
 
 
 # --- preconditions -------------------------------------------------------------------------------------------------
@@ -189,8 +190,11 @@ def judge_refusal(cfg):
         return 'refusing to judge: the oracle interpreter is under %s, where the sandbox profile denies reads' % HOME_PREFIX
     if under_users(cfg.run_root):
         return 'refusing to judge: the run root is under %s, where the sandbox profile denies reads' % HOME_PREFIX
-    if not shutil.which('sandbox-exec'):
-        return 'refusing to judge: no sandbox-exec launcher on PATH, and the oracle is never run unsandboxed'
+    if under_users(cfg.launcher):
+        return 'refusing to judge: the launcher is under %s, which is not a system location' % HOME_PREFIX
+    real = os.path.realpath(cfg.launcher)
+    if not os.path.isfile(real) or not os.access(real, os.X_OK):
+        return 'refusing to judge: the configured launcher is not an executable file, and the oracle is never run unsandboxed'
     return None
 
 
@@ -919,7 +923,7 @@ def judge(cfg, oracle_dir, final_dir, transcript):
     reason = judge_refusal(cfg)
     if reason:
         raise Refusal(reason)
-    launcher = shutil.which('sandbox-exec')
+    launcher = os.path.realpath(cfg.launcher)
     root = new_root(cfg, 'j', subdirs=('scratch',))
     try:
         copy_tree(oracle_dir, root / 'oracle')
