@@ -138,6 +138,16 @@
       "purpose": "Context projections, archives, resume and handoff costs, and the plan view recipe."
     },
     {
+      "path": "eval/tests/product/resume",
+      "files": [
+        "test_resume_path.py"
+      ],
+      "tests": 3,
+      "source": "eval/status",
+      "category": "product",
+      "purpose": "The cold-resume read order, its links from every read list, the spent-count source and the closure listing of open obligations."
+    },
+    {
       "path": "eval/tests/product/lint/rows",
       "files": [
         "test_lint_rows.py",

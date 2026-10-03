@@ -13,6 +13,7 @@
     "eval/tests/product/lint/task-contracts",
     "eval/tests/product/run/verification-records",
     "eval/tests/product/status",
+    "eval/tests/product/resume",
     "eval/tests/product/lint/rows",
     "eval/tests/product/templates",
     "eval/tests/tooling/protocol-v2",
@@ -194,6 +195,23 @@
       ],
       "families": [
         "eval/tests/product/status"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/tests/product/resume/**",
+        "skills/tackle/references/AGENTS.tmpl.md",
+        "skills/tackle/references/README.tmpl.md",
+        "skills/tackle/references/guides/intake-and-gate.md",
+        "skills/tackle/references/guides/migrate.md",
+        "skills/tackle/references/guides/run-card.md",
+        "skills/tackle/references/guides/run.md",
+        "skills/tackle/references/guides/status.md"
+      ],
+      "families": [
+        "eval/tests/product/resume"
       ],
       "exclude": [],
       "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
