@@ -144,5 +144,5 @@ The Run report and raw evidence are records, not substitutes for deliverable acc
 
 ## Status / next
 
-Use the latest `history.md` State snapshot and the canonical `task-board.md`; see the Run guide for resuming
+Resume in the order of `references/guides/status.md#cold-resume-read-order`; see the Run guide for resuming
 an interrupted execution.

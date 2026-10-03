@@ -145,4 +145,4 @@ Both are **optional** — only created when the user supplies the material; a va
 
 ## Requests share the same boundaries
 
-Internal invocation never bypasses guardrails: the ladder gates edits, intent stays explicit, and consents and the log/board trail match user-invoked ones. Natural-language requests, short actions and legacy text aliases follow the same modes; see [invocation.md](invocation.md). A resume triggered by memory of a workspace has the same gate, read-first and consent as one the user typed. A bare skill selection or help request stops at help before intake or scaffolding.
+Internal invocation never bypasses guardrails: the ladder gates edits, intent stays explicit, and consents and the log/board trail match user-invoked ones. Natural-language requests, short actions and legacy text aliases follow the same modes; see [invocation.md](invocation.md). A resume triggered by memory of a workspace has the same gate, [read-first](status.md#cold-resume-read-order) and consent as one the user typed. A bare skill selection or help request stops at help before intake or scaffolding.

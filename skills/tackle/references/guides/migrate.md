@@ -181,7 +181,12 @@ no neighboring workspace.
    or adopt with the row 13 warning, which blocks nothing by itself.
 6. Add no `**Adversary**:` line to a task completed before this adoption. It is outside the
    [adversary-checkpoint check](run.md#adversary-checkpoints); only later tasks owe one.
-7. Run rows 1–17 again. Adopt only the validated copy: record the adoption and the rollback result, bump
+7. Point the workspace's own read lists at the [cold resume read order](status.md#cold-resume-read-order):
+   in its `AGENTS.md` and `README.md`, use the code span from the 9.1 templates, and keep no read order of
+   its own. From now on a cold resume lists every `Open` obligation, from the table and from every Complete
+   task's `**Remains**:` receipt, and takes a task's spent correction count from the task-linked failed
+   correction-validation records.
+8. Run rows 1–17 again. Adopt only the validated copy: record the adoption and the rollback result, bump
    the `Methodology:` stamp to 9.1.0, and roll back by restoring the checkpoint copy.
 
 <a id="schema-keyed-migration"></a>

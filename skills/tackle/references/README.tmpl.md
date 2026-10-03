@@ -46,6 +46,8 @@ Add appendices here too (descriptive name, not numbered). -->
 4. `decisions.md` / `questions.md` — what's settled / still open.
 5. The relevant `tasks/T-0N-*.md` — self-contained brief for the work you're picking up.
 
+A cold resume reads in the order of `references/guides/status.md#cold-resume-read-order`.
+
 ## Next step
 
 {{Use STATUS for a read-only digest or next selection. Use RUN only after explicit execution intent.}}
