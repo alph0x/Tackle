@@ -168,23 +168,23 @@ capability is not zero evidence.
 <a id="adversary-checkpoints"></a>
 ### Adversary checkpoints
 
-Run calls an adversarial review at three moments:
+Run calls an independent adversarial review at three moments:
 
 - `lock`: before a contract clause or task brief locks; a brief locks when its task first enters
   `Ready to run` and after each change.
-- `repeat-failure`: when a check fails again with the same signature, before the next correction.
-  The reviewer judges if it removes the cause or hides the symptom.
+- `repeat-failure`: on a repeated same-signature failure. The no-progress stop applies first;
+  the review, before any further correction, judges whether it removes or hides the cause.
 - `complete`: before a task is Complete.
 
-The reviewer is a fresh session that authored none of the work and gets only the artifacts under review.
-It writes its own verdict, recording model, session, inputs and whether it shares the author's model
-family; a non-independent one is reported. With none available, the task stops
-`Waiting on owner`, never reaching `Ready to run` or Complete, unless an owner decision waives it.
+The reviewer is a fresh session that authored none of the work and sees only the artifacts under review.
+It writes a verdict, recording model, session, inputs and shared model family; a
+non-independent one is reported and never counts. With no independent reviewer, the task stops
+`Waiting on owner`, not `Ready to run` or Complete, unless an owner decision waives it.
 
 Each review leaves one report line:
 `**Adversary**: <moment> · <verdict path> · <reviewer model and session> · <independence>`.
-A waiver cites its decision and reads `waived`. A review spends no correction cycle. Tasks completed
-before adopting 9.1 are outside the [check](../recipes/adversary-checkpoints.md).
+Paths are workspace-relative; a waiver cites `decisions.md#D-<n>` and reads `waived`. A review spends no
+correction cycle. Tasks completed before adopting 9.1 are outside the [check](../recipes/adversary-checkpoints.md).
 
 <a id="integration-global-acceptance-and-close"></a>
 <a id="integration-deliverable-acceptance-and-close"></a>

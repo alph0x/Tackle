@@ -1,11 +1,18 @@
 ```python
 MOMENTS = ('lock', 'repeat-failure', 'complete')
 PREFIX = '**Adversary**:'
+NOT_INDEPENDENT = ('not independent', 'non-independent', 'self-review')
 
 
 def review_lines(report):
-    return [[cell.strip() for cell in line[len(PREFIX):].split(' · ')]
-            for line in report.splitlines() if line.startswith(PREFIX)]
+    found = []
+    for line in report.splitlines():
+        line = line.strip()
+        if line[:2] in ('- ', '* ', '+ '):
+            line = line[2:].lstrip()
+        if line.startswith(PREFIX):
+            found.append([cell.strip() for cell in line[len(PREFIX):].split(' · ')])
+    return found
 
 
 def line_problem(cells, paths):
@@ -15,6 +22,8 @@ def line_problem(cells, paths):
     if moment not in MOMENTS:
         return 'unknown adversary moment %r' % moment
     decision = verdict.startswith('decisions.md#')
+    if any(mark in independence.lower() for mark in NOT_INDEPENDENT) and independence != 'waived':
+        return 'a review that is not independent does not satisfy its moment'
     if decision != (independence == 'waived'):
         return 'a waiver cites a decision and a decision is cited only by a waiver'
     if (verdict if decision else verdict.split('#')[0]) not in paths:
