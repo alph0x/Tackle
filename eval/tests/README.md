@@ -17,7 +17,7 @@ consumer; dates and experiment identifiers belong to evidence provenance.
 | product | [product/lint/task-identity](product/lint/task-identity/) | Task identity, scaffold paths and workspace naming. |
 | product | [product/migration](product/migration/) | Workspace schema migration, recipes and census refusal. |
 | product | [product/plan](product/plan/) | Plan decomposition and acceptance section order. |
-| product | [product/run/card](product/run/card/) | Execution state transitions and template bindings. |
+| product | [product/run/card](product/run/card/) | Execution state transitions, template bindings and adversary-checkpoint records. |
 | product | [product/run/evidence-capture](product/run/evidence-capture/) | Child execution, streams, timeouts and evidence capture. |
 | product | [product/run/execution](product/run/execution/) | Literal execution recipes, identity and verdict capture. |
 | product | [product/run/focused-closure](product/run/focused-closure/) | Focused completion receipts and artifact hashing. |

@@ -6788,6 +6788,24 @@
       "destination": "references/guides/lint-spec.md",
       "note": "Task boards declare `Schema: tackle-workspace/5` in `task-board.md`; rows 2, 3, 5, 10, 11, 12, 14 and 17 refuse a Coordinated workspace without one with `migrate first`, and row 3 validates the ten `/5` states, including `Waiting on owner`.",
       "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run-card.md",
+      "line": 40,
+      "unit_sha256": "784d558dc2915ab7ec25f713b93fbe1237cbaccd7b57fc84e149b7e4ae4caff3",
+      "disposition": "reworded",
+      "destination": "references/guides/run-card.md",
+      "note": "**Close.** A [reviewer's verdict](run.md#adversary-checkpoints) is its own artifact; the coordinator decides.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 156,
+      "unit_sha256": "fd1744e6213de5716d11c8a6f823e19ca60a22bf3b5391317da70fc260708bbe",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Routine Run has no universal frontier checker or majority vote; its only routine independent reviews are the three [adversary checkpoints](#adversary-checkpoints).",
+      "destination_unit_sha256": null
     }
   ]
 }

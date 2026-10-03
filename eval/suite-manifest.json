@@ -21,12 +21,13 @@
     {
       "path": "eval/tests/product/run/card",
       "files": [
+        "test_adversary_checkpoints.py",
         "test_run.py"
       ],
-      "tests": 3,
+      "tests": 6,
       "source": "eval/run/card",
       "category": "product",
-      "purpose": "Execution state transitions and template bindings."
+      "purpose": "Execution state transitions, template bindings and adversary-checkpoint records."
     },
     {
       "path": "eval/tests/product/lint/task-identity",
