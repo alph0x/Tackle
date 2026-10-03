@@ -192,10 +192,11 @@ def judge_refusal(cfg):
     """None when the oracle may be judged, otherwise the explicit reason. The route never judges unsandboxed.
 
     The profile always denies every tree in DENY_READ and re-allows only the judged root, so an interpreter anywhere
-    under one of them could not start. ``oracle.denied_prefixes`` narrows this courtesy check alone, for a launcher that
+    under one of them could not start. ``oracle.denied_prefixes`` narrows this courtesy check for the other trees alone (/Users is always checked), for a launcher that
     enforces no profile (the suite's fake).
     """
-    for prefix in cfg.oracle_denied:
+    # The /Users check is part of the contract and never configurable: it runs first, whatever denied_prefixes holds.
+    for prefix in [HOME_PREFIX] + [item for item in cfg.oracle_denied if item != HOME_PREFIX]:
         if under(prefix, cfg.oracle_python):
             return 'refusing to judge: the oracle interpreter is under %s, where the sandbox profile denies reads' % prefix
     if under_users(cfg.run_root):
@@ -289,6 +290,14 @@ def scrub_tree(path):
         os.rmdir(path)
     else:
         os.unlink(path)
+
+
+def retire_root(root):
+    """Delete a run root the participant may have made hard to delete; a root that still cannot go stays for the owner."""
+    try:
+        scrub_tree(root)
+    except OSError:
+        pass
 
 
 def retire_after_hit(cfg, root, name):
@@ -623,7 +632,11 @@ def inside_root(path, root):
 
     The volume ignores case, so the comparison does too.
     """
-    return under(root, os.path.normpath(os.path.join(str(root / 'work'), path)), fold=True)
+    try:
+        return under(root, os.path.normpath(os.path.join(str(root / 'work'), path)), fold=True)
+    except ValueError:
+        # A path the host cannot resolve (an embedded NUL) is read as inside the root: the conservative reading.
+        return True
 
 
 def unexpected_denials(denials, root, arm):
@@ -990,7 +1003,7 @@ def judge(cfg, oracle_dir, final_dir, transcript):
             verdict['invalid_reason'] = Neutral(cfg, [(str(root), '<judged>')]).text(verdict['invalid_reason'])
         return verdict
     finally:
-        shutil.rmtree(root, ignore_errors=True)
+        retire_root(root)
 
 
 # --- the cohort ---------------------------------------------------------------------------------------------------------
@@ -1353,7 +1366,7 @@ def run_episode(stage, entry, position):
             (session_dir / 'stderr.txt').write_bytes(session.child.stderr)
         final_files, other = preserve_tree(root / 'work', directory / 'final')
         record['final_tree'] = {'files': len(final_files), 'other': other}
-        shutil.rmtree(root, ignore_errors=True)
+        retire_root(root)
         if outcome is None and other:
             # A link, a special file or an unreadable entry is not in the copy: the oracle is never given a partial tree.
             outcome, reason = 'invalid', REASON_TREE
@@ -1560,13 +1573,13 @@ def summarize_probe(cfg, children, sentinels, markers):
                 count = int(digits.group()) if digits else None
         visible.append(None if count is None else count > 0)
     method = next(child for child in children if child.arm == 'method')
-    control = next(child for child in children if child.arm == 'control')
+    control = next((child for child in children if child.arm == 'control'), None)
     token_visible = None if None in visible else any(visible)
     skills = lambda child: (child.stream['init'] or {}).get('skills') or []  # noqa: E731
     flags = {'network_denied': denied['network'], 'repository_read_denied': denied['repository_read'],
              'workspace_read_denied': denied['workspace_read'],
              'method_arm_skill_loaded': bool(method.stream['init']) and 'tackle' in skills(method),
-             'control_arm_skill_absent': bool(control.stream['init']) and 'tackle' not in skills(control),
+             'control_arm_skill_absent': control is not None and bool(control.stream['init']) and 'tackle' not in skills(control),
              'token_scan_clean': not any(child.locations for child in children),
              'work_tree_write_allowed': all(wrote for wrote, _ in inside_writes),
              'work_tree_read_allowed': all(read for _, read in inside_writes)}
@@ -1577,7 +1590,7 @@ def summarize_probe(cfg, children, sentinels, markers):
     observed = (method.stream['init'] or {}).get('model')
     return dict({'schema': PROBE_SCHEMA, 'passed': sound}, **flags, token_visible_to_tools=token_visible, attempts=attempts,
                 work_tree_read_attempts=inside_reads,
-                model=observed if observed == (control.stream['init'] or {}).get('model') else None,
+                model=observed if control is not None and observed == (control.stream['init'] or {}).get('model') else None,
                 cost_usd=round(sum(child.cost for child in children), 6), isolation_problems=problems,
                 children=[{'arm': c.arm, 'exit': c.child.exit if c.child else None, 'tool_calls': len(c.calls),
                            'num_turns': (c.stream['result'] or {}).get('num_turns')} for c in children])
@@ -1623,6 +1636,8 @@ def cmd_probe(args):
                 children.append(probe_child(stage, arm, 'probe-%s-%s' % (out.name, arm), sentinels, 'INSIDE-' + marker))
                 if children[-1].child is None or children[-1].child.interrupted:
                     return 130
+                if children[-1].locations:
+                    break  # a credential hit stops the stage: no further child runs under the incident
         finally:
             for path in sentinels.values():
                 try:
@@ -1638,7 +1653,7 @@ def cmd_probe(args):
                 (out / child.arm).mkdir()
                 (out / child.arm / 'stdout.jsonl').write_bytes(child.child.stdout)
                 (out / child.arm / 'stderr.txt').write_bytes(child.child.stderr)
-                shutil.rmtree(child.root, ignore_errors=True)
+                retire_root(child.root)
         dump(out / 'result.json', neutral.apply(result))
         print(json.dumps({'passed': result['passed'], 'cost_usd': result['cost_usd']}))
         return 0 if result['passed'] else 1
