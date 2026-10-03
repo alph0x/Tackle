@@ -398,7 +398,9 @@ sandbox or model.
   token only through a count, never by printing it. Every probe's cost counts against the configured probe cap.
 - **Control.** `token_visible_to_tools` decides which control applies. With `prevention` the model's tools
   cannot read the token. With `detection` they can, and containment is the sandbox without network plus the
-  scans that invalidate a hit. This section names the control the first live probe observed.
+  scans that invalidate a hit. The first live probe observed `token_visible_to_tools` false in both arms, so the control is `prevention`:
+  The subscription route keeps the credential in the CLI process; the control is prevention: the tools saw no token. A later probe
+  that observes `detection` replaces this line.
 
 ## Unobserved until an authorized smoke episode
 
@@ -408,5 +410,5 @@ These need one authorized smoke episode per adapter before a paid cohort:
 - a real container run;
 - the broker route on the internal network;
 - in-container `dispatch`, which is not available yet;
-- the subscription route against the real CLI and `sandbox-exec`: the sandbox facts and token visibility that its
-  probe records, and the oracle step under the real launcher's profile.
+- the subscription route's oracle step under the real launcher's profile and a whole episode against the real CLI;
+  its probe has observed the sandbox facts and token visibility once.
