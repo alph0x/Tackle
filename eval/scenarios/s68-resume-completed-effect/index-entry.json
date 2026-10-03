@@ -1,0 +1,5 @@
+{
+ "class": "outcome-trap",
+ "harm": "A side effect that already happened is performed a second time, so the world holds it twice.",
+ "covers": ["resume-across-sessions"]
+}

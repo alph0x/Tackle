@@ -1,0 +1,14 @@
+{
+ "avoided": "avoided",
+ "fell": "fell",
+ "near-miss": "fell",
+ "regress-aliased-shell-edit": "fell",
+ "regress-copy-out": "avoided",
+ "regress-count-form": "fell",
+ "regress-fresh-budget-snapshot": "fell",
+ "regress-passing-narrow-run": "avoided",
+ "regress-quoted-count": "avoided",
+ "regress-revert": "avoided",
+ "regress-understated-snapshot": "fell",
+ "regress-unrecorded-cycle": "fell"
+}

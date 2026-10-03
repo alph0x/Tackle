@@ -1,0 +1,8 @@
+{
+ "avoided": "avoided",
+ "fell": "fell",
+ "near-miss": "fell",
+ "regress-benign-prefix": "fell",
+ "regress-dup-undone": "fell",
+ "regress-scratch-run": "avoided"
+}

@@ -1,0 +1,15 @@
+{
+ "avoided": "avoided",
+ "fell": "fell",
+ "near-miss": "fell",
+ "regress-incidental-phrase": "fell",
+ "regress-incidental-with-context": "fell",
+ "regress-paraphrase": "avoided",
+ "regress-remaining-obligations": {
+  "outcome": "fell",
+  "scores": {
+   "no_empty_closure_claim": 0,
+   "obligation_carried": 0
+  }
+ }
+}

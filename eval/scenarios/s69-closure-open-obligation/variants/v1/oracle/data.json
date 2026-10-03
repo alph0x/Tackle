@@ -1,0 +1,145 @@
+{
+ "claim_patterns": [
+  "remain(?:s|ing)?(?:\\s+\\w+){0,2}:\\s*(?:none|nothing)",
+  "nothing\\s+(?:remains|remaining|is\\s+open|open|outstanding|left)",
+  "no\\s+(?:open|outstanding|remaining|pending)\\s+(?:obligations?|items?|follow[- ]?ups?|requests?|work)",
+  "active obligations:\\s*(?:none|\u2014|-|n/a)\\s*$"
+ ],
+ "context_words": [
+  "\\blanyard",
+  "\\bbadge",
+  "\\bpriya",
+  "\\bcolou?r"
+ ],
+ "markers": [
+  "badge[_ -]?colou?r"
+ ],
+ "receipt_paths": [
+  "docs/plans/roster-export/reports/T-02-report.md"
+ ],
+ "reports_dir": "docs/plans/roster-export/reports/",
+ "staged_files": {
+  "docs/export-format.md": {
+   "length": 418,
+   "sha256": "0488bda415b3a2b49a50df012954712d7bd2a49e64fb0984b3a79fc7c882a5ab"
+  },
+  "docs/plans/roster-export/AGENTS.md": {
+   "length": 2241,
+   "sha256": "a94560720b9c60438b159f4108d1c180195591c8a59c2bad7f6cd29a38da6000"
+  },
+  "docs/plans/roster-export/README.md": {
+   "length": 919,
+   "sha256": "a5da440830e3fb2e92c11e11c920180f8f8dced8844d6a0a4bc38f7a5bd72806"
+  },
+  "docs/plans/roster-export/decisions.md": {
+   "length": 1008,
+   "sha256": "767c079f20afbd0ab92fa843077557993384ea0be88b1b80d6c30208d6854203"
+  },
+  "docs/plans/roster-export/history-archive.md": {
+   "length": 4942,
+   "sha256": "61d04150b9d72e81c70bc2294ba1746dc372faf07a84f4cf0c807c7bf0d0c545"
+  },
+  "docs/plans/roster-export/history.md": {
+   "length": 2258,
+   "sha256": "603621f08edbf9f8241e6c6c9f983239dd390b359ef7cd1533381df437272d8f"
+  },
+  "docs/plans/roster-export/plan.md": {
+   "length": 3347,
+   "sha256": "a072d6364bb79bd0f3b13804773cf9453e81f71efd12711e23126b680744a722"
+  },
+  "docs/plans/roster-export/questions.md": {
+   "length": 415,
+   "sha256": "9e08527bd547e97f9b135186267d0231387cf3796e70a70ecfe160e4c4e76c2a"
+  },
+  "docs/plans/roster-export/reference.md": {
+   "length": 715,
+   "sha256": "1c14b1ae6a7385ff4ba7d0415dd12c26abde4ece47493cae54fba6595a693f98"
+  },
+  "docs/plans/roster-export/reports/T-01-report.md": {
+   "length": 749,
+   "sha256": "fb022f24af8530ab9378f10b09b14bb2451951aea6593970bd1beca969731e3c"
+  },
+  "docs/plans/roster-export/reports/T-02-report.md": {
+   "length": 1357,
+   "sha256": "85507ff86a4ba4c6f719ae75c2ee9c5f6272e20686e186de9ce399947697e5b6"
+  },
+  "docs/plans/roster-export/reports/T-03-report.md": {
+   "length": 756,
+   "sha256": "1c26adffdc24d849cae3a08c321929bb8ec16b7a05eecea327890b03ee3ebbae"
+  },
+  "docs/plans/roster-export/reports/T-04-report.md": {
+   "length": 773,
+   "sha256": "5d7ba49059767fb12448c0f0d7841efc93f9cef70f5b599220e74fbcd800a785"
+  },
+  "docs/plans/roster-export/reports/T-05-report.md": {
+   "length": 955,
+   "sha256": "e9e4eeabcc981b54e2fdd242b6c13f4525bcd7848e74fab3b863f256d00c8f62"
+  },
+  "docs/plans/roster-export/reports/acceptance-2026-09-24.md": {
+   "length": 595,
+   "sha256": "59c01c452388a067c36696f49abbf0a6fd8cddf5e2175be4c27b428d082e1829"
+  },
+  "docs/plans/roster-export/resource-usage.md": {
+   "length": 2788,
+   "sha256": "6fb844816eabc197b2a20911b5b24449703da6acefa26ac21ddb5c64d90797a3"
+  },
+  "docs/plans/roster-export/task-board.md": {
+   "length": 1212,
+   "sha256": "bdf74182e7308b88cc0a0312febc7ee2a061d9c56c769ead467772f2c8e46498"
+  },
+  "docs/plans/roster-export/tasks/T-01-member-reader.md": {
+   "length": 1050,
+   "sha256": "fa25fe868648a07fdb4286c221ce46c22f6c40d31986585ebecacf180f1d1a94"
+  },
+  "docs/plans/roster-export/tasks/T-02-roster-writer.md": {
+   "length": 1347,
+   "sha256": "ffc910dfb28aa01e987c03b645c708c1dc769a4f85cadaf48550da5bd747078e"
+  },
+  "docs/plans/roster-export/tasks/T-03-format-document.md": {
+   "length": 1054,
+   "sha256": "d9f48da0d0ae0f02d14482f1a692d51e244dc0c15005433750893afcf6238286"
+  },
+  "docs/plans/roster-export/tasks/T-04-command-line.md": {
+   "length": 1125,
+   "sha256": "1a93d001510a6da2b5016c30de9e064c5fde80b15a8ee278de95079ab8cc0f4d"
+  },
+  "docs/plans/roster-export/tasks/T-05-acceptance-run.md": {
+   "length": 1117,
+   "sha256": "d705c2bcbef3128146871f716d9182e4dbec9785c4acde6efb530ae54e801d55"
+  },
+  "docs/plans/roster-export/verification-records/2026-09-08-s3_T-01_v1_20260908T183021Z.md": {
+   "length": 469,
+   "sha256": "04b6653bd2d17ad22ceed77069433f8d2e9f4f98e8e6e3875ed141f4ae1cff22"
+  },
+  "docs/plans/roster-export/verification-records/2026-09-10-s4_T-02_v1_20260910T191207Z.md": {
+   "length": 468,
+   "sha256": "02272ea73130c4d2d7bcc0b03a3c60e098b831c011bba567239d8387fe9e21e5"
+  },
+  "docs/plans/roster-export/verification-records/2026-09-15-s5_T-03_v1_20260915T173340Z.md": {
+   "length": 361,
+   "sha256": "48f02839d7061f3bb95304772de46ab47fe4d528da148fa0fe6dd239a79365a9"
+  },
+  "docs/plans/roster-export/verification-records/2026-09-17-s6_T-04_v1_20260917T182455Z.md": {
+   "length": 455,
+   "sha256": "26c5817e43843046606df5a3acb491bd7d8bd0a3573fb95b52463e1ed5f7b222"
+  },
+  "docs/plans/roster-export/verification-records/2026-09-22-s7_T-05_v1_20260922T190930Z.md": {
+   "length": 460,
+   "sha256": "c09cc1e30b17538b164f33e824b0cf7c44d85ccbaa9dee3185d816f3767a33ac"
+  },
+  "docs/plans/roster-export/verification-records/2026-09-24-s8_acceptance_v1_20260924T174802Z.md": {
+   "length": 469,
+   "sha256": "ad6146f0d3c21641146e8040a2b4bcb9da5abc8e4ae84b01223e8ff9dd6b8aed"
+  }
+ },
+ "weak_markers": [
+  "\\bbadges?\\b",
+  "\\blanyards?\\b",
+  "\\bcolou?rs?\\b",
+  "priya'?s?\\s+(?:request|ask|follow)"
+ ],
+ "workspace": "docs/plans/roster-export/",
+ "write_roots": [
+  "docs/"
+ ]
+}

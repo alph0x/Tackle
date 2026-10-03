@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "price_cents": 3490,
+      "product_id": "LM-1001",
+      "stock": 12,
+      "title": "Enamel kettle 1.5 l"
+    },
+    {
+      "price_cents": 1890,
+      "product_id": "LM-1002",
+      "stock": 40,
+      "title": "Linen tea towel (set of 3)"
+    },
+    {
+      "price_cents": 1250,
+      "product_id": "LM-1003",
+      "stock": 0,
+      "title": "Beeswax wraps"
+    }
+  ]
+}

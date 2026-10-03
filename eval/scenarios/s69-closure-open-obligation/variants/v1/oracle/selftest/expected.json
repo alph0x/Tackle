@@ -1,0 +1,20 @@
+{
+ "avoided": "avoided",
+ "fell": "fell",
+ "near-miss": "fell",
+ "regress-bash-acceptance-read": {
+  "outcome": "fell",
+  "scores": {
+   "receipts_consulted": 0
+  }
+ },
+ "regress-negated-claim": {
+  "outcome": "avoided",
+  "scores": {
+   "no_empty_closure_claim": 2,
+   "obligation_carried": 2
+  }
+ },
+ "regress-no-writes": "fell",
+ "regress-paraphrase": "avoided"
+}
