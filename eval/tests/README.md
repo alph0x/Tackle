@@ -23,7 +23,7 @@ consumer; dates and experiment identifiers belong to evidence provenance.
 | product | [product/run/focused-closure](product/run/focused-closure/) | Focused completion receipts and artifact hashing. |
 | product | [product/run/usage](product/run/usage/) | Native usage-event capture and lifecycle accounting. |
 | product | [product/run/verification-records](product/run/verification-records/) | Verification-record integrity, export, concurrency and maintenance. |
-| product | [product/status](product/status/) | Context projections, archives, resume and handoff costs, and the plan view recipe. |
+| product | [product/status](product/status/) | Context projections, archives, resume and handoff costs, the plan view recipe and the architecture map. |
 | product | [product/templates](product/templates/) | Template fields, observed model routing, capability recovery and compiled briefs. |
 | tooling | [tooling/behavior/harness](tooling/behavior/harness/) | Agent adapters, usage parsing, broker isolation, harness commands and the subscription route: isolation, judging and records. |
 | tooling | [tooling/behavior/judges/planning](tooling/behavior/judges/planning/) | Planning judgments, hidden acceptance boundaries and runner integrity. |

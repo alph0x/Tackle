@@ -772,7 +772,7 @@
       "rule_id": "R-PLAN-11",
       "statement": "The repository references/ template library is read-only during scaffolding; initiative-specific edits belong in the workspace copy.",
       "statement_sha256": "488ffc1715a3bdfe05ef2d92a2ae222b3fc024f69f727fafc06b233242df0571",
-      "home": "references/guides/scaffold.md:48",
+      "home": "references/guides/scaffold.md:50",
       "home_fragment": "template library is read-only during scaffolding",
       "units": [],
       "mirrors": [],
@@ -945,7 +945,7 @@
       "rule_id": "R-RUN-05",
       "statement": "Reuse verified current state and sufficient existing checks; do not append equivalent assertions or unchanged closure reruns.",
       "statement_sha256": "d9beacfc73bfe0717bd839e70c569c8c6a2133391f0bbffcb8e6877522d2ff55",
-      "home": "references/guides/run.md:262",
+      "home": "references/guides/run.md:264",
       "home_fragment": "Reuse unchanged PLAN readiness checks",
       "units": [],
       "mirrors": [],
@@ -1307,7 +1307,7 @@
       "home_fragment": "Closure reports for done tasks",
       "units": [],
       "mirrors": [
-        "references/guides/run.md:248"
+        "references/guides/run.md:250"
       ],
       "class": "safety-invariant",
       "hot_path": false,
@@ -3289,6 +3289,29 @@
       "origin": {
         "added_in": "9.1.0",
         "trigger": "The owner asks for a local view of a workspace and expects it to stay current.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-03"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATUS-07",
+      "statement": "Tackle writes the architecture map base only on the owner's request or at a confirmed closure fold, never invents a map when no base exists and offers to create one, and at the fold keeps the planned changes out of the base and reports them.",
+      "statement_sha256": "34a0bb1170d01b7e6ae5d02ec1b6d01ee8bddf434cd448e8cf14f45664a7ee4d",
+      "home": "references/guides/architecture-map.md:10",
+      "home_fragment": "only the owner's request or a confirmed closure fold",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.0",
+        "trigger": "The owner asks to see how the project is put together, or closes a plan that changed it.",
         "discovered_by": []
       },
       "evidence": {

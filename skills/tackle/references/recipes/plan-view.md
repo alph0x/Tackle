@@ -3,6 +3,7 @@ import argparse
 import datetime
 import html
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -15,13 +16,20 @@ STATE_CLASS = {'Complete': 'done', 'In progress': 'prog', 'Checking': 'prog', 'R
 UI = {
     'en': dict(
         skip='Skip to content', theme='Switch between light and dark', progress='Progress', kicker='Plan',
-        n_graph='Task graph', n_tasks='Tasks', n_now='Where we are', n_tech='Details',
+        n_graph='Task graph', n_tasks='Tasks', n_now='Where we are', n_tech='Details', n_arch='Before and after',
         working='Working now', working_none='No session works on this plan right now.', plan_scope='The plan',
         run_scope='The run', live='Live', graph='How the work connects',
         graph_note='Each arrow points from a task to the work that needs it. Select a task to trace it.',
         graph_reduced='An arrow that a longer path already implies is left out. Each task lists everything it needs.',
         graph_none='This plan has no task board, so the view shows no graph.', clear='Clear the trace',
         stage='Stage {n}', stage_count='{done} of {total} complete', stage_note='A stage is a column of the graph, not an order of work.',
+        a_title='Before and after', a_note='How the project is put together today, and what this plan adds or changes. Select a component to see what it connects to.',
+        a_views='Which view to show', a_cards='Cards', a_diagram='Diagram', a_pics='Which picture to show', a_today='Today',
+        a_after='After this plan', a_whole='Showing: the whole project', a_changed_only='Showing: only what changes, with its neighbors',
+        a_new='New', a_change='Changed', a_stale='Source missing', a_planned='Planned', a_done='Done', a_uses='Uses', a_used='Used by',
+        a_sources='Sources', a_count='Components', a_changes='Changes', a_nochange='This plan changes nothing in the map.',
+        a_none='No base map yet. Ask for one and this section shows the project before and after the plan.',
+        a_mismatch='The map was verified at {have}, and the delta expects {want}.', a_pick='Select a component to see what it connects to.',
         states={},
         tasks='Tasks', all='All', needs='Needs', unblocks='Unblocks', nothing='nothing', requirements='Requirements',
         brief='Brief', trace_up='Trace what it needs', trace_down='Trace what it unblocks',
@@ -42,13 +50,20 @@ UI = {
                'designer': 'Designing the page'}),
     'es': dict(
         skip='Ir al contenido', theme='Cambiar entre claro y oscuro', progress='Avance', kicker='Plan',
-        n_graph='Grafo de tareas', n_tasks='Tareas', n_now='Dónde estamos', n_tech='Detalle',
+        n_graph='Grafo de tareas', n_tasks='Tareas', n_now='Dónde estamos', n_tech='Detalle', n_arch='Antes y después',
         working='En marcha ahora', working_none='Ninguna sesión trabaja en este plan ahora.', plan_scope='El plan',
-        run_scope='La ejecución', live='En curso', graph='Cómo se conecta el trabajo',
+        run_scope='La ejecución', live='En marcha', graph='Cómo se conecta el trabajo',
         graph_note='Cada flecha va de una tarea al trabajo que la necesita. Elige una tarea para seguir su traza.',
         graph_reduced='Se omite la flecha que un camino más largo ya implica. Cada tarea lista todo lo que necesita.',
         graph_none='Este plan no tiene tablero de tareas, así que la vista no muestra grafo.', clear='Quitar la traza',
         stage='Etapa {n}', stage_count='{done} de {total} completas', stage_note='Una etapa es una columna del grafo, no un orden de trabajo.',
+        a_title='Antes y después', a_note='Cómo está armado el proyecto hoy y qué agrega o cambia este plan. Elige un componente para ver con qué se conecta.',
+        a_views='Qué vista mostrar', a_cards='Tarjetas', a_diagram='Diagrama', a_pics='Qué imagen mostrar', a_today='Hoy',
+        a_after='Después de este plan', a_whole='Se muestra: todo el proyecto', a_changed_only='Se muestra: solo lo que cambia, con sus vecinos',
+        a_new='Nuevo', a_change='Cambiado', a_stale='Falta la fuente', a_planned='Planificado', a_done='Hecho', a_uses='Usa', a_used='Lo usa',
+        a_sources='Fuentes', a_count='Componentes', a_changes='Cambios', a_nochange='Este plan no cambia nada del mapa.',
+        a_none='Todavía no hay un mapa base. Pídelo y esta sección muestra el proyecto antes y después del plan.',
+        a_mismatch='El mapa se verificó en {have}, y el delta espera {want}.', a_pick='Elige un componente para ver con qué se conecta.',
         states={'Draft': 'Borrador', 'Ready to run': 'Lista para ejecutar', 'In progress': 'En curso', 'Checking': 'En verificación',
                 'Complete': 'Completa', 'Blocked': 'Bloqueada', 'Interrupted': 'Interrumpida', 'Skipped': 'Omitida',
                 'Unverifiable': 'No verificable', 'Waiting on owner': 'Esperando al responsable'},
@@ -435,6 +450,246 @@ def graph_svg(tasks, stage, edges, live, ui):
     return ''.join(out)
 
 
+def load_map_recipe(template_path):
+    """Load the architecture-map recipe that sits in recipes/ beside the template's folder."""
+    path = Path(template_path).parent / 'recipes' / 'architecture-map.md'
+    parts = path.read_text(encoding='utf-8').split('```python\n')
+    if len(parts) != 2:
+        raise ValueError('the map recipe must hold exactly one fenced python block')
+    namespace = {'__name__': 'architecture_map'}
+    exec(compile(parts[1].split('\n```')[0] + '\n', str(path), 'exec'), namespace)
+    return namespace
+
+
+def read_json(path):
+    try:
+        return json.loads(Path(path).read_text(encoding='utf-8')), None
+    except (OSError, ValueError) as problem:
+        return None, '%s: %s' % (path, problem)
+
+
+def rel3(rel):
+    return (rel[0], rel[1], rel[2] if len(rel) > 2 else '')
+
+
+def arch_marks(changes):
+    marks = {}
+    for change in changes:
+        mark = marks.setdefault(change['id'], dict(op='change', tasks=[], states=[]))
+        if change['op'] == 'add':
+            mark['op'] = 'add'
+        mark['tasks'].append(change['task'])
+        mark['states'].append(change['state'])
+    return marks
+
+
+def arch_badges(cid, marks, stale_ids, ui):
+    out = []
+    if cid in marks:
+        out.append('<span class="abadge %s">%s</span>' % (marks[cid]['op'], esc(ui['a_new'] if marks[cid]['op'] == 'add' else ui['a_change'])))
+        out.append('<span class="abadge plain">%s</span>' % esc(', '.join(sorted(set(marks[cid]['tasks'])))))
+        out.append('<span class="abadge plain">%s</span>' % esc(ui['a_planned'] if 'planned' in marks[cid]['states'] else ui['a_done']))
+    if cid in stale_ids:
+        out.append('<span class="abadge old">%s</span>' % esc(ui['a_stale']))
+    return ''.join(out)
+
+
+def arch_attrs(cid, rels, marks, stale_ids):
+    related = sorted({b if a == cid else a for a, b, _ in rels if cid in (a, b)})
+    return 'data-cid="%s" data-rel="%s"%s%s' % (
+        esc(cid), esc(json.dumps(related)), ' data-change="%s"' % marks[cid]['op'] if cid in marks else '',
+        ' data-stale="true"' if cid in stale_ids else '')
+
+
+def arch_cards(shown, groups, comps, rels, marks, stale_ids, pic, ui):
+    out = []
+    for group in groups:
+        here = [cid for cid in shown if comps[cid]['group'] == group['id']]
+        if not here:
+            continue
+        cards = []
+        for cid in here:
+            comp = comps[cid]
+            uses = ['%s → %s' % (esc(label), esc(comps[to]['title'])) for a, to, label in rels if a == cid]
+            used = ['%s ← %s' % (esc(label), esc(comps[a]['title'])) for a, to, label in rels if to == cid]
+            cards.append(
+                '<article class="acard" data-pic="%s" %s tabindex="0"><h5>%s</h5><div class="abadges">%s</div><p>%s</p>%s%s'
+                '<p class="asrc"><b>%s</b>: %s</p></article>' % (
+                    pic, arch_attrs(cid, rels, marks if pic == 'after' else {}, stale_ids), esc(comp['title']),
+                    arch_badges(cid, marks if pic == 'after' else {}, stale_ids, ui), esc(comp.get('text', '')),
+                    '<p class="arel"><b>%s</b>: %s</p>' % (esc(ui['a_uses']), '; '.join(uses)) if uses else '',
+                    '<p class="arel"><b>%s</b>: %s</p>' % (esc(ui['a_used']), '; '.join(used)) if used else '',
+                    esc(ui['a_sources']), ', '.join('<code>%s</code>' % esc(src) for src in comp.get('sources', [])) or '–'))
+        out.append('<div class="agroup"><h4>%s</h4><div class="acards">%s</div></div>' % (esc(group['title']), ''.join(cards)))
+    return ''.join(out)
+
+
+def arch_svg(shown, groups, comps, rels, marks, stale_ids, fresh, pic, ui):
+    """Boxes in group columns. Arrows run along rails in the gutters between columns, and an arrow that skips a
+    column runs along a channel above them, so none passes behind a box it does not join. Arrow ends are
+    spread along a box side, so no two share a point."""
+    columns = [[cid for cid in shown if comps[cid]['group'] == g['id']] for g in groups]
+    columns = [c for c in columns if c]
+    node_w, gap_y, pad, step, head = 190, 14, 14, 12, 14
+    band_w = node_w + 2 * pad
+    col_of = {cid: k for k, column in enumerate(columns) for cid in column}
+    row_of = {cid: j for column in columns for j, cid in enumerate(column)}
+    plan = []
+    for a, b, label in rels:
+        out = 'R' if col_of[a] <= col_of[b] else 'L'
+        into = 'L' if col_of[a] < col_of[b] else 'R'
+        plan.append(dict(a=a, b=b, label=label, out=out, into=into, ge=col_of[a] + (1 if out == 'R' else 0),
+                         gt=col_of[b] + (1 if into == 'R' else 0)))
+    for k, item in enumerate(plan):
+        item['far'] = item['ge'] != item['gt']
+        item['k'] = k
+    uses = {}
+    for item in plan:
+        uses.setdefault(item['ge'], []).append((item['k'], 'ge'))
+        if item['far']:
+            uses.setdefault(item['gt'], []).append((item['k'], 'gt'))
+    per_side = {}
+    for item in plan:
+        for key in ((item['a'], item['out']), (item['b'], item['into'])):
+            per_side[key] = per_side.get(key, 0) + 1
+    node_h = min(220, max(56, 6 * (max(per_side.values(), default=0) + 1)))
+    count = len(columns)
+    width_of = [max(60 if 0 < g < count else 24, (len(uses.get(g, [])) + 1) * step) for g in range(count + 1)]
+    far = [item for item in plan if item['far']]
+    channel = (len(far) + 1) * step + 8 if far else 0
+    gutter_x = [6 + sum(width_of[:g]) + g * band_w for g in range(count + 1)]
+    top = max(len(c) * node_h + (len(c) - 1) * gap_y for c in columns) if columns else 0
+    total_w = gutter_x[count] + width_of[count] + 6 if columns else 12
+    total_h = channel + head + top + 2 * pad
+    where = {}
+    for cid in col_of:
+        where[cid] = (gutter_x[col_of[cid]] + width_of[col_of[cid]] + pad, channel + head + pad + row_of[cid] * (node_h + gap_y))
+    ends = {}
+    for item in plan:
+        ends.setdefault((item['a'], item['out']), []).append((where[item['b']][1], item['k'], 'from'))
+        ends.setdefault((item['b'], item['into']), []).append((where[item['a']][1], item['k'], 'to'))
+    slot = {}
+    for (cid, side), listed in ends.items():
+        for n, (_, k, role) in enumerate(sorted(listed)):
+            slot[(k, role)] = where[cid][1] + (n + 1) * node_h / (len(listed) + 1)
+    by_gutter = {}
+    for item in plan:
+        by_gutter.setdefault(item['ge'], []).append((item['k'], 'from', item['a']))
+        by_gutter.setdefault(item['gt'], []).append((item['k'], 'to', item['b']))
+    for listed in by_gutter.values():
+        previous = None
+        for k, role, cid in sorted(listed, key=lambda u: (slot[(u[0], u[1])], u[0], u[1])):
+            if previous is not None and slot[(k, role)] < previous + 3:
+                slot[(k, role)] = min(previous + 3, where[cid][1] + node_h - 2)
+            previous = slot[(k, role)]
+    rail = {}
+    for g, listed in uses.items():
+        ordered = sorted(listed, key=lambda u: min(slot[(u[0], 'from')], slot[(u[0], 'to')]))
+        for n, (k, which) in enumerate(ordered):
+            rail[(k, which)] = gutter_x[g] + (n + 1) * width_of[g] / (len(ordered) + 1)
+    lane = {item['k']: channel - (n + 1) * step for n, item in enumerate(sorted(far, key=lambda i: (i['ge'], i['gt'], i['k'])))}
+    out = ['<svg viewBox="0 0 %d %d" width="%d" height="%d" role="group" aria-label="%s"><defs><marker id="arrow-%s" viewBox="0 0 10 10" refX="9" refY="5" '
+           'markerWidth="8" markerHeight="8" orient="auto"><path class="arrowhead" d="M 0 1 L 10 5 L 0 9 z"/></marker></defs>' % (
+               total_w, total_h, total_w, total_h, esc(ui['a_diagram']), pic)]
+    for k, column in enumerate(columns):
+        out.append('<rect class="band" x="%d" y="%d" width="%d" height="%d" rx="16"><title>%s</title></rect>' % (
+            gutter_x[k] + width_of[k], channel, band_w, total_h - channel, esc(next(g['title'] for g in groups if g['id'] == comps[column[0]]['group']))))
+    labels = []
+    for item in plan:
+        a, b, k = item['a'], item['b'], item['k']
+        start = (where[a][0] + (node_w if item['out'] == 'R' else 0), slot[(k, 'from')])
+        end = (where[b][0] + (0 if item['into'] == 'L' else node_w), slot[(k, 'to')])
+        if item['far']:
+            points = [start, (rail[(k, 'ge')], start[1]), (rail[(k, 'ge')], lane[k]), (rail[(k, 'gt')], lane[k]), (rail[(k, 'gt')], end[1]), end]
+            spot = ((rail[(k, 'ge')] + rail[(k, 'gt')]) / 2, lane[k] - 3, 'middle')
+        else:
+            points = [start, (rail[(k, 'ge')], start[1]), (rail[(k, 'ge')], end[1]), end]
+            spot = (rail[(k, 'ge')] + 4, (start[1] + end[1]) / 2 - 3, 'start')
+        path = 'M%.1f %.1f' % points[0] + ''.join(' L%.1f %.1f' % p for p, q in zip(points[1:], points) if p != q)
+        out.append('<path class="aedge%s" data-from="%s" data-to="%s" d="%s" marker-end="url(#arrow-%s)"><title>%s</title></path>' % (
+            ' new' if (a, b, item['label']) in fresh else '', esc(a), esc(b), path, pic,
+            esc('%s → %s: %s' % (comps[a]['title'], comps[b]['title'], item['label']))))
+        labels.append('<text class="aelabel" data-from="%s" data-to="%s" x="%.1f" y="%.1f" text-anchor="%s">%s</text>' % (
+            esc(a), esc(b), spot[0], spot[1], spot[2], esc(item['label'])))
+    for cid in shown:
+        x, y = where[cid]
+        lines = wrap(comps[cid]['title'], 24)
+        text = ''.join('<tspan x="%d" dy="%d">%s</tspan>' % (x + 12, 0 if k == 0 else 16, esc(line)) for k, line in enumerate(lines))
+        tag = ''
+        if cid in stale_ids:
+            tag = ui['a_stale']
+        elif pic == 'after' and cid in marks:
+            tag = ui['a_new'] if marks[cid]['op'] == 'add' else ui['a_change']
+        out.append('<g class="anode" %s tabindex="0" role="button" aria-label="%s"><title>%s</title><rect x="%d" y="%.1f" width="%d" height="%d" rx="12"/>'
+                   '<text class="ant" x="%d" y="%.1f">%s</text>%s</g>' % (
+                       arch_attrs(cid, rels, marks if pic == 'after' else {}, stale_ids), esc(comps[cid]['title']), esc(comps[cid]['title']),
+                       x, y, node_w, node_h, x + 12, y + 22, text,
+                       '<text class="ang" x="%d" y="%.1f" text-anchor="end">%s</text>' % (x + node_w - 10, y + node_h - 8, esc(tag)) if tag else ''))
+    out += labels
+    out.append('</svg>')
+    return ''.join(out)
+
+
+def arch_section(mapm, base, delta, scope, root, ui):
+    """The Before and after section, and the island's map object. Assumes the delta passed validate."""
+    later = mapm['after'](base, delta)
+    changes = delta.get('changes', [])
+    changed = sorted({c['id'] for c in changes})
+    base_ids = sorted(c['id'] for c in base['components'])
+    after_ids = sorted(c['id'] for c in later['components'])
+    if scope == 'changed':
+        after_ids = [i for i in mapm['neighbors'](later, changed) if i in set(after_ids)]
+        today_ids = [i for i in after_ids if i in set(base_ids)]
+    else:
+        today_ids = base_ids
+    stale_ids = set(mapm['stale'](base, root)) & set(today_ids)
+    island = dict(today=today_ids, after=after_ids, changed=changed, stale=sorted(stale_ids))
+    if scope == 'changed' and not changes:
+        return ('<section class="sec" id="architecture" data-map="shown" data-reveal><div class="sh"><h2>%s</h2><p>%s</p></div></section>' % (
+            esc(ui['a_title']), esc(ui['a_nochange']))), island
+    marks = arch_marks(changes)
+    fresh = {rel3(r) for c in changes for r in c.get('relations', [])}
+    groups = base['groups']
+    pictures = [('today', base, today_ids)] + ([('after', later, after_ids)] if changes else [])
+    parts = []
+    for pic, source, shown in pictures:
+        comps = {c['id']: c for c in source['components']}
+        shown_set = set(shown)
+        rels = [rel3(r) for r in source.get('relations', []) if r[0] in shown_set and r[1] in shown_set]
+        parts.append(
+            '<div class="arch-pic" data-pic="%s"><h3>%s</h3><div class="apanel" data-view="cards">%s</div>'
+            '<div class="apanel" data-view="diagram"><div class="ascroll">%s</div></div></div>' % (
+                pic, esc(ui['a_today'] if pic == 'today' else ui['a_after']),
+                arch_cards(shown, groups, comps, rels, marks, stale_ids, pic, ui),
+                arch_svg(shown, groups, comps, rels, marks, stale_ids, fresh, pic, ui)))
+    tabs = '<div class="atabs" role="tablist" aria-label="%s"><button type="button" role="tab" class="chip" data-view="cards" aria-selected="true">%s</button>' \
+           '<button type="button" role="tab" class="chip" data-view="diagram" aria-selected="false">%s</button></div>' % (
+               esc(ui['a_views']), esc(ui['a_cards']), esc(ui['a_diagram']))
+    switch = ''
+    if changes:
+        switch = '<div class="apics" role="radiogroup" aria-label="%s"><button type="button" role="radio" class="chip" data-pic="today" aria-checked="false">%s</button>' \
+                 '<button type="button" role="radio" class="chip" data-pic="after" aria-checked="true">%s</button></div>' % (
+                     esc(ui['a_pics']), esc(ui['a_today']), esc(ui['a_after']))
+    figures = [(ui['a_count'], len(after_ids)), (ui['a_changes'], len(changes))]
+    summary = ''.join('<div class="stat"><span class="k">%s</span><b>%s</b></div>' % (esc(k), esc(v)) for k, v in figures)
+    notes = [ui['a_whole'] if scope == 'all' else ui['a_changed_only']]
+    if not changes:
+        notes.append(ui['a_nochange'])
+    want, have = delta.get('base_revision'), base.get('verified_at', {}).get('revision')
+    if want and have and want != have:
+        notes.append(ui['a_mismatch'].format(have=have, want=want))
+    html_out = ('<section class="sec" id="architecture" data-map="shown" data-reveal><div class="sh"><h2>%s</h2><p>%s</p></div>'
+                '<div class="arch-bar">%s%s</div><div class="stats arch-stats">%s</div><p class="anote">%s</p>%s'
+                '<div class="ainfo" aria-live="polite" data-empty="%s"></div></section>') % (
+        esc(ui['a_title']), esc(ui['a_note']), tabs, switch, summary, esc(' '.join(notes)), ''.join(parts), esc(ui['a_pick']))
+    return html_out, island
+
+
+def arch_none(ui):
+    return '<section class="sec" id="architecture" data-map="none" data-reveal><div class="sh"><h2>%s</h2><p>%s</p></div></section>' % (
+        esc(ui['a_title']), esc(ui['a_none']))
+
+
 def fill(template, values):
     missing = sorted(set(re.findall(r'\{\{(\w+)\}\}', template)) - set(values))
     if missing:
@@ -445,6 +700,9 @@ def fill(template, values):
 def main():
     parser = argparse.ArgumentParser(description='Write the plan view of a workspace.')
     parser.add_argument('--template', required=True)
+    parser.add_argument('--map', dest='map_base', help='the project map (tackle-map/1) to draw before and after the plan')
+    parser.add_argument('--map-scope', choices=('all', 'changed'), default='all',
+                        help='draw the whole map, or only the changed components with their neighbors')
     parser.add_argument('workspace')
     parser.add_argument('output')
     args = parser.parse_args()
@@ -504,6 +762,29 @@ def main():
                         found = re.search(r'^- \*\*Traces to\*\*: (.+)$', path.read_text(encoding='utf-8'), re.M)
                         traces = found.group(1) if found else ''
             t['traces'] = traces
+    arch, missing_base = None, False
+    if args.map_base:
+        try:
+            mapm = load_map_recipe(args.template)
+        except (OSError, ValueError, SyntaxError) as problem:
+            print('cannot load the architecture map recipe: %s' % problem, file=sys.stderr)
+            return 2
+        base, trouble = (None, None) if not Path(args.map_base).exists() else read_json(args.map_base)
+        if not Path(args.map_base).exists():
+            missing_base = True
+        elif trouble:
+            problems.append('cannot read the base map %s' % trouble)
+        elif not isinstance(base, dict) or base.get('schema') != 'tackle-map/1':
+            problems.append('the base map is not schema tackle-map/1')
+            base = None
+        delta = dict(schema='tackle-map-delta/1', changes=[])
+        if (ws / 'map-delta.json').is_file() and not missing_base:
+            delta, trouble = read_json(ws / 'map-delta.json')
+            if trouble:
+                problems.append('cannot read the map delta %s' % trouble)
+        if base is not None and not any(p.startswith('cannot read the map delta') for p in problems):
+            problems += ['map: ' + line for line in mapm['validate'](base, delta)]
+        arch = (base, delta, mapm) if base is not None else None
     stage = None
     if tasks and not problems:
         stage = stages_of([t['id'] for t in tasks], {t['id']: list(t['deps']) for t in tasks})
@@ -520,6 +801,13 @@ def main():
     down = {i: sorted(t['id'] for t in tasks if i in t['deps']) for i in ids}
     cover = {r: [t['id'] for t in tasks if covers(r, t['traces'])] for r in sorted(reqs, key=lambda r: int(r[1:]))}
     decisions = parse_decisions(read(ws, 'decisions.md'))
+    map_html, map_island = '', None
+    if arch:
+        above = Path(os.path.abspath(ws)).parents
+        root = above[2] if len(above) > 2 else above[-1]
+        map_html, map_island = arch_section(arch[2], arch[0], arch[1], args.map_scope, root, ui)
+    elif missing_base or (ws / 'map-delta.json').is_file():
+        map_html = arch_none(ui)
     snapshot = newest_snapshot(read(ws, 'history.md')) or fields.get('state', '')
     working = open_runs(read(ws, 'resource-usage.md'))
     live = {w['scope'] for w in working}
@@ -595,6 +883,8 @@ def main():
                     esc(ui['trace_up']), esc(ui['trace_down'])))
         tasks_html = '<section class="sec" id="tasks" data-reveal><div class="sh"><h2>%s</h2></div><div class="bar">%s</div><div class="tasks">%s</div></section>' % (
             esc(ui['tasks']), bar, ''.join(cards))
+    if map_html:
+        nav.append(('architecture', ui['n_arch']))
     nav.append(('snapshot', ui['n_now']))
     nav.append(('technical', ui['n_tech']))
     rows = []
@@ -625,7 +915,8 @@ def main():
     island = json.dumps(dict(
         schema='tackle-plan-view/1', focused=focused, language=lang, built=stamp,
         tasks=[dict(id=t['id'], status=t['status'], deps=t['deps'], title=t['title'], brief=t['brief'], traces=t['traces']) for t in tasks],
-        requirements={r: cover[r] for r in cover}, decisions=[d['id'] for d in decisions], snapshot=snapshot, working=working),
+        requirements={r: cover[r] for r in cover}, decisions=[d['id'] for d in decisions], snapshot=snapshot, working=working,
+        map=map_island),
         ensure_ascii=True).replace('<', '\\u003c').replace('>', '\\u003e').replace('&', '\\u0026')
     objective = objective_of(plan)
     values = dict(
@@ -633,7 +924,7 @@ def main():
         objective='<p class="objective">%s</p>' % esc(objective) if objective else '', progress=progress,
         stats=''.join('<div class="stat"><span class="k">%s</span><b>%s</b></div>' % (esc(k), esc(v)) for k, v in stats),
         nav=''.join('<a href="#%s">%s</a>' % (anchor, esc(label)) for anchor, label in nav),
-        working=working_html, graph=graph_html, tasks=tasks_html, snapshot=snapshot_html, technical=technical, footer=footer,
+        working=working_html, graph=graph_html, tasks=tasks_html, architecture=map_html, snapshot=snapshot_html, technical=technical, footer=footer,
         island=island, ui_skip=esc(ui['skip']), ui_theme=esc(ui['theme']), ui_progress=esc(ui['progress']),
         ui_technical=esc(ui['technical']), ui_technical_note=esc(ui['technical_note']))
     try:

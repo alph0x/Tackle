@@ -91,5 +91,5 @@ STATUS: [status](references/guides/status.md). Explicit [audit](references/guide
 [migration](references/guides/migrate.md#schema-keyed-migration),
 [owner-controlled updates](references/guides/update.md).
 
-Explicit [plan view](references/guides/plan-view.md).
+Explicit [plan view](references/guides/plan-view.md) and [architecture map](references/guides/architecture-map.md).
 Owner texts and specifications: [controlled writing](references/guides/controlled-writing.md).

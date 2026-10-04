@@ -220,6 +220,8 @@ environment capabilities remain failed or unverifiable observations.
 All tasks passing is insufficient to close an initiative. For compound global checks, save the
 complete script before execution and include it in input fingerprints; a label describing an inline
 assertion cannot replace its code in the handoff.
+At closure, when the workspace has a map delta, offer to fold its `done` changes into the base, as the
+[architecture map guide](architecture-map.md#closure-fold) states, and fold only on the owner's yes.
 
 ## Release gating
 

@@ -1,0 +1,478 @@
+"""The shipped architecture-map recipe validates, applies, scopes and folds a map, and the plan view draws it.
+
+The test extracts the recipe from `references/recipes/architecture-map.md`, calls its functions on fixture
+maps, then runs the shipped plan-view recipe as a child process with `--map` over a throwaway repository
+laid out as `<root>/docs/plans/<name>`. Ids are built at run time. The interactive behavior (tabs, picture
+toggle, selection) is outside this oracle; the markup and data it needs are inside it.
+"""
+import ast
+import copy
+import json
+import re
+import subprocess
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+
+REPO = Path(__file__).resolve().parents[4]
+MAP_RECIPE = REPO / 'skills/tackle/references/recipes/architecture-map.md'
+VIEW_RECIPE = REPO / 'skills/tackle/references/recipes/plan-view.md'
+TEMPLATE = REPO / 'skills/tackle/references/plan-view.template.md'
+STATES = ('Draft, Ready to run, In progress, Checking, Complete, Blocked, Interrupted, Skipped, '
+          'Unverifiable, Waiting on owner')
+FORBIDDEN = {'socket', 'ssl', 'urllib', 'http', 'subprocess', 'requests', 'asyncio', 'webbrowser', 'multiprocessing'}
+PAYLOAD = '<img src=x onerror=alert(1)>'
+ATTR = 'x" onmouseover="alert(2)'
+
+
+def task_id(n):
+    return 'T-%02d' % n
+
+
+def req_id(n):
+    return 'R%02d' % n
+
+
+def fenced_source(path):
+    parts = path.read_text(encoding='utf-8').split('```python\n')
+    assert len(parts) == 2, 'the recipe must hold exactly one fenced python block'
+    return parts[1].split('\n```')[0] + '\n'
+
+
+def load_map_recipe():
+    source = fenced_source(MAP_RECIPE)
+    imported = set()
+    for node in ast.walk(ast.parse(source)):
+        if isinstance(node, ast.Import):
+            imported |= {a.name.split('.')[0] for a in node.names}
+        elif isinstance(node, ast.ImportFrom) and node.module:
+            imported.add(node.module.split('.')[0])
+    assert not imported & FORBIDDEN, 'the map recipe imports %s' % sorted(imported & FORBIDDEN)
+    namespace = {'__name__': 'map_recipe'}
+    exec(compile(source, str(MAP_RECIPE), 'exec'), namespace)
+    return namespace
+
+
+def base_map():
+    return {'schema': 'tackle-map/1', 'project': 'Demo', 'summary': 'A demo.',
+            'verified_at': {'revision': 'v1.0.0', 'commit': 'abc1234', 'date': '2026-10-01'},
+            'groups': [{'id': 'core', 'title': 'Core'}, {'id': 'tools', 'title': 'Tools'}],
+            'components': [
+                {'id': 'intake', 'group': 'core', 'title': 'Intake', 'text': 'Reads requests.', 'sources': ['src/intake.py']},
+                {'id': 'store', 'group': 'core', 'title': 'Store', 'text': 'Keeps records.', 'sources': ['src/store.py']},
+                {'id': 'report', 'group': 'tools', 'title': 'Report', 'text': 'Writes reports.',
+                 'sources': ['tools/report.py', 'tools/removed.py']},
+                {'id': 'lint', 'group': 'tools', 'title': 'Lint', 'text': 'Checks files.', 'sources': ['tools/lint.py']},
+                {'id': 'ship', 'group': 'tools', 'title': 'Ship', 'text': 'Publishes.', 'sources': ['tools/ship.py']}],
+            'relations': [['intake', 'store', 'calls'], ['store', 'report', 'feeds'], ['lint', 'ship', 'gates']]}
+
+
+def delta_of(extra_changes=()):
+    return {'schema': 'tackle-map-delta/1', 'plan': 'Demo two', 'base_revision': 'v1.0.0',
+            'changes': [
+                {'op': 'change', 'id': 'store', 'text': 'Keeps records, faster.', 'task': task_id(1), 'state': 'done'},
+                {'op': 'add', 'id': 'viewer', 'group': 'core', 'title': 'Viewer', 'text': 'Shows the map.',
+                 'task': task_id(2), 'state': 'planned', 'relations': [['intake', 'viewer', 'calls']]}] + list(extra_changes)}
+
+
+def invalid_deltas():
+    other = task_id(3)
+    cases = {
+        'change of an unknown component': {'op': 'change', 'id': 'ghost', 'text': 'x', 'task': other, 'state': 'planned'},
+        'add of an existing component': {'op': 'add', 'id': 'intake', 'group': 'core', 'title': 'Again', 'text': 'x', 'task': other, 'state': 'planned'},
+        'add into an unknown group': {'op': 'add', 'id': 'wander', 'group': 'nowhere', 'title': 'W', 'text': 'x', 'task': other, 'state': 'planned'},
+        'change into an unknown group': {'op': 'change', 'id': 'lint', 'group': 'nowhere', 'task': other, 'state': 'planned'},
+        'state outside the vocabulary': {'op': 'change', 'id': 'lint', 'text': 'x', 'task': other, 'state': 'maybe'},
+        'op outside the vocabulary': {'op': 'remove', 'id': 'ship', 'task': other, 'state': 'planned'},
+        'relation to a missing component': {'op': 'add', 'id': 'extra', 'group': 'core', 'title': 'E', 'text': 'x', 'task': other,
+                                            'state': 'planned', 'relations': [['extra', 'phantom', 'calls']]},
+    }
+    named = {'change of an unknown component': 'ghost', 'add of an existing component': 'intake',
+             'add into an unknown group': 'nowhere', 'change into an unknown group': 'nowhere',
+             'state outside the vocabulary': 'maybe', 'op outside the vocabulary': 'remove',
+             'relation to a missing component': 'phantom'}
+    return [(name, delta_of([change]), named[name]) for name, change in cases.items()]
+
+
+def ids_of(map_):
+    return sorted(c['id'] for c in map_['components'])
+
+
+def lay_out_sources(root, skip=('tools/removed.py',)):
+    for relative in ('src/intake.py', 'src/store.py', 'tools/report.py', 'tools/removed.py', 'tools/lint.py', 'tools/ship.py'):
+        if relative in skip:
+            continue
+        path = root / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text('x\n', encoding='utf-8')
+
+
+def workspace(root, delta, plan_text=None, running=False):
+    ws = root / 'docs/plans/demo'
+    (ws / 'tasks').mkdir(parents=True)
+    first, second = task_id(1), task_id(2)
+    (ws / 'task-board.md').write_text(
+        '# Board\n\nStates: %s.\n\n| Task | What | Brief | Depends on | Status | Verification |\n|---|---|---|---|---|---|\n'
+        '| %s | Speed up the store | `tasks/%s.md` | none | Complete | v |\n'
+        '| %s | Add the viewer | `tasks/%s.md` | %s | In progress | v |\n' % (STATES, first, first, second, second, first),
+        encoding='utf-8')
+    for task in (first, second):
+        (ws / 'tasks' / (task + '.md')).write_text('# Task\n\n- **Traces to**: %s\n' % req_id(1), encoding='utf-8')
+    (ws / 'plan.md').write_text(plan_text or '# Action plan — demo\n\nThe plan adds a viewer and speeds up the store.\n\n| `%s` | one | o |\n' % req_id(1),
+                                encoding='utf-8')
+    (ws / 'history.md').write_text('# History\n', encoding='utf-8')
+    if running:
+        (ws / 'resource-usage.md').write_text(
+            '# Usage\n\n| Run ID | Event | Task | Role | Harness | Tier | Model | Effort | At | Outcome | Attempts | Rework | Verification | Source |\n'
+            '|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n'
+            '| run/a | start | %s | executor | h | standard | m | n/a | 2026-10-03T10:00:00Z | o | n/a | n/a | n/a | s |\n' % second,
+            encoding='utf-8')
+    if delta is not None:
+        (ws / 'map-delta.json').write_text(json.dumps(delta), encoding='utf-8')
+    return ws
+
+
+def run_view(tmp, case, delta, base=None, extra=(), plan_text=None, running=False):
+    root = Path(tmp) / case
+    root.mkdir()
+    lay_out_sources(root)
+    ws = workspace(root, delta, plan_text, running)
+    script = root / 'view-recipe.py'
+    script.write_text(fenced_source(VIEW_RECIPE), encoding='utf-8')
+    arguments = []
+    if base is not None:
+        (root / 'base.json').write_text(json.dumps(base), encoding='utf-8')
+        arguments = ['--map', str(root / 'base.json')]
+    out = ws / 'plan-view.html'
+    result = subprocess.run([sys.executable, '-I', str(script), '--template', str(TEMPLATE)] + arguments + list(extra) + [str(ws), str(out)],
+                            cwd=root, capture_output=True, text=True, timeout=60)
+    page = out.read_text(encoding='utf-8') if out.exists() else ''
+    return result, page, out
+
+
+def island_of(page):
+    raw = re.search(r'<script type="application/json" id="plan-view-data">(.*?)</script>', page, re.S).group(1)
+    assert not re.search(r'[<>&]', raw), 'the island holds a raw <, > or &'
+    return json.loads(raw)
+
+
+def static_part(page):
+    return re.sub(r'<script\b.*?</script>', '', page, flags=re.S)
+
+
+class ArchitectureMapTests(unittest.TestCase):
+    def test_the_shipped_recipe_draws_and_folds_a_fixture_map(self):
+        m = load_map_recipe()
+        base, delta = base_map(), delta_of()
+        self.assertEqual(m['validate'](base, delta), [])
+        for name, bad, needle in invalid_deltas():
+            problems = m['validate'](base, bad)
+            self.assertTrue(problems, name)
+            self.assertTrue(any(needle in line for line in problems), '%s: %s' % (name, problems))
+            with self.assertRaises(ValueError, msg=name):
+                m['after'](base, bad)
+            with self.assertRaises(ValueError, msg=name):
+                m['fold'](base, bad, 'v2.0.0')
+        later = m['after'](base, delta)
+        self.assertEqual(ids_of(later), ['intake', 'lint', 'report', 'ship', 'store', 'viewer'])
+        self.assertEqual([c for c in later['components'] if c['id'] == 'store'][0]['text'], 'Keeps records, faster.')
+        self.assertIn(['intake', 'viewer', 'calls'], [list(r) for r in later['relations']])
+        self.assertEqual(sorted(m['neighbors'](later, {'viewer'})), ['intake', 'viewer'])
+        self.assertEqual(sorted(m['neighbors'](later, {'store'})), ['intake', 'report', 'store'])
+        with tempfile.TemporaryDirectory() as tmp:
+            lay_out_sources(Path(tmp))
+            self.assertEqual(m['stale'](base, Path(tmp)), ['report'])
+        folded = m['fold'](base, delta, 'v2.0.0')
+        self.assertEqual(ids_of(folded), ids_of(base))
+        self.assertEqual([c for c in folded['components'] if c['id'] == 'store'][0]['text'], 'Keeps records, faster.')
+        self.assertEqual(folded['verified_at']['revision'], 'v2.0.0')
+        self.assertEqual(sorted(map(list, folded['relations'])), sorted(map(list, base['relations'])))
+        # Done relations fold in; planned ones stay out; a done relation to a planned component is refused.
+        done_add = delta_of()
+        done_add['changes'][1]['state'] = 'done'
+        folded = m['fold'](base, done_add, 'v2.0.0')
+        self.assertIn('viewer', ids_of(folded))
+        self.assertIn(['intake', 'viewer', 'calls'], [list(r) for r in folded['relations']])
+        dangling = delta_of([{'op': 'change', 'id': 'lint', 'text': 'x', 'task': task_id(3), 'state': 'done',
+                              'relations': [['lint', 'viewer', 'reads']]}])
+        self.assertEqual(m['validate'](base, dangling), [])
+        with self.assertRaises(ValueError):
+            m['fold'](base, dangling, 'v2.0.0')
+        self.assertEqual(base, base_map())
+        self.assertEqual(delta, delta_of())
+
+    def test_the_view_draws_today_and_after_scopes_them_and_refuses_a_bad_delta(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            result, page, _ = run_view(tmp, 'full', delta_of(), base_map())
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            data = island_of(page)
+            self.assertEqual(data['map'], {'today': ['intake', 'lint', 'report', 'ship', 'store'],
+                                           'after': ['intake', 'lint', 'report', 'ship', 'store', 'viewer'],
+                                           'changed': ['store', 'viewer'], 'stale': ['report']})
+            static = static_part(page)
+            for needle in ('id="architecture"', 'data-pic="today"', 'data-pic="after"', 'role="tab"', 'Showing: the whole project'):
+                self.assertIn(needle, static)
+            added = re.search(r'<article[^>]*data-pic="after"[^>]*data-cid="viewer"[^>]*>|<article[^>]*data-cid="viewer"[^>]*data-pic="after"[^>]*>', static)
+            self.assertIsNotNone(added)
+            self.assertIn('data-change="add"', added.group(0))
+            stale = re.search(r'<article[^>]*data-cid="report"[^>]*>', static)
+            self.assertIn('data-stale="true"', stale.group(0))
+            self.assertIn(task_id(2), static)
+            result, page, _ = run_view(tmp, 'scoped', delta_of(), base_map(), ['--map-scope', 'changed'])
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertEqual(island_of(page)['map'], {'today': ['intake', 'report', 'store'],
+                                                      'after': ['intake', 'report', 'store', 'viewer'],
+                                                      'changed': ['store', 'viewer'], 'stale': ['report']})
+            self.assertNotIn('data-cid="lint"', static_part(page))
+            result, page, _ = run_view(tmp, 'nomap', delta_of())
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            data = island_of(page)
+            self.assertIn('map', data)
+            self.assertIsNone(data['map'])
+            self.assertIn('data-map="none"', static_part(page))
+            result, page, _ = run_view(tmp, 'plain', None)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertNotIn('id="architecture"', static_part(page))
+            self.assertIsNone(island_of(page)['map'])
+            for name, bad, needle in invalid_deltas():
+                result, page, out = run_view(tmp, 'bad-' + re.sub(r'\W+', '-', name), bad, base_map())
+                self.assertEqual(result.returncode, 1, name)
+                self.assertTrue(any(line.startswith('refused: ') and needle in line for line in result.stdout.splitlines()), name)
+                self.assertFalse(out.exists(), name)
+            result, page, out = run_view(tmp, 'missing-base', delta_of(), base_map(), ['--map', str(Path(tmp) / 'nowhere.json')])
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn('data-map="none"', static_part(page))
+            self.assertIn('No base map yet', static_part(page))
+            self.assertIsNone(island_of(page)['map'])
+            broken = Path(tmp) / 'broken'
+            broken.mkdir()
+            (broken / 'base.json').write_text('{not json', encoding='utf-8')
+            result, page, out = run_view(tmp, 'broken-base', delta_of(), None, ['--map', str(broken / 'base.json')])
+            self.assertEqual(result.returncode, 1)
+            self.assertFalse(out.exists())
+
+    def test_the_view_escapes_every_map_string(self):
+        base = base_map()
+        base['project'] = PAYLOAD
+        base['groups'][0]['title'] = PAYLOAD
+        base['components'][0].update(title=PAYLOAD, text='"><svg onload=alert(3)>', sources=['src/intake.py', ATTR])
+        base['relations'][0][2] = PAYLOAD
+        delta = delta_of()
+        delta['changes'][1].update(title='</script><script>alert(4)</script>', text=PAYLOAD)
+        with tempfile.TemporaryDirectory() as tmp:
+            result, page, _ = run_view(tmp, 'hostile', delta, base)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            island_of(page)
+            for needle in (PAYLOAD, '<svg onload', '</script><script>alert(4)', 'onmouseover="alert(2)"'):
+                self.assertNotIn(needle, page)
+
+    def test_the_spanish_page_names_live_work_en_marcha(self):
+        spanish = ('# Plan — Migración\n\nEl plan describe los pasos de la migración. Cada tarea tiene una verificación. '
+                   'La configuración queda lista después de la revisión.\n\n| `%s` | uno | o |\n' % req_id(1))
+        with tempfile.TemporaryDirectory() as tmp:
+            result, page, _ = run_view(tmp, 'es', None, plan_text=spanish, running=True)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            static = static_part(page)
+            self.assertIn('<span class="live">En marcha</span>', static)
+            self.assertNotIn('<span class="live">En curso</span>', static)
+            self.assertIn('En curso', re.sub(r'<[^>]*>', ' ', static))
+            result, page, _ = run_view(tmp, 'en', None, running=True)
+            self.assertIn('<span class="live">Live</span>', static_part(page))
+
+
+def wide_base():
+    """Five groups of four components with relations that skip columns, loop inside a column and fan in."""
+    groups = ['alpha', 'beta', 'gamma', 'delta', 'omega']
+    names = ['%s-%s' % (g, k) for g in groups for k in ('north', 'south', 'east', 'west')]
+    relations, seen = [], set()
+    for i, source in enumerate(names):
+        for target in (names[(i * 3 + 5) % len(names)], names[(i + 7) % len(names)], names[(i * 2 + 1) % len(names)], names[(i + 1) % len(names)]):
+            if target != source and (source, target) not in seen:
+                seen.add((source, target))
+                relations.append([source, target, 'uses %s' % target])
+    return {'schema': 'tackle-map/1', 'project': 'Wide', 'summary': 'Wide.',
+            'verified_at': {'revision': 'v1.0.0', 'commit': 'abc1234', 'date': '2026-10-01'},
+            'groups': [{'id': g, 'title': g.title()} for g in groups],
+            'components': [{'id': n, 'group': n.split('-')[0], 'title': n, 'text': 't', 'sources': ['src/' + n]} for n in names],
+            'relations': relations}
+
+
+def wide_delta():
+    return {'schema': 'tackle-map-delta/1', 'plan': 'Wide two', 'base_revision': 'v1.0.0',
+            'changes': [{'op': 'add', 'id': 'alpha-extra', 'group': 'alpha', 'title': 'Extra', 'text': 'x', 'task': task_id(1), 'state': 'planned',
+                         'relations': [['alpha-extra', 'omega-west', 'feeds'], ['delta-north', 'alpha-extra', 'reads']]},
+                        {'op': 'change', 'id': 'gamma-east', 'text': 'changed', 'task': task_id(2), 'state': 'done'}]}
+
+
+def diagram_of(page, pic):
+    block = re.search(r'<div class="arch-pic" data-pic="%s">(.*?)(?=<div class="arch-pic"|</section>)' % pic, static_part(page), re.S).group(1)
+    svg = re.search(r'<svg.*?</svg>', block, re.S).group(0)
+    nodes = {}
+    for match in re.finditer(r'<g class="anode" [^>]*?data-cid="([^"]*)".*?<rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)"', svg, re.S):
+        nodes[match.group(1)] = tuple(float(v) for v in match.groups()[1:])
+    edges = []
+    for match in re.finditer(r'<path class="aedge[^"]*" data-from="([^"]*)" data-to="([^"]*)" d="([^"]*)"', svg):
+        numbers = [float(v) for v in re.findall(r'-?\d+(?:\.\d+)?', match.group(3))]
+        edges.append((match.group(1), match.group(2), list(zip(numbers[0::2], numbers[1::2]))))
+    labels = re.findall(r'<text class="aelabel[^"]*" data-from="([^"]*)" data-to="([^"]*)"[^>]*>([^<]*)</text>', svg)
+    return nodes, edges, labels
+
+
+def dense_base():
+    """A wide map where one hub joins a dozen components in both directions."""
+    base = wide_base()
+    hub = 'alpha-north'
+    others = [c['id'] for c in base['components'] if c['id'] != hub]
+    have = {(a, b) for a, b, _ in base['relations']}
+    for n, other in enumerate(others[:14]):
+        pair = (hub, other) if n % 4 else (other, hub)
+        if pair not in have:
+            have.add(pair)
+            base['relations'].append([pair[0], pair[1], 'joins'])
+    return base
+
+
+def shared_lines(edges):
+    """Pairs of arrows that run along one horizontal or vertical line for more than a pixel."""
+    pieces = []
+    for source, target, points in edges:
+        for start, end in zip(points, points[1:]):
+            pieces.append(((source, target), start, end))
+    found = []
+    for n, (one, a1, a2) in enumerate(pieces):
+        for other, b1, b2 in pieces[n + 1:]:
+            if one == other:
+                continue
+            for axis, across in ((1, 0), (0, 1)):
+                if a1[axis] == a2[axis] == b1[axis] == b2[axis]:
+                    low = max(min(a1[across], a2[across]), min(b1[across], b2[across]))
+                    high = min(max(a1[across], a2[across]), max(b1[across], b2[across]))
+                    if high - low > 1:
+                        found.append((one, other))
+    return found
+
+
+def segment_enters(a, b, rect):
+    left, top, width, height = rect
+    low_x, high_x = sorted((a[0], b[0]))
+    low_y, high_y = sorted((a[1], b[1]))
+    return low_x < left + width and high_x > left and low_y < top + height and high_y > top
+
+
+class ArchitectureDiagramTests(unittest.TestCase):
+    def test_diagram_arrows_clear_every_component_and_never_share_an_arrowhead(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            result, page, _ = run_view(tmp, 'wide', wide_delta(), wide_base())
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            for pic, expected in (('today', len(wide_base()['relations'])), ('after', len(wide_base()['relations']) + 2)):
+                nodes, edges, labels = diagram_of(page, pic)
+                self.assertEqual(len(edges), expected, pic)
+                crossings = []
+                for source, target, points in edges:
+                    self.assertIn(source, nodes)
+                    self.assertIn(target, nodes)
+                    for start, end in zip(points, points[1:]):
+                        self.assertTrue(start[0] == end[0] or start[1] == end[1], 'a slanted segment in %s -> %s' % (source, target))
+                        crossings += [(source, target, name) for name, rect in nodes.items() if segment_enters(start, end, rect)]
+                self.assertEqual(crossings, [], pic)
+                ends = [points[-1] for _, _, points in edges]
+                self.assertEqual(len(ends), len(set(ends)), 'two arrowheads share a point in ' + pic)
+                starts = [points[0] for _, _, points in edges]
+                self.assertEqual(len(starts), len(set(starts)), 'two arrows leave one point in ' + pic)
+                self.assertEqual(sorted((a, b) for a, b, _ in edges), sorted((a, b) for a, b, _ in labels), pic)
+                self.assertEqual(shared_lines(edges), [], 'two arrows run along one line in ' + pic)
+            result, page, _ = run_view(tmp, 'dense', None, dense_base())
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            nodes, edges, _ = diagram_of(page, 'today')
+            self.assertGreater(len(edges), len(wide_base()['relations']))
+            self.assertEqual(shared_lines(edges), [], 'dense')
+            self.assertEqual([(s, t, n) for s, t, pts in edges for a, b in zip(pts, pts[1:]) for n, r in nodes.items() if segment_enters(a, b, r)], [])
+            ends = [pts[-1] for _, _, pts in edges]
+            self.assertEqual(len(ends), len(set(ends)))
+
+
+class ArchitectureFindingsTests(unittest.TestCase):
+    def test_a_source_glob_is_stale_only_when_it_matches_nothing(self):
+        m = load_map_recipe()
+        base = base_map()
+        base['components'][0]['sources'] = ['src/*.py']
+        base['components'][1]['sources'] = ['nothing/*.py']
+        base['components'][3]['sources'] = ['tools/**/*.py', '../outside.py']
+        with tempfile.TemporaryDirectory() as tmp:
+            lay_out_sources(Path(tmp))
+            self.assertEqual(m['stale'](base, Path(tmp)), ['lint', 'report', 'store'])
+
+    def test_bad_field_types_are_refused_with_the_field_named(self):
+        m = load_map_recipe()
+        cases = []
+        broken = base_map()
+        broken['verified_at'] = 'v1'
+        cases.append(('verified_at', broken, delta_of()))
+        broken = base_map()
+        del broken['components'][0]['title']
+        cases.append(('title', broken, delta_of()))
+        broken = base_map()
+        broken['components'][0]['sources'] = 'src/intake.py'
+        cases.append(('sources', broken, delta_of()))
+        later = delta_of()
+        later['changes'][0]['title'] = 5
+        cases.append(('title', base_map(), later))
+        later = delta_of()
+        later['changes'][0]['title'] = ''
+        cases.append(('title', base_map(), later))
+        later = delta_of()
+        later['changes'][1]['sources'] = [4]
+        cases.append(('sources', base_map(), later))
+        later = delta_of()
+        later['changes'][0]['text'] = {'a': 1}
+        cases.append(('text', base_map(), later))
+        broken = base_map()
+        broken['groups'][0]['title'] = None
+        cases.append(('title', broken, delta_of()))
+        later = delta_of()
+        later['changes'][0]['task'] = 7
+        cases.append(('task', base_map(), later))
+        later = delta_of()
+        later['changes'][0]['task'] = ['T']
+        cases.append(('task', base_map(), later))
+        broken = base_map()
+        broken['components'][0]['id'] = 5
+        cases.append(('id', broken, delta_of()))
+        broken = base_map()
+        broken['groups'][0]['id'] = ['core']
+        cases.append(('id', broken, delta_of()))
+        broken = base_map()
+        broken['components'][0]['sources'] = ['src/**x/*.py']
+        cases.append(('sources', broken, delta_of()))
+        with tempfile.TemporaryDirectory() as tmp:
+            for index, (field, base, delta) in enumerate(cases):
+                problems = m['validate'](base, delta)
+                self.assertTrue(any(field in line for line in problems), (index, problems))
+                result, page, out = run_view(tmp, 'types-%d' % index, delta, base)
+                self.assertEqual(result.returncode, 1, (index, result.stdout))
+                self.assertTrue(any(line.startswith('refused: ') and field in line for line in result.stdout.splitlines()), (index, result.stdout))
+                self.assertNotIn('Traceback', result.stderr)
+                self.assertFalse(out.exists())
+
+    def test_an_empty_change_set_shows_one_sentence_when_only_the_changes_are_asked_for(self):
+        empty = {'schema': 'tackle-map-delta/1', 'plan': 'Empty', 'base_revision': 'v1.0.0', 'changes': []}
+        with tempfile.TemporaryDirectory() as tmp:
+            result, page, _ = run_view(tmp, 'empty', empty, base_map(), ['--map-scope', 'changed'])
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            static = static_part(page)
+            self.assertIn('This plan changes nothing in the map.', static)
+            self.assertNotIn('class="arch-pic"', static)
+            self.assertEqual(island_of(page)['map'], {'today': [], 'after': [], 'changed': [], 'stale': []})
+            result, page, _ = run_view(tmp, 'empty-all', empty, base_map())
+            self.assertIn('data-pic="today"', static_part(page))
+
+    def test_the_tab_lists_answer_the_arrow_keys(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            result, page, _ = run_view(tmp, 'keys', delta_of(), base_map())
+            for key in ('ArrowRight', 'ArrowLeft', 'Home', 'End'):
+                self.assertIn(key, page)
+
+
+if __name__ == '__main__':
+    unittest.main()
