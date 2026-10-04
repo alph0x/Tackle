@@ -90,7 +90,10 @@ records only into `behavior/harness/jev-thresholds/`, which is committed before 
 edited; `score` refuses a held-out cohort whose manifest commit does not descend from that commit. The key is read
 at call time from the file or variable named in a local configuration, stays out of every record, and the spend is
 capped there. Text shared with the variant's input or answer sheet (six words or more) is removed before a call.
-The model-free suite is `test_jev_signal.py`. The
+What the signal means: the cause threshold measures how well fell separates from avoided, not whether the cause is
+right. The cause label matched the T-04 diagnosis in 0 of 4 falls and is not validated. A review flag near the cut is
+likely noise, because the same input moved by about 0.1 in confidence between two calls. The client refuses every
+redirect. The model-free suite is `test_jev_signal.py`. The
 manual A/B workflow and its scoring rubric are the suite mode of the shipped
 [judge guide](../skills/tackle/references/guides/judge.md). One seed per scenario is a smoke test, not a benchmark, and
 a null is as informative as a win.

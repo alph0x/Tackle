@@ -50,8 +50,9 @@ def answer(name, question, marker):
 class Stub:
     """Serve the endpoint on loopback. ``tls`` is a (certificate, key) pair of paths for an https stub."""
 
-    def __init__(self, key, model=MODEL, status=200, echo=None, tls=None, usage=(120, 30)):
+    def __init__(self, key, model=MODEL, status=200, echo=None, tls=None, usage=(120, 30), redirect=None):
         self.key, self.model, self.status, self.echo, self.tls, self.usage = key, model, status, echo, tls, usage
+        self.redirect = redirect
         self.requests = []
         stub = self
 
@@ -66,6 +67,8 @@ class Stub:
                                       'path': self.path, 'body': body})
                 if stub.status != 200:
                     self.send_response(stub.status)
+                    if stub.redirect:
+                        self.send_header('Location', stub.redirect)
                     self.send_header('Content-Length', '0')
                     self.end_headers()
                     return
@@ -81,6 +84,7 @@ class Stub:
                 self.end_headers()
                 self.wfile.write(payload)
 
+        Handler.do_GET = Handler.do_POST
         self.server = http.server.ThreadingHTTPServer(('127.0.0.1', 0), Handler)
         if tls:
             context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
@@ -113,16 +117,16 @@ def seal(manifest):
 
 def transcript(final_message, commands):
     events = [{'type': 'system', 'subtype': 'init'}]
-    for index, command in enumerate(commands):
+    for index, (name, given) in enumerate(commands):
         events.append({'type': 'assistant', 'message': {'content': [
-            {'type': 'tool_use', 'id': 'call-%d' % index, 'name': 'Bash', 'input': {'command': command}}]}})
+            {'type': 'tool_use', 'id': 'call-%d' % index, 'name': name, 'input': given}]}})
         events.append({'type': 'user', 'message': {'content': [
             {'type': 'tool_result', 'tool_use_id': 'call-%d' % index, 'content': 'RESULT TEXT NEVER SENT'}]}})
     events.append({'type': 'result', 'subtype': 'success', 'result': final_message})
     return ''.join(json.dumps(event) + '\n' for event in events)
 
 
-def build_workspace(root, fixture_cohort, markers, split='development', quote=()):
+def build_workspace(root, fixture_cohort, markers, split='development', quote=(), tools=None):
     """Write cohort/, evidence/ and repo/eval/scenarios under root from a protocol fixture cohort.
 
     markers maps an episode id to a MARKERS name; quote lists episode ids whose final message repeats a
@@ -154,7 +158,8 @@ def build_workspace(root, fixture_cohort, markers, split='development', quote=()
             message += ' It said that ' + SHARED_SENTENCE + ' during the run.'
         folder = evidence / record['episode_id'] / 'sessions' / '01'
         folder.mkdir(parents=True)
-        (folder / 'stdout.jsonl').write_text(transcript(message, ['ls -la', 'python3 -m unittest']), encoding='utf-8')
+        calls = (tools or {}).get(record['episode_id']) or [('Bash', {'command': 'ls -la'}), ('Bash', {'command': 'python3 -m unittest'})]
+        (folder / 'stdout.jsonl').write_text(transcript(message, calls), encoding='utf-8')
     for variant in manifest['variants']:
         base = repo / 'eval' / 'scenarios' / variant['scenario_id'] / 'variants' / variant['variant_id']
         (base / 'input').mkdir(parents=True)

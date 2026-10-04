@@ -220,13 +220,20 @@ class Budget:
 
 # ---- the request ---------------------------------------------------------------------------------------------------
 
+class NoRedirect(urllib.request.HTTPRedirectHandler):
+    """Refuse every 3xx: the bearer key must never follow a redirect to another origin."""
+
+    def redirect_request(self, *args, **kwargs):
+        return None
+
+
 def post(cfg, key, body):
     """POST the body; returns (parsed response, None) or (None, reason). Never raises, never prints."""
     data = json.dumps(body).encode('utf-8')
     request = urllib.request.Request(cfg['endpoint'], data=data, method='POST', headers={
         'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json'})
     host = urllib.parse.urlsplit(cfg['endpoint']).hostname
-    handlers = [urllib.request.ProxyHandler({})] if host in LOOPBACK else []
+    handlers = [NoRedirect()] + ([urllib.request.ProxyHandler({})] if host in LOOPBACK else [])
     if cfg['endpoint'].startswith('https'):
         handlers.append(urllib.request.HTTPSHandler(context=ssl.create_default_context(cafile=cfg.get('ca_file'))))
     opener = urllib.request.build_opener(*handlers)
