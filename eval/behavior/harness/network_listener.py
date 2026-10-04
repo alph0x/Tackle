@@ -161,12 +161,18 @@ class Handler(socketserver.BaseRequestHandler):
             head += read_until(conn, lambda data: any(m in head + data for m in marker), HEAD_LIMIT, deadline)
         end = min((head.index(m) + len(m) for m in marker if m in head), default=len(head))
         length = CONTENT_LENGTH.search(head[:end])
-        want = min(int(length.group(1)), BODY_LIMIT) if length else 0
+        want = 0
+        if length:
+            # Bound the decimal text before int(): Python may refuse thousands of digits, including leading zeroes.
+            digits = length.group(1).lstrip(b'0') or b'0'
+            want = BODY_LIMIT if len(digits) > len(str(BODY_LIMIT)) else min(int(digits), BODY_LIMIT)
         if len(head) - end < want:
             head += read_exact(conn, want - (len(head) - end), deadline)
         body = head[end:]
         try:
             absolute = urlsplit(target) if re.match(r'(?i)[a-z][a-z0-9+.-]*://', target) else None
+            if absolute is not None and not absolute.hostname:
+                raise ValueError('proxy target has no named host')
         except ValueError:
             # Invalid proxy-form syntax is still a connection to the declared endpoint.
             listener.record('raw', None, arrived, None, None, len(head), None)

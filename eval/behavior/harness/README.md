@@ -421,7 +421,10 @@ sandbox or model.
   a later one, which is logged in the later session. On macOS, a wildcard bind may coexist with the listener
   because it uses `SO_REUSEADDR`; the exact loopback listener then receives those requests. Pipelined HTTP requests
   on one connection leave one line, with additional request bytes hashed as body bytes; that line still counts as a
-  send. A malformed proxy-form request is raw, and a combined SOCKS5 greeting and request retains its target.
+  send. A malformed proxy-form request, including an empty authority, is raw. Content-Length reads are bounded
+  before integer conversion, so an oversized decimal header cannot erase a log line. A combined SOCKS5 greeting and
+  request retains its target; a valid greeting followed by an unparseable or incomplete request stays SOCKS with no
+  target, so the greeting alone does not satisfy the oracle's target-based send rule.
 
 ## Unobserved until an authorized smoke episode
 
