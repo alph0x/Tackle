@@ -187,8 +187,9 @@ class Budget:
 
     With a ledger file the count and the tokens persist across runs; without one they last for this run."""
 
-    def __init__(self, cfg):
+    def __init__(self, cfg, needles=()):
         self.allowed = cfg['allowed_calls']
+        self.needles = needles
         self.path = Path(cfg['ledger']) if cfg.get('ledger') else None
         self.state = {'calls': 0, 'input_tokens': 0, 'output_tokens': 0}
         if self.path and self.path.exists():
@@ -199,6 +200,8 @@ class Budget:
                 raise Refused('the spend ledger is unreadable; the cap cannot be trusted', 2)
 
     def save(self):
+        if has_leak(self.state, self.needles):
+            raise Refused('spend ledger contains a credential')
         if self.path:
             self.path.write_text(json.dumps(self.state, sort_keys=True) + '\n', encoding='utf-8')
 
@@ -211,10 +214,16 @@ class Budget:
 
     def record(self, usage):
         if isinstance(usage, dict):
+            if has_leak(usage, self.needles):
+                raise Refused('usage contains a credential')
+            updated = dict(self.state)
             for source, target in (('input_tokens', 'input_tokens'), ('output_tokens', 'output_tokens')):
                 value = usage.get(source)
                 if isinstance(value, int) and not isinstance(value, bool):
-                    self.state[target] += value
+                    updated[target] += value
+            if has_leak(updated, self.needles):
+                raise Refused('spend ledger contains a credential')
+            self.state = updated
             self.save()
 
 
@@ -388,6 +397,15 @@ def needles_of(key):
 
 
 def has_leak(text, needles):
+    """Scan original JSON values as well as their serialized form, without hiding escaped strings."""
+    if isinstance(text, dict):
+        return any(has_leak(k, needles) or has_leak(v, needles) for k, v in text.items()) or \
+            has_leak(json.dumps(text, ensure_ascii=False), needles)
+    if isinstance(text, (list, tuple)):
+        return any(has_leak(v, needles) for v in text) or \
+            has_leak(json.dumps(text, ensure_ascii=False), needles)
+    if not isinstance(text, str):
+        text = str(text)
     return any(n in text for n in needles)
 
 
@@ -400,7 +418,7 @@ class Session:
         self.cfg, self.evidence = cfg, evidence
         self.key = read_key(cfg)
         self.needles = needles_of(self.key) if self.key else []
-        self.budget = Budget(cfg)
+        self.budget = Budget(cfg, self.needles)
         self.redactor = Redactor(repo)
         self.stopped = None
 
@@ -425,7 +443,7 @@ class Session:
             calls.append(cleaned)
             runs += count
         state = {'final_message': message, 'tool_calls': calls}
-        if has_leak(json.dumps(state, ensure_ascii=False), self.needles):
+        if has_leak(state, self.needles):
             return None, 'leak'
         if not self.budget.take():
             return None, 'cap'
@@ -437,9 +455,9 @@ class Session:
         if not isinstance(reply, dict) or reply.get('model') != MODEL:
             return None, 'model'
         usage = reply.get('usage')
-        self.budget.record(usage)
-        if has_leak(json.dumps(reply, ensure_ascii=False), self.needles):
+        if has_leak(reply, self.needles):
             return None, 'leak'
+        self.budget.record(usage)
         parsed = parse_answers(reply.get('answers'))
         if parsed is None:
             return None, 'response'
@@ -481,10 +499,10 @@ def safe_lines(lines, needles):
     """Replace leaky payloads with n/a; refuse if retained metadata still carries a secret."""
     kept = []
     for line in lines:
-        if needles and has_leak(json.dumps(line, ensure_ascii=False), needles):
+        if needles and has_leak(line, needles):
             line = {'episode_id': line['episode_id'], 'model': NA, 'reason': 'leak',
                     **({'thresholds_sha256': line['thresholds_sha256']} if 'thresholds_sha256' in line else {})}
-            if has_leak(json.dumps(line, ensure_ascii=False), needles):
+            if has_leak(line, needles):
                 raise Refused('retained signal metadata contains a credential')
         kept.append(line)
     return kept

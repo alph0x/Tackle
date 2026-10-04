@@ -492,39 +492,98 @@ class Containment(Base):
         self.assertEqual(kept[1], lines[1])
         # Metadata survives the fallback, so a secret there must refuse the entire batch.
         # Exercise each writer with a clean earlier line: refusal must precede all output.
-        for encoding in module.needles_of(self.key):
-            for field in ('episode_id', 'thresholds_sha256'):
-                unsafe = dict(lines[1], **{field: 'prefix-' + encoding})
-                refused = False
-                try:
-                    module.safe_lines([lines[1], unsafe], module.needles_of(self.key))
-                except module.Refused as error:
-                    refused = not module.has_leak(str(error), module.needles_of(self.key))
-                self.assertTrue(refused, 'unsafe fallback metadata must refuse without echoing it')
-            for command in ('score', 'calibrate'):
-                records = [{'episode_id': 'clean', 'split': 'development'},
-                           {'episode_id': 'prefix-' + encoding, 'split': 'development'}]
-                output = self.tmp / 'refused-output.jsonl'
-                scores = self.tmp / 'refused-scores.jsonl'
-                session = SimpleNamespace(needles=module.needles_of(self.key),
-                                          judge=lambda record: (None, 'leak'),
-                                          budget=SimpleNamespace(state={'calls': 0}))
-                args = [command, '--config', 'unused', '--cohort', 'unused', '--evidence', 'unused',
-                        '--out', str(output)]
-                if command == 'score':
-                    args += ['--thresholds', str(self.fake_thresholds())]
+        for key in (self.key, 'synthetic-' + chr(34) + '-key', 'synthetic-' + chr(92) + '-key',
+                    'synthetic-' + chr(10) + '-key'):
+            with self.subTest(domain=key is self.key):
+                for encoding in module.needles_of(key):
+                    fallback = module.safe_lines([dict(lines[1], note=encoding), lines[1]],
+                                                 module.needles_of(key))
+                    self.assertTrue(fallback[0] == {'episode_id': 'b', 'model': 'n/a', 'reason': 'leak',
+                                                   'thresholds_sha256': 'f' * 64})
+                    self.assertTrue(fallback[1] == lines[1])
+                    for field in ('episode_id', 'thresholds_sha256'):
+                        unsafe = dict(lines[1], **{field: 'prefix-' + encoding})
+                        refused = False
+                        try:
+                            module.safe_lines([lines[1], unsafe], module.needles_of(key))
+                        except module.Refused as error:
+                            refused = not module.has_leak(str(error), module.needles_of(key))
+                        self.assertTrue(refused, 'unsafe fallback metadata must refuse without echoing it')
+                    for command in ('score', 'calibrate'):
+                        records = [{'episode_id': 'clean', 'split': 'development'},
+                                   {'episode_id': 'prefix-' + encoding, 'split': 'development'}]
+                        output = self.tmp / 'refused-output.jsonl'
+                        scores = self.tmp / 'refused-scores.jsonl'
+                        session = SimpleNamespace(needles=module.needles_of(key),
+                                                  judge=lambda record: (None, 'leak'),
+                                                  budget=SimpleNamespace(state={'calls': 0}))
+                        args = [command, '--config', 'unused', '--cohort', 'unused', '--evidence', 'unused',
+                                '--out', str(output)]
+                        if command == 'score':
+                            args += ['--thresholds', str(self.fake_thresholds())]
+                        else:
+                            args += ['--diagnosis', str(self.verdict), '--scores-out', str(scores)]
+                        stdout = io.StringIO()
+                        with patch.object(module, 'load_cohort', return_value=(
+                                {'variants': [{'split': 'development'}]}, records)), \
+                                patch.object(module, 'load_config', return_value={}), \
+                                patch.object(module, 'Session', return_value=session), \
+                                contextlib.redirect_stdout(stdout):
+                            code = module.main(args)
+                        self.assertTrue(code != 0, 'unsafe identifiers must refuse at the CLI consumer')
+                        self.assertFalse(output.exists() or scores.exists(), 'refusal must retain no output')
+                        self.assertFalse(module.has_leak(stdout.getvalue(), module.needles_of(key)))
+
+        # Use the real accounting writer with a memory sink, and no transport or transcript.
+        key = ''.join(str(i % 9 + 1) for i in range(32))
+        needles = module.needles_of(key)
+        answer = {'probabilities': {'0': 0.1, '1': 0.2, '2': 0.7}, 'confidence': 0.7}
+        for value, leaky in ((int(key.encode().hex()), True), (120, False)):
+            with self.subTest(usage_leaky=leaky):
+                writes = []
+                cfg = {'allowed_calls': 1, 'ledger': None}
+                with patch.object(module, 'read_key', return_value=key):
+                    session = module.Session(cfg, None, self.tmp)
+                session.budget.path = self.tmp / 'memory-ledger'
+                session.redactor = SimpleNamespace(grams=lambda *args: set())
+                reply = {'model': module.MODEL, 'usage': {'input_tokens': value, 'output_tokens': 10},
+                         'answers': {**{d: dict(answer) for d in module.DIMENSIONS},
+                                     'failure_cause': {'choice': 'none', 'confidence': 0.9}}}
+                def sink(path, data, **kwargs):
+                    writes.append(data)
+                    return len(data)
+                with patch.object(module, 'participant_output', return_value=('A clean report.', [])), \
+                        patch.object(module, 'post', return_value=(reply, None)), \
+                        patch.object(Path, 'write_text', sink):
+                    data, reason = session.judge({'episode_id': 'clean', 'outcome': 'avoided'})
+                self.assertFalse(any(module.has_leak(w, needles) for w in writes),
+                                 'response usage must be scanned before a ledger write')
+                self.assertEqual(session.budget.state['calls'], 1)
+                if leaky:
+                    self.assertEqual(reason, 'leak')
+                    self.assertIsNone(data)
+                    self.assertEqual(session.budget.state['input_tokens'], 0)
                 else:
-                    args += ['--diagnosis', str(self.verdict), '--scores-out', str(scores)]
-                stdout = io.StringIO()
-                with patch.object(module, 'load_cohort', return_value=(
-                        {'variants': [{'split': 'development'}]}, records)), \
-                        patch.object(module, 'load_config', return_value={}), \
-                        patch.object(module, 'Session', return_value=session), \
-                        contextlib.redirect_stdout(stdout):
-                    code = module.main(args)
-                self.assertTrue(code != 0, 'unsafe identifiers must refuse at the CLI consumer')
-                self.assertFalse(output.exists() or scores.exists(), 'refusal must retain no output')
-                self.assertFalse(module.has_leak(stdout.getvalue(), module.needles_of(self.key)))
+                    self.assertIsNone(reason)
+                    self.assertTrue(data is not None)
+                    self.assertEqual(session.budget.state['input_tokens'], 120)
+                    self.assertEqual(session.budget.state['output_tokens'], 10)
+                    self.assertEqual(len(writes), 2)
+        # Even clean individual usages can add up to a sensitive encoding.
+        with patch.object(module, 'read_key', return_value=key):
+            session = module.Session({'allowed_calls': 2, 'ledger': None}, None, self.tmp)
+        session.budget.path = self.tmp / 'memory-ledger'
+        session.budget.state['input_tokens'] = int(key.encode().hex()) - 1
+        writes = []
+        with patch.object(Path, 'write_text', sink):
+            refused = False
+            try:
+                session.budget.record({'input_tokens': 1})
+            except module.Refused:
+                refused = True
+        self.assertTrue(refused, 'the ledger sink must scan accumulated state before keeping it')
+        self.assertFalse(writes)
+
 
 
 class Boundaries(Base):
