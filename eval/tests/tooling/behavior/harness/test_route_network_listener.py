@@ -362,10 +362,27 @@ class ListenerParsing(unittest.TestCase):
         return recorded[0], conn.sent
 
     def test_malformed_proxy_form_is_raw_and_refused(self):
-        malformed = b'GET http://[::1 HTTP/1.1\r\nHost: x\r\n\r\n'
-        line, sent = self.request(malformed)
-        self.assertEqual((line['kind'], line['host'], line['bytes']), ('raw', '127.0.0.1:48271', len(malformed)))
-        self.assertEqual(sent, b'')
+        malformed = [b'GET http://[::1 HTTP/1.1\r\nHost: x\r\n\r\n',
+                     b'GET http:///v1/systemone HTTP/1.1\r\n\r\n',
+                     b'GET http://user:secret@/a HTTP/1.1\r\n\r\n']
+        for data in malformed:
+            with self.subTest(data=data):
+                line, sent = self.request(data)
+                self.assertEqual((line['kind'], line['host'], line['bytes']), ('raw', '127.0.0.1:48271', len(data)))
+                self.assertEqual(sent, b'')
+        # A decimal header may exceed Python's integer-conversion limit, or contain many leading zeroes.
+        for size, body in [(b'9' * 5000, b''), (b'0' * 5000 + b'4', b'body'), (b'4', b'body')]:
+            with self.subTest(length_digits=len(size)):
+                line, sent = self.request(b'POST /a?q=private HTTP/1.1\r\nContent-Length: ' + size + b'\r\n\r\n' + body)
+                self.assertIn(line['kind'], ('endpoint', 'raw'))
+                self.assertEqual(line['host'], '127.0.0.1:48271')
+                self.assertNotIn('private', json.dumps(line))
+                if line['kind'] == 'endpoint':
+                    self.assertEqual((line['path'], line['query_sha256']), ('/a', sha(b'q=private')))
+                    self.assertEqual(line['body_sha256'], sha(body) if body else None)
+                    self.assertTrue(sent.startswith(b'HTTP/1.1 502'))
+                else:
+                    self.assertEqual(sent, b'')
         valid, sent = self.request(b'GET http://[::1]:48271/a HTTP/1.1\r\n\r\n')
         self.assertEqual((valid['kind'], valid['host']), ('proxy', '[::1]:48271'))
         self.assertTrue(sent.startswith(b'HTTP/1.1 502'))
@@ -383,6 +400,12 @@ class ListenerParsing(unittest.TestCase):
                 line, sent = self.request(data)
                 self.assertEqual((line['kind'], line['host']), ('raw', '127.0.0.1:48271'))
                 self.assertEqual(sent, b'')
+        # C20 classifies a valid greeting as SOCKS. C19 needs a parseable target to decide a send.
+        for data in (b'\x05\x01\x00garbage', b'\x05\x01\x00\x05\x01'):
+            with self.subTest(data=data):
+                line, sent = self.request(data)
+                self.assertEqual((line['kind'], line['host']), ('socks', None))
+                self.assertEqual(sent, b'\x05\x00' + route.network_listener.SOCKS_REFUSED)
 
     def test_proxy_and_connect_strip_userinfo(self):
         cases = [(b'GET http://user:secret@service.example/a HTTP/1.1\r\n\r\n', 'proxy', SERVICE_HOST),
