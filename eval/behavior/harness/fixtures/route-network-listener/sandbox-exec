@@ -1,0 +1,52 @@
+#!/usr/bin/env python3
+"""Fake platform sandbox launcher, used only by the route network-listener suite.
+
+It logs the profile it was given, the command and the environment names it received, then runs the command
+unconfined. ``launcher-mode.txt`` beside this file can make it refuse (``fail``) the way a launcher that
+cannot apply its profile does. Nothing here enforces a profile: the suite checks what the route asks for.
+"""
+import hashlib
+import json
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+args = sys.argv[1:]
+profile = None
+if args[:1] == ['-p']:
+    profile, args = args[1], args[2:]
+elif args[:1] == ['-f']:
+    profile, args = Path(args[1]).read_text(), args[2:]
+mode_file = HERE / 'launcher-mode.txt'
+mode = mode_file.read_text().strip() if mode_file.exists() else 'ok'
+
+
+def value_of(flag):
+    return args[args.index(flag) + 1] if flag in args and args.index(flag) + 1 < len(args) else None
+
+
+def files_under(root):
+    return sorted(p.relative_to(root).as_posix() for p in Path(root).rglob('*') if p.is_file()) if root else []
+
+
+def tree_digest(root):
+    mapping = {name: hashlib.sha256((Path(root) / name).read_bytes()).hexdigest() for name in files_under(root)}
+    return hashlib.sha256(json.dumps(mapping, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+
+
+final, transcript = value_of('--final'), value_of('--transcript')
+with open(HERE / 'launcher.log', 'a') as handle:
+    handle.write(json.dumps({
+        'profile': profile, 'argv': args, 'cwd': os.getcwd(), 'env_names': sorted(os.environ),
+        'env': {key: os.environ.get(key) for key in ('PATH', 'HOME', 'TMPDIR', 'LANG')},
+        'final_digest': tree_digest(final) if final and Path(final).is_dir() else None,
+        'transcript_sha256': hashlib.sha256(Path(transcript).read_bytes()).hexdigest() if transcript and Path(transcript).is_file() else None,
+        'root_listing': files_under(Path(final).parent) if final else []}) + '\n')
+if profile is None or not args:
+    sys.exit(64)
+if mode == 'fail':
+    sys.exit(71)
+child = subprocess.run(args)
+sys.exit(child.returncode)

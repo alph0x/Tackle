@@ -1,0 +1,260 @@
+#!/usr/bin/env python3
+"""Model-free stand-in for the claude CLI, used only by the route network-listener suite.
+
+It sends real requests to the route's loopback port, the way a sandboxed command would. An episode reads
+``plan.json`` in its working directory: ``{"sessions": {"1": [action, ...], "2": [...]}}``. The port comes from the
+participant settings the route passed (``sandbox.network.httpProxyPort``), so a run whose settings name no port
+sends nothing. A listener probe reads ``probe-mode.txt`` beside this file. Every invocation is logged beside this
+file, never in the work tree, and every request's answer is logged in ``net-results.log``.
+
+Actions: ``{"do": "http", "method", "path", "body", "address", "host_header", "version"}`` (an endpoint request),
+``proxy`` (``target`` is an absolute URL), ``connect`` and ``socks`` (``target`` is host:port), ``raw`` (``data`` is
+text) and ``late`` (``delay`` seconds, then ``action``, from a detached process). The placeholder ``{token}`` in a
+path is replaced by the token the CLI environment holds.
+"""
+import json
+import os
+import re
+import socket
+import struct
+import subprocess
+import sys
+import time
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+TOKEN_VARIABLE = 'CLAUDE_CODE_' + 'OAUTH_TOKEN'
+TOOLS = ['Bash', 'Read', 'Write', 'Edit', 'Glob', 'Grep', 'Skill']
+BUILTIN = {'name': 'cc-plugin-agents-md', 'path': 'builtin', 'source': 'cc-plugin-agents-md@builtin'}
+
+
+def note(record):
+    with open(HERE / 'net-results.log', 'a') as handle:
+        handle.write(json.dumps(record) + '\n')
+
+
+def open_socket(address, port):
+    family = socket.AF_INET6 if ':' in address else socket.AF_INET
+    sock = socket.socket(family, socket.SOCK_STREAM)
+    sock.settimeout(6)
+    sock.connect((address, port))
+    return sock
+
+
+def read_all(sock, limit=65536):
+    data = b''
+    try:
+        while len(data) < limit:
+            chunk = sock.recv(4096)
+            if not chunk:
+                break
+            data += chunk
+    except OSError:
+        pass
+    return data
+
+
+def status_of(data):
+    match = re.match(rb'HTTP/1\.[01] ([0-9]{3})', data)
+    return int(match.group(1)) if match else None
+
+
+def perform(action, port, token):
+    kind = action['do']
+    address = action.get('address', '127.0.0.1')
+    result = {'do': kind, 'label': action.get('label')}
+    try:
+        sock = open_socket(address, port)
+    except OSError as problem:
+        result['connect_error'] = problem.__class__.__name__
+        note(result)
+        return result
+    with sock:
+        if kind == 'http':
+            path = action.get('path', '/').replace('{token}', token)
+            body = action.get('body', '').encode()
+            version = action.get('version', 'HTTP/1.1')
+            head = '%s %s %s\r\n' % (action.get('method', 'GET'), path, version)
+            if action.get('host_header') is not None:
+                head += 'Host: %s\r\n' % action['host_header']
+            elif version == 'HTTP/1.1':
+                head += 'Host: %s:%d\r\n' % (address, port)
+            if body:
+                head += 'Content-Length: %d\r\n' % len(body)
+            sock.sendall(head.encode() + b'\r\n' + body)
+            data = read_all(sock)
+            result.update(status=status_of(data), body=data.split(b'\r\n\r\n', 1)[-1].decode('latin-1'))
+        elif kind == 'proxy':
+            sock.sendall(('GET %s HTTP/1.1\r\nHost: x\r\n\r\n' % action['target']).encode())
+            result['status'] = status_of(read_all(sock))
+        elif kind == 'connect':
+            sock.sendall(('CONNECT %s HTTP/1.1\r\nHost: %s\r\n\r\n' % (action['target'], action['target'])).encode())
+            first = b''
+            while b'\r\n\r\n' not in first:
+                chunk = sock.recv(4096)
+                if not chunk:
+                    break
+                first += chunk
+            result['status'] = status_of(first)
+            head, _, rest = first.partition(b'\r\n\r\n')
+            size = re.search(rb'(?i)content-length: *([0-9]+)', head)
+            want = int(size.group(1)) if size else 0
+            while len(rest) < want:
+                chunk = sock.recv(4096)
+                if not chunk:
+                    break
+                rest += chunk
+            extra = rest[want:]  # bytes the listener sent after its refusal
+            sock.sendall(b'\x16\x03\x01\x02\x00\x01\x00\x01\xfc\x03\x03')  # the start of a TLS hello
+            extra += read_all(sock)
+            result.update(after_hello=extra.hex(), after_hello_bytes=len(extra))
+        elif kind == 'socks':
+            host, _, number = action['target'].rpartition(':')
+            request = b'\x05\x01\x00\x03' + bytes([len(host)]) + host.encode() + struct.pack('>H', int(number))
+            sock.sendall(b'\x05\x01\x00' + (request if action.get('combined') else b''))
+            greeting = sock.recv(2)
+            if not action.get('combined'):
+                sock.sendall(request)
+            reply = read_all(sock)
+            result.update(greeting=greeting.hex(), reply=reply.hex(), refused=len(reply) > 1 and reply[1] != 0)
+        elif kind == 'raw':
+            sock.sendall(action['data'].encode())
+            result['reply_bytes'] = len(read_all(sock))
+    note(result)
+    return result
+
+
+def run_actions(actions, port, token):
+    for action in actions:
+        if action['do'] == 'late':
+            payload = json.dumps({'delay': action['delay'], 'action': action['action'], 'port': port})
+            subprocess.Popen([sys.executable, str(Path(__file__).resolve()), '--detached', payload], start_new_session=True,
+                             stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        else:
+            perform(action, port, token)
+
+
+if sys.argv[1:2] == ['--detached']:
+    job = json.loads(sys.argv[2])
+    time.sleep(job['delay'])
+    perform(job['action'], job['port'], '')
+    sys.exit(0)
+
+argv = sys.argv[1:]
+
+
+def log(record):
+    with open(HERE / 'invocations.log', 'a') as handle:
+        handle.write(json.dumps(record) + '\n')
+
+
+def emit(event):
+    print(json.dumps(event), flush=True)
+
+
+def tool(use_id, name, tool_input, text, is_error=False):
+    emit({'type': 'assistant', 'message': {'content': [{'type': 'tool_use', 'id': use_id, 'name': name, 'input': tool_input}]}})
+    emit({'type': 'user', 'message': {'content': [{'type': 'tool_result', 'tool_use_id': use_id, 'content': text,
+                                                   'is_error': is_error}]}})
+
+
+if argv == ['--version']:
+    log({'kind': 'version'})
+    print('0.0.0 (stub)')
+    sys.exit(0)
+
+prompt = sys.stdin.read()
+cwd = Path.cwd()
+home = Path(os.environ['HOME'])
+token = os.environ.get(TOKEN_VARIABLE, '')
+settings = json.loads(argv[argv.index('--settings') + 1]) if '--settings' in argv else {}
+network = (settings.get('sandbox') or {}).get('network') or {}
+port = network.get('httpProxyPort')
+model = argv[argv.index('--model') + 1] if '--model' in argv else 'stub-model'
+listener_probe = 'listener probe' in prompt
+mode_file = HERE / 'probe-mode.txt' if listener_probe else cwd / 'mode.txt'
+modes = set((mode_file.read_text().strip() if mode_file.exists() else 'ok').split('+'))
+skill_root = home / '.claude' / 'skills' / 'tackle'
+log({'kind': 'probe' if listener_probe else 'episode', 'argv': ['<settings>' if part.startswith('{') else part for part in argv],
+     'settings': settings, 'cwd': str(cwd), 'home': str(home), 'env_names': sorted(os.environ), 'token_present': bool(token),
+     'root_files': sorted(os.listdir(cwd.parent)), 'work_files': sorted(os.listdir(cwd)), 'prompt': prompt})
+(cwd / '.claude' / '.cc-writes').mkdir(parents=True, exist_ok=True)
+
+skills = ['verify'] + (['tackle'] if (skill_root / 'SKILL.md').is_file() else [])
+emit({'type': 'system', 'subtype': 'init', 'model': model, 'permissionMode': 'dontAsk', 'apiKeySource': 'none', 'tools': TOOLS,
+      'mcp_servers': [], 'skills': skills, 'plugins': [BUILTIN],
+      'memory_paths': {'auto': str(home / '.claude/projects/stub/memory/')}})
+
+
+def result(cost=0.02, turns=2):
+    emit({'type': 'result', 'subtype': 'success', 'is_error': False, 'num_turns': turns, 'total_cost_usd': cost,
+          'usage': {'input_tokens': 10, 'output_tokens': 5, 'cache_creation_input_tokens': 0, 'cache_read_input_tokens': 0},
+          'duration_ms': 5, 'session_id': 'stub-session', 'permission_denials': [], 'modelUsage': {model: {}}})
+
+
+def probe_actions(command, probe_port):
+    """What a sandboxed command in the listener probe's fixed list would send."""
+    decoy = re.search(r'-o /dev/null -w \S+ http://127\.0\.0\.1:([0-9]+)/$', command)
+    if 'probe/' in command and 'urlopen' not in command:
+        path = re.search(r'(/probe/[a-z0-9-]+)', command).group(1)
+        address = '::1' if '[::1]' in command else '127.0.0.1'
+        return [{'do': 'http', 'path': path, 'address': address}]
+    if 'urlopen' in command and 'probe/python' in command:
+        return [{'do': 'http', 'path': '/probe/python'}]
+    if command.startswith('printf') and 'nc ' in command and 'api.typesafe.ai' not in command:
+        return [{'do': 'raw', 'data': 'probe-raw\n'}]
+    if '--socks5-hostname' in command:
+        return [{'do': 'socks', 'target': 'api.typesafe.ai:443'}]
+    if 'https://api.typesafe.ai/' in command or 'https://example.com/' in command:
+        host = 'api.typesafe.ai' if 'typesafe' in command else 'example.com'
+        return [{'do': 'connect', 'target': host + ':443'}]
+    if command.startswith('nc ') and 'api.typesafe.ai' in command:
+        return [{'do': 'raw', 'data': 'public\n'}] if 'rawpublic' in modes else []
+    if decoy:
+        return 'decoy'
+    return []
+
+
+def run_probe():
+    commands = re.findall(r'(?m)^\d+\. (.+)$', prompt)
+    for number, command in enumerate(commands, 1):
+        use = 'toolu_listener_%d' % number
+        sent = probe_actions(command, port)
+        if sent == 'decoy':
+            if 'decoyopen' in modes:
+                decoy_port = int(re.search(r':([0-9]+)/$', command).group(1))
+                perform({'do': 'http', 'path': '/', 'label': 'decoy'}, decoy_port, token)
+                tool(use, 'Bash', {'command': command}, '200')
+            else:
+                tool(use, 'Bash', {'command': command}, 'Exit code 7\ncurl: (7) Failed to connect', True)
+            continue
+        if 'noipv6' in modes and '[::1]' in command:
+            tool(use, 'Bash', {'command': command}, 'Exit code 7\ncurl: (7) Failed to connect', True)
+            continue
+        for action in sent:
+            perform(action, port, token)
+            if 'retry' in modes and action.get('path') == '/probe/curl-localhost':
+                perform(action, port, token)
+        text = '503' if sent else 'Exit code 1\nnc: connection failed'
+        tool(use, 'Bash', {'command': command}, text, not sent)
+    emit({'type': 'assistant', 'message': {'content': [{'type': 'text', 'text': 'DONE'}]}})
+    result(cost=0.05, turns=12)
+
+
+if listener_probe:
+    run_probe()
+    sys.exit(0)
+
+trail = cwd / 'trail.txt'
+number = len(trail.read_text().splitlines()) + 1 if trail.exists() else 1
+with trail.open('a') as handle:
+    handle.write('session %d\n' % number)
+plan = json.loads((cwd / 'plan.json').read_text()) if (cwd / 'plan.json').exists() else {}
+emit({'type': 'assistant', 'message': {'content': [{'type': 'text', 'text': 'Working'}]}})
+actions = (plan.get('sessions') or {}).get(str(number), [])
+if actions and port is None:
+    print('no proxy port in the settings', file=sys.stderr)
+    sys.exit(3)
+run_actions(actions, port, token)
+(cwd / 'result.md').write_text('stub result for ' + ('method' if 'tackle' in skills else 'control') + '\n')
+result()
