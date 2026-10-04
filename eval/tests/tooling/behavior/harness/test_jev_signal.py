@@ -416,6 +416,54 @@ class Scoring(Base):
         out, runs = module.redact(text, grams)
         self.assertEqual(runs, 2)
         self.assertEqual(out, 'x [removed] y; again [removed]! but one two three four five')
+        domains = (
+            ('ascii', 'gentle bronze meadow shelters violet lanterns',
+             'crimson kites wander beside distant towers'),
+            ('cyrillic', 'синий маяк хранит тихую музыку ночи',
+             'красные птицы рисуют новые круги утром'),
+            ('greek', 'μικρό αστέρι φωτίζει ήρεμο δάσος απόψε',
+             'κόκκινα πουλιά ταξιδεύουν πάνω μακρινούς λόφους'),
+            ('accented_latin', 'ágil búho observa cálidas nubes púrpuras',
+             'jóvenes músicos dibujan árboles verdes mañana'),
+            ('ascii_identifiers', 'alpha_beta r2d2 gamma_3 delta4 epsilon_5 zeta6',
+             'eta_7 theta8 iota_9 kappa0 lambda_1 mu2'),
+            ('ascii_separators', "amber's lantern-glow meets river",
+             "cedar's window-light greets mountain"),
+        )
+        for domain, shared, unshared in domains:
+            # Separator case deliberately represents six ASCII regex words in four whitespace tokens.
+            five = ' '.join(shared.split()[:5]) if domain != 'ascii_separators' else "amber's lantern-glow meets"
+            for case, text, expected, runs in (
+                ('six_shared', shared, module.REMOVED, 1),
+                ('five_shared', five, five, 0),
+                ('six_unshared', unshared, unshared, 0),
+            ):
+                for consumer in ('final_message', 'tool_calls'):
+                    with self.subTest(domain=domain, case=case, consumer=consumer):
+                        grams = module.word_grams(shared)
+                        cleaned, removed = module.redact(text, grams)
+                        captured = []
+                        key = secrets.token_hex(24)
+                        with patch.object(module, 'read_key', return_value=key):
+                            session = module.Session({'allowed_calls': 1}, None, ROOT)
+                        session.redactor = SimpleNamespace(grams=lambda *args: grams)
+                        participant = (text, []) if consumer == 'final_message' else ('A clean result.', [text])
+                        def post(cfg, credential, body):
+                            captured.append(body)
+                            return None, 'connection'
+                        with patch.object(module, 'participant_output', return_value=participant), \
+                                patch.object(module, 'post', post):
+                            data, reason = session.judge({'episode_id': 'synthetic', 'outcome': 'avoided'})
+                        self.assertEqual(len(captured), 1)
+                        actual = captured[0]['state'][consumer]
+                        expected_body = expected if consumer == 'final_message' else [expected]
+                        self.assertTrue(actual == expected_body, 'request consumer leaked or over-redacted a run')
+                        self.assertTrue(cleaned == expected, 'shared-word boundary output mismatch')
+                        self.assertEqual(removed, runs)
+                        self.assertFalse(module.has_leak(captured[0], session.needles))
+                        self.assertEqual(session.budget.state['calls'], 1)
+                        self.assertEqual(reason, 'connection')
+                        self.assertIsNone(data)
 
     def test_a_missing_scenario_tree_reads_na_redaction(self):
         shutil.rmtree(str(self.work_a['repo'] / 'eval' / 'scenarios'))

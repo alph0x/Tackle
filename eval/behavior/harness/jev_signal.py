@@ -54,7 +54,7 @@ MAX_MESSAGE = 8000
 MAX_CALLS_SHOWN = 80
 MAX_SUMMARY = 160
 LOOPBACK = ('127.0.0.1', '::1', 'localhost')
-WORD = re.compile(r'[A-Za-z0-9_]+')
+WORD = re.compile(r'\w+')
 CONFIG_KEYS = ('endpoint', 'key_env', 'key_file', 'key_field', 'ca_file', 'max_calls', 'usd_total', 'usd_per_call',
                'timeout_s', 'ledger')
 
