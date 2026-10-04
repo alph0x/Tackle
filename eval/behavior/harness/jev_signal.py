@@ -478,12 +478,14 @@ def sidecar_line(record, data, thresholds, pinned):
 
 
 def safe_lines(lines, needles):
-    """Drop any line that carries the key or an encoding of it: it becomes an n/a line."""
+    """Replace leaky payloads with n/a; refuse if retained metadata still carries a secret."""
     kept = []
     for line in lines:
         if needles and has_leak(json.dumps(line, ensure_ascii=False), needles):
             line = {'episode_id': line['episode_id'], 'model': NA, 'reason': 'leak',
                     **({'thresholds_sha256': line['thresholds_sha256']} if 'thresholds_sha256' in line else {})}
+            if has_leak(json.dumps(line, ensure_ascii=False), needles):
+                raise Refused('retained signal metadata contains a credential')
         kept.append(line)
     return kept
 

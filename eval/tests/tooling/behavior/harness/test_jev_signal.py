@@ -10,6 +10,7 @@ mint a throwaway certificate with the openssl command line tool at run time, so 
 import contextlib
 import hashlib
 import importlib.util
+import io
 import json
 import os
 import secrets
@@ -20,6 +21,8 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
 
 HERE = Path(__file__).resolve().parents[5] / 'eval/behavior/harness'
 ROOT = HERE.parents[2]
@@ -487,6 +490,41 @@ class Containment(Base):
         kept = module.safe_lines(lines, module.needles_of(self.key))
         self.assertEqual(kept[0], {'episode_id': 'a', 'model': 'n/a', 'reason': 'leak', 'thresholds_sha256': 'f' * 64})
         self.assertEqual(kept[1], lines[1])
+        # Metadata survives the fallback, so a secret there must refuse the entire batch.
+        # Exercise each writer with a clean earlier line: refusal must precede all output.
+        for encoding in module.needles_of(self.key):
+            for field in ('episode_id', 'thresholds_sha256'):
+                unsafe = dict(lines[1], **{field: 'prefix-' + encoding})
+                refused = False
+                try:
+                    module.safe_lines([lines[1], unsafe], module.needles_of(self.key))
+                except module.Refused as error:
+                    refused = not module.has_leak(str(error), module.needles_of(self.key))
+                self.assertTrue(refused, 'unsafe fallback metadata must refuse without echoing it')
+            for command in ('score', 'calibrate'):
+                records = [{'episode_id': 'clean', 'split': 'development'},
+                           {'episode_id': 'prefix-' + encoding, 'split': 'development'}]
+                output = self.tmp / 'refused-output.jsonl'
+                scores = self.tmp / 'refused-scores.jsonl'
+                session = SimpleNamespace(needles=module.needles_of(self.key),
+                                          judge=lambda record: (None, 'leak'),
+                                          budget=SimpleNamespace(state={'calls': 0}))
+                args = [command, '--config', 'unused', '--cohort', 'unused', '--evidence', 'unused',
+                        '--out', str(output)]
+                if command == 'score':
+                    args += ['--thresholds', str(self.fake_thresholds())]
+                else:
+                    args += ['--diagnosis', str(self.verdict), '--scores-out', str(scores)]
+                stdout = io.StringIO()
+                with patch.object(module, 'load_cohort', return_value=(
+                        {'variants': [{'split': 'development'}]}, records)), \
+                        patch.object(module, 'load_config', return_value={}), \
+                        patch.object(module, 'Session', return_value=session), \
+                        contextlib.redirect_stdout(stdout):
+                    code = module.main(args)
+                self.assertTrue(code != 0, 'unsafe identifiers must refuse at the CLI consumer')
+                self.assertFalse(output.exists() or scores.exists(), 'refusal must retain no output')
+                self.assertFalse(module.has_leak(stdout.getvalue(), module.needles_of(self.key)))
 
 
 class Boundaries(Base):
