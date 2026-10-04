@@ -945,7 +945,7 @@
       "rule_id": "R-RUN-05",
       "statement": "Reuse verified current state and sufficient existing checks; do not append equivalent assertions or unchanged closure reruns.",
       "statement_sha256": "d9beacfc73bfe0717bd839e70c569c8c6a2133391f0bbffcb8e6877522d2ff55",
-      "home": "references/guides/run.md:264",
+      "home": "references/guides/run.md:266",
       "home_fragment": "Reuse unchanged PLAN readiness checks",
       "units": [],
       "mirrors": [],
@@ -968,7 +968,7 @@
       "rule_id": "R-RUN-06",
       "statement": "Changed content, selector membership, configuration, interfaces, runtime or freshness invalidate affected consumers, and unknown dependencies require conservative checks.",
       "statement_sha256": "1c1280f74aeef7eb7f7257c0cd7e6857d1cdb14607295e70d0e2dac102a2fd0e",
-      "home": "references/guides/run.md:197",
+      "home": "references/guides/run.md:199",
       "home_fragment": "only the dependent checks; re-ground and revalidate",
       "units": [],
       "mirrors": [],
@@ -1307,7 +1307,7 @@
       "home_fragment": "Closure reports for done tasks",
       "units": [],
       "mirrors": [
-        "references/guides/run.md:250"
+        "references/guides/run.md:252"
       ],
       "class": "safety-invariant",
       "hot_path": false,
@@ -1909,7 +1909,7 @@
       "home_fragment": "Historical E0–E3 codes",
       "units": [],
       "mirrors": [
-        "references/guides/run.md:165"
+        "references/guides/run.md:167"
       ],
       "class": "format",
       "hot_path": false,
@@ -2071,7 +2071,7 @@
         "**STATUS** `status [<workspace>]` Read-only stat"
       ],
       "mirrors": [
-        "references/guides/communication.md:24"
+        "references/guides/communication.md:34"
       ],
       "class": "safety-invariant",
       "hot_path": true,
@@ -3184,7 +3184,7 @@
       "rule_id": "R-RUN-19",
       "statement": "An obligation that outlives its task is recorded when it is created as an O-NN row of the board's obligations table and prevents initiative completion while it is Open, unless the owner withdrew it.",
       "statement_sha256": "6d1baf55e5ae97b57a522eb306cc74f95574013a45a9a47e4800fd2267c2978a",
-      "home": "references/guides/run.md:210",
+      "home": "references/guides/run.md:212",
       "home_fragment": "An obligation that outlives its task is recorded when it is",
       "units": [],
       "mirrors": [
@@ -3199,7 +3199,9 @@
       },
       "evidence": {
         "status": "untested",
-        "scenarios": [],
+        "scenarios": [
+          "s69-closure-open-obligation"
+        ],
         "cohort_id": null,
         "as_of": "2026-10-02"
       },
@@ -3209,7 +3211,7 @@
       "rule_id": "R-RUN-20",
       "statement": "RUN calls a fresh, independent adversarial review at three moments only (lock, repeat-failure and complete), the reviewer records its actual independence, and a moment with no independent reviewer stops the task Waiting on owner unless a recorded owner decision waives it.",
       "statement_sha256": "6a7f89f981c2bda43e934d6c4f5fd7152fb97189fb55cc785b7e81e2ec579da8",
-      "home": "references/guides/run.md:171",
+      "home": "references/guides/run.md:173",
       "home_fragment": "Run calls an independent adversarial review at three moments",
       "units": [],
       "mirrors": [],
@@ -3317,6 +3319,112 @@
       "evidence": {
         "status": "untested",
         "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-03"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATUS-09",
+      "statement": "A cold resume reads the workspace AGENTS.md, the board with its obligations table, the newest State snapshot, the current brief and report and the named inputs in that order, and a snapshot that is missing, older than the board or in conflict with it loses: the board wins and the conflict is reported.",
+      "statement_sha256": "d56426675d26a97599d6863e2ce3cb427fb850d2dfb6171d01e1df5e37260687",
+      "home": "references/guides/status.md:71",
+      "home_fragment": "A snapshot that is missing, older than the board's last",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.0",
+        "trigger": "A cold session resumes a long workspace and reads whatever it finds first.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s67-resume-correction-count",
+          "s68-resume-completed-effect",
+          "s69-closure-open-obligation"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-10-03"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATUS-08",
+      "statement": "Older history, history-archive.md included, opens only when the snapshot or a current record cites it by a stable id, or when the completeness of a spent correction count, an in-flight effect or an obligation is uncertain.",
+      "statement_sha256": "0c6ed5eaf610fc3c26fa9819bbe1ed471aba355accbbe78e03ab67f7b45d7aa3",
+      "home": "references/guides/status.md:73",
+      "home_fragment": "Older history, `history-archive.md` included, opens only",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.0",
+        "trigger": "A resume reads old history that nothing in the current records points to.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s67-resume-correction-count",
+          "s68-resume-completed-effect",
+          "s69-closure-open-obligation"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-10-03"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-21",
+      "statement": "The spent correction count comes from the task-linked failed correction-validation records, whoever wrote them, the State snapshot only projects it, and a resume never assumes zero: zero requires records showing no failure.",
+      "statement_sha256": "6221975721f94893108f8666f7f45bba55da011825b1862a7add60f8531e745c",
+      "home": "references/guides/run.md:131",
+      "home_fragment": "The spent count comes from the task-linked failed corr",
+      "units": [],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.0",
+        "trigger": "A resumed task restarts its correction count and spends more cycles than the bound allows.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s67-resume-correction-count"
+        ],
+        "cohort_id": null,
+        "as_of": "2026-10-03"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-22",
+      "statement": "Before an initiative is declared closed, and at every cold resume, every Open obligation in the table and every id on a Complete task's Remains receipt is listed.",
+      "statement_sha256": "ec51baf62af1856cdad379a864d2a8ef55b018fbe52d791008bf88b079fdf45c",
+      "home": "references/guides/run.md:214",
+      "home_fragment": "Before an initiative is declared closed, and at every cold",
+      "units": [],
+      "mirrors": [
+        "references/guides/status.md:71"
+      ],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.0",
+        "trigger": "An initiative is declared closed while an owner obligation is still open.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s69-closure-open-obligation"
+        ],
         "cohort_id": null,
         "as_of": "2026-10-03"
       },

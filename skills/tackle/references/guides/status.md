@@ -23,10 +23,9 @@ RUN; a standalone status/resume request does not authorize execution.
 - **Next** selects a Ready task and provides its purpose, dependencies, write scope, and starting
   prompt. Selection is not execution. Draft tasks cannot be selected as Ready. When no task is
   Ready, Next reports the open obligations (id, owner, trigger) rather than nothing.
-- **Resume** reads workspace instructions, verified current work, the relevant task brief and
-  named inputs/depth artifacts. Report current state, reusable verification records, relevant
-  changes, and the next authorized action. Ask only when a user-owned decision actually blocks
-  affected work. Plain resume remains STATUS.
+- **Resume** follows the [cold resume read order](#cold-resume-read-order). Report current state,
+  reusable verification records, relevant changes, and the next authorized action. Ask only when a
+  user-owned decision actually blocks affected work. Plain resume remains STATUS.
 
 Write a digest the reader can take in at a glance: lead with what changes their next action (a
 blocker, a failure, an owner decision, the next authorized task), and never omit a material
@@ -56,6 +55,24 @@ constraints even if their original decision is old. Include the source context a
 objects the recipient needs, following [portable export](context-lifecycle.md#portable-handoff).
 Keep stable IDs when their meanings and referenced objects travel with them; local links alone do
 not make context portable. Regeneration may replace the projection, never its authoritative sources.
+
+<a id="cold-resume-read-order"></a>
+## Cold resume read order
+
+A cold resume is a STATUS resume, or a RUN on a workspace this session did not start. It reads, in this
+order:
+
+1. the workspace `AGENTS.md`;
+2. `task-board.md`, recording its sha256, with its obligations table;
+3. the newest `history.md` State snapshot;
+4. the current task's brief, its report and the records they cite;
+5. the task's named inputs.
+
+A board without an obligations table is read through every Complete task's report receipt instead. A snapshot that is missing, older than the board's last change or in conflict with it loses: the board wins, and the resume reports the conflict. The resume lists every Open obligation with its owner and trigger, from the table and from every `**Remains**:` receipt.
+
+Older history, `history-archive.md` included, opens only when the snapshot or a current record cites it by a stable id, or when the completeness of a spent correction count, an in-flight effect or an obligation is uncertain.
+
+A wider read is allowed and is stated in the resume report; an active obligation or a spent count is always kept, whatever the size.
 
 <a id="archive-explicit-request-only"></a>
 ## Archive

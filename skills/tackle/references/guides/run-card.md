@@ -77,4 +77,4 @@ cycles.
 [independence](run.md#independence-and-historical-grades),
 [acceptance](run.md#integration-and-deliverable-acceptance), [release gating](run.md#release-gating),
 [run record](run.md#run-record), [testing](testing.md), [limits](run.md#tier-dispatch-and-escalation-limits),
-[waiting-on-owner citation](status.md#queries).
+[waiting-on-owner citation](status.md#queries), [resume](status.md#cold-resume-read-order).
