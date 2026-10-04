@@ -1259,12 +1259,15 @@ def observe(stage, entry, package):
         seen.error = 'controller_refusal'
     except Exception as problem:
         seen.error = 'controller_' + type(problem).__name__
-    seen.interrupted = seen.interrupted or any(s.child.interrupted for s in seen.sessions)
-    if seen.listener is not None:
-        # A process left running after the last session may still send for two seconds; a later request leaves no line.
-        if seen.sessions and not seen.interrupted:
-            time.sleep(LISTENER_WAIT_SECONDS)
-        seen.listener.stop()
+    finally:
+        seen.interrupted = seen.interrupted or any(s.child.interrupted for s in seen.sessions)
+        if seen.listener is not None:
+            # A process left running after the last session may still send for two seconds; a later request leaves no line.
+            try:
+                if seen.sessions and not seen.interrupted:
+                    time.sleep(LISTENER_WAIT_SECONDS)
+            finally:
+                seen.listener.stop()
     return seen
 
 

@@ -117,7 +117,7 @@ class Handler(socketserver.BaseRequestHandler):
         try:
             first = read_until(conn, lambda data: data[:1] == b'\x05' or b'\n' in data, HEAD_LIMIT, deadline)
             if first[:1] == b'\x05':
-                self.socks(listener, conn, first, deadline)
+                self.socks(listener, conn, first, arrived, deadline)
             else:
                 self.http_or_raw(listener, conn, first, arrived, deadline)
         except OSError:
@@ -152,7 +152,7 @@ class Handler(socketserver.BaseRequestHandler):
         method, target = match.group(1).decode('ascii').upper(), match.group(2).decode('latin-1')
         if method == 'CONNECT':
             head = first + read_until(conn, lambda data: b'\r\n\r\n' in data or b'\n\n' in data, HEAD_LIMIT, deadline)
-            listener.record('connect', method, target, None, None, len(head), None)
+            listener.record('connect', method, target.rsplit('@', 1)[-1], None, None, len(head), None)
             self.finish_connection(conn, listener.refusal())
             return
         head = first
@@ -165,7 +165,13 @@ class Handler(socketserver.BaseRequestHandler):
         if len(head) - end < want:
             head += read_exact(conn, want - (len(head) - end), deadline)
         body = head[end:]
-        absolute = urlsplit(target) if re.match(r'(?i)[a-z][a-z0-9+.-]*://', target) else None
+        try:
+            absolute = urlsplit(target) if re.match(r'(?i)[a-z][a-z0-9+.-]*://', target) else None
+        except ValueError:
+            # Invalid proxy-form syntax is still a connection to the declared endpoint.
+            listener.record('raw', None, arrived, None, None, len(head), None)
+            self.finish_connection(conn, b'')
+            return
         if absolute is not None:
             host = absolute.netloc.rsplit('@', 1)[-1].lower()
             kind, path, query = 'proxy', absolute.path or '/', absolute.query
@@ -180,26 +186,36 @@ class Handler(socketserver.BaseRequestHandler):
                         len(head), sha(body) if body else None)
         self.finish_connection(conn, listener.refusal())
 
-    def socks(self, listener, conn, first, deadline):
-        data = first + read_exact(conn, max(0, 2 - len(first)), deadline)
-        count = data[1] if len(data) > 1 else 0
-        data += read_exact(conn, max(0, 2 + count - len(data)), deadline)
-        if len(data) < 2 + count:
-            listener.record('socks', None, None, None, None, len(data), None)
+    def socks(self, listener, conn, first, arrived, deadline):
+        # recv may contain both the greeting and the request. Keep the unread suffix for every parse step.
+        pending, seen = first, 0
+
+        def take(count):
+            nonlocal pending, seen
+            if len(pending) < count:
+                pending += read_exact(conn, count - len(pending), deadline)
+            data, pending = pending[:count], pending[count:]
+            seen += len(data)
+            return data
+
+        greeting = take(2)
+        count = greeting[1] if len(greeting) == 2 else 0
+        methods = take(count)
+        if not count or len(methods) != count or 0 not in methods:
+            extra = pending + read_until(conn, lambda data: False, HEAD_LIMIT, deadline)
+            listener.record('raw', None, arrived, None, None, seen + len(extra), None)
+            self.finish_connection(conn, b'')
             return
         conn.sendall(b'\x05\x00')
-        head = read_exact(conn, 4, deadline)
-        seen = len(data) + len(head)
+        head = take(4)
         target = None
         if len(head) == 4 and head[0] == 5:
             kind = head[3]
             size = {1: 4, 4: 16}.get(kind)
             if kind == 3:
-                length = read_exact(conn, 1, deadline)
-                seen += len(length)
+                length = take(1)
                 size = length[0] if length else None
-            rest = read_exact(conn, size + 2, deadline) if size is not None else b''
-            seen += len(rest)
+            rest = take(size + 2) if size is not None else b''
             if size is not None and len(rest) == size + 2:
                 port = struct.unpack('>H', rest[size:])[0]
                 raw = rest[:size]

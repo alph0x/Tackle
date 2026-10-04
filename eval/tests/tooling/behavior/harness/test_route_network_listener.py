@@ -212,7 +212,7 @@ class Listener(unittest.TestCase):
         log = self.env.network_log()
         self.assertEqual([(l['kind'], l['method'], l['host'], l['path'], l['body_sha256']) for l in log],
                          [('raw', None, '127.0.0.1:%d' % self.env.port, None, None)] * 4)
-        self.assertEqual([l['bytes'] for l in log], [12, 4, 39, 16])
+        self.assertEqual([l['bytes'] for l in log], [12, 4, 37, 16])
         self.assertEqual([r['reply_bytes'] for r in self.env.net_results()], [0, 0, 0, 0])
 
     def test_the_logged_host_never_comes_from_a_header(self):
@@ -413,6 +413,19 @@ class ListenerParsing(unittest.TestCase):
                 mock.patch.object(route.time, 'sleep', side_effect=SystemExit):
             with self.assertRaises(SystemExit):
                 route.observe(stage, {'arm': 'control'}, package)
+        listener.stop.assert_called_once_with()
+        listener.reset_mock()
+        with mock.patch.object(route, 'new_root', return_value=Path('/synthetic')), \
+                mock.patch.object(route, 'work_hashes', return_value={}), \
+                mock.patch.object(route, 'start_listener', return_value=listener), \
+                mock.patch.object(route, 'child_env', return_value={}), \
+                mock.patch.object(route, 'participant_argv', return_value=['synthetic']), \
+                mock.patch.object(route, 'launch', return_value=child), \
+                mock.patch.object(route, 'parse_stream', return_value=stream), \
+                mock.patch.object(route.time, 'sleep'):
+            seen = route.observe(stage, {'arm': 'control'}, package)
+        self.assertIsNone(seen.error)
+        self.assertEqual(len(seen.sessions), 1)
         listener.stop.assert_called_once_with()
 
     def test_log_is_outside_the_declared_write_permissions(self):

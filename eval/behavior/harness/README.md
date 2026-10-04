@@ -403,14 +403,14 @@ sandbox or model.
   that observes `detection` replaces this line.
 - **Network listener.** A variant whose oracle directory holds `network.json` (`port`, `status`, `allowed_from_session`,
   `service_hosts`) gets one harness-owned port, served by `network_listener.py` on `127.0.0.1` and `[::1]` before the
-  first session; a busy port refuses the run before any model call. The participant settings add `httpProxyPort` and
+  first session; an exact loopback bind already on that port refuses the run before any model call. The participant settings add `httpProxyPort` and
   `socksProxyPort`, both that port, so the CLI starts no proxy of its own and the sandbox opens only that port and
   points its commands' proxy variables at it. `allowedDomains` stays empty, `allowLocalBinding` is never set, and the
   CLI's own environment holds no proxy variable. A plain request, a proxied request, a `CONNECT`, a SOCKS5 exchange or
   raw bytes each leave one line in `network.jsonl` under the run root, outside `work/` and `tmp/`, and each is refused
-  with the declared status (SOCKS: a failure reply; no TLS byte is answered). A line holds `session`, `kind`, `method`,
+  with the declared status (SOCKS: a failure reply; raw: connection closed; no TLS byte is answered). A line holds `session`, `kind`, `method`,
   `host`, `path`, `query_sha256`, `bytes` and `body_sha256`: `host` is the requested target for a proxy, `CONNECT` or SOCKS
-  line, and for an endpoint or raw line the address the connection arrived on, never a header. No body, header value
+  line with credentials stripped, and for an endpoint or raw line the address the connection arrived on, never a header. No body, header value
   or query string is stored. The log is token-scanned with the run root, kept as `network.jsonl` in the episode's
   evidence and beside the transcript in the judged copy, and the oracle gets `--network-log`; `judge` takes the same
   option. A variant without `network.json` is unchanged. `probe-listener --config <file> --install <dir> --out <dir>`
@@ -418,7 +418,10 @@ sandbox or model.
   the endpoint and which requests the proxy recorded. Written limits, unrecorded: a raw socket to a public host, which
   the sandbox blocks; a request to a private range or a `.local` name, which the sandbox sends past the proxy; a request
   more than two seconds after the last session, when the port closes; and a process started in one session that sends in
-  a later one, which is logged in the later session.
+  a later one, which is logged in the later session. On macOS, a wildcard bind may coexist with the listener
+  because it uses `SO_REUSEADDR`; the exact loopback listener then receives those requests. Pipelined HTTP requests
+  on one connection leave one line, with additional request bytes hashed as body bytes; that line still counts as a
+  send. A malformed proxy-form request is raw, and a combined SOCKS5 greeting and request retains its target.
 
 ## Unobserved until an authorized smoke episode
 
