@@ -8,8 +8,8 @@ participant settings, the way sandboxed commands would, and a fake launcher reco
 is the route itself, run as a subprocess; the cohort the stub produces must still pass the protocol checker. A
 variant without ``network.json`` is covered here only for what must not change; ``test_subscription_route.py``
 stays the protected suite for the rest. Synthetic tokens are generated at run time and the token variable's name is
-assembled by concatenation. The stub is not sandboxed, so what it cannot show is a refused write: the log's
-location is checked structurally, against the settings the participant received.
+assembled by concatenation. The stub is not sandboxed: its log location and permission settings are checked
+structurally. Kernel write refusal is a separate host observation; these tests do not observe CLI permission translation.
 """
 import contextlib
 import json
@@ -19,6 +19,8 @@ import socket
 import sys
 import time
 import unittest
+from types import SimpleNamespace
+from unittest import mock
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -169,21 +171,27 @@ class Listener(unittest.TestCase):
     def test_proxy_records_and_refuses_every_host(self):
         hosts = ['one.example.org', 'two.example.net', 'three.example.com']
         process = self.env.episode_run(plan(s1=[
-            {'do': 'proxy', 'target': 'http://%s/path?x=1' % hosts[0]},
-            {'do': 'connect', 'target': hosts[1] + ':443'},
-            {'do': 'socks', 'target': hosts[2] + ':443'}]))
+            {'do': 'proxy', 'target': 'http://user:proxy-secret@%s/path?x=1' % hosts[0]},
+            {'do': 'connect', 'target': 'user:connect-secret@' + hosts[1] + ':443'},
+            {'do': 'socks', 'target': hosts[2] + ':443'},
+            {'do': 'socks', 'target': hosts[2] + ':443', 'combined': True}]))
         self.ok(process)
         log = self.env.network_log()
         self.assertEqual([(l['kind'], l['method'], l['host']) for l in log],
-                         [('proxy', 'GET', hosts[0]), ('connect', 'CONNECT', hosts[1] + ':443'), ('socks', 'CONNECT', hosts[2] + ':443')])
+                         [('proxy', 'GET', hosts[0]), ('connect', 'CONNECT', hosts[1] + ':443'), ('socks', 'CONNECT', hosts[2] + ':443'), ('socks', 'CONNECT', hosts[2] + ':443')])
         self.assertEqual((log[0]['path'], log[0]['query_sha256']), ('/path', sha(b'x=1')))
-        self.assertEqual([l['path'] for l in log[1:]], [None, None])
-        proxied, tunnel, socks = self.env.net_results()
+        self.assertEqual([l['path'] for l in log[1:]], [None, None, None])
+        encoded = (self.env.out / 'one' / 'network.jsonl').read_text()
+        self.assertNotIn('user:', encoded)
+        self.assertNotIn('secret', encoded)
+        proxied, tunnel, socks, combined = self.env.net_results()
         self.assertEqual((proxied['status'], tunnel['status']), (STATUS, STATUS))
         # No handshake byte is answered after a tunnel request is refused.
         self.assertEqual((tunnel['after_hello'], tunnel['after_hello_bytes']), ('', 0))
         self.assertTrue(socks['refused'])
         self.assertEqual(socks['greeting'], '0500')
+        self.assertEqual(combined['greeting'], '0500')
+        self.assertTrue(combined['refused'])
         self.assertTrue(all(l['bytes'] > 0 for l in log))
 
     def test_cli_env_holds_no_proxy_variable(self):
@@ -198,12 +206,14 @@ class Listener(unittest.TestCase):
         self.assertEqual([name for name in built if 'proxy' in name.lower()], [])
 
     def test_raw_bytes_are_logged_as_a_raw_connection(self):
-        self.ok(self.env.episode_run(plan(s1=[{'do': 'raw', 'data': 'hello there\n'}, {'do': 'raw', 'data': 'GET\n'}])))
+        self.ok(self.env.episode_run(plan(s1=[{'do': 'raw', 'data': 'hello there\n'}, {'do': 'raw', 'data': 'GET\n'},
+            {'do': 'raw', 'data': 'GET http://[::1 HTTP/1.1\r\nHost: x\r\n\r\n'},
+            {'do': 'raw', 'data': '\x05\x00not-a-greeting'}])))
         log = self.env.network_log()
         self.assertEqual([(l['kind'], l['method'], l['host'], l['path'], l['body_sha256']) for l in log],
-                         [('raw', None, '127.0.0.1:%d' % self.env.port, None, None)] * 2)
-        self.assertEqual([l['bytes'] for l in log], [12, 4])
-        self.assertEqual([r['reply_bytes'] for r in self.env.net_results()], [0, 0])
+                         [('raw', None, '127.0.0.1:%d' % self.env.port, None, None)] * 4)
+        self.assertEqual([l['bytes'] for l in log], [12, 4, 39, 16])
+        self.assertEqual([r['reply_bytes'] for r in self.env.net_results()], [0, 0, 0, 0])
 
     def test_the_logged_host_never_comes_from_a_header(self):
         self.ok(self.env.episode_run(plan(s1=[
@@ -309,6 +319,113 @@ class Listener(unittest.TestCase):
         argvs = [item['argv'] for item in self.env.launcher_log()]
         self.assertNotIn('--network-log', argvs[0])
         self.assertIn('--network-log', argvs[1])
+
+
+class MemoryConnection:
+    """Socket-shaped byte stream; recv consumes at most count, including a combined SOCKS exchange."""
+
+    def __init__(self, data, chunk_size=None):
+        self.data, self.sent = data, b''
+        self.chunk_size = chunk_size
+
+    def recv(self, count):
+        take = min(count, self.chunk_size) if self.chunk_size else count
+        chunk, self.data = self.data[:take], self.data[take:]
+        return chunk
+
+    def sendall(self, data):
+        self.sent += data
+
+    def getsockname(self):
+        return ('127.0.0.1', 48271)
+
+    def settimeout(self, seconds):
+        pass
+
+    def shutdown(self, how):
+        pass
+
+    def close(self):
+        pass
+
+
+class ListenerParsing(unittest.TestCase):
+    """Exercise the real handler with byte streams, including malformed and fragmented valid alternatives."""
+
+    def request(self, data, chunk_size=None):
+        listener = route.network_listener.Listener(48271, STATUS, Path('/unused'))
+        recorded = []
+        listener.record = lambda *values: recorded.append(dict(zip(LOG_KEYS[1:], values)))
+        conn = MemoryConnection(data, chunk_size)
+        route.network_listener.Handler(conn, ('127.0.0.1', 1), SimpleNamespace(listener=listener))
+        self.assertEqual(len(recorded), 1)
+        return recorded[0], conn.sent
+
+    def test_malformed_proxy_form_is_raw_and_refused(self):
+        malformed = b'GET http://[::1 HTTP/1.1\r\nHost: x\r\n\r\n'
+        line, sent = self.request(malformed)
+        self.assertEqual((line['kind'], line['host'], line['bytes']), ('raw', '127.0.0.1:48271', len(malformed)))
+        self.assertEqual(sent, b'')
+        valid, sent = self.request(b'GET http://[::1]:48271/a HTTP/1.1\r\n\r\n')
+        self.assertEqual((valid['kind'], valid['host']), ('proxy', '[::1]:48271'))
+        self.assertTrue(sent.startswith(b'HTTP/1.1 502'))
+
+    def test_combined_and_fragmented_socks_keep_the_target(self):
+        payload = b'\x05\x01\x00\x05\x01\x00\x03\x0fservice.example\x01\xbb'
+        for chunk_size in (None, 1, 3):
+            with self.subTest(chunk_size=chunk_size):
+                line, sent = self.request(payload, chunk_size)
+                self.assertEqual((line['kind'], line['method'], line['host'], line['bytes']),
+                                 ('socks', 'CONNECT', SERVICE_HOST + ':443', len(payload)))
+                self.assertEqual(sent, b'\x05\x00' + route.network_listener.SOCKS_REFUSED)
+        for data in (b'\x05\x00not-a-greeting', b'\x05', b'\x05\x01\x02'):
+            with self.subTest(data=data):
+                line, sent = self.request(data)
+                self.assertEqual((line['kind'], line['host']), ('raw', '127.0.0.1:48271'))
+                self.assertEqual(sent, b'')
+
+    def test_proxy_and_connect_strip_userinfo(self):
+        cases = [(b'GET http://user:secret@service.example/a HTTP/1.1\r\n\r\n', 'proxy', SERVICE_HOST),
+                 (b'CONNECT user:secret@service.example:443 HTTP/1.1\r\n\r\n', 'connect', SERVICE_HOST + ':443'),
+                 (b'CONNECT service.example:443 HTTP/1.1\r\n\r\n', 'connect', SERVICE_HOST + ':443')]
+        for request, kind, host in cases:
+            with self.subTest(kind=kind, request=request):
+                line, sent = self.request(request)
+                self.assertEqual((line['kind'], line['host']), (kind, host))
+                self.assertNotIn('secret', json.dumps(line))
+                self.assertTrue(sent.startswith(b'HTTP/1.1 502'))
+
+    def test_final_wait_interrupt_always_stops_the_listener(self):
+        listener = mock.Mock()
+        cfg = SimpleNamespace(episode_seconds=10, episode_turns=4, episode_usd=1)
+        stage = SimpleNamespace(cfg=cfg, token='synthetic', cli=Path('/unused'))
+        package = SimpleNamespace(fixture={}, network=SimpleNamespace(port=48271, status=STATUS),
+                                  prompts=[('task.md', 'First.')])
+        child = SimpleNamespace(stdout=b'', interrupted=False, timed_out=False, error=None, exit=0)
+        stream = {'result': {'subtype': 'success', 'is_error': False}}
+        with mock.patch.object(route, 'new_root', return_value=Path('/synthetic')), \
+                mock.patch.object(route, 'work_hashes', return_value={}), \
+                mock.patch.object(route, 'start_listener', return_value=listener), \
+                mock.patch.object(route, 'child_env', return_value={}), \
+                mock.patch.object(route, 'participant_argv', return_value=['synthetic']), \
+                mock.patch.object(route, 'launch', return_value=child), \
+                mock.patch.object(route, 'parse_stream', return_value=stream), \
+                mock.patch.object(route.time, 'sleep', side_effect=SystemExit):
+            with self.assertRaises(SystemExit):
+                route.observe(stage, {'arm': 'control'}, package)
+        listener.stop.assert_called_once_with()
+
+    def test_log_is_outside_the_declared_write_permissions(self):
+        root = Path('/synthetic/run')
+        settings = route.sandbox_settings(root, 48271)
+        log = root / 'network.jsonl'
+        allowed = settings['sandbox']['filesystem']['allowWrite']
+        self.assertFalse(any(base.covers(prefix, log) for prefix in allowed))
+        for writable in (root / 'work' / 'result.md', root / 'tmp' / 'scratch'):
+            self.assertTrue(any(base.covers(prefix, writable) for prefix in allowed))
+        self.assertEqual(settings['permissions']['defaultMode'], 'dontAsk')
+        self.assertIn('Edit(/%s/work/**)' % root, settings['permissions']['allow'])
+        self.assertNotIn('Edit(/%s/**)' % root, settings['permissions']['allow'])
 
 
 class ListenerProbe(unittest.TestCase):

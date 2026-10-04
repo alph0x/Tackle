@@ -110,9 +110,11 @@ def perform(action, port, token):
             result.update(after_hello=extra.hex(), after_hello_bytes=len(extra))
         elif kind == 'socks':
             host, _, number = action['target'].rpartition(':')
-            sock.sendall(b'\x05\x01\x00')
+            request = b'\x05\x01\x00\x03' + bytes([len(host)]) + host.encode() + struct.pack('>H', int(number))
+            sock.sendall(b'\x05\x01\x00' + (request if action.get('combined') else b''))
             greeting = sock.recv(2)
-            sock.sendall(b'\x05\x01\x00\x03' + bytes([len(host)]) + host.encode() + struct.pack('>H', int(number)))
+            if not action.get('combined'):
+                sock.sendall(request)
             reply = read_all(sock)
             result.update(greeting=greeting.hex(), reply=reply.hex(), refused=len(reply) > 1 and reply[1] != 0)
         elif kind == 'raw':
