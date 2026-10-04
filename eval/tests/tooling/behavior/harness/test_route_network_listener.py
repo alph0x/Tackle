@@ -400,7 +400,7 @@ class ListenerParsing(unittest.TestCase):
                 line, sent = self.request(data)
                 self.assertEqual((line['kind'], line['host']), ('raw', '127.0.0.1:48271'))
                 self.assertEqual(sent, b'')
-        # C20 classifies a valid greeting as SOCKS. C19 needs a parseable target to decide a send.
+        # A valid greeting identifies SOCKS; a parseable target determines whether it is a send.
         for data in (b'\x05\x01\x00garbage', b'\x05\x01\x00\x05\x01'):
             with self.subTest(data=data):
                 line, sent = self.request(data)
