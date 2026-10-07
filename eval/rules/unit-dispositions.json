@@ -95,19 +95,47 @@
       "path": "references/guides/lint-spec.md",
       "line": 64,
       "unit_sha256": "4e71058a0827871f2ed5c3f603910886ccbf867b883c750a2e0348c13d7f9026",
-      "disposition": "merged",
+      "disposition": "reworded",
       "destination": "MAINTAINING.md",
-      "note": null,
-      "destination_unit_sha256": "4e71058a0827871f2ed5c3f603910886ccbf867b883c750a2e0348c13d7f9026"
+      "note": "A release that deletes normative content from `SKILL.md` or a guide also needs two things.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "1",
+          "reason": "the release policy on deleted normative content moved into the change gate as prose; the requirement is unchanged and stated without its old label or enumeration"
+        },
+        {
+          "token": "13",
+          "reason": "the release policy on deleted normative content moved into the change gate as prose; the requirement is unchanged and stated without its old label or enumeration"
+        },
+        {
+          "token": "every",
+          "reason": "the release policy on deleted normative content moved into the change gate as prose; the requirement is unchanged and stated without its old label or enumeration"
+        },
+        {
+          "token": "must",
+          "reason": "the release policy on deleted normative content moved into the change gate as prose; the requirement is unchanged and stated without its old label or enumeration"
+        }
+      ]
     },
     {
       "path": "references/guides/lint-spec.md",
       "line": 64,
       "unit_sha256": "cee38cd9c9b3b6dcbebfbf60803a9160caa4942bac41ab137e0cc9cf57b5aa11",
-      "disposition": "merged",
+      "disposition": "reworded",
       "destination": "MAINTAINING.md",
-      "note": null,
-      "destination_unit_sha256": "cee38cd9c9b3b6dcbebfbf60803a9160caa4942bac41ab137e0cc9cf57b5aa11"
+      "note": "Second, one behavioral run on a **trap dedicated to the shipped feature** (method arm = the edited file),",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "must",
+          "reason": "the release policy on deleted normative content moved into the change gate as prose; the requirement is unchanged and stated without its old label or enumeration"
+        },
+        {
+          "token": "not",
+          "reason": "the release policy on deleted normative content moved into the change gate as prose; the requirement is unchanged and stated without its old label or enumeration"
+        }
+      ]
     },
     {
       "path": "references/guides/lint-spec.md",
@@ -6869,6 +6897,52 @@
       "destination": "references/guides/run-card.md",
       "note": "Update the board with hash-before-write, then append one history line and the usage row, and rebuild an existing plan view.",
       "destination_unit_sha256": null
+    },
+    {
+      "path": "MAINTAINING.md",
+      "line": 26,
+      "unit_sha256": "4e71058a0827871f2ed5c3f603910886ccbf867b883c750a2e0348c13d7f9026",
+      "disposition": "reworded",
+      "destination": "MAINTAINING.md",
+      "note": "A release that deletes normative content from `SKILL.md` or a guide also needs two things.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "1",
+          "reason": "the release policy on deleted normative content moved into the change gate as prose; the requirement is unchanged and stated without its old label or enumeration"
+        },
+        {
+          "token": "13",
+          "reason": "the release policy on deleted normative content moved into the change gate as prose; the requirement is unchanged and stated without its old label or enumeration"
+        },
+        {
+          "token": "every",
+          "reason": "the release policy on deleted normative content moved into the change gate as prose; the requirement is unchanged and stated without its old label or enumeration"
+        },
+        {
+          "token": "must",
+          "reason": "the release policy on deleted normative content moved into the change gate as prose; the requirement is unchanged and stated without its old label or enumeration"
+        }
+      ]
+    },
+    {
+      "path": "MAINTAINING.md",
+      "line": 26,
+      "unit_sha256": "cee38cd9c9b3b6dcbebfbf60803a9160caa4942bac41ab137e0cc9cf57b5aa11",
+      "disposition": "reworded",
+      "destination": "MAINTAINING.md",
+      "note": "Second, one behavioral run on a **trap dedicated to the shipped feature** (method arm = the edited file),",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "must",
+          "reason": "the release policy on deleted normative content moved into the change gate as prose; the requirement is unchanged and stated without its old label or enumeration"
+        },
+        {
+          "token": "not",
+          "reason": "the release policy on deleted normative content moved into the change gate as prose; the requirement is unchanged and stated without its old label or enumeration"
+        }
+      ]
     },
     {
       "path": "SKILL.md",

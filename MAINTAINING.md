@@ -23,8 +23,6 @@ the changed deliverable. Historical closed or parked workspaces that are neither
 selected report WARN on failures and are non-gating; and (6) compute and report
 `sweep: N/M gates passed` from those observed results. The documented rows and gates are the only canonical contract.
 
-D-13 trigger: if the release includes any change that deletes normative content from `SKILL.md` or a guide, the sweep additionally requires (1) a rule-inventory diff — every normative one-liner extracted before the edit must be greppable after, in `SKILL.md` or its named guide — and (2) one behavioral eval run (trap scenario, method arm = edited file) proving the skill still avoids the trap. The eval run must be a **trap dedicated to the feature being shipped** (e.g. s23-flip-gate for the double gate), not a generic pre-existing scenario — text-presence (greps) doesn't prove behavior, and a behavioral contract feature needs its own trap (proven by s23: method denied the flip without mechanical green, control flipped E1).
-
 Migrate-chain currency: if the release changes any workspace-level contract (`AGENTS.tmpl.md`, status vocabulary, artifact names, closure protocol), the migrate guide MUST gain a checklist for the immediately previous version in the same release — a version bump without its migrate checklist is a release defect (precedent: v3.0→v3.1 and v3.3→v3.4 were both missed once).
 
 ### Skill self-lint gates
@@ -63,6 +61,15 @@ rule alike — held-out evidence is required only for a hot-path rule or a safet
 revision, so demoting or reclassifying a rule cannot hide its change); every other touched rule still
 needs its ledger diff, printed and named, but not evidence. A pure rewording (the same words, carried
 into the new text) needs no new evidence either way.
+
+A release that deletes normative content from `SKILL.md` or a guide also needs two things. First, the
+rule-inventory accounting: the unit gate (`check_unit_diff.py`) shows that every normative unit removed
+since the base has a disposition, so each one-liner stays greppable in `SKILL.md` or its named guide.
+Second, one behavioral run on a **trap dedicated to the shipped feature** (method arm = the edited file),
+not a generic pre-existing scenario: text presence does not prove behavior, and a behavioral contract
+needs its own trap (s23 proved it: the method arm denied the flip without mechanical green, while the
+control flipped). The alternative, mechanical proof plus a held-out no-regression cohort, applies only
+with the owner's recorded acceptance for that release.
 
 Recorded exceptions live in `eval/rules/gate-exceptions.json` (committed), a list of `{rule_id,
 statement_sha256, reason, accepted}`. An entry lets one in-scope add or change pass without this
