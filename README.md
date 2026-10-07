@@ -1,5 +1,9 @@
 <p align="center">
-  <img src=".github/brand/tackle-lockup.png" alt="Tackle: connected task checkpoints leading to a verified result" width="520">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/brand/tackle-hero-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset=".github/brand/tackle-hero-light.svg">
+    <img src=".github/brand/tackle-hero-light.svg" alt="Tackle: a plan drawn as stages of connected tasks, complete, in progress and not started, leading to the final acceptance check" width="100%">
+  </picture>
 </p>
 
 <h1 align="center">Durable plans. Verified delivery.</h1>
@@ -93,6 +97,15 @@ That public release reference and the GitHub API fast path have not been tested.
 
 ## How it works
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".github/brand/tackle-flow-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset=".github/brand/tackle-flow-light.svg">
+  <img src=".github/brand/tackle-flow-light.svg" alt="PLAN prepares the work: goal, scope, inputs, task briefs and readiness checks. RUN executes and checks the work: task checks, affected integrations and final deliverable acceptance. STATUS reads current progress without starting or changing work." width="100%">
+</picture>
+
+<details>
+<summary>Text version</summary>
+
 ```text
 PLAN                          RUN
 Prepare the work       →      Execute and check the work
@@ -101,6 +114,8 @@ task briefs, readiness        and final deliverable acceptance
 
 STATUS reads current progress without starting or changing work.
 ```
+
+</details>
 
 **PLAN** prepares requirements, decisions, task briefs, dependencies, and acceptance checks. Readiness checks are part of preparation.
 

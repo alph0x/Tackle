@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="470" viewBox="0 0 1200 470" role="img" aria-labelledby="hero-title hero-desc">
+<title id="hero-title">Tackle</title>
+<desc id="hero-desc">The Tackle wordmark beside a plan drawn as stages of connected tasks: complete tasks filled, the task in progress half filled, the tasks not started open, leading to the final acceptance check.</desc>
+<defs><pattern id="paper" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M 32 0 L 0 0 0 32" fill="none" stroke="#eceeea" stroke-opacity=".06" stroke-width="1"/></pattern></defs>
+<rect width="1200" height="470" fill="#0e1012"/>
+<rect width="1200" height="470" fill="url(#paper)"/>
+<rect x="1" y="1" width="1198" height="468" fill="none" stroke="#eceeea" stroke-width="2"/>
+<path d="M 15 24 H 33 M 24 15 V 33" stroke="#b9bdbf" stroke-width="1.5" fill="none"/>
+<path d="M 1167 24 H 1185 M 1176 15 V 33" stroke="#b9bdbf" stroke-width="1.5" fill="none"/>
+<path d="M 15 446 H 33 M 24 437 V 455" stroke="#b9bdbf" stroke-width="1.5" fill="none"/>
+<path d="M 1167 446 H 1185 M 1176 437 V 455" stroke="#b9bdbf" stroke-width="1.5" fill="none"/>
+<rect x="64" y="96" width="12" height="12" fill="#ff5c1f"/>
+<text x="88" y="107.5" font-family="ui-monospace, 'SF Mono', SFMono-Regular, 'Cascadia Mono', 'JetBrains Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="15" font-weight="700" letter-spacing="0.16em" fill="#ff8a57" text-anchor="start">AGENT SKILL / PLAN → RUN</text>
+<path d="M 108.2 300 V 149.3 H 146.5 V 300 ZM 61.9 181.2 V 148.3 H 193 V 181.2 Z M 215.6 302.1 Q 201.1 302.1 189.7 295.1 Q 178.4 288 172 275.8 Q 165.5 263.5 165.5 247.7 Q 165.5 231.9 172 219.6 Q 178.4 207.2 189.7 200.2 Q 201.1 193.2 215.6 193.2 Q 225.5 193.2 233.6 196.8 Q 241.7 200.4 247 206.7 Q 252.3 213.1 253.4 221.4 V 274 Q 252.3 282.2 247 288.6 Q 241.8 295 233.6 298.6 Q 225.5 302.1 215.6 302.1 ZM 223.6 269 Q 232.8 269 238.5 263 Q 244.1 257 244.1 247.7 Q 244.1 241.4 241.6 236.6 Q 239 231.9 234.4 229.1 Q 229.8 226.4 223.8 226.4 Q 217.8 226.4 213.2 229.1 Q 208.6 231.9 205.9 236.7 Q 203.2 241.5 203.2 247.7 Q 203.2 253.8 205.8 258.6 Q 208.4 263.5 213.1 266.2 Q 217.8 269 223.6 269 ZM 242.7 300 V 271.9 L 248.1 246.4 L 242.7 221.1 V 195.4 H 279.3 V 300 Z M 341 302.5 Q 324.4 302.5 311 295.4 Q 297.7 288.3 290 275.9 Q 282.3 263.5 282.3 247.8 Q 282.3 232 290.1 219.6 Q 297.8 207.2 311.3 200 Q 324.7 192.9 341.5 192.9 Q 353.8 192.9 363.9 196.9 Q 373.9 201 382.2 209.1 L 358.6 232.7 Q 355.4 229.4 351.2 227.8 Q 347.1 226.2 341.5 226.2 Q 335.5 226.2 330.6 228.8 Q 325.8 231.5 323 236.3 Q 320.1 241 320.1 247.5 Q 320.1 253.9 323 258.8 Q 325.8 263.7 330.7 266.4 Q 335.6 269.2 341.5 269.2 Q 347.5 269.2 351.8 267.2 Q 356.2 265.3 359.4 261.7 L 383 285.3 Q 374.2 293.9 364.1 298.2 Q 354 302.5 341 302.5 Z M 451.9 300 419 245.3 451.7 195.4 H 492.5 L 451.9 251.7 L 452.9 238 L 494.7 300 ZM 384.7 300 V 144 H 422 V 300 Z M 493.4 300 V 144 H 530.7 V 300 Z M 593.7 302.5 Q 576 302.5 562.5 295.5 Q 549 288.6 541.4 276.1 Q 533.7 263.7 533.7 247.7 Q 533.7 231.8 541.2 219.5 Q 548.6 207.2 561.6 200 Q 574.6 192.9 590.8 192.9 Q 606.7 192.9 619 199.6 Q 631.2 206.3 638.2 218.2 Q 645.1 230.1 645.1 245.3 Q 645.1 248.4 644.8 251.7 Q 644.5 255 643.5 259.3 L 551.2 259.8 V 235.7 L 628.7 235.3 L 611.9 245.7 Q 611.8 236.9 609.5 231.2 Q 607.2 225.5 602.7 222.6 Q 598.1 219.6 591.3 219.6 Q 584.3 219.6 579.1 223 Q 573.9 226.4 571.1 232.6 Q 568.4 238.8 568.4 247.7 Q 568.4 256.7 571.4 262.9 Q 574.3 269.1 579.9 272.4 Q 585.6 275.6 593.6 275.6 Q 601.2 275.6 607.2 273.1 Q 613.1 270.5 617.8 265.2 L 637.3 284.5 Q 629.5 293.5 618.5 298 Q 607.4 302.5 593.7 302.5 Z" fill="#eceeea"/>
+<rect x="64" y="342" width="584.43" height="2" fill="#eceeea"/>
+<text x="64" y="378" font-family="ui-monospace, 'SF Mono', SFMono-Regular, 'Cascadia Mono', 'JetBrains Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="17" font-weight="800" letter-spacing="0.14em" fill="#eceeea" text-anchor="start">PLAN</text>
+<text x="64" y="402" font-family="ui-monospace, 'SF Mono', SFMono-Regular, 'Cascadia Mono', 'JetBrains Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="14" font-weight="500" letter-spacing="0.04em" fill="#b9bdbf" text-anchor="start">prepares</text>
+<text x="260" y="378" font-family="ui-monospace, 'SF Mono', SFMono-Regular, 'Cascadia Mono', 'JetBrains Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="17" font-weight="800" letter-spacing="0.14em" fill="#eceeea" text-anchor="start">RUN</text>
+<text x="260" y="402" font-family="ui-monospace, 'SF Mono', SFMono-Regular, 'Cascadia Mono', 'JetBrains Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="14" font-weight="500" letter-spacing="0.04em" fill="#b9bdbf" text-anchor="start">executes + checks</text>
+<text x="456" y="378" font-family="ui-monospace, 'SF Mono', SFMono-Regular, 'Cascadia Mono', 'JetBrains Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="17" font-weight="800" letter-spacing="0.14em" fill="#eceeea" text-anchor="start">STATUS</text>
+<text x="456" y="402" font-family="ui-monospace, 'SF Mono', SFMono-Regular, 'Cascadia Mono', 'JetBrains Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="14" font-weight="500" letter-spacing="0.04em" fill="#b9bdbf" text-anchor="start">reads</text>
+<rect x="754" y="88" width="394" height="316" fill="#ff5c1f"/>
+<rect x="743" y="77" width="392" height="314" fill="#161a1d" stroke="#eceeea" stroke-width="2"/>
+<text x="762" y="107" font-family="ui-monospace, 'SF Mono', SFMono-Regular, 'Cascadia Mono', 'JetBrains Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="13" font-weight="800" letter-spacing="0.16em" fill="#eceeea" text-anchor="start">PLAN</text>
+<text x="816" y="107" font-family="ui-monospace, 'SF Mono', SFMono-Regular, 'Cascadia Mono', 'JetBrains Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="13" font-weight="600" letter-spacing="0.12em" fill="#b9bdbf" text-anchor="start">STAGES 1–4</text>
+<rect x="1106" y="94" width="9" height="9" fill="#eceeea"/>
+<rect x="742" y="123" width="394" height="2" fill="#eceeea"/>
+<path d="M 820 175 L 858 175" fill="none" stroke="#eceeea" stroke-width="2.4"/>
+<polygon points="852.5,171.25 859,175 852.5,178.75" fill="#eceeea"/>
+<path d="M 820 291 L 858 291" fill="none" stroke="#eceeea" stroke-width="2.4"/>
+<polygon points="852.5,287.25 859,291 852.5,294.75" fill="#eceeea"/>
+<path d="M 912 175 L 921.5 175 Q 931 175 931 184.5 L 931 223.5 Q 931 233 940.5 233 L 950 233" fill="none" stroke="#eceeea" stroke-width="2.4"/>
+<polygon points="944.5,229.25 951,233 944.5,236.75" fill="#eceeea"/>
+<path d="M 912 291 L 921.5 291 Q 931 291 931 281.5 L 931 242.5 Q 931 233 940.5 233 L 950 233" fill="none" stroke="#eceeea" stroke-width="2" stroke-opacity=".34"/>
+<polygon points="944.5,229.25 951,233 944.5,236.75" fill="#eceeea" fill-opacity=".34"/>
+<path d="M 1004 233 L 1042 233" fill="none" stroke="#eceeea" stroke-width="2" stroke-opacity=".34"/>
+<polygon points="1036.5,229.25 1043,233 1036.5,236.75" fill="#eceeea" fill-opacity=".34"/>
+<rect x="768.75" y="157.75" width="50" height="34" fill="#15181b" stroke="#eceeea" stroke-opacity=".32" stroke-width="1.5"/>
+<rect x="787" y="168" width="14" height="14" fill="#eceeea"/>
+<rect x="768.75" y="273.75" width="50" height="34" fill="#15181b" stroke="#eceeea" stroke-opacity=".32" stroke-width="1.5"/>
+<rect x="787" y="284" width="14" height="14" fill="#eceeea"/>
+<rect x="860.75" y="157.75" width="50" height="34" fill="#15181b" stroke="#eceeea" stroke-opacity=".32" stroke-width="1.5"/>
+<rect x="879" y="168" width="14" height="14" fill="#eceeea"/>
+<rect x="866" y="279" width="52" height="36" fill="#ff5c1f"/>
+<rect x="861.25" y="274.25" width="49" height="33" fill="#161a1d" stroke="#eceeea" stroke-width="2.5"/>
+<rect x="879" y="284" width="7" height="14" fill="#ff5c1f"/><rect x="880" y="285" width="12" height="12" fill="none" stroke="#eceeea" stroke-width="2"/>
+<rect x="952.75" y="215.75" width="50" height="34" fill="#161a1d" stroke="#eceeea" stroke-width="1.5"/>
+<rect x="972" y="227" width="12" height="12" fill="none" stroke="#eceeea" stroke-width="2"/>
+<rect x="1044.75" y="215.75" width="50" height="34" fill="#161a1d" stroke="#eceeea" stroke-width="1.5"/>
+<rect x="1048.75" y="219.75" width="42" height="26" fill="none" stroke="#eceeea" stroke-width="1.5"/>
+<path d="M 1063 233.5 L 1068 238.5 L 1077.5 227.5" fill="none" stroke="#eceeea" stroke-width="2.4" stroke-linecap="square"/>
+<text x="1070" y="273" font-family="ui-monospace, 'SF Mono', SFMono-Regular, 'Cascadia Mono', 'JetBrains Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="11" font-weight="700" letter-spacing="0.12em" fill="#b9bdbf" text-anchor="middle">ACCEPT</text>
+<rect x="742" y="336" width="394" height="1.5" fill="#eceeea"/>
+<rect x="762" y="357" width="13" height="13" fill="#eceeea"/>
+<text x="783" y="368.5" font-family="ui-monospace, 'SF Mono', SFMono-Regular, 'Cascadia Mono', 'JetBrains Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="12" font-weight="700" letter-spacing="0.08em" fill="#eceeea" text-anchor="start">COMPLETE</text>
+<rect x="870.28" y="357" width="6.5" height="13" fill="#ff5c1f"/><rect x="871.15" y="357.88" width="11.25" height="11.25" fill="none" stroke="#eceeea" stroke-width="1.75"/>
+<text x="891.28" y="368.5" font-family="ui-monospace, 'SF Mono', SFMono-Regular, 'Cascadia Mono', 'JetBrains Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="12" font-weight="700" letter-spacing="0.08em" fill="#eceeea" text-anchor="start">IN PROGRESS</text>
+<rect x="1003.91" y="357.88" width="11.25" height="11.25" fill="none" stroke="#eceeea" stroke-width="1.75"/>
+<text x="1024.04" y="368.5" font-family="ui-monospace, 'SF Mono', SFMono-Regular, 'Cascadia Mono', 'JetBrains Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="12" font-weight="700" letter-spacing="0.08em" fill="#eceeea" text-anchor="start">NOT STARTED</text>
+</svg>
