@@ -181,12 +181,14 @@
         "test_tier_model_collision.py",
         "test_brief_template.py",
         "test_capability_recovery.py",
-        "test_history_and_obligation_templates.py"
+        "test_history_and_obligation_templates.py",
+        "test_system_one_functional.py",
+        "test_system_one_integration.py"
       ],
-      "tests": 63,
+      "tests": 92,
       "source": "eval/templates",
       "category": "product",
-      "purpose": "Template fields, observed model routing, capability recovery and compiled briefs."
+      "purpose": "Template fields, observed model routing, capability recovery and compiled briefs. Public System One reference recipe admission, workspace consent, normalized transport, confidence and provenance. Optional System One shell detection, real consent persistence, SDK serialization, fallback and bounded history/intake consumers."
     },
     {
       "path": "eval/tests/tooling/protocol-v2",

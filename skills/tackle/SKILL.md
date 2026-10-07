@@ -62,7 +62,7 @@ STATUS never archives or cleans up.
 
 Migrate only selected active workspaces on a disposable copy first, preserve history and correction
 lineage, and adopt at an explicit task boundary. Ordinary invocation performs no network access or
-installation mutation. Same-release adoption of the selected active copy is held when a required lifecycle row fails; closed records and neighboring workspaces remain untouched.
+installation mutation, except a [consented System One call](references/guides/system-one.md). Same-release adoption of the selected active copy is held when a required lifecycle row fails; closed records and neighboring workspaces remain untouched.
 
 ## Core conventions
 

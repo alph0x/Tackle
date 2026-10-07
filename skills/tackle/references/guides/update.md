@@ -2,7 +2,7 @@
 
 ## Boundary
 
-Ordinary Tackle invocation performs no network access or installation-tree mutation. Tackle never
+Ordinary Tackle invocation performs no network access or installation-tree mutation, except a consented System One call under [the optional capability](system-one.md). Tackle never
 performs release checks, downloads, extraction, or installation-tree replacement, even when a newer
 release may exist. This guide is reference material for a user-controlled, out-of-band workflow
 only.

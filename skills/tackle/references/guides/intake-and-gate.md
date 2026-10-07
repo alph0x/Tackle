@@ -84,7 +84,7 @@ For a selected Lite route, `../lite-plan.tmpl.md` provides these preparation and
 <a id="step-2--gate-sizing-full--lite--none"></a>
 # Step 2 — Route sizing (Coordinated / Focused / Direct)
 
-Persistent route identifiers Full/Lite/None remain readable; the visible names below preserve their risk conditions.
+Persistent route identifiers Full/Lite/None remain readable; the visible names below preserve their risk conditions. Optional: [consented JEV](system-one.md#integration).
 
 | Gate | Use for | Example |
 |---|---|---|

@@ -78,6 +78,8 @@ retried role starts its own new Run ID with its own start/finish pair, plus one 
 <a id="failure-classification-and-correction"></a>
 ## Failure classification and escalation packet
 
+Optional: [consented JEV](system-one.md#integration).
+
 Consume retained failed observations before another check, including on resume. Diagnose from their
 command, output and relevant input fingerprints; do not repeat an unchanged failed check to
 rediscover its result. Recheck only after a recorded relevant input or environment change, or an

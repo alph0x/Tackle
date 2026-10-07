@@ -4366,7 +4366,7 @@
       "unit_sha256": "62c3e56e0d2a4d748568012c79d08266c258efaa45ba906ccc142812e4b193ae",
       "disposition": "reworded",
       "destination": "references/guides/update.md",
-      "note": "Ordinary Tackle invocation performs no network access or installation-tree mutation.",
+      "note": "Ordinary Tackle invocation performs no network access or installation-tree mutation, except a consented System One call under [the optional capability](system-one.md).",
       "destination_unit_sha256": null
     },
     {
@@ -6841,6 +6841,24 @@
       "disposition": "reworded",
       "destination": "references/guides/status.md",
       "note": "**Resume** follows the [cold resume read order](#cold-resume-read-order).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "SKILL.md",
+      "line": 60,
+      "unit_sha256": "b10dbf2279fbd472780f8c8622b9abdb6f18dc6f9ec8d4ec38da87030f570fc1",
+      "disposition": "reworded",
+      "destination": "SKILL.md",
+      "note": "Ordinary invocation performs no network access or installation mutation, except a [consented System One call](references/guides/system-one.md).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/update.md",
+      "line": 5,
+      "unit_sha256": "0e7ba627f08f1dacba49e665d79177457a4973794ae947ab39c683dee4228c31",
+      "disposition": "reworded",
+      "destination": "references/guides/update.md",
+      "note": "Ordinary Tackle invocation performs no network access or installation-tree mutation, except a consented System One call under [the optional capability](system-one.md).",
       "destination_unit_sha256": null
     }
   ]

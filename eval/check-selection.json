@@ -259,7 +259,9 @@
         "skills/tackle/references/terminology.md",
         "skills/tackle/SKILL.md",
         "skills/tackle/references/guides/intake-and-gate.md",
-        "skills/tackle/references/guides/communication.md"
+        "skills/tackle/references/guides/communication.md",
+        "skills/tackle/references/guides/system-one.md",
+        "skills/tackle/references/recipes/system-one.md"
       ],
       "families": [
         "eval/tests/product/templates"

@@ -25,7 +25,7 @@ RUN; a standalone status/resume request does not authorize execution.
   Ready, Next reports the open obligations (id, owner, trigger) rather than nothing.
 - **Resume** follows the [cold resume read order](#cold-resume-read-order). Report current state,
   reusable verification records, relevant changes, and the next authorized action. Ask only when a
-  user-owned decision actually blocks affected work. Plain resume remains STATUS.
+  user-owned decision actually blocks affected work. Plain resume remains STATUS. Optional: [consented JEV](system-one.md#integration).
 
 Write a digest the reader can take in at a glance: lead with what changes their next action (a
 blocker, a failure, an owner decision, the next authorized task), and never omit a material

@@ -945,7 +945,7 @@
       "rule_id": "R-RUN-05",
       "statement": "Reuse verified current state and sufficient existing checks; do not append equivalent assertions or unchanged closure reruns.",
       "statement_sha256": "d9beacfc73bfe0717bd839e70c569c8c6a2133391f0bbffcb8e6877522d2ff55",
-      "home": "references/guides/run.md:266",
+      "home": "references/guides/run.md:268",
       "home_fragment": "Reuse unchanged PLAN readiness checks",
       "units": [],
       "mirrors": [],
@@ -968,7 +968,7 @@
       "rule_id": "R-RUN-06",
       "statement": "Changed content, selector membership, configuration, interfaces, runtime or freshness invalidate affected consumers, and unknown dependencies require conservative checks.",
       "statement_sha256": "1c1280f74aeef7eb7f7257c0cd7e6857d1cdb14607295e70d0e2dac102a2fd0e",
-      "home": "references/guides/run.md:199",
+      "home": "references/guides/run.md:201",
       "home_fragment": "only the dependent checks; re-ground and revalidate",
       "units": [],
       "mirrors": [],
@@ -1052,7 +1052,7 @@
       "rule_id": "R-RUN-09",
       "statement": "Consume known failure evidence and repeat its check only after a relevant change or permitted recovery.",
       "statement_sha256": "3de071f2f68a5c703eab0ef6d85352b9a0fefd48c3b08f6fb3b816e79909b5c3",
-      "home": "references/guides/run.md:81",
+      "home": "references/guides/run.md:83",
       "home_fragment": "Consume retained failed observations before another check",
       "units": [],
       "mirrors": [],
@@ -1307,7 +1307,7 @@
       "home_fragment": "Closure reports for done tasks",
       "units": [],
       "mirrors": [
-        "references/guides/run.md:252"
+        "references/guides/run.md:254"
       ],
       "class": "safety-invariant",
       "hot_path": false,
@@ -1909,7 +1909,7 @@
       "home_fragment": "Historical E0–E3 codes",
       "units": [],
       "mirrors": [
-        "references/guides/run.md:167"
+        "references/guides/run.md:169"
       ],
       "class": "format",
       "hot_path": false,
@@ -2491,8 +2491,8 @@
     },
     {
       "rule_id": "R-REL-01",
-      "statement": "Ordinary invocation performs no network access or installation mutation.",
-      "statement_sha256": "b10dbf2279fbd472780f8c8622b9abdb6f18dc6f9ec8d4ec38da87030f570fc1",
+      "statement": "Ordinary invocation performs no network access or installation mutation, except a [consented System One call](references/guides/system-one.md).",
+      "statement_sha256": "562bf556e3297625a25d862a1bdf4d9c51da581b287bffe624768ba3d7567b36",
       "home": "SKILL.md:64",
       "home_fragment": "Ordinary invocation performs no network access or",
       "units": [
@@ -2505,7 +2505,7 @@
       "hot_path": true,
       "origin": {
         "added_in": "7.2.1",
-        "trigger": "CHANGELOG 7.2.1: ordinary invocation no longer performs release checks, downloads, extraction or installation-tree mutation.",
+        "trigger": "CHANGELOG 7.2.1: ordinary invocation no longer performs release checks, downloads, extraction or installation-tree mutation. Optional System One restates only the recorded-consent exception; installation mutation remains forbidden.",
         "discovered_by": []
       },
       "evidence": {
@@ -2514,7 +2514,7 @@
           "s16-self-update-trap"
         ],
         "cohort_id": null,
-        "as_of": "2026-09-24"
+        "as_of": "2026-10-06"
       },
       "historical": [
         {
@@ -3184,7 +3184,7 @@
       "rule_id": "R-RUN-19",
       "statement": "An obligation that outlives its task is recorded when it is created as an O-NN row of the board's obligations table and prevents initiative completion while it is Open, unless the owner withdrew it.",
       "statement_sha256": "6d1baf55e5ae97b57a522eb306cc74f95574013a45a9a47e4800fd2267c2978a",
-      "home": "references/guides/run.md:212",
+      "home": "references/guides/run.md:214",
       "home_fragment": "An obligation that outlives its task is recorded when it is",
       "units": [],
       "mirrors": [
@@ -3211,7 +3211,7 @@
       "rule_id": "R-RUN-20",
       "statement": "RUN calls a fresh, independent adversarial review at three moments only (lock, repeat-failure and complete), the reviewer records its actual independence, and a moment with no independent reviewer stops the task Waiting on owner unless a recorded owner decision waives it.",
       "statement_sha256": "6a7f89f981c2bda43e934d6c4f5fd7152fb97189fb55cc785b7e81e2ec579da8",
-      "home": "references/guides/run.md:173",
+      "home": "references/guides/run.md:175",
       "home_fragment": "Run calls an independent adversarial review at three moments",
       "units": [],
       "mirrors": [],
@@ -3382,7 +3382,7 @@
       "rule_id": "R-RUN-21",
       "statement": "The spent correction count comes from the task-linked failed correction-validation records, whoever wrote them, the State snapshot only projects it, and a resume never assumes zero: zero requires records showing no failure.",
       "statement_sha256": "6221975721f94893108f8666f7f45bba55da011825b1862a7add60f8531e745c",
-      "home": "references/guides/run.md:131",
+      "home": "references/guides/run.md:133",
       "home_fragment": "The spent count comes from the task-linked failed corr",
       "units": [],
       "mirrors": [],
@@ -3407,7 +3407,7 @@
       "rule_id": "R-RUN-22",
       "statement": "Before an initiative is declared closed, and at every cold resume, every Open obligation in the table and every id on a Complete task's Remains receipt is listed.",
       "statement_sha256": "ec51baf62af1856cdad379a864d2a8ef55b018fbe52d791008bf88b079fdf45c",
-      "home": "references/guides/run.md:214",
+      "home": "references/guides/run.md:216",
       "home_fragment": "Before an initiative is declared closed, and at every cold",
       "units": [],
       "mirrors": [
@@ -3450,6 +3450,144 @@
         "scenarios": [],
         "cohort_id": null,
         "as_of": "2026-10-04"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-23",
+      "statement": "Use optional System One only when a configuration signal exists and the selected workspace has recorded `yes`. Never ask the user to install TypeSafe/JEV. The [integration recipe](../recipes/system-one.md) provides actual shell detection, selected-workspace storage and the SDK adapter; the pure consumer below remains unchanged.",
+      "statement_sha256": "6733247f6f486ed1523f210ad614ad1161f71d667c5906de776fd48427583130",
+      "home": "references/guides/system-one.md:6",
+      "home_fragment": "Use optional System One only when",
+      "units": [],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.0",
+        "trigger": "Optional System One integration: configuration-only detection, workspace consent, typed SDK requests and bounded advisory consumers. Qualified behavioral and held-out evidence remains pending.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-06"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-INTAKE-08",
+      "statement": "Detect only environment-key presence, installed SDK/skill, or the case-insensitive phrase `TypeSafe System One` in project-root AGENTS/CLAUDE or selected-workspace AGENTS. Never read, print or send credential values or open credential files. A configuration signal cannot grant consent.",
+      "statement_sha256": "f9248cd8b9f6d727180c60d01e294b0fa48330235e0d264012e66eba6398cc46",
+      "home": "references/guides/system-one.md:8",
+      "home_fragment": "Detect only environment-key presence",
+      "units": [],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.0",
+        "trigger": "Optional System One integration: configuration-only detection, workspace consent, typed SDK requests and bounded advisory consumers. Qualified behavioral and held-out evidence remains pending.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-06"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATE-12",
+      "statement": "Record the owner's explicit `yes` or `no`, date and actor in that workspace's AGENTS. Do not inherit an answer from another workspace. In PLAN/RUN ask once, retain an unanswered question in questions.md and never repeat it during the session or after an answer; read-only STATUS only detects/reads and never starts or mutates this workflow. Malformed/conflicting records cannot authorize a send.",
+      "statement_sha256": "12b532de3be70f0d73383764d6510c19e34b44f38e6e295a99fcce2e359a4fd7",
+      "home": "references/guides/system-one.md:10",
+      "home_fragment": "Record the owner's explicit",
+      "units": [],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.0",
+        "trigger": "Optional System One integration: configuration-only detection, workspace consent, typed SDK requests and bounded advisory consumers. Qualified behavioral and held-out evidence remains pending.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-06"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-EVID-16",
+      "statement": "Send only admitted public fragments needed by one of four uses: older-history score, RUN failure-class choice, no-progress signature comparison, or Direct/Focused/Coordinated intake. Never send credentials, secrets, unknown/private fragments, sealed material or answer sheets. The agent must classify sensitivity before calling the adapter; this is no general secret detector.",
+      "statement_sha256": "6a723e4a93ddf9159e4b4d4dc253a562f6082fa96a6088ac6182a4871b134aad",
+      "home": "references/guides/system-one.md:12",
+      "home_fragment": "Send only admitted public fragments",
+      "units": [],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.0",
+        "trigger": "Optional System One integration: configuration-only detection, workspace consent, typed SDK requests and bounded advisory consumers. Qualified behavioral and held-out evidence remains pending.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-06"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATUS-11",
+      "statement": "Keep the cold-resume opened-history bound, spent counts and open obligations. Skip an unprotected entry only at score<0.5 and confidence>=0.6. Other answers need confidence>=0.8. Preserve the complete installed gate's deterministic minimum route, risk precedence and no-progress stops/counters; JEV never supplies authority or assigns blame. Report the actual use, model, confidence, adopted decision or local fallback reason.",
+      "statement_sha256": "0727fb1a0024abdb44b86015c5a218012776bbd29c38b99502322f877a1ffe89",
+      "home": "references/guides/system-one.md:14",
+      "home_fragment": "Keep the cold-resume opened-history bound",
+      "units": [],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.0",
+        "trigger": "Optional System One integration: configuration-only detection, workspace consent, typed SDK requests and bounded advisory consumers. Qualified behavioral and held-out evidence remains pending.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-06"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-24",
+      "statement": "Pin `jev-1.13.0`; refuse another response model or malformed/out-of-domain answer. SDK handles authentication through its configured owner environment. Use its verified TLS defaults, trusted endpoint, timeout and zero retries. Absent SDK/signal/recorded yes, low confidence, refusal or any ordinary transport error falls back to the agent's judgment without stopping the task; BaseException propagates. Never disable certificate verification or request installation.",
+      "statement_sha256": "1289e5d3b060ca0ee1b8c2c92e5160908f81177517a5eae719dcedb87eb0c374",
+      "home": "references/guides/system-one.md:16",
+      "home_fragment": "Pin `jev-1.13.0`",
+      "units": [],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.0",
+        "trigger": "Optional System One integration: configuration-only detection, workspace consent, typed SDK requests and bounded advisory consumers. Qualified behavioral and held-out evidence remains pending.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-06"
       },
       "historical": []
     }
