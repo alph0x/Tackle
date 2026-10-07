@@ -2509,7 +2509,7 @@
      }
     }
    ],
-   "oracle_sha256": "43c826c2dfacb0069841c33d0d5f08682096f6c50a431e486b7d791d05a6188a"
+   "oracle_sha256": "07017edeed9c924a646c465a92e4e3cb72f8d524398d34722bedc0fb0ed6252e"
   },
   {
    "scenario_id": "s8-judge-trap",
