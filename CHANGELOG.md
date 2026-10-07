@@ -1,5 +1,46 @@
 # Tackle changelog
 
+## Tackle 9.1.0
+
+- **Resumed work keeps its place.** A cold resume reads the workspace in one declared order, keeps
+  counting spent correction cycles from the records instead of restarting them, never repeats an effect
+  the records show as done, and reads only the history it needs within a bounded window.
+- **History stays bounded and obligations stay visible.** New workspaces cap history growth with an
+  archive policy, and every obligation that outlives its task becomes an `O-NN` row on the board that
+  blocks initiative completion while it is `Open`. Each Complete task's report ends with a
+  `**Remains**:` receipt. Lint row 17 checks the table, the receipts and the newest snapshot.
+- **Closing reads the records as prose.** Before an initiative is declared closed, every Complete task's
+  brief, report and cited records, with the history, are read as prose, and an owner's unmet request
+  becomes an `Open` obligation raised with the owner. A missing table or `**Remains**:` line never
+  shows that nothing remains.
+- **Independent review at the key moments.** A session that did not do the work reviews a plan before
+  it is locked, a check that fails twice and work before it is called Complete, with its verdict kept as
+  its own record.
+- **Optional System One (TypeSafe JEV).** When a configuration signal exists and the selected workspace
+  has recorded `yes`, Tackle may ask JEV for four bounded judgments: older-history selection, failure
+  class, no-progress comparison and intake size. It detects only presence, never reads or sends
+  credentials, asks for consent once per workspace, and falls back to its own judgment on any refusal,
+  low confidence or transport error. Ordinary invocation still performs no network access or
+  installation mutation; the only exception is network access by a consented System One call.
+- **A local plan view.** On request, Tackle builds one self-contained HTML page for a workspace: status,
+  outcomes, the task graph with traced selection, tasks, requirements, decisions, the project's
+  architecture before and after the plan, and executive Plan, Progress or Both PDFs. The coordinator
+  rebuilds an existing view at each task close, an open page reloads itself with no server, and curated
+  status prose written for an earlier board gives way to the recorded facts with a visible note. An
+  optional loopback producer serves a live page on the owner's request only.
+- **A living architecture map** stays current between plans, and **controlled writing** keeps plans,
+  briefs and reports in short, plain sentences, with a check that flags vague wording.
+- **Migration.** The new `v9.0 → v9.1` checklist adopts a selected active workspace on a disposable copy
+  at a task boundary; closed tasks, historical records and neighboring workspaces are untouched.
+- **Evidence and its limits.** Released 9.0.1 and 9.1.0 were compared with real agents (Claude Sonnet
+  5.5 through the Claude Code CLI, five valid seeds per version, sealed mechanical oracles, same-family
+  models). On the resume and closure traps no rule measured worse than in 9.0.1: the correction-count
+  rule was inert (both versions passed), the completed-effect rules leaned toward 9.1 without reaching
+  the threshold, and the closure rules showed no difference, before or after the closing fix. The adversary
+  review and System One traps could not measure their rules on this route, which offers no review tool,
+  and where the skill was rarely invoked; no unsafe System One act was observed. These labels are
+  directional; they are recorded in the gate-exception reasons.
+
 ## Tackle 9.0.1
 
 - **The skill installs from `skills/tackle/`.** The repository root no longer carries `SKILL.md`;

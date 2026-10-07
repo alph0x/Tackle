@@ -5,7 +5,7 @@ description: "Use for durable planning and explicit task execution of multi-sess
 
 # Tackle
 
-**Tackle 9.0.1** is a model-agnostic planning and execution method. Install: Markdown-only `SKILL.md` plus `references/`. Release changes: changelog.
+**Tackle 9.1.0** is a model-agnostic planning and execution method. Install: Markdown-only `SKILL.md` plus `references/`. Release changes: changelog.
 
 ## Public surface
 

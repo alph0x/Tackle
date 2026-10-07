@@ -20,7 +20,7 @@ Tackle turns a goal into a plan stored in your repository. Each task carries the
 
 Use it for features, refactors, and investigations that span sessions or involve handoffs between agents or people.
 
-**Tackle 9.0.1** · Model-agnostic · Markdown-only install · MIT
+**Tackle 9.1.0** · Model-agnostic · Markdown-only install · MIT
 
 ## Why Tackle
 
@@ -78,20 +78,20 @@ cp -R skills/tackle/references ~/.claude/skills/tackle/
 
 For Cursor, use `~/.cursor/skills/tackle/`. Other agents use their own skill directory. Tackle follows the [Agent Skills](https://github.com/anthropics/skills) format.
 
-The install contains only `SKILL.md` and `references/`, with 55 installation-relative files. Repository branding, development tools, and evaluation fixtures are not part of the installed skill.
+The install contains only `SKILL.md` and `references/`, with 66 installation-relative files. Repository branding, development tools, and evaluation fixtures are not part of the installed skill.
 The checkout copy commands above copy those files into the selected directory and leave any other files already there.
 
-The update checks used skills@1.7.0 in controlled synthetic Git fixtures; they did not change a real installation or test the public GitHub API route. In a copy-mode reinstall using `--copy -a claude-code -y -g`, the selected Claude Code directory received the exact 55-file artifact. That route refreshed the selected agent copy and lock while leaving any old canonical `.agents/skills/tackle` directory untouched.
+For 9.0.1, the update checks used skills@1.7.0 in controlled synthetic Git fixtures; they did not change a real installation or test the public GitHub API route. In a copy-mode reinstall using `--copy -a claude-code -y -g`, the selected Claude Code directory received the exact 55-file artifact. That route refreshed the selected agent copy and lock while leaving any old canonical `.agents/skills/tackle` directory untouched.
 
 In two fresh synthetic global fixtures, default symlink mode with `--skill tackle -a claude-code codex -y -g` replaced the canonical `.agents/skills/tackle` directory with the exact artifact and linked Claude Code to it. Codex resolves the canonical `.agents/skills` directory; this command does not create a separate `.codex/skills/tackle` link. Seeded floating and pinned ordinary updates exited successfully while retaining the old root-layout path and bytes; the pinned lock still named v9.0.0. These results do not establish automatic migration of older installs.
 
-After the v9.0.1 tag exists publicly, the tested flags can be used with this proposed source command:
+After publication, sandboxed probes of 9.0.1 installed the exact 55-file artifact through both public routes: the `#v9.0.1` tag and the default no-ref source. For 9.1.0 the same flags apply to the tag once it exists:
 
 ```sh
-npx --yes skills@1.7.0 add 'https://github.com/alph0x/Tackle.git#v9.0.1' --skill tackle -a claude-code codex -y -g
+npx --yes skills@1.7.0 add 'https://github.com/alph0x/Tackle.git#v9.1.0' --skill tackle -a claude-code codex -y -g
 ```
 
-That public release reference and the GitHub API fast path have not been tested. The controlled source used `.invalid#packaging-preparation-02`, rewritten to a local clone, with synthetic old-lock seeds. An earlier parser-invalid root probe selected a same-name two-file fixture; the 1,476-file figure describes repository/package blast radius or conditional root-copy risk, not observed historical installed content. Restart your session after an update if your agent cannot reload skills.
+The 9.1.0 routes are probed only after publication, and the GitHub API fast path has not been tested. The controlled source used `.invalid#packaging-preparation-02`, rewritten to a local clone, with synthetic old-lock seeds. An earlier parser-invalid root probe selected a same-name two-file fixture; the 1,476-file figure describes repository/package blast radius or conditional root-copy risk, not observed historical installed content. Restart your session after an update if your agent cannot reload skills.
 
 </details>
 
@@ -229,7 +229,7 @@ Historical records retain their meanings: E1 for independent command verificatio
 
 During 8.x, documented slash forms such as `/tackle-run` and `/tackle-verify` preserve their intent boundaries when the host passes them as text; they do not register separate picker entries. The retiring 8.x action-name aliases keep their historical targets in [terminology.md](skills/tackle/references/terminology.md).
 
-The install keeps the head of the checklist chain v2.0 → v9.0: [8.4 → 9.0](skills/tackle/references/guides/migrate.md#v84--v90-checklist), [8.4.0 → 8.4.1](skills/tackle/references/guides/migrate.md#v840--v841-checklist) and [8.3 → 8.4](skills/tackle/references/guides/migrate.md#v83--v84-checklist). The historical checklists, v2.0 → v8.3, live in the repository's [`maintaining/migrations.md`](maintaining/migrations.md), including [8.2 → 8.3](maintaining/migrations.md#v82--v83-checklist), [8.1 → 8.2](maintaining/migrations.md#v81--v82-checklist), [8.0 → 8.1](maintaining/migrations.md#v80--v81-checklist), and the [copy-first 7.3 → 8.0 transition](maintaining/migrations.md#v73--v80-checklist).
+The install keeps the head of the checklist chain v2.0 → v9.1: [9.0 → 9.1](skills/tackle/references/guides/migrate.md#v90--v91-checklist), [8.4 → 9.0](skills/tackle/references/guides/migrate.md#v84--v90-checklist), [8.4.0 → 8.4.1](skills/tackle/references/guides/migrate.md#v840--v841-checklist) and [8.3 → 8.4](skills/tackle/references/guides/migrate.md#v83--v84-checklist). The historical checklists, v2.0 → v8.3, live in the repository's [`maintaining/migrations.md`](maintaining/migrations.md), including [8.2 → 8.3](maintaining/migrations.md#v82--v83-checklist), [8.1 → 8.2](maintaining/migrations.md#v81--v82-checklist), [8.0 → 8.1](maintaining/migrations.md#v80--v81-checklist), and the [copy-first 7.3 → 8.0 transition](maintaining/migrations.md#v73--v80-checklist).
 
 </details>
 

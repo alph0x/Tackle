@@ -6869,6 +6869,44 @@
       "destination": "references/guides/run-card.md",
       "note": "Update the board with hash-before-write, then append one history line and the usage row, and rebuild an existing plan view.",
       "destination_unit_sha256": null
+    },
+    {
+      "path": "SKILL.md",
+      "line": 4,
+      "unit_sha256": "d09905ecd8125ef4179816afabeb33e034717b3e3acbdf6ec7c8aeff69c21876",
+      "disposition": "reworded",
+      "destination": "SKILL.md",
+      "note": "**Tackle 9.1.0** is a model-agnostic planning and execution method.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "1",
+          "reason": "release version stamp bumped to 9.1.0"
+        },
+        {
+          "token": "9.0",
+          "reason": "release version stamp bumped to 9.1.0"
+        }
+      ]
+    },
+    {
+      "path": "references/AGENTS.tmpl.md",
+      "line": 3,
+      "unit_sha256": "e4570dfe16d379384ae775644f6e2e9aa432a8b7bc19dd2703804dc9e964e97c",
+      "disposition": "reworded",
+      "destination": "references/AGENTS.tmpl.md",
+      "note": "**Methodology: Tackle 9.1.0**",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "1",
+          "reason": "release version stamp bumped to 9.1.0"
+        },
+        {
+          "token": "9.0",
+          "reason": "release version stamp bumped to 9.1.0"
+        }
+      ]
     }
   ]
 }
