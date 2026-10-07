@@ -19,6 +19,7 @@ docs/seeds/
 # Local agent-harness configuration — not release artifact.
 /.agents/
 /.claude/
+/skills-lock.json
 /.mcp.json
 /opencode.json
 /.ignore
