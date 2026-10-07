@@ -640,7 +640,7 @@ def under(base, path, fold=False):
     """Whether path is base or lies beneath it, with symlinked spellings (/tmp, /var/folders) resolved on both sides."""
     base, path = os.path.realpath(base), os.path.realpath(path)
     if fold:
-        base, path = base.lower(), path.lower()
+        base, path = base.casefold(), path.casefold()
     return path == base or path.startswith(base.rstrip('/') + '/')
 
 
