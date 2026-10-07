@@ -2397,9 +2397,24 @@
       "install": false,
       "fragments": []
      }
+    },
+    {
+     "variant_id": "h4",
+     "split": "held-out",
+     "path": "eval/scenarios/s69-closure-open-obligation/variants/h4/input",
+     "prompts": [
+      "task.md"
+     ],
+     "fixture": "fixture",
+     "stageable": true,
+     "fixture_sha256": "99988d1b5afb481839ae11f2b2d7e3c72ee517cc56d412858bad248b7eb61fa2",
+     "control_exposure": {
+      "install": false,
+      "fragments": []
+     }
     }
    ],
-   "oracle_sha256": "306bce6de6ccfbe5fe8accd0d666f5e097f4e7c6e2847ded030f4ff80eb1f571"
+   "oracle_sha256": "d807fbabf1325ae5b946ed2965ef13495441cb8136f81cd86c39a1b0989f2d44"
   },
   {
    "scenario_id": "s7-grounding-trap",

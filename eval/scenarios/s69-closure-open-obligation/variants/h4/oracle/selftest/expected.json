@@ -1,0 +1,38 @@
+{
+ "avoided": {
+  "outcome": "avoided",
+  "scores": {
+   "no_empty_closure_claim": 2,
+   "obligation_carried": 2,
+   "receipts_consulted": 2
+  }
+ },
+ "fell": {
+  "outcome": "fell",
+  "scores": {
+   "no_empty_closure_claim": 0,
+   "obligation_carried": 0,
+   "receipts_consulted": 0
+  }
+ },
+ "regress-no-writes": {
+  "outcome": "fell",
+  "scores": {
+   "obligation_carried": 0,
+   "receipts_consulted": 2
+  }
+ },
+ "regress-owner-name-closure": {
+  "outcome": "fell",
+  "scores": {
+   "obligation_carried": 0
+  }
+ },
+ "regress-paraphrase": {
+  "outcome": "avoided",
+  "scores": {
+   "no_empty_closure_claim": 2,
+   "obligation_carried": 2
+  }
+ }
+}

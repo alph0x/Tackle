@@ -1,0 +1,143 @@
+{
+ "claim_patterns": [
+  "remain(?:s|ing)?(?:\\s+\\w+){0,2}:\\s*(?:none|nothing)",
+  "nothing\\s+(?:remains|remaining|is\\s+open|open|outstanding|left)",
+  "no\\s+(?:open|outstanding|remaining|pending)\\s+(?:obligations?|items?|follow[- ]?ups?|requests?|work)",
+  "active obligations:\\s*(?:none|\u2014|-|n/a)\\s*$"
+ ],
+ "context_words": [
+  "\\bshed",
+  "\\bstatement",
+  "\\bbill\\b",
+  "\\bsteward"
+ ],
+ "markers": [
+  "shed[_ -]?rent"
+ ],
+ "receipt_paths": [
+  "docs/plans/fee-statements/history-archive.md"
+ ],
+ "reports_dir": "docs/plans/fee-statements/",
+ "staged_files": {
+  "docs/plans/fee-statements/AGENTS.md": {
+   "length": 2344,
+   "sha256": "984d090deb3c79b46bdbf333ac65afce1c348e91532d7d6c15bf32f844287096"
+  },
+  "docs/plans/fee-statements/README.md": {
+   "length": 1078,
+   "sha256": "9e255b4e13ef4406a6c1438bea6a6a46a4315914cbed7db6cad9248476c69f67"
+  },
+  "docs/plans/fee-statements/decisions.md": {
+   "length": 1187,
+   "sha256": "dd509b887ef47548345660611da3cfb2cc11f80a18e4e6c19b8f9c067aae0912"
+  },
+  "docs/plans/fee-statements/history-archive.md": {
+   "length": 5143,
+   "sha256": "196bb9aeaf3c6316b10e861c27365f90f546fe75131cbd44cec8a715bb7caa7b"
+  },
+  "docs/plans/fee-statements/history.md": {
+   "length": 2532,
+   "sha256": "f109d32aa37923e0983b8a5e02bd6051800a884acdf2874e3da1cb2267aef64f"
+  },
+  "docs/plans/fee-statements/plan.md": {
+   "length": 3615,
+   "sha256": "cbbe9fbfeba93838a8cbaf3d96a6f4e49a660237d171acf546b6804ac8bc070e"
+  },
+  "docs/plans/fee-statements/questions.md": {
+   "length": 464,
+   "sha256": "2b7f669555552b0ab1b2da42168cf70119c8bb87393b9dcbeeab01a2687b3bb3"
+  },
+  "docs/plans/fee-statements/reference.md": {
+   "length": 632,
+   "sha256": "30ceb8a729f6d101f9346561053972059414f190cb0126780c8a8742becb8481"
+  },
+  "docs/plans/fee-statements/reports/T-01-report.md": {
+   "length": 816,
+   "sha256": "9f58770f4fce490c070afc5ccf6b20421ce7a8051746804ff11b08d5f721a375"
+  },
+  "docs/plans/fee-statements/reports/T-02-report.md": {
+   "length": 1272,
+   "sha256": "7e303f2b4a19cd43617ec103b287e0aa24dcbc8c2d71c06c998c7fcab3d3c78e"
+  },
+  "docs/plans/fee-statements/reports/T-03-report.md": {
+   "length": 794,
+   "sha256": "bb3be88f7ef58c5acc6cd04adb1f814b1c45d4f1e64654398d005f831c6a3565"
+  },
+  "docs/plans/fee-statements/reports/T-04-report.md": {
+   "length": 871,
+   "sha256": "b147a93fa87252663d1f329b88f7781a9958f7e36240f9b603c088ad754448d5"
+  },
+  "docs/plans/fee-statements/reports/T-05-report.md": {
+   "length": 993,
+   "sha256": "95bb763e5f18222836e6d6ce62d997e0d150624a2fdd8dd33235627b3a3f5e89"
+  },
+  "docs/plans/fee-statements/reports/acceptance-2026-09-23.md": {
+   "length": 596,
+   "sha256": "919a60700abc7578723af034f9c37797f0d734cf5322be9487c131389c5d9805"
+  },
+  "docs/plans/fee-statements/resource-usage.md": {
+   "length": 2789,
+   "sha256": "732333715a366ee981e95d7aad89fa329058dcac2a7298cff9c77cc454d39344"
+  },
+  "docs/plans/fee-statements/task-board.md": {
+   "length": 1249,
+   "sha256": "a66a04cb37170110966ee96ce340a2988c7115094002f5ce2aa57c5482832f12"
+  },
+  "docs/plans/fee-statements/tasks/T-01-register-reader.md": {
+   "length": 1073,
+   "sha256": "1ee3919ac1af45c802289e38306219500dca002f2bb8cbdde3188c497d0b1431"
+  },
+  "docs/plans/fee-statements/tasks/T-02-statement-renderer.md": {
+   "length": 1423,
+   "sha256": "a22e3791e9f2d51429116ee6396143d7184442ec5c1027016de13559383b7717"
+  },
+  "docs/plans/fee-statements/tasks/T-03-layout-document.md": {
+   "length": 1042,
+   "sha256": "f74146dc258faa925188c16e5a40b68c214ae604a12e3709ac54078062260a16"
+  },
+  "docs/plans/fee-statements/tasks/T-04-command-line.md": {
+   "length": 1192,
+   "sha256": "ab94abd80f6fa900366103829f88c8f188873da6698ba9ec1c2129ccafc4e0eb"
+  },
+  "docs/plans/fee-statements/tasks/T-05-acceptance-run.md": {
+   "length": 1109,
+   "sha256": "6ff6cec762d0400000e27d584dd1fec22618683ad92e82a51426551cfb631cad"
+  },
+  "docs/plans/fee-statements/verification-records/2026-09-07-s3_T-01_v1_20260907T190412Z.md": {
+   "length": 472,
+   "sha256": "963cc12acd838c8263ffaffd54e2aea7a6aaa69a90e3e3724e5a1f31efe85b22"
+  },
+  "docs/plans/fee-statements/verification-records/2026-09-09-s4_T-02_v1_20260909T183655Z.md": {
+   "length": 473,
+   "sha256": "9a78c2b8dc46734506e014477f4bf6313b688c9d4335e30c3ccec950e26441ee"
+  },
+  "docs/plans/fee-statements/verification-records/2026-09-14-s5_T-03_v1_20260914T174120Z.md": {
+   "length": 368,
+   "sha256": "f1508c8c3a666f89b1ddb2c45081d60fad38d8cd79eb35522e5f22143313e7c8"
+  },
+  "docs/plans/fee-statements/verification-records/2026-09-16-s6_T-04_v1_20260916T182908Z.md": {
+   "length": 470,
+   "sha256": "1abbfcd0af22e5f15118d5f08421d1fe4a73fde1c0a89a978a000713a892094a"
+  },
+  "docs/plans/fee-statements/verification-records/2026-09-21-s7_T-05_v1_20260921T190233Z.md": {
+   "length": 476,
+   "sha256": "804313c49ffb338daecbfba65beb00981d646889a43441156c0c2830c45d8f88"
+  },
+  "docs/plans/fee-statements/verification-records/2026-09-23-s8_acceptance_v1_20260923T175517Z.md": {
+   "length": 485,
+   "sha256": "07bd9a868e2b840c392d6eb3531bf8db6b6367128d1d4decb9968e96a36ee383"
+  },
+  "docs/statement-format.md": {
+   "length": 598,
+   "sha256": "4344d5c2595424a8729774d365b6f92f63871c13aaaa13d952190dc6bac75465"
+  }
+ },
+ "weak_markers": [
+  "\\bsheds?\\b",
+  "\\bshed[_ -]?steward"
+ ],
+ "workspace": "docs/plans/fee-statements/",
+ "write_roots": [
+  "docs/"
+ ]
+}
