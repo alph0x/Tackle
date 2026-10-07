@@ -68,7 +68,8 @@ A variant is `{variant_id, split, path, prompts, fixture, stageable, fixture_sha
    scenario's rules found in the input (case and whitespace ignored). New and held-out variants are
    unexposed, and every outcome trap that carries held-out variants has an unexposed, stageable
    development variant.
-5. Eight to twelve outcome traps carry at least two held-out variants each.
+5. Eight to twelve outcome traps carry at least two held-out variants each. (9.1 raised the upper bound from ten for the added System One trap
+   and closure variants.)
 6. For every cohort manifest under `eval/cohorts/` that lists a held-out variant, the manifest digest
    equals the index digest. In git history, the commit that first adds that digest to `INDEX.json` comes
    strictly before the first commit that adds an `episodes.jsonl` line naming the variant.

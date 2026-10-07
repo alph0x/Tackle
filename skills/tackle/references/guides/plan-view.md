@@ -15,7 +15,7 @@ request at any time by saying stop.
 ## Rebuild
 
 When a view exists for the workspace, the coordinator rebuilds it after each board status change and after
-each role start or finish, while the plan is worked; the standing request covers these rebuilds until the
+each role start or finish; the standing request covers these rebuilds until the
 owner says stop. The coordinator rebuilds only a view that already exists. An open view reloads itself after
 a rebuild, keeping its selection, filter and reading position: the recipe writes a small stamp script beside
 the page, and the page rereads it every few seconds, with no server and no process to stop. When a rebuild is
@@ -94,7 +94,7 @@ Each document names the plan, its scope and build time and includes context for 
 
 Optional `view/export-summary.json` supplies typed reader-facing narrative. Status aggregates always come
 from the current board. Without curation, the report uses a concise source-derived context and truthful
-fallback. A curated summary records the board it describes: `as_of` and `board_states` in `view/summary.json`, and
+fallback. For a Full plan, a curated summary records the board it describes: `as_of` and `board_states` in `view/summary.json`, and
 `authority.as_of` and `authority.canonical_states` in `view/export-summary.json`. When the current task states
 differ, its status prose (now, next, you; achievements, open work, dependency, next steps, evidence) is set
 aside with a visible note, and the canonical records speak alone until the summary is updated. The build warns about
@@ -110,7 +110,7 @@ The view stays local. Tackle never publishes, uploads or sends it.
 
 ## Optional loopback live view
 
-For a page served by a local producer instead of the file, save the fenced block in
+Start the live producer only when the owner asks for it. For a page served by a local producer instead of the file, save the fenced block in
 [`../recipes/plan-view-live.md`](../recipes/plan-view-live.md) as `plan-view-live.py` beside the extracted
 `plan-view.md` recipe; pass that source explicitly with `--recipe` so the producer never discovers a recipe by adjacency. Run it with the same workspace, template and optional map inputs:
 
@@ -124,4 +124,4 @@ query strings and every other path. On each request it hashes the declared publi
 `map-delta.json`, declared task briefs, workspace `AGENTS.md` / `readiness.md`, the template, the plan recipe, the architecture-map recipe and the optional explicit map—and regenerates the page when those inputs change. A
 failed refresh keeps the last successful page and reports an unhealthy `/health`; it never calls that page
 live. The page remains file mode when the ordinary recipe is used. Theme, filter and task selection state
-belongs to the page's session storage and can be restored by the parent controller after a refresh.
+belongs to the page's session storage, and the page restores it after a refresh. The producer sends nothing off the machine.

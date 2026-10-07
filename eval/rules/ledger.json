@@ -2491,8 +2491,8 @@
     },
     {
       "rule_id": "R-REL-01",
-      "statement": "Ordinary invocation performs no network access or installation mutation, except a [consented System One call](references/guides/system-one.md).",
-      "statement_sha256": "562bf556e3297625a25d862a1bdf4d9c51da581b287bffe624768ba3d7567b36",
+      "statement": "Ordinary invocation performs no network access or installation mutation; the only exception is network access by a [consented System One call](references/guides/system-one.md).",
+      "statement_sha256": "4f680c1fb632efc2af550c2400f929b6a62d00e6dd809949e3d7f592cca23ee6",
       "home": "SKILL.md:64",
       "home_fragment": "Ordinary invocation performs no network access or",
       "units": [
@@ -3280,12 +3280,16 @@
     },
     {
       "rule_id": "R-STATUS-06",
-      "statement": "An explicit view request creates the plan view and stands for its workspace, and the coordinator rebuilds an existing view after each board status change and each role start or finish, an open view reloads itself after a rebuild without a server, and after a refused rebuild the coordinator reports the refusal lines to the owner while the earlier view keeps its earlier build time, and curated status prose that declares an earlier board's task states is set aside with a visible note.",
-      "statement_sha256": "870734bca14a9ed27a0ab08fd701992b97a81255dc8594a6194ad76dd309c932",
+      "statement": "An explicit view request creates the plan view and stands for its workspace, and the coordinator rebuilds an existing view after each board status change and each role start or finish, an open view reloads itself after a rebuild without a server, and after a refused rebuild the coordinator reports the refusal lines to the owner while the earlier view keeps its earlier build time, and curated status prose that declares an earlier board's task states is set aside with a visible note, and the build warns about a summary with status prose that declares no board states.",
+      "statement_sha256": "91b7de08e21364e8a3749268fbc3b5316d7f39504aa50f71bf056d4bc3c578fa",
       "home": "references/guides/plan-view.md:12",
       "home_fragment": "creates the view and stands for its workspace",
       "units": [],
-      "mirrors": [],
+      "mirrors": [
+        "references/guides/plan-view.md:19",
+        "references/guides/plan-view.md:97",
+        "references/guides/run-card.md:42"
+      ],
       "class": "behavioral",
       "hot_path": false,
       "origin": {
@@ -3405,12 +3409,13 @@
     },
     {
       "rule_id": "R-RUN-22",
-      "statement": "Before an initiative is declared closed, and at every cold resume, every Open obligation in the table and every id on a Complete task's Remains receipt is listed. Before an initiative is declared closed, every Complete task's brief and report and every record a report cites, verification records included, are opened and read, with the history, decisions and questions, as prose for owner requests or follow-ups not yet done, each is recorded as an Open obligation and raised with the owner before closing, and a missing table or Remains line never shows that nothing remains.",
-      "statement_sha256": "78c7e444ffc49633671110fdf9e21a01e2a3dc233422832b1c77b2ddd20fb6e7",
+      "statement": "Before an initiative is declared closed, and at every cold resume, every Open obligation in the table and every id on a Complete task's Remains receipt is listed. Before an initiative is declared closed, every Complete task's brief and report and every record a report cites, verification records included, are opened and read, with the history (history-archive.md included), decisions and questions, as prose for owner requests or follow-ups not yet done, each is recorded as an Open obligation and raised with the owner before closing, and a missing table or Remains line never shows that nothing remains.",
+      "statement_sha256": "15bea7ad5cefc858c1db1e962ae9d3839bb2f5dc687a619fe2af58c7576691b6",
       "home": "references/guides/run.md:216",
       "home_fragment": "Before an initiative is declared closed, and at every cold",
       "units": [],
       "mirrors": [
+        "references/guides/run-card.md:44",
         "references/guides/status.md:71"
       ],
       "class": "behavioral",
@@ -3432,8 +3437,8 @@
     },
     {
       "rule_id": "R-STATUS-10",
-      "statement": "Full and Focused views use the same template and export the complete plan, source-derived progress or both through a separate light print report independent of screen filters, theme and collapsed sections, with original page title, temporary print attributes and focus restored after printing, cancellation or a print exception.",
-      "statement_sha256": "c4eef7502fdbc5b2330ab84c3085207cc5912a486fab6fc3835085453f0cd17f",
+      "statement": "Full and Focused views use the same template and export a self-contained executive presentation of the plan, its current progress or both through a separate light print report independent of screen filters, theme and collapsed sections, with original page title, temporary print attributes and focus restored after printing, cancellation or a print exception.",
+      "statement_sha256": "7462bde8443a2a81b16d7eb0760090fd5c37a9d4ac61f28746ab802998c9fa0c",
       "home": "references/guides/plan-view.md:81",
       "home_fragment": "Full and Focused views use the same template",
       "units": [],
@@ -3455,8 +3460,8 @@
     },
     {
       "rule_id": "R-RUN-23",
-      "statement": "Use optional System One only when a configuration signal exists and the selected workspace has recorded `yes`. Never ask the user to install TypeSafe/JEV. The [integration recipe](../recipes/system-one.md) provides actual shell detection, selected-workspace storage and the SDK adapter; the pure consumer below remains unchanged.",
-      "statement_sha256": "6733247f6f486ed1523f210ad614ad1161f71d667c5906de776fd48427583130",
+      "statement": "Use optional System One only when a configuration signal exists and the selected workspace has recorded `yes`. Never ask the user to install TypeSafe/JEV. The [integration recipe](../recipes/system-one.md) provides actual shell detection, selected-workspace storage and the SDK adapter.",
+      "statement_sha256": "ab1480ee6090ac15883f97a319d6536617b01bf6450492b83855b2471d7ae2f8",
       "home": "references/guides/system-one.md:6",
       "home_fragment": "Use optional System One only when",
       "units": [],
@@ -3506,7 +3511,9 @@
       "home": "references/guides/system-one.md:10",
       "home_fragment": "Record the owner's explicit",
       "units": [],
-      "mirrors": [],
+      "mirrors": [
+        "references/guides/migrate.md:186"
+      ],
       "class": "safety-invariant",
       "hot_path": false,
       "origin": {
@@ -3565,6 +3572,31 @@
         "scenarios": [],
         "cohort_id": null,
         "as_of": "2026-10-06"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATUS-12",
+      "statement": "The optional live producer starts only when the owner asks for it, binds only to 127.0.0.1, answers only requests addressed to 127.0.0.1:<port>, serves only / and /health, rejects query strings and every other path, sends nothing off the machine, and after a failed refresh keeps the last successful page and reports an unhealthy /health.",
+      "statement_sha256": "f7870e5832a38daa89033475db3dd5edadcf26419361849fa035330cadfd92ad",
+      "home": "references/guides/plan-view.md:121",
+      "home_fragment": "The producer binds only to `127.0.0.1`",
+      "units": [],
+      "mirrors": [
+        "references/guides/plan-view.md:113"
+      ],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.0",
+        "trigger": "An independent review found the live view's loopback limits owned by no rule and the producer's start unrestricted.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-07"
       },
       "historical": []
     },

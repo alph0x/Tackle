@@ -41,8 +41,8 @@ RUN starts only after explicit execution intent, including a scoped PLAN+RUN req
    a receipt: what is complete, what remains (the `**Remains**:` line), and who owns the next step. Update the board with
    hash-before-write, then append one history line and the usage row, and rebuild an existing plan view. Loop. When no task remains,
    deliverable acceptance precedes initiative completion.
-   Before closing it, read every Complete task's brief, report and cited records as prose; an unmet owner
-   request is an `Open` obligation.
+   Before closing the initiative, read every Complete task's brief, report and cited records as prose; an
+   unmet owner request is an `Open` obligation raised with the owner.
 
 ## State transitions
 

@@ -3,7 +3,7 @@
 <a id="integration"></a>
 ## Integration contract
 
-Use optional System One only when a configuration signal exists and the selected workspace has recorded `yes`. Never ask the user to install TypeSafe/JEV. The [integration recipe](../recipes/system-one.md) provides actual shell detection, selected-workspace storage and the SDK adapter; the pure consumer below remains unchanged.
+Use optional System One only when a configuration signal exists and the selected workspace has recorded `yes`. Never ask the user to install TypeSafe/JEV. The [integration recipe](../recipes/system-one.md) provides actual shell detection, selected-workspace storage and the SDK adapter.
 
 Detect only environment-key presence, installed SDK/skill, or the case-insensitive phrase `TypeSafe System One` in project-root AGENTS/CLAUDE or selected-workspace AGENTS. Never read, print or send credential values or open credential files. A configuration signal cannot grant consent.
 
@@ -11,7 +11,7 @@ Record the owner's explicit `yes` or `no`, date and actor in that workspace's AG
 
 Send only admitted public fragments needed by one of four uses: older-history score, RUN failure-class choice, no-progress signature comparison, or Direct/Focused/Coordinated intake. Never send credentials, secrets, unknown/private fragments, sealed material or answer sheets. The agent must classify sensitivity before calling the adapter; this is no general secret detector.
 
-Keep the cold-resume opened-history bound, spent counts and open obligations. Skip an unprotected entry only at score<0.5 and confidence>=0.6. Other answers need confidence>=0.8. Preserve the complete installed gate's deterministic minimum route, risk precedence and no-progress stops/counters; JEV never supplies authority or assigns blame. Report the actual use, model, confidence, adopted decision or local fallback reason.
+Keep the cold-resume opened-history bound, spent counts and open obligations. Skip an unprotected entry only at score<0.5 and confidence>=0.6. Other uses need confidence>=0.8. Preserve the complete installed gate's deterministic minimum route, risk precedence and no-progress stops/counters; JEV never supplies authority or assigns blame. Report the actual use, model, confidence, adopted decision or local fallback reason.
 
 Pin `jev-1.13.0`; refuse another response model or malformed/out-of-domain answer. SDK handles authentication through its configured owner environment. Use its verified TLS defaults, trusted endpoint, timeout and zero retries. Absent SDK/signal/recorded yes, low confidence, refusal or any ordinary transport error falls back to the agent's judgment without stopping the task; BaseException propagates. Never disable certificate verification or request installation.
 
