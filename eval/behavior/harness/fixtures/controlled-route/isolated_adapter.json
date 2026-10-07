@@ -1,0 +1,400 @@
+{
+  "schema": "isolated-tool-policy/1",
+  "adapter": "isolated-tool-adapter/1",
+  "caps": {
+    "containers_per_run": 1,
+    "tool_seconds": 30,
+    "run_main_seconds": 70,
+    "cleanup_reserved_seconds": 20,
+    "run_total_seconds": 90,
+    "max_request_bytes": 1048576,
+    "max_file_result_bytes": 3145728,
+    "max_stdout_bytes": 1048576,
+    "max_stderr_bytes": 1048576,
+    "max_engine_command_stream_bytes": 4194304,
+    "max_retained_bytes": 67108864,
+    "pids": 64,
+    "memory_bytes": 268435456,
+    "memory_swap_bytes": 268435456,
+    "nano_cpus": 1000000000
+  },
+  "image_id": "sha256:ee2c320efc696d510c4579d9d40d5e2ece061a6cd0adc4b966db84b581bc8be0",
+  "docker_cli": {
+    "path": "const /opt/homebrew/Cellar/docker/29.8.1/bin/docker",
+    "version": "const 29.8.1",
+    "sha256": "const 2568587ecdd4f39cdca6ff202ee54998b03bb2a9495f23a87c35fbe4812afc29",
+    "endpoint": "const unix://~/.docker/run/docker.sock"
+  },
+  "record_fields": {
+    "Artifact": [
+      "schema",
+      "artifact",
+      "sha256",
+      "byte_length"
+    ],
+    "ComponentConfig": [
+      "schema",
+      "mode",
+      "adapter",
+      "docker_cli",
+      "image_id",
+      "roots",
+      "pins",
+      "caps",
+      "policy_sha256",
+      "network",
+      "seccomp",
+      "provider_requests"
+    ],
+    "DockerCLI": [
+      "path",
+      "version",
+      "sha256",
+      "endpoint"
+    ],
+    "ComponentRoots": [
+      "component_root",
+      "work",
+      "tmp",
+      "runtime",
+      "evidence_parent",
+      "cli_home",
+      "cli_config"
+    ],
+    "ComponentPins": [
+      "source_files",
+      "runtime_tree_sha256",
+      "image_config_sha256",
+      "engine_files",
+      "fingerprint"
+    ],
+    "FileRequest": [
+      "schema",
+      "request_id",
+      "function_name",
+      "arguments"
+    ],
+    "FileClaim": [
+      "schema",
+      "request_id",
+      "kind",
+      "facts",
+      "returned_utf8_b64",
+      "returned_sha256",
+      "complete"
+    ],
+    "ReadFacts": [
+      "file_path",
+      "byte_offset",
+      "requested_max_bytes",
+      "returned_bytes",
+      "content_utf8",
+      "content_sha256",
+      "eof"
+    ],
+    "WriteFacts": [
+      "file_path",
+      "bytes_written",
+      "content_sha256"
+    ],
+    "RefusalFacts": [
+      "error_code",
+      "errno",
+      "mechanism",
+      "effect_started"
+    ],
+    "NativeCommand": [
+      "schema",
+      "command_id",
+      "sequence",
+      "phase",
+      "argv",
+      "cwd",
+      "input_ref",
+      "stdout_ref",
+      "stderr_ref",
+      "started_ns",
+      "ended_ns",
+      "exit_code",
+      "signal",
+      "timeout",
+      "overflow",
+      "eof_channels",
+      "capture_complete",
+      "phase_deadline_ns",
+      "input_bytes_total",
+      "input_bytes_written",
+      "stdout_received_bytes",
+      "stderr_received_bytes"
+    ],
+    "Mount": [
+      "role",
+      "source",
+      "destination",
+      "writable"
+    ],
+    "ContainerFacts": [
+      "schema",
+      "request_id",
+      "cid",
+      "name",
+      "label_key",
+      "label_value",
+      "image_id",
+      "user",
+      "mounts",
+      "network",
+      "readonly_rootfs",
+      "caps_drop",
+      "no_new_privileges",
+      "default_seccomp",
+      "privileged",
+      "ipc",
+      "tty",
+      "pids_limit",
+      "memory_bytes",
+      "memory_swap_bytes",
+      "nano_cpus",
+      "running",
+      "pid",
+      "exit_code",
+      "oom_killed",
+      "source_command_id"
+    ],
+    "BashFacts": [
+      "command",
+      "argv",
+      "shell_path",
+      "cwd",
+      "stdout_ref",
+      "stderr_ref",
+      "stdout_utf8",
+      "stderr_utf8",
+      "exit_code",
+      "signal",
+      "timeout",
+      "capture_complete"
+    ],
+    "InvocationIdentity": [
+      "episode_id",
+      "session_id",
+      "attempt_id",
+      "response_id",
+      "item_index",
+      "item_id",
+      "call_id",
+      "function_name",
+      "worker_handle"
+    ],
+    "ComponentResult": [
+      "schema",
+      "request_id",
+      "invocation_sha256",
+      "identity",
+      "kind",
+      "facts",
+      "returned_utf8_b64",
+      "returned_sha256",
+      "complete",
+      "claim_ref",
+      "host_command_ids"
+    ],
+    "SnapshotEntry": [
+      "relative_path",
+      "mode",
+      "artifact_ref"
+    ],
+    "Snapshot": [
+      "schema",
+      "root_role",
+      "observed_ns",
+      "entries",
+      "tree_sha256"
+    ],
+    "ComponentReceipt": [
+      "schema",
+      "proof_scope",
+      "request_id",
+      "fingerprint",
+      "invocation_ref",
+      "result_ref",
+      "native_commands",
+      "container_created",
+      "container_stopped",
+      "cleanup_confirmed",
+      "owned_cid",
+      "snapshot",
+      "component_boundary_observed",
+      "cgroup_empty_observed",
+      "descendant_census",
+      "complete",
+      "failure_codes",
+      "full_route_accepted",
+      "C07_accepted",
+      "C20_accepted",
+      "liveReady",
+      "T12Ready",
+      "sourceReady",
+      "T17Complete",
+      "run_started_ns",
+      "main_deadline_ns",
+      "run_deadline_ns"
+    ],
+    "ComponentBundle": [
+      "schema",
+      "adapter",
+      "fingerprint",
+      "config_sha256",
+      "receipt_ref",
+      "artifacts",
+      "outcome"
+    ],
+    "ControllerInput": [
+      "schema",
+      "config",
+      "invocation",
+      "request_id",
+      "run_started_ns",
+      "run_deadline_ns",
+      "simulation",
+      "output"
+    ],
+    "HostRunObservation": [
+      "schema",
+      "adapter",
+      "request_id",
+      "fingerprint",
+      "proof_scope",
+      "controller_argv",
+      "started_ns",
+      "deadline_ns",
+      "ended_ns",
+      "exit_code",
+      "signal",
+      "timeout",
+      "overflow",
+      "eof_channels",
+      "capture_complete",
+      "input_bytes_total",
+      "input_bytes_written",
+      "stdout_utf8_b64",
+      "stderr_utf8_b64",
+      "bundle_ref",
+      "outcome",
+      "component_boundary_observed",
+      "full_route_accepted",
+      "sourceReady",
+      "liveReady",
+      "T12Ready",
+      "T17Complete",
+      "C07_accepted",
+      "C20_accepted"
+    ]
+  },
+  "engine_files": {
+    "hosts": "127.0.0.1 localhost\n::1 localhost\n",
+    "hostname": "tackle-isolated-worker\n",
+    "resolv.conf": ""
+  },
+  "participant_env": {
+    "HOME": "/work",
+    "TMPDIR": "/tmp",
+    "PATH": "/usr/local/bin:/usr/bin:/bin",
+    "LANG": "C.UTF-8",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "image_env_names": [
+    "GPG_KEY",
+    "PYTHON_VERSION",
+    "PYTHON_SHA256",
+    "PATH",
+    "LANG"
+  ],
+  "tool_schemas": [
+    {
+      "description": "Return a requested byte range from a readable file as UTF-8 text.",
+      "name": "Read",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "byte_offset": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "file_path": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "max_bytes": {
+            "maximum": 65536,
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "file_path",
+          "byte_offset",
+          "max_bytes"
+        ],
+        "type": "object"
+      },
+      "strict": true,
+      "type": "function"
+    },
+    {
+      "description": "Write UTF-8 content to a writable file and return the acknowledged result.",
+      "name": "Write",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "content": {
+            "maxLength": 1048576,
+            "type": "string"
+          },
+          "file_path": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "file_path",
+          "content"
+        ],
+        "type": "object"
+      },
+      "strict": true,
+      "type": "function"
+    },
+    {
+      "description": "Run bounded arbitrary shell command text in an owned working directory and return host-observed native component bytes.",
+      "name": "Bash",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "command": {
+            "maxLength": 65536,
+            "minLength": 1,
+            "type": "string"
+          },
+          "cwd": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "command",
+          "cwd"
+        ],
+        "type": "object"
+      },
+      "strict": true,
+      "type": "function"
+    }
+  ],
+  "limits": [
+    "network_none does not prohibit every own-loopback socket",
+    "Docker default seccomp retained; no custom profile",
+    "Engine removal is component lifecycle evidence, not a direct cgroup task census",
+    "No Responses, C07_accepted or C20_accepted, private chain or live acceptance"
+  ]
+}

@@ -1,0 +1,800 @@
+{
+  "checkpoint_fields": {
+    "authority_binding": "ledger_authority",
+    "caps": "config_caps",
+    "checkpoint_id": "id",
+    "episode_anchors": "array<episode_origin>",
+    "initiative_id": "id",
+    "journal_prefix": "journal_prefix",
+    "ledger_id": "id",
+    "prior_claims": "array<checkpoint_claim>",
+    "proof_scope": {
+      "const": "synthetic_nonbillable",
+      "type": "string"
+    },
+    "schema": {
+      "const": "tackle-controlled-synthetic-checkpoint/1",
+      "type": "string"
+    },
+    "unit_policy": {
+      "const": "controlled-inference-attempt/1",
+      "type": "string"
+    }
+  },
+  "instructions": "Complete the supplied task. Available tools are Read, Write and Bash. Paths are absolute inside this worker. Return a final text response when complete.",
+  "io": {
+    "max_episode_retained_raw_bytes": 67108864,
+    "max_response_items": 256,
+    "max_response_raw_bytes": 4194304,
+    "max_serialized_request_bytes": 1048576,
+    "max_tool_seconds": 30,
+    "max_worker_result_bytes": 3145728,
+    "max_worker_stderr_bytes": 1048576,
+    "max_worker_stdout_bytes": 1048576
+  },
+  "ledger_fields": {
+    "actual_usd": "usd_or_na",
+    "attempt_id": "nullable<id>",
+    "authority_id": "id",
+    "body_sha256": "nullable<sha256>",
+    "bound_receipt_sha256": "nullable<sha256>",
+    "episode_id": "id",
+    "episode_origin": "nullable<episode_origin>",
+    "episode_origin_event_id": "id",
+    "event_id": "id",
+    "evidence_sha256": "sha256",
+    "fingerprint": "sha256",
+    "initiative_id": "id",
+    "kind": {
+      "enum": [
+        "episode_open",
+        "reserve",
+        "consume",
+        "dispatch_ack",
+        "uncertain",
+        "settle"
+      ],
+      "type": "string"
+    },
+    "ledger_id": "id",
+    "monotonic_elapsed_ns": "uint",
+    "permit_id": "nullable<id>",
+    "prev_sha256": "sha256",
+    "request_units_delta": "uint",
+    "reserved_usd": "usd",
+    "schema": {
+      "const": "tackle-controlled-ledger-event/1",
+      "type": "string"
+    },
+    "sequence": "positive_int",
+    "session_id": "nullable<id>",
+    "stage": {
+      "enum": [
+        "probe",
+        "smoke",
+        "held-out"
+      ],
+      "type": "string"
+    }
+  },
+  "modes": [
+    "stdout_stderr",
+    "read_archive_prefix",
+    "nonzero",
+    "delay",
+    "owned_helper"
+  ],
+  "records": {
+    "artifact_reference": {
+      "properties": {
+        "artifact": "relative_path",
+        "byte_length": "uint",
+        "schema": {
+          "const": "tackle-controlled-artifact-ref/1",
+          "type": "string"
+        },
+        "sha256": "sha256"
+      },
+      "version": "tackle-controlled-artifact-ref/1"
+    },
+    "checkpoint_claim": {
+      "properties": {
+        "admission_id": "nullable<id>",
+        "attempt_id": "nullable<id>",
+        "body_sha256": "nullable<sha256>",
+        "claim_id": "id",
+        "episode_id": "nullable<id>",
+        "kind": {
+          "enum": [
+            "inference",
+            "non_inference"
+          ],
+          "type": "string"
+        },
+        "request_units": "uint",
+        "reservation_event_id": "nullable<id>",
+        "reserved_usd": "usd",
+        "schema": {
+          "const": "tackle-controlled-checkpoint-claim/1",
+          "type": "string"
+        },
+        "settled_usd": "usd_or_na",
+        "settlement_status": {
+          "enum": [
+            "settled",
+            "unsettled"
+          ],
+          "type": "string"
+        },
+        "source": "raw_source",
+        "stage": {
+          "enum": [
+            "probe",
+            "smoke",
+            "held-out"
+          ],
+          "type": "string"
+        },
+        "unit_state": {
+          "enum": [
+            "admitted",
+            "not_inference"
+          ],
+          "type": "string"
+        }
+      },
+      "version": "tackle-controlled-checkpoint-claim/1"
+    },
+    "counts": {
+      "properties": {
+        "canonical_row_count": "uint",
+        "consumption_count": "uint",
+        "episode_admitted_request_units": "uint",
+        "episode_elapsed_ns": "uint",
+        "provider_cost_usd": {
+          "const": "n/a",
+          "type": "string"
+        },
+        "provider_inference_attempts": {
+          "const": "n/a",
+          "type": "string"
+        },
+        "provider_tokens_in": {
+          "const": "n/a",
+          "type": "string"
+        },
+        "provider_tokens_out": {
+          "const": "n/a",
+          "type": "string"
+        },
+        "raw_request_bytes": "uint",
+        "raw_response_bytes": "uint",
+        "raw_worker_result_bytes": "uint",
+        "reservation_count": "uint",
+        "reserved_request_units": "uint",
+        "response_item_count": "uint",
+        "schema": {
+          "const": "tackle-controlled-counts/1",
+          "type": "string"
+        },
+        "scope": {
+          "enum": [
+            "session",
+            "bundle"
+          ],
+          "type": "string"
+        },
+        "scope_id": "id",
+        "stderr_bytes": "uint",
+        "stdout_bytes": "uint",
+        "stub_ack_count": "uint",
+        "tool_invocation_count": "uint",
+        "tool_result_count": "uint"
+      },
+      "version": "tackle-controlled-counts/1"
+    },
+    "episode_origin": {
+      "properties": {
+        "authority_id": "id",
+        "clock_basis": {
+          "const": "python-monotonic-owner-lifetime/1",
+          "type": "string"
+        },
+        "clock_epoch_id": "id",
+        "clock_owner_handle": "id",
+        "episode_id": "id",
+        "initiative_id": "id",
+        "ledger_id": "id",
+        "origin_event_id": "id",
+        "origin_monotonic_ns": "uint",
+        "schema": {
+          "const": "tackle-controlled-episode-origin/1",
+          "type": "string"
+        }
+      },
+      "version": "tackle-controlled-episode-origin/1"
+    },
+    "journal_prefix": {
+      "properties": {
+        "cutoff_sequence": "uint",
+        "cutoff_sha256": "sha256",
+        "schema": {
+          "const": "tackle-controlled-journal-prefix/1",
+          "type": "string"
+        }
+      },
+      "version": "tackle-controlled-journal-prefix/1"
+    },
+    "ledger_authority": {
+      "properties": {
+        "authority_id": "id",
+        "checkpoint_id": "id",
+        "fingerprint": "sha256",
+        "initiative_id": "id",
+        "ledger_id": "id",
+        "owner_handle": "id",
+        "schema": {
+          "const": "tackle-controlled-ledger-authority/1",
+          "type": "string"
+        },
+        "state_root": "root_identity",
+        "task_root": "root_identity"
+      },
+      "version": "tackle-controlled-ledger-authority/1"
+    },
+    "ledger_receipt": {
+      "properties": {
+        "admission_ids": "array<id>",
+        "admitted_request_units": "uint",
+        "authority_id": "id",
+        "checkpoint_ref": "artifact_reference",
+        "elapsed_ns": "uint",
+        "episode_id": "id",
+        "episode_origin_event_id": "id",
+        "fingerprint": "sha256",
+        "first_sequence": "uint",
+        "initiative_id": "id",
+        "journal_ref": "artifact_reference",
+        "last_event_sha256": "sha256",
+        "last_sequence": "uint",
+        "ledger_id": "id",
+        "prefix_sha256": "sha256",
+        "schema": {
+          "const": "tackle-controlled-ledger-receipt/1",
+          "type": "string"
+        },
+        "sources": "array<raw_source>"
+      },
+      "version": "tackle-controlled-ledger-receipt/1"
+    },
+    "ledger_receipt_ref": {
+      "properties": {
+        "artifact_ref": "artifact_reference",
+        "authority_id": "id",
+        "episode_id": "id",
+        "episode_origin_event_id": "id",
+        "fingerprint": "sha256",
+        "initiative_id": "id",
+        "ledger_id": "id",
+        "receipt_schema": {
+          "const": "tackle-controlled-ledger-receipt/1",
+          "type": "string"
+        },
+        "schema": {
+          "const": "tackle-controlled-ledger-receipt-ref/1",
+          "type": "string"
+        }
+      },
+      "version": "tackle-controlled-ledger-receipt-ref/1"
+    },
+    "mapping_session": {
+      "properties": {
+        "attempt_order": "array<id>",
+        "complete": "bool",
+        "controller_handle": "id",
+        "counts": "counts",
+        "episode_id": "id",
+        "episode_origin_event_id": "id",
+        "index": "positive_int",
+        "raw_components": "array<raw_component>",
+        "schema": {
+          "const": "tackle-controlled-mapping-session/1",
+          "type": "string"
+        },
+        "session_id": "id",
+        "supervisor_receipt_ref": "nullable<supervisor_receipt_ref>"
+      },
+      "version": "tackle-controlled-mapping-session/1"
+    },
+    "process_handle": {
+      "properties": {
+        "exit_code": "nullable<int>",
+        "exit_source": "nullable<raw_source>",
+        "handle_id": "id",
+        "parent_handle_id": "nullable<id>",
+        "pid": "positive_int",
+        "schema": {
+          "const": "tackle-controlled-owned-process/1",
+          "type": "string"
+        },
+        "signal": "nullable<positive_int>",
+        "spawn_source": "raw_source"
+      },
+      "version": "tackle-controlled-owned-process/1"
+    },
+    "raw_component": {
+      "properties": {
+        "artifact_ref": "artifact_reference",
+        "attempt_id": "id",
+        "order_index": "uint",
+        "response_id": "id",
+        "schema": {
+          "const": "tackle-controlled-raw-component/1",
+          "type": "string"
+        },
+        "session_id": "id"
+      },
+      "version": "tackle-controlled-raw-component/1"
+    },
+    "raw_source": {
+      "properties": {
+        "artifact": "relative_path",
+        "byte_end": "uint",
+        "byte_start": "uint",
+        "event_id": "id",
+        "producer": {
+          "enum": [
+            "controller",
+            "stub",
+            "worker",
+            "supervisor",
+            "ledger"
+          ],
+          "type": "string"
+        },
+        "schema": {
+          "const": "tackle-controlled-raw-source/1",
+          "type": "string"
+        },
+        "sha256": "sha256"
+      },
+      "version": "tackle-controlled-raw-source/1"
+    },
+    "root_binding": {
+      "properties": {
+        "access": {
+          "enum": [
+            "read_write",
+            "read_only"
+          ],
+          "type": "string"
+        },
+        "descriptor_slot": "positive_int",
+        "device": "uint",
+        "handle_id": "id",
+        "initial_tree_sha256": "sha256",
+        "inode": "positive_int",
+        "owner_uid": "uint",
+        "role": {
+          "enum": [
+            "work",
+            "tmp",
+            "install",
+            "runtime"
+          ],
+          "type": "string"
+        },
+        "schema": {
+          "const": "tackle-controlled-root-binding/1",
+          "type": "string"
+        }
+      },
+      "version": "tackle-controlled-root-binding/1"
+    },
+    "root_identity": {
+      "properties": {
+        "canonical_path": "absolute_task_path",
+        "device": "uint",
+        "inode": "positive_int",
+        "owner_uid": "uint",
+        "schema": {
+          "const": "tackle-controlled-root-identity/1",
+          "type": "string"
+        }
+      },
+      "version": "tackle-controlled-root-identity/1"
+    },
+    "snapshot": {
+      "properties": {
+        "boundary_handle": "id",
+        "entries": "array<snapshot_entry>",
+        "observed_monotonic_ns": "uint",
+        "quiescence_event_id": "id",
+        "root_role": {
+          "enum": [
+            "work"
+          ],
+          "type": "string"
+        },
+        "schema": {
+          "const": "tackle-controlled-fixture-snapshot/1",
+          "type": "string"
+        },
+        "snapshot_id": "id",
+        "source": "raw_source",
+        "stderr_eof_event_id": "id",
+        "stdout_eof_event_id": "id",
+        "tree_sha256": "sha256",
+        "worker_handle": "id"
+      },
+      "version": "tackle-controlled-fixture-snapshot/1"
+    },
+    "snapshot_entry": {
+      "properties": {
+        "artifact_ref": "artifact_reference",
+        "mode": "uint",
+        "relative_path": "relative_path",
+        "schema": {
+          "const": "tackle-controlled-snapshot-entry/1",
+          "type": "string"
+        }
+      },
+      "version": "tackle-controlled-snapshot-entry/1"
+    },
+    "stream_capture": {
+      "properties": {
+        "artifact_ref": "artifact_reference",
+        "capture_complete": "bool",
+        "channel": {
+          "enum": [
+            "stdout",
+            "stderr"
+          ],
+          "type": "string"
+        },
+        "eof_source": "raw_source",
+        "returned_bytes": "uint",
+        "schema": {
+          "const": "tackle-controlled-stream-capture/1",
+          "type": "string"
+        },
+        "stream_id": "id",
+        "truncated": "bool",
+        "worker_handle": "id"
+      },
+      "version": "tackle-controlled-stream-capture/1"
+    },
+    "supervisor_empty_facts": {
+      "properties": {
+        "last_spawn_event_id": "id",
+        "observed_monotonic_ns": "uint",
+        "owned_processes": "array<process_handle>",
+        "remaining_handle_ids": "array<id>",
+        "schema": {
+          "const": "tackle-controlled-fixture-empty-facts/1",
+          "type": "string"
+        }
+      },
+      "version": "tackle-controlled-fixture-empty-facts/1"
+    },
+    "supervisor_eof_facts": {
+      "properties": {
+        "capture": "stream_capture",
+        "observed_monotonic_ns": "uint",
+        "schema": {
+          "const": "tackle-controlled-eof-facts/1",
+          "type": "string"
+        }
+      },
+      "version": "tackle-controlled-eof-facts/1"
+    },
+    "supervisor_event": {
+      "properties": {
+        "boundary_handle": "id",
+        "episode_id": "id",
+        "event_id": "id",
+        "facts": "discriminated_by_kind",
+        "fingerprint": "sha256",
+        "invocation_id": "id",
+        "kind": {
+          "enum": [
+            "spawn_ack",
+            "main_exit",
+            "tracked_fixture_handles_empty",
+            "stdout_eof",
+            "stderr_eof",
+            "snapshot_observed",
+            "offline_finalized",
+            "instrument_incomplete"
+          ],
+          "type": "string"
+        },
+        "monotonic_ns": "uint",
+        "schema": {
+          "const": "tackle-controlled-offline-supervisor/1",
+          "type": "string"
+        },
+        "session_id": "id",
+        "source": "raw_source",
+        "worker_handle": "id"
+      },
+      "version": "tackle-controlled-offline-supervisor/1"
+    },
+    "supervisor_exit_facts": {
+      "properties": {
+        "exit_code": "nullable<int>",
+        "interrupted": "bool",
+        "process_handle_id": "id",
+        "schema": {
+          "const": "tackle-controlled-exit-facts/1",
+          "type": "string"
+        },
+        "signal": "nullable<positive_int>",
+        "timeout": "bool"
+      },
+      "version": "tackle-controlled-exit-facts/1"
+    },
+    "supervisor_final_facts": {
+      "properties": {
+        "receipt_ref": "supervisor_receipt_ref",
+        "schema": {
+          "const": "tackle-controlled-finalized-facts/1",
+          "type": "string"
+        }
+      },
+      "version": "tackle-controlled-finalized-facts/1"
+    },
+    "supervisor_incomplete_facts": {
+      "properties": {
+        "observed_sources": "array<raw_source>",
+        "reason_codes": "array<missing_fact_code>",
+        "remaining_handle_ids": "array<id>",
+        "schema": {
+          "const": "tackle-controlled-incomplete-facts/1",
+          "type": "string"
+        }
+      },
+      "version": "tackle-controlled-incomplete-facts/1"
+    },
+    "supervisor_receipt": {
+      "properties": {
+        "boundary_handle": "id",
+        "complete": "bool",
+        "episode_id": "id",
+        "fingerprint": "sha256",
+        "kernel_boundary_accepted": {
+          "const": false,
+          "type": "bool"
+        },
+        "missing_facts": "array<missing_fact_code>",
+        "proof_scope": {
+          "const": "offline_fixture_only",
+          "type": "string"
+        },
+        "schema": {
+          "const": "tackle-controlled-offline-finalization/1",
+          "type": "string"
+        },
+        "session_id": "id",
+        "snapshot": "nullable<snapshot>",
+        "sources": "array<raw_source>",
+        "stream_captures": "array<stream_capture>",
+        "worker_handle": "id",
+        "worker_handles": "array<process_handle>"
+      },
+      "version": "tackle-controlled-offline-finalization/1"
+    },
+    "supervisor_receipt_ref": {
+      "properties": {
+        "artifact_ref": "artifact_reference",
+        "boundary_handle": "id",
+        "episode_id": "id",
+        "fingerprint": "sha256",
+        "receipt_schema": {
+          "const": "tackle-controlled-offline-finalization/1",
+          "type": "string"
+        },
+        "schema": {
+          "const": "tackle-controlled-supervisor-receipt-ref/1",
+          "type": "string"
+        },
+        "session_id": "id",
+        "worker_handle": "id"
+      },
+      "version": "tackle-controlled-supervisor-receipt-ref/1"
+    },
+    "supervisor_snapshot_facts": {
+      "properties": {
+        "schema": {
+          "const": "tackle-controlled-snapshot-facts/1",
+          "type": "string"
+        },
+        "snapshot": "snapshot"
+      },
+      "version": "tackle-controlled-snapshot-facts/1"
+    },
+    "supervisor_spawn_facts": {
+      "properties": {
+        "main_process": "process_handle",
+        "owned_processes": "array<process_handle>",
+        "schema": {
+          "const": "tackle-controlled-spawn-facts/1",
+          "type": "string"
+        },
+        "stderr_stream_id": "id",
+        "stdout_stream_id": "id",
+        "worker_authority_sha256": "sha256"
+      },
+      "version": "tackle-controlled-spawn-facts/1"
+    },
+    "worker_authority": {
+      "properties": {
+        "boundary_handle": "id",
+        "command_profile": {
+          "const": "fixed-command-helper/1",
+          "type": "string"
+        },
+        "controller_owner_handle": "id",
+        "episode_id": "id",
+        "fingerprint": "sha256",
+        "root_bindings": "array<root_binding>",
+        "schema": {
+          "const": "tackle-controlled-worker-authority/1",
+          "type": "string"
+        },
+        "session_id": "id",
+        "spawn_event_id": "id",
+        "spawn_source": "raw_source",
+        "worker_handle": "id"
+      },
+      "version": "tackle-controlled-worker-authority/1"
+    },
+    "worker_envelope": {
+      "properties": {
+        "authority": "worker_authority",
+        "invocation": "existing_invocation",
+        "schema": {
+          "const": "tackle-controlled-worker-envelope/1",
+          "type": "string"
+        }
+      },
+      "version": "tackle-controlled-worker-envelope/1"
+    }
+  },
+  "schema": "controlled-offline-fixtures/1",
+  "script": {
+    "faults": [
+      null,
+      "missing_completion",
+      "conflict_item",
+      "duplicate_event",
+      "drop_ack",
+      "nonzero"
+    ],
+    "fields": [
+      "schema",
+      "items",
+      "status",
+      "fault",
+      "chunk_bytes"
+    ],
+    "schema": "stub-responses-script/1",
+    "status": [
+      "completed",
+      "failed",
+      "incomplete"
+    ]
+  },
+  "streams": {
+    "nonzero": {
+      "exit": 7,
+      "stderr": "failed command\n",
+      "stdout": "observed\n"
+    },
+    "stdout_stderr": {
+      "exit": 0,
+      "stderr": "err β\n",
+      "stdout": "out α\n"
+    }
+  },
+  "tools": [
+    {
+      "description": "Return a requested byte range from a readable file as UTF-8 text.",
+      "name": "Read",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "byte_offset": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "file_path": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "max_bytes": {
+            "maximum": 65536,
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "file_path",
+          "byte_offset",
+          "max_bytes"
+        ],
+        "type": "object"
+      },
+      "strict": true,
+      "type": "function"
+    },
+    {
+      "description": "Write UTF-8 content to a writable file and return the acknowledged result.",
+      "name": "Write",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "content": {
+            "maxLength": 1048576,
+            "type": "string"
+          },
+          "file_path": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "file_path",
+          "content"
+        ],
+        "type": "object"
+      },
+      "strict": true,
+      "type": "function"
+    },
+    {
+      "description": "Run a registered command in a working directory and return its observed result.",
+      "name": "Bash",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "command": {
+            "maxLength": 65536,
+            "minLength": 1,
+            "type": "string"
+          },
+          "cwd": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "command",
+          "cwd"
+        ],
+        "type": "object"
+      },
+      "strict": true,
+      "type": "function"
+    }
+  ],
+  "versions": {
+    "bundle": "tackle-controlled-bundle/1",
+    "checkpoint": "tackle-controlled-synthetic-checkpoint/1",
+    "config": "tackle-controlled-route-config/1",
+    "episode": "tackle-controlled-offline-episode/1",
+    "history": "explicit-complete-history/1",
+    "invocation": "tackle-controlled-tool-invocation/1",
+    "ledger_event": "tackle-controlled-ledger-event/1",
+    "mapping": "tackle-controlled-map/1",
+    "packet": "tackle-controlled-route-packet/1",
+    "result": "tackle-controlled-tool-result/1",
+    "route": "controlled-offline/1",
+    "scheduler": "serial-response-items/1",
+    "stub_events": "tackle-controlled-stub-event/1",
+    "supervisor": "tackle-controlled-offline-supervisor/1",
+    "tools": "controlled-read-write-bash/1",
+    "wire": "stub-responses/1",
+    "worker": "fixed-fixture-worker/1"
+  }
+}

@@ -436,3 +436,280 @@ These need one authorized smoke episode per adapter before a paid cohort:
 - in-container `dispatch`, which is not available yet;
 - the subscription route's oracle step under the real launcher's profile and a whole episode against the real CLI;
   its probe has observed the sandbox facts and token visibility once.
+
+
+## GPT route interface
+
+`gpt_route.py` implements an explicitly pinned synthetic route. `preflight`, `probe`,
+`run` and `judge` require `--config` (`tackle-gpt-route-config/1`) and fresh `--out`.
+Syntax or malformed configuration exits 2; unavailable capability or an instrument
+stop exits 1; success exits 0 within the recorded synthetic scope. `mode: live`
+always refuses before binary, authentication or network dispatch. Every packet
+keeps live acceptance and readiness false.
+
+The closed configuration contains `schema`, `mode`, `binding` (model `gpt-6-luna`,
+requested host effort `xhigh`), `cli`, `launcher`, `interpreter` (each exact path,
+SHA256 and version), `fingerprints` (route SHA256, `tackle-gpt-stub-map/1`, fixture
+tree SHA256), `roots` (owned sibling `run_root`/`state_dir` under a generated
+`tackle-gpt-route-` scratch directory), `capabilities`, `prior_ledger` (path/SHA256),
+`caps` and `oracle` (launcher/interpreter SHA256 and seconds). Capability identifiers
+are `stub-isolation/1`, `stub-auth-separated/1`, `stub-request-limiter/1`,
+`tackle-gpt-stub-map/1` and `stub-loopback-log/1`, for isolation/auth/limiter/trace/network.
+Only the packaged fixture programs and current explicitly pinned Python interpreter
+are allowlisted; pinning arbitrary external code does not grant support. Caps stay
+at USD200 total, USD8/900 seconds/60 requests per episode, USD25 smoke, USD121 held-out
+and USD4 probe. The fixture reserves USD0.10 before each actual synthetic request;
+this is an illustrative bound, with observed billing and token usage `n/a`.
+
+Synthetic `preflight` reads and validates the pinned prior ledger and any existing
+active ledger with the same strict row checks used by execution. It writes no ledger,
+claim or lock. Boolean or nonfinite caps and malformed rows refuse before a packet
+can report complete synthetic support.
+
+`probe --repo R --install I --workspace W` uses only owned scratch inputs. It executes
+the pinned stub's literal `sandbox -P gpt-measurement -C WORK PYTHON -B HELPER ...`
+form with fresh HOME/CODEX_HOME. A permission-zero synthetic sentinel yields an
+actual syscall errno; separate tool-wrapper operations deny outside, linked and
+hardlinked reads while permitting own-tree reads/writes. An owned
+closed loopback port supplies an observed ECONNREFUSED; a timeout or other result
+is unsupported. These facts establish
+synthetic controls, with no Codex invocation or OS sandbox claim.
+
+`run --repo R --install I --cohort C --stage smoke|held-out` accepts only generated
+synthetic fixtures. `C` holds an unchanged protocol-v2 manifest, episodes JSONL and
+`workload.json` with schema `tackle-gpt-synthetic-workload/1`, text `files`, a list
+of `sessions`, lower workload `limits` (`seconds`, `requests`) and optional `network`
+(`port`, HTTP status 200 or 403). Fixed operations are read_write, archive, command,
+network, boundary and claim_only. Method installs live under `I/baseline` and
+`I/candidate`; their SKILL.md/references digests must match the manifest and differ
+when both are used. A session gets a fresh process/thread identity and shares only
+its episode work tree. State locks, persistent conservative reservations, recorded
+prefix validation and fingerprint continuity prevent uncovered concurrent launch,
+budget reset and replay of completed records.
+
+Clean stdout/stderr remain byte-exact. Complete synthetic invocation/result facts
+project into canonical JSONL tool blocks with session-qualified IDs, original names, byte/line
+provenance and separate raw/canonical/map hashes. Prose and summaries create no
+tools; unknown, partial, duplicated or incomplete facts stop before the oracle.
+Archive bytes count actual returned UTF-8 bytes. Encoded synthetic sensitive values
+in streams, trees, names or links are withheld before retention.
+
+A UTF-8 prefix that splits a character retains its actual failed read fact and
+worker stderr, then stops before oracle or protocol judgment. Its reservation stays
+unsettled. Complete command tool results may contain a nonzero native exit while
+the enclosing worker completes normally. The fixed `command_nonzero` fixture selector
+uses only the unchanged helper's argument error to exercise this distinction.
+
+The unchanged Listener owns declared IPv4/IPv6 loopback sockets and protects its log
+outside participant work. Endpoint identity comes from the observed local socket,
+with query/body hashes; a foreign Host header does not change it. Final observations
+retain a two-second attribution window. `judge --oracle FIXTURE_ORACLE --final F
+--transcript T [--network-log L]` verifies the state-held bundle receipt, copies only
+complete final/canonical/optional-log inputs, and executes the allowlisted synthetic
+oracle. The actual unchanged protocol CLI consumes the resulting neutral records.
+The registered tests exercise these consumers and their permitted alternatives.
+
+The synthetic oracle verifies invocation/result identities, write input bytes and
+digests, returned read content and byte counts, valid archive prefixes and the last
+sentinel write against final state. Contradictory complete facts produce a native-zero
+business verdict of invalid or fell; complete consistent facts remain supported.
+
+Synthetic green leaves real native isolation, separated existing authentication,
+complete native GPT traces, pre-request billable bounds, GPT network observations
+and live probe/smoke acceptance unobserved.
+
+### One-tool Responses source-simulation contract
+
+The direct API has an explicit branch:
+`execute(configured, out, {}, [], stage="probe", responses_contract=optin)`.
+The opt-in schema is `tackle-responses-one-tool-opt-in/1`, its mode is
+`source_simulation`, and its trusted simulation contains a non-null, own
+`state_path`. The output must be an empty direct child of the component evidence
+parent. This API admits one original `NativeRead`, `NativeWrite` or
+`CommandExecution` invocation in exactly three raw JSON lines:
+`request_started`, `tool_started`, `session_completed`. Null simulation, zero or
+multiple invocations, completed legacy tool records, native mode, unsupported
+legacy inputs and malformed arguments refuse before staging, ledger claims or
+legacy launch effects. Absent opt-in retains the existing route behavior; the
+CLI and cohort interface do not select this branch.
+
+Read maps an own regular work file to `/work` and explicitly records the derived
+`byte_offset=0` and `max_bytes=65536` defaults. Write and Bash preserve their
+original content and command strings. Original lexical input spans are separate
+from canonical generated arguments. Source-route fingerprints, the component
+fingerprint, deterministic invocation identities and both invocation hashes
+remain distinct. Environment fields in the integration capture are declarations;
+the component HostRunObservation schema gains no environment field.
+
+The branch calls the actual `controlled_route.isolated_run`, persists its exact
+returned observation directly under the evidence parent, and calls the literal
+`verify_isolated_bundle(config, bundle_path, run_observation_path)` before
+projection. `project(raw, session, integrated_capture=capture)` repeats that
+verification and binds the receipt's observed invocation and typed result to the
+translated invocation. Its observation reference must name the exact context
+path and contain the same observed bytes. A successful source capture produces
+one tool-use/result pair and one terminal row. Read returns its bytes, Write its
+typed acknowledgement, and Bash retains distinct stdout/stderr plus its native
+exit status; a completed exit7 remains an error tool result in a completed route.
+The public finite engine fixture never interprets Bash text or establishes actual
+Write filesystem effects.
+
+The existing ledger receives the actual six-argument `claim` call. Its opaque
+return is retained as canonical JSON and a pinned artifact. The fixed synthetic
+reservation requests USD 0.1; observed USD stays `n/a`. A raised claim leaves
+`reserved_units=null`, records the attempted call and permits no dispatch. There
+is no new settlement, refund or headroom API. Capture counts distinguish claims,
+dispatches, verified receipts, complete results and projected pairs.
+
+Raw source and generated arguments are each bounded by 1 MiB, returned bytes by
+3 MiB, each Bash stream by 1 MiB, and the combined retained component and route
+artifacts by the unchanged component retention cap. Admission and dispatch
+require 95 seconds of logical remainder; the existing component 70+20=90-second
+watchdog policy stays unchanged. The route clock covers admission through
+verification, projection and publication checks. Filesystem publication outside
+the component child is not proof of a universal physical wall-time or
+uninterruptible-IO bound. A `failure.json` invalidates any draft result or canonical
+prefix already retained, and the failure return has empty canonical bytes.
+
+`RouteCLI.test_single_tool_responses_execute_contract` uses the current public
+component factory, actual direct execute/project callers, original watchdog
+capture delegate, literal verifier and ledger. It retains raw frames before
+assertions, then exercises input refusals and synthetic capture counterfaults
+against the same consumer and an unmodified valid alternative. These source
+simulations establish encoded public guards only. They establish no actual
+Responses/GPT participant, Docker isolation, network topology, billing, private
+outcome or full route readiness. All integration readiness fields remain false.
+
+## Controlled offline route
+
+`gpt_route.py controlled-preflight`, `controlled-run` and `controlled-verify`
+select the separate versioned local route. Existing commands keep their original
+arguments and route. All controlled commands require `--config` and a new `--out`
+directly beneath the configured evidence root. `controlled-run` also requires
+`--episode`; `controlled-verify` requires `--bundle`. Exit 0 means the offline
+check completed, 1 means unsupported or instrument-incomplete, and 2 means
+malformed input or altered evidence. An incomplete run retains its raw facts and
+error packet without becoming a successful bundle.
+
+For a public synthetic example, use the same Python interpreter for configuration
+and execution:
+
+```python
+import sys
+from pathlib import Path
+sys.path.insert(0, 'eval/behavior/harness')
+import controlled_route
+config = controlled_route.create_config(Path('/tmp').resolve() / 'new-controlled-demo')
+```
+
+The returned configuration pins this source, the fixed worker and fixtures, the
+interpreter and shell, and every closed policy record. Generated roots must be
+canonical temporary directories owned by the current user. Episodes contain
+only public synthetic UTF-8 files and finite stub scripts. Each fresh controller
+receives the session prompt and complete local history; the shared work directory
+persists between sessions. Serial tool returns become explicit history entries.
+
+Every stub request has a strictly positive Decimal reservation in the synthetic
+ledger, a durable consumed admission and an independently captured acknowledgment
+matching its exact request bytes. These reservations are nonbillable fixtures:
+`provider_applicable` is false and real cost/token/model telemetry is `n/a`.
+The ledger carries reservations, admitted units, stage/global ceilings and owner
+timing. Reopening an episode without its original owner refuses; it never resets
+its timer or refunds an uncertain dispatch.
+
+Read and Write operate through fixed no-follow descriptors. Bash accepts only
+exact packaged helper commands for the registered modes, through the pinned
+shell. The archive-prefix command carries the fixed `history-archive.md` operand
+so the unchanged public byte reader counts its actual returned bytes. Arbitrary
+shell strings refuse. These are application controls for fixed local fixtures;
+no kernel containment or real network topology is established.
+
+A complete bundle retains raw requests/responses, separate worker streams,
+observed process exits, owned-handle completion and snapshots after both EOFs.
+Verification reopens every referenced artifact, validates closed nested records,
+reprojects the original raw argument spans and actual results, and compares hashes
+and counts. Unknown or altered evidence refuses without repairing the original.
+The protocol transcript digest hashes ordered raw stub response bytes; the
+canonical transcript has a separate digest. Public parser acceptance establishes
+shape and returned-byte compatibility only. It establishes no private outcome,
+provider wire, live admission, avoided/fell verdict or agent behavior.
+
+Live mode always refuses before worker or stub dispatch, even when candidate
+metadata claims all capabilities. Packets keep `live_ready`, `task_complete` and
+`private_consumer_accepted` false. The finite missing-capability list describes
+what remains unavailable; it is never satisfied by caller assertions.
+
+
+### Isolated public tool component
+
+`controlled_route.py isolated-preflight`, `isolated-run` and `isolated-verify` are a
+separate `isolated-tool-adapter/1` component. They take a closed component config
+and an absent output directory. Run also takes `--invocation` and emits the
+closed outer `HostRunObservation` on stdout. Its trusted caller stores those
+exact bytes in the configured evidence parent, outside participant mounts.
+Verify requires both `--bundle` and `--run-observation`. The existing
+controlled-offline/1 entry, fixtures, fixed Bash allowlist and false kernel
+acceptance flag are retained.
+
+Each run has one fresh exact-owned container. General Bash command text executes
+directly as `/bin/sh -c` in owned work/tmp cwd. Read and Write use the immutable
+`controlled_worker.py --isolated-file-worker/1` helper and a finite stdin request.
+Host output, engine socket, controller/auth/ledger/protected logs and repository
+are never mounted. Only work/tmp regular-file roots are writable; runtime/image
+and the three public /etc hosts/hostname/resolver overrides are read-only.
+
+The host records separate native stdout/stderr, actual retained and received
+bytes, EOF, exit and exact engine create/inspect/wait/remove observations.
+Worker JSON and forged receipt text are untrusted content. Bash results always
+retain the Bash discriminant, including legitimate nonzero exits. Independently
+typed raw arguments and file claims must match the canonical parsed/result
+facts. Real file refusals retain the immutable helper's observed effect status.
+
+The literal verifier checks native lifecycle and cleanup evidence for incomplete
+receipts as well as complete ones. Unknown create can remain incomplete while
+cleanup is independently proved by exact random name, label/image/config,
+confirmed CID removal and raw absence output. Unknown ownership permits no
+owned-CID or cleanup claim. Missing EOF, overflow, unsafe snapshots and
+unconfirmed cleanup prevent component completion.
+
+The fixed trusted host child owns configuration validation, native lifecycle,
+work reads, hashing, snapshot copies and durable receipt/bundle writes. An outer
+host watchdog observes that child with the canonical absolute 90-second budget;
+its wrapper starts the origin before bounded in-memory wire preparation and
+launches without output stat, policy reads, tree/hash validation or Store IO.
+Main commands retain the 70-second allocation and attached commands the
+30-second bound. The verifier requires ordered command intervals, real channel
+and aggregate byte caps, snapshot after every native EOF/removal and a matching
+outer observation ending by the deadline. A late complete draft cannot become a
+usable result. Killing this known host process group does not prove container
+cleanup or universal descendant termination. Remaining lifecycle facts stay
+unknown if the child cannot finish. The outer observation binds the exact
+trusted host output path and request ID; it grants no worker authority.
+
+The immutable cached image and Docker CLI are pinned by `isolated_adapter.json`;
+configuration includes exact source/runtime/policy/image metadata pins and finite
+limits. Default Docker seccomp and network_none remain. This configuration does
+not deny every own-loopback socket or establish the required network topology.
+Engine removal is not a direct cgroup task census. Full-route, process census,
+network topology, private and live readiness remain false. Actual Docker use
+requires a separately reviewed exact native procedure; source acceptance
+provides no runtime authority. Source simulation does not prove hard real-time
+host scheduling, uninterruptible kernel IO, container termination, or the native
+CLI caller's final publication/capture timing.
+
+`IsolatedToolAdapter` source tests run the actual descriptor helper on public own
+files and the host adapter through `isolated_engine_fixture.py`, which records
+CLI arguments and never executes participant command text. The seven methods
+retain their original positive, fault and valid-alternative assertions and
+extend strict lifecycle/type/byte/time matrices. Synthetic counterfaults repin
+the full reference chain and outer child-summary bridge to reach the intended
+guard; those forged observations are no host attestation. Small-budget fast and
+stall subprocess controls exercise the actual watchdog capture mechanism only,
+not an actual canonical 90-second component run or native kernel proof.
+
+Before assertions and temporary teardown, tests preserve raw component captures,
+config, receipts, outer observations and actual failure codes in new own public
+evidence directories. `TACKLE_ISOLATED_TEST_EVIDENCE_ROOT` selects the trusted
+absolute evidence destination; retention fails above 1 GiB or 4096 files and
+rejects symlinks, nonregular files and multiple hard links. Source simulation
+receipts cannot establish a Docker/kernel boundary or live readiness.

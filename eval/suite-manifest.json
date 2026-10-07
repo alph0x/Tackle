@@ -242,12 +242,15 @@
         "test_jev_signal.py",
         "test_route_network_listener.py",
         "test_subagent.py",
-        "test_subscription_route.py"
+        "test_subscription_route.py",
+        "test_gpt_route.py",
+        "test_controlled_route.py",
+        "test_neutral_probe.py"
       ],
-      "tests": 359,
+      "tests": 445,
       "source": "eval/behavior/harness",
       "category": "tooling",
-      "purpose": "Agent adapters, usage parsing, broker isolation, harness commands, the subscription route (isolation, judging, records, loopback request parsing and interruption cleanup) and the JEV secondary signal (calibration, sidecar, key containment)."
+      "purpose": "Agent adapters, usage parsing, broker isolation, harness commands, the subscription route (isolation, judging, records, loopback request parsing and interruption cleanup) and the JEV secondary signal (calibration, sidecar, key containment). GPT synthetic route boundaries, retention, complete tool provenance, request caps, protected loopback observations, protocol recovery, read-only ledger preflight, incomplete-worker refusal and call/result judgment. Controlled offline request history, durable synthetic admission, fixed worker effects, exact stream/source mapping, offline supervisor completion, public reader compatibility and fail-closed live capability refusal. Isolated tool component planning, descriptor file effects and finite nonexecuting engine simulation; independent host lifecycle, strict tool and primitive continuity, stream/retention bounds, monotonic deadlines and exact-owned cleanup. Source checks leave native isolation, process census, network topology and live readiness unestablished. Single-tool source-simulation integration through the direct Responses opt-in API, preserving original input bytes and defaults, binding the observed component invocation and exact host observation, projecting typed results, and retaining opaque claims, counts, logical deadlines and original watchdog evidence; no live readiness. Neutral single-attempt component qualification: descriptor-only retained-session status, persistent request fence/deadline, stateless public wire and bounded SSE terminal consumer. Synthetic auth/transports only; no included-plan entitlement or live activation proof."
     },
     {
       "path": "eval/tests/product/install/inventory",
