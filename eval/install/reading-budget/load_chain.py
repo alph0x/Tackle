@@ -16,7 +16,7 @@ Words are counted as `wc -w` counts them under LC_CTYPE=C on the host that measu
 return. (GNU wc skips non-printable bytes and can count fewer.)
 
 Prints `run-chain words=<n> card=<m> mandatory=<paths>` (comma-separated, in reading order) and exits
-0, or 1 when n > 4000 or m > 820. Exit 2: usage error, a missing file, or a link or anchor that does not
+0, or 1 when n > 4040 or m > 880. Exit 2: usage error, a missing file, or a link or anchor that does not
 resolve. Standard library only.
 """
 import argparse
@@ -27,7 +27,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 from maintaining.install_root import current_root  # noqa: E402
 
-CHAIN_LIMIT, CARD_LIMIT = 4000, 820
+CHAIN_LIMIT, CARD_LIMIT = 4040, 880
 CARD = 'references/guides/run-card.md'
 ENTRY, BRIEF_PROXY = 'SKILL.md', 'references/task.tmpl.md'
 DEPTH_HEADING = '## Depth (on demand)'

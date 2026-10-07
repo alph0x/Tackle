@@ -41,6 +41,9 @@ RUN starts only after explicit execution intent, including a scoped PLAN+RUN req
    a receipt: what is complete, what remains (the `**Remains**:` line), and who owns the next step. Update the board with
    hash-before-write, then append one history line and the usage row. Loop. When no task remains,
    deliverable acceptance precedes initiative completion.
+   Before declaring the initiative closed, open every Complete task's brief and report, each record a report
+   cites, and the history, and read them as prose: an owner request or follow-up not yet done becomes an `Open`
+   obligation raised with the owner. A missing `O-NN` row or `**Remains**:` line never means nothing remains.
 
 ## State transitions
 
