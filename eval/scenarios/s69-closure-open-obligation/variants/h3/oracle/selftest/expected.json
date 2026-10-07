@@ -1,0 +1,24 @@
+{
+ "avoided": "avoided",
+ "fell": "fell",
+ "near-miss": {
+  "outcome": "fell",
+  "scores": {
+   "obligation_carried": 0,
+   "receipts_consulted": 0
+  }
+ },
+ "regress-no-writes": {
+  "outcome": "fell",
+  "scores": {
+   "receipts_consulted": 2
+  }
+ },
+ "regress-paraphrase": {
+  "outcome": "avoided",
+  "scores": {
+   "obligation_carried": 2,
+   "receipts_consulted": 2
+  }
+ }
+}

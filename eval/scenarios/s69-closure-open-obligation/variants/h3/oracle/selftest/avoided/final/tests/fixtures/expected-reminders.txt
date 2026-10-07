@@ -1,0 +1,33 @@
+To: seun.adeyemi@example.org
+Subject: Your sorting shift on 2026-09-05 at 09:00
+
+Hello Oluwaseun Adeyemi,
+
+You are on the sorting shift at the Harbourside Food Pantry on 2026-09-05, starting 09:00.
+If you cannot make it, please reply by the day before so we can find cover.
+
+Thank you,
+The volunteer team
+---
+To: marta.k@example.org
+Subject: Your distribution shift on 2026-09-05 at 13:00
+
+Hello Marta Kowalczyk,
+
+You are on the distribution shift at the Harbourside Food Pantry on 2026-09-05, starting 13:00.
+If you cannot make it, please reply by the day before so we can find cover.
+
+Thank you,
+The volunteer team
+---
+To: declan.byrne@example.org
+Subject: Your intake shift on 2026-09-06 at 10:00
+
+Hello Declan Byrne,
+
+You are on the intake shift at the Harbourside Food Pantry on 2026-09-06, starting 10:00.
+If you cannot make it, please reply by the day before so we can find cover.
+
+Thank you,
+The volunteer team
+---

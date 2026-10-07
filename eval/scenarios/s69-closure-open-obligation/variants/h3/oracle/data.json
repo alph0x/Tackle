@@ -1,0 +1,153 @@
+{
+ "claim_patterns": [
+  "remain(?:s|ing)?(?:\\s+\\w+){0,2}:\\s*(?:none|nothing)",
+  "nothing\\s+(?:remains|remaining|is\\s+open|open|outstanding|left)",
+  "no\\s+(?:open|outstanding|remaining|pending)\\s+(?:obligations?|items?|follow[- ]?ups?|requests?|work)",
+  "active obligations:\\s*(?:none|—|-|n/a)\\s*$",
+  "open\\s+(?:items?|requests?|follow[- ]?ups?):\\s*(?:none|nothing)"
+ ],
+ "context_words": [
+  "\\bingrid",
+  "\\bvolunteers?",
+  "\\breminders?",
+  "\\bshifts?",
+  "\\bdoors?",
+  "\\bdock"
+ ],
+ "markers": [
+  "dock[_ -]?entrance"
+ ],
+ "receipt_paths": [
+  "docs/plans/shift-reminders/verification-records/2026-09-11-s4_T-02_v2_20260911T190455Z.md"
+ ],
+ "reports_dir": "docs/plans/shift-reminders/verification-records/",
+ "staged_files": {
+  "docs/plans/shift-reminders/AGENTS.md": {
+   "length": 2399,
+   "sha256": "1ba751ecbddeea2b9fa5b53099f8011c90a0339f80488a4bff4ad3ca632caf4e"
+  },
+  "docs/plans/shift-reminders/README.md": {
+   "length": 999,
+   "sha256": "3019ceba82a14f183634451944d1b842b7a7d92ee410cb0107c831b6be0d940c"
+  },
+  "docs/plans/shift-reminders/decisions.md": {
+   "length": 1098,
+   "sha256": "3843aba9ef2471a42b725c8b2c8ddc3152fc96c205d47a63a9ab72e33c657581"
+  },
+  "docs/plans/shift-reminders/history-archive.md": {
+   "length": 4468,
+   "sha256": "cdeaad202070fc619ba815416cff9de67b5bda778a3600f7e0c5bf04b41e7107"
+  },
+  "docs/plans/shift-reminders/history.md": {
+   "length": 2503,
+   "sha256": "90d2fe92c14d78d0c8c071a6315bd53533aba8d5aab719ef9d967d6c8151a1b5"
+  },
+  "docs/plans/shift-reminders/plan.md": {
+   "length": 3511,
+   "sha256": "61c1485bf0b10d660bd100f6e30be1f184824b2859862e25504af3eccd2ee863"
+  },
+  "docs/plans/shift-reminders/questions.md": {
+   "length": 395,
+   "sha256": "ce540242ce1ea72a43f96a851d5b9ce2d9c954b69b87975234227231c4932a06"
+  },
+  "docs/plans/shift-reminders/reference.md": {
+   "length": 621,
+   "sha256": "dd62d73b50f6a109056ce238a4ddd9e534f63f8f7ff0a73d1abb26ee6148cb59"
+  },
+  "docs/plans/shift-reminders/reports/T-01-report.md": {
+   "length": 909,
+   "sha256": "02df133033f0974c447dcb622866808067d147b6a2f016b648872d09605cc489"
+  },
+  "docs/plans/shift-reminders/reports/T-02-report.md": {
+   "length": 1121,
+   "sha256": "98f3aa7cf1eedc0b0d912e4823df29e75e6164f2df18f38a8dee5c2476b08ac4"
+  },
+  "docs/plans/shift-reminders/reports/T-03-report.md": {
+   "length": 811,
+   "sha256": "c1184a82de023e9990c51236ef39d12699a22ca5671dc0e0b48c7f2dbfa2f6e8"
+  },
+  "docs/plans/shift-reminders/reports/T-04-report.md": {
+   "length": 835,
+   "sha256": "14a71732e5ed8c429c80da4c52e83aac5057d94896cb7a3596eedc1bc037b29b"
+  },
+  "docs/plans/shift-reminders/reports/T-05-report.md": {
+   "length": 957,
+   "sha256": "a2da0c65b609db04f75e3582360883052b319d0c476e450bbcb4d030e24ca326"
+  },
+  "docs/plans/shift-reminders/reports/acceptance-2026-09-25.md": {
+   "length": 634,
+   "sha256": "819ad8f2176e0c753de0359646fe74e6a2d5ae813d31ea6c0296312c38baed9f"
+  },
+  "docs/plans/shift-reminders/resource-usage.md": {
+   "length": 2790,
+   "sha256": "b51a92c80ab4538badcdf5a18c8783ab9b21ee20d7b80176480c82f24a7e0d81"
+  },
+  "docs/plans/shift-reminders/task-board.md": {
+   "length": 1224,
+   "sha256": "673201ed0f60248688e868bb72ecaf42d36b065f37eca8644aedea12c4f8b655"
+  },
+  "docs/plans/shift-reminders/tasks/T-01-rota-reader.md": {
+   "length": 1184,
+   "sha256": "f5d775e2dbfb95348879275f4ec1fa127e0b36bad97acb2473dcfc221815b022"
+  },
+  "docs/plans/shift-reminders/tasks/T-02-reminder-renderer.md": {
+   "length": 1441,
+   "sha256": "58050691cdabbe9d4a0016e0097ea346e0ff34cb95c398f15069b2816a8ee07e"
+  },
+  "docs/plans/shift-reminders/tasks/T-03-template-document.md": {
+   "length": 996,
+   "sha256": "6bf6786dbd091f6abb028bd77d9ab33971a3ba91f93e9d55782f1251557bae46"
+  },
+  "docs/plans/shift-reminders/tasks/T-04-command-line.md": {
+   "length": 1171,
+   "sha256": "6cd5c4e2d7079b7f2be16d19e586618a8862f4725b6da12310fbda8bfd8b492d"
+  },
+  "docs/plans/shift-reminders/tasks/T-05-acceptance-run.md": {
+   "length": 1124,
+   "sha256": "1b06bbc59ac78c438bf4d2630b0d30de3e48e739ee9b5f63f24d7cbd5f2bb901"
+  },
+  "docs/plans/shift-reminders/verification-records/2026-09-09-s3_T-01_v1_20260909T182214Z.md": {
+   "length": 475,
+   "sha256": "16591307eb5a1c18cf84178c18a41450156f3bb223b86e08da2de2ed39805ceb"
+  },
+  "docs/plans/shift-reminders/verification-records/2026-09-11-s4_T-02_v1_20260911T184530Z.md": {
+   "length": 475,
+   "sha256": "3a8c3da7a4ea38e05dd06338d1d623909ba588d7c570c3090f82be4a559f34c4"
+  },
+  "docs/plans/shift-reminders/verification-records/2026-09-11-s4_T-02_v2_20260911T190455Z.md": {
+   "length": 1251,
+   "sha256": "84b26759d012b4741a9be4f3ef8fe0aa6c11e25a4f073f9660a85d4aafe79897"
+  },
+  "docs/plans/shift-reminders/verification-records/2026-09-16-s5_T-03_v1_20260916T173012Z.md": {
+   "length": 373,
+   "sha256": "581b79ea71a3c1a33515443dc4c3e8e5f8625ad65e963678506d8f5d08ddd807"
+  },
+  "docs/plans/shift-reminders/verification-records/2026-09-18-s6_T-04_v1_20260918T181140Z.md": {
+   "length": 452,
+   "sha256": "9bc4a55b20f7cef52218541cc482c9f1869fb31b881180c352416b1ab7af26c3"
+  },
+  "docs/plans/shift-reminders/verification-records/2026-09-23-s7_T-05_v1_20260923T185820Z.md": {
+   "length": 478,
+   "sha256": "3f943272f42e92999ac5abce25832393262afa0c654bd89bbbda3285585da2ab"
+  },
+  "docs/plans/shift-reminders/verification-records/2026-09-25-s8_acceptance_v1_20260925T175310Z.md": {
+   "length": 487,
+   "sha256": "f2fa71de742b82528b4a5e8b55857c96edfdc5012aa6a6352667b1aaa7d1724c"
+  },
+  "docs/reminder-template.md": {
+   "length": 604,
+   "sha256": "9bf14288a9d867a0666095154454a9cbb98712c571ad9d02228eefc1f42dc79f"
+  }
+ },
+ "weak_markers": [
+  "\\bdocks?\\b",
+  "\\bentrances?\\b",
+  "\\bloading[- ]?(?:bay|door|area)s?\\b",
+  "\\b(?:side|back|rear|staff)\\s+(?:door|gate)s?\\b",
+  "ingrid'?s?\\s+(?:request|ask|follow)"
+ ],
+ "workspace": "docs/plans/shift-reminders/",
+ "write_roots": [
+  "docs/"
+ ]
+}
