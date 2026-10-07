@@ -2025,6 +2025,10 @@ def main():
         if board and not tasks:
             problems.append('the board has no task rows')
         stale_prose = set_aside_stale_prose(summary, export_summary, tasks)
+        for name, data in (('view/summary.json', summary), ('view/export-summary.json', export_summary)):
+            if data is not None and data.get('board_states') is None:
+                print('note: %s declares no board states, so its status prose cannot be checked for staleness'
+                      % name, file=sys.stderr)
         seen = set()
         for t in tasks:
             if t['id'] in seen:

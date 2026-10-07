@@ -3,7 +3,7 @@
 The shipped recipe builds the static page and its print reports. A curated summary that declares the task
 states it was written for keeps its status prose while those states hold. Once the board's states differ, the
 page and the reports drop that prose, show a visible note, and keep the canonical counts. A summary that
-declares no board keeps its prose, as before. These assertions read the generated document, not a browser.
+declares no board keeps its prose, as before, and the build warns that it cannot be checked. These assertions read the generated document, not a browser.
 """
 import html
 import json
@@ -57,6 +57,7 @@ class StatusFreshnessTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             result, output = run_recipe(tmp, files, name)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.stderr = result.stderr
             return html.unescape(output.read_text(encoding='utf-8'))
 
     def test_prose_written_for_the_current_board_is_shown(self):
@@ -65,6 +66,7 @@ class StatusFreshnessTests(unittest.TestCase):
         for text in CURATED:
             self.assertIn(text, page)
         self.assertNotIn(STALE_EN, page)
+        self.assertNotIn('declares no board states', self.stderr)
 
     def test_prose_written_for_an_earlier_board_gives_way_to_the_records(self):
         earlier = board_states({2: 'Draft'})
@@ -92,6 +94,8 @@ class StatusFreshnessTests(unittest.TestCase):
         for text in CURATED:
             self.assertIn(text, page)
         self.assertNotIn(STALE_EN, page)
+        for name in ('view/summary.json', 'view/export-summary.json'):
+            self.assertIn('note: %s declares no board states' % name, self.stderr)
 
     def test_the_note_is_localized(self):
         page = self.render({'view/summary.json': json.dumps(summary(board_states({1: 'Draft'})))},
