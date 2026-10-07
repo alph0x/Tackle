@@ -94,7 +94,7 @@ class StatusFreshnessTests(unittest.TestCase):
         for text in CURATED:
             self.assertIn(text, page)
         self.assertNotIn(STALE_EN, page)
-        for name in ('view/summary.json', 'view/export-summary.json'):
+        for name in ('the curated summary', 'the executive summary'):
             self.assertIn('note: %s declares no board states' % name, self.stderr)
 
     def test_the_note_is_localized(self):

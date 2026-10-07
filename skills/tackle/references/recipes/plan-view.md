@@ -2025,8 +2025,12 @@ def main():
         if board and not tasks:
             problems.append('the board has no task rows')
         stale_prose = set_aside_stale_prose(summary, export_summary, tasks)
-        for name, data in (('view/summary.json', summary), ('view/export-summary.json', export_summary)):
-            if data is not None and data.get('board_states') is None:
+        progress = export_summary.get('progress', {}) if export_summary else {}
+        for name, data, prose in (
+                ('the curated summary', summary, summary and (summary.get('now') or summary.get('next') or summary.get('owner'))),
+                ('the executive summary', export_summary,
+                 any(progress.get(key) for key in ('achievements', 'open_work', 'dependency', 'next', 'evidence')))):
+            if data is not None and prose and data.get('board_states') is None:
                 print('note: %s declares no board states, so its status prose cannot be checked for staleness'
                       % name, file=sys.stderr)
         seen = set()
