@@ -3405,8 +3405,8 @@
     },
     {
       "rule_id": "R-RUN-22",
-      "statement": "Before an initiative is declared closed, and at every cold resume, every Open obligation in the table and every id on a Complete task's Remains receipt is listed. A Complete task whose report has no `**Remains**:` line carries an older receipt, which is read whole, any request or follow-up it leaves open is recorded as an Open obligation, and a missing line never shows that nothing remains.",
-      "statement_sha256": "d74bcedc48f8980063003bdb9314537a4852511a025b4589ffa3abd8beed0c9a",
+      "statement": "Before an initiative is declared closed, and at every cold resume, every Open obligation in the table and every id on a Complete task's Remains receipt is listed. Before an initiative is declared closed, every Complete task's brief and report are opened and read, with the history, decisions and questions, as prose for owner requests or follow-ups not yet done, each is recorded as an Open obligation and raised with the owner before closing, and a missing table or Remains line never shows that nothing remains.",
+      "statement_sha256": "7bc59f3af99090b8778dff13b98157df5d84c29249aad0386a7e9de7d5701caa",
       "home": "references/guides/run.md:216",
       "home_fragment": "Before an initiative is declared closed, and at every cold",
       "units": [],

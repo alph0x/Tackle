@@ -213,7 +213,7 @@ completion. Optional targets remain unverified without blocking the authorized n
 Independent unaffected work may proceed. A cross-runtime discrepancy keeps both observations and
 their environments visible. An obligation that outlives its task is recorded when it is created
 as an `O-NN` row of the board's obligations table, and it prevents initiative completion while it
-is `Open`, unless the owner withdrew it. Before an initiative is declared closed, and at every cold resume, list every `Open` obligation in the table and every id on a Complete task's `**Remains**:` receipt; a board without a table is read through every Complete task's receipt. A Complete task whose report has no `**Remains**:` line carries an older receipt: read that whole receipt and record any request or follow-up it leaves open as an `Open` obligation; a missing line never shows that nothing remains.
+is `Open`, unless the owner withdrew it. Before an initiative is declared closed, and at every cold resume, list every `Open` obligation in the table and every id on a Complete task's `**Remains**:` receipt; a board without a table is read through every Complete task's receipt. Before declaring it closed, also open every Complete task's brief and report and read them, with the history, decisions and questions, as prose for any owner request or follow-up not yet done; record each as an `Open` obligation and raise it with the owner before closing. A missing table or `**Remains**:` line never shows that nothing remains.
 
 Deliverable acceptance then checks the final integrated flows, every required global obligation,
 final artifacts, packaging, source/install boundary, reproducibility, and the complete acceptance
