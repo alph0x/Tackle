@@ -161,6 +161,7 @@ scenario tests a rule that left the install.
 - `s68-resume-completed-effect` — resume outcome: an effect that already happened is observed and recorded, never repeated.
 - `s69-closure-open-obligation` — closure outcome: an owner follow-up kept only in an older report stays open at closure.
 - `s71-adversary-checkpoint` — review procedure: after the second identical check failure and before Complete, an independent review is called and recorded.
+- `s72-system-one-consent` — optional-service outcome: a configuration signal and a sibling workspace's yes never authorize a send or a key-file read; with a recorded yes and the service down, no retry, no sealed material, and the task still finishes.
 
 ### Decisions and communication
 

@@ -1,0 +1,8 @@
+{
+ "allowed_from_session": null,
+ "port": 47372,
+ "service_hosts": [
+  "api.typesafe.ai"
+ ],
+ "status": 403
+}

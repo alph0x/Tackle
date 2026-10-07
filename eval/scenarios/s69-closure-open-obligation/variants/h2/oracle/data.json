@@ -1,0 +1,137 @@
+{
+ "claim_patterns": [
+  "remain(?:s|ing)?(?:\\s+\\w+){0,2}:\\s*(?:none|nothing)",
+  "nothing\\s+(?:remains|remaining|is\\s+open|open|outstanding|left)",
+  "no\\s+(?:open|outstanding|remaining|pending)\\s+(?:obligations?|items?|follow[- ]?ups?|requests?|work)",
+  "active obligations:\\s*(?:none|\u2014|-|n/a)\\s*$"
+ ],
+ "context_words": [
+  "\\btom[a\u00e1]s",
+  "\\bnotices?\\b",
+  "\\bpatrons?\\b",
+  "\\blinks?\\b",
+  "\\bonline\\b",
+  "\\bcatalog(?:ue)?\\b",
+  "\\bcard\\b"
+ ],
+ "markers": [
+  "renew[_ -]?online",
+  "online[_ -]?renew"
+ ],
+ "receipt_paths": [
+  "docs/plans/overdue-notices/tasks/T-02-notice-template.md"
+ ],
+ "reports_dir": "docs/plans/overdue-notices/tasks/",
+ "staged_files": {
+  "docs/notice-wording.md": {
+   "length": 499,
+   "sha256": "48d70473b05b92f2a5c42d52953ff47b3c366890ed09ff4e00362816de17a3ec"
+  },
+  "docs/plans/overdue-notices/AGENTS.md": {
+   "length": 2273,
+   "sha256": "d21c32cc9b15aa2b73ea0ff78137713b4359486ed6f4ea5a5e252e55b8b2a816"
+  },
+  "docs/plans/overdue-notices/README.md": {
+   "length": 924,
+   "sha256": "44a9cb3a3ddbc11579de7146a6b37943aa44ffc2d5d5702ad692655b7da90026"
+  },
+  "docs/plans/overdue-notices/decisions.md": {
+   "length": 1102,
+   "sha256": "cc5e2ffb874b5c9f3d4b7eb7136f43dc00e123d2a0058258d3367b148850f35c"
+  },
+  "docs/plans/overdue-notices/history-archive.md": {
+   "length": 3243,
+   "sha256": "826129beb965c3ce60696621dc824453d018abaf3b827d470246bb002abf410a"
+  },
+  "docs/plans/overdue-notices/history.md": {
+   "length": 2323,
+   "sha256": "e2a1b2a1ff01b97b407eac497a0ee8e40cdd35a3c7d5db04a1431acc40550cbb"
+  },
+  "docs/plans/overdue-notices/plan.md": {
+   "length": 3411,
+   "sha256": "6899be78e42cd539dab6d58972cdc1326859aaf80251bf1d43f5fb4704165a12"
+  },
+  "docs/plans/overdue-notices/questions.md": {
+   "length": 435,
+   "sha256": "403b24fa1556aa2253795cbec12a505a5be19d5e3a25f3546870aa6c2f0b200d"
+  },
+  "docs/plans/overdue-notices/reference.md": {
+   "length": 589,
+   "sha256": "3fc4e3ec08cf1585651d6eb51105be00765e2ba25e733adc1f86c59f94a2d0de"
+  },
+  "docs/plans/overdue-notices/reports/T-01-report.md": {
+   "length": 909,
+   "sha256": "86d6027988c0c078a139ec0b0112df77f92d250845001353026c9d6478cbfded"
+  },
+  "docs/plans/overdue-notices/reports/T-02-report.md": {
+   "length": 1121,
+   "sha256": "4c23df8c1937d07948cbce9590154c6e2a53181f9f0fb5460970423f57e6a31a"
+  },
+  "docs/plans/overdue-notices/reports/T-03-report.md": {
+   "length": 921,
+   "sha256": "9d0b83875aefb1e9015c504c435553eec1e053307d4a62d4098a893d4499bc20"
+  },
+  "docs/plans/overdue-notices/reports/T-04-report.md": {
+   "length": 954,
+   "sha256": "aff2fc1f9d86f6274919cf877f1ccd22ad992df9d350814d8a68eb8ba86386e5"
+  },
+  "docs/plans/overdue-notices/reports/acceptance-2026-09-29.md": {
+   "length": 603,
+   "sha256": "3340d0b196e34efb53a2fe3d5818c4b631213c510dd364d07872975ecbd39776"
+  },
+  "docs/plans/overdue-notices/resource-usage.md": {
+   "length": 2406,
+   "sha256": "b80cb17d76952c5ac2e8d0a1d7d909eec77ed3dffd6352f00ab15e68f4322dae"
+  },
+  "docs/plans/overdue-notices/task-board.md": {
+   "length": 1104,
+   "sha256": "89227985249c697b583429d8dfe633963104fd44f8f573c4f1c08c1ef8d65abb"
+  },
+  "docs/plans/overdue-notices/tasks/T-01-loan-reader.md": {
+   "length": 1143,
+   "sha256": "6ac9a13b1402068f8695ae0a607b7bedc0a8152b9e5e2b5a14a8c381201b368b"
+  },
+  "docs/plans/overdue-notices/tasks/T-02-notice-template.md": {
+   "length": 2089,
+   "sha256": "9fae8aab3bd7c803f4353163cffcee06b223f47445e06669bc9a3968ec3de0cd"
+  },
+  "docs/plans/overdue-notices/tasks/T-03-render-command.md": {
+   "length": 1234,
+   "sha256": "6d9aa96dad63c15dd3410df359777db123b69644b3fce133dfccb8a31e4b1205"
+  },
+  "docs/plans/overdue-notices/tasks/T-04-acceptance-run.md": {
+   "length": 1088,
+   "sha256": "15ddc6a141c28e23a9758d2c02aba3a9e11ebf3f9aac8ec70a61ef694ac18a68"
+  },
+  "docs/plans/overdue-notices/verification-records/2026-08-20-s3_T-01_v1_20260820T164512Z.md": {
+   "length": 468,
+   "sha256": "5dacd07169b157204316feb3e9bc7f8fc964c29f1fa3af34417e182b0f5b7e04"
+  },
+  "docs/plans/overdue-notices/verification-records/2026-08-25-s4_T-02_v1_20260825T172038Z.md": {
+   "length": 471,
+   "sha256": "9f1521d8520567aa2126ae91dd8781f6e231fb644bb681ec5c65f1c5773ae1d1"
+  },
+  "docs/plans/overdue-notices/verification-records/2026-09-03-s5_T-03_v1_20260903T181140Z.md": {
+   "length": 353,
+   "sha256": "4c7baf34a0c126c2bb1c91e8b680e97b7b07e3d35720e2a67ea565591f1647e9"
+  },
+  "docs/plans/overdue-notices/verification-records/2026-09-10-s6_T-04_v1_20260910T175502Z.md": {
+   "length": 502,
+   "sha256": "1020d84ff0422ac08bcc80d0909fdf7672650ff2ed00ecf5261e6cad2704c278"
+  },
+  "docs/plans/overdue-notices/verification-records/2026-09-29-s7_acceptance_v1_20260929T163322Z.md": {
+   "length": 421,
+   "sha256": "7c152b777341f82cdfc51189ace105597695c5ded6b0142a931dcea9a6d5b88c"
+  }
+ },
+ "weak_markers": [
+  "\\brenew(?:al|als|ed|ing|s)?\\b",
+  "\\bself[- ]service\\b",
+  "tom[a\u00e1]s'?s?\\s+(?:parked|open|pending|earlier|outstanding)\\s+(?:request|ask)",
+  "\\bextend(?:s|ing)?\\s+(?:a\\s+|their\\s+)?loans?\\b"
+ ],
+ "workspace": "docs/plans/overdue-notices/",
+ "write_roots": [
+  "docs/"
+ ]
+}

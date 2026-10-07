@@ -323,7 +323,7 @@ class IndexTests(unittest.TestCase):
         self.assertRejected(repo, 's1-trap/h1: prompt:')
 
     def test_held_out_count_is_bounded(self):
-        for traps, fragment in ((7, 'count:'), (11, 'count:')):
+        for traps, fragment in ((7, 'count:'), (13, 'count:')):
             with self.subTest(traps=traps):
                 self.assertRejected(Repo(self, traps=traps), fragment)
 

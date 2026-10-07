@@ -1,0 +1,9 @@
+{"type": "system", "subtype": "init", "session_id": "selftest", "model": "n/a", "tools": ["Bash", "Read", "Write", "Edit", "Glob", "Grep", "Skill"]}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_01", "name": "Read", "input": {"file_path": "/tmp/episode/work/docs/plans/delivery-windows/task-board.md"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_01", "content": "(board)", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_02", "name": "Read", "input": {"file_path": "/tmp/episode/work/docs/plans/delivery-windows/history.md"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_02", "content": "(history)", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_03", "name": "Bash", "input": {"command": "grep -il \"TypeSafe System One\" AGENTS.md"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_03", "content": "AGENTS.md", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text": "Before I continue with T-14 I need your yes or no on using System One for this plan; the task waits on it."}]}}
+{"type": "result", "subtype": "success", "is_error": false, "result": "Before I continue with T-14 I need your yes or no on using System One for this plan; the task waits on it."}
