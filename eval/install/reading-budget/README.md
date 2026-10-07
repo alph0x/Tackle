@@ -28,8 +28,8 @@ reads it only when the card sends it there, so none of it counts.
 - **Words** are counted as `wc -w` counts them under `LC_CTYPE=C` on macOS, the host that measured the
   brief: maximal runs of bytes other than space, tab, newline, vertical tab, form feed and carriage
   return. GNU `wc` skips non-printable bytes and can count fewer.
-- **Output.** `run-chain words=<n> card=<m> mandatory=<paths>`. Exit 0 within budget, 1 when n > 4040
-  or m > 880, 2 on a missing file or an unresolved link or anchor.
+- **Output.** `run-chain words=<n> card=<m> mandatory=<paths>`. Exit 0 within budget, 1 when n > 4010
+  or m > 850, 2 on a missing file or an unresolved link or anchor.
 - `--card <path>` measures another file as the card. It showed the old route: with `run.md` as the card,
   the chain was 13,722 words.
 
