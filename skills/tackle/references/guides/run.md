@@ -286,4 +286,4 @@ Final status: Complete. Next owner: the coordinator.
 **Remains**: O-02
 ```
 
-When a plan view exists for the workspace, rebuild it after each board status change and each role start or finish, as the [plan view guide](plan-view.md#rebuild) states.
+When a plan view exists for the workspace, rebuild it after each board status change and each role start or finish, as the [plan view guide](plan-view.md#rebuild) states; an open view reloads itself.

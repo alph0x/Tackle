@@ -3280,8 +3280,8 @@
     },
     {
       "rule_id": "R-STATUS-06",
-      "statement": "An explicit view request creates the plan view and stands for its workspace, and the coordinator rebuilds an existing view after each board status change and each role start or finish, and after a refused rebuild the coordinator reports the refusal lines to the owner while the earlier view keeps its earlier build time.",
-      "statement_sha256": "5aa386e1419d964eb302566d13a1989f7a7327e2a87cc27588fa07e6aa92179e",
+      "statement": "An explicit view request creates the plan view and stands for its workspace, and the coordinator rebuilds an existing view after each board status change and each role start or finish, an open view reloads itself after a rebuild without a server, and after a refused rebuild the coordinator reports the refusal lines to the owner while the earlier view keeps its earlier build time.",
+      "statement_sha256": "e0541a55ae1ec85fb67fb218620d7461db0c4a52bcba69a8a2764f651bf112a7",
       "home": "references/guides/plan-view.md:12",
       "home_fragment": "creates the view and stands for its workspace",
       "units": [],
@@ -3297,7 +3297,7 @@
         "status": "untested",
         "scenarios": [],
         "cohort_id": null,
-        "as_of": "2026-10-03"
+        "as_of": "2026-10-07"
       },
       "historical": []
     },
@@ -3427,6 +3427,29 @@
         ],
         "cohort_id": null,
         "as_of": "2026-10-03"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATUS-10",
+      "statement": "Full and Focused views use the same template and export the complete plan, source-derived progress or both through a separate light print report independent of screen filters, theme and collapsed sections, with original page title, temporary print attributes and focus restored after printing, cancellation or a print exception.",
+      "statement_sha256": "c4eef7502fdbc5b2330ab84c3085207cc5912a486fab6fc3835085453f0cd17f",
+      "home": "references/guides/plan-view.md:81",
+      "home_fragment": "Full and Focused views use the same template",
+      "units": [],
+      "mirrors": [],
+      "class": "format",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.0",
+        "trigger": "The owner requests one presentation convention and local PDF exports for plan, progress and both.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-04"
       },
       "historical": []
     }

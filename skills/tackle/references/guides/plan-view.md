@@ -15,9 +15,12 @@ request at any time by saying stop.
 ## Rebuild
 
 When a view exists for the workspace, the coordinator rebuilds it after each board status change and after
-each role start or finish. The coordinator rebuilds only a view that already exists. The standing request
-covers these rebuilds until the owner says stop. When a rebuild is refused, the coordinator reports the refusal
-lines to the owner, and the earlier view keeps its earlier build time.
+each role start or finish, while the plan is worked; the standing request covers these rebuilds until the
+owner says stop. The coordinator rebuilds only a view that already exists. An open view reloads itself after
+a rebuild, keeping its selection, filter and reading position: the recipe writes a small stamp script beside
+the page, and the page rereads it every few seconds, with no server and no process to stop. When a rebuild is
+refused, the coordinator reports the refusal lines to the owner, and the earlier view keeps its earlier build
+time.
 
 ## Build
 
@@ -70,9 +73,51 @@ names no requirement id, the recipe refuses with the Focused reason. It invents 
 - The page escapes every workspace string. No workspace text runs as script.
 - The interface has English and Spanish text. The recipe picks Spanish only on clear Spanish evidence in the
   plan. Any other plan gets English, and `lang` says `en`.
-- A light and dark toggle and the system font stack keep the page local. Motion stops under
+- A light and dark toggle and the embedded Outfit font with a system fallback keep the page local. Motion stops under
   `prefers-reduced-motion`.
+
+## Shared presentation and PDF
+
+Full and Focused views use the same template and export a self-contained executive presentation of the
+plan, its current progress or both. The page retains detailed requirements, task records and the full
+decision archive. The complete technical plan, including code and later sections, stays in `plan.md`.
+
+Choose a scope in the PDF controls and select Export PDF. The page opens the browser's native print dialog;
+choose Save as PDF there. The view needs no network, external assets or additional runtime dependency.
+Each document names the plan, its scope and build time and includes context for a reader unfamiliar with it.
+
+- Plan presents the purpose, expected benefits, scope, work stages and key current choices.
+- Progress includes context, board-derived completion and state counts, achievements, remaining work and
+  next steps. A Focused plan uses its recorded State and a validation-presence cue without inventing a
+  task board, measured result or completion percentage.
+- Both combines the plan and progress in one presentation with one shared context and header.
+
+Optional `view/export-summary.json` supplies typed reader-facing narrative. Status aggregates always come
+from the current board. Without curation, the report uses a concise source-derived context and truthful
+fallback. The report is independent of screen filters, theme and collapsed sections.
+
+The light A4 report uses readable sections and wrapping text. The page restores its title, temporary
+print attributes and focus after printing, cancellation or a print exception. Ordinary browser print uses
+Both. Native dialog, pagination and PDF destination behavior depend on the owner's browser.
 
 ## Publishing
 
 The view stays local. Tackle never publishes, uploads or sends it.
+
+## Optional loopback live view
+
+For a page served by a local producer instead of the file, save the fenced block in
+[`../recipes/plan-view-live.md`](../recipes/plan-view-live.md) as `plan-view-live.py` beside the extracted
+`plan-view.md` recipe; pass that source explicitly with `--recipe` so the producer never discovers a recipe by adjacency. Run it with the same workspace, template and optional map inputs:
+
+```sh
+python3 -I plan-view-live.py --template plan-view.template.md --recipe plan-view.md [--map .tackle/map/architecture.json] <workspace>
+```
+
+The producer binds only to `127.0.0.1`, answers only requests addressed to `127.0.0.1:<port>` (open that address, not `localhost`), and serves only `/` (the generated HTML) and `/health`. It rejects
+query strings and every other path. On each request it hashes the declared public inputs—`plan.md`,
+`task-board.md`, `decisions.md`, `history.md`, `resource-usage.md`, the supported summary files,
+`map-delta.json`, declared task briefs, workspace `AGENTS.md` / `readiness.md`, the template, the plan recipe, the architecture-map recipe and the optional explicit map—and regenerates the page when those inputs change. A
+failed refresh keeps the last successful page and reports an unhealthy `/health`; it never calls that page
+live. The page remains file mode when the ordinary recipe is used. Theme, filter and task selection state
+belongs to the page's session storage and can be restored by the parent controller after a refresh.
