@@ -219,6 +219,7 @@ h3,h4,h5{text-wrap:balance}
 .status-headline{margin:0;max-width:40ch;font:600 clamp(22px,1.2vw + 14px,34px)/1.18 var(--sans);letter-spacing:-.025em;text-wrap:balance}
 .status-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(28px,4vw,72px);align-items:start}
 .status-k{display:block;margin-bottom:10px;color:var(--accent-ink)}
+.status-stale{margin:0 0 20px;padding:12px 16px;border:1.5px solid var(--accent);background:var(--accent-soft);color:var(--ink);font-size:15px;line-height:1.5}
 .status-now{margin:0 0 28px;font-size:clamp(17px,.5vw + 14px,21px);line-height:1.5;text-wrap:pretty}
 .status-you{margin:0 0 24px;padding:16px 20px 18px;border-left:5px solid var(--accent);background:var(--surface)}
 .status-you h3{margin:0 0 10px;color:var(--accent-ink)}

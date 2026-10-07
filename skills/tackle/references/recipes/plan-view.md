@@ -21,7 +21,7 @@ UI = {
         n_graph='Flow', n_tasks='Tasks', n_now='Status', n_tech='Details', n_arch='Architecture',
         working='Working now', working_none='No session works on this plan right now.', plan_scope='The plan',
         run_scope='The run', live='Live', graph='How the work flows',
-        graph_note='Each arrow points from a task to the work that needs it. Select a task to trace it.', mission_purpose='Purpose', mission_complete='{done} of {total} recorded tasks are complete.', mission_remaining='{count} recorded tasks remain open or unfinished.', mission_achievements='Recorded achievements', mission_open_work='Open work', mission_next='Next recorded steps', mission_raw_snapshot='Raw recorded snapshot', mission_no_board='No task board is available; this view remains a focused snapshot.',
+        graph_note='Each arrow points from a task to the work that needs it. Select a task to trace it.', mission_purpose='Purpose', mission_complete='{done} of {total} recorded tasks are complete.', mission_remaining='{count} recorded tasks remain open or unfinished.', mission_achievements='Recorded achievements', mission_open_work='Open work', mission_next='Next recorded steps', mission_raw_snapshot='Raw recorded snapshot', mission_no_board='No task board is available; this view remains a focused snapshot.', stale_prose='The written status summary describes an earlier board ({as_of}); the task states have changed since, so the recorded facts below replace it until it is updated.',
         graph_reduced='An arrow that a longer path already implies is left out. Each task lists everything it needs.',
         graph_none='This plan has no task board, so the view shows no graph.', clear='Clear the trace',
         stage='Stage {n}', stage_count='{done} of {total} complete', stage_note='A stage is a column of the graph, not an order of work.',
@@ -108,7 +108,7 @@ UI = {
         n_graph='Flujo', n_tasks='Tareas', n_now='Estado', n_tech='Detalle', n_arch='Arquitectura',
         working='En marcha ahora', working_none='Ninguna sesión trabaja en este plan ahora.', plan_scope='El plan',
         run_scope='La ejecución', live='En marcha', graph='Cómo fluye el trabajo',
-        graph_note='Cada flecha va de una tarea al trabajo que la necesita. Elige una tarea para seguir su traza.', mission_purpose='Propósito', mission_complete='{done} de {total} tareas registradas están completas.', mission_remaining='{count} tareas registradas siguen abiertas o incompletas.', mission_achievements='Logros registrados', mission_open_work='Trabajo abierto', mission_next='Siguientes pasos registrados', mission_raw_snapshot='Instantánea registrada en bruto', mission_no_board='No hay un tablero de tareas; esta vista conserva una instantánea enfocada.',
+        graph_note='Cada flecha va de una tarea al trabajo que la necesita. Elige una tarea para seguir su traza.', mission_purpose='Propósito', mission_complete='{done} de {total} tareas registradas están completas.', mission_remaining='{count} tareas registradas siguen abiertas o incompletas.', mission_achievements='Logros registrados', mission_open_work='Trabajo abierto', mission_next='Siguientes pasos registrados', mission_raw_snapshot='Instantánea registrada en bruto', mission_no_board='No hay un tablero de tareas; esta vista conserva una instantánea enfocada.', stale_prose='El resumen escrito del estado describe un tablero anterior ({as_of}); los estados de las tareas cambiaron desde entonces, así que los hechos registrados de abajo lo reemplazan hasta que se actualice.',
         graph_reduced='Se omite la flecha que un camino más largo ya implica. Cada tarea lista todo lo que necesita.',
         graph_none='Este plan no tiene tablero de tareas, así que la vista no muestra grafo.', clear='Quitar la traza',
         stage='Etapa {n}', stage_count='{done} de {total} completas', stage_note='Una etapa es una columna del grafo, no un orden de trabajo.',
@@ -1369,8 +1369,34 @@ def load_summary(ws):
                     curated.append(dict(text=text, date=date))
         return dict(title=_summary_text(data.get('title')), kicker=_summary_text(data.get('kicker')),
                     objective=_summary_text(data.get('objective')), outcomes=outcomes, tasks=tasks, milestones=milestones,
-                    now=_summary_text(data.get('now')), next=next_items, owner=owner_items, decisions=curated)
+                    now=_summary_text(data.get('now')), next=next_items, owner=owner_items, decisions=curated,
+                    as_of=_summary_text(data.get('as_of')), board_states=_board_states(data.get('board_states')))
     return None
+
+
+def _board_states(value):
+    """The task states a curated summary was written for, or None when it declares none."""
+    if not isinstance(value, dict):
+        return None
+    return {ident: state for ident, state in value.items() if isinstance(ident, str) and isinstance(state, str)}
+
+
+def set_aside_stale_prose(summary, export_summary, tasks):
+    """Curated status prose describes one board. When it declares that board's task states and the current states
+    differ, its time-bound fields are dropped so the canonical counts and records speak alone; prose that declares
+    no board is kept as before. Returns the as-of text of the first stale summary, or '' when none is stale."""
+    current = {task['id']: task['status'] for task in tasks}
+    stale = ''
+    if summary is not None and (summary.get('now') or summary.get('next') or summary.get('owner')) \
+            and summary.get('board_states') is not None and summary.get('board_states') != current:
+        summary.update(now='', next=[], owner=[])
+        stale = summary.get('as_of') or '?'
+    progress = export_summary.get('progress') if export_summary else None
+    if progress and any(progress.get(key) for key in ('achievements', 'open_work', 'dependency', 'next', 'evidence')) \
+            and export_summary.get('board_states') is not None and export_summary.get('board_states') != current:
+        progress.update(achievements=[], open_work=[], dependency='', next=[], evidence='')
+        stale = stale or export_summary.get('as_of') or '?'
+    return stale
 
 
 def _export_pairs(value):
@@ -1404,6 +1430,7 @@ def load_export_summary(ws):
         plan = data.get('plan') if isinstance(data.get('plan'), dict) else {}
         scope = plan.get('scope') if isinstance(plan.get('scope'), dict) else {}
         progress = data.get('progress') if isinstance(data.get('progress'), dict) else {}
+        authority = data.get('authority') if isinstance(data.get('authority'), dict) else {}
         return dict(
             title=_summary_text(data.get('title')), kicker=_summary_text(data.get('kicker')),
             context=_summary_text(data.get('context')), purpose=_summary_text(data.get('purpose')),
@@ -1413,7 +1440,8 @@ def load_export_summary(ws):
                       key_choices=_export_pairs(plan.get('key_choices'))),
             progress=dict(meaning=_summary_text(progress.get('meaning')), achievements=_export_pairs(progress.get('achievements')),
                           open_work=_export_pairs(progress.get('open_work')), dependency=_summary_text(progress.get('current_dependency')),
-                          next=_export_strings(progress.get('next')), evidence=_summary_text(progress.get('evidence'))))
+                          next=_export_strings(progress.get('next')), evidence=_summary_text(progress.get('evidence'))),
+            as_of=_summary_text(authority.get('as_of')), board_states=_board_states(authority.get('canonical_states')))
     return None
 
 
@@ -1855,7 +1883,7 @@ def title_block(tasks, reqs, cover, decisions, working, fields, focused, stamp, 
             '<p class="tb-method">%s</p></aside>') % (esc(ui['progress']), esc(ui['progress']), figure, strip, grid, esc(method))
 
 
-def status_section(summary, export_summary, fields, tasks, focused, snapshot, working_html, title, plan, ui):
+def status_section(summary, export_summary, fields, tasks, focused, snapshot, working_html, title, plan, ui, stale_prose=''):
     """Where the plan stands: the current narrative, what needs the owner, what is done and open, and the raw snapshot."""
     counts = {}
     for task in tasks:
@@ -1871,6 +1899,8 @@ def status_section(summary, export_summary, fields, tasks, focused, snapshot, wo
     achievements, open_work = progress.get('achievements', []), progress.get('open_work', [])
     next_steps = progress.get('next', []) or (summary['next'] if summary and summary.get('next') else [])
     lead = []
+    if stale_prose:
+        lead.append('<p class="status-stale" role="note">%s</p>' % esc(ui['stale_prose'].format(as_of=stale_prose)))
     if summary and summary.get('now'):
         lead.append('<p class="status-now"><span class="status-k">%s</span>%s</p>' % (esc(ui['now']), esc(summary['now'])))
     if summary and summary.get('owner'):
@@ -1986,6 +2016,7 @@ def main():
     if focused and not reqs:
         problems.append('the Focused plan names no requirement id in its Purpose / requirements line or its criteria table')
     tasks, states, board = [], DEFAULT_STATES, ''
+    stale_prose = ''
     if not focused:
         board = read(ws, 'task-board.md')
         if not board:
@@ -1993,6 +2024,7 @@ def main():
         states, tasks = parse_board(board, problems)
         if board and not tasks:
             problems.append('the board has no task rows')
+        stale_prose = set_aside_stale_prose(summary, export_summary, tasks)
         seen = set()
         for t in tasks:
             if t['id'] in seen:
@@ -2124,7 +2156,7 @@ def main():
             stage_list(tasks, layout[0], edges, ui), esc(ui['graph_reduced']), esc(ui['stage_note']))
         tasks_html = task_list(tasks, cover, down, live, summary, ui, counts, present)
     overview_html = presentation_overview(summary, objective_of(plan), ui)
-    status_html = status_section(summary, export_summary, fields, tasks, focused, snapshot, working_html, title, plan, ui)
+    status_html = status_section(summary, export_summary, fields, tasks, focused, snapshot, working_html, title, plan, ui, stale_prose)
     nav = [('snapshot', ui['n_now'])]
     if overview_html:
         nav.append(('overview', ui['n_overview']))

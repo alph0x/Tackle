@@ -6860,6 +6860,15 @@
       "destination": "references/guides/update.md",
       "note": "Ordinary Tackle invocation performs no network access or installation-tree mutation, except a consented System One call under [the optional capability](system-one.md).",
       "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run-card.md",
+      "line": 41,
+      "unit_sha256": "aeadf58dbc5d9085fa8134b56dc9aaf9451a06b59d905427bb70ca874e654195",
+      "disposition": "reworded",
+      "destination": "references/guides/run-card.md",
+      "note": "Update the board with hash-before-write, then append one history line and the usage row, and rebuild an existing plan view.",
+      "destination_unit_sha256": null
     }
   ]
 }

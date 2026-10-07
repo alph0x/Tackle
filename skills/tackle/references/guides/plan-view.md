@@ -94,7 +94,10 @@ Each document names the plan, its scope and build time and includes context for 
 
 Optional `view/export-summary.json` supplies typed reader-facing narrative. Status aggregates always come
 from the current board. Without curation, the report uses a concise source-derived context and truthful
-fallback. The report is independent of screen filters, theme and collapsed sections.
+fallback. A curated summary records the board it describes: `as_of` and `board_states` in `view/summary.json`, and
+`authority.as_of` and `authority.canonical_states` in `view/export-summary.json`. When the current task states
+differ, its status prose (now, next, you; achievements, open work, dependency, next steps, evidence) is set
+aside with a visible note, and the canonical records speak alone until the summary is updated. The report is independent of screen filters, theme and collapsed sections.
 
 The light A4 report uses readable sections and wrapping text. The page restores its title, temporary
 print attributes and focus after printing, cancellation or a print exception. Ordinary browser print uses

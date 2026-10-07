@@ -3280,8 +3280,8 @@
     },
     {
       "rule_id": "R-STATUS-06",
-      "statement": "An explicit view request creates the plan view and stands for its workspace, and the coordinator rebuilds an existing view after each board status change and each role start or finish, an open view reloads itself after a rebuild without a server, and after a refused rebuild the coordinator reports the refusal lines to the owner while the earlier view keeps its earlier build time.",
-      "statement_sha256": "e0541a55ae1ec85fb67fb218620d7461db0c4a52bcba69a8a2764f651bf112a7",
+      "statement": "An explicit view request creates the plan view and stands for its workspace, and the coordinator rebuilds an existing view after each board status change and each role start or finish, an open view reloads itself after a rebuild without a server, and after a refused rebuild the coordinator reports the refusal lines to the owner while the earlier view keeps its earlier build time, and curated status prose that declares an earlier board's task states is set aside with a visible note.",
+      "statement_sha256": "870734bca14a9ed27a0ab08fd701992b97a81255dc8594a6194ad76dd309c932",
       "home": "references/guides/plan-view.md:12",
       "home_fragment": "creates the view and stands for its workspace",
       "units": [],

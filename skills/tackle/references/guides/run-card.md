@@ -39,7 +39,7 @@ RUN starts only after explicit execution intent, including a scoped PLAN+RUN req
      the owner must act.
 8. **Close.** A [reviewer's verdict](run.md#adversary-checkpoints) is its own artifact; the coordinator decides. The report ends with
    a receipt: what is complete, what remains (the `**Remains**:` line), and who owns the next step. Update the board with
-   hash-before-write, then append one history line and the usage row. Loop. When no task remains,
+   hash-before-write, then append one history line and the usage row, and rebuild an existing plan view. Loop. When no task remains,
    deliverable acceptance precedes initiative completion.
    Before declaring the initiative closed, open every Complete task's brief and report, each record a report
    cites, and the history, and read them as prose: an owner request or follow-up not yet done becomes an `Open`
