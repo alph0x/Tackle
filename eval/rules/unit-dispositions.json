@@ -7134,6 +7134,15 @@
       "destination": "references/guides/plan-view.md",
       "note": "When a view exists for the workspace, the coordinator rebuilds it after every write to a page input, in PLAN and in RUN. It rebuilds at the end of the step that wrote the input, and after each role start or finish. The page inputs are `task-board.md`, `plan.md`, `decisions.md`, `questions.md`, `history.md` and `resource-usage.md`. They also include the workspace `AGENTS.md` and `readiness.md`, every declared brief and `map-delta.json`. The curated summaries, the map base, the template and the two recipes are page inputs too. The coordinator rebuilds only a view that already exists. Under the standing view request, the coordinator runs the plan-view recipe with `--check` at the end of each step that wrote a page input. That request is the owner's explicit authorization for these checks and rebuilds. The coordinator rebuilds when the check says stale. The standing request covers these checks and rebuilds until the owner says stop.",
       "destination_unit_sha256": null
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 16,
+      "unit_sha256": "cc7cbe5c52ad63f31a8062612695b6e0570e2ced77f440cf19e02911ab67436d",
+      "disposition": "ruled",
+      "destination": null,
+      "note": "a recipe manifest hash row, not a rule: the row for the same recipe now carries the hash of the changed recipe file, as the manifest requires",
+      "destination_unit_sha256": null
     }
   ]
 }

@@ -34,8 +34,8 @@ that wrote a page input. That request is the owner's explicit authorization for 
 coordinator rebuilds when the check says stale. The standing request covers these checks and rebuilds until the
 owner says stop. After stop, nobody runs the check.
 
-Before a rebuild that follows a change to task rows or states, the coordinator updates `view/summary.json` and
-`view/export-summary.json`. It updates their time-bound prose, their declared board states and their as-of times.
+The coordinator updates `view/summary.json` and `view/export-summary.json` before a rebuild that follows a
+change to task rows or states. It updates their time-bound prose, their declared board states and their as-of times.
 It removes prose that it cannot update honestly. A rebuild after a role start or finish needs no summary update.
 
 An open view reloads itself after

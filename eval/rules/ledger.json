@@ -3879,7 +3879,7 @@
       "statement": "Before a rebuild that follows a change to task rows or states, the coordinator updates the time-bound prose, declared board states and as-of times of the curated summaries, and removes prose it cannot update honestly; a rebuild after a role start or finish needs no summary update, and the set-aside note stays as the safety net.",
       "statement_sha256": "c80f8890dca26c9288bd15f29cf722cea2cb53c7fa38e4194d117ce8df306df1",
       "home": "references/guides/plan-view.md:37",
-      "home_fragment": "Before a rebuild that follows a change to task rows",
+      "home_fragment": "The coordinator updates `view/summary.json` and",
       "units": [],
       "mirrors": [
         "references/guides/plan-view.md:135"
