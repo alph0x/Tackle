@@ -104,6 +104,37 @@ Totals/rankings require 100% comparable coverage; tier/effort recommendations al
 three completed like-for-like runs. The universal ledger never depends on a collector; no hook,
 daemon, plugin, provider API, or sidecar is required for a task to close.
 
+<a id="claude-code-native-sources"></a>
+## Claude Code native sources
+
+Each host has its own usage records; this section describes one host. On Claude Code, the coordinator
+can fill the sidecar from local files, with no collector or recipe. Check the installed version first,
+because these paths and fields can change. Copy only numbers, ids, model names and times; never copy
+prompt, response or tool content.
+
+- Each subagent dispatch returns a subagent id. Write that id in the Source of the role's finish row.
+- The subagent's transcript is `~/.claude/projects/<project>/<session>/subagents/agent-<id>.jsonl`.
+  Its `.meta.json` names the dispatch description and a model alias. Take the model from the assistant
+  events, which name it in full.
+- One request can appear as several assistant events with the same `message.id`. Keep only the last
+  event of each `message.id`; never add up every event.
+- Over those last events, add up `input_tokens`, `cache_creation_input_tokens` as `cache_write_tokens`,
+  `cache_read_input_tokens` as `cache_read_tokens`, and `output_tokens`. `requests` is the count of
+  distinct `message.id` values. `reasoning_tokens` is the sum of `output_tokens_details.thinking_tokens`
+  when every kept event has it, otherwise `n/a`. It is part of `output_tokens`; never add it to them.
+- Write one `scope: role` record with that role's Run ID as `run_id`. The join is exact, because the
+  coordinator assigned both the Run ID and the dispatch.
+- A subagent that served several Run IDs gives one `scope: session` record with the subagent id as
+  `scope_id` and `run_id: n/a`. Never divide it into roles.
+- The first assistant event time is a host-observed start clock and can fill the start `At`. Record the
+  last assistant event time in `provenance` as the last observed request; it is not a finish clock.
+- The coordinator's own transcript, `~/.claude/projects/<project>/<session>.jsonl`, gives one
+  `scope: session` record, captured once at close, with its last event time in `provenance`. Never
+  divide it into roles.
+- Plan-limit percentages and the context-window count describe the account and the current context.
+  They are not cumulative role usage.
+- A missing, unreadable or unknown file or field stays `n/a`.
+
 ## Pre-v2 tables the migration carries
 
 An eight-column header beginning `Point | Role | Tier | Model | Effort | Tokens in | Tokens out |

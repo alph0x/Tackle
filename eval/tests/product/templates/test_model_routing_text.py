@@ -235,6 +235,35 @@ class UsageObservabilityTests(unittest.TestCase):
         self.assertIn('capability escalation', sentence)
         self.assertIn('once', sentence)
 
+    def claude_code_section(self):
+        return ' '.join(USAGE.split('## Claude Code native sources', 1)[1].split('\n## ', 1)[0].split())
+
+    def test_claude_code_native_sources_join_exactly_and_copy_no_content(self):
+        section = self.claude_code_section()
+        for phrase in ('Each host has its own usage records; this section describes one host.',
+                       'never copy prompt, response or tool content',
+                       "Write that id in the Source of the role's finish row",
+                       "Write one `scope: role` record with that role's Run ID as `run_id`",
+                       'gives one `scope: session` record with the subagent id as `scope_id` and `run_id: n/a`.',
+                       'captured once at close',
+                       'stays `n/a`'):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, section)
+
+    def test_claude_code_native_sources_count_each_request_once(self):
+        # Several events can carry one request; summing every event overcounts.
+        section = self.claude_code_section()
+        for phrase in ('Keep only the last event of each `message.id`; never add up every event.',
+                       '`requests` is the count of distinct `message.id` values.',
+                       '`cache_creation_input_tokens` as `cache_write_tokens`',
+                       '`cache_read_input_tokens` as `cache_read_tokens`',
+                       'Take the model from the assistant events',
+                       'it is not a finish clock',
+                       'The first assistant event time is a host-observed start clock',
+                       'It is part of `output_tokens`; never add it to them.'):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, section)
+
     def test_attempts_sentence_first_validation_wording_is_unambiguous(self):
         # The capability escalation charges a cycle even on the first validation; the adjacent
         # "do not count" carve-out is scoped to an implementation fault's own checks.
