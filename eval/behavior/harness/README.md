@@ -329,6 +329,9 @@ sandbox or model.
   The file tools' permission rules allow reading the run root and editing `work/`, and refuse reads under the home
   and temporary trees; a deny rule outranks an allow rule, so no deny rule covers the run root itself, which sits
   under `/private/var/tmp`. A refused `Read`, `Glob` or `Grep` inside the run root is an instrument fault.
+  Bash is allowed by one tool-level permission rule (`Bash`) and always runs sandboxed: `allowUnsandboxedCommands`
+  is false, so `dangerouslyDisableSandbox` has no effect. A Bash permission denial in a participant session is an
+  instrument fault: the episode is `invalid` with the reason `isolation` (problem `bash_denied`) and the stage stops.
 - **Token.** The owner's subscription token is read at launch from the file the configuration names, which must
   be a regular file owned by the user; it is tightened to owner-only and must hold one value. It goes into the
   CLI process environment only, never into argv, a prompt, a staged file or a record. Before anything is kept,
@@ -389,11 +392,19 @@ sandbox or model.
 - **Probe.** `probe` runs the method arm and the control arm once each with fixed commands, and writes
   `result.json`: the booleans `passed`, `network_denied`, `repository_read_denied`, `workspace_read_denied`,
   `method_arm_skill_loaded`, `control_arm_skill_absent`, `token_scan_clean`, `work_tree_write_allowed`,
-  `work_tree_read_allowed` and `token_visible_to_tools`; the `attempts` (counts of recorded tool calls that tried
+  `work_tree_read_allowed`, `denied_shapes_succeeded`, `outside_write_denied`, `config_write_denied`,
+  `unsandboxed_refused` and `token_visible_to_tools`; the `attempts` (counts of recorded tool calls that tried
   the network, the repository and the workspace) and `work_tree_read_attempts` (the `Read` calls on the file in the
   child's own work tree); the `model`; and `cost_usd`. A denial is true only when its attempt was recorded and
   refused, and an allowance only when its attempt was recorded and succeeded: each child writes a file in its
   work tree with `Bash` and must then `Read` it, so rules that refuse the child its own files fail the probe.
+  Each child also runs the shell shapes a calibration saw denied (a quoted `$?`, a loop over `"$f"`, `$(...)`,
+  backticks, `sed -i.bak`, a brace group with a function, a heredoc holding `$(...)`), and each must succeed
+  (`denied_shapes`). It tries each sandbox boundary with Bash: a write outside `work/` and `tmp/`, a write into
+  `work/.claude`, a read outside the run root, a network call, and a call with `dangerouslyDisableSandbox` set. Each
+  must fail, and the probe checks the disk after the child. `passed` needs zero Bash permission denials
+  (`bash_denials`; `boundary_permission_denials` counts those on boundary attempts, which prove nothing about the
+  sandbox). An `rm` inside `work/` is recorded in `work_rm` as `ran` or `refused` and is not required.
   Sentinel files are planted in `--repo` and `--workspace` and removed afterwards. The probe learns whether the tools can see the
   token only through a count, never by printing it. Every probe's cost counts against the configured probe cap.
 - **Control.** `token_visible_to_tools` decides which control applies. With `prevention` the model's tools

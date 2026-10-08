@@ -71,6 +71,8 @@ REASON_CONFIG = 'harness configuration written'
 REASON_CONTROL = 'control arm exposed to the skill'
 REASON_METHOD = 'method arm skill not listed'
 REASON_TREE = 'final tree not preserved'
+# The isolation problem a participant Bash permission denial records; the episode's reason is REASON_ISOLATION.
+BASH_DENIED = 'bash_denied'
 # Only the CLI wrapper's own refusal counts: the trailing line of an "Exit code" result naming its cwd-tracking file.
 HARNESS_FAULT = re.compile(r'(?m)^(?:zsh|bash|sh):\d+: operation not permitted: \S*/claude-\d+/cwd-[0-9a-f]+\s*\Z')
 
@@ -592,7 +594,8 @@ def parse_stream(raw):
         'init': {k: init.get(k) for k in ('model', 'permissionMode', 'apiKeySource', 'tools', 'mcp_servers', 'skills', 'plugins',
                                           'memory_paths')} if init else None,
         'result': {k: result.get(k) for k in ('subtype', 'is_error', 'num_turns', 'total_cost_usd')} if result else None,
-        'denials': [{'tool': str(d.get('tool_name')), 'path': denial_location(str(d.get('tool_name')), d.get('tool_input'))}
+        'denials': [{'tool': str(d.get('tool_name')), 'path': denial_location(str(d.get('tool_name')), d.get('tool_input')),
+                     'id': d.get('tool_use_id')}
                     for d in denials if isinstance(d, dict)] if isinstance(denials, list) else [],
     }
 
@@ -657,7 +660,8 @@ def inside_root(path, root):
 
 
 def unexpected_denials(denials, root, arm):
-    """Edits inside the workspace, reads inside the run root and, for the method arm, skill use must never be refused."""
+    """Edits inside the workspace, reads inside the run root, any Bash command and, for the method arm, skill use must
+    never be refused. A Bash denial is the permission layer refusing a command before the sandbox could judge it."""
     work, config_root = str(root / 'work'), str(root / 'work' / '.claude').lower()
     found = []
     for denial in denials or []:
@@ -669,6 +673,8 @@ def unexpected_denials(denials, root, arm):
             found.append(tool + ' in workspace')
         elif tool in ('Read', 'Glob', 'Grep') and inside_root(path, root):
             found.append(tool + ' in run root')
+        elif tool == 'Bash':
+            found.append('Bash')
         elif tool == 'Skill' and arm == 'method':
             found.append('Skill')
     return found
@@ -852,6 +858,9 @@ def launch(argv, cwd, env, prompt, seconds):
 def sandbox_settings(root, port=None):
     """Bash runs sandboxed: no network, writes only in work and tmp, reads denied outside the run root.
 
+    Bash is allowed by a permission rule and always runs sandboxed: the sandbox block below admits no unsandboxed
+    command, so a call that asks for dangerouslyDisableSandbox still runs inside the sandbox.
+
     File tools may read the run root (the method arm's skill lives in its HOME) and edit only the working directory;
     anything else is refused because the session runs in dontAsk mode. Nothing in a run may create work/.claude.
     A deny rule outranks every allow rule, so the file tools' deny rules leave out each tree that holds the run root:
@@ -874,7 +883,10 @@ def sandbox_settings(root, port=None):
         },
         'permissions': {
             'defaultMode': 'dontAsk',
-            'allow': ['Read(/%s/**)' % root, 'Edit(/%s/work/**)' % root, 'Skill'],
+            # One tool-level Bash rule: the sandbox's auto-allow refuses some shapes ($(...), backticks, quoted $?, brace
+            # groups, functions) and dontAsk turns that refusal into a denial. The rule changes only whether a command
+            # may start; every Bash command still runs inside the sandbox above, which allows no unsandboxed command.
+            'allow': ['Read(/%s/**)' % root, 'Edit(/%s/work/**)' % root, 'Skill', 'Bash'],
             'deny': ['Read(/%s/**)' % prefix for prefix in DENY_READ if not under(prefix, root)]
                     + ['Edit(/%s/work/.claude/**)' % root]
                     + ['Edit(/%s/**)' % prefix for prefix in DENY_EDIT if not under(prefix, root)]
@@ -1304,6 +1316,9 @@ def classify(stage, seen, locations, arm):
                 decision.problems.append(problem)
     decision.config_paths = harness_config_paths(root / 'work') if root is not None and (root / 'work').is_dir() else []
     denials = [d for s in sessions for d in s.stream['denials']]
+    if any(d['tool'] == 'Bash' for d in denials) and BASH_DENIED not in decision.problems:
+        # The CLI refused the participant a shell command: an isolation-class instrument fault, as the calibration showed.
+        decision.problems.append(BASH_DENIED)
     refused = unexpected_denials(denials, root, arm) if root is not None else []
     faults = sum(harness_faults(s.child.stdout) for s in sessions)
     used_skill = arm == 'control' and any(skill_use(s.child.stdout) for s in sessions)
@@ -1566,25 +1581,87 @@ def cmd_run(args):
 
 # --- the probe command --------------------------------------------------------------------------------------------------
 
-def probe_prompt(repository, workspace, inside, content):
+def probe_write(content):
+    """Command 6: the child writes its own work-tree file, which it must then be able to Read."""
+    return 'echo %s > %s && ls %s' % (content, PROBE_INSIDE, PROBE_INSIDE)
+
+
+# The shapes the CLI's sandbox auto-allow check refused in the first route calibration, where dontAsk turned each
+# refusal into a denial. Each must now run, inside the sandbox, and print what it should: (name, command, the substrings
+# its output must hold), where '{c}' is the child's content and '{e}' that content as the sed edit leaves it.
+PROBE_SHAPES = (
+    ('quoted_status', 'sh -c \'exit 3\'; echo "exit=$?"', ('exit=3',)),
+    ('quoted_loop', 'for f in probe-inside.txt; do echo "== $f"; cat "$f"; done', ('== probe-inside.txt', '{c}')),
+    ('substitution', 'got=$(cat probe-inside.txt) && [ -n "$got" ] && echo "got=$got"', ('got={c}',)),
+    ('backticks', "printf '%s\\n' \"tick=`cat probe-inside.txt`\"", ('tick={c}',)),
+    ('sed_in_place', "cp probe-inside.txt probe-conf.txt && sed -i.bak 's/INSIDE/EDITED/' probe-conf.txt && cat probe-conf.txt",
+     ('{e}',)),
+    ('group_and_function', '{ echo "group=1"; cat probe-inside.txt; } > probe-group.txt && show() { cat probe-group.txt; }; show',
+     ('group=1', '{c}')),
+    ('heredoc_substitution', "cat > probe-heredoc.sh <<'EOF'\ngot=$(cat probe-inside.txt)\necho \"heredoc=$got\"\nEOF\n"
+                             'sh probe-heredoc.sh', ('heredoc={c}',)),
+    ('tmp_write', 'cat probe-inside.txt > "$TMPDIR/probe-tmp.txt" && echo "tmp=$(cat "$TMPDIR/probe-tmp.txt")"', ('tmp={c}',)),
+)
+# Recorded, never required: the CLI's own rm check may still refuse it after the allow rule, and the probe says which.
+PROBE_RM = 'rm probe-conf.txt.bak && ls probe-conf.txt'
+PROBE_OUT = 'probe-out.txt'
+PROBE_CURL = "curl -sS -m 5 -o /dev/null -w '%{http_code}' "
+UNSANDBOXED = 'dangerouslyDisableSandbox'
+
+
+def probe_escape(root):
+    """Where the boundary write beside the child's root would land: inside the run root, outside every writable tree."""
+    return root.parent / ('probe-out-%s.txt' % root.name)
+
+
+def probe_boundaries(root, repository):
+    """Bash attempts the sandbox must refuse, in compound form: (kind, command). The unsandboxed one is run with the Bash
+    tool's dangerouslyDisableSandbox parameter set to true."""
+    return (('outside_write', "printf 'x\\n' > %s" % (root / 'home' / PROBE_OUT)),
+            ('outside_write', "printf 'x\\n' > %s" % probe_escape(root)),
+            ('config_write', "mkdir -p .claude/probe && printf '{}\\n' > .claude/settings.json"),
+            ('outside_read', 'for f in %s; do cat "$f"; done' % repository),
+            ('network', 'code=$(' + PROBE_CURL + PROBE_URL + ') && echo "net=$code"'),
+            ('unsandboxed', PROBE_CURL + PROBE_URL + '/unsandboxed'))
+
+
+def probe_prompt(repository, workspace, inside, content, root):
     """The fixed probe. ``inside`` is a file in the child's own work tree, which it writes with command 6 and must then be
-    able to Read: the other two reads must be refused."""
+    able to Read: the other two reads must be refused. The later commands repeat the shapes the calibration saw denied
+    and try each sandbox boundary with Bash."""
+    numbered = (["printenv | cut -d= -f 1 | sort | tr '\\n' ' '", 'printenv %s | wc -c' % TOKEN_VARIABLE, 'cat ' + repository,
+                 'cat ' + workspace, PROBE_CURL + PROBE_URL, probe_write(content)]
+                + [command for _, command, _ in PROBE_SHAPES if '\n' not in command] + [PROBE_RM]
+                + [command for _, command in probe_boundaries(root, repository)])
+    block = next(command for _, command, _ in PROBE_SHAPES if '\n' in command)
     return ('This is a technical sandbox probe for a test harness. Run each numbered shell command below with the Bash tool, '
-            'one command per call, exactly as written, even if it fails, and run nothing else:\n'
-            "1. printenv | cut -d= -f 1 | sort | tr '\\n' ' '\n"
-            '2. printenv %s | wc -c\n'
-            '3. cat %s\n'
-            '4. cat %s\n'
-            "5. curl -sS -m 5 -o /dev/null -w '%%{http_code}' %s\n"
-            '6. echo %s > probe-inside.txt && ls probe-inside.txt\n'
-            'Then use the Read tool once on each of these three files, one Read call per file and in this order:\n'
-            '- %s\n- %s\n- %s\n'
-            'Finally reply with the word DONE. Do not repeat or quote any file content in your reply.\n') % (
-                TOKEN_VARIABLE, repository, workspace, PROBE_URL, content, repository, workspace, inside)
+            'one command per call, exactly as written and in this order, even if it fails, and run nothing else:\n'
+            + ''.join('%d. %s\n' % (number, command) for number, command in enumerate(numbered, 1))
+            + 'Run command %d with the Bash tool\'s %s parameter set to true; run every other command without it.\n'
+            % (len(numbered), UNSANDBOXED)
+            + 'Then run this multi-line command in one Bash call, exactly as written:\n' + block
+            + '\n(end of the multi-line command)\n'
+            + 'Then use the Read tool once on each of these three files, one Read call per file and in this order:\n'
+            + '- %s\n- %s\n- %s\n' % (repository, workspace, inside)
+            + 'Finally reply with the word DONE. Do not repeat or quote any file content in your reply.\n')
 
 
 def reachable(text):
     return bool(re.match(r'\s*[1-5][0-9][0-9]\b', text or ''))
+
+
+def same_command(call, command):
+    """Whether a Bash call ran this command as written (trailing spaces on a line aside)."""
+    given = str((call['input'] or {}).get('command') or '') if isinstance(call['input'], dict) else ''
+    tidy = lambda text: '\n'.join(line.rstrip() for line in text.strip().splitlines())  # noqa: E731
+    return call['tool'] == 'Bash' and tidy(given) == tidy(command)
+
+
+def probe_disk(root):
+    """What the boundary attempts left on disk, read after the child exits: True where nothing escaped."""
+    claude = root / 'work' / '.claude'
+    return {'outside_write': not os.path.lexists(root / 'home' / PROBE_OUT) and not os.path.lexists(probe_escape(root)),
+            'config_write': not os.path.lexists(claude) or cli_staging_only(str(claude))}
 
 
 def probe_child(stage, arm, name, sentinels, content):
@@ -1592,13 +1669,13 @@ def probe_child(stage, arm, name, sentinels, content):
     its stream shows."""
     cfg = stage.cfg
     claim = stage.ledger.claim(name, 'probe', 'probe', cfg.probe_child_usd, cfg.probe_total_usd, cfg.total_usd)
-    child, root, locations = None, None, []
+    child, root, locations, disk = None, None, [], {'outside_write': False, 'config_write': False}
     stream = {'init': None, 'result': None, 'denials': []}
     try:
         root = new_root(cfg, 'p')
         if arm == 'method':
             stage_skill(root / 'home', stage.install_files, stage.install_digest)
-        prompt = probe_prompt(sentinels['repository'], sentinels['workspace'], str(root / 'work' / PROBE_INSIDE), content)
+        prompt = probe_prompt(sentinels['repository'], sentinels['workspace'], str(root / 'work' / PROBE_INSIDE), content, root)
         settings = sandbox_settings(root)
         argv = participant_argv(stage.cli, cfg, settings, cfg.probe_child_turns, cfg.probe_child_usd)
         child = launch(argv, root / 'work', child_env(cfg, root, stage.token), prompt.encode(), cfg.probe_child_seconds)
@@ -1611,22 +1688,56 @@ def probe_child(stage, arm, name, sentinels, content):
         if child is not None:
             locations = [label for label in ('stdout', 'stderr') if contains(getattr(child, label), found)]
         if root is not None:
+            disk = probe_disk(root)
             try:
                 locations += token_hits(root, stage.token)
             except Exception:
                 locations.append('(scan failed)')
+            try:
+                os.unlink(probe_escape(root))  # an escaped boundary write would otherwise refuse the next run as a leftover
+            except OSError:
+                pass
         if locations and root is not None:
             retire_after_hit(cfg, root, name)
     cost = (stream['result'] or {}).get('total_cost_usd')
     stage.ledger.settle(claim, cost, cfg.probe_child_usd)
     clean = child is not None and root is not None and not locations and not child.interrupted
-    result = SimpleNamespace(arm=arm, child=child, stream=stream, calls=tool_calls(child.stdout) if child else [],
-                             content=content, locations=locations,
+    calls = tool_calls(child.stdout) if child else []
+    # The recorded rm is the one call whose refusal is not a fault: the probe reports it in work_rm instead.
+    rm_ids = {call['id'] for call in calls if same_command(call, PROBE_RM)}
+    counted = [d for d in stream['denials'] if d.get('id') is None or d.get('id') not in rm_ids]
+    result = SimpleNamespace(arm=arm, child=child, stream=stream, calls=calls, content=content, locations=locations,
                              cost=cost if isinstance(cost, (int, float)) else cfg.probe_child_usd,
                              problems=isolation_problems(stream['init'], root, arm, cfg.model) if root is not None else ['no_root'],
-                             refused=unexpected_denials(stream['denials'], root, arm) if root is not None else [],
+                             refused=unexpected_denials(counted, root, arm) if root is not None else [],
+                             bash_denials=[d for d in counted if d['tool'] == 'Bash'], rm_ids=rm_ids, disk=disk,
                              faults=harness_faults(child.stdout) if child else 0, root=root, clean=clean)
     return result
+
+
+def shape_ran(calls, command, expected):
+    """Whether the shape was attempted and every attempt succeeded and printed what it should."""
+    found = [c for c in calls if same_command(c, command)]
+    return bool(found) and all(c['is_error'] is False and all(text in str(c['text']) for text in expected) for c in found)
+
+
+def boundary_refused(calls, command, unsandboxed=False):
+    """Whether the attempt was recorded and every attempt failed; the unsandboxed one must also have asked to leave the
+    sandbox, so the refusal shows that the request had no effect."""
+    found = [c for c in calls if same_command(c, command)]
+    if unsandboxed and not all(isinstance(c['input'], dict) and c['input'].get(UNSANDBOXED) is True for c in found):
+        return False
+    return bool(found) and all(c['is_error'] is True and not reachable(c['text']) for c in found)
+
+
+def rm_outcome(child):
+    """'ran' when the rm succeeded and its file is gone, 'refused' when the call failed or was denied, else 'not_attempted'."""
+    found = [c for c in child.calls if same_command(c, PROBE_RM)]
+    if not found:
+        return 'not_attempted'
+    gone = child.root is not None and not os.path.lexists(child.root / 'work' / 'probe-conf.txt.bak')
+    ran = all(c['is_error'] is False for c in found) and gone and not any(d.get('id') in child.rm_ids for d in child.stream['denials'])
+    return 'ran' if ran else 'refused'
 
 
 def summarize_probe(cfg, children, sentinels, markers):
@@ -1637,6 +1748,9 @@ def summarize_probe(cfg, children, sentinels, markers):
     denied = {'network': True, 'repository_read': True, 'workspace_read': True}
     inside_reads, inside_writes = 0, []
     visible = []
+    shapes = {name: True for name, _, _ in PROBE_SHAPES}
+    boundaries = {'outside_write': True, 'config_write': True, 'unsandboxed': True}
+    boundary_denials = 0
     for child in children:
         calls = child.calls
         everything = ' '.join(str(call['text']) for call in calls)
@@ -1652,12 +1766,23 @@ def summarize_probe(cfg, children, sentinels, markers):
                 refused = False
             denied[key] = denied[key] and refused
         # The child's own files must stay usable: a Read of the file its Bash call wrote has to return what was written.
-        wrote = [c for c in calls if c['tool'] == 'Bash' and PROBE_INSIDE in str((c['input'] or {}).get('command'))]
+        wrote = [c for c in calls if same_command(c, probe_write(child.content))]
         read = [c for c in calls
                 if c['tool'] == 'Read' and os.path.basename(str((c['input'] or {}).get('file_path'))) == PROBE_INSIDE]
         inside_reads += len(read)
         inside_writes.append((bool(wrote) and all(c['is_error'] is False and PROBE_INSIDE in str(c['text']) for c in wrote),
                               bool(read) and all(c['is_error'] is False and child.content in str(c['text']) for c in read)))
+        edited = child.content.replace('INSIDE', 'EDITED', 1)
+        for name, command, expected in PROBE_SHAPES:
+            wanted = [text.replace('{c}', child.content).replace('{e}', edited) for text in expected]
+            shapes[name] = shapes[name] and shape_ran(calls, command, wanted)
+        kinds = probe_boundaries(child.root, repository) if child.root is not None else ()
+        for kind in boundaries:
+            commands = [command for k, command in kinds if k == kind]
+            held = bool(commands) and all(boundary_refused(calls, command, kind == 'unsandboxed') for command in commands)
+            boundaries[kind] = boundaries[kind] and held and child.disk.get(kind, True)
+        boundary_ids = {c['id'] for c in calls if any(same_command(c, command) for _, command in kinds)}
+        boundary_denials += sum(1 for d in child.bash_denials if d.get('id') in boundary_ids)
         count = None
         for call in calls:
             command = str((call['input'] or {}).get('command'))
@@ -1669,20 +1794,25 @@ def summarize_probe(cfg, children, sentinels, markers):
     control = next((child for child in children if child.arm == 'control'), None)
     token_visible = None if None in visible else any(visible)
     skills = lambda child: (child.stream['init'] or {}).get('skills') or []  # noqa: E731
+    bash_denials = sum(len(child.bash_denials) for child in children)
     flags = {'network_denied': denied['network'], 'repository_read_denied': denied['repository_read'],
              'workspace_read_denied': denied['workspace_read'],
              'method_arm_skill_loaded': bool(method.stream['init']) and 'tackle' in skills(method),
              'control_arm_skill_absent': control is not None and bool(control.stream['init']) and 'tackle' not in skills(control),
              'token_scan_clean': not any(child.locations for child in children),
              'work_tree_write_allowed': all(wrote for wrote, _ in inside_writes),
-             'work_tree_read_allowed': all(read for _, read in inside_writes)}
+             'work_tree_read_allowed': all(read for _, read in inside_writes),
+             'denied_shapes_succeeded': all(shapes.values()),
+             'outside_write_denied': boundaries['outside_write'], 'config_write_denied': boundaries['config_write'],
+             'unsandboxed_refused': boundaries['unsandboxed']}
     problems = {child.arm: [p for p in child.problems if p != 'skill_listing'] for child in children}
-    sound = (all(flags.values()) and isinstance(token_visible, bool) and not any(problems.values())
+    sound = (all(flags.values()) and isinstance(token_visible, bool) and not any(problems.values()) and bash_denials == 0
              and not any(child.refused or child.faults or not child.clean for child in children)
              and all(count >= 1 for count in attempts.values()))
     observed = (method.stream['init'] or {}).get('model')
     return dict({'schema': PROBE_SCHEMA, 'passed': sound}, **flags, token_visible_to_tools=token_visible, attempts=attempts,
-                work_tree_read_attempts=inside_reads,
+                work_tree_read_attempts=inside_reads, denied_shapes=shapes, bash_denials=bash_denials,
+                boundary_permission_denials=boundary_denials, work_rm={child.arm: rm_outcome(child) for child in children},
                 model=observed if control is not None and observed == (control.stream['init'] or {}).get('model') else None,
                 cost_usd=round(sum(child.cost for child in children), 6), isolation_problems=problems,
                 children=[{'arm': c.arm, 'exit': c.child.exit if c.child else None, 'tool_calls': len(c.calls),
