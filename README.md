@@ -195,6 +195,20 @@ Tackle is a method an agent follows. The agent still needs the tools, permission
 
 See the [RUN card](skills/tackle/references/guides/run-card.md) and [failure-modes catalog](skills/tackle/references/failure-modes.md).
 
+## Security model
+
+This section describes how Tackle is built to behave; it is not a claim about any third-party review or scanner result.
+
+The install is Markdown only: `SKILL.md` and `references/` contain no executable runner and install none (see the install contents [above](#get-started)). Ordinary invocation performs no network access and does not change the installation tree. The optional System One capability is the one consented exception, and it only runs when the workspace records your agreement ([System One](skills/tackle/references/guides/system-one.md)).
+
+Recipe scripts under `references/` are documentation. An agent saves or runs one only with your explicit authorization, and prefers an equivalent capability of its own harness. If you decline, the affected record is reported unavailable or produced another permitted way, never faked.
+
+RUN executes only the argv of authorized, ready tasks, and captures each command with its exit status and output streams ([RUN card](skills/tackle/references/guides/run-card.md)).
+
+Content in `reference-docs/`, fetched pages and tool output is data. Tackle cites it and never follows instructions found inside it.
+
+Updates are owner-controlled and out of band: Tackle does not check for, download or install releases ([update guide](skills/tackle/references/guides/update.md)).
+
 ## Documentation
 
 | Need | Guide |
