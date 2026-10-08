@@ -8,6 +8,8 @@ The card's steps 5 and 6 link here for the decomposition and lint procedure in f
 - Cut for parallelism using crossing artifacts, interfaces, and configuration consumers; disjoint
   `Write scope` alone do not establish semantic independence. Name every produced/consumed artifact
   and relevant invalidation edge.
+- Scope a change to a count, literal or row set by searching the value and its consumers across the
+  repository (tests, guards and phrasing variants that bind it), not chosen phrases in chosen directories.
 - Decompose to the fewest tasks, each with a qualifying reason to stay separate (the [PLAN
   card](plan-card.md)'s step 5 names the five reasons); each separate task's briefing names its own.
 - One task = smallest coherent vertical slice with ONE runnable acceptance check; keep the slice
@@ -82,12 +84,20 @@ Set a selected prepared task **Ready to run** only when all of these are true:
   blocking finding;
 - interfaces and dependency crossings are coherent, including configuration consumers;
 - positive and negative validator/contract-boundary fixtures pass with checked native results
-  and exits, plus exact counts only where the contract requires them;
+  and exits, plus exact counts only where the contract requires them, and call each validator with
+  the acceptance script's exact argv (revision names such as an annotated tag, the tree under test, a
+  head changed after validation), never a convenient equivalent;
 - the relevant clause, code, configuration, dependency, and input fingerprints are recorded;
 - no material contradiction or unowned global obligation remains.
 
 PLAN also runs the [controlled-writing](controlled-writing.md) check over `plan.md`, the briefs and
 `design-contract.md`; a finding blocks Ready until the text is fixed or the owner accepts it.
+
+Before Ready, when tasks touch shared guards (registries, budgets, ledgers, committed-text admission),
+apply placeholder or plausible outputs of those tasks to a disposable copy of the repository and run
+the project's full regression suite (its test registry where one exists); every failing consumer gets
+an owner task or a recorded expected-red decision. This rehearsal is readiness evidence on a throwaway
+copy, not source execution of the plan.
 
 Preparation records readiness evidence; it does not run source execution or claim product PASS.
 Handoff contains the final Ready fingerprints and validated Task contracts. RUN alone may execute

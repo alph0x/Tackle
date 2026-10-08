@@ -95,6 +95,8 @@ tasks and stops before source execution.`
    never runs source execution or claims a product PASS. Handoff carries the matrix, the global
    obligations, the Ready fingerprints and the explicit execution boundary; RUN records its own
    intent before it may mutate source.
+   A Coordinated handoff offers the [plan view](plan-view.md#request) once and names its recipe; only the
+   owner's yes builds it, and that yes is the owner's explicit authorization for the plan-view recipe.
    A brief locks only after its `lock` [adversary checkpoint](run.md#adversary-checkpoints).
 
 **Stop rule.** PLAN exists to unblock execution. When the next step is small and clear, do it; do

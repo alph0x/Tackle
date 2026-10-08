@@ -56,6 +56,11 @@ Each plan records its delta in `<workspace>/map-delta.json`, schema `tackle-map-
 - `task` names the task that owns the change. `state` is `planned` until that task is Complete, then `done`.
 - `relations` is optional and adds relations.
 
+When a base exists and the plan adds or changes components, PLAN writes this delta with the plan, each
+change `planned`. Validating it with the recipe needs the owner's explicit authorization, which an
+architecture-map or plan-view request grants; without that grant, the next view build checks the delta and
+refuses an invalid one.
+
 ## The recipe
 
 Saving and importing the recipe needs the owner's explicit authorization; an explicit architecture-map or plan-view request, or the owner's closure-fold confirmation, grants it for that request ([recipe consent](../recipes/README.md#consent)). Prefer an equivalent harness capability. With that authorization, save the [recipe](../recipes/architecture-map.md) as a file and import it. It uses only the standard library

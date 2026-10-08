@@ -7107,6 +7107,24 @@
       "destination": "references/guides/migrate.md",
       "note": "Run row 16 and the retro lifecycle check command from `retro.md`; retain their exact result and any Run ID diagnosis.",
       "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 84,
+      "unit_sha256": "c1e0a635e35ea4994c64a20e7ac454e3701178213261ec709c75c952ac19c76d",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "positive and negative validator/contract-boundary fixtures pass with checked native results and exits, plus exact counts only where the contract requires them, and call each validator with the acceptance script's exact argv (revision names such as an annotated tag, the tree under test, a head changed after validation), never a convenient equivalent;",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run-card.md",
+      "line": 44,
+      "unit_sha256": "5fd7755de7b8836a068bf739757260de598439f4abefa06040a92128f107b673",
+      "disposition": "reworded",
+      "destination": "references/guides/run-card.md",
+      "note": "Before closing the initiative, read every Complete task's brief, report and cited records as prose; an unmet owner request is an `Open` obligation raised with the owner; with a map delta, also offer the owner its fold (`architecture-map.md`, Closure fold).",
+      "destination_unit_sha256": null
     }
   ]
 }

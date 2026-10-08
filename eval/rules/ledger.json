@@ -721,7 +721,7 @@
       "rule_id": "R-PLAN-09",
       "statement": "Long initiatives may prepare milestones; every requirement keeps an owner, and deferred tasks stay Draft until verified Ready.",
       "statement_sha256": "69a94acb2074238280e8a2ac7a65098bcad79386d4384fc83f55ce0c84a13d05",
-      "home": "references/guides/decompose-and-lint.md:98",
+      "home": "references/guides/decompose-and-lint.md:108",
       "home_fragment": "Long initiatives may use optional milestones",
       "units": [],
       "mirrors": [],
@@ -772,7 +772,7 @@
       "rule_id": "R-PLAN-11",
       "statement": "The repository references/ template library is read-only during scaffolding; initiative-specific edits belong in the workspace copy.",
       "statement_sha256": "488ffc1715a3bdfe05ef2d92a2ae222b3fc024f69f727fafc06b233242df0571",
-      "home": "references/guides/scaffold.md:50",
+      "home": "references/guides/scaffold.md:52",
       "home_fragment": "template library is read-only during scaffolding",
       "units": [],
       "mirrors": [],
@@ -820,7 +820,7 @@
       "rule_id": "R-PLAN-12",
       "statement": "Planning always runs on a more capable tier than the Executor's whenever more than one suitable tier binds; a one-tier harness records its limitation. These are role proposals, not claims that a host binding occurred.",
       "statement_sha256": "f2516914cd7def40bbf47bf3973d6b24cd128e5ac88a7d378b148c84cc53d2ff",
-      "home": "references/guides/decompose-and-lint.md:251",
+      "home": "references/guides/decompose-and-lint.md:261",
       "home_fragment": "Planning always runs on a more capable tier",
       "units": [],
       "mirrors": [],
@@ -989,12 +989,14 @@
     },
     {
       "rule_id": "R-RUN-07",
-      "statement": "Task, related regression and affected integration checks precede task completion, and deliverable acceptance precedes initiative completion.",
-      "statement_sha256": "3ff8a917588d913bdb03899a3207e55977f61a87556856fd17629cabacf94922",
-      "home": "references/guides/run-card.md:43",
+      "statement": "Task, related regression and affected merged-tree integration checks pass before a task becomes Complete, and deliverable acceptance precedes initiative completion.",
+      "statement_sha256": "d3301a1f5ebbba1c848bc0b74aecc74ef0aa2bbce18ca99a6a237e8064424f42",
+      "home": "references/guides/run-card.md:45",
       "home_fragment": "deliverable acceptance precedes initiative completion",
       "units": [],
-      "mirrors": [],
+      "mirrors": [
+        "references/guides/run-card.md:22"
+      ],
       "class": "behavioral",
       "hot_path": false,
       "origin": {
@@ -1027,7 +1029,7 @@
       "rule_id": "R-RUN-08",
       "statement": "Three failed correction-validation cycles per task or two identical no-progress observations bound implementation correction, and lineage keeps spent cycles across split, merge and resume.",
       "statement_sha256": "9a6b0e2439703af8ce593d30e2c77c73bc87fa3af6a3b7d586613ea19e28bfb7",
-      "home": "references/guides/run-card.md:30",
+      "home": "references/guides/run-card.md:31",
       "home_fragment": "three failed correction-validation cycles per task",
       "units": [],
       "mirrors": [],
@@ -1198,7 +1200,7 @@
       "rule_id": "R-RUN-14",
       "statement": "New tests follow red, green, refactor: the chosen failing test is seen failing before the implementation, and an opt-out needs a decision recorded first.",
       "statement_sha256": "c33bea5f8bef201516b6c34e8f5345884dbb59406f0c985bddb840e073df8ae6",
-      "home": "references/guides/testing.md:29",
+      "home": "references/guides/testing.md:34",
       "home_fragment": "red → green → refactor is the Executor's default shape",
       "units": [],
       "mirrors": [],
@@ -1269,7 +1271,7 @@
       "home_fragment": "deduplicate against everything seen",
       "units": [],
       "mirrors": [
-        "references/guides/decompose-and-lint.md:31"
+        "references/guides/decompose-and-lint.md:33"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -1336,7 +1338,7 @@
       "rule_id": "R-RUN-18",
       "statement": "A declared capability failure is corrected exactly once, at the model map's next tier with effort unchanged, spends one task-pool cycle always, never applies to an unbound tier, a next tier whose bound model id matches the model actually used for the failed attempt, or a further escalation, never skips to a further tier, never beyond the topmost bound tier, and never for an evaluation control arm.",
       "statement_sha256": "394cbc57ad5d115fcaa220a84036a0fcb79cdca4fb5f1ce83b281f90173a61e9",
-      "home": "references/guides/run-card.md:28",
+      "home": "references/guides/run-card.md:29",
       "home_fragment": "An implementation fault is corrected; a capability failure",
       "units": [],
       "mirrors": [
@@ -2982,19 +2984,22 @@
         "references/guides/full-checks.md:375",
         "references/guides/full-checks.md:378",
         "references/guides/evidence-capture.md:18",
-        "references/guides/decompose-and-lint.md:113",
+        "references/guides/decompose-and-lint.md:123",
         "references/guides/context-lifecycle.md:85",
         "references/guides/record-lifecycle.md:67",
         "references/guides/codex-native-usage.md:10",
-        "references/guides/architecture-map.md:61",
+        "references/guides/architecture-map.md:66",
         "references/guides/controlled-writing.md:33",
         "references/guides/migrate.md:216",
-        "references/guides/plan-view.md:27",
-        "references/guides/plan-view.md:113",
+        "references/guides/plan-view.md:34",
+        "references/guides/plan-view.md:125",
         "references/guides/run.md:146",
         "references/guides/system-one.md:6",
         "references/guides/context-lifecycle.md:76",
-        "references/guides/evidence-capture.md:132"
+        "references/guides/evidence-capture.md:132",
+        "references/guides/plan-view.md:15",
+        "references/guides/plan-card.md:98",
+        "references/guides/architecture-map.md:60"
       ],
       "class": "safety-invariant",
       "hot_path": true,
@@ -3353,15 +3358,17 @@
     },
     {
       "rule_id": "R-STATUS-06",
-      "statement": "An explicit view request creates the plan view and stands for its workspace, and the coordinator rebuilds an existing view after each board status change and each role start or finish, an open view reloads itself after a rebuild without a server, and after a refused rebuild the coordinator reports the refusal lines to the owner while the earlier view keeps its earlier build time, and curated status prose that declares an earlier board's task states is set aside with a visible note, and the build warns about a summary with status prose that declares no board states.",
-      "statement_sha256": "91b7de08e21364e8a3749268fbc3b5316d7f39504aa50f71bf056d4bc3c578fa",
+      "statement": "An explicit view request, or the owner's yes to the plan view offered once at a Coordinated PLAN handoff, creates the plan view and stands for its workspace, a yes also writes the curated summaries that declare the board states they describe and a no writes nothing, and the coordinator rebuilds an existing view after each board status change and each role start or finish, an open view reloads itself after a rebuild without a server, and after a refused rebuild the coordinator reports the refusal lines to the owner while the earlier view keeps its earlier build time, and curated status prose that declares an earlier board's task states is set aside with a visible note, and the build warns about a summary with status prose that declares no board states.",
+      "statement_sha256": "691117850479878a9a1eb0ed8a7f13cccd64d4e60c945a4ea828ef13ba6852be",
       "home": "references/guides/plan-view.md:12",
       "home_fragment": "creates the view and stands for its workspace",
       "units": [],
       "mirrors": [
-        "references/guides/plan-view.md:19",
-        "references/guides/plan-view.md:97",
-        "references/guides/run-card.md:42"
+        "references/guides/plan-view.md:26",
+        "references/guides/plan-view.md:109",
+        "references/guides/run-card.md:44",
+        "references/guides/plan-view.md:15",
+        "references/guides/plan-card.md:98"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -3385,7 +3392,9 @@
       "home": "references/guides/architecture-map.md:10",
       "home_fragment": "only the owner's request or a confirmed closure fold",
       "units": [],
-      "mirrors": [],
+      "mirrors": [
+        "references/guides/run-card.md:47"
+      ],
       "class": "behavioral",
       "hot_path": false,
       "origin": {
@@ -3488,7 +3497,7 @@
       "home_fragment": "Before an initiative is declared closed, and at every cold",
       "units": [],
       "mirrors": [
-        "references/guides/run-card.md:44",
+        "references/guides/run-card.md:46",
         "references/guides/status.md:71"
       ],
       "class": "behavioral",
@@ -3512,7 +3521,7 @@
       "rule_id": "R-STATUS-10",
       "statement": "Full and Focused views use the same template and export a self-contained executive presentation of the plan, its current progress or both through a separate light print report independent of screen filters, theme and collapsed sections, with original page title, temporary print attributes and focus restored after printing, cancellation or a print exception.",
       "statement_sha256": "7462bde8443a2a81b16d7eb0760090fd5c37a9d4ac61f28746ab802998c9fa0c",
-      "home": "references/guides/plan-view.md:81",
+      "home": "references/guides/plan-view.md:93",
       "home_fragment": "Full and Focused views use the same template",
       "units": [],
       "mirrors": [],
@@ -3652,11 +3661,11 @@
       "rule_id": "R-STATUS-12",
       "statement": "The optional live producer starts only when the owner asks for it, binds only to 127.0.0.1, answers only requests addressed to 127.0.0.1:<port>, serves only / and /health, rejects query strings and every other path, sends nothing off the machine, and after a failed refresh keeps the last successful page and reports an unhealthy /health.",
       "statement_sha256": "f7870e5832a38daa89033475db3dd5edadcf26419361849fa035330cadfd92ad",
-      "home": "references/guides/plan-view.md:121",
+      "home": "references/guides/plan-view.md:133",
       "home_fragment": "The producer binds only to `127.0.0.1`",
       "units": [],
       "mirrors": [
-        "references/guides/plan-view.md:113"
+        "references/guides/plan-view.md:125"
       ],
       "class": "safety-invariant",
       "hot_path": false,
@@ -3693,6 +3702,150 @@
         "scenarios": [],
         "cohort_id": null,
         "as_of": "2026-10-06"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-13",
+      "statement": "A validator's readiness fixtures call it with the acceptance script's exact argv, including its revision names such as an annotated tag, the tree under test and a head changed after validation, never a convenient equivalent.",
+      "statement_sha256": "3b4c213cb064dd4f33235eb5e730b447b49404945e09fbf6edbb411143999ae9",
+      "home": "references/guides/testing.md:23",
+      "home_fragment": "readiness fixtures call it with the acceptance script's",
+      "units": [],
+      "mirrors": [
+        "references/guides/decompose-and-lint.md:88"
+      ],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.1",
+        "trigger": "Retro lesson: readiness fixtures passed a commit sha where the acceptance passed an annotated tag and never changed the head after validation, and both faults reached RUN.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-08"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-14",
+      "statement": "Scoping a change to a count, literal or row set searches the value and its consumers across the repository, not chosen phrases in chosen directories.",
+      "statement_sha256": "62e05232e40d92f2b38952735ee81b0422eb3910c1dd0335394bdeff33ff5455",
+      "home": "references/guides/decompose-and-lint.md:11",
+      "home_fragment": "Scope a change to a count, literal or row set by searching",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.1",
+        "trigger": "Retro lesson: a row-count change was scoped by grepping phrases in a few places and missed the tests and guards that bind the literal.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-08"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-15",
+      "statement": "Before Ready, when tasks touch shared guards, PLAN applies placeholder or plausible outputs of those tasks to a disposable copy and runs the project's full regression suite, every failing consumer gets an owner task or a recorded expected-red decision, and the rehearsal is readiness evidence, not source execution.",
+      "statement_sha256": "970013aa53d9dbaefc0d96c82f11f2e76573aa868a08c3b53f8f326f780d150f",
+      "home": "references/guides/decompose-and-lint.md:96",
+      "home_fragment": "Before Ready, when tasks touch shared guards",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.1",
+        "trigger": "Retro lesson: a task's effect on shared guards surfaced only after merge, and no task owned it.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-08"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATUS-13",
+      "statement": "When the architecture map base exists, the plan view build passes it with --map and the scope the owner chose for a large project before the first build, and without the base it passes no --map.",
+      "statement_sha256": "a454f0b832839dbb644b6e6a3a4dbc2ad848dddd26a1e1da716d5cbe3dc0e6a6",
+      "home": "references/guides/plan-view.md:40",
+      "home_fragment": "When `.tackle/map/architecture.json` exists, pass `--map",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.1",
+        "trigger": "Retro lesson: a plan view was built without its architecture map because the build command omitted --map.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-08"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATUS-14",
+      "statement": "When a base exists and the plan adds or changes components, PLAN writes the workspace map delta with each change planned, and validating it with the recipe needs the owner's explicit authorization from an architecture-map or plan-view request.",
+      "statement_sha256": "658a98bc191df0187a9058dbb44297bf79c6999701189914e8830d9ba069cb9c",
+      "home": "references/guides/architecture-map.md:59",
+      "home_fragment": "When a base exists and the plan adds or changes components",
+      "units": [],
+      "mirrors": [
+        "references/guides/scaffold.md:44"
+      ],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.1",
+        "trigger": "Retro lesson: no map delta existed for a plan that changed components, because scaffolding only offered a base when none existed.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-08"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-25",
+      "statement": "Closing a Complete task sets its map delta changes to done before any view rebuild.",
+      "statement_sha256": "63123fa9f2c6cd6a7386247812b9f677fa94a2a95b651238865145ad81f2076c",
+      "home": "references/guides/run-card.md:43",
+      "home_fragment": "Set a Complete task's `map-delta.json` changes to `done`",
+      "units": [],
+      "mirrors": [
+        "references/guides/architecture-map.md:56"
+      ],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.1",
+        "trigger": "Retro lesson: a delta left changes planned although their tasks had completed, so the fold left them out.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-08"
       },
       "historical": []
     }

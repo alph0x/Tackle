@@ -20,6 +20,11 @@ outcome. Derive isolated cases from that inventory before writing implementation
 exhaustiveness beyond the declared input domain and known interfaces; newly discovered failure
 modes update the inventory before the corresponding implementation change.
 
+A validator's readiness fixtures call it with the acceptance script's exact argv: the same revision
+names, such as an annotated tag where the script passes one, the tree under test, and a head that
+changes after validation. A convenient equivalent, such as a commit sha in place of the tag, does
+not exercise the consumer's call.
+
 ## Test-first execution
 
 For the bounded None route, follow `intake-and-gate.md` without expanding the task into this
