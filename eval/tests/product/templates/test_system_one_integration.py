@@ -365,6 +365,42 @@ class SystemOneIntegration(unittest.TestCase):
             self.assertEqual(route('Focused',invalid,1,False,False,False),'Focused')
             self.assertFalse(self.ns['no_progress_same'](False,dict(invalid,judgment=True)))
 
+    def test_intake_checks_for_a_signal_on_every_route_before_sizing(self):
+        intake=' '.join((ROOT/'skills/tackle/references/guides/intake-and-gate.md').read_text().split())
+        section=intake.split('## System One check (every route)',1)[1].split(' ## ',1)[0]
+        for phrase in ['Before sizing, check once per workspace for a System One configuration signal',
+                       'check presence only',
+                       'When there is a signal, a selected workspace and no recorded answer, ask the System One question in PLAN or RUN, then record it.',
+                       'ask right after the scaffold creates it.',
+                       'in the exact form that [the recipe](../recipes/system-one.md) reads:',
+                       '`System One consent: yes · date=YYYY-MM-DD · actor="name"`, with `no` for a refusal.',
+                       'Without a signal, record nothing and continue.']:
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase,section)
+        self.assertLess(intake.index('## System One check (every route)'),intake.index('# Step 2'))
+        card=(ROOT/'skills/tackle/references/guides/plan-card.md').read_text()
+        self.assertIn('[System One check](intake-and-gate.md#system-one-check)',card)
+        run=' '.join((ROOT/'skills/tackle/references/guides/run.md').read_text().split())
+        self.assertIn('gets the [System One check](intake-and-gate.md#system-one-check) when RUN starts.',run)
+
+    def test_each_call_and_fallback_becomes_one_sidecar_record(self):
+        guide=' '.join((ROOT/'skills/tackle/references/guides/system-one.md').read_text().split())
+        for phrase in ['After a configuration signal, record each call and each local fallback as one [sidecar](usage-observability.md) record',
+                       '`collector: system-one`',"Use `scope: role` and the calling role's Run ID as `run_id`",
+                       'without a Run ID, use `scope: session` and `run_id: n/a`',
+                       'A Direct request has no workspace and writes no record.',
+                       '`requests` is 1 when a request was sent and 0 when the fallback came before any send.',
+                       'when the response reports them, token counts','adopted decision or fallback reason',
+                       'With a recorded `yes`, consult System One at every point where one of the four uses applies:',
+                       'each failure classification, each no-progress comparison, each cold-resume history choice and each intake sizing.',
+                       'Each consult keeps the thresholds and fallbacks above.',
+                       'A point with no admitted public fragment is a skipped point.',
+                       'Record a skipped point with its reason.',
+                       'Read-only STATUS makes no call and writes no record.',
+                       'A missing sidecar or a failed record write never fails the task.']:
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase,guide)
+
     def test_actual_source_hooks_network_exception_and_artifact(self):
         entry=(ROOT/'skills/tackle/SKILL.md').read_text()
         self.assertLessEqual(len(entry.split()),1100)
