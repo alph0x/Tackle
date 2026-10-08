@@ -227,7 +227,7 @@ def pins():
         ('command_fixture', FIXTURE / 'command_fixture.py'))}
     answer = dict(components=components,
                   interpreter=dict(path=PYTHON, version=platform.python_version(), sha256=digest(artifact_read(PYTHON))),
-                  shell=dict(path=SHELL, version='posix-sh/1', sha256=digest(artifact_read(SHELL))),
+                  shell=dict(path=SHELL, version='posix-sh/1', sha256=digest(artifact_read(os.path.realpath(SHELL)))),
                   fixture_tree_sha256=tree_digest(FIXTURE), policy_sha256=digest(artifact_read(FIXTURE / 'streams.json')))
     answer['fingerprint'] = digest(encoded(dict(pins=answer, binding=MODEL, route=VERSIONS['route'])))
     return answer
