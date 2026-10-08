@@ -5104,7 +5104,7 @@
       "unit_sha256": "f09bc2ed67be9fe3e0fe2d7a6924b2bb019de7d1cde05f11253873f0a943af16",
       "disposition": "reworded",
       "destination": "references/guides/run-card.md",
-      "note": "An implementation fault is corrected; a capability failure declared in the brief is corrected only once, one tier up ([limits](run.md#tier-dispatch-and-escalation-limits)).",
+      "note": "An implementation fault is corrected; a capability failure declared in the brief is corrected only once, one tier up, after the owner confirms the model ([limits](run.md#tier-dispatch-and-escalation-limits)).",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -5215,7 +5215,7 @@
       "unit_sha256": "16d9393a545b9001c8481e08da2c6f6450044fe6549cda4c3b61a21bff58dac6",
       "disposition": "reworded",
       "destination": "references/guides/run-card.md",
-      "note": "An implementation fault is corrected; a capability failure declared in the brief is corrected only once, one tier up ([limits](run.md#tier-dispatch-and-escalation-limits)).",
+      "note": "An implementation fault is corrected; a capability failure declared in the brief is corrected only once, one tier up, after the owner confirms the model ([limits](run.md#tier-dispatch-and-escalation-limits)).",
       "destination_unit_sha256": null
     },
     {
@@ -6545,7 +6545,7 @@
       "unit_sha256": "fda3bf7e3c05de617690ec01040810feebfbbb641b4e6bd90e2e33c494272219",
       "disposition": "reworded",
       "destination": "references/guides/decompose-and-lint.md",
-      "note": "At the step above that compiles sufficient task briefs, read the workspace `AGENTS.md` model map once per initiative \u2014 confirm it at intake, then reconfirm only on a deviation \u2014 and observe the host's model names, tier capabilities, model-binding controls, effort-binding controls, telemetry, and the source of those observations before proposing roles. Mark availability as `supported`, `unsupported`, or `unknown`; map generic tiers only to actual available models. An unavailable exact request needs a concrete viable alternative with its consequences or an explicit unavailability report; never invent a vendor equivalent. Per task, propose a **Tier** (`fast`/`standard`/`frontier`) and **Effort** for the Executor. When observed binding supports it, default the Executor to the cheapest bindable tier at low effort: the cheapest suitable supported tier mapped to an actually available model. If model-binding support is `unknown` or `unsupported`, do not claim this default is bindable; report the limitation and offer an observed viable alternative with its consequences or an explicit unavailability. Planning always runs on a more capable tier than the Executor's whenever more than one suitable tier binds; a one-tier harness records its limitation. These are role proposals, not claims that a host binding occurred. Keep portable schema Effort tokens separate from actual host controls, and leave unexposed telemetry as `n/a`. A deviation from the routine default, of Tier or Effort, needs a reason in that task's `**Tier reason**`, confirmed by the owner like any other material decision ([communication.md](communication.md)); the routine default itself needs no confirmation beyond the once-per-initiative one.",
+      "note": "At the step above that compiles sufficient task briefs, read the workspace `AGENTS.md` model map once per initiative \u2014 confirm it at intake, then reconfirm only on a deviation \u2014 and observe the host's model names, tier capabilities, model-binding controls, effort-binding controls, telemetry, and the source of those observations before proposing roles.",
       "destination_unit_sha256": null
     },
     {
@@ -7167,6 +7167,63 @@
           "reason": "The token comes from the AGENTS.md file name, which moved to the next sentence of the same input list."
         }
       ]
+    },
+    {
+      "path": "references/AGENTS.tmpl.md",
+      "line": 122,
+      "unit_sha256": "ae8d5c7cee0d3e0076c1c43564a0cd0a00ec75977de4b2d4aa23a35f889df39b",
+      "disposition": "reworded",
+      "destination": "references/AGENTS.tmpl.md",
+      "note": "**Confirmed for this initiative**: (owner, date and the confirmed role-to-model table.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "only",
+          "reason": "Reconfirmation now also covers any other model change and an escalation, so it no longer happens only on a deviation."
+        }
+      ]
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 254,
+      "unit_sha256": "be9cc41908e2b147e0c7858cde2a0aa1c694bd6917ecd19ddbb19ee06bb3b534",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "A deviation from the routine default, of Tier or Effort, needs a reason in that task's `**Tier reason**`, confirmed by the owner like any other material decision ([communication.md](communication.md)); the routine default itself needs no confirmation beyond the once-per-initiative role-to-model table.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "1",
+          "reason": "The word one named the once-per-initiative confirmation, which the sentence now names as the role-to-model table."
+        }
+      ]
+    },
+    {
+      "path": "references/guides/run-card.md",
+      "line": 28,
+      "unit_sha256": "c7ac8d98f5a7bb747dd79e9b95fa52b81f41013dc5bbf3806660ec009f4bc5e8",
+      "disposition": "reworded",
+      "destination": "references/guides/run-card.md",
+      "note": "An implementation fault is corrected; a capability failure declared in the brief is corrected only once, one tier up, after the owner confirms the model ([limits](run.md#tier-dispatch-and-escalation-limits)).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 70,
+      "unit_sha256": "d2ffa1ae766e7c8a7be4c0be58d603d284aaf86120f5de1cd3b8cb097be00656",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "The correction is never applied to an unbound tier, or to a next tier whose bound model id matches the model actually used for the failed attempt — both stop the task with evidence and return to the planner or owner instead, never skipping to a further tier — never past that one escalation, and never above the topmost tier (`frontier` has none).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/task.tmpl.md",
+      "line": 18,
+      "unit_sha256": "c65c675f7781123025544ce860aaf6e0416cf3b538708ce51cda91d9f1514076",
+      "disposition": "reworded",
+      "destination": "references/task.tmpl.md",
+      "note": "**Escalation**: (declared; omit when the task does not permit the one capped retry; the owner still confirms the escalated model)",
+      "destination_unit_sha256": null
     }
   ]
 }
