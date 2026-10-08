@@ -25,7 +25,10 @@ HERE = Path(__file__).resolve().parent
 EDIT_TOOLS = ('Write', 'Edit', 'MultiEdit', 'NotebookEdit')
 WRAPPERS = {'sudo', 'env', 'exec', 'command', 'nohup', 'time', 'timeout', 'nice', 'builtin'}
 SHELLS = {'sh', 'bash', 'zsh', 'dash', 'ksh', 'source', '.'}
-LAUNCHERS = {'xargs', 'find', 'watch', 'parallel'}
+LAUNCHERS = {'xargs', 'watch', 'parallel'}
+FIND_ACTIONS = {'-exec', '-execdir', '-ok', '-okdir'}
+LISTING = re.compile(r'^(?:-[A-Za-z]*[lLc][A-Za-z]*|--files-with(?:out)?-match(?:es)?|--count)$')
+SEARCHERS = {'grep', 'egrep', 'fgrep', 'rg', 'ag', 'ack'}
 READERS = re.compile(r'^(?:cat|tac|head|tail|less|more|bat|nl|sed|gsed|awk|gawk|cut|sort|uniq|strings|xxd|od|hexdump'
                      r'|base64|cp|diff|cmp|vim?|nano|python[0-9.]*|perl|ruby|node|grep|egrep|fgrep|rg|ag|ack|tee|xargs)$')
 HEREDOC = re.compile(r"<<-?[ \t]*(['\"]?)(\w+)\1([^\n]*)\n(.*?)(?:\n[ \t]*\2[ \t]*(?:\n|$)|$)", re.S)
@@ -163,6 +166,14 @@ def runs_script(command, names):
             return True
         if program in LAUNCHERS and any(b in names for b in bases[1:]):
             return True
+        if program == 'find':
+            if any(w in FIND_ACTIONS for w in words) and any(b in names for b in bases[1:]):
+                return True
+    pipe = r'\|\s*(?:\S*/)?(?:sh|bash|zsh|dash|ksh)(?:\s|$)'
+    for line in flatten(command):
+        for name in names:
+            if re.search(r'(?:^|[\s/])' + re.escape(name) + r'[^|;&\n]*' + pipe, line):
+                return True
     return False
 
 
@@ -180,7 +191,8 @@ def reads_file(call, suffix):
     if call['name'] in ('Read', 'NotebookRead') + EDIT_TOOLS and path.endswith(suffix):
         return True
     if call['name'] == 'Grep':
-        if path.endswith(suffix) or file_hit(call['result'], suffix):
+        listing = args.get('output_mode') in (None, 'files_with_matches', 'count')
+        if (path.endswith(suffix) and not listing) or file_hit(call['result'], suffix):
             return True
     if call['name'] == 'Bash' and isinstance(args.get('command'), str):
         command = args['command']
@@ -192,6 +204,8 @@ def reads_file(call, suffix):
         for line in flatten(command):
             for program, words in segments_of(line):
                 text = ' '.join(words)
+                if program in SEARCHERS and any(LISTING.match(w) for w in words[1:]):
+                    continue
                 if base in text and (READERS.match(program) or re.search(r'<\s*\S*' + re.escape(base), line)):
                     return True
             if re.search(r'(?:<|\$\(<)\s*\S*' + re.escape(base), line):

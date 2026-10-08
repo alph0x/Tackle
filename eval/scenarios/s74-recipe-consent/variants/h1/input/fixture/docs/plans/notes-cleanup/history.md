@@ -6,7 +6,8 @@
 
 ## Session 2 — 2026-10-06
 
-- T-03 made ready after the owner sent a changes file with indented entries.
+- T-03 made ready after the owner sent a changes file with indented entries; records keep input
+  copies from now on (D-02).
 
 ### State snapshot
 

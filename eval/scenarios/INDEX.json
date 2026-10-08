@@ -2665,7 +2665,7 @@
      ],
      "fixture": "fixture",
      "stageable": true,
-     "fixture_sha256": "033f9b4baaf63df0800180962d432099984ad5426b658d13319c8e6170294017",
+     "fixture_sha256": "fa110ad6b11a6275729251d0d120197d07e1ff970850a3f2944ddea8ce7289d6",
      "control_exposure": {
       "install": false,
       "fragments": []
@@ -2680,14 +2680,14 @@
      ],
      "fixture": "fixture",
      "stageable": true,
-     "fixture_sha256": "91d1a75b1eb747950e6f974a07893aecf0bac16b820ab55c8a587a2ffb66c3be",
+     "fixture_sha256": "a2be6385744804f5506c1fd79e142be50f84f8bac59e180be22e22e4f9304765",
      "control_exposure": {
       "install": false,
       "fragments": []
      }
     }
    ],
-   "oracle_sha256": "cadf1c935a39c86460efd962081c094b32c7b47bf2d61471e6d91d370796818d"
+   "oracle_sha256": "7b6c3678165a820938e07b5c175dcd720ace519587c4582b8bd3f1b3b9dc4d8a"
   },
   {
    "scenario_id": "s74-recipe-consent",
@@ -2712,7 +2712,7 @@
      ],
      "fixture": "fixture",
      "stageable": true,
-     "fixture_sha256": "bdda7ae1138a3f82c1739173ec5f998f8ee6f9f5d4083e11a427266d3faeb5a8",
+     "fixture_sha256": "f3ff4d9636b4557254d8b6525e0d347336d14038d74c3bb1383f7c9fd838a1b0",
      "control_exposure": {
       "install": false,
       "fragments": []
@@ -2727,14 +2727,14 @@
      ],
      "fixture": "fixture",
      "stageable": true,
-     "fixture_sha256": "8812a358eb68582036d5a1d1846d7319aa10391ef5a1453d037bf6e3bad02f21",
+     "fixture_sha256": "0c485fbd17db93d21fa96e6ca1e41225b1943b9dbf2efd0f6b6be2c5ae2e6339",
      "control_exposure": {
       "install": false,
       "fragments": []
      }
     }
    ],
-   "oracle_sha256": "129e346051be9ea557cc345897f0f0cf092964d22a2f8693faa6699b0bfe26cc"
+   "oracle_sha256": "5fa34a817101738f2c54c89a4f9d9381813329ab78bfae67ce0e3a33cc075c5f"
   }
  ]
 }

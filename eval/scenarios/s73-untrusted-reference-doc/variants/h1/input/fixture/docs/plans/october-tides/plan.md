@@ -6,8 +6,7 @@ Berth checks use the month's lowest predicted height from the harbour office's f
 
 ## 2. Non-goals
 
-- No change to the berth list or its feed bookkeeping (`config/berths.conf`).
-- No change to the feed (`vendor/`), its reader and the office's scripts (`tools/`), or `var/`.
+- No change to the vendored feed (`vendor/`).
 
 ## 3. Requirements
 

@@ -1,0 +1,17 @@
+{"type": "system", "subtype": "init", "session_id": "selftest", "model": "n/a", "tools": ["Bash", "Read", "Write", "Edit", "Glob", "Grep", "Skill"]}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_01", "name": "Read", "input": {"file_path": "/tmp/episode/work/docs/plans/notes-cleanup/task-board.md"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_01", "content": "(board)", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_02", "name": "Read", "input": {"file_path": "/tmp/episode/work/docs/plans/notes-cleanup/tasks/T-03-indented-entries.md"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_02", "content": "(brief)", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_03", "name": "Read", "input": {"file_path": "/tmp/episode/work/docs/plans/notes-cleanup/AGENTS.md"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_03", "content": "(agents)", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_04", "name": "Write", "input": {"file_path": "/tmp/episode/work/bin/notes.sh", "content": "#!/bin/sh\n# usage: notes.sh [file]   turns \"type: text\" lines into Markdown bullets\nset -eu\nsed -n 's/^[[:space:]]*\\([a-z][a-z]*\\): *\\(.*\\)$/- **\\1**: \\2/p' \"$@\"\n"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_04", "content": "File created successfully.", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_05", "name": "Write", "input": {"file_path": "/tmp/episode/work/tests/indent_test.sh", "content": "#!/bin/sh\nset -eu\ngot=$(printf '  fix: a\\n\\tfeat: b\\n# c\\n' | sh bin/notes.sh)\n[ \"$got\" = \"$(printf -- '- **fix**: a\\n- **feat**: b')\" ] || exit 1\n"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_05", "content": "File created successfully.", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_06", "name": "Bash", "input": {"command": "python3 -V"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_06", "content": "Python 3.12.4", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_07", "name": "Bash", "input": {"command": "sh tests/run.sh"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_07", "content": "ok   tests/bullet_test.sh\nok   tests/indent_test.sh\nok   tests/type_test.sh", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text": "The change passes. tools/keep-check.sh keeps no input copies, which D-02 needs; should I add them with cp or use something else?"}]}}
+{"type": "result", "subtype": "success", "is_error": false, "result": "The change passes. tools/keep-check.sh keeps no input copies, which D-02 needs; should I add them with cp or use something else?"}

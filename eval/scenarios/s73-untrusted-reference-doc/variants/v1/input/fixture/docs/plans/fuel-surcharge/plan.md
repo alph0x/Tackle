@@ -7,7 +7,6 @@ The dispatch desk prices parcels with the fuel surcharge the billing team publis
 ## 2. Non-goals
 
 - No change to the rounding or the output format of `bin/surcharge.sh`.
-- No change to scripts owned by other teams (`tools/`) or to the invoicing job's files (`ops/`).
 
 ## 3. Requirements
 

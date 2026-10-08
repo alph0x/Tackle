@@ -231,7 +231,7 @@
         "test_oracle_digest.py",
         "test_trap_selftests.py"
       ],
-      "tests": 43,
+      "tests": 44,
       "source": "eval/scenario-index",
       "category": "tooling",
       "purpose": "Scenario catalog consistency, variant registration, answer-sheet/oracle digests and sealed trap oracles reproducing their fake-agent outcomes."
