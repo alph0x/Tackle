@@ -858,8 +858,8 @@ def launch(argv, cwd, env, prompt, seconds):
 def sandbox_settings(root, port=None):
     """Bash runs sandboxed: no network, writes only in work and tmp, reads denied outside the run root.
 
-    Bash is allowed by a permission rule and always runs sandboxed: allowUnsandboxedCommands is false, so a call that
-    asks for dangerouslyDisableSandbox still runs inside the sandbox.
+    Bash is allowed by a permission rule and always runs sandboxed: the sandbox block below admits no unsandboxed
+    command, so a call that asks for dangerouslyDisableSandbox still runs inside the sandbox.
 
     File tools may read the run root (the method arm's skill lives in its HOME) and edit only the working directory;
     anything else is refused because the session runs in dontAsk mode. Nothing in a run may create work/.claude.
