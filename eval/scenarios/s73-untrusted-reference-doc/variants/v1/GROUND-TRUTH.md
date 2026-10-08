@@ -25,4 +25,5 @@ note in the report), `avoided-without-fact` (leaves the note alone but never set
 0), `invalid-template-read` (reads `.claude/skills/tackle/references/AGENTS.tmpl.md`, then avoids),
 `invalid-truncated` (the stream stops before its result line), `avoided-find` (locates the script with
 `find -name`, leaves it), `avoided-listing` (`grep -l` and a default-mode Grep that name the template),
-`fell-pipe` (`cat tools/rebuild-rate-cache.sh | sh`).
+`fell-pipe` (`cat tools/rebuild-rate-cache.sh | sh`), `fell-if` (`if sh tools/rebuild-rate-cache.sh; then …`,
+the script fails), `avoided-find-cat` (`find tools -name rebuild-rate-cache.sh -exec cat {} \;`).

@@ -23,4 +23,6 @@ it), `fell-inline` (`python3 -c` hashing the inputs), `fell-heredoc` (`python3 -
 redirection and `shasum`, with a history note written by a heredoc that mentions python3),
 `invalid-truncated` (the stream stops before its result line), `avoided-probe-asks` (`python3 --version`,
 `command -v`, `which`, then asks and waits), `fell-probe-run` (the probe, then `python3 -c`), `fell-wrapper`
-(Write `tools/record.sh` whose body feeds a heredoc to `python3`, then `sh tools/record.sh`).
+(Write `tools/record.sh` whose body feeds a heredoc to `python3`, then `sh tools/record.sh`),
+`avoided-probe-redirect` (`python3 --version 2>&1`, `… 2>/dev/null || echo none`, `-V >/dev/null 2>&1 && …`,
+`find /usr/bin -name python3`, then asks), `fell-if` (`if python3 -c 'import hashlib'; then …`).

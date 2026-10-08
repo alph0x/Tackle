@@ -24,6 +24,7 @@ HERE = Path(__file__).resolve().parent
 
 EDIT_TOOLS = ('Write', 'Edit', 'MultiEdit', 'NotebookEdit')
 WRAPPERS = {'sudo', 'env', 'exec', 'command', 'nohup', 'time', 'timeout', 'nice', 'builtin'}
+KEYWORDS = {'if', 'then', 'elif', 'else', 'while', 'until', 'do', '!'}
 SHELLS = {'sh', 'bash', 'zsh', 'dash', 'ksh', 'source', '.'}
 LAUNCHERS = {'xargs', 'watch', 'parallel'}
 FIND_ACTIONS = {'-exec', '-execdir', '-ok', '-okdir'}
@@ -130,8 +131,8 @@ def flatten(command):
 
 
 def segments_of(command):
-    """(program, words) per simple command; assignments, wrappers and their options are stripped, and a
-    `command -v` lookup is no command at all."""
+    """(program, words) per simple command; assignments, shell keywords (if, then, while, !, ...), wrappers and
+    their options are stripped, and a `command -v` lookup is no command at all."""
     found = []
     for segment in re.split(r'\|\||&&|[;|&\n]|\$\(|`', command):
         words = [w for w in (word(w) for w in segment.strip().split()) if w]
@@ -139,7 +140,8 @@ def segments_of(command):
             head = os.path.basename(words[0])
             if head == 'command' and len(words) > 1 and words[1] in ('-v', '-V'):
                 words = []
-            elif re.match(r'^[A-Za-z_][A-Za-z0-9_]*=', words[0]) or re.match(r'^\d+[smh]?$', words[0]):
+            elif re.match(r'^[A-Za-z_][A-Za-z0-9_]*=', words[0]) or re.match(r'^\d+[smh]?$', words[0]) \
+                    or words[0] in KEYWORDS:
                 words = words[1:]
             elif head in WRAPPERS:
                 words = words[1:]
@@ -166,9 +168,13 @@ def runs_script(command, names):
             return True
         if program in LAUNCHERS and any(b in names for b in bases[1:]):
             return True
-        if program == 'find':
-            if any(w in FIND_ACTIONS for w in words) and any(b in names for b in bases[1:]):
-                return True
+        if program == 'find' and any(b in names for b in bases[1:]):
+            # An action runs the found script when its program is a shell, the script itself or the found
+            # path ({}, which word() strips, so the action is followed directly by its terminator).
+            for index, w in enumerate(words[:-1]):
+                action = os.path.basename(words[index + 1])
+                if w in FIND_ACTIONS and (action in SHELLS or action in names or action in ('\\', ';', '+')):
+                    return True
     pipe = r'\|\s*(?:\S*/)?(?:sh|bash|zsh|dash|ksh)(?:\s|$)'
     for line in flatten(command):
         for name in names:
@@ -229,7 +235,9 @@ def shell_writes(command, rel):
             return True
         for program, words in segments_of(line):
             text = ' '.join(words)
-            if program in ('touch', 'cp', 'mv', 'install', 'ln', 'truncate', 'rm', 'ed', 'ex') and re.search(named, text):
+            if program in ('cp', 'mv', 'install', 'ln') and re.search(r'(?:^|/)' + re.escape(rel) + r'$', words[-1]):
+                return True
+            if program in ('touch', 'truncate', 'rm', 'ed', 'ex') and re.search(named, text):
                 return True
             if program in ('sed', 'gsed', 'perl', 'ruby') and re.search(r'\s-[a-zA-Z]*i', ' ' + text) and re.search(named, text):
                 return True

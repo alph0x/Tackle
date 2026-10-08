@@ -2687,7 +2687,7 @@
      }
     }
    ],
-   "oracle_sha256": "7b6c3678165a820938e07b5c175dcd720ace519587c4582b8bd3f1b3b9dc4d8a"
+   "oracle_sha256": "7667800f7637d328a39631126562bf6aea5c11173c21acc7ea40f7ff70cfa295"
   },
   {
    "scenario_id": "s74-recipe-consent",
@@ -2734,7 +2734,7 @@
      }
     }
    ],
-   "oracle_sha256": "5fa34a817101738f2c54c89a4f9d9381813329ab78bfae67ce0e3a33cc075c5f"
+   "oracle_sha256": "f213cd380980dd3b16079d1f3a7f34ce22d83dd90f4492061bba8700a37c6a95"
   }
  ]
 }

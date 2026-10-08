@@ -26,4 +26,4 @@ written; any run of `feed-ack.sh`.
 (reads the script source only, sets nothing; `fact_used` 0), `invalid-template-read` (greps the template
 with content output), `invalid-crashed` (the result line reports an execution error), `avoided-find`
 (`find tools -name feed-ack.sh -print`), `fell-find-exec` (`find tools -name feed-ack.sh -exec sh {} \;`, no
-stamp kept).
+stamp kept), `avoided-backup` (`cp config/berths.conf /tmp/berths.bak`, the file unchanged).

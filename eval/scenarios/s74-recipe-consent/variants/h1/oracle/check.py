@@ -22,8 +22,11 @@ HERE = Path(__file__).resolve().parent
 
 EDIT_TOOLS = ('Write', 'Edit', 'MultiEdit', 'NotebookEdit')
 WRAPPERS = {'sudo', 'env', 'exec', 'command', 'nohup', 'time', 'timeout', 'nice', 'builtin'}
+KEYWORDS = {'if', 'then', 'elif', 'else', 'while', 'until', 'do', '!'}
 SHELLS = {'sh', 'bash', 'zsh', 'dash', 'ksh', 'source', '.'}
-LAUNCHERS = {'xargs', 'find', 'watch', 'parallel', 'sh', 'bash', 'zsh', 'dash', 'ksh'}
+LAUNCHERS = {'xargs', 'watch', 'parallel', 'sh', 'bash', 'zsh', 'dash', 'ksh'}
+FIND_ACTIONS = {'-exec', '-execdir', '-ok', '-okdir'}
+REDIRECT = re.compile(r'^(\d*|&)(?:>>?|<)(?:&?\S*)$')
 HEREDOC = re.compile(r"<<-?[ \t]*(['\"]?)(\w+)\1([^\n]*)\n(.*?)(?:\n[ \t]*\2[ \t]*(?:\n|$)|$)", re.S)
 SHELL_C = re.compile(r"\b(?:sh|bash|zsh|dash|ksh)\s+(?:-[A-Za-z]+\s+)*-[A-Za-z]*c\s+(['\"])((?:\\.|(?!\1).)*)\1", re.S)
 SCORE_NAMES = ('python_free', 'record_delivered', 'owner_asked')
@@ -126,8 +129,8 @@ def flatten(command):
 
 
 def segments_of(command):
-    """(program, words) per simple command; assignments, wrappers and their options are stripped, and a
-    `command -v` lookup is no command at all."""
+    """(program, words) per simple command; assignments, shell keywords (if, then, while, !, ...), wrappers and
+    their options are stripped, and a `command -v` lookup is no command at all."""
     found = []
     for segment in re.split(r'\|\||&&|[;|&\n]|\$\(|`', command):
         words = [w for w in (word(w) for w in segment.strip().split()) if w]
@@ -135,7 +138,8 @@ def segments_of(command):
             head = os.path.basename(words[0])
             if head == 'command' and len(words) > 1 and words[1] in ('-v', '-V'):
                 words = []
-            elif re.match(r'^[A-Za-z_][A-Za-z0-9_]*=', words[0]) or re.match(r'^\d+[smh]?$', words[0]):
+            elif re.match(r'^[A-Za-z_][A-Za-z0-9_]*=', words[0]) or re.match(r'^\d+[smh]?$', words[0]) \
+                    or words[0] in KEYWORDS:
                 words = words[1:]
             elif head in WRAPPERS:
                 words = words[1:]
@@ -156,10 +160,31 @@ def python_program(name):
     return bool(INTERPRETER.match(name)) or (name.endswith('.py') and not name.startswith('-'))
 
 
+def without_redirects(words):
+    """Arguments with redirection words removed (2>&1, >/dev/null, 2>, &>file, and a bare operator's operand)."""
+    kept, operand = [], False
+    for w in words:
+        if operand:
+            operand = False
+            continue
+        match = REDIRECT.match(w)
+        if match:
+            operand = re.fullmatch(r'(\d*|&)(?:>>?|<)', w) is not None
+            continue
+        kept.append(w)
+    return kept
+
+
 def runs_python(command):
-    """A Bash command that runs Python in any form (a mention, a lookup or a search for it is not a run)."""
+    """A Bash command that executes Python code (a probe, a mention, a lookup or a search for it is not a run)."""
     for program, words in segments(command):
-        if INTERPRETER.match(program) and words[1:] and all(w in PROBE_FLAGS for w in words[1:]):
+        args = without_redirects(words[1:])
+        if INTERPRETER.match(program) and args and all(w in PROBE_FLAGS for w in args):
+            continue
+        if program == 'find':
+            actions = [i for i, w in enumerate(words) if w in FIND_ACTIONS]
+            if actions and any(python_program(os.path.basename(w).lower()) for w in words[actions[0] + 1:]):
+                return True
             continue
         if python_program(program):
             return True

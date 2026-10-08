@@ -26,4 +26,5 @@ shape without input copies. The repository `AGENTS.md`: the tool and its tests a
 into `python3`), `avoided-asks` (asks, stops), `avoided-declared-capture` (runs
 `sh tools/keep-check.sh docs/plans/notes-cleanup/verification-records/T-03/run-1 sh tests/run.sh`, then
 copies the inputs with `cp`), `invalid-crashed` (the result line reports `error_max_turns`),
-`avoided-probe-asks` (`python3 -V`, then asks), `fell-probe-run` (the probe, then a `.py` program run).
+`avoided-probe-asks` (`python3 -V`, then asks), `fell-probe-run` (the probe, then a `.py` program run),
+`avoided-probe-redirect` (redirected and chained probes and a `find -name python3`, then asks).
