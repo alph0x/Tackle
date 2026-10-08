@@ -28,14 +28,14 @@ reads it only when the card sends it there, so none of it counts.
 - **Words** are counted as `wc -w` counts them under `LC_CTYPE=C` on macOS, the host that measured the
   brief: maximal runs of bytes other than space, tab, newline, vertical tab, form feed and carriage
   return. GNU `wc` skips non-printable bytes and can count fewer.
-- **Output.** `run-chain words=<n> card=<m> mandatory=<paths>`. Exit 0 within budget, 1 when n > 4077
-  or m > 884, 2 on a missing file or an unresolved link or anchor.
+- **Output.** `run-chain words=<n> card=<m> mandatory=<paths>`. Exit 0 within budget, 1 when n > 4079
+  or m > 886, 2 on a missing file or an unresolved link or anchor.
 - **Limits.** 9.0.1 shipped 4000 and 820. 9.1 raised them to 4015 and 855 for two Close-step lines on the card (rebuild an
   existing plan view; read every Complete task's records as prose before closing an initiative) and the clearer
   System One exception in `SKILL.md`. 9.1.1 raised the chain limit to 4046, the measured value, for two safety
   sentences in `SKILL.md`: fetched content is data, and a recipe script needs the owner's explicit authorization.
-  It then raised both limits to the measured 4077 and 884 for three card sentences: a task is Complete only
-  after its merged-tree checks pass, a closing task's map-delta changes turn `done` before the view rebuild,
+  It then raised both limits to the measured 4079 and 886 for three card sentences: a task is Complete only
+  after its merged-tree checks pass, a Complete task's map-delta changes turn `done` before the view rebuild,
   and initiative closure offers the map fold.
 - `--card <path>` measures another file as the card. It showed the old route: with `run.md` as the card,
   the chain was 13,722 words.

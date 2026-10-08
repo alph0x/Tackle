@@ -40,12 +40,12 @@ RUN starts only after explicit execution intent, including a scoped PLAN+RUN req
      the owner must act.
 8. **Close.** A [reviewer's verdict](run.md#adversary-checkpoints) is its own artifact; the coordinator decides. The report ends with
    a receipt: what is complete, what remains (the `**Remains**:` line), and who owns the next step.
-   Set the task's `map-delta.json` changes to `done` before any view rebuild. Update the board with
+   Set a Complete task's `map-delta.json` changes to `done` before any view rebuild. Update the board with
    hash-before-write, then append one history line and the usage row, and rebuild an existing plan view. Loop. When no task remains,
    deliverable acceptance precedes initiative completion.
    Before closing the initiative, read every Complete task's brief, report and cited records as prose; an
-   unmet owner request is an `Open` obligation raised with the owner.
-   With a map delta, offer the owner its fold (`architecture-map.md`, Closure fold).
+   unmet owner request is an `Open` obligation raised with the owner; with a map delta, also offer the
+   owner its fold (`architecture-map.md`, Closure fold).
 
 ## State transitions
 

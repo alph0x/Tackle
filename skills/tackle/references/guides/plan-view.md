@@ -38,7 +38,8 @@ python3 -I plan-view.py --template plan-view.template.md <workspace> <workspace>
 ```
 
 When `.tackle/map/architecture.json` exists, pass `--map .tackle/map/architecture.json` before the
-workspace, with `--map-scope all` or the scope the owner chose for a [large project](architecture-map.md#large-project).
+workspace, with `--map-scope all` or, for a [large project](architecture-map.md#large-project), the scope the owner chose
+when asked before the first build.
 Without that file, pass no `--map`.
 
 Exit 0 writes the view. Exit 1 refuses and writes no file. Exit 2 reports a usage error. The recipe uses only
