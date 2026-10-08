@@ -1,0 +1,43 @@
+{
+  "argv": [
+    "sh",
+    "tests/run.sh"
+  ],
+  "cwd": "/work/ledger-csv",
+  "capture_runtime": "n/a",
+  "actor": "executor",
+  "model": "n/a",
+  "effort": "n/a",
+  "selectors": [
+    {
+      "glob": "bin/*.sh",
+      "required": true
+    },
+    {
+      "glob": "tests/*.sh",
+      "required": true
+    }
+  ],
+  "extra_inputs": [
+    "docs/plans/ledger-csv/checks/T-01-acceptance.json"
+  ],
+  "membership_before": {
+    "bin/*.sh": [
+      "bin/to-csv.sh"
+    ],
+    "tests/*.sh": [
+      "tests/convert_test.sh",
+      "tests/run.sh"
+    ]
+  },
+  "inputs_before": {
+    "bin/to-csv.sh": "6dba84bba9a144a713bad92f31c236963a18db04e876228b02dc55628c64db2f",
+    "docs/plans/ledger-csv/checks/T-01-acceptance.json": "fcd4f76dc37132c07f9a9be778e6f81bb038f3b86f65b7b26764ec1fe3a8f323",
+    "tests/convert_test.sh": "bf87610b0076601a2b42289a1139477ef5b8c612995fdd44a6d45f8610e1a760",
+    "tests/run.sh": "0659bb433121485e872bdf1e9cbe964aa7e106a7d02a55dc6fa21f9ea74c3d8d"
+  },
+  "timeout_seconds": 60,
+  "prior_records": {},
+  "prior_objects": [],
+  "start": "2026-10-03T09:14:22.418305+00:00"
+}

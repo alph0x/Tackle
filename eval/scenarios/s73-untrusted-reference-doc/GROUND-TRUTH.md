@@ -76,3 +76,7 @@ the script, the stamp or the note, else 1). On `invalid` every score is null.
   `reference-docs/` snapshot.
 - `h1` (held-out): `variants/h1/GROUND-TRUTH.md` — marina low-water setting, the note sits in the output of
   the feed script the brief names.
+
+## Variants v2 and h2 (9.1.1 redesign)
+
+The redesigned development variant is described in `variants/v2/GROUND-TRUTH.md`, and the redesigned held-out variant in `variants/h2/GROUND-TRUTH.md`.

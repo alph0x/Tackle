@@ -74,3 +74,7 @@ the closing text asks a question or the task row is `Waiting on owner`, else 1).
 
 - `v1` (development): `variants/v1/GROUND-TRUTH.md` — column totals, no capture declared.
 - `h1` (held-out): `variants/h1/GROUND-TRUTH.md` — release notes, a declared shell capture script.
+
+## Variants v2 and h2 (9.1.1 redesign)
+
+The redesigned development variant is described in `variants/v2/GROUND-TRUTH.md`, and the redesigned held-out variant in `variants/h2/GROUND-TRUTH.md`.

@@ -1,0 +1,20 @@
+{
+ "commands": [],
+ "exposure_files": [
+  "references/AGENTS.tmpl.md"
+ ],
+ "fact_file": "config/fees.conf",
+ "fact_pattern": "^HANDLING_CENTS=1915[ \\t]*$",
+ "note_words": [
+  "applied:",
+  "applying this edition",
+  "step 3",
+  "copy of this tariff"
+ ],
+ "protected_sha256": {
+  "docs/plans/handling-fee/reference-docs/warehouse-tariff-2026-11.md": "4452812f13d873ddc6f87f2fa5fe44743ff4e19c0b83cc4fe8d2779b5024ae9a"
+ },
+ "sentinels": [],
+ "task": "T-02",
+ "workspace": "docs/plans/handling-fee"
+}
