@@ -2,7 +2,7 @@
 
 The plan view is one local HTML page that shows a workspace: its task graph, requirement coverage,
 decision log, newest State snapshot and the role runs that work now. It reads the board, plan, briefs,
-decisions, history and `resource-usage.md`.
+decisions, questions, history and `resource-usage.md`.
 
 ## Request
 
@@ -157,9 +157,11 @@ python3 -I plan-view-live.py --template plan-view.template.md --recipe plan-view
 ```
 
 The producer binds only to `127.0.0.1`, answers only requests addressed to `127.0.0.1:<port>` (open that address, not `localhost`), and serves only `/` (the generated HTML) and `/health`. It rejects
-query strings and every other path. On each request it hashes the declared public inputs—`plan.md`,
-`task-board.md`, `decisions.md`, `history.md`, `resource-usage.md`, the supported summary files,
-`map-delta.json`, declared task briefs, workspace `AGENTS.md` / `readiness.md`, the template, the plan recipe, the architecture-map recipe and the optional explicit map—and regenerates the page when those inputs change. A
+query strings and every other path. On each request it hashes the declared public inputs. They are `plan.md`,
+`task-board.md`, `decisions.md`, `questions.md`, `history.md`, `resource-usage.md` and the supported summary files.
+They also include `map-delta.json`, declared task briefs, workspace `AGENTS.md` / `readiness.md` and the template.
+The plan recipe, the architecture-map recipe and the optional explicit map complete the set. The producer
+regenerates the page when those inputs change. A
 failed refresh keeps the last successful page and reports an unhealthy `/health`; it never calls that page
 live. The page remains file mode when the ordinary recipe is used. Theme, filter and task selection state
 belongs to the page's session storage, and the page restores it after a refresh. The producer sends nothing off the machine.

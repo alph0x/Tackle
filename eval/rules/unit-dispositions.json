@@ -7143,6 +7143,24 @@
       "destination": null,
       "note": "a recipe manifest hash row, not a rule: the row for the same recipe now carries the hash of the changed recipe file, as the manifest requires",
       "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 4,
+      "unit_sha256": "6380c5e56893c11ae37eb84f57aa019b7be88d0e805b3c5a0e1edcd28c6e66c0",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "It reads the board, plan, briefs, decisions, questions, history and `resource-usage.md`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 122,
+      "unit_sha256": "082aeaf0c3bdcafaa7ba3fbfe83c4e068799a1b3c6cab1deedf6e94b4891aef3",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "On each request it hashes the declared public inputs; the list now includes `questions.md`, split into short sentences.",
+      "destination_unit_sha256": null
     }
   ]
 }
