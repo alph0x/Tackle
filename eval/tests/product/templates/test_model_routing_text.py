@@ -98,6 +98,21 @@ class RunMdEscalationLimitsTests(unittest.TestCase):
             with self.subTest(clause=clause):
                 self.assertIn(clause, section)
 
+    def test_dispatch_needs_an_owner_confirmed_binding_and_review_tier(self):
+        section = ' '.join(escalation_limits_section().split())
+        for phrase in ('Dispatch only a role-to-model binding that the owner confirmed.',
+                       "A review role dispatches at the tier the team table gives it, never by default at the coordinator's model.",
+                       'The owner confirms the escalated model before that dispatch.',
+                       'The correction is never applied to an unbound tier'):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, section)
+        card = ' '.join(RUN_CARD.split())
+        self.assertIn('corrected only once, one tier up, after the owner confirms the model', card)
+        self.assertIn('the owner still confirms the escalated model', TASK_TEMPLATE)
+        agents = ' '.join(AGENTS.split())
+        self.assertIn('owner, date and the confirmed role-to-model table', agents)
+        self.assertIn('before any other model change or escalation', agents)
+
     def test_states_the_recording_shape(self):
         section = escalation_limits_section()
         self.assertIn('Attempts', section)
@@ -127,6 +142,32 @@ class DecomposeAndLintWordingTests(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, section)
 
+    def test_states_owner_confirmed_cheapest_model_per_role(self):
+        # Each subagent role targets the cheapest model; the owner confirms the concrete table before dispatch.
+        section = ' '.join(self.section().split())
+        for phrase in ('Each subagent role targets the cheapest available model that fits its tier in the team table.',
+                       'Without that confirmation, the affected task waits on the owner.',
+                       'show the owner the concrete role-to-model table for every subagent role and get an explicit confirmation',
+                       'A run intent is not a model confirmation.',
+                       'an escalation included, needs a new confirmation before that dispatch'):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, section)
+
+    def test_states_brief_strengthening_before_a_tier_deviation(self):
+        # A stronger brief replaces a higher tier; review runs one tier above the Executor.
+        section = ' '.join(self.section().split())
+        for phrase in ('strengthen its brief before any Tier deviation',
+                       'Add the missing context, split the work into smaller steps, and give exact commands with their expected results.',
+                       'writes the brief so that the Executor makes no design decision.',
+                       'A brief that leaves one to the Executor is not ready.',
+                       'the planner strengthens the brief first; an escalation is the exception.',
+                       'A Tier deviation is the last resort',
+                       'says why a stronger brief is not enough',
+                       'A review role (lock, complete or audit) runs one tier above the Executor whose task it reviews.',
+                       'When that tier does not bind, record the limitation.'):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, section)
+
     def test_deviation_reason_trigger_covers_tier_or_effort(self):
         # The owner's model-and-effort reconfirmation policy covers effort, not Tier alone.
         section = ' '.join(self.section().split())
@@ -140,6 +181,24 @@ class TeamAndAgentsTemplateTests(unittest.TestCase):
         self.assertIn('per-task override', TEAM)
         self.assertIn('**Tier**', TEAM)
         self.assertIn('**Tier reason**', TEAM)
+
+    def test_team_template_defaults_the_executor_to_fast_and_review_one_tier_above(self):
+        # The cheapest tier executes from a sufficient brief; a reviewer runs one tier above the Executor.
+        team = ' '.join(TEAM.split())
+        for phrase in ('| Executor | fast | low |',
+                       '| Reviewer | one tier above the Executor (`standard` for a `fast` Executor) | medium |',
+                       '| Coordinator | standard | medium |',
+                       '**`fast`** — task execution from a sufficient brief',
+                       '**`standard`** — coordination, review of `fast` work, and implementation that a stronger brief cannot bring to `fast`.',
+                       '**`frontier`** — review of `standard` work',
+                       'Propose each reviewer one tier above the Executor whose task it reviews.',
+                       'The Verifier runs checks and is not a review role.',
+                       'Show the owner the concrete role-to-model table, and get an explicit confirmation before the first dispatch.',
+                       'again on a Tier or Effort deviation from the compiled default, on any other model change and on an escalation.'):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, team)
+        self.assertNotIn('| Executor | standard |', TEAM)
+        self.assertNotIn('| Reviewer / Coordinator |', TEAM)
 
     def test_team_template_override_trigger_covers_effort_deviation(self):
         # The confirmed-again trigger must not be Tier-scoped only.
