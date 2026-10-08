@@ -7,7 +7,8 @@ unavailable trace does not block task completion, and the provider-independent c
 [usage-observability.md](usage-observability.md) remains authoritative. It uses only Python's
 standard library, reads no authentication file, and does not copy prompt or tool content.
 
-At a role's start and again after its externally observed end, run the fenced Python body with
+Prefer an equivalent harness usage export. With the owner's explicit authorization, at a role's start
+and again after its externally observed end, run the fenced Python body with
 `python3 - "$workspace" ["$native_jsonl"] <<'PY'` and a closing `PY`, or extract the fence
 verbatim into an ephemeral script and give it the same arguments. With no second argument,
 `CODEX_THREAD_ID` selects the exact Desktop rollout under `~/.codex/sessions/`. For a saved

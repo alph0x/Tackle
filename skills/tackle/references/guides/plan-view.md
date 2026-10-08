@@ -24,7 +24,7 @@ time.
 
 ## Build
 
-Save the [recipe](../recipes/plan-view.md) as a file and run it with the [template](../plan-view.template.md):
+Saving and running the recipe needs the owner's explicit authorization; an explicit plan-view request grants it for that request ([recipe consent](../recipes/README.md#consent)). Prefer an equivalent harness capability. With that authorization, save the [recipe](../recipes/plan-view.md) as a file and run it with the [template](../plan-view.template.md):
 
 ```sh
 python3 -I plan-view.py --template plan-view.template.md <workspace> <workspace>/plan-view.html
@@ -110,7 +110,7 @@ The view stays local. Tackle never publishes, uploads or sends it.
 
 ## Optional loopback live view
 
-Start the live producer only when the owner asks for it. For a page served by a local producer instead of the file, save the fenced block in
+Start the live producer only when the owner asks for it. That request is the owner's explicit authorization for the live recipe; prefer an equivalent harness capability. For a page served by a local producer instead of the file, save the fenced block in
 [`../recipes/plan-view-live.md`](../recipes/plan-view-live.md) as `plan-view-live.py` beside the extracted
 `plan-view.md` recipe; pass that source explicitly with `--recipe` so the producer never discovers a recipe by adjacency. Run it with the same workspace, template and optional map inputs:
 

@@ -64,7 +64,8 @@ or an already authorized initiative policy. Implementation/testing may use dispo
 An authorized RUN can maintain its own policy-covered store without repeated per-file questions.
 Planning, STATUS and vocabulary updates do not authorize deletion.
 
-The optional standard-library recipe below is saved next to the Coordinated `capture.py`. It is
+Prefer an equivalent harness capability. With the owner's explicit authorization, the optional
+standard-library recipe below is saved next to the Coordinated `capture.py`. It is
 documentation, not an installed CLI. `preview` reads only. `maintain` requires the exact preview
 fingerprint and explicit authorized policy use; it rechecks under the shared lease. It first publishes
 an immutable compact retirement tombstone with event identity, exact command, observed clocks,

@@ -15,7 +15,7 @@ For Focused/Coordinated, choose the capture destination before validation and op
 before closure. A generic transcript label is not an accessible export. Choose either capture mechanism;
 the required verification record must be delivered and correspond to the final validated inputs.
 
-Save the recipe in an authorized location and pass the existing initiative workspace as its
+With the owner's explicit authorization, save the recipe in an authorized location and pass the existing initiative workspace as its
 single argument, for example `python3 capture.py docs/plans/demo`. A `python3 -c` adaptation
 also passes that workspace as its argument. The recipe never chooses cwd/evidence implicitly.
 Direct do not require this store when sufficient actual tool records already exist. For

@@ -30,7 +30,7 @@ The recipe in [controlled-writing.md](../recipes/controlled-writing.md) reports 
 
 A sentence ends at a period, an exclamation mark, a question mark, a colon or a semicolon. This holds also before a closing quote, parenthesis or emphasis mark. A list item or a heading starts a new sentence. A wrapped sentence is reported at the line where it starts.
 
-Run it as `findings(text, language)` from the recipe. Pass the language code of the text, such as `en` or `es`.
+Running the recipe needs the owner's explicit authorization ([recipe consent](../recipes/README.md#consent)); prefer an equivalent harness check, and without either, check the text against the rules by reading it. With that authorization, run it as `findings(text, language)` from the recipe. Pass the language code of the text, such as `en` or `es`.
 
 ## Vague words
 

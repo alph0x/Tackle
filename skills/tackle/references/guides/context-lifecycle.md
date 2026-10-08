@@ -82,7 +82,8 @@ An explicit audit may load full history. Routine handoff does not do so without 
 ## Optional local recipe
 
 This is an extractable Python standard-library example, not an installed executable or new
-workflow engine. Save the code in an authorized scratch path and instantiate `Context(workspace)`.
+workflow engine. Prefer an equivalent harness capability. With the owner's explicit authorization, save
+the code in an authorized scratch path and instantiate `Context(workspace)`.
 `project(scope, sources)` is an authorized RUN write; `current(scope, sources)`, `history()`,
 `event(number)`, and `lookup(original_heading)` are reads. `append_event(data, expected_event,
 expected_revision)` appends one event under authorized RUN and detects an already-completed

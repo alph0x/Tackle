@@ -58,7 +58,7 @@ Each plan records its delta in `<workspace>/map-delta.json`, schema `tackle-map-
 
 ## The recipe
 
-Save the [recipe](../recipes/architecture-map.md) as a file and import it. It uses only the standard library
+Saving and importing the recipe needs the owner's explicit authorization; an explicit architecture-map or plan-view request grants it for that request ([recipe consent](../recipes/README.md#consent)). Prefer an equivalent harness capability. With that authorization, save the [recipe](../recipes/architecture-map.md) as a file and import it. It uses only the standard library
 and changes none of its inputs:
 
 - `validate(base, delta)` lists every problem. It names a change of an unknown component, an add of an

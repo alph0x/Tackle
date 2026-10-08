@@ -110,8 +110,8 @@ Current Step 6.5 structural observations satisfy the same checks in Step 6.75; v
 
 ## Optional task consistency recipe
 
-For a nontrivial graph, an existing planner may save this standard-library recipe locally and
-pass its compiled task data. It checks identities, full scope ownership, selected readiness and
+For a nontrivial graph, and with the owner's explicit authorization, an existing planner may save this
+standard-library recipe locally and pass its compiled task data; an equivalent harness check is preferred. It checks identities, full scope ownership, selected readiness and
 producer/consumer compatibility. It does not infer product requirements, evaluate semantic
 correctness, execute tasks or replace reference verification. `available` contains observed
 producer artifacts, not planned promises; each entry has its observed interface and revision.

@@ -151,7 +151,8 @@ historical records.
 6. On the selected active copy, review new lifecycle writes against the legal role Outcome states,
    trace-backed positive Attempts, truthful `n/a`/observed-zero counts and externally observed role
    terminal clocks. Run row 16 and the installed retro lifecycle recipe; retain their exact result
-   and any Run ID diagnosis. An unsupported known old row is a record defect: hold adoption and keep
+   and any Run ID diagnosis. The explicit migration request is the owner's explicit authorization this
+   recipe needs; prefer an equivalent harness capability. An unsupported known old row is a record defect: hold adoption and keep
    the original workspace active, without rewriting closed rows or neighboring workspaces. Adopt the
    copy only after its required checks pass and record the rollback path at this task boundary.
 
@@ -212,7 +213,9 @@ never changes the bucket. A workspace matching more than one row below is `unkno
 ## Migration steps
 
 Each step is one idempotent detect → transform → verify recipe; a second run of any step on its own
-output is a byte-identical no-op. Standard library only. To run a step: execute
+output is a byte-identical no-op. Standard library only. Running these recipes needs the owner's explicit
+authorization; an explicit migration request grants it for that migration (the Consent section of the [recipe manifest](../recipes/README.md)).
+Prefer an equivalent harness capability. To run a step: execute
 [`schema.md`](../recipes/migrate/schema.md)'s fenced block first into a namespace, then execute the
 chosen step's fenced block into a namespace seeded with `schema.md`'s names (each step's `detect`,
 `transform` and `verify` call `schema_of`, `parse_board` and the other shared helpers by name, and

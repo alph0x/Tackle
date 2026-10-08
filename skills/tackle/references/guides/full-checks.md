@@ -1,8 +1,9 @@
 <a id="full--executable-observations-and-bounded-closure"></a>
 # Coordinated — verification records and bounded completion
 
-Use an equivalent complete harness export when available. Otherwise save this Python 3 recipe
-inside the authorized workspace before running checks. This is an optional documentation recipe,
+Use an equivalent complete harness export when available. Otherwise, with the owner's explicit
+authorization ([recipe consent](../recipes/README.md#consent)), save this Python 3 recipe inside the
+authorized workspace before running checks. This is an optional documentation recipe,
 not an installed runner or a new product dependency. This is Coordinated's direct-capture entry from
 `run.md` and `evidence-capture.md`; Direct and Focused keep their own procedures.
 
@@ -30,7 +31,8 @@ evidence. Save compound scripts before invoking them and include every called sc
 the recipe automatically includes itself, its JSON specification and existing file arguments after argv[0]. The executable/runtime is
 observed separately; absolute interpreter paths are valid. External read-only scripts need an
 authorized local snapshot or equivalent harness capture; do not widen write permissions to copy them.
-A copied module loaded by an inline interpreter still needs its selector.
+A copied module loaded by an inline interpreter still needs its selector. Running the capture recipe
+needs the owner's explicit authorization; an equivalent harness capture is preferred.
 
 The recipe below saves exact input bytes once per initiative in immutable content-addressed
 objects, with compatible per-record blob aliases, binary streams and actual
@@ -41,7 +43,7 @@ are never replaced. The recipe is for foreground children that join their own ch
 certify process-tree shutdown: on timeout, interrupt or background work, use the harness to stop
 all writers and record that confirmation before closing evidence.
 
-Save the block as a workspace-local `capture.py`. Invoke it with one JSON specification path,
+With the owner's explicit authorization, save the block as a workspace-local `capture.py`. Invoke it with one JSON specification path,
 for example `python3 docs/plans/demo/capture.py docs/plans/demo/product-check.json`. The JSON has
 `argv`, `selectors` (objects with `glob` and `required`), `artifacts` (relative file names),
 `workspace` (the already authorized initiative directory) and `timeout_seconds`. Optional
@@ -370,10 +372,12 @@ interpretation. Save the extracted UTF-8 bytes verbatim as each script; capture 
 with the recipe above. Supply the canonical source hash recorded at preflight, not a hash silently
 recomputed after a change. Check that all 17 returned rows are scheduled before initial execution.
 Each result carries `row`, `command_sha256`, `source_sha256`, raw check record path and verdict;
-build the index from those records. Equivalent harness automation is valid.
+build the index from those records. Equivalent harness automation is valid. Extracting or running
+these functions needs the owner's explicit authorization.
 
-Use the connected path below when equivalent harness automation is absent: save this second
-block as workspace-local `lint.py` beside `capture.py`, then run `python3 <lint.py> <lint.json>`.
+When equivalent harness automation is absent, the connected path below needs the owner's explicit
+authorization; with it, save this second block as workspace-local `lint.py` beside `capture.py`, then
+run `python3 <lint.py> <lint.json>`.
 The JSON specifies `source` (current lint-spec path), preflight `source_sha256`, `slug`,
 `capture_script`, `selectors`, `workspace` and `timeout_seconds`. The literal capture recipe
 below is pinned by the lint recipe; only final newlines may vary. Review both recipe blocks

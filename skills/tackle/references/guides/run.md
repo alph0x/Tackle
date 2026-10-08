@@ -143,7 +143,9 @@ pools retains each allowance separately; their sum is informative and does not e
 pool. A combined failed correction has one event ID and names each affected pool once in `pool_ids`.
 Stop corrections involving an exhausted pool; separate unrelated work may continue. Use the optional
 pure check in [correction-lineage.md](../recipes/correction-lineage.md) when composing a split/merge;
-its pool limits are parameters, 3 for a task pool and 2 for the unowned integration pool. Callers
+its pool limits are parameters, 3 for a task pool and 2 for the unowned integration pool. Running that
+check needs the owner's explicit authorization ([recipe consent](../recipes/README.md#consent)); prefer an
+equivalent harness capability. Callers
 validate failure attribution against the original records; arbitrary IDs cannot manufacture a fresh
 budget. Successful corrections, observations and dispatches are not failed-cycle events.
 
