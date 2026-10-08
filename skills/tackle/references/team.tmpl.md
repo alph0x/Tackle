@@ -13,21 +13,25 @@ Teams bind roles to abstract, harness-agnostic tiers, never vendor models. The d
 proposals until the observed model map is read; use only supported tiers and concrete models
 listed there. A static role table never supplies a host binding:
 
-- **`fast`** — grounding reads, searches, lint and drift checks.
-- **`standard`** — implementation, coordination and ordinary review.
-- **`frontier`** — adversarial verification or architecture judgment when the risk requires it.
+- **`fast`** — task execution from a sufficient brief, grounding reads, searches, lint and drift checks.
+- **`standard`** — coordination, review of `fast` work, and implementation that a stronger brief cannot
+  bring to `fast`.
+- **`frontier`** — review of `standard` work, and adversarial verification or architecture judgment when
+  the risk requires it.
 
 | Role | Tier | Effort |
 |---|---|---|
-| Executor | standard | medium |
-| Reviewer / Coordinator | standard | medium |
+| Executor | fast | low |
+| Reviewer | one tier above the Executor (`standard` for a `fast` Executor) | medium |
+| Coordinator | standard | medium |
 | Verifier (including reference checks) | fast | low |
 | Auditor (explicit risk-triggered audit) | frontier | high |
 | Specialists | standard | medium |
 
 The Task brief may override a default: a compiled `**Tier**` and `**Effort**` (with a deviation's
 reason in `**Tier reason**`) is that per-task override of the Executor row above, confirmed once per
-initiative at intake and again only on a Tier or Effort deviation from the compiled default. The
+initiative at intake and again on a Tier or Effort deviation from the compiled default, on any other model
+change and on an escalation. The
 workspace `AGENTS.md` model map binds tiers to the concrete models available in that harness. Effort
 is `low / medium / high / max`; when effort or
 model binding is unsupported, record the actual binding and `n/a` values honestly. Never silently
@@ -35,8 +39,10 @@ upgrade a role to resolve a Run failure. An independent session or human fallbac
 when the Run risk requires semantic independence; a renamed role or tier does not itself establish
 independence.
 
-When more than one suitable tier binds, propose a planner on a stronger tier than the Executor. If
-only one suitable tier binds, state the one-tier limitation. An unavailable exact model requires an
+When more than one suitable tier binds, propose a planner on a stronger tier than the Executor.
+Propose each reviewer one tier above the Executor whose task it reviews. The Verifier runs checks and is
+not a review role. Show the owner the concrete role-to-model table, and get an explicit confirmation
+before the first dispatch. If only one suitable tier binds, state the one-tier limitation. An unavailable exact model requires an
 observed supported alternative with its consequences or an explicit unavailability report; never
 invent an equivalent.
 

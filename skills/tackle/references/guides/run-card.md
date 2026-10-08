@@ -27,7 +27,7 @@ RUN starts only after explicit execution intent, including a scoped PLAN+RUN req
    - Classify each failure: implementation; missing or ambiguous requirement; incomplete output;
      required edge case; dependency or integration; contradictory spec; validator; environment;
      capability; or undetermined. An implementation fault is corrected; a capability failure
-     declared in the brief is corrected only once, one tier up ([limits](run.md#tier-dispatch-and-escalation-limits)).
+     declared in the brief is corrected only once, one tier up, after the owner confirms the model ([limits](run.md#tier-dispatch-and-escalation-limits)).
    - **Task pool.** At most three failed correction-validation cycles per task, in one pool shared
      across the executor, reviewer, checker, interruptions, resumptions and sessions. The first
      validation of an implementation fault is not a cycle, and a successful correction resets no counter.

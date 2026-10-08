@@ -15,7 +15,7 @@
 - **Tier**: (fast / standard / frontier; omit the whole field when the map cannot propose one)
 - **Tier reason**: ("default" for the compiled default; the reason otherwise, for a Tier or Effort
   deviation; omit only when Tier is omitted and Effort is the compiled default)
-- **Escalation**: (declared; omit when the task does not permit the one capped retry)
+- **Escalation**: (declared; omit when the task does not permit the one capped retry; the owner still confirms the escalated model)
 - **Budget**: {{resolved correction, round, timeout, or tool limits, when applicable}}.
 - **Procedure revision**: {{pinned procedure/version; adopt changes only at a task boundary}}.
 - **Lineage**: {{ancestor task IDs and unresolved failure/cycle-pool references; none for unrelated new work}}.
