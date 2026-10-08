@@ -4087,6 +4087,29 @@
         "as_of": "2026-10-08"
       },
       "historical": []
+    },
+    {
+      "rule_id": "R-EVID-17",
+      "statement": "On Claude Code, the coordinator records each subagent's usage from its local transcript as one role-scoped sidecar record joined by the Run ID it assigned, counting each request once by its last event per message id; a subagent that served several Run IDs and the coordinator's own session go to session scope, never divided into roles; only numbers, ids, model names and times are copied.",
+      "statement_sha256": "8ed1f011ee3996edc5adc20f6a906264223e6bb1f660ecd5268493e0227fdbd0",
+      "home": "references/guides/usage-observability.md:119",
+      "home_fragment": "Keep only the last",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.1",
+        "trigger": "Owner request: the ledger takes the usage that each host records, starting with Claude Code's local transcripts, instead of n/a.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-08"
+      },
+      "historical": []
     }
   ],
   "non_normative": [
