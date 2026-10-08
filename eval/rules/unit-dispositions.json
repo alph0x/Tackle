@@ -7125,6 +7125,15 @@
       "destination": "references/guides/run-card.md",
       "note": "Before closing the initiative, read every Complete task's brief, report and cited records as prose; an unmet owner request is an `Open` obligation raised with the owner; with a map delta, also offer the owner its fold (`architecture-map.md`, Closure fold).",
       "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 17,
+      "unit_sha256": "839640f58ef8cf823c1026838fce9f86a9df3d7dc7a8f92d46fe2c02c3ca128a",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "When a view exists for the workspace, the coordinator rebuilds it after every write to a page input, in PLAN and in RUN. It rebuilds at the end of the step that wrote the input, and after each role start or finish. The page inputs are `task-board.md`, `plan.md`, `decisions.md`, `questions.md`, `history.md` and `resource-usage.md`. They also include the workspace `AGENTS.md` and `readiness.md`, every declared brief and `map-delta.json`. The curated summaries, the map base, the template and the two recipes are page inputs too. The coordinator rebuilds only a view that already exists. Under the standing view request, the coordinator runs the plan-view recipe with `--check` at the end of each step that wrote a page input. That request is the owner's explicit authorization for these checks and rebuilds. The coordinator rebuilds when the check says stale. The standing request covers these checks and rebuilds until the owner says stop.",
+      "destination_unit_sha256": null
     }
   ]
 }

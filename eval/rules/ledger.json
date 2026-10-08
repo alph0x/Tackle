@@ -2977,7 +2977,7 @@
         "Saving or running a [recipe script](references/r"
       ],
       "mirrors": [
-        "references/recipes/README.md:25",
+        "references/recipes/README.md:26",
         "references/guides/full-checks.md:4",
         "references/guides/full-checks.md:34",
         "references/guides/full-checks.md:46",
@@ -2991,13 +2991,13 @@
         "references/guides/architecture-map.md:66",
         "references/guides/controlled-writing.md:33",
         "references/guides/migrate.md:216",
-        "references/guides/plan-view.md:37",
-        "references/guides/plan-view.md:128",
+        "references/guides/plan-view.md:52",
+        "references/guides/plan-view.md:151",
         "references/guides/run.md:146",
         "references/guides/system-one.md:6",
         "references/guides/context-lifecycle.md:76",
         "references/guides/evidence-capture.md:132",
-        "references/guides/plan-view.md:15",
+        "references/guides/plan-view.md:16",
         "references/guides/plan-card.md:98",
         "references/guides/architecture-map.md:60"
       ],
@@ -3358,16 +3358,16 @@
     },
     {
       "rule_id": "R-STATUS-06",
-      "statement": "An explicit view request, or the owner's yes to the plan view offered once at a Coordinated PLAN handoff, creates the plan view and stands for its workspace, a yes also writes the curated summaries that declare the board states they describe and a no writes nothing, and the coordinator rebuilds an existing view after each board status change and each role start or finish, an open view reloads itself after a rebuild without a server, and after a refused rebuild the coordinator reports the refusal lines to the owner while the earlier view keeps its earlier build time, and curated status prose that declares an earlier board's task states is set aside with a visible note, and the build warns about a summary with status prose that declares no board states.",
-      "statement_sha256": "691117850479878a9a1eb0ed8a7f13cccd64d4e60c945a4ea828ef13ba6852be",
-      "home": "references/guides/plan-view.md:12",
+      "statement": "An explicit view request, or the owner's yes to the plan view offered once at a Coordinated PLAN handoff, creates the plan view and stands for its workspace, a yes also writes the curated summaries that declare the board states they describe and a no writes nothing, and the coordinator rebuilds an existing view after every write to a page input and after each role start or finish, an open view reloads itself after a rebuild without a server, and after a refused rebuild the coordinator reports the refusal lines to the owner while the earlier view keeps its earlier build time, and curated status prose that declares an earlier board's task states is set aside with a visible note, and the build warns about a summary with status prose that declares no board states.",
+      "statement_sha256": "e43d0c32d9f9275283f51e8475b6aa134a30aa4d591a678598a796107a51d725",
+      "home": "references/guides/plan-view.md:13",
       "home_fragment": "creates the view and stands for its workspace",
       "units": [],
       "mirrors": [
-        "references/guides/plan-view.md:26",
-        "references/guides/plan-view.md:112",
+        "references/guides/plan-view.md:35",
+        "references/guides/plan-view.md:135",
         "references/guides/run-card.md:44",
-        "references/guides/plan-view.md:15",
+        "references/guides/plan-view.md:16",
         "references/guides/plan-card.md:98"
       ],
       "class": "behavioral",
@@ -3381,7 +3381,7 @@
         "status": "untested",
         "scenarios": [],
         "cohort_id": null,
-        "as_of": "2026-10-07"
+        "as_of": "2026-10-08"
       },
       "historical": []
     },
@@ -3521,7 +3521,7 @@
       "rule_id": "R-STATUS-10",
       "statement": "Full and Focused views use the same template and export a self-contained executive presentation of the plan, its current progress or both through a separate light print report independent of screen filters, theme and collapsed sections, with original page title, temporary print attributes and focus restored after printing, cancellation or a print exception.",
       "statement_sha256": "7462bde8443a2a81b16d7eb0760090fd5c37a9d4ac61f28746ab802998c9fa0c",
-      "home": "references/guides/plan-view.md:96",
+      "home": "references/guides/plan-view.md:119",
       "home_fragment": "Full and Focused views use the same template",
       "units": [],
       "mirrors": [],
@@ -3661,11 +3661,11 @@
       "rule_id": "R-STATUS-12",
       "statement": "The optional live producer starts only when the owner asks for it, binds only to 127.0.0.1, answers only requests addressed to 127.0.0.1:<port>, serves only / and /health, rejects query strings and every other path, sends nothing off the machine, and after a failed refresh keeps the last successful page and reports an unhealthy /health.",
       "statement_sha256": "f7870e5832a38daa89033475db3dd5edadcf26419361849fa035330cadfd92ad",
-      "home": "references/guides/plan-view.md:136",
+      "home": "references/guides/plan-view.md:159",
       "home_fragment": "The producer binds only to `127.0.0.1`",
       "units": [],
       "mirrors": [
-        "references/guides/plan-view.md:128"
+        "references/guides/plan-view.md:151"
       ],
       "class": "safety-invariant",
       "hot_path": false,
@@ -3780,7 +3780,7 @@
       "rule_id": "R-STATUS-13",
       "statement": "When the architecture map base exists, the plan view build passes it with --map and the scope the owner chose for a large project before the first build, and without the base it passes no --map.",
       "statement_sha256": "a454f0b832839dbb644b6e6a3a4dbc2ad848dddd26a1e1da716d5cbe3dc0e6a6",
-      "home": "references/guides/plan-view.md:43",
+      "home": "references/guides/plan-view.md:58",
       "home_fragment": "When `.tackle/map/architecture.json` exists, pass `--map",
       "units": [],
       "mirrors": [],
@@ -3828,7 +3828,7 @@
       "rule_id": "R-STATUS-15",
       "statement": "An open plan view that cannot reload itself (a host view that shows a snapshot, or an address that is not a file opened in a browser) shows a notice saying so, and the coordinator never starts a server or background process to show the view.",
       "statement_sha256": "90ffc2e748e3b6bd16a8be27ab091b00d9d23d1dcec947dc0626e21ee7666530",
-      "home": "references/guides/plan-view.md:30",
+      "home": "references/guides/plan-view.md:45",
       "home_fragment": "The coordinator never starts a server or background process",
       "units": [],
       "mirrors": [],
@@ -3837,6 +3837,130 @@
       "origin": {
         "added_in": "9.1.1",
         "trigger": "Owner report: a plan view shown as a host snapshot looked current while it could never update, and no server may be started to fix that.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-08"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATUS-16",
+      "statement": "When a plan view exists and the owner has not said stop, the coordinator rebuilds it after every write to a page input, in PLAN and in RUN, at the end of the step that wrote it, and after each role start or finish; the page inputs include the board, plan, decisions, questions, history, resource usage, the workspace AGENTS.md and readiness.md, every declared brief, the map delta, the curated summaries, the map base, the template and the two recipes.",
+      "statement_sha256": "1b105cdf52e88c6c924ff239d474578a504f8f014b04ff50ed9bba7294f3d2d1",
+      "home": "references/guides/plan-view.md:25",
+      "home_fragment": "after every write to a page input",
+      "units": [],
+      "mirrors": [
+        "references/guides/plan-view.md:27",
+        "references/guides/plan-view.md:28",
+        "references/guides/plan-view.md:29"
+      ],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.1",
+        "trigger": "Owner report: a curated summary went stale, a view showed fewer tasks than the board after a task row was added, and nothing could tell that a view was older than its inputs.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-08"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATUS-17",
+      "statement": "Before a rebuild that follows a change to task rows or states, the coordinator updates the time-bound prose, declared board states and as-of times of the curated summaries, and removes prose it cannot update honestly; a rebuild after a role start or finish needs no summary update, and the set-aside note stays as the safety net.",
+      "statement_sha256": "c80f8890dca26c9288bd15f29cf722cea2cb53c7fa38e4194d117ce8df306df1",
+      "home": "references/guides/plan-view.md:37",
+      "home_fragment": "Before a rebuild that follows a change to task rows",
+      "units": [],
+      "mirrors": [
+        "references/guides/plan-view.md:135"
+      ],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.1",
+        "trigger": "Owner report: a curated summary went stale, a view showed fewer tasks than the board after a task row was added, and nothing could tell that a view was older than its inputs.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-08"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATUS-18",
+      "statement": "Under the standing view request, which is the owner's explicit authorization, the coordinator runs the plan-view recipe with its read-only --check at the end of each step that wrote a page input and rebuilds when the check says stale; after the owner's yes at a Coordinated handoff the last action before handoff is a passing --check; after the owner says stop nobody runs the check.",
+      "statement_sha256": "2789de3fc3522c12ce2811ecb6a0d52cb4882a0374ae56e5998ec9874a201d6f",
+      "home": "references/guides/plan-view.md:32",
+      "home_fragment": "Under the standing view request, the coordinator runs",
+      "units": [],
+      "mirrors": [
+        "references/guides/plan-view.md:66",
+        "references/guides/plan-card.md:100"
+      ],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.1",
+        "trigger": "Owner report: a curated summary went stale, a view showed fewer tasks than the board after a task row was added, and nothing could tell that a view was older than its inputs.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-08"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATUS-19",
+      "statement": "STATUS runs no recipe for the plan view and never checks it: STATUS stays read-only and code-free.",
+      "statement_sha256": "17491308fd330929b96fd7654f350c10e5b949f900b816a8d3a1c4f2fe7622d8",
+      "home": "references/guides/plan-view.md:11",
+      "home_fragment": "STATUS runs no recipe for the view and never checks it",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.1",
+        "trigger": "Owner request: the view check adds no recipe run to STATUS, so the installed skill gains no new dynamic execution.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-08"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATUS-20",
+      "statement": "The plan view shows a Waiting on you section read from the files: open questions from questions.md with their Determines line, open unless the state carries a resolved mark, tasks Waiting on owner or Blocked with their Verification cell, and Open board obligations with owner and trigger; when nothing is open one line says so, a Focused plan shows its open questions only, and the PDF report keeps its own obligations table.",
+      "statement_sha256": "206bec52b78fc5b5fb02cbd953c30ffbac75d71c31f1471db5b1437f60adb9fb",
+      "home": "references/guides/plan-view.md:106",
+      "home_fragment": "A Waiting on you section lists open questions",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.1",
+        "trigger": "Owner request: the page shows what waits on the owner, read from the files instead of curated prose.",
         "discovered_by": []
       },
       "evidence": {
