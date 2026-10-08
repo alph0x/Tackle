@@ -17,6 +17,9 @@ GLOB = '*?['
 
 
 def _glob_ok(pattern):
+    # '**' is only valid as a whole path component; newer Pythons no longer raise for it, so check it here.
+    if any('**' in part and part != '**' for part in pattern.replace('\\', '/').split('/')):
+        return False
     try:
         next(Path('glob-probe-missing-dir').glob(pattern), None)
     except (ValueError, NotImplementedError):
