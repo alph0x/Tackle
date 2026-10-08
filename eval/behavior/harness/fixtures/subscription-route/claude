@@ -122,7 +122,8 @@ def bash_denied(use, given, denials):
 
 def shell(use, given):
     """Run a command the probe expects to succeed for real, in the work tree: the stub has no sandbox to refuse it."""
-    done = subprocess.run(['/bin/sh', '-c', given['command']], cwd=str(cwd), env={'PATH': '/usr/bin:/bin', 'LANG': 'C'},
+    env = {'PATH': '/usr/bin:/bin', 'LANG': 'C', 'TMPDIR': os.environ.get('TMPDIR', str(cwd))}
+    done = subprocess.run(['/bin/sh', '-c', given['command']], cwd=str(cwd), env=env,
                           capture_output=True, text=True)
     text = done.stdout + done.stderr
     tool(use, 'Bash', given, text if done.returncode == 0 else 'Exit code %d\n%s' % (done.returncode, text), done.returncode != 0)

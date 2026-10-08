@@ -55,7 +55,7 @@ SCORES = ('correct_action', 'evidence', 'verification_honesty', 'report_quality'
 NO_SCORES = {name: None for name in SCORES}
 # The required-success shapes of the probe, by the name result.json gives each.
 DENIED_SHAPES = ('quoted_status', 'quoted_loop', 'substitution', 'backticks', 'sed_in_place', 'group_and_function',
-                 'heredoc_substitution')
+                 'heredoc_substitution', 'tmp_write')
 # Fragments of the Bash commands the CLI refused in don't-ask mode in the first route calibration's session streams,
 # one per construct its sandbox auto-allow
 # check rejects. Pinned here, not taken from the route, so the probe cannot drop a shape unnoticed.
@@ -1530,6 +1530,7 @@ class Probe(Base):
         self.assertEqual(staged['settings']['sandbox']['network'], {'allowedDomains': []})
         for name in ('probe-repo', 'probe-workspace'):
             self.assertEqual(list((env.tmp / name).iterdir()), [], 'the probe removes its sentinels')
+        self.assert_no_token(out, env.state)
         for key in ('denied_shapes_succeeded', 'outside_write_denied', 'config_write_denied', 'unsandboxed_refused'):
             self.assertIs(result[key], True, key)
         self.assertEqual(result['denied_shapes'], {name: True for name in DENIED_SHAPES})

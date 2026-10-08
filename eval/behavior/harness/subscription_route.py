@@ -1600,6 +1600,7 @@ PROBE_SHAPES = (
      ('group=1', '{c}')),
     ('heredoc_substitution', "cat > probe-heredoc.sh <<'EOF'\ngot=$(cat probe-inside.txt)\necho \"heredoc=$got\"\nEOF\n"
                              'sh probe-heredoc.sh', ('heredoc={c}',)),
+    ('tmp_write', 'cat probe-inside.txt > "$TMPDIR/probe-tmp.txt" && echo "tmp=$(cat "$TMPDIR/probe-tmp.txt")"', ('tmp={c}',)),
 )
 # Recorded, never required: the CLI's own rm check may still refuse it after the allow rule, and the probe says which.
 PROBE_RM = 'rm probe-conf.txt.bak && ls probe-conf.txt'
