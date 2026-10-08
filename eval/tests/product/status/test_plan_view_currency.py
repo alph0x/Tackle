@@ -28,6 +28,11 @@ WORKSPACE_INPUTS = ('task-board.md', 'plan.md', 'decisions.md', 'questions.md', 
                     'AGENTS.md', 'readiness.md', 'map-delta.json', 'view/summary.json', 'summary.json',
                     'view/export-summary.json', 'export-summary.json')
 ROLES = ('template', 'plan-view recipe', 'architecture-map recipe', 'map base')
+T, R, D = base.task_id, base.req_id, base.decision_id
+
+
+def Q(n):
+    return 'Q' + '-%02d' % n
 
 
 def write_files(workspace, files):
@@ -124,8 +129,8 @@ class InputDigestTests(unittest.TestCase):
 
     def test_each_changed_workspace_input_is_named_stale_and_restoring_it_is_current(self):
         edits = {name: 'x\n' for name in WORKSPACE_INPUTS}
-        edits['task-board.md'] = '| T-04 | Fourth | `tasks/T-04.md` | none | Draft | v |\n'
-        edits['tasks/T-02.md'] = 'edited\n'
+        edits['task-board.md'] = '| %s | Fourth | `tasks/%s.md` | none | Draft | v |\n' % (T(4), T(4))
+        edits['tasks/%s.md' % T(2)] = 'edited\n'
         with tempfile.TemporaryDirectory() as tmp:
             fixture = Fixture(tmp)
             fixture.build()
@@ -137,7 +142,7 @@ class InputDigestTests(unittest.TestCase):
                 result = fixture.check()
                 self.assertEqual(result.returncode, 1, (name, result.stdout, result.stderr))
                 names = stale_names(result.stdout)
-                expected = [name, 'tasks/T-04.md'] if name == 'task-board.md' else [name]
+                expected = [name, 'tasks/%s.md' % T(4)] if name == 'task-board.md' else [name]
                 self.assertEqual(sorted(names or []), sorted(expected), (name, result.stdout))
                 if old is None:
                     path.unlink()
@@ -249,8 +254,8 @@ class InputDigestTests(unittest.TestCase):
 
     def test_an_escaped_brief_name_survives_the_meta(self):
         rows = base.plain_rows(brief_a='`tasks/a"b.md`')
-        files = base.small_files('# Plan — demo\n\n| Criterion | Behavior |\n|---|---|\n| `R01` | one |\n', rows)
-        files['tasks/a"b.md'] = '# Task\n\n- **Traces to**: R01\n'
+        files = base.small_files('# Plan — demo\n\n| Criterion | Behavior |\n|---|---|\n| `%s` | one |\n' % R(1), rows)
+        files['tasks/a"b.md'] = '# Task\n\n- **Traces to**: %s\n' % R(1)
         with tempfile.TemporaryDirectory() as tmp:
             fixture = Fixture(tmp, files)
             page = fixture.build()
@@ -260,15 +265,16 @@ class InputDigestTests(unittest.TestCase):
 
 QUESTIONS = (
     '# Open questions\n\nSingle source.\n\n---\n\n'
-    '## Q-01 · Pick the route · 🔴 open\n\nWhich route?\n\n**Determines**: the release\nroute for T-03.\n**Decides**: owner.\n\n'
-    '## Q-02 · Cache · or not · 🟡 open non-blocking\n\nText.\n\n**Determines**: cache policy.\n\n'
-    '## Q-03 · Unknown state · pendiente\n\nText.\n\n**Determines**: nothing yet.\n\n'
-    '## Q-04 · Resolved one · 🟢 resolved → D-01\n\n**Determines**: closed-marker-a.\n\n'
-    '## Q-05 · Ticked one · ✅ resolved\n\n**Determines**: closed-marker-b.\n\n'
-    '## Q-06 · No field · ⚠️ provisional — awaiting user confirmation\n\nText.\n')
+    '## %s · Pick the route · 🔴 open\n\nWhich route?\n\n**Determines**: the release\nroute for %s.\n**Decides**: owner.\n\n'
+    '## %s · Cache · or not · 🟡 open non-blocking\n\nText.\n\n**Determines**: cache policy.\n\n'
+    '## %s · Unknown state · pendiente\n\nText.\n\n**Determines**: nothing yet.\n\n'
+    '## %s · Resolved one · 🟢 resolved → %s\n\n**Determines**: closed-marker-a.\n\n'
+    '## %s · Ticked one · ✅ resolved\n\n**Determines**: closed-marker-b.\n\n'
+    '## %s · No field · ⚠️ provisional — awaiting user confirmation\n\nText.\n'
+) % (Q(1), T(3), Q(2), Q(3), Q(4), D(1), Q(5), Q(6))
 OBLIGATIONS = ('\n## Obligations\n\n| Obligation | What | Owner | Trigger | State | Discharge check | Reference |\n'
                '|---|---|---|---|---|---|---|\n| O-01 | Rotate the key | ops-team | before release | Open | key age | n/a |\n'
-               '| O-02 | Old duty | someone | never | Discharged | done | D-01 |\n')
+               '| O-02 | Old duty | someone | never | Discharged | done | %s |\n' % D(1))
 
 
 def waiting_files(questions=QUESTIONS, obligations=OBLIGATIONS, plan=None):
@@ -296,11 +302,11 @@ class WaitingSectionTests(unittest.TestCase):
             section = waiting_section(page)
             self.assertIsNotNone(section, 'no waiting section inside <main>')
             self.assertIn('Waiting on you', section)
-            for needle in ('Q-01', 'Pick the route', 'the release route for T-03', 'Q-02', 'Cache · or not', 'cache policy',
-                           'Q-03', 'Unknown state', 'Q-06', 'No field', 'T-03', 'needs the route answer', 'T-02',
+            for needle in (Q(1), 'Pick the route', 'the release route for %s' % T(3), Q(2), 'Cache · or not', 'cache policy',
+                           Q(3), 'Unknown state', Q(6), 'No field', T(3), 'needs the route answer', T(2),
                            'blocked by vendor', 'O-01', 'Rotate the key', 'ops-team', 'before release'):
                 self.assertIn(html.escape(needle, quote=False), section, needle)
-            for absent in ('Q-04', 'Q-05', 'closed-marker', 'O-02', 'Old duty', 'Decides', 'T-01'):
+            for absent in (Q(4), Q(5), 'closed-marker', 'O-02', 'Old duty', 'Decides', T(1)):
                 self.assertNotIn(absent, section, absent)
             self.assertIn('href="#waiting"', re.search(r'<nav\b.*?</nav>', page, re.S).group(0))
             reports = re.search(r'<div class="print-reports">.*', page, re.S).group(0)
@@ -308,7 +314,7 @@ class WaitingSectionTests(unittest.TestCase):
 
     def test_nothing_open_shows_one_line(self):
         files = base.workspace_files()
-        files['questions.md'] = '# Open questions\n\n## Q-01 · Done · 🟢 resolved → D-01\n'
+        files['questions.md'] = '# Open questions\n\n## %s · Done · 🟢 resolved → %s\n' % (Q(1), D(1))
         with tempfile.TemporaryDirectory() as tmp:
             section = waiting_section(Fixture(tmp, files).build())
             self.assertIsNotNone(section)
@@ -324,7 +330,7 @@ class WaitingSectionTests(unittest.TestCase):
 
     def test_a_spanish_plan_gets_spanish_labels(self):
         with tempfile.TemporaryDirectory() as tmp:
-            page = Fixture(tmp, waiting_files(plan=base.SPANISH_PLAN + '\n| Criterion | Behavior |\n|---|---|\n| `R01` | one |\n')).build()
+            page = Fixture(tmp, waiting_files(plan=base.SPANISH_PLAN + '\n| Criterion | Behavior |\n|---|---|\n| `%s` | one |\n' % R(1))).build()
             section = waiting_section(page)
             self.assertIn('Esperando por ti', section)
             self.assertIn('Determina', section)
@@ -335,7 +341,7 @@ class WaitingSectionTests(unittest.TestCase):
 
     def test_workspace_text_in_the_section_is_escaped(self):
         payloads = base.PAYLOADS
-        questions = '## Q-01 · %s · open\n\n**Determines**: %s\n' % (payloads[0], payloads[2])
+        questions = '## %s · %s · open\n\n**Determines**: %s\n' % (Q(1), payloads[0], payloads[2])
         obligations = OBLIGATIONS.replace('ops-team', payloads[1])
         with tempfile.TemporaryDirectory() as tmp:
             page = Fixture(tmp, waiting_files(questions=questions, obligations=obligations)).build()
