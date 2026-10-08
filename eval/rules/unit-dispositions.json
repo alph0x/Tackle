@@ -7248,6 +7248,15 @@
       "destination": "references/task.tmpl.md",
       "note": "**Escalation**: (declared; omit when the task does not permit the one capped retry; the owner still confirms the escalated model)",
       "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-card.md",
+      "line": 9,
+      "unit_sha256": "ac124b366dda50dbd3007743019b14374f1d8eeaa59d887f4e68fba9288cded6",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-card.md",
+      "note": "The full infer-first-then-ask procedure, the owner-prerequisite probe, the [System One check](intake-and-gate.md#system-one-check), the [learning-loop read](intake-and-gate.md#learning-loop-read-if-enabled) and reference-plan offer are in [intake-and-gate.md](intake-and-gate.md#step-1--intake-infer-first-then-ask), Step 1 through [Step 1.5](intake-and-gate.md#step-15--anchor-the-intake-before-sizing).",
+      "destination_unit_sha256": null
     }
   ]
 }
