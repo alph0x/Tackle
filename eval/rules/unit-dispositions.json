@@ -7160,7 +7160,13 @@
       "disposition": "reworded",
       "destination": "references/guides/plan-view.md",
       "note": "On each request it hashes the declared public inputs.",
-      "destination_unit_sha256": null
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "agent",
+          "reason": "The token comes from the AGENTS.md file name, which moved to the next sentence of the same input list."
+        }
+      ]
     }
   ]
 }
