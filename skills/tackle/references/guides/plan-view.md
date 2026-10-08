@@ -22,16 +22,16 @@ describes. A no writes nothing. The host shows the page when it can display a lo
 
 ## Rebuild
 
-When a view exists for the workspace, the coordinator rebuilds it after every write to a page input, in PLAN
-and in RUN. It rebuilds at the end of the step that wrote the input, and after each role start or finish.
+Under the standing view request, the coordinator rebuilds an existing view after every write to a page input, in PLAN
+and in RUN. Under that request it rebuilds at the end of the step that wrote the input, and after each role start or finish.
 The page inputs are `task-board.md`, `plan.md`, `decisions.md`, `questions.md`, `history.md` and `resource-usage.md`.
 They also include the workspace `AGENTS.md` and `readiness.md`, every declared brief and `map-delta.json`.
 The curated summaries, the map base, the template and the two recipes are page inputs too.
 The coordinator rebuilds only a view that already exists.
 
 Under the standing view request, the coordinator runs the plan-view recipe with `--check` at the end of each step
-that wrote a page input. That request is the owner's explicit authorization for these checks and rebuilds. The
-coordinator rebuilds when the check says stale. The standing request covers these checks and rebuilds until the
+that wrote a page input. That request is the owner's explicit authorization for these checks and rebuilds. Under
+that request, the coordinator rebuilds when the check says stale. The standing request covers these checks and rebuilds until the
 owner says stop. After stop, nobody runs the check.
 
 The coordinator updates `view/summary.json` and `view/export-summary.json` before a rebuild that follows a

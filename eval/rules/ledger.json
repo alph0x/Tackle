@@ -3882,7 +3882,7 @@
       "home_fragment": "The coordinator updates `view/summary.json` and",
       "units": [],
       "mirrors": [
-        "references/guides/plan-view.md:135"
+        "references/guides/plan-view.md:138"
       ],
       "class": "behavioral",
       "hot_path": false,
