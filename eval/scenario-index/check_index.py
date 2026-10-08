@@ -24,7 +24,7 @@ ORACLE_SET = re.compile(r'(GROUND-TRUTH\.md|variants/[^/]+/GROUND-TRUTH\.md|vari
 VARIANT_FIELDS = {'variant_id', 'split', 'path', 'prompts', 'fixture', 'stageable', 'fixture_sha256', 'control_exposure'}
 VARIANT_ID = re.compile(r'([vh])[0-9]+')
 HEX = re.compile(r'[0-9a-f]{64}')
-HELD_OUT_TRAPS = (8, 12)
+HELD_OUT_TRAPS = (8, 14)
 INSTALL_NAME = re.compile(r'^name:\s*tackle\s*$', re.I | re.M)
 
 
