@@ -7159,7 +7159,7 @@
       "unit_sha256": "082aeaf0c3bdcafaa7ba3fbfe83c4e068799a1b3c6cab1deedf6e94b4891aef3",
       "disposition": "reworded",
       "destination": "references/guides/plan-view.md",
-      "note": "On each request it hashes the declared public inputs; the list now includes `questions.md`, split into short sentences.",
+      "note": "On each request it hashes the declared public inputs.",
       "destination_unit_sha256": null
     }
   ]
