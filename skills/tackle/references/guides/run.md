@@ -81,7 +81,8 @@ retried role starts its own new Run ID with its own start/finish pair, plus one 
 <a id="failure-classification-and-correction"></a>
 ## Failure classification and escalation packet
 
-Optional: [consented JEV](system-one.md#integration).
+Optional: [consented JEV](system-one.md#integration). A workspace with a signal and no recorded answer gets
+the [System One check](intake-and-gate.md#system-one-check) when RUN starts.
 
 Consume retained failed observations before another check, including on resume. Diagnose from their
 command, output and relevant input fingerprints; do not repeat an unchanged failed check to

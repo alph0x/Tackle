@@ -7,8 +7,8 @@ tasks and stops before source execution.`
 1. **Intake anchors.** Extract or confirm the four anchors — problem, observable result expected,
    top 2 non-goals, highest-shape decision — from the request or resolved decisions; ground claims
    in `file:line`. A sufficient request needs no reconfirmation. The full infer-first-then-ask
-   procedure, the owner-prerequisite probe, the
-   [learning-loop read](intake-and-gate.md#learning-loop-read-if-enabled) and reference-plan offer
+   procedure, the owner-prerequisite probe, the [System One check](intake-and-gate.md#system-one-check),
+   the [learning-loop read](intake-and-gate.md#learning-loop-read-if-enabled) and reference-plan offer
    are in [intake-and-gate.md](intake-and-gate.md#step-1--intake-infer-first-then-ask), Step 1
    through [Step 1.5](intake-and-gate.md#step-15--anchor-the-intake-before-sizing).
 2. **Sizing and routing**, before any route-specific loading:

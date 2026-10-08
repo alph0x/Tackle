@@ -70,6 +70,17 @@ Read `.tackle/archetypes/` (project scope) and `~/.tackle/archetypes/` (user sco
 
 If no reference plan matches, skip without offering. There is no scoring engine — read and judge, exactly like profiles and seeds.
 
+<a id="system-one-check"></a>
+## System One check (every route)
+
+Before sizing, check once per workspace for a System One configuration signal, as
+[system-one.md](system-one.md#integration) defines it. Use the host's own tools and check presence only.
+When there is a signal, a selected workspace and no recorded answer, ask the System One question in PLAN
+or RUN, then record it. The record is one line in the workspace's `AGENTS.md`, in the exact form that
+[the recipe](../recipes/system-one.md) reads: `System One consent: yes · date=YYYY-MM-DD · actor="name"`,
+with `no` for a refusal. A new initiative has a workspace only after the scaffold, so ask
+right after the scaffold creates it. Without a signal, record nothing and continue.
+
 ## Decision ownership
 
 Use the shared decision policy above. Distinguish an informational question, a pending material product decision, and a blocker. Record a Q-id only when an answer changes the work; identify the affected requirement and continue unaffected work. Reversible technical choices inside authorized scope are local freedom, with a recorded reason when consequential. Diagnose operational failures through permitted tools before asking for user input. Material product ambiguity blocks the affected criterion and its consumers. A reversible delegated

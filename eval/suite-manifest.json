@@ -188,7 +188,7 @@
         "test_system_one_functional.py",
         "test_system_one_integration.py"
       ],
-      "tests": 98,
+      "tests": 100,
       "source": "eval/templates",
       "category": "product",
       "purpose": "Template fields, observed model routing, capability recovery and compiled briefs. Public System One reference recipe admission, workspace consent, normalized transport, confidence and provenance. Optional System One shell detection, real consent persistence, SDK serialization, fallback and bounded history/intake consumers."
