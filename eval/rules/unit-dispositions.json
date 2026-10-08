@@ -6950,7 +6950,7 @@
       "unit_sha256": "d09905ecd8125ef4179816afabeb33e034717b3e3acbdf6ec7c8aeff69c21876",
       "disposition": "reworded",
       "destination": "SKILL.md",
-      "note": "**Tackle 9.1.0** is a model-agnostic planning and execution method.",
+      "note": "is a model-agnostic planning and execution method.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -6969,7 +6969,7 @@
       "unit_sha256": "e4570dfe16d379384ae775644f6e2e9aa432a8b7bc19dd2703804dc9e964e97c",
       "disposition": "reworded",
       "destination": "references/AGENTS.tmpl.md",
-      "note": "**Methodology: Tackle 9.1.0**",
+      "note": "**Methodology: Tackle",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -7257,6 +7257,44 @@
       "destination": "references/guides/plan-card.md",
       "note": "The full infer-first-then-ask procedure, the owner-prerequisite probe, the [System One check](intake-and-gate.md#system-one-check), the [learning-loop read](intake-and-gate.md#learning-loop-read-if-enabled) and reference-plan offer are in [intake-and-gate.md](intake-and-gate.md#step-1--intake-infer-first-then-ask), Step 1 through [Step 1.5](intake-and-gate.md#step-15--anchor-the-intake-before-sizing).",
       "destination_unit_sha256": null
+    },
+    {
+      "path": "SKILL.md",
+      "line": 4,
+      "unit_sha256": "3406d9a9ed821e5bfe8ada6ad1252d677ec0eac5e4e176fc73c43d9958ea45b1",
+      "disposition": "reworded",
+      "destination": "SKILL.md",
+      "note": "is a model-agnostic planning and execution method.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "9.1",
+          "reason": "release version stamp bumped to 9.1.1"
+        },
+        {
+          "token": "0",
+          "reason": "release version stamp bumped to 9.1.1"
+        }
+      ]
+    },
+    {
+      "path": "references/AGENTS.tmpl.md",
+      "line": 3,
+      "unit_sha256": "2bac7dd4d5a3f69d90c69062576687398adeb5c6d8e3b454179fba204017e270",
+      "disposition": "reworded",
+      "destination": "references/AGENTS.tmpl.md",
+      "note": "**Methodology: Tackle",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "9.1",
+          "reason": "release version stamp bumped to 9.1.1"
+        },
+        {
+          "token": "0",
+          "reason": "release version stamp bumped to 9.1.1"
+        }
+      ]
     }
   ]
 }
