@@ -4966,7 +4966,7 @@
       "unit_sha256": "3d941d8a043ac1fe820d1a8b83192066db567139bff0127a70bd525ba84a230d",
       "disposition": "reworded",
       "destination": "references/guides/run-card.md",
-      "note": "**Preflight.** Check the pinned procedure, which never changes silently; the brief, decision and contract revisions; the dependency outputs; the environment; the write scope; and a compiled Tier's [model-map binding](run.md#tier-dispatch-and-escalation-limits).",
+      "note": "**Preflight.** Check the pinned procedure, which never changes silently; the brief, decision and contract revisions; the dependency outputs; the environment; the write scope; and a compiled Tier's [model-map binding](run.md#tier-dispatch-and-escalation-limits), which the owner must have confirmed; an unconfirmed binding leaves the task `Waiting on owner`.",
       "destination_unit_sha256": null
     },
     {
@@ -4975,7 +4975,7 @@
       "unit_sha256": "cb47145b2b55084ee8fa84821a54f89a72f0cd0fe27ae73e0de0b253cd1edcea",
       "disposition": "reworded",
       "destination": "references/guides/run-card.md",
-      "note": "**Preflight.** Check the pinned procedure, which never changes silently; the brief, decision and contract revisions; the dependency outputs; the environment; the write scope; and a compiled Tier's [model-map binding](run.md#tier-dispatch-and-escalation-limits).",
+      "note": "**Preflight.** Check the pinned procedure, which never changes silently; the brief, decision and contract revisions; the dependency outputs; the environment; the write scope; and a compiled Tier's [model-map binding](run.md#tier-dispatch-and-escalation-limits), which the owner must have confirmed; an unconfirmed binding leaves the task `Waiting on owner`.",
       "destination_unit_sha256": null
     },
     {
@@ -5044,7 +5044,7 @@
       "unit_sha256": "c00a1a3972b6461e802a2ea98c8b12a50dac933e63baa548291046f43656d500",
       "disposition": "reworded",
       "destination": "references/guides/run-card.md",
-      "note": "**Preflight.** Check the pinned procedure, which never changes silently; the brief, decision and contract revisions; the dependency outputs; the environment; the write scope; and a compiled Tier's [model-map binding](run.md#tier-dispatch-and-escalation-limits).",
+      "note": "**Preflight.** Check the pinned procedure, which never changes silently; the brief, decision and contract revisions; the dependency outputs; the environment; the write scope; and a compiled Tier's [model-map binding](run.md#tier-dispatch-and-escalation-limits), which the owner must have confirmed; an unconfirmed binding leaves the task `Waiting on owner`.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -5059,7 +5059,7 @@
       "unit_sha256": "c1b36e120fb419a006fdc812e62dde4cc7d8f37d7dbd53576965683faa4a6c14",
       "disposition": "reworded",
       "destination": "references/guides/run-card.md",
-      "note": "**Preflight.** Check the pinned procedure, which never changes silently; the brief, decision and contract revisions; the dependency outputs; the environment; the write scope; and a compiled Tier's [model-map binding](run.md#tier-dispatch-and-escalation-limits).",
+      "note": "**Preflight.** Check the pinned procedure, which never changes silently; the brief, decision and contract revisions; the dependency outputs; the environment; the write scope; and a compiled Tier's [model-map binding](run.md#tier-dispatch-and-escalation-limits), which the owner must have confirmed; an unconfirmed binding leaves the task `Waiting on owner`.",
       "destination_unit_sha256": null
     },
     {
@@ -6545,7 +6545,7 @@
       "unit_sha256": "fda3bf7e3c05de617690ec01040810feebfbbb641b4e6bd90e2e33c494272219",
       "disposition": "reworded",
       "destination": "references/guides/decompose-and-lint.md",
-      "note": "At the step above that compiles sufficient task briefs, read the workspace `AGENTS.md` model map once per initiative \u2014 confirm it at intake, then reconfirm only on a deviation \u2014 and observe the host's model names, tier capabilities, model-binding controls, effort-binding controls, telemetry, and the source of those observations before proposing roles.",
+      "note": "At the step above that compiles sufficient task briefs, read the workspace `AGENTS.md` model map once per initiative \u2014 confirm it at intake, then reconfirm on a deviation, on any other model change and on an escalation \u2014 and observe the host's model names, tier capabilities, model-binding controls, effort-binding controls, telemetry, and the source of those observations before proposing roles.",
       "destination_unit_sha256": null
     },
     {
@@ -7185,6 +7185,21 @@
     },
     {
       "path": "references/guides/decompose-and-lint.md",
+      "line": 239,
+      "unit_sha256": "ae2b4caaf9a8cffe473f253cf9da40c77efed4e43934f16660ca6ef86467a8af",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "At the step above that compiles sufficient task briefs, read the workspace `AGENTS.md` model map once per initiative — confirm it at intake, then reconfirm on a deviation, on any other model change and on an escalation — and observe the host's model names, tier capabilities, model-binding controls, effort-binding controls, telemetry, and the source of those observations before proposing roles.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "only",
+          "reason": "Reconfirmation now also covers any other model change and an escalation, so it no longer happens only on a deviation."
+        }
+      ]
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
       "line": 254,
       "unit_sha256": "be9cc41908e2b147e0c7858cde2a0aa1c694bd6917ecd19ddbb19ee06bb3b534",
       "disposition": "reworded",
@@ -7197,6 +7212,15 @@
           "reason": "The word one named the once-per-initiative confirmation, which the sentence now names as the role-to-model table."
         }
       ]
+    },
+    {
+      "path": "references/guides/run-card.md",
+      "line": 12,
+      "unit_sha256": "bd6d5fa11ba8f630d81bc45f11092da26d80e9c3b33cc29a098bbbe7357fb4e3",
+      "disposition": "reworded",
+      "destination": "references/guides/run-card.md",
+      "note": "**Preflight.** Check the pinned procedure, which never changes silently; the brief, decision and contract revisions; the dependency outputs; the environment; the write scope; and a compiled Tier's [model-map binding](run.md#tier-dispatch-and-escalation-limits), which the owner must have confirmed; an unconfirmed binding leaves the task `Waiting on owner`.",
+      "destination_unit_sha256": null
     },
     {
       "path": "references/guides/run-card.md",
