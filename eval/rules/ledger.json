@@ -721,7 +721,7 @@
       "rule_id": "R-PLAN-09",
       "statement": "Long initiatives may prepare milestones; every requirement keeps an owner, and deferred tasks stay Draft until verified Ready.",
       "statement_sha256": "69a94acb2074238280e8a2ac7a65098bcad79386d4384fc83f55ce0c84a13d05",
-      "home": "references/guides/decompose-and-lint.md:98",
+      "home": "references/guides/decompose-and-lint.md:108",
       "home_fragment": "Long initiatives may use optional milestones",
       "units": [],
       "mirrors": [],
@@ -772,7 +772,7 @@
       "rule_id": "R-PLAN-11",
       "statement": "The repository references/ template library is read-only during scaffolding; initiative-specific edits belong in the workspace copy.",
       "statement_sha256": "488ffc1715a3bdfe05ef2d92a2ae222b3fc024f69f727fafc06b233242df0571",
-      "home": "references/guides/scaffold.md:50",
+      "home": "references/guides/scaffold.md:52",
       "home_fragment": "template library is read-only during scaffolding",
       "units": [],
       "mirrors": [],
@@ -820,7 +820,7 @@
       "rule_id": "R-PLAN-12",
       "statement": "Planning always runs on a more capable tier than the Executor's whenever more than one suitable tier binds; a one-tier harness records its limitation. These are role proposals, not claims that a host binding occurred.",
       "statement_sha256": "f2516914cd7def40bbf47bf3973d6b24cd128e5ac88a7d378b148c84cc53d2ff",
-      "home": "references/guides/decompose-and-lint.md:251",
+      "home": "references/guides/decompose-and-lint.md:261",
       "home_fragment": "Planning always runs on a more capable tier",
       "units": [],
       "mirrors": [],
@@ -989,12 +989,14 @@
     },
     {
       "rule_id": "R-RUN-07",
-      "statement": "Task, related regression and affected integration checks precede task completion, and deliverable acceptance precedes initiative completion.",
-      "statement_sha256": "3ff8a917588d913bdb03899a3207e55977f61a87556856fd17629cabacf94922",
-      "home": "references/guides/run-card.md:43",
+      "statement": "Task, related regression and affected merged-tree integration checks pass before a task becomes Complete, and deliverable acceptance precedes initiative completion.",
+      "statement_sha256": "d3301a1f5ebbba1c848bc0b74aecc74ef0aa2bbce18ca99a6a237e8064424f42",
+      "home": "references/guides/run-card.md:45",
       "home_fragment": "deliverable acceptance precedes initiative completion",
       "units": [],
-      "mirrors": [],
+      "mirrors": [
+        "references/guides/run-card.md:22"
+      ],
       "class": "behavioral",
       "hot_path": false,
       "origin": {
@@ -1027,7 +1029,7 @@
       "rule_id": "R-RUN-08",
       "statement": "Three failed correction-validation cycles per task or two identical no-progress observations bound implementation correction, and lineage keeps spent cycles across split, merge and resume.",
       "statement_sha256": "9a6b0e2439703af8ce593d30e2c77c73bc87fa3af6a3b7d586613ea19e28bfb7",
-      "home": "references/guides/run-card.md:30",
+      "home": "references/guides/run-card.md:31",
       "home_fragment": "three failed correction-validation cycles per task",
       "units": [],
       "mirrors": [],
@@ -1198,7 +1200,7 @@
       "rule_id": "R-RUN-14",
       "statement": "New tests follow red, green, refactor: the chosen failing test is seen failing before the implementation, and an opt-out needs a decision recorded first.",
       "statement_sha256": "c33bea5f8bef201516b6c34e8f5345884dbb59406f0c985bddb840e073df8ae6",
-      "home": "references/guides/testing.md:29",
+      "home": "references/guides/testing.md:34",
       "home_fragment": "red → green → refactor is the Executor's default shape",
       "units": [],
       "mirrors": [],
@@ -1269,7 +1271,7 @@
       "home_fragment": "deduplicate against everything seen",
       "units": [],
       "mirrors": [
-        "references/guides/decompose-and-lint.md:31"
+        "references/guides/decompose-and-lint.md:33"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -1336,7 +1338,7 @@
       "rule_id": "R-RUN-18",
       "statement": "A declared capability failure is corrected exactly once, at the model map's next tier with effort unchanged, spends one task-pool cycle always, never applies to an unbound tier, a next tier whose bound model id matches the model actually used for the failed attempt, or a further escalation, never skips to a further tier, never beyond the topmost bound tier, and never for an evaluation control arm.",
       "statement_sha256": "394cbc57ad5d115fcaa220a84036a0fcb79cdca4fb5f1ce83b281f90173a61e9",
-      "home": "references/guides/run-card.md:28",
+      "home": "references/guides/run-card.md:29",
       "home_fragment": "An implementation fault is corrected; a capability failure",
       "units": [],
       "mirrors": [
@@ -2982,19 +2984,22 @@
         "references/guides/full-checks.md:375",
         "references/guides/full-checks.md:378",
         "references/guides/evidence-capture.md:18",
-        "references/guides/decompose-and-lint.md:113",
+        "references/guides/decompose-and-lint.md:123",
         "references/guides/context-lifecycle.md:85",
         "references/guides/record-lifecycle.md:67",
         "references/guides/codex-native-usage.md:10",
-        "references/guides/architecture-map.md:61",
+        "references/guides/architecture-map.md:66",
         "references/guides/controlled-writing.md:33",
         "references/guides/migrate.md:216",
-        "references/guides/plan-view.md:27",
-        "references/guides/plan-view.md:113",
+        "references/guides/plan-view.md:34",
+        "references/guides/plan-view.md:124",
         "references/guides/run.md:146",
         "references/guides/system-one.md:6",
         "references/guides/context-lifecycle.md:76",
-        "references/guides/evidence-capture.md:132"
+        "references/guides/evidence-capture.md:132",
+        "references/guides/plan-view.md:15",
+        "references/guides/plan-card.md:98",
+        "references/guides/architecture-map.md:60"
       ],
       "class": "safety-invariant",
       "hot_path": true,
@@ -3353,15 +3358,17 @@
     },
     {
       "rule_id": "R-STATUS-06",
-      "statement": "An explicit view request creates the plan view and stands for its workspace, and the coordinator rebuilds an existing view after each board status change and each role start or finish, an open view reloads itself after a rebuild without a server, and after a refused rebuild the coordinator reports the refusal lines to the owner while the earlier view keeps its earlier build time, and curated status prose that declares an earlier board's task states is set aside with a visible note, and the build warns about a summary with status prose that declares no board states.",
-      "statement_sha256": "91b7de08e21364e8a3749268fbc3b5316d7f39504aa50f71bf056d4bc3c578fa",
+      "statement": "An explicit view request, or the owner's yes to the plan view offered once at a Coordinated PLAN handoff, creates the plan view and stands for its workspace, a yes also writes the curated summaries that declare the board states they describe and a no writes nothing, and the coordinator rebuilds an existing view after each board status change and each role start or finish, an open view reloads itself after a rebuild without a server, and after a refused rebuild the coordinator reports the refusal lines to the owner while the earlier view keeps its earlier build time, and curated status prose that declares an earlier board's task states is set aside with a visible note, and the build warns about a summary with status prose that declares no board states.",
+      "statement_sha256": "691117850479878a9a1eb0ed8a7f13cccd64d4e60c945a4ea828ef13ba6852be",
       "home": "references/guides/plan-view.md:12",
       "home_fragment": "creates the view and stands for its workspace",
       "units": [],
       "mirrors": [
-        "references/guides/plan-view.md:19",
-        "references/guides/plan-view.md:97",
-        "references/guides/run-card.md:42"
+        "references/guides/plan-view.md:26",
+        "references/guides/plan-view.md:108",
+        "references/guides/run-card.md:44",
+        "references/guides/plan-view.md:15",
+        "references/guides/plan-card.md:98"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -3385,7 +3392,9 @@
       "home": "references/guides/architecture-map.md:10",
       "home_fragment": "only the owner's request or a confirmed closure fold",
       "units": [],
-      "mirrors": [],
+      "mirrors": [
+        "references/guides/run-card.md:48"
+      ],
       "class": "behavioral",
       "hot_path": false,
       "origin": {
@@ -3488,7 +3497,7 @@
       "home_fragment": "Before an initiative is declared closed, and at every cold",
       "units": [],
       "mirrors": [
-        "references/guides/run-card.md:44",
+        "references/guides/run-card.md:46",
         "references/guides/status.md:71"
       ],
       "class": "behavioral",
@@ -3512,7 +3521,7 @@
       "rule_id": "R-STATUS-10",
       "statement": "Full and Focused views use the same template and export a self-contained executive presentation of the plan, its current progress or both through a separate light print report independent of screen filters, theme and collapsed sections, with original page title, temporary print attributes and focus restored after printing, cancellation or a print exception.",
       "statement_sha256": "7462bde8443a2a81b16d7eb0760090fd5c37a9d4ac61f28746ab802998c9fa0c",
-      "home": "references/guides/plan-view.md:81",
+      "home": "references/guides/plan-view.md:92",
       "home_fragment": "Full and Focused views use the same template",
       "units": [],
       "mirrors": [],
@@ -3652,11 +3661,11 @@
       "rule_id": "R-STATUS-12",
       "statement": "The optional live producer starts only when the owner asks for it, binds only to 127.0.0.1, answers only requests addressed to 127.0.0.1:<port>, serves only / and /health, rejects query strings and every other path, sends nothing off the machine, and after a failed refresh keeps the last successful page and reports an unhealthy /health.",
       "statement_sha256": "f7870e5832a38daa89033475db3dd5edadcf26419361849fa035330cadfd92ad",
-      "home": "references/guides/plan-view.md:121",
+      "home": "references/guides/plan-view.md:132",
       "home_fragment": "The producer binds only to `127.0.0.1`",
       "units": [],
       "mirrors": [
-        "references/guides/plan-view.md:113"
+        "references/guides/plan-view.md:124"
       ],
       "class": "safety-invariant",
       "hot_path": false,
