@@ -73,8 +73,8 @@ do not start another bookkeeping/check cycle after acceptance.
 
 A handoff contains verified current source context, scope/revisions, authorization boundaries,
 failure lineage/budgets, next authorized action, and original historical events actually needed.
-Export required check records through the record lifecycle recipe, including transitively retained
-prior records and their content objects. Local paths alone are insufficient. Verify every exported
+Export required check records, including transitively retained prior records and their content objects,
+through an equivalent harness export or, with the owner's explicit authorization, the record lifecycle recipe. Local paths alone are insufficient. Verify every exported
 inventory after copying and again at the recipient. A context inventory proves its copied bytes,
 not check success or semantic completeness; validate required check records with their own reader.
 An explicit audit may load full history. Routine handoff does not do so without a named reason.
@@ -82,7 +82,8 @@ An explicit audit may load full history. Routine handoff does not do so without 
 ## Optional local recipe
 
 This is an extractable Python standard-library example, not an installed executable or new
-workflow engine. Save the code in an authorized scratch path and instantiate `Context(workspace)`.
+workflow engine. Prefer an equivalent harness capability. With the owner's explicit authorization, save
+the code in an authorized scratch path and instantiate `Context(workspace)`.
 `project(scope, sources)` is an authorized RUN write; `current(scope, sources)`, `history()`,
 `event(number)`, and `lookup(original_heading)` are reads. `append_event(data, expected_event,
 expected_revision)` appends one event under authorized RUN and detects an already-completed

@@ -3,7 +3,7 @@
 <a id="integration"></a>
 ## Integration contract
 
-Use optional System One only when a configuration signal exists and the selected workspace has recorded `yes`. Never ask the user to install TypeSafe/JEV. The [integration recipe](../recipes/system-one.md) provides actual shell detection, selected-workspace storage and the SDK adapter.
+Use optional System One only when a configuration signal exists and the selected workspace has recorded `yes`. Never ask the user to install TypeSafe/JEV. The [integration recipe](../recipes/system-one.md) provides actual shell detection, selected-workspace storage and the SDK adapter. Saving or running these recipes needs the owner's explicit authorization under the [recipe consent rule](../recipes/README.md#consent); the recorded `yes` grants it for that use only.
 
 Detect only environment-key presence, installed SDK/skill, or the case-insensitive phrase `TypeSafe System One` in project-root AGENTS/CLAUDE or selected-workspace AGENTS. Never read, print or send credential values or open credential files. A configuration signal cannot grant consent.
 

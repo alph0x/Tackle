@@ -15,3 +15,20 @@ or changes a recipe adds or updates its row.
 | [migrate/step-4-to-5.md](migrate/step-4-to-5.md) | `62cc9a0ed90b5389f4c4b45d827119d1621edc99992a6da773877d5f0455b182` |
 | [plan-view.md](plan-view.md) | `52297881e3932afa0cb63e13edc70578cdeab8788139b8a629136998a74af615` |
 | [architecture-map.md](architecture-map.md) | `5dff71f09364d689082f0b32748286748871c6184e8893c3d431670a4bd562c9` |
+
+## Consent
+
+A recipe script is a program that a guide tells the agent to save as a file, import, extract or run:
+the Python recipes embedded in guides and the files under `references/recipes/`. A documented one-line
+check command, such as a lint row or a retro metric command, is not a recipe script.
+
+Saving a recipe script and running it each need the owner's explicit authorization, under the shared
+[decision and communication policy](../guides/communication.md). A prior general request to plan or run
+does not count unless it names the recipe use. Prefer an equivalent harness capability when one exists.
+
+An explicit owner request for a feature whose documented procedure is a recipe authorizes that recipe
+for that request, such as the plan view, a migration, or a System One use that the workspace recorded
+`yes` for. A general request to plan or run does not.
+
+Declining is a normal outcome. The affected record is reported unavailable or produced by another
+permitted route; it is never faked.

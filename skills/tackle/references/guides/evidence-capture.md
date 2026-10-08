@@ -15,7 +15,7 @@ For Focused/Coordinated, choose the capture destination before validation and op
 before closure. A generic transcript label is not an accessible export. Choose either capture mechanism;
 the required verification record must be delivered and correspond to the final validated inputs.
 
-Save the recipe in an authorized location and pass the existing initiative workspace as its
+With the owner's explicit authorization, save the recipe in an authorized location and pass the existing initiative workspace as its
 single argument, for example `python3 capture.py docs/plans/demo`. A `python3 -c` adaptation
 also passes that workspace as its argument. The recipe never chooses cwd/evidence implicitly.
 Direct do not require this store when sufficient actual tool records already exist. For
@@ -129,6 +129,6 @@ stream fingerprints; it does not invent role metadata or declare all product req
 Read actual result/status and match final source/artifact hashes before using it. Accepted here
 means the captured child passed with stable inputs and present artifacts, not semantic approval.
 For compound checks, retain the exact checked script among hashed inputs. A prose command label
-is not a runnable substitute. An unavailable native export can use this recipe without any installed
-collector; equivalent direct capture is valid if it preserves the same facts. Missing role clocks
+is not a runnable substitute. When a native export is unavailable, this recipe, with the owner's explicit authorization, works without
+any installed collector; equivalent direct capture is valid if it preserves the same facts. Missing role clocks
 stay n/a in the lifecycle ledger even when the validation clock is known.

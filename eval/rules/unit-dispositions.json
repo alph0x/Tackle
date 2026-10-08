@@ -6981,6 +6981,132 @@
           "reason": "release version stamp bumped to 9.1.0"
         }
       ]
+    },
+    {
+      "path": "references/guides/architecture-map.md",
+      "line": 61,
+      "unit_sha256": "c6129a5904d2b15af7b90a5b3f35aa529e3dcad166da35e33bd9fae448214050",
+      "disposition": "reworded",
+      "destination": "references/guides/architecture-map.md",
+      "note": "With that authorization, save the [recipe](../recipes/architecture-map.md) as a file and import it.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/codex-native-usage.md",
+      "line": 10,
+      "unit_sha256": "e441cad181616b1918f765915e1780f3996d39257589f90e8d4a39dad60e9e00",
+      "disposition": "reworded",
+      "destination": "references/guides/codex-native-usage.md",
+      "note": "With the owner's explicit authorization, at a role's start and again after its externally observed end, run the fenced Python body with `python3 - \"$workspace\" [\"$native_jsonl\"] <<'PY'` and a closing `PY`, or extract the fence verbatim into an ephemeral script and give it the same arguments.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 85,
+      "unit_sha256": "5d69ec30d9fa8e0c46dce64c9aa751c88155fd3b82514aed215fe276589f29a5",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "With the owner's explicit authorization, save the code in an authorized scratch path and instantiate `Context(workspace)`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/controlled-writing.md",
+      "line": 33,
+      "unit_sha256": "3515b38055e6adfff8cb66598e048b1b832c393091b01ed9de57788aeb2f3534",
+      "disposition": "reworded",
+      "destination": "references/guides/controlled-writing.md",
+      "note": "With that authorization, run it as `findings(text, language)` from the recipe.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 113,
+      "unit_sha256": "94a7fd78059c9b3ca2af7208db50d5fb80b64cf9f9477fd9870f87ed88695668",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "For a nontrivial graph, and with the owner's explicit authorization, an existing planner may save this standard-library recipe locally and pass its compiled task data; an equivalent harness check is preferred.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 18,
+      "unit_sha256": "1e5eda58a17d4661def7bcf62ffd915c518b66696922b5572cb6925e747aa1b9",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "With the owner's explicit authorization, save the recipe in an authorized location and pass the existing initiative workspace as its single argument",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 4,
+      "unit_sha256": "1d50ed956f20d006eff3bcc5941b357f3540b870fd38800497d0b8a74697044e",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Otherwise, with the owner's explicit authorization ([recipe consent](../recipes/README.md#consent)), save this Python 3 recipe inside the authorized workspace before running checks.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 44,
+      "unit_sha256": "96f87c8109f0014735754fc41b6ce036f5a8322888d6d079cbb8578e301a25fe",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "With the owner's explicit authorization, save the block as a workspace-local `capture.py`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 375,
+      "unit_sha256": "69880f345adaf6a422ec6746ad78f31ff5d0c38f931e98cc9f8c35311b4fef4e",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "When equivalent harness automation is absent, the connected path below needs the owner's explicit authorization; with it, save this second block as workspace-local `lint.py` beside `capture.py`, then run `python3 <lint.py> <lint.json>`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 27,
+      "unit_sha256": "4d48d28c108da8993e2e17810b35d7dcc2cc8413bb93f418b04bb8f8839f97f2",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "With that authorization, save the [recipe](../recipes/plan-view.md) as a file and run it with the [template](../plan-view.template.md):",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 67,
+      "unit_sha256": "9e6a6795a5038eb9f8400fa1bf4b6a6934118e74c514ef74416d2c4939583ce1",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "With the owner's explicit authorization, the optional standard-library recipe below is saved next to the Coordinated `capture.py`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 76,
+      "unit_sha256": "abbcafbc312535c20609060313702f7e5a0ba4f4bfeec22b4deb91c5d1989018",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "Export required check records, including transitively retained prior records and their content objects, through an equivalent harness export or, with the owner's explicit authorization, the record lifecycle recipe.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 132,
+      "unit_sha256": "b59a9b38b8ea5a7f0bdf2b6916ce5a4be86149d87c83862f39bb74281503516f",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "When a native export is unavailable, this recipe, with the owner's explicit authorization, works without any installed collector; equivalent direct capture is valid if it preserves the same facts.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 153,
+      "unit_sha256": "3437af585325d2b59c829200db96388b4c44b4896380f1d77fd2f58cb12e7446",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "Run row 16 and the retro lifecycle check command from `retro.md`; retain their exact result and any Run ID diagnosis.",
+      "destination_unit_sha256": null
     }
   ]
 }
