@@ -155,6 +155,7 @@ code,pre{font-family:var(--mono);font-size:.88em}
 .nav a[aria-current="true"]{color:var(--ink);border-bottom-color:var(--accent)}
 .top-actions{display:flex;align-items:center;gap:14px;margin-left:auto}
 .freshness{margin:0;font:500 11px var(--mono);letter-spacing:.04em;color:var(--mut);white-space:nowrap}
+.static-copy{margin:0;padding:8px var(--gutter);font:500 12px/1.5 var(--mono);letter-spacing:.02em;color:var(--ink);background:var(--bg);border-bottom:1.5px solid var(--ink)}
 .theme-toggle{flex:none;width:36px;height:36px;display:grid;place-items:center;border:1.5px solid var(--ink);background:var(--surface);color:var(--ink);transition:transform .15s,box-shadow .15s}
 .theme-toggle:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink)}
 .theme-toggle svg{width:18px;height:18px}
@@ -717,6 +718,7 @@ details>summary:hover{color:var(--accent-ink)}
   html,body{background:#ffffff!important;color:#111315!important;overflow:visible!important}
   *,*::before,*::after{animation:none!important;transition:none!important;box-shadow:none!important}
   body>*:not(.print-reports),.lens{display:none!important}
+  .static-copy{display:none!important}
   .print-reports{display:block!important}
   .print-report{display:none!important}
   :root:not([data-print-scope]) #print-report-both,:root[data-print-scope="plan"] #print-report-plan,
@@ -773,6 +775,7 @@ details>summary:hover{color:var(--accent-ink)}
 <div class="top-actions"><p class="freshness" id="plan-freshness">{{ui_freshness}}</p>
 <button type="button" class="theme-toggle" id="theme" aria-label="{{ui_theme}}" title="{{ui_theme}}"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M 21 12.8 A 9 9 0 1 1 11.2 3 a 7 7 0 0 0 9.8 9.8 z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><rect x="8" y="8" width="8" height="8"/><path d="M 12 1 v 3 M 12 20 v 3 M 1 12 h 3 M 20 12 h 3 M 4.2 4.2 l 2.1 2.1 M 17.7 17.7 l 2.1 2.1 M 4.2 19.8 l 2.1 -2.1 M 17.7 6.3 l 2.1 -2.1"/></svg></button></div>
 </div></header>
+<p class="static-copy" id="plan-static-copy" role="status" data-en="This copy does not update itself. Open plan-view.html from its folder in a browser." data-es="Esta copia no se actualiza sola. Abre plan-view.html desde su carpeta en un navegador." hidden></p>
 <main id="main">
 <section class="hero" data-title-size="{{title_size}}"><div class="hero-copy"><p class="kicker">{{kicker}}</p><h1>{{title}}</h1>{{objective}}</div>{{titleblock}}</section>
 {{status}}
@@ -1543,7 +1546,9 @@ details>summary:hover{color:var(--accent-ink)}
   }
   /* File view: when the coordinator rebuilds this page, it rewrites a small sibling stamp script. The open page
      reloads that script every few seconds and reloads itself when the revision changes, keeping the selection,
-     the filter and the reading position. No server is involved; the dedicated live producer has its own client. */
+     the filter and the reading position. No server is involved; the dedicated live producer has its own client.
+     When the page cannot update itself (an address that is not file:, http: or https:, or two stamp loads in a
+     row that fail), one notice says so; a later successful load hides it. */
   var fileRevision = one('meta[name="tackle-file-revision"]');
   if (fileRevision && !one('meta[name="tackle-live-revision"]')) {
     var revision = fileRevision.getAttribute('content');
@@ -1561,6 +1566,14 @@ details>summary:hover{color:var(--accent-ink)}
       }
     } catch (problem) { /* storage may be unavailable */ }
     var waiting = false;
+    var failedLoads = 0;
+    var copyNotice = doc.getElementById('plan-static-copy');
+    var showCopyNotice = function (on) {
+      if (!copyNotice) { return; }
+      if (on) { copyNotice.textContent = copyNotice.getAttribute(/^es/.test(doc.documentElement.lang) ? 'data-es' : 'data-en') || ''; }
+      copyNotice.hidden = !on;
+    };
+    if (!/^(file|https?):$/.test(String(location.protocol || ''))) { showCopyNotice(true); }
     var checkStamp = function () {
       if (waiting || doc.hidden || root.getAttribute('data-print-scope') !== null || !stampName) { return; }
       waiting = true;
@@ -1573,6 +1586,8 @@ details>summary:hover{color:var(--accent-ink)}
         var stamps = window.TacklePlanViewStamp || {};
         var latest = stamps[pageName];
         done();
+        failedLoads = 0;
+        showCopyNotice(false);
         var tried = null;
         try { tried = window.sessionStorage.getItem(stateKey + '-tried'); } catch (problem) { tried = null; }
         if (latest && latest !== revision && latest !== tried) {
@@ -1590,7 +1605,11 @@ details>summary:hover{color:var(--accent-ink)}
           location.reload();
         }
       };
-      script.onerror = done;
+      script.onerror = function () {
+        done();
+        failedLoads += 1;
+        if (failedLoads >= 2) { showCopyNotice(true); }
+      };
       script.src = stampName + '?r=' + new Date().getTime();
       (doc.head || root).appendChild(script);
     };

@@ -2991,8 +2991,8 @@
         "references/guides/architecture-map.md:66",
         "references/guides/controlled-writing.md:33",
         "references/guides/migrate.md:216",
-        "references/guides/plan-view.md:34",
-        "references/guides/plan-view.md:125",
+        "references/guides/plan-view.md:37",
+        "references/guides/plan-view.md:128",
         "references/guides/run.md:146",
         "references/guides/system-one.md:6",
         "references/guides/context-lifecycle.md:76",
@@ -3365,7 +3365,7 @@
       "units": [],
       "mirrors": [
         "references/guides/plan-view.md:26",
-        "references/guides/plan-view.md:109",
+        "references/guides/plan-view.md:112",
         "references/guides/run-card.md:44",
         "references/guides/plan-view.md:15",
         "references/guides/plan-card.md:98"
@@ -3521,7 +3521,7 @@
       "rule_id": "R-STATUS-10",
       "statement": "Full and Focused views use the same template and export a self-contained executive presentation of the plan, its current progress or both through a separate light print report independent of screen filters, theme and collapsed sections, with original page title, temporary print attributes and focus restored after printing, cancellation or a print exception.",
       "statement_sha256": "7462bde8443a2a81b16d7eb0760090fd5c37a9d4ac61f28746ab802998c9fa0c",
-      "home": "references/guides/plan-view.md:93",
+      "home": "references/guides/plan-view.md:96",
       "home_fragment": "Full and Focused views use the same template",
       "units": [],
       "mirrors": [],
@@ -3661,11 +3661,11 @@
       "rule_id": "R-STATUS-12",
       "statement": "The optional live producer starts only when the owner asks for it, binds only to 127.0.0.1, answers only requests addressed to 127.0.0.1:<port>, serves only / and /health, rejects query strings and every other path, sends nothing off the machine, and after a failed refresh keeps the last successful page and reports an unhealthy /health.",
       "statement_sha256": "f7870e5832a38daa89033475db3dd5edadcf26419361849fa035330cadfd92ad",
-      "home": "references/guides/plan-view.md:133",
+      "home": "references/guides/plan-view.md:136",
       "home_fragment": "The producer binds only to `127.0.0.1`",
       "units": [],
       "mirrors": [
-        "references/guides/plan-view.md:125"
+        "references/guides/plan-view.md:128"
       ],
       "class": "safety-invariant",
       "hot_path": false,
@@ -3780,7 +3780,7 @@
       "rule_id": "R-STATUS-13",
       "statement": "When the architecture map base exists, the plan view build passes it with --map and the scope the owner chose for a large project before the first build, and without the base it passes no --map.",
       "statement_sha256": "a454f0b832839dbb644b6e6a3a4dbc2ad848dddd26a1e1da716d5cbe3dc0e6a6",
-      "home": "references/guides/plan-view.md:40",
+      "home": "references/guides/plan-view.md:43",
       "home_fragment": "When `.tackle/map/architecture.json` exists, pass `--map",
       "units": [],
       "mirrors": [],
@@ -3814,6 +3814,29 @@
       "origin": {
         "added_in": "9.1.1",
         "trigger": "Retro lesson: no map delta existed for a plan that changed components, because scaffolding only offered a base when none existed.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-08"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATUS-15",
+      "statement": "An open plan view that cannot reload itself (a host view that shows a snapshot, or an address that is not a file opened in a browser) shows a notice saying so, and the coordinator never starts a server or background process to show the view.",
+      "statement_sha256": "90ffc2e748e3b6bd16a8be27ab091b00d9d23d1dcec947dc0626e21ee7666530",
+      "home": "references/guides/plan-view.md:30",
+      "home_fragment": "The coordinator never starts a server or background process",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.1",
+        "trigger": "Owner report: a plan view shown as a host snapshot looked current while it could never update, and no server may be started to fix that.",
         "discovered_by": []
       },
       "evidence": {
