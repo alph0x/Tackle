@@ -8,6 +8,7 @@ decisions, history and `resource-usage.md`.
 
 A request such as "show the plan view" or "mostrá la vista del plan" asks for it, in any language. It
 is its own request. It is not a STATUS mode, and STATUS never writes the view.
+STATUS runs no recipe for the view and never checks it: STATUS stays read-only and code-free.
 
 An explicit request creates the view and stands for its workspace. The owner can end that standing
 request at any time by saying stop.
@@ -21,9 +22,23 @@ describes. A no writes nothing. The host shows the page when it can display a lo
 
 ## Rebuild
 
-When a view exists for the workspace, the coordinator rebuilds it after each board status change and after
-each role start or finish; the standing request covers these rebuilds until the
-owner says stop. The coordinator rebuilds only a view that already exists. An open view reloads itself after
+When a view exists for the workspace, the coordinator rebuilds it after every write to a page input, in PLAN
+and in RUN. It rebuilds at the end of the step that wrote the input, and after each role start or finish.
+The page inputs are `task-board.md`, `plan.md`, `decisions.md`, `questions.md`, `history.md` and `resource-usage.md`.
+They also include the workspace `AGENTS.md` and `readiness.md`, every declared brief and `map-delta.json`.
+The curated summaries, the map base, the template and the two recipes are page inputs too.
+The coordinator rebuilds only a view that already exists.
+
+Under the standing view request, the coordinator runs the plan-view recipe with `--check` at the end of each step
+that wrote a page input. That request is the owner's explicit authorization for these checks and rebuilds. The
+coordinator rebuilds when the check says stale. The standing request covers these checks and rebuilds until the
+owner says stop. After stop, nobody runs the check.
+
+Before a rebuild that follows a change to task rows or states, the coordinator updates `view/summary.json` and
+`view/export-summary.json`. It updates their time-bound prose, their declared board states and their as-of times.
+It removes prose that it cannot update honestly. A rebuild after a role start or finish needs no summary update.
+
+An open view reloads itself after
 a rebuild, keeping its selection, filter and reading position: the recipe writes a small stamp script beside
 the page, and the page rereads it every few seconds, with no server and no process to stop. The page reloads
 itself only when opened from its file in a browser; a host view that shows a snapshot cannot update, and the page
@@ -47,6 +62,10 @@ Without that file, pass no `--map`.
 
 Exit 0 writes the view. Exit 1 refuses and writes no file. Exit 2 reports a usage error. The recipe uses only
 the standard library, makes no network access and writes only the output file.
+
+The page records one sha256 for each input and one overall digest. With `--check` and the build's arguments, the
+recipe compares them with the inputs now and writes nothing. It prints `view current` and exits 0. Otherwise it
+prints `view stale:` with the changed inputs and exits 1. A page without digests is stale. A usage error exits 2.
 
 ## Pre-flight
 
@@ -84,6 +103,10 @@ names no requirement id, the recipe refuses with the Focused reason. It invents 
   when its `start` row has no `finish` or `observe-incomplete` row.
 - The page names a running role `Live`, or `En marcha` on a Spanish page, so the badge never reads like the
   In progress state.
+- A Waiting on you section lists open questions from `questions.md` with their Determines line. It also lists tasks
+  that are Waiting on owner or Blocked, with their Verification cell, and Open board obligations with owner and trigger.
+  A question is open unless its state carries 🟢 or ✅. When nothing is open, one line says so. A Focused plan
+  shows its open questions only, and the PDF report keeps its own obligations table.
 - The footer shows the build time and the Methodology version of the workspace.
 - The page escapes every workspace string. No workspace text runs as script.
 - The interface has English and Spanish text. The recipe picks Spanish only on clear Spanish evidence in the

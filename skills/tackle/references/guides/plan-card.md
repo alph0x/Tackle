@@ -97,6 +97,7 @@ tasks and stops before source execution.`
    intent before it may mutate source.
    A Coordinated handoff offers the [plan view](plan-view.md#request) once and names its recipe; only the
    owner's yes builds it, and that yes is the owner's explicit authorization for the plan-view recipe.
+   Under that standing view request, the last action before handoff is a `--check` of the view that passes.
    A brief locks only after its `lock` [adversary checkpoint](run.md#adversary-checkpoints).
 
 **Stop rule.** PLAN exists to unblock execution. When the next step is small and clear, do it; do
