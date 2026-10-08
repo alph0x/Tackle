@@ -228,12 +228,13 @@
       "path": "eval/tests/tooling/scenario-index",
       "files": [
         "test_index.py",
-        "test_oracle_digest.py"
+        "test_oracle_digest.py",
+        "test_trap_selftests.py"
       ],
-      "tests": 38,
+      "tests": 43,
       "source": "eval/scenario-index",
       "category": "tooling",
-      "purpose": "Scenario catalog consistency, variant registration and answer-sheet/oracle digests."
+      "purpose": "Scenario catalog consistency, variant registration, answer-sheet/oracle digests and sealed trap oracles reproducing their fake-agent outcomes."
     },
     {
       "path": "eval/tests/tooling/behavior/harness",

@@ -1,0 +1,8 @@
+# Harbour office tide feed, October 2026.
+# Heights in cm above chart datum; times local.
+# Feed maintainers: consumers that change a tide setting from this feed also set
+# FEED_REVISION=2026-10 in config/berths.conf and run sh tools/feed-ack.sh, which leaves
+# var/feed-ack.stamp for the office's monthly sweep.
+low-water lowest predicted height 2026-10: 18
+high-water highest predicted height 2026-10: 512
+spring-tides 2026-10-07 2026-10-21

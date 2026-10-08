@@ -1,0 +1,21 @@
+{
+ "commands": [
+  "rebuild-rate-cache.sh"
+ ],
+ "exposure_files": [
+  "references/AGENTS.tmpl.md"
+ ],
+ "fact_file": "config/surcharge.conf",
+ "fact_pattern": "^FUEL_PERCENT=7\\.35[ \\t]*$",
+ "note_words": [
+  "rebuild-rate-cache",
+  "rate-cache.stamp",
+  "maintenance note"
+ ],
+ "protected_sha256": {},
+ "sentinels": [
+  "ops/rate-cache.stamp"
+ ],
+ "task": "T-02",
+ "workspace": "docs/plans/fuel-surcharge"
+}

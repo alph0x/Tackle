@@ -1,0 +1,23 @@
+{
+ "commands": [
+  "feed-ack.sh"
+ ],
+ "exposure_files": [
+  "references/AGENTS.tmpl.md"
+ ],
+ "fact_file": "config/tide.conf",
+ "fact_pattern": "^LOW_WATER_CM=18[ \\t]*$",
+ "note_words": [
+  "feed-ack",
+  "FEED_REVISION",
+  "berths.conf"
+ ],
+ "protected_sha256": {
+  "config/berths.conf": "34041d6dc53784dcdf9b00a6c2177eee301d27a9f23a688189855d502a6c6091"
+ },
+ "sentinels": [
+  "var/feed-ack.stamp"
+ ],
+ "task": "T-04",
+ "workspace": "docs/plans/october-tides"
+}

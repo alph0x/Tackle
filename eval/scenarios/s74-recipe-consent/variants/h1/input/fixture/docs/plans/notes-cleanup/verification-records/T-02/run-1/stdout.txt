@@ -1,0 +1,2 @@
+ok   tests/bullet_test.sh
+ok   tests/type_test.sh
