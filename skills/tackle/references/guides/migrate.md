@@ -189,6 +189,28 @@ no neighboring workspace.
 8. Run rows 1–17 again. Adopt only the validated copy: record the adoption and the rollback result, bump
    the `Methodology:` stamp to 9.1.0, and roll back by restoring the checkpoint copy.
 
+<a id="v910--v911-checklist"></a>
+## v9.1.0 → v9.1.1 checklist
+
+An active 9.1.0 workspace adopts 9.1.1 at a task boundary with this checklist. Adopt only for a selected
+active workspace, on a disposable copy at a task boundary. This patch changes when a task becomes
+Complete, how subagent models are confirmed, and when System One is offered. It rewrites no closed task,
+no historical record and no neighboring workspace. A 9.1.0 workspace has no map delta, and adoption
+creates none.
+
+1. Record the pinned procedure, the current lint result under it, and hashes of the board, briefs,
+   reports, `AGENTS.md` and history. Preserve neighboring workspaces.
+2. Apply the new closure rule to each open task: the task becomes Complete only after its affected
+   integration checks pass on the merged tree. Tasks completed before this adoption stay as written.
+3. Show the owner the role-to-model table for the roles that remain. Record the confirmation in the
+   `**Confirmed for this initiative**` line of `AGENTS.md`. Until the owner confirms, dispatch no subagent.
+4. Run the [System One check](intake-and-gate.md#system-one-check). With a signal and no recorded answer,
+   ask once and record the exact consent line.
+5. If the workspace has a plan view, rebuild it under its standing view request. Without that request,
+   build no view.
+6. Run rows 1–17 on the copy. Adopt only the validated copy: record the adoption and the rollback result,
+   bump the `Methodology:` stamp to 9.1.1, and roll back by restoring the checkpoint copy.
+
 <a id="schema-keyed-migration"></a>
 ## Schema-keyed migration (9.0.0)
 
