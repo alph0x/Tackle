@@ -68,7 +68,7 @@ def render(lang=None, live=False):
     if lang:
         page = re.sub(r'<html lang="[^"]*"', '<html lang="%s"' % lang, page, count=1)
     if live:
-        page = page.replace('<meta name="tackle-file-revision"', '<meta name="tackle-live-revision" content="r1"><meta name="tackle-file-revision"', 1)
+        page = page.replace('<meta name="tackle-file-revision"', '<meta name="tackle-live-revision" content="live-revision-a"><meta name="tackle-file-revision"', 1)
     return page
 
 
