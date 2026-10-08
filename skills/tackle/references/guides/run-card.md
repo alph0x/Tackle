@@ -11,7 +11,8 @@ RUN starts only after explicit execution intent, including a scoped PLAN+RUN req
    progress, append the start row with the Run ID. A row already claimed by another run is skipped, never retried.
 4. **Preflight.** Check the pinned procedure, which never changes silently; the brief, decision and
    contract revisions; the dependency outputs; the environment; the write scope; and a compiled Tier's
-   [model-map binding](run.md#tier-dispatch-and-escalation-limits). Also check the row's `ready:`
+   [model-map binding](run.md#tier-dispatch-and-escalation-limits), which the owner must have confirmed; an
+   unconfirmed binding leaves the task `Waiting on owner`. Also check the row's `ready:`
    citation. A stale input goes back to
    Draft or to Blocked.
 5. **Intent, then work.** Write the INTENT line before any mutation, then work only inside the write

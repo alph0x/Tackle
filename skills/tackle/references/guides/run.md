@@ -65,7 +65,8 @@ reconstructed.
 A compiled Tier is a requested capability. Preflight resolves it against the workspace model map and
 dispatches at the bound model. Dispatch only a role-to-model binding that the owner confirmed. A review
 role dispatches at the tier the team table gives it, never by default at the coordinator's model. An
-unbindable Tier records `unsupported` and the model actually used, never an invented binding.
+unconfirmed binding leaves the task `Waiting on owner`. An unbindable Tier records `unsupported` and the
+model actually used, never an invented binding.
 
 A brief that has declared `Escalation` permits one capability-classified correction, once per task: at the
 model map's next tier, with effort unchanged from the brief. The owner confirms the escalated model before

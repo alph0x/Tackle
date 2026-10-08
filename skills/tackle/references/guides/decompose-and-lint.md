@@ -247,7 +247,8 @@ behind a requirement ID still fails the required semantic counterexample review.
 ## Model and tier proposal (compile time)
 
 At the step above that compiles sufficient task briefs, read the workspace `AGENTS.md` model map
-once per initiative — confirm it at intake, then reconfirm only on a deviation — and observe the
+once per initiative — confirm it at intake, then reconfirm on a deviation, on any other model change and
+on an escalation — and observe the
 host's model names, tier capabilities, model-binding controls, effort-binding controls, telemetry,
 and the source of those observations before proposing roles. Mark availability as `supported`,
 `unsupported`, or `unknown`; map generic tiers only to actual available models. An unavailable exact
@@ -277,6 +278,6 @@ deviation. Add the missing context, split the work into smaller steps, and give 
 their expected results. The planner, on a more capable tier, writes the brief so that the Executor makes
 no design decision. A brief that leaves one to the Executor is not ready. When an Executor cannot finish,
 the planner strengthens the brief first; an escalation is the exception. A Tier deviation is the last
-resort, and its `**Tier reason**` says why a stronger brief is not enough. A review role (lock, complete
-or audit) runs one tier above the Executor whose task it reviews. When that tier does not bind, record
-the limitation.
+resort, and its `**Tier reason**` says why a stronger brief is not enough. A review role (lock or
+complete) runs one tier above the Executor whose task it reviews. When that tier does not bind, record
+the limitation. An audit runs at the Auditor's tier in the team table.
