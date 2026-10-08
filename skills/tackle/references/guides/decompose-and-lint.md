@@ -247,7 +247,8 @@ behind a requirement ID still fails the required semantic counterexample review.
 ## Model and tier proposal (compile time)
 
 At the step above that compiles sufficient task briefs, read the workspace `AGENTS.md` model map
-once per initiative — confirm it at intake, then reconfirm only on a deviation — and observe the
+once per initiative — confirm it at intake, then reconfirm on a deviation, on any other model change and
+on an escalation — and observe the
 host's model names, tier capabilities, model-binding controls, effort-binding controls, telemetry,
 and the source of those observations before proposing roles. Mark availability as `supported`,
 `unsupported`, or `unknown`; map generic tiers only to actual available models. An unavailable exact
@@ -264,4 +265,19 @@ binding occurred. Keep portable schema Effort tokens separate from actual host c
 unexposed telemetry as `n/a`. A deviation from the routine default, of Tier or Effort, needs a
 reason in that task's `**Tier reason**`, confirmed by the owner like any other material decision
 ([communication.md](communication.md)); the routine default itself needs no confirmation beyond the
-once-per-initiative one.
+once-per-initiative role-to-model table.
+
+Each subagent role targets the cheapest available model that fits its tier in the team table.
+Before the first dispatch, show the owner the concrete role-to-model table for every subagent role and get
+an explicit confirmation. A run intent is not a model confirmation. Any later model change for a role, an
+escalation included, needs a new confirmation before that dispatch. Without that confirmation, the affected
+task waits on the owner.
+
+When a task looks too hard for the cheapest bindable tier, strengthen its brief before any Tier
+deviation. Add the missing context, split the work into smaller steps, and give exact commands with
+their expected results. The planner, on a more capable tier, writes the brief so that the Executor makes
+no design decision. A brief that leaves one to the Executor is not ready. When an Executor cannot finish,
+the planner strengthens the brief first; an escalation is the exception. A Tier deviation is the last
+resort, and its `**Tier reason**` says why a stronger brief is not enough. A review role (lock or
+complete) runs one tier above the Executor whose task it reviews. When that tier does not bind, record
+the limitation. An audit runs at the Auditor's tier in the team table.

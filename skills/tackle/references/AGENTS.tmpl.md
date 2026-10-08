@@ -119,8 +119,8 @@ effort controls, telemetry, and the source of each observation. Use `supported`,
 **Portable Effort schema:** `low / medium / high / max`; **actual host effort control:** {{observed value or n/a}}.
 **Telemetry:** tokens={{observed value or n/a}}; USD={{observed value or n/a}}.
 
-**Confirmed for this initiative**: (owner, date; re-confirmed only when a task's Tier or Effort
-deviates from the compiled default, recorded in that task's Tier reason)
+**Confirmed for this initiative**: (owner, date and the confirmed role-to-model table. Reconfirm on a Tier
+or Effort deviation, recorded in that task's Tier reason, and before any other model change or escalation)
 
 Map only models observed as available. If binding is unsupported or unknown, record the actual
 model/effort or `n/a`; never claim a binding that did not occur. See

@@ -820,7 +820,7 @@
       "rule_id": "R-PLAN-12",
       "statement": "Planning always runs on a more capable tier than the Executor's whenever more than one suitable tier binds; a one-tier harness records its limitation. These are role proposals, not claims that a host binding occurred.",
       "statement_sha256": "f2516914cd7def40bbf47bf3973d6b24cd128e5ac88a7d378b148c84cc53d2ff",
-      "home": "references/guides/decompose-and-lint.md:261",
+      "home": "references/guides/decompose-and-lint.md:262",
       "home_fragment": "Planning always runs on a more capable tier",
       "units": [],
       "mirrors": [],
@@ -945,7 +945,7 @@
       "rule_id": "R-RUN-05",
       "statement": "Reuse verified current state and sufficient existing checks; do not append equivalent assertions or unchanged closure reruns.",
       "statement_sha256": "d9beacfc73bfe0717bd839e70c569c8c6a2133391f0bbffcb8e6877522d2ff55",
-      "home": "references/guides/run.md:270",
+      "home": "references/guides/run.md:273",
       "home_fragment": "Reuse unchanged PLAN readiness checks",
       "units": [],
       "mirrors": [],
@@ -968,7 +968,7 @@
       "rule_id": "R-RUN-06",
       "statement": "Changed content, selector membership, configuration, interfaces, runtime or freshness invalidate affected consumers, and unknown dependencies require conservative checks.",
       "statement_sha256": "1c1280f74aeef7eb7f7257c0cd7e6857d1cdb14607295e70d0e2dac102a2fd0e",
-      "home": "references/guides/run.md:203",
+      "home": "references/guides/run.md:206",
       "home_fragment": "only the dependent checks; re-ground and revalidate",
       "units": [],
       "mirrors": [],
@@ -991,11 +991,11 @@
       "rule_id": "R-RUN-07",
       "statement": "Task, related regression and affected merged-tree integration checks pass before a task becomes Complete, and deliverable acceptance precedes initiative completion.",
       "statement_sha256": "d3301a1f5ebbba1c848bc0b74aecc74ef0aa2bbce18ca99a6a237e8064424f42",
-      "home": "references/guides/run-card.md:45",
+      "home": "references/guides/run-card.md:46",
       "home_fragment": "deliverable acceptance precedes initiative completion",
       "units": [],
       "mirrors": [
-        "references/guides/run-card.md:22"
+        "references/guides/run-card.md:23"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -1029,7 +1029,7 @@
       "rule_id": "R-RUN-08",
       "statement": "Three failed correction-validation cycles per task or two identical no-progress observations bound implementation correction, and lineage keeps spent cycles across split, merge and resume.",
       "statement_sha256": "9a6b0e2439703af8ce593d30e2c77c73bc87fa3af6a3b7d586613ea19e28bfb7",
-      "home": "references/guides/run-card.md:31",
+      "home": "references/guides/run-card.md:32",
       "home_fragment": "three failed correction-validation cycles per task",
       "units": [],
       "mirrors": [],
@@ -1054,7 +1054,7 @@
       "rule_id": "R-RUN-09",
       "statement": "Consume known failure evidence and repeat its check only after a relevant change or permitted recovery.",
       "statement_sha256": "3de071f2f68a5c703eab0ef6d85352b9a0fefd48c3b08f6fb3b816e79909b5c3",
-      "home": "references/guides/run.md:83",
+      "home": "references/guides/run.md:86",
       "home_fragment": "Consume retained failed observations before another check",
       "units": [],
       "mirrors": [],
@@ -1309,7 +1309,7 @@
       "home_fragment": "Closure reports for done tasks",
       "units": [],
       "mirrors": [
-        "references/guides/run.md:256"
+        "references/guides/run.md:259"
       ],
       "class": "safety-invariant",
       "hot_path": false,
@@ -1338,11 +1338,11 @@
       "rule_id": "R-RUN-18",
       "statement": "A declared capability failure is corrected exactly once, at the model map's next tier with effort unchanged, spends one task-pool cycle always, never applies to an unbound tier, a next tier whose bound model id matches the model actually used for the failed attempt, or a further escalation, never skips to a further tier, never beyond the topmost bound tier, and never for an evaluation control arm.",
       "statement_sha256": "394cbc57ad5d115fcaa220a84036a0fcb79cdca4fb5f1ce83b281f90173a61e9",
-      "home": "references/guides/run-card.md:29",
+      "home": "references/guides/run-card.md:30",
       "home_fragment": "An implementation fault is corrected; a capability failure",
       "units": [],
       "mirrors": [
-        "references/guides/run.md:69"
+        "references/guides/run.md:71"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -1911,7 +1911,7 @@
       "home_fragment": "Historical E0–E3 codes",
       "units": [],
       "mirrors": [
-        "references/guides/run.md:171"
+        "references/guides/run.md:174"
       ],
       "class": "format",
       "hot_path": false,
@@ -2993,7 +2993,7 @@
         "references/guides/migrate.md:216",
         "references/guides/plan-view.md:52",
         "references/guides/plan-view.md:151",
-        "references/guides/run.md:146",
+        "references/guides/run.md:149",
         "references/guides/system-one.md:6",
         "references/guides/context-lifecycle.md:76",
         "references/guides/evidence-capture.md:132",
@@ -3262,7 +3262,7 @@
       "rule_id": "R-RUN-19",
       "statement": "An obligation that outlives its task is recorded when it is created as an O-NN row of the board's obligations table and prevents initiative completion while it is Open, unless the owner withdrew it.",
       "statement_sha256": "6d1baf55e5ae97b57a522eb306cc74f95574013a45a9a47e4800fd2267c2978a",
-      "home": "references/guides/run.md:216",
+      "home": "references/guides/run.md:219",
       "home_fragment": "An obligation that outlives its task is recorded when it is",
       "units": [],
       "mirrors": [
@@ -3289,7 +3289,7 @@
       "rule_id": "R-RUN-20",
       "statement": "RUN calls a fresh, independent adversarial review at three moments only (lock, repeat-failure and complete), the reviewer records its actual independence, and a moment with no independent reviewer stops the task Waiting on owner unless a recorded owner decision waives it.",
       "statement_sha256": "6a7f89f981c2bda43e934d6c4f5fd7152fb97189fb55cc785b7e81e2ec579da8",
-      "home": "references/guides/run.md:177",
+      "home": "references/guides/run.md:180",
       "home_fragment": "Run calls an independent adversarial review at three moments",
       "units": [],
       "mirrors": [],
@@ -3366,7 +3366,7 @@
       "mirrors": [
         "references/guides/plan-view.md:35",
         "references/guides/plan-view.md:135",
-        "references/guides/run-card.md:44",
+        "references/guides/run-card.md:45",
         "references/guides/plan-view.md:16",
         "references/guides/plan-card.md:98"
       ],
@@ -3393,7 +3393,7 @@
       "home_fragment": "only the owner's request or a confirmed closure fold",
       "units": [],
       "mirrors": [
-        "references/guides/run-card.md:47"
+        "references/guides/run-card.md:48"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -3468,7 +3468,7 @@
       "rule_id": "R-RUN-21",
       "statement": "The spent correction count comes from the task-linked failed correction-validation records, whoever wrote them, the State snapshot only projects it, and a resume never assumes zero: zero requires records showing no failure.",
       "statement_sha256": "6221975721f94893108f8666f7f45bba55da011825b1862a7add60f8531e745c",
-      "home": "references/guides/run.md:133",
+      "home": "references/guides/run.md:136",
       "home_fragment": "The spent count comes from the task-linked failed corr",
       "units": [],
       "mirrors": [],
@@ -3493,11 +3493,11 @@
       "rule_id": "R-RUN-22",
       "statement": "Before an initiative is declared closed, and at every cold resume, every Open obligation in the table and every id on a Complete task's Remains receipt is listed. Before an initiative is declared closed, every Complete task's brief and report and every record a report cites, verification records included, are opened and read, with the history (history-archive.md included), decisions and questions, as prose for owner requests or follow-ups not yet done, each is recorded as an Open obligation and raised with the owner before closing, and a missing table or Remains line never shows that nothing remains.",
       "statement_sha256": "15bea7ad5cefc858c1db1e962ae9d3839bb2f5dc687a619fe2af58c7576691b6",
-      "home": "references/guides/run.md:218",
+      "home": "references/guides/run.md:221",
       "home_fragment": "Before an initiative is declared closed, and at every cold",
       "units": [],
       "mirrors": [
-        "references/guides/run-card.md:46",
+        "references/guides/run-card.md:47",
         "references/guides/status.md:71"
       ],
       "class": "behavioral",
@@ -3975,7 +3975,7 @@
       "rule_id": "R-RUN-25",
       "statement": "Closing a Complete task sets its map delta changes to done before any view rebuild.",
       "statement_sha256": "63123fa9f2c6cd6a7386247812b9f677fa94a2a95b651238865145ad81f2076c",
-      "home": "references/guides/run-card.md:43",
+      "home": "references/guides/run-card.md:44",
       "home_fragment": "Set a Complete task's `map-delta.json` changes to `done`",
       "units": [],
       "mirrors": [
@@ -3986,6 +3986,98 @@
       "origin": {
         "added_in": "9.1.1",
         "trigger": "Retro lesson: a delta left changes planned although their tasks had completed, so the fold left them out.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-08"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-16",
+      "statement": "Each subagent role targets the cheapest available model that fits its tier in the team table. Before the first dispatch, show the owner the concrete role-to-model table for every subagent role and get an explicit confirmation. A run intent is not a model confirmation. Any later model change for a role, an escalation included, needs a new confirmation before that dispatch. Without that confirmation, the affected task waits on the owner.",
+      "statement_sha256": "9e1444771bd9b09f8349106d55d032baef3862449540e6d91dd19af142217542",
+      "home": "references/guides/decompose-and-lint.md:270",
+      "home_fragment": "Each subagent role targets the cheapest",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.1",
+        "trigger": "Owner request: subagents run on the cheapest model the owner confirms; the planner, on a more capable tier, writes briefs so complete that the Executor makes no design decision; a weak brief is strengthened instead of raising the tier; review runs one tier above the Executor.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-08"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-17",
+      "statement": "When a task looks too hard for the cheapest bindable tier, strengthen its brief before any Tier deviation. Add the missing context, split the work into smaller steps, and give exact commands with their expected results. The planner, on a more capable tier, writes the brief so that the Executor makes no design decision. A brief that leaves one to the Executor is not ready. When an Executor cannot finish, the planner strengthens the brief first; an escalation is the exception. A Tier deviation is the last resort, and its `**Tier reason**` says why a stronger brief is not enough. A review role (lock or complete) runs one tier above the Executor whose task it reviews. When that tier does not bind, record the limitation. An audit runs at the Auditor's tier in the team table.",
+      "statement_sha256": "5ee7a8f573a659ff497f3dca95293acb2c5b4a121321266cc4841a383194cc32",
+      "home": "references/guides/decompose-and-lint.md:276",
+      "home_fragment": "When a task looks too hard for the cheapest",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.1",
+        "trigger": "Owner request: subagents run on the cheapest model the owner confirms; the planner, on a more capable tier, writes briefs so complete that the Executor makes no design decision; a weak brief is strengthened instead of raising the tier; review runs one tier above the Executor.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-08"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-26",
+      "statement": "Dispatch only a role-to-model binding that the owner confirmed. A review role dispatches at the tier the team table gives it, never by default at the coordinator's model. An unconfirmed binding leaves the task `Waiting on owner`.",
+      "statement_sha256": "f380e511807f71fbae0bc76bacadb1b69b856cf449c37ce91073a90418723327",
+      "home": "references/guides/run.md:66",
+      "home_fragment": "Dispatch only a role-to-model binding",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.1",
+        "trigger": "Owner request: subagents run on the cheapest model the owner confirms; the planner, on a more capable tier, writes briefs so complete that the Executor makes no design decision; a weak brief is strengthened instead of raising the tier; review runs one tier above the Executor.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-08"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-27",
+      "statement": "The owner confirms the escalated model before that dispatch.",
+      "statement_sha256": "a9e7147f7966b9fefe46c75a53dd7ef94ffcbd4c38b7621c6f1df62e43f8c14d",
+      "home": "references/guides/run.md:72",
+      "home_fragment": "The owner confirms the escalated model",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.1",
+        "trigger": "Owner request: subagents run on the cheapest model the owner confirms; the planner, on a more capable tier, writes briefs so complete that the Executor makes no design decision; a weak brief is strengthened instead of raising the tier; review runs one tier above the Executor.",
         "discovered_by": []
       },
       "evidence": {

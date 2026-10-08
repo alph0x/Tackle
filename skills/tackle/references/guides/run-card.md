@@ -11,7 +11,8 @@ RUN starts only after explicit execution intent, including a scoped PLAN+RUN req
    progress, append the start row with the Run ID. A row already claimed by another run is skipped, never retried.
 4. **Preflight.** Check the pinned procedure, which never changes silently; the brief, decision and
    contract revisions; the dependency outputs; the environment; the write scope; and a compiled Tier's
-   [model-map binding](run.md#tier-dispatch-and-escalation-limits). Also check the row's `ready:`
+   [model-map binding](run.md#tier-dispatch-and-escalation-limits), which the owner must have confirmed; an
+   unconfirmed binding leaves the task `Waiting on owner`. Also check the row's `ready:`
    citation. A stale input goes back to
    Draft or to Blocked.
 5. **Intent, then work.** Write the INTENT line before any mutation, then work only inside the write
@@ -27,7 +28,7 @@ RUN starts only after explicit execution intent, including a scoped PLAN+RUN req
    - Classify each failure: implementation; missing or ambiguous requirement; incomplete output;
      required edge case; dependency or integration; contradictory spec; validator; environment;
      capability; or undetermined. An implementation fault is corrected; a capability failure
-     declared in the brief is corrected only once, one tier up ([limits](run.md#tier-dispatch-and-escalation-limits)).
+     declared in the brief is corrected only once, one tier up, after the owner confirms the model ([limits](run.md#tier-dispatch-and-escalation-limits)).
    - **Task pool.** At most three failed correction-validation cycles per task, in one pool shared
      across the executor, reviewer, checker, interruptions, resumptions and sessions. The first
      validation of an implementation fault is not a cycle, and a successful correction resets no counter.

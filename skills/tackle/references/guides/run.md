@@ -63,11 +63,14 @@ reconstructed.
 ## Tier dispatch and escalation limits
 
 A compiled Tier is a requested capability. Preflight resolves it against the workspace model map and
-dispatches at the bound model. An unbindable Tier records `unsupported` and the model actually used,
-never an invented binding.
+dispatches at the bound model. Dispatch only a role-to-model binding that the owner confirmed. A review
+role dispatches at the tier the team table gives it, never by default at the coordinator's model. An
+unconfirmed binding leaves the task `Waiting on owner`. An unbindable Tier records `unsupported` and the
+model actually used, never an invented binding.
 
 A brief that has declared `Escalation` permits one capability-classified correction, once per task: at the
-model map's next tier, with effort unchanged from the brief. It is never applied to an unbound tier,
+model map's next tier, with effort unchanged from the brief. The owner confirms the escalated model before
+that dispatch. The correction is never applied to an unbound tier,
 or to a next tier whose bound model id matches the model actually used for the failed attempt — both stop
 the task with evidence and return to the planner or owner instead, never skipping to a further tier — never
 past that one escalation, and never above the topmost tier (`frontier` has none). It is never available to
