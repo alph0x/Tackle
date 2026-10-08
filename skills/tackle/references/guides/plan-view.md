@@ -25,7 +25,10 @@ When a view exists for the workspace, the coordinator rebuilds it after each boa
 each role start or finish; the standing request covers these rebuilds until the
 owner says stop. The coordinator rebuilds only a view that already exists. An open view reloads itself after
 a rebuild, keeping its selection, filter and reading position: the recipe writes a small stamp script beside
-the page, and the page rereads it every few seconds, with no server and no process to stop. When a rebuild is
+the page, and the page rereads it every few seconds, with no server and no process to stop. The page reloads
+itself only when opened from its file in a browser; a host view that shows a snapshot cannot update, and the page
+says so with a notice. The coordinator never starts a server or background process to show the view; the
+optional live producer stays owner-requested only. When a rebuild is
 refused, the coordinator reports the refusal lines to the owner, and the earlier view keeps its earlier build
 time.
 
