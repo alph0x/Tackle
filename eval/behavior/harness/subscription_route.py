@@ -1586,7 +1586,7 @@ def probe_write(content):
     return 'echo %s > %s && ls %s' % (content, PROBE_INSIDE, PROBE_INSIDE)
 
 
-# The shapes the CLI's sandbox auto-allow check refused in the t04-calib-old calibration, where dontAsk turned each
+# The shapes the CLI's sandbox auto-allow check refused in the first route calibration, where dontAsk turned each
 # refusal into a denial. Each must now run, inside the sandbox, and print what it should: (name, command, the substrings
 # its output must hold), where '{c}' is the child's content and '{e}' that content as the sed edit leaves it.
 PROBE_SHAPES = (

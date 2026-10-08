@@ -56,8 +56,8 @@ NO_SCORES = {name: None for name in SCORES}
 # The required-success shapes of the probe, by the name result.json gives each.
 DENIED_SHAPES = ('quoted_status', 'quoted_loop', 'substitution', 'backticks', 'sed_in_place', 'group_and_function',
                  'heredoc_substitution')
-# Fragments of the Bash commands the CLI refused in don't-ask mode in the t04-calib-old calibration streams
-# (verification-records/T-04/out/t04-calib-old-*/sessions/01/stdout.jsonl), one per construct its sandbox auto-allow
+# Fragments of the Bash commands the CLI refused in don't-ask mode in the first route calibration's session streams,
+# one per construct its sandbox auto-allow
 # check rejects. Pinned here, not taken from the route, so the probe cannot drop a shape unnoticed.
 CALIBRATION_DENIED = {'quoted_status': '; echo "exit=$?"', 'quoted_loop': '; do echo "== $f"; cat "$f"; done',
                       'substitution': 'got=$(', 'backticks': '`cat ', 'sed_in_place': "sed -i.bak 's/",
@@ -1599,7 +1599,7 @@ class Probe(Base):
                     self.assertEqual(list((env.tmp / name).iterdir()), [])
 
     def test_probe_repeats_every_shape_the_calibration_saw_denied(self):
-        # The fragments are copied from the denied commands of the t04-calib-old streams; each must reach a child as a
+        # The fragments are copied from the denied commands of that calibration; each must reach a child as a
         # command of its own, and the denial text the CLI gave them must not be what the probe calls success.
         process, out = self.env.probe()
         self.assertEqual(process.returncode, 0, process.stdout + process.stderr)

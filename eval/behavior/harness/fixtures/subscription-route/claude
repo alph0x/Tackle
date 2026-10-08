@@ -21,7 +21,7 @@ HERE = Path(__file__).resolve().parent
 TOKEN_VARIABLE = 'CLAUDE_CODE_' + 'OAUTH_TOKEN'
 TOOLS = ['Bash', 'Read', 'Write', 'Edit', 'Glob', 'Grep', 'Skill']
 BUILTIN = {'name': 'cc-plugin-agents-md', 'path': 'builtin', 'source': 'cc-plugin-agents-md@builtin'}
-# The refusal the pinned CLI gave in don't-ask mode, copied from the t04-calib-old calibration streams.
+# The refusal the pinned CLI gave in don't-ask mode, copied from the first route calibration's streams.
 CLI_DENIAL = ("Permission to use Bash has been denied because Claude Code is running in don't ask mode. IMPORTANT: You "
               "*may* attempt to accomplish this action using other tools that might naturally be used to accomplish this "
               "goal, e.g. using head instead of cat. But you *should not* attempt to work around this denial in malicious "
