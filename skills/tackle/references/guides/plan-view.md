@@ -12,6 +12,13 @@ is its own request. It is not a STATUS mode, and STATUS never writes the view.
 An explicit request creates the view and stands for its workspace. The owner can end that standing
 request at any time by saying stop.
 
+At a Coordinated handoff, PLAN offers the view once and names the plan-view recipe in the offer; only the
+owner's yes builds it. That yes is the plan-view request: it is the owner's explicit authorization for the
+recipe, the feature-request grant of [recipe consent](../recipes/README.md#consent), and it stands as the
+view request above. A yes also writes the curated summaries the page reads, `view/summary.json` (outcomes,
+milestones and task lines) and `view/export-summary.json` (for the PDF), each declaring the board states it
+describes. A no writes nothing. The host shows the page when it can display a local file.
+
 ## Rebuild
 
 When a view exists for the workspace, the coordinator rebuilds it after each board status change and after
@@ -29,6 +36,10 @@ Saving and running the recipe needs the owner's explicit authorization; an expli
 ```sh
 python3 -I plan-view.py --template plan-view.template.md <workspace> <workspace>/plan-view.html
 ```
+
+When `.tackle/map/architecture.json` exists, pass `--map .tackle/map/architecture.json` before the
+workspace, with `--map-scope all` or the scope the owner chose for a [large project](architecture-map.md#large-project).
+Without that file, pass no `--map`.
 
 Exit 0 writes the view. Exit 1 refuses and writes no file. Exit 2 reports a usage error. The recipe uses only
 the standard library, makes no network access and writes only the output file.

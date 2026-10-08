@@ -41,6 +41,8 @@ Full templates. Its complete bodies and lifecycle rules are in `../lite-plan.tmp
 also govern the file maps in the generic workspace templates.
 When the plan changes how the project is put together and `.tackle/map/architecture.json` does not exist,
 offer once to create it, as the [architecture map guide](architecture-map.md) states, and write nothing without a yes.
+When that base exists and the plan adds or changes components, PLAN writes `<workspace>/map-delta.json`, as
+the [delta](architecture-map.md#the-delta) states.
 
 Create the workspace by copying the core set from the §File map: nine artifacts from
 `AGENTS.tmpl.md` plus an empty `tasks/`. Select `task-board.tmpl.md`, `history.tmpl.md` and
