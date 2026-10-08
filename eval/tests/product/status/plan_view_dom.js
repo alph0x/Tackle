@@ -65,7 +65,6 @@ class Element {
       },
     };
   }
-  get lang() { return this.getAttribute('lang') || ''; }
   get hidden() { return this.hasAttribute('hidden'); }
   set hidden(value) { if (value) { this.setAttribute('hidden', ''); } else { this.removeAttribute('hidden'); } }
   get tabIndex() { return Number(this.getAttribute('tabindex') || -1); }
@@ -90,7 +89,6 @@ class Element {
     this.childNodes.push(node);
     return node;
   }
-  removeChild(node) { const i = this.childNodes.indexOf(node); if (i >= 0) { this.childNodes.splice(i, 1); node.parentNode = null; } return node; }
   contains(node) { for (let n = node; n; n = n.parentNode) { if (n === this) { return true; } } return false; }
   compoundMatches(c) {
     if (c.tag && c.tag !== this.tagName) { return false; }
@@ -192,13 +190,13 @@ function load(options) {
     fire(type) { (listeners[type] || []).forEach((fn) => fn({ type })); },
     matchMedia(query) { return { matches: !!media[query], addEventListener() {}, addListener() {} }; },
     setTimeout(fn) { fn(); return 1; },
-    setInterval(fn) { (window.intervals = window.intervals || []).push(fn); return 1; },
+    setInterval() { return 1; },
     localStorage: options.storage === 'throws'
       ? { getItem() { throw new Error('blocked'); }, setItem() { throw new Error('blocked'); }, removeItem() { throw new Error('blocked'); } }
       : { getItem: (k) => (k in store ? store[k] : null), setItem: (k, v) => { store[k] = String(v); }, removeItem: (k) => { delete store[k]; } },
   };
   window.window = window;
-  const location = { hash: options.hash || '', pathname: '/plan-view.html', search: '', protocol: options.protocol === undefined ? 'file:' : options.protocol, hostname: '', href: 'file:///plan-view.html' + (options.hash || '') };
+  const location = { hash: options.hash || '', pathname: '/plan-view.html', search: '', protocol: 'file:', hostname: '', href: 'file:///plan-view.html' + (options.hash || '') };
   window.location = location;
   window.history = { replaceState(state, title, url) { location.hash = String(url).startsWith('#') ? String(url) : ''; } };
   (options.sizes || []).forEach(([selector, width]) => doc.querySelectorAll(selector).forEach((el) => { el.clientWidth = width; }));

@@ -20,8 +20,20 @@ NOTICE_ID = 'plan-static-copy'
 HELPERS = r"""
 const notice = (env) => env.one('#plan-static-copy');
 const start = (options) => {
-  const env = load(options || {});
-  env.tick = () => env.window.intervals[env.window.intervals.length - 1]();
+  options = options || {};
+  // The shared DOM has no lang property, removeChild or interval capture; add them to its element prototype.
+  const proto = Object.getPrototypeOf(load().root);
+  if (!('lang' in proto)) { Object.defineProperty(proto, 'lang', { get() { return this.getAttribute('lang') || ''; } }); }
+  if (!proto.removeChild) {
+    proto.removeChild = function (node) { const i = this.childNodes.indexOf(node); if (i >= 0) { this.childNodes.splice(i, 1); node.parentNode = null; } return node; };
+  }
+  // The harness loads under file:; run the shipped controller again on the same page under the scripted protocol.
+  const env = load();
+  env.intervals = [];
+  env.window.setInterval = (fn) => { env.intervals.push(fn); return 1; };
+  if (options.protocol !== undefined) { env.location.protocol = options.protocol; }
+  vm.runInContext(env.scripts.controller, env.context);
+  env.tick = () => env.intervals[env.intervals.length - 1]();
   env.pending = () => env.root.children.filter((c) => c.tagName === 'script');
   env.fail = () => { const s = env.pending().pop(); s.onerror(); };
   env.succeed = () => { const s = env.pending().pop(); s.onload(); };
@@ -125,7 +137,7 @@ assert.ok(!notice(env).hidden, 'the second real failure shows it');
         self.run_js(r"""
 const env = start({ protocol: 'data:' });
 assert.ok(notice(env).hidden);
-assert.strictEqual((env.window.intervals || []).length, 0, 'the file view does not run on the live page');
+assert.strictEqual(env.intervals.length, 0, 'the file view does not run on the live page');
 """, page=render(live=True))
 
     def test_the_text_follows_the_page_language_and_suggests_no_server(self):
