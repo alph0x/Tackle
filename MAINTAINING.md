@@ -25,6 +25,13 @@ selected report WARN on failures and are non-gating; and (6) compute and report
 
 Migrate-chain currency: if the release changes any workspace-level contract (`AGENTS.tmpl.md`, status vocabulary, artifact names, closure protocol), the migrate guide MUST gain a checklist for the immediately previous version in the same release — a version bump without its migrate checklist is a release defect (precedent: v3.0→v3.1 and v3.3→v3.4 were both missed once).
 
+Before tagging, complete these four steps in this order; each follows the sweep above and none is optional:
+
+1. Run the full registry under CI's interpreter before pushing the release branch: the `python3` of the `ubuntu-26.04` runner image. The workflow (`.github/workflows/ci.yml`) pins no version, so take the version from the latest CI log, or use a matching local interpreter. A green run under a different interpreter does not count.
+2. Run the committed-text guard over everything a commit adds, untracked files included: build a temporary index, mark the new files with `git add -N`, and point the guard at that index by running it with `GIT_INDEX_FILE` set to the temporary index, so a file that is not yet tracked is checked like a committed one.
+3. Reproduce every documented install channel in a sandbox and count the installed files against the install artifact (`SKILL.md` plus `references/`); a channel that needs the tag is reproduced against a local clone of the candidate commit. Any extra or missing file blocks the tag.
+4. On the owner's order, push the release branch without a tag and observe CI; create the tag only after CI is green, never before. A local run hides host-dependent variants (gawk, mawk, original-awk and busybox; Linux interpreters), so only the CI observation clears this step.
+
 ### Skill self-lint gates
 
 The eight gates validate the installed Markdown skill and its documentation in the same sweep. Run all eight from the repo root; each stays silent and exits 0 on pass — any echoed line blocks the tag until fixed. Every version value derives from the files; no gate hardcodes one.
