@@ -103,11 +103,13 @@ class RunMdEscalationLimitsTests(unittest.TestCase):
         for phrase in ('Dispatch only a role-to-model binding that the owner confirmed.',
                        "A review role dispatches at the tier the team table gives it, never by default at the coordinator's model.",
                        'The owner confirms the escalated model before that dispatch.',
-                       'The correction is never applied to an unbound tier'):
+                       'The correction is never applied to an unbound tier',
+                       'An unconfirmed binding leaves the task `Waiting on owner`.'):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, section)
         card = ' '.join(RUN_CARD.split())
         self.assertIn('corrected only once, one tier up, after the owner confirms the model', card)
+        self.assertIn('which the owner must have confirmed; an unconfirmed binding leaves the task `Waiting on owner`.', card)
         self.assertIn('the owner still confirms the escalated model', TASK_TEMPLATE)
         agents = ' '.join(AGENTS.split())
         self.assertIn('owner, date and the confirmed role-to-model table', agents)
@@ -163,7 +165,9 @@ class DecomposeAndLintWordingTests(unittest.TestCase):
                        'the planner strengthens the brief first; an escalation is the exception.',
                        'A Tier deviation is the last resort',
                        'says why a stronger brief is not enough',
-                       'A review role (lock, complete or audit) runs one tier above the Executor whose task it reviews.',
+                       'A review role (lock or complete) runs one tier above the Executor whose task it reviews.',
+                       "An audit runs at the Auditor's tier in the team table.",
+                       'then reconfirm on a deviation, on any other model change and on an escalation',
                        'When that tier does not bind, record the limitation.'):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, section)
