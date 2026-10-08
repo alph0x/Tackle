@@ -779,6 +779,7 @@ details>summary:hover{color:var(--accent-ink)}
 <main id="main">
 <section class="hero" data-title-size="{{title_size}}"><div class="hero-copy"><p class="kicker">{{kicker}}</p><h1>{{title}}</h1>{{objective}}</div>{{titleblock}}</section>
 {{status}}
+{{waiting}}
 {{overview}}
 {{graph}}
 {{tasks}}

@@ -13,7 +13,7 @@ import threading
 from pathlib import Path
 from urllib.parse import urlsplit
 
-FIXED_INPUTS = ('plan.md', 'task-board.md', 'decisions.md', 'history.md', 'resource-usage.md',
+FIXED_INPUTS = ('plan.md', 'task-board.md', 'decisions.md', 'questions.md', 'history.md', 'resource-usage.md',
                 'summary.json', 'view/summary.json', 'export-summary.json', 'view/export-summary.json',
                 'map-delta.json', 'AGENTS.md', 'readiness.md')
 

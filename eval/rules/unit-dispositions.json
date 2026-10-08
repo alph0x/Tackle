@@ -7125,6 +7125,48 @@
       "destination": "references/guides/run-card.md",
       "note": "Before closing the initiative, read every Complete task's brief, report and cited records as prose; an unmet owner request is an `Open` obligation raised with the owner; with a map delta, also offer the owner its fold (`architecture-map.md`, Closure fold).",
       "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 17,
+      "unit_sha256": "839640f58ef8cf823c1026838fce9f86a9df3d7dc7a8f92d46fe2c02c3ca128a",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "Under the standing view request, the coordinator rebuilds an existing view after every write to a page input, in PLAN and in RUN. Under that request it rebuilds at the end of the step that wrote the input, and after each role start or finish. The page inputs are `task-board.md`, `plan.md`, `decisions.md`, `questions.md`, `history.md` and `resource-usage.md`. They also include the workspace `AGENTS.md` and `readiness.md`, every declared brief and `map-delta.json`. The curated summaries, the map base, the template and the two recipes are page inputs too. The coordinator rebuilds only a view that already exists. Under the standing view request, the coordinator runs the plan-view recipe with `--check` at the end of each step that wrote a page input. That request is the owner's explicit authorization for these checks and rebuilds. Under that request, the coordinator rebuilds when the check says stale. The standing request covers these checks and rebuilds until the owner says stop.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 16,
+      "unit_sha256": "cc7cbe5c52ad63f31a8062612695b6e0570e2ced77f440cf19e02911ab67436d",
+      "disposition": "ruled",
+      "destination": null,
+      "note": "a recipe manifest hash row, not a rule: the row for the same recipe now carries the hash of the changed recipe file, as the manifest requires",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 4,
+      "unit_sha256": "6380c5e56893c11ae37eb84f57aa019b7be88d0e805b3c5a0e1edcd28c6e66c0",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "It reads the board, plan, briefs, decisions, questions, history and `resource-usage.md`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 122,
+      "unit_sha256": "082aeaf0c3bdcafaa7ba3fbfe83c4e068799a1b3c6cab1deedf6e94b4891aef3",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "On each request it hashes the declared public inputs.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "agent",
+          "reason": "The token comes from the AGENTS.md file name, which moved to the next sentence of the same input list."
+        }
+      ]
     }
   ]
 }

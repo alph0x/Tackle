@@ -54,6 +54,9 @@ UI = {
         st_reqs='Requirements', st_checks='Checks',
         complete='complete', bar_caption='{done} of {total} tasks are complete.', unknown='Unknown',
         outcomes='What this plan makes possible', now='Now', next='Next', owner='You',
+        n_waiting='Waiting', waiting='Waiting on you', waiting_lede='Open questions, tasks that wait on you or are blocked, and open obligations, read from the workspace files.',
+        waiting_none='Nothing waits on you.', waiting_questions='Open questions', waiting_tasks='Tasks waiting or blocked',
+        waiting_obligations='Open obligations', determines='Determines', obligation_owner='Owner', obligation_trigger='Trigger',
         milestones='Milestones', source_note='Outcomes and milestones come from the plan summary. States, counts and coverage come from the board and the plan.',
         task_purpose='Purpose', requirements_intro='Each requirement keeps its exact behavior, observable output, boundary cases and valid alternatives from the plan, with the tasks that cover it.',
         behavior='Required behavior', output='Observable output/effect', boundary='Boundary cases', alternative='Valid alternatives', source_details='Exact source details',
@@ -143,6 +146,9 @@ UI = {
         st_reqs='Requisitos', st_checks='Comprobaciones',
         complete='completo', bar_caption='{done} de {total} tareas están completas.', unknown='Desconocido',
         outcomes='Lo que este plan hace posible', now='Ahora', next='Siguiente', owner='Tú',
+        n_waiting='Pendiente', waiting='Esperando por ti', waiting_lede='Preguntas abiertas, tareas que esperan por ti o están bloqueadas, y obligaciones abiertas, leídas de los archivos del espacio de trabajo.',
+        waiting_none='Nada espera por ti.', waiting_questions='Preguntas abiertas', waiting_tasks='Tareas en espera o bloqueadas',
+        waiting_obligations='Obligaciones abiertas', determines='Determina', obligation_owner='Responsable', obligation_trigger='Disparador',
         milestones='Hitos', source_note='Los resultados y los hitos vienen del resumen del plan. Los estados, las cifras y la cobertura vienen del tablero y del plan.',
         task_purpose='Propósito', requirements_intro='Cada requisito conserva el comportamiento exacto, el resultado observable, los límites y las alternativas válidas del plan, con las tareas que lo cubren.',
         behavior='Comportamiento requerido', output='Resultado/efecto observable', boundary='Casos límite', alternative='Alternativas válidas', source_details='Detalles exactos de la fuente',
@@ -594,6 +600,146 @@ def open_obligations(board):
             continue
         found.append({name: parts[index] if index < len(parts) else '' for name, index in columns.items()})
     return found
+
+
+RESOLVED_MARKS = ('\U0001F7E2', '✅')
+WAITING_STATES = ('Waiting on owner', 'Blocked')
+
+
+def open_questions(text):
+    """Open questions of questions.md. A heading is `## Q-NN · title · state`; the state is the last `·` segment. A
+    question is open unless its state carries a resolved mark, so an unknown state counts as open. The Determines
+    field runs to a blank line, the next bold field, a comment or a heading, and its lines are joined."""
+    found, current, field = [], None, False
+    for line in text.splitlines():
+        heading = re.match(r'^##\s+(Q-\d+)\b(.*)$', line)
+        if heading or re.match(r'^#{1,2}\s', line):
+            current, field = None, False
+            if heading:
+                parts = [part.strip() for part in heading.group(2).split('·')]
+                if parts and parts[0] == '':
+                    parts = parts[1:]
+                state = parts[-1] if len(parts) > 1 else ''
+                title = ' · '.join(parts[:-1]) if len(parts) > 1 else ''.join(parts)
+                if not any(mark in state for mark in RESOLVED_MARKS):
+                    current = dict(id=heading.group(1), title=title, state=state, determines='')
+                    found.append(current)
+            continue
+        if current is None:
+            continue
+        stripped = line.strip()
+        if field:
+            if not stripped or stripped.startswith(('**', '<!--', '#')):
+                field = False
+            else:
+                current['determines'] += ' ' + stripped
+                continue
+        named = re.match(r'^\*\*Determines\*\*:\s*(.*)$', stripped)
+        if named and not current['determines']:
+            current['determines'], field = named.group(1).strip(), True
+    return found
+
+
+def waiting_section(questions, tasks, obligations, ui):
+    """What waits on the owner, read from the files: open questions, waiting or blocked tasks, open obligations."""
+    def block(heading, items):
+        return '<div class="status-block is-open"><h3>%s</h3><ul class="status-list">%s</ul></div>' % (esc(heading), ''.join(
+            '<li><b>%s</b>%s</li>' % (esc(head), '<span>%s</span>' % esc(text) if text else '') for head, text in items))
+    blocks = []
+    if questions:
+        blocks.append(block(ui['waiting_questions'], [('%s · %s' % (q['id'], q['title']) if q['title'] else q['id'],
+                                                       '%s: %s' % (ui['determines'], q['determines']) if q['determines'] else '')
+                                                      for q in questions]))
+    waiting = [t for t in tasks if t['status'] in WAITING_STATES]
+    if waiting:
+        blocks.append(block(ui['waiting_tasks'], [('%s · %s' % (t['id'], t['title']), '%s · %s' % (
+            ui['states'].get(t['status'], t['status']), t['verification'])) for t in waiting]))
+    if obligations:
+        blocks.append(block(ui['waiting_obligations'], [('%s · %s' % (o.get('obligation', ''), o.get('what', '')), '%s: %s · %s: %s' % (
+            ui['obligation_owner'], o.get('owner', ''), ui['obligation_trigger'], o.get('trigger', ''))) for o in obligations]))
+    body = '<div class="status-blocks">%s</div>' % ''.join(blocks) if blocks else '<p class="status-now">%s</p>' % esc(ui['waiting_none'])
+    return ('<section class="sec waiting" id="waiting"><header class="sec-head"><h2>%s</h2><p class="sec-lede">%s</p></header>%s</section>') % (
+        esc(ui['waiting']), esc(ui['waiting_lede']), body)
+
+
+WORKSPACE_INPUTS = ('task-board.md', 'plan.md', 'decisions.md', 'questions.md', 'history.md', 'resource-usage.md',
+                    'AGENTS.md', 'readiness.md', 'map-delta.json', 'view/summary.json', 'summary.json',
+                    'view/export-summary.json', 'export-summary.json')
+
+
+def file_digest(path):
+    try:
+        return hashlib.sha256(Path(path).read_bytes()).hexdigest() if Path(path).is_file() else 'absent'
+    except OSError:
+        return 'unreadable'
+
+
+def input_digests(ws, template_path, map_base, map_scope):
+    """One sha256 per page input, as stored, named by workspace-relative path or by role, plus an overall digest.
+    The recipes are read from the template's folder; without --map the default base under the repository root is
+    recorded present or absent."""
+    inputs = {name: file_digest(ws / name) for name in WORKSPACE_INPUTS}
+    board = ws / 'task-board.md'
+    if board.is_file():
+        try:
+            rows = parse_board(board.read_bytes().decode('utf-8', 'replace'), [])[1]
+        except OSError:
+            rows = []
+        for row in rows:
+            if not row['brief']:
+                continue
+            path = ws / row['brief']
+            try:
+                path.resolve().relative_to(ws.resolve())
+            except ValueError:
+                inputs[row['brief']] = 'outside the workspace'
+            else:
+                inputs[row['brief']] = file_digest(path)
+    folder = Path(template_path).parent
+    inputs['template'] = file_digest(template_path)
+    inputs['plan-view recipe'] = file_digest(folder / 'recipes' / 'plan-view.md')
+    inputs['architecture-map recipe'] = file_digest(folder / 'recipes' / 'architecture-map.md')
+    if map_base:
+        inputs['map base'] = file_digest(map_base)
+    else:
+        above = Path(os.path.abspath(ws)).parents
+        root = above[2] if len(above) > 2 else above[-1]
+        inputs['map base'] = file_digest(root / '.tackle' / 'map' / 'architecture.json')
+    inputs = dict(sorted(inputs.items()))
+    mode = 'given' if map_base else 'default'
+    overall = hashlib.sha256()
+    for name, value in list(inputs.items()) + [('--map', mode), ('--map-scope', map_scope)]:
+        overall.update(name.encode('utf-8') + b'\0' + value.encode('utf-8') + b'\0')
+    return dict(schema='tackle-input-digest/1', digest=overall.hexdigest(), inputs=inputs, map=mode, map_scope=map_scope)
+
+
+def check_view(record, output):
+    """Compare the digests a page recorded with the inputs now. Writes nothing."""
+    try:
+        page = Path(output).read_text(encoding='utf-8')
+    except (OSError, ValueError) as problem:
+        print('usage: cannot read the page: %s' % problem, file=sys.stderr)
+        return 2
+    found = re.search(r'<meta name="tackle-input-digest" content="([^"]*)">', page.split('<body', 1)[0])
+    built = None
+    if found:
+        try:
+            built = json.loads(html.unescape(found.group(1)))
+        except ValueError:
+            built = None
+    if not isinstance(built, dict) or not isinstance(built.get('inputs'), dict):
+        print('view stale: no input digest (built before input digests)')
+        return 1
+    now, then = record['inputs'], built['inputs']
+    changed = sorted(name for name in set(now) | set(then) if now.get(name) != then.get(name))
+    changed += [name for name, key in (('--map', 'map'), ('--map-scope', 'map_scope')) if built.get(key) != record[key]]
+    if not changed and built.get('digest') != record['digest']:
+        changed.append('overall digest')
+    if changed:
+        print('view stale: ' + ', '.join(changed))
+        return 1
+    print('view current')
+    return 0
 
 
 def report_table(headers, rows):
@@ -1987,6 +2133,8 @@ def main():
     parser.add_argument('--map', dest='map_base', help='the project map (tackle-map/1) to draw before and after the plan')
     parser.add_argument('--map-scope', choices=('all', 'changed'), default='all',
                         help='draw the whole map, or only the changed components with their neighbors')
+    parser.add_argument('--check', action='store_true',
+                        help='compare the input digests recorded in the page with the inputs now, and write nothing')
     parser.add_argument('workspace')
     parser.add_argument('output')
     args = parser.parse_args()
@@ -2001,6 +2149,9 @@ def main():
         print('usage: the template needs one html block and the workspace must be a directory', file=sys.stderr)
         return 2
     template = blocks[0]
+    record = input_digests(ws, args.template, args.map_base, args.map_scope)
+    if args.check:
+        return check_view(record, args.output)
     problems = []
     plan = read(ws, 'plan.md')
     if not plan:
@@ -2165,7 +2316,8 @@ def main():
         tasks_html = task_list(tasks, cover, down, live, summary, ui, counts, present)
     overview_html = presentation_overview(summary, objective_of(plan), ui)
     status_html = status_section(summary, export_summary, fields, tasks, focused, snapshot, working_html, title, plan, ui, stale_prose)
-    nav = [('snapshot', ui['n_now'])]
+    waiting_html = waiting_section(open_questions(read(ws, 'questions.md')), tasks, open_obligations(board), ui)
+    nav = [('snapshot', ui['n_now']), ('waiting', ui['n_waiting'])]
     if overview_html:
         nav.append(('overview', ui['n_overview']))
     if not focused:
@@ -2192,7 +2344,7 @@ def main():
         objective='<p class="objective">%s</p>' % esc(presentation_objective) if presentation_objective else '',
         titleblock=title_block(tasks, reqs, cover, decisions, working, fields, focused, stamp, method, ui),
         nav=''.join('<a href="#%s">%s</a>' % (anchor, esc(label)) for anchor, label in nav),
-        status=status_html, overview=overview_html, graph=graph_html, tasks=tasks_html, architecture=map_html, technical=technical,
+        status=status_html, waiting=waiting_html, overview=overview_html, graph=graph_html, tasks=tasks_html, architecture=map_html, technical=technical,
         export=export_section(export_ui), footer=footer, print_reports=print_reports, island=island,
         ui_skip=esc(ui['skip']), ui_theme=esc(ui['theme']), ui_nav=esc(ui['nav']), ui_freshness=esc(ui['freshness'].format(built=stamp)))
     try:
@@ -2200,6 +2352,8 @@ def main():
     except KeyError as missing:
         print('the template names unknown slots: %s' % missing, file=sys.stderr)
         return 2
+    digest_meta = '<meta name="tackle-input-digest" content="%s">' % esc(json.dumps(record, ensure_ascii=True, separators=(',', ':')))
+    page = re.sub(r'(?i)(<head\b[^>]*>)', lambda found: found.group(1) + digest_meta, page, count=1)
     # An open file view reloads itself when this revision changes: the page names a sibling stamp script, and
     # the stamp is written after the page so a reader never reloads into a half-written file.
     output = Path(args.output)
