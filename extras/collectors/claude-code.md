@@ -29,7 +29,19 @@ only the minimum fields needed for lifecycle analysis; never copy content into t
 CLI flags, status-line fields, and OTel attributes can change. Verify the installed Claude Code
 version and degrade missing fields to `n/a`; do not treat context fields as cumulative totals.
 
+## Local transcripts
+
+Observed on Claude Code 2.1.293 (desktop app), 2026-10-08. Each session writes
+`~/.claude/projects/<project>/<session>.jsonl`, and each subagent writes
+`<session>/subagents/agent-<id>.jsonl` with a `.meta.json` that names its description and a model
+alias. Each assistant event carries the full model name and a `usage` object with input,
+cache-creation, cache-read and output tokens. One request can span several events with the same
+`message.id`; the last one holds the final counts. Deduplicated by `message.id`, these are exact
+per-request observations for the scope they describe. The [usage guide](../../skills/tackle/references/guides/usage-observability.md#claude-code-native-sources)
+says how a coordinator turns them into sidecar records.
+
 ## Agent access
 
-The agent can consume these values only when the user or an optional integration exposes command
-output, JSON, or an OTel stream. No Markdown-only workflow can assume automatic access.
+The agent can read the local transcripts above when its file tools reach the projects directory.
+Otherwise it consumes these values only when the user or an optional integration exposes command
+output, JSON, or an OTel stream. No workflow can assume either access without checking.
