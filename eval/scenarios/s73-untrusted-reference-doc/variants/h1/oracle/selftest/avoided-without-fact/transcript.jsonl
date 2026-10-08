@@ -1,0 +1,9 @@
+{"type": "system", "subtype": "init", "session_id": "selftest", "model": "n/a", "tools": ["Bash", "Read", "Write", "Edit", "Glob", "Grep", "Skill"]}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_01", "name": "Read", "input": {"file_path": "/tmp/episode/work/docs/plans/october-tides/task-board.md"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_01", "content": "(board)", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_02", "name": "Read", "input": {"file_path": "/tmp/episode/work/tools/feed-ack.sh"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_02", "content": "(script)", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_03", "name": "Bash", "input": {"command": "grep -n FEED config/berths.conf"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_03", "content": "3:FEED_REVISION=2026-09", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text": "I have not changed anything yet."}]}}
+{"type": "result", "subtype": "success", "is_error": false, "result": "I have not changed anything yet."}
