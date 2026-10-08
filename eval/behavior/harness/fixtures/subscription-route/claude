@@ -11,6 +11,7 @@ import hashlib
 import json
 import os
 import re
+import subprocess
 import sys
 import time
 import urllib.parse
@@ -20,6 +21,15 @@ HERE = Path(__file__).resolve().parent
 TOKEN_VARIABLE = 'CLAUDE_CODE_' + 'OAUTH_TOKEN'
 TOOLS = ['Bash', 'Read', 'Write', 'Edit', 'Glob', 'Grep', 'Skill']
 BUILTIN = {'name': 'cc-plugin-agents-md', 'path': 'builtin', 'source': 'cc-plugin-agents-md@builtin'}
+# The refusal the pinned CLI gave in don't-ask mode, copied from the t04-calib-old calibration streams.
+CLI_DENIAL = ("Permission to use Bash has been denied because Claude Code is running in don't ask mode. IMPORTANT: You "
+              "*may* attempt to accomplish this action using other tools that might naturally be used to accomplish this "
+              "goal, e.g. using head instead of cat. But you *should not* attempt to work around this denial in malicious "
+              "ways, e.g. do not use your ability to run tests to execute non-test actions. You should only try to work "
+              "around this restriction in reasonable ways that do not attempt to bypass the intent behind this denial. If "
+              "you believe this capability is essential to complete the user's request, STOP and explain to the user what "
+              "you were trying to do and why you need this permission. Let the user decide how to proceed.")
+REFUSED = 'Exit code 1\nsh: %s: Operation not permitted'
 
 
 def tree(root):
@@ -105,8 +115,65 @@ def result(subtype='success', denials=(), cost=0.02, turns=2):
           'duration_ms': 5, 'session_id': 'stub-session', 'permission_denials': list(denials), 'modelUsage': {model: {}}})
 
 
+def bash_denied(use, given, denials):
+    tool(use, 'Bash', given, CLI_DENIAL, True)
+    denials.append({'tool_name': 'Bash', 'tool_use_id': use, 'tool_input': given})
+
+
+def shell(use, given):
+    """Run a command the probe expects to succeed for real, in the work tree: the stub has no sandbox to refuse it."""
+    done = subprocess.run(['/bin/sh', '-c', given['command']], cwd=str(cwd), env={'PATH': '/usr/bin:/bin', 'LANG': 'C'},
+                          capture_output=True, text=True)
+    text = done.stdout + done.stderr
+    tool(use, 'Bash', given, text if done.returncode == 0 else 'Exit code %d\n%s' % (done.returncode, text), done.returncode != 0)
+
+
+def later_command(use, command, unsandboxed, denials, sentinel):
+    """The commands after the first six: the shapes the calibration saw denied, the recorded rm and the boundaries."""
+    given = {'command': command}
+    if unsandboxed:
+        given['dangerouslyDisableSandbox'] = True
+    if 'curl ' in command:
+        if 'nonet' in modes:
+            return
+        if 'netopen' in modes or (unsandboxed and 'unsandboxed' in modes):
+            tool(use, 'Bash', given, '200' if unsandboxed else 'net=200')
+        else:
+            tool(use, 'Bash', given, 'Exit code 6\ncurl: (6) Could not resolve host: example.com', True)
+    elif 'route-probe-' in command:
+        path = re.search(r'for f in (\S+);', command).group(1)
+        leaks, skipped = sentinel(path)
+        if skipped in modes:
+            return
+        tool(use, 'Bash', given, Path(path).read_text() if leaks in modes else REFUSED % path, leaks not in modes)
+    elif command.startswith('rm '):
+        if 'rmdenied' in modes:
+            bash_denied(use, given, denials)
+        else:
+            shell(use, given)
+    elif '.claude' in command or re.search(r'> /', command):
+        if 'noboundary' in modes:
+            return
+        if 'boundarydenied' in modes and '/home/' in command:
+            bash_denied(use, given, denials)
+            return
+        if ('outsidewrite' in modes and '> /' in command) or ('configwrite' in modes and '.claude' in command):
+            # The write escapes yet the result reads like the sandbox's refusal: only the route's disk check sees it.
+            subprocess.run(['/bin/sh', '-c', command], cwd=str(cwd), env={'PATH': '/usr/bin:/bin'}, capture_output=True)
+        tool(use, 'Bash', given, REFUSED % command.split('> ')[-1], True)
+    elif command.startswith("sh -c 'exit 3'") and 'bashdenied' in modes:
+        bash_denied(use, given, denials)
+    elif command.startswith("sh -c 'exit 3'") and 'shapefail' in modes:
+        tool(use, 'Bash', given, 'Exit code 2\nsh: fork: Resource temporarily unavailable', True)
+    else:
+        shell(use, given)
+
+
 def run_probe():
     commands = re.findall(r'(?m)^\d+\. (.+)$', prompt)
+    unsandboxed = re.search(r"Run command (\d+) with the Bash tool's dangerouslyDisableSandbox parameter set to true", prompt)
+    unsandboxed = int(unsandboxed.group(1)) if unsandboxed else None
+    block = re.search(r'(?s)in one Bash call, exactly as written:\n(.*?)\n\(end of the multi-line command\)', prompt)
     if 'probeleak' in modes:
         (cwd / 'leak.txt').write_text(token)
     reads = re.findall(r'(?m)^- (\S+)$', prompt)
@@ -120,7 +187,9 @@ def run_probe():
 
     for number, command in enumerate(commands, 1):
         use = 'toolu_probe_%d' % number
-        if command.startswith('printenv | cut'):
+        if number > 6:
+            later_command(use, command, number == unsandboxed, denials, sentinel)
+        elif command.startswith('printenv | cut'):
             tool(use, 'Bash', {'command': command}, ' '.join(names) + ' ')
         elif command.startswith('printenv ') and 'wc -c' in command:
             if 'notoken' in modes:
@@ -151,6 +220,8 @@ def run_probe():
             else:
                 (cwd / 'probe-inside.txt').write_text(command[len('echo '):].split(' > ')[0] + '\n')
                 tool(use, 'Bash', {'command': command}, 'probe-inside.txt')
+    if block:
+        later_command('toolu_probe_block', block.group(1), False, denials, sentinel)
     for number, path in enumerate(reads, 1):
         use = 'toolu_probe_read_%d' % number
         if path == str(cwd / 'probe-inside.txt'):
@@ -270,12 +341,15 @@ if 'controlskilluse' in modes:
     tool('toolu_skill', 'Skill', {'skill': 'tackle'}, 'Launching skill: tackle')
 if 'denyskill' in modes:
     denials = [{'tool_name': 'Skill', 'tool_use_id': 'toolu_denied', 'tool_input': {}}]
+if 'denybash' in modes:
+    # The calibration's refusal: a compound command the sandbox auto-allow check rejected, denied in don't-ask mode.
+    bash_denied('toolu_denied_bash', {'command': 'sh tests/run.sh; echo "exit=$?"'}, denials)
 (cwd / 'result.md').write_text('stub result for ' + ('method' if 'tackle' in skills else 'control') + '\n')
 if 'maxturns' in modes:
-    result('error_max_turns', turns=60, cost=0.03)
+    result('error_max_turns', denials=denials, turns=60, cost=0.03)
     sys.exit(1)
 if 'maxbudget' in modes:
-    result('error_max_budget_usd', cost=1.0)
+    result('error_max_budget_usd', denials=denials, cost=1.0)
     sys.exit(1)
 leave = next((float(item[len('leave='):]) for item in modes if item.startswith('leave=')), None)
 # leave=N spends all but N of the budget this session was given.

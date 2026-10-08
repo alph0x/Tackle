@@ -53,6 +53,17 @@ CHILD_ENV = {'PATH', 'HOME', 'TMPDIR', 'LANG', 'TERM', 'NO_COLOR', 'DISABLE_TELE
 PLATFORM_ENV = {'__CF_USER_TEXT_ENCODING', 'LC_CTYPE'}
 SCORES = ('correct_action', 'evidence', 'verification_honesty', 'report_quality')
 NO_SCORES = {name: None for name in SCORES}
+# The required-success shapes of the probe, by the name result.json gives each.
+DENIED_SHAPES = ('quoted_status', 'quoted_loop', 'substitution', 'backticks', 'sed_in_place', 'group_and_function',
+                 'heredoc_substitution')
+# Fragments of the Bash commands the CLI refused in don't-ask mode in the t04-calib-old calibration streams
+# (verification-records/T-04/out/t04-calib-old-*/sessions/01/stdout.jsonl), one per construct its sandbox auto-allow
+# check rejects. Pinned here, not taken from the route, so the probe cannot drop a shape unnoticed.
+CALIBRATION_DENIED = {'quoted_status': '; echo "exit=$?"', 'quoted_loop': '; do echo "== $f"; cat "$f"; done',
+                      'substitution': 'got=$(', 'backticks': '`cat ', 'sed_in_place': "sed -i.bak 's/",
+                      'group_and_function': '{ echo ', 'function_definition': '() { ', 'heredoc_substitution': "<<'EOF'\ngot=$("}
+CLI_DENIAL = ("Permission to use Bash has been denied because Claude Code is running in don't ask mode. IMPORTANT: You "
+              "*may* attempt to accomplish this action using other tools that might naturally be used to accomplish this goal")
 
 
 def sha(data):
@@ -121,6 +132,13 @@ def covers(prefix, path):
     """Whether path lies in the tree that prefix names, with symlinked spellings (/tmp, /var) resolved on both sides."""
     prefix, path = os.path.realpath(prefix), os.path.realpath(path)
     return path == prefix or path.startswith(prefix.rstrip(SEP) + SEP)
+
+
+def probe_commands(prompt):
+    """The shell commands a probe prompt asks for: each numbered line, plus the one multi-line command block."""
+    commands = re.findall(r'(?m)^\d+\. (.+)$', prompt)
+    block = re.search(r'(?s)in one Bash call, exactly as written:\n(.*?)\n\(end of the multi-line command\)', prompt)
+    return commands + ([block.group(1)] if block else [])
 
 
 def wait_for(found, timeout=30):
@@ -504,7 +522,7 @@ class StubCohort(Base):
             self.assertEqual(filesystem['denyWrite'], [str(root / 'work' / '.claude')])
             permissions = settings['permissions']
             self.assertEqual(permissions['defaultMode'], 'dontAsk')
-            self.assertEqual(set(permissions['allow']), {'Read(/%s/**)' % root, 'Edit(/%s/work/**)' % root, 'Skill'})
+            self.assertEqual(permissions['allow'], ['Read(/%s/**)' % root, 'Edit(/%s/work/**)' % root, 'Skill', 'Bash'])
             for rule in ('Read(/%s/**)' % DENIED_READS[0], 'Edit(/%s/work/.claude/**)' % root, 'WebFetch', 'WebSearch'):
                 self.assertIn(rule, permissions['deny'])
             # A deny rule outranks the allow rules, so none may cover the episode's own root (the suite's roots sit under
@@ -1359,6 +1377,28 @@ class Outcomes(Base):
                 self.assertEqual(len(env.model_calls()), 1, 'the stage stopped after the faulty episode')
                 self.assertEqual(len(env.records()), 1, 'a stopped stage leaves the cohort incomplete')
 
+    def test_a_bash_permission_denial_invalidates_the_episode_as_an_isolation_fault_and_stops_the_stage(self):
+        # The calibration's refusal: the CLI's don't-ask denial of a compound command. It is the instrument refusing the
+        # participant, so the episode is invalid with an isolation-class reason and no later episode runs.
+        for mode, arm in (('denybash', 'method'), ('denybash', 'control'), ('denybash+maxturns', 'method')):
+            with self.subTest(mode=mode, arm=arm):
+                env = self.new_env()
+                env.cohort_of([arm, arm], mode=mode)
+                process = env.run()
+                self.assertEqual(process.returncode, 1, process.stdout + process.stderr)
+                self.assertIn('a fault stopped the stage', process.stdout + process.stderr)
+                record, = env.records()
+                self.assertEqual((record['outcome'], record['invalid_reason']), ('invalid', 'isolation'))
+                self.assertEqual(record['scores'], NO_SCORES)
+                episode = env.episode(record['episode_id'])
+                self.assertIn('bash_denied', episode['isolation_problems'])
+                self.assertIn({'tool': 'Bash', 'path': ''}, episode['sessions'][0]['permission_denials'])
+                stream = (env.out / record['episode_id'] / 'sessions' / '01' / 'stdout.jsonl').read_text()
+                self.assertIn(json.dumps(CLI_DENIAL)[1:-1], stream, 'the stub refuses with the CLI\'s own text')
+                self.assertEqual(len(env.model_calls()), 1, 'the stage stopped after the faulty episode')
+                self.assertEqual(env.launcher_log(), [], 'an instrument fault is never judged')
+                self.assertEqual(env.check().returncode, 1, 'a stopped stage leaves the cohort incomplete')
+
     def test_a_limit_without_an_init_event_is_still_a_timeout(self):
         _, episode = self.only(self.env.one('noinit+maxturns'), 'timeout', exit_code=0)
         self.assertEqual(episode['limit_reached'], 'error_max_turns')
@@ -1490,7 +1530,12 @@ class Probe(Base):
         self.assertEqual(staged['settings']['sandbox']['network'], {'allowedDomains': []})
         for name in ('probe-repo', 'probe-workspace'):
             self.assertEqual(list((env.tmp / name).iterdir()), [], 'the probe removes its sentinels')
-        self.assert_no_token(out, env.state)
+        for key in ('denied_shapes_succeeded', 'outside_write_denied', 'config_write_denied', 'unsandboxed_refused'):
+            self.assertIs(result[key], True, key)
+        self.assertEqual(result['denied_shapes'], {name: True for name in DENIED_SHAPES})
+        self.assertEqual((result['bash_denials'], result['boundary_permission_denials']), (0, 0))
+        self.assertEqual(result['work_rm'], {'method': 'ran', 'control': 'ran'})
+        self.assertEqual(sorted(os.listdir(env.run_root)), [], 'no boundary write is left beside the retired roots')
         text = (out / 'result.json').read_text()
         for pattern in protocol_leaks():
             self.assertIsNone(pattern.search(text), pattern.pattern)
@@ -1552,6 +1597,58 @@ class Probe(Base):
                                                             'workspace_read_denied': 'workspace_read'}[flag]], 1)
                 for name in ('probe-repo', 'probe-workspace'):
                     self.assertEqual(list((env.tmp / name).iterdir()), [])
+
+    def test_probe_repeats_every_shape_the_calibration_saw_denied(self):
+        # The fragments are copied from the denied commands of the t04-calib-old streams; each must reach a child as a
+        # command of its own, and the denial text the CLI gave them must not be what the probe calls success.
+        process, out = self.env.probe()
+        self.assertEqual(process.returncode, 0, process.stdout + process.stderr)
+        for item in self.env.model_calls():
+            commands = probe_commands(item['prompt'])
+            for name, fragment in CALIBRATION_DENIED.items():
+                self.assertTrue(any(fragment in command for command in commands), name)
+            self.assertTrue(any('dangerouslyDisableSandbox' in line for line in item['prompt'].splitlines()))
+        for mode in ('bashdenied', 'shapefail'):
+            with self.subTest(mode=mode):
+                env = self.new_env()
+                process, out = env.probe(mode)
+                self.assertEqual(process.returncode, 1, process.stdout + process.stderr)
+                result = self.result(out)
+                self.assertIs(result['passed'], False)
+                self.assertIs(result['denied_shapes_succeeded'], False)
+                self.assertIs(result['denied_shapes']['quoted_status'], False)
+                self.assertEqual(result['bash_denials'], 2 if mode == 'bashdenied' else 0, 'one per arm')
+                if mode == 'bashdenied':
+                    self.assertIn(json.dumps(CLI_DENIAL)[1:-1], (out / 'method' / 'stdout.jsonl').read_text())
+                for key in ('network_denied', 'outside_write_denied', 'config_write_denied', 'unsandboxed_refused'):
+                    self.assertIs(result[key], True, key)
+
+    def test_probe_requires_every_sandbox_boundary_to_refuse_bash_and_checks_the_disk(self):
+        # outsidewrite and configwrite report the sandbox's refusal text but leave the file on disk: only the disk
+        # check catches them. A boundary the permission layer refuses proves nothing about the sandbox.
+        cases = {'outsidewrite': 'outside_write_denied', 'configwrite': 'config_write_denied',
+                 'unsandboxed': 'unsandboxed_refused', 'noboundary': 'outside_write_denied',
+                 'boundarydenied': 'outside_write_denied'}
+        for mode, flag in cases.items():
+            with self.subTest(mode=mode):
+                env = self.new_env()
+                process, out = env.probe(mode)
+                self.assertEqual(process.returncode, 1, process.stdout + process.stderr)
+                result = self.result(out)
+                self.assertIs(result['passed'], False)
+                self.assertIs(result[flag], mode == 'boundarydenied', flag)
+                self.assertIs(result['denied_shapes_succeeded'], True)
+                if mode == 'boundarydenied':
+                    self.assertEqual((result['bash_denials'], result['boundary_permission_denials']), (2, 2))
+                self.assertEqual(sorted(os.listdir(env.run_root)), [], 'a boundary write that escaped is still removed')
+
+    def test_a_refused_rm_inside_the_work_tree_is_recorded_and_does_not_fail_the_probe(self):
+        process, out = self.env.probe('rmdenied')
+        self.assertEqual(process.returncode, 0, process.stdout + process.stderr)
+        result = self.result(out)
+        self.assertIs(result['passed'], True)
+        self.assertEqual(result['work_rm'], {'method': 'refused', 'control': 'refused'})
+        self.assertEqual(result['bash_denials'], 0, 'the recorded rm is the one call whose refusal is not a fault')
 
     def test_probe_learns_token_visibility_by_count_only(self):
         env = self.env
@@ -1655,7 +1752,7 @@ class Components(Base):
         self.assertEqual([rule for rule in deny if rule.startswith('Edit(')],
                          ['Edit(//private/var/tmp/tcr/p000000/work/.claude/**)', 'Edit(//Users/**)', 'Edit(//private/tmp/**)'])
         self.assertEqual(settings['permissions']['allow'], ['Read(//private/var/tmp/tcr/p000000/**)',
-                                                           'Edit(//private/var/tmp/tcr/p000000/work/**)', 'Skill'])
+                                                           'Edit(//private/var/tmp/tcr/p000000/work/**)', 'Skill', 'Bash'])
         filesystem = settings['sandbox']['filesystem']
         self.assertEqual(filesystem['denyRead'], everywhere, 'the sandbox keeps every tree: allowRead re-allows the root')
         self.assertEqual(filesystem['allowRead'], [str(production)])
@@ -1667,6 +1764,53 @@ class Components(Base):
         self.assertNotIn('Read(//Users/**)', users)
         self.assertNotIn('Edit(//Users/**)', users)
         self.assertIn('Edit(//private/tmp/**)', users)
+
+    def test_participant_settings_are_the_frozen_sandbox_plus_one_bash_allow_rule(self):
+        # The sandbox block, the deny list and the mode are pinned as the values at 22d60ff: only the allow list gains
+        # one tool-level Bash rule, and Bash stays sandboxed because allowUnsandboxedCommands stays false.
+        root = Path('/private/var/tmp/tcr/p000000')
+        frozen_sandbox = {
+            'enabled': True, 'failIfUnavailable': True, 'autoAllowBashIfSandboxed': True, 'allowUnsandboxedCommands': False,
+            'network': {'allowedDomains': []},
+            'filesystem': {'denyRead': [SEP + 'Users', SEP + 'private/tmp', SEP + 'tmp', SEP + 'Volumes', SEP + 'private/var/folders',
+                                        SEP + 'var/folders', SEP + 'private/var/tmp'],
+                           'allowRead': [str(root)], 'allowWrite': [str(root) + '/work', str(root) + '/tmp'],
+                           'denyWrite': [str(root) + '/work/.claude']}}
+        frozen_deny = ['Read(//Users/**)', 'Read(//private/tmp/**)', 'Read(//tmp/**)', 'Read(//Volumes/**)',
+                       'Read(//private/var/folders/**)', 'Read(//var/folders/**)',
+                       'Edit(//private/var/tmp/tcr/p000000/work/.claude/**)', 'Edit(//Users/**)', 'Edit(//private/tmp/**)',
+                       'WebFetch', 'WebSearch']
+        expected = {'sandbox': frozen_sandbox,
+                    'permissions': {'defaultMode': 'dontAsk',
+                                    'allow': ['Read(//private/var/tmp/tcr/p000000/**)', 'Edit(//private/var/tmp/tcr/p000000/work/**)',
+                                              'Skill', 'Bash'],
+                                    'deny': frozen_deny}}
+        settings = route.sandbox_settings(root)
+        self.assertEqual(settings, expected)
+        self.assertEqual(set(settings), {'sandbox', 'permissions'})
+        self.assertEqual(set(settings['permissions']), {'defaultMode', 'allow', 'deny'})
+        self.assertEqual([rule for rule in settings['permissions']['allow'] if rule.startswith('Bash')], ['Bash'],
+                         'exactly one Bash rule, tool-level, and no narrower or wider spelling beside it')
+        with_port = route.sandbox_settings(root, port=43210)
+        self.assertEqual(with_port['sandbox'], dict(frozen_sandbox, network={'allowedDomains': [], 'httpProxyPort': 43210,
+                                                                             'socksProxyPort': 43210}))
+        self.assertEqual(with_port['permissions'], expected['permissions'])
+        cfg = SimpleNamespace(model='stub-model')
+        argv = route.participant_argv({'realpath': '/opt/cli/claude'}, cfg, settings, 7, 0.5)
+        self.assertEqual(argv[argv.index('--permission-mode') + 1], 'dontAsk')
+        self.assertEqual(argv[argv.index('--tools') + 1], 'Bash,Read,Write,Edit,Glob,Grep,Skill')
+        self.assertEqual(json.loads(argv[argv.index('--settings') + 1]), expected)
+        self.assertNotIn('--dangerously-skip-permissions', argv)
+        self.assertNotIn('--allowedTools', argv)
+
+    def test_a_bash_permission_denial_is_an_instrument_fault_in_either_arm(self):
+        root = Path('/private/var/tmp/tcr/p000001')
+        for arm in ('method', 'control'):
+            with self.subTest(arm=arm):
+                self.assertEqual(route.unexpected_denials([{'tool': 'Bash', 'path': ''}], root, arm), ['Bash'])
+        raw = (json.dumps({'type': 'result', 'subtype': 'success', 'is_error': False, 'permission_denials': [
+            {'tool_name': 'Bash', 'tool_use_id': 'toolu_x', 'tool_input': {'command': 'sh tests/run.sh; echo "exit=$?"'}}]}) + '\n').encode()
+        self.assertEqual(route.parse_stream(raw)['denials'], [{'tool': 'Bash', 'path': '', 'id': 'toolu_x'}])
 
     def test_a_refused_path_that_cannot_be_resolved_counts_as_inside_the_root(self):
         root = Path('/private/var/tmp/tcr/p000001')
