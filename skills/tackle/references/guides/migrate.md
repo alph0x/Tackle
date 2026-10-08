@@ -150,9 +150,8 @@ historical records.
    decision and bump the `Methodology:` stamp to 9.0.1. Roll back by restoring the checkpoint copy.
 6. On the selected active copy, review new lifecycle writes against the legal role Outcome states,
    trace-backed positive Attempts, truthful `n/a`/observed-zero counts and externally observed role
-   terminal clocks. Run row 16 and the installed retro lifecycle recipe; retain their exact result
-   and any Run ID diagnosis. The explicit migration request is the owner's explicit authorization this
-   recipe needs; prefer an equivalent harness capability. An unsupported known old row is a record defect: hold adoption and keep
+   terminal clocks. Run row 16 and the retro lifecycle check command from `retro.md`; retain their exact result
+   and any Run ID diagnosis. An unsupported known old row is a record defect: hold adoption and keep
    the original workspace active, without rewriting closed rows or neighboring workspaces. Adopt the
    copy only after its required checks pass and record the rollback path at this task boundary.
 

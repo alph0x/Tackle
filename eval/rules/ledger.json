@@ -2988,12 +2988,13 @@
         "references/guides/codex-native-usage.md:10",
         "references/guides/architecture-map.md:61",
         "references/guides/controlled-writing.md:33",
-        "references/guides/migrate.md:154",
         "references/guides/migrate.md:216",
         "references/guides/plan-view.md:27",
         "references/guides/plan-view.md:113",
         "references/guides/run.md:146",
-        "references/guides/system-one.md:6"
+        "references/guides/system-one.md:6",
+        "references/guides/context-lifecycle.md:76",
+        "references/guides/evidence-capture.md:132"
       ],
       "class": "safety-invariant",
       "hot_path": true,

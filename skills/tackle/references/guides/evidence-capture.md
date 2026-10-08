@@ -129,6 +129,6 @@ stream fingerprints; it does not invent role metadata or declare all product req
 Read actual result/status and match final source/artifact hashes before using it. Accepted here
 means the captured child passed with stable inputs and present artifacts, not semantic approval.
 For compound checks, retain the exact checked script among hashed inputs. A prose command label
-is not a runnable substitute. An unavailable native export can use this recipe without any installed
-collector; equivalent direct capture is valid if it preserves the same facts. Missing role clocks
+is not a runnable substitute. When a native export is unavailable, this recipe, with the owner's explicit authorization, works without
+any installed collector; equivalent direct capture is valid if it preserves the same facts. Missing role clocks
 stay n/a in the lifecycle ledger even when the validation clock is known.

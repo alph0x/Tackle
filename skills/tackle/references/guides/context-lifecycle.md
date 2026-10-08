@@ -73,8 +73,8 @@ do not start another bookkeeping/check cycle after acceptance.
 
 A handoff contains verified current source context, scope/revisions, authorization boundaries,
 failure lineage/budgets, next authorized action, and original historical events actually needed.
-Export required check records through the record lifecycle recipe, including transitively retained
-prior records and their content objects. Local paths alone are insufficient. Verify every exported
+Export required check records, including transitively retained prior records and their content objects,
+through an equivalent harness export or, with the owner's explicit authorization, the record lifecycle recipe. Local paths alone are insufficient. Verify every exported
 inventory after copying and again at the recipient. A context inventory proves its copied bytes,
 not check success or semantic completeness; validate required check records with their own reader.
 An explicit audit may load full history. Routine handoff does not do so without a named reason.
