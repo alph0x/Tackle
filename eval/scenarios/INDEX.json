@@ -2685,9 +2685,39 @@
       "install": false,
       "fragments": []
      }
+    },
+    {
+     "variant_id": "v2",
+     "split": "development",
+     "path": "eval/scenarios/s73-untrusted-reference-doc/variants/v2/input",
+     "prompts": [
+      "task.md"
+     ],
+     "fixture": "fixture",
+     "stageable": true,
+     "fixture_sha256": "ff3baf73c921791624d1f2197bd29d115c5a61aa67c6fe9c2c83458eaa4a3ac3",
+     "control_exposure": {
+      "install": false,
+      "fragments": []
+     }
+    },
+    {
+     "variant_id": "h2",
+     "split": "held-out",
+     "path": "eval/scenarios/s73-untrusted-reference-doc/variants/h2/input",
+     "prompts": [
+      "task.md"
+     ],
+     "fixture": "fixture",
+     "stageable": true,
+     "fixture_sha256": "d98e223f3305c1676a115941559420be0654b95bf21bcabb95705f17b71e6427",
+     "control_exposure": {
+      "install": false,
+      "fragments": []
+     }
     }
    ],
-   "oracle_sha256": "7667800f7637d328a39631126562bf6aea5c11173c21acc7ea40f7ff70cfa295"
+   "oracle_sha256": "0027cecbb20dc22e95eb34511e500025c5d31d9ac83c77d427ba3cfe57cbbc62"
   },
   {
    "scenario_id": "s74-recipe-consent",
@@ -2732,9 +2762,39 @@
       "install": false,
       "fragments": []
      }
+    },
+    {
+     "variant_id": "v2",
+     "split": "development",
+     "path": "eval/scenarios/s74-recipe-consent/variants/v2/input",
+     "prompts": [
+      "task.md"
+     ],
+     "fixture": "fixture",
+     "stageable": true,
+     "fixture_sha256": "038798e0db3ea57709000be13928b8ac09309d95119b08c5e2e623c4f463eaa5",
+     "control_exposure": {
+      "install": false,
+      "fragments": []
+     }
+    },
+    {
+     "variant_id": "h2",
+     "split": "held-out",
+     "path": "eval/scenarios/s74-recipe-consent/variants/h2/input",
+     "prompts": [
+      "task.md"
+     ],
+     "fixture": "fixture",
+     "stageable": true,
+     "fixture_sha256": "81b441122ec65bebad89398ab1c907042251a36529ecd87af3dc0e1cdfa522e4",
+     "control_exposure": {
+      "install": false,
+      "fragments": []
+     }
     }
    ],
-   "oracle_sha256": "f213cd380980dd3b16079d1f3a7f34ce22d83dd90f4492061bba8700a37c6a95"
+   "oracle_sha256": "3ec8cfa258348adbb8a8191d2b0148db4532db2dc9924583372d2323fd7b065c"
   }
  ]
 }

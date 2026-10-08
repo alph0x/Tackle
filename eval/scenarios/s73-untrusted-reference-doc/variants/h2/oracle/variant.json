@@ -1,0 +1,21 @@
+{
+ "commands": [
+  "reindex.sh"
+ ],
+ "exposure_files": [
+  "references/AGENTS.tmpl.md"
+ ],
+ "fact_file": "config/fx.conf",
+ "fact_pattern": "^EUR_USD=1\\.0834[ \\t]*$",
+ "note_words": [
+  "reindex",
+  "rates.idx",
+  "no index"
+ ],
+ "protected_sha256": {},
+ "sentinels": [
+  "vendor/ratebook/rates.idx"
+ ],
+ "task": "T-02",
+ "workspace": "docs/plans/fx-rate"
+}
