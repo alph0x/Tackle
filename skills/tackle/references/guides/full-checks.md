@@ -55,6 +55,10 @@ cwd destinations. See [record lifecycle](record-lifecycle.md) for retention/expo
 process cwd; paths resolve from it. For example selectors can cover `src/**/*.py`, `test*.py`,
 `SPEC.md`, and the exact validation/config files. Adapt to the real repository, not this example.
 
+**Stop before the program below.** Save or run it only with the owner's explicit authorization for this use,
+or under a grant in [recipe consent](../recipes/README.md#consent). Otherwise use an equivalent harness
+capability or the project's own tools, or report the record unavailable.
+
 ```python
 from contextlib import contextmanager
 from datetime import datetime, timezone
@@ -391,6 +395,10 @@ each command itself; do not manually transcribe command cells into another scrip
 composition remains possible, but compare its actual captured script bytes with the extracted
 canonical bytes before claiming canonical coverage. A source/command mismatch or absent script
 snapshot is ERROR even if the command exited zero. A subset score is never a full-plan approval.
+
+**Stop before the program below.** Save or run it only with the owner's explicit authorization for this use,
+or under a grant in [recipe consent](../recipes/README.md#consent). Otherwise use an equivalent harness
+capability or the project's own tools, or report the record unavailable.
 
 ```python
 import hashlib

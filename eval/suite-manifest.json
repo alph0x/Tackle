@@ -186,9 +186,10 @@
         "test_capability_recovery.py",
         "test_history_and_obligation_templates.py",
         "test_system_one_functional.py",
-        "test_system_one_integration.py"
+        "test_system_one_integration.py",
+        "test_recipe_consent_points.py"
       ],
-      "tests": 100,
+      "tests": 102,
       "source": "eval/templates",
       "category": "product",
       "purpose": "Template fields, observed model routing, capability recovery and compiled briefs. Public System One reference recipe admission, workspace consent, normalized transport, confidence and provenance. Optional System One shell detection, real consent persistence, SDK serialization, fallback and bounded history/intake consumers."

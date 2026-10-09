@@ -81,6 +81,10 @@ untouched. Legacy stores can be read and exported; in-place deletion/compaction 
 authorizing removal of old duplicates. Event directories, not the presence of bulky result files,
 index retired events. Readers check retirement before attempting to open retired raw metadata.
 
+**Stop before the program below.** Save or run it only with the owner's explicit authorization for this use,
+or under a grant in [recipe consent](../recipes/README.md#consent). Otherwise use an equivalent harness
+capability or the project's own tools, or report the record unavailable.
+
 ```python
 from pathlib import Path
 import json

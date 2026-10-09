@@ -26,6 +26,10 @@ role end only when the Run ID maps exactly to that native turn. Model and effort
 `turn_context` are configured bindings, not independent server-model attestations. CLI launch
 flags are requested bindings; this stream alone does not attest them or a billing cost.
 
+**Stop before the program below.** Save or run it only with the owner's explicit authorization for this use,
+or under a grant in [recipe consent](../recipes/README.md#consent). Otherwise use an equivalent harness
+capability or the project's own tools, or report the record unavailable.
+
 <!-- codex-usage-recipe:start -->
 ```python
 import datetime

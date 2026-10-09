@@ -38,6 +38,10 @@ regex/count/PASS gate. Where the contract truly requires a count, obtain it from
 and propagate that assertion's own failure. `pipefail` alone does not stop later commands; every
 required child/condition needs a checked result. Raw wrapper capture does not prove its logic.
 
+**Stop before the program below.** Save or run it only with the owner's explicit authorization for this use,
+or under a grant in [recipe consent](../recipes/README.md#consent). Otherwise use an equivalent harness
+capability or the project's own tools, or report the record unavailable.
+
 ```python
 from datetime import datetime, timezone
 import hashlib

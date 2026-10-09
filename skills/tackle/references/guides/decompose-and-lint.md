@@ -130,6 +130,10 @@ The caller records fingerprints of the actual named inputs before using the resu
 explicit not-applicable reasons. `selectors` is a nonempty list/map describing selector membership;
 an explicitly optional selector may have an empty match list. Empty top-level metadata is missing. No installed tool or additional file is required for small work.
 
+**Stop before the program below.** Save or run it only with the owner's explicit authorization for this use,
+or under a grant in [recipe consent](../recipes/README.md#consent). Otherwise use an equivalent harness
+capability or the project's own tools, or report the record unavailable.
+
 ```python
 import hashlib
 import json

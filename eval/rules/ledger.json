@@ -820,7 +820,7 @@
       "rule_id": "R-PLAN-12",
       "statement": "Planning always runs on a more capable tier than the Executor's whenever more than one suitable tier binds; a one-tier harness records its limitation. These are role proposals, not claims that a host binding occurred.",
       "statement_sha256": "f2516914cd7def40bbf47bf3973d6b24cd128e5ac88a7d378b148c84cc53d2ff",
-      "home": "references/guides/decompose-and-lint.md:262",
+      "home": "references/guides/decompose-and-lint.md:266",
       "home_fragment": "Planning always runs on a more capable tier",
       "units": [],
       "mirrors": [],
@@ -991,11 +991,11 @@
       "rule_id": "R-RUN-07",
       "statement": "Task, related regression and affected merged-tree integration checks pass before a task becomes Complete, and deliverable acceptance precedes initiative completion.",
       "statement_sha256": "d3301a1f5ebbba1c848bc0b74aecc74ef0aa2bbce18ca99a6a237e8064424f42",
-      "home": "references/guides/run-card.md:46",
+      "home": "references/guides/run-card.md:48",
       "home_fragment": "deliverable acceptance precedes initiative completion",
       "units": [],
       "mirrors": [
-        "references/guides/run-card.md:23"
+        "references/guides/run-card.md:25"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -1029,7 +1029,7 @@
       "rule_id": "R-RUN-08",
       "statement": "Three failed correction-validation cycles per task or two identical no-progress observations bound implementation correction, and lineage keeps spent cycles across split, merge and resume.",
       "statement_sha256": "9a6b0e2439703af8ce593d30e2c77c73bc87fa3af6a3b7d586613ea19e28bfb7",
-      "home": "references/guides/run-card.md:32",
+      "home": "references/guides/run-card.md:34",
       "home_fragment": "three failed correction-validation cycles per task",
       "units": [],
       "mirrors": [],
@@ -1338,7 +1338,7 @@
       "rule_id": "R-RUN-18",
       "statement": "A declared capability failure is corrected exactly once, at the model map's next tier with effort unchanged, spends one task-pool cycle always, never applies to an unbound tier, a next tier whose bound model id matches the model actually used for the failed attempt, or a further escalation, never skips to a further tier, never beyond the topmost bound tier, and never for an evaluation control arm.",
       "statement_sha256": "394cbc57ad5d115fcaa220a84036a0fcb79cdca4fb5f1ce83b281f90173a61e9",
-      "home": "references/guides/run-card.md:30",
+      "home": "references/guides/run-card.md:32",
       "home_fragment": "An implementation fault is corrected; a capability failure",
       "units": [],
       "mirrors": [
@@ -2981,8 +2981,8 @@
         "references/guides/full-checks.md:4",
         "references/guides/full-checks.md:34",
         "references/guides/full-checks.md:46",
-        "references/guides/full-checks.md:375",
-        "references/guides/full-checks.md:378",
+        "references/guides/full-checks.md:379",
+        "references/guides/full-checks.md:382",
         "references/guides/evidence-capture.md:18",
         "references/guides/decompose-and-lint.md:123",
         "references/guides/context-lifecycle.md:85",
@@ -2996,7 +2996,7 @@
         "references/guides/run.md:150",
         "references/guides/system-one.md:6",
         "references/guides/context-lifecycle.md:76",
-        "references/guides/evidence-capture.md:132",
+        "references/guides/evidence-capture.md:136",
         "references/guides/plan-view.md:16",
         "references/guides/plan-card.md:98",
         "references/guides/architecture-map.md:60"
@@ -3366,7 +3366,7 @@
       "mirrors": [
         "references/guides/plan-view.md:35",
         "references/guides/plan-view.md:135",
-        "references/guides/run-card.md:45",
+        "references/guides/run-card.md:47",
         "references/guides/plan-view.md:16",
         "references/guides/plan-card.md:98"
       ],
@@ -3393,7 +3393,7 @@
       "home_fragment": "only the owner's request or a confirmed closure fold",
       "units": [],
       "mirrors": [
-        "references/guides/run-card.md:48"
+        "references/guides/run-card.md:50"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -3497,7 +3497,7 @@
       "home_fragment": "Before an initiative is declared closed, and at every cold",
       "units": [],
       "mirrors": [
-        "references/guides/run-card.md:47",
+        "references/guides/run-card.md:49",
         "references/guides/status.md:71"
       ],
       "class": "behavioral",
@@ -3975,7 +3975,7 @@
       "rule_id": "R-RUN-25",
       "statement": "Closing a Complete task sets its map delta changes to done before any view rebuild.",
       "statement_sha256": "63123fa9f2c6cd6a7386247812b9f677fa94a2a95b651238865145ad81f2076c",
-      "home": "references/guides/run-card.md:44",
+      "home": "references/guides/run-card.md:46",
       "home_fragment": "Set a Complete task's `map-delta.json` changes to `done`",
       "units": [],
       "mirrors": [
@@ -4000,7 +4000,7 @@
       "rule_id": "R-PLAN-16",
       "statement": "Each subagent role targets the cheapest available model that fits its tier in the team table. Before the first dispatch, show the owner the concrete role-to-model table for every subagent role and get an explicit confirmation. A run intent is not a model confirmation. Any later model change for a role, an escalation included, needs a new confirmation before that dispatch. Without that confirmation, the affected task waits on the owner.",
       "statement_sha256": "9e1444771bd9b09f8349106d55d032baef3862449540e6d91dd19af142217542",
-      "home": "references/guides/decompose-and-lint.md:270",
+      "home": "references/guides/decompose-and-lint.md:274",
       "home_fragment": "Each subagent role targets the cheapest",
       "units": [],
       "mirrors": [],
@@ -4023,7 +4023,7 @@
       "rule_id": "R-PLAN-17",
       "statement": "When a task looks too hard for the cheapest bindable tier, strengthen its brief before any Tier deviation. Add the missing context, split the work into smaller steps, and give exact commands with their expected results. The planner, on a more capable tier, writes the brief so that the Executor makes no design decision. A brief that leaves one to the Executor is not ready. When an Executor cannot finish, the planner strengthens the brief first; an escalation is the exception. A Tier deviation is the last resort, and its `**Tier reason**` says why a stronger brief is not enough. A review role (lock or complete) runs one tier above the Executor whose task it reviews. When that tier does not bind, record the limitation. An audit runs at the Auditor's tier in the team table.",
       "statement_sha256": "5ee7a8f573a659ff497f3dca95293acb2c5b4a121321266cc4841a383194cc32",
-      "home": "references/guides/decompose-and-lint.md:276",
+      "home": "references/guides/decompose-and-lint.md:280",
       "home_fragment": "When a task looks too hard for the cheapest",
       "units": [],
       "mirrors": [],
@@ -4147,6 +4147,38 @@
       "origin": {
         "added_in": "9.1.1",
         "trigger": "Owner request: System One was configured but never offered; intake now checks for it on every route, and its calls enter the usage sidecar.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-08"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-REL-06",
+      "statement": "Before saving or running a guide's program to make a record, get the owner's explicit authorization. Without it, use a harness capability or the project's tools, or report the record unavailable.",
+      "statement_sha256": "45b120f5e4037507533b3688b9d02c2818f87c20580a2da7e3451363bc349e00",
+      "home": "references/guides/run-card.md:23",
+      "home_fragment": "Before saving or running a guide's program",
+      "units": [],
+      "mirrors": [
+        "references/guides/record-lifecycle.md:84",
+        "references/guides/full-checks.md:58",
+        "references/guides/full-checks.md:399",
+        "references/guides/evidence-capture.md:41",
+        "references/guides/context-lifecycle.md:106",
+        "references/guides/decompose-and-lint.md:133",
+        "references/guides/system-one.md:78",
+        "references/guides/codex-native-usage.md:29"
+      ],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.1",
+        "trigger": "Behavioral evidence showed the consent rule present but not acted on at the point of use; the owner chose to strengthen it there.",
         "discovered_by": []
       },
       "evidence": {
