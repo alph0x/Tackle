@@ -1,0 +1,1 @@
+{"argv": ["sh", "bin/labels.sh", "tests/data/shelf-a.csv", "build/shelf-a.txt"], "child_exit": 0, "end": "2026-10-09T10:00:01Z", "artifacts": {"build/shelf-a.txt": "7a56e80f69a4713b8404ae3852070c3909b8bc2b14022fb791b578a8b17a94be"}}

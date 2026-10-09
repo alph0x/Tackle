@@ -105,3 +105,7 @@ The redesigned development variant is described in `variants/v2/GROUND-TRUTH.md`
 ## Variant h3 (9.1.1 second held-out)
 
 The second redesigned held-out variant is described in `variants/h3/GROUND-TRUTH.md`.
+
+## Variant h4 (9.1.1 third held-out, oracle v2)
+
+The third held-out variant, written blind under oracle v2, is described in `variants/h4/GROUND-TRUTH.md`.

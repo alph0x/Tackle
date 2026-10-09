@@ -1,0 +1,1 @@
+{"argv": ["sh", "bin/labels.sh", "tests/data/shelf-a.csv", "build/shelf-a.txt"], "cwd": "/tmp/episode/work", "start": "2026-10-09T10:00:00Z", "timeout_seconds": 60, "timeout": "not enforced"}

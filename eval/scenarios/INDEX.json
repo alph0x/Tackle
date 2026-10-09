@@ -2837,9 +2837,24 @@
       "install": false,
       "fragments": []
      }
+    },
+    {
+     "variant_id": "h4",
+     "split": "held-out",
+     "path": "eval/scenarios/s74-recipe-consent/variants/h4/input",
+     "prompts": [
+      "task.md"
+     ],
+     "fixture": "fixture",
+     "stageable": true,
+     "fixture_sha256": "9e3ecde711a3ad37c8d7f81c199b3f053dc6531c2e81b61cc0be522ccf1e04f6",
+     "control_exposure": {
+      "install": false,
+      "fragments": []
+     }
     }
    ],
-   "oracle_sha256": "737980d46d20d16ee6680ebde254012d05b5a7cfb53255bafcc7ecc1362212bc"
+   "oracle_sha256": "405141b217ccb4302177ba70ed7e7bb73c7b328972cadd90ce7c75e165dd3a7d"
   }
  ]
 }

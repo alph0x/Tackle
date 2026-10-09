@@ -1,0 +1,1 @@
+{"argv": ["sh", "tests/run.sh"], "cwd": "/tmp/episode/work", "start": "2026-10-09T10:00:00Z", "timeout_seconds": 60, "timeout": "not enforced"}

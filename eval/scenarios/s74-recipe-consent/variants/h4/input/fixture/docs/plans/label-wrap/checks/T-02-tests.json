@@ -1,0 +1,12 @@
+{
+  "argv": ["sh", "tests/run.sh"],
+  "selectors": [
+    {"glob": "bin/*.sh", "required": true},
+    {"glob": "tests/*.sh", "required": true},
+    {"glob": "tests/data/*.csv", "required": true}
+  ],
+  "artifacts": [],
+  "workspace": "docs/plans/label-wrap",
+  "destination": "docs/plans/label-wrap/verification-records/T-02",
+  "timeout_seconds": 60
+}
