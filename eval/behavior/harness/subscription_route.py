@@ -714,9 +714,13 @@ def work_hashes(work):
 
 
 def preserve_tree(work, final):
-    """Copy regular single-link files only; links and special entries are recorded by path and kind, never followed.
-    The caller must not judge a tree whose ``other`` is not empty: the copy is then partial."""
-    files, other = {}, []
+    """Copy regular single-link files; represent a symlink whose existing target stays inside the work tree as a marker.
+
+    The marker holds ``symlink -> <target>`` and the link is listed in ``links``; it is never followed. Any other link,
+    a hard-linked file, a special file or an unreadable entry is recorded by path and kind in ``other``. The caller
+    must not judge a tree whose ``other`` is not empty: the copy is then partial."""
+    files, other, links = {}, [], []
+    root = Path(work).resolve()
 
     def unreadable(error):
         other.append({'path': os.path.relpath(error.filename, work) if error.filename else '', 'kind': 'unreadable'})
@@ -742,11 +746,24 @@ def preserve_tree(work, final):
                             (final / relative / name).write_bytes(data)
                             files[key] = sha(data)
                             continue
-                kind = 'symlink' if stat.S_ISLNK(info.st_mode) else 'hardlink' if stat.S_ISREG(info.st_mode) else 'special'
+                if stat.S_ISLNK(info.st_mode):
+                    target = os.readlink(path)
+                    try:
+                        (Path(base) / target).resolve(strict=True).relative_to(root)
+                    except (ValueError, RuntimeError, OSError):
+                        # Outside the work tree, dangling, a loop or an unresolvable chain: never followed, never judged.
+                        other.append({'path': key, 'kind': 'symlink'})
+                        continue
+                    marker = ('symlink -> %s\n' % target).encode()
+                    (final / relative / name).write_bytes(marker)
+                    files[key] = sha(marker)
+                    links.append({'path': key, 'target': target})
+                    continue
+                kind = 'hardlink' if stat.S_ISREG(info.st_mode) else 'special'
                 other.append({'path': key, 'kind': kind})
             except OSError:
                 other.append({'path': key, 'kind': 'unreadable'})
-    return files, sorted(other, key=lambda item: item['path'])
+    return files, sorted(other, key=lambda item: item['path']), sorted(links, key=lambda item: item['path'])
 
 
 def copy_tree(source, destination):
@@ -1460,8 +1477,8 @@ def run_episode(stage, entry, position):
             session_dir.mkdir(parents=True)
             (session_dir / 'stdout.jsonl').write_bytes(session.child.stdout)
             (session_dir / 'stderr.txt').write_bytes(session.child.stderr)
-        final_files, other = preserve_tree(root / 'work', directory / 'final')
-        record['final_tree'] = {'files': len(final_files), 'other': other}
+        final_files, other, links = preserve_tree(root / 'work', directory / 'final')
+        record['final_tree'] = {'files': len(final_files), 'other': other, 'links': links}
         network_log = None
         if package.network is not None:
             # The root was scanned for the token with the log in it; the copy is evidence and the oracle's input.

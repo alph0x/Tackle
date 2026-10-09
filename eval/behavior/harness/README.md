@@ -373,10 +373,11 @@ sandbox or model.
   - `unobserved` is a planned episode that a reached cap stopped. There are no re-runs: an observed cohort is
     never amended.
   - Each episode keeps `episode.json`, `oracle.json`, the byte-exact `sessions/NN/stdout.jsonl` and
-    `stderr.txt`, and a copy of `final/` under `--out/<episode_id>/`. A link, a hard-linked file, a special file
-    or an unreadable entry in the work tree is recorded by path and kind and never followed or copied, and the
-    episode is then `invalid` with the reason `final tree not preserved`: the oracle never runs on a partial tree,
-    and the stage goes on. The route's records carry neutral tokens (`<runtime>`,
+    `stderr.txt`, and a copy of `final/` under `--out/<episode_id>/`. A symlink whose existing target resolves inside
+    the work tree is never followed: the copy holds a marker file `symlink -> <target>` at its path, and `final_tree.links`
+    lists it. Any other link, a hard-linked file, a special file or an unreadable entry in the work tree is
+    recorded by path and kind and never followed or copied, and the episode is then `invalid` with the reason
+    `final tree not preserved`: the oracle never runs on a partial tree, and the stage goes on. The route's records carry neutral tokens (`<runtime>`,
     `<home>`, `<work>`, `<tmp>`, `<cli>`, `<repo>`) instead of absolute paths. The retained streams and tree are
     evidence, not records, and keep the paths the participant saw.
   - `episode.json` also holds `metrics.archive_bytes_read`: the bytes of `history-archive.md` returned to the
