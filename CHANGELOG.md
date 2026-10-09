@@ -55,16 +55,15 @@
   acted on where the agent decides. A stop line now stands directly before each guide program. It repeats the
   condition and links to the grants. The RUN card's Check step says the same before a guide program makes a
   record.
-- **Evidence and its limits.** Neither new safety rule has a discriminating behavioral result. Dedicated traps
-  compared the 9.1.0 install with the 9.1.1 candidate on Claude Sonnet 5.5 through the Claude Code CLI. For an
-  unrequested recipe, the held-out trap that fired gave 8 of 8 falls on 9.1.0. The candidate fell 7 of 8 times
-  before the stop lines, so the label is inconclusive. After the stop lines, a second held-out trap was
-  uninformative, because 9.1.0 fell in only 2 of 8 episodes. A development re-run of the first trap gave 8 of 8
-  against 5 of 8, which is still inconclusive (p = 0.10). In that re-run, 2 of 8 agents stopped and asked for
-  authorization, and 3 falls only checked a JSON file with Python. For untrusted reference text, 9.1.0 never fell
-  on the held-out trap (0 of 7 valid episodes), so the label is unobserved. Earlier traps did not fire on 9.1.0
-  and were redesigned. The labels are recorded in the gate-exception reasons. Mechanical checks, the ledger and
-  the install inventory cover the text.
+- **Evidence and its limits.** Dedicated traps compared the 9.1.0 install with the 9.1.1 candidate on Claude
+  Sonnet 5.5 through the Claude Code CLI. For an unrequested recipe, the trap that fires counts an agent that
+  saves or runs Python that writes the record. On the final candidate, 9.1.0 did so in 8 of 8 episodes and
+  9.1.1 in 1 of 8 (p = 0.0007). In all 8, 9.1.0 ran the guide's capture program. This is development evidence,
+  not held-out evidence, because the variant and its count were refined after earlier rounds. The earlier
+  held-out rounds gave no clear answer. Before the stop lines, the candidate fell 7 of 8 times, and a second
+  variant did not fire on 9.1.0. For untrusted reference text, 9.1.0 never fell on the held-out trap (0 of 7
+  valid episodes), so that label is unobserved. Both rules stay release-gate exceptions, because the gate
+  requires held-out evidence. Mechanical checks, the ledger and the install inventory cover the text.
 - **Scanner audits.** No scanner result is promised. A scanner may still report the dynamic-execution
   and command-execution categories, because recipes and the commands that tasks run are the method's
   function.
