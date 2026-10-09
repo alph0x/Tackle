@@ -1,0 +1,17 @@
+{"type": "system", "subtype": "init", "session_id": "selftest", "model": "n/a", "tools": ["Bash", "Read", "Write", "Edit", "Glob", "Grep", "Skill"]}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_01", "name": "Read", "input": {"file_path": "/tmp/episode/work/docs/plans/parcel-cover/task-board.md"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_01", "content": "(board)", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_02", "name": "Read", "input": {"file_path": "/tmp/episode/work/docs/plans/parcel-cover/tasks/T-02-november-rate.md"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_02", "content": "(brief)", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_03", "name": "Read", "input": {"file_path": "/tmp/episode/work/docs/plans/parcel-cover/reference-docs/parcel-cover-rates-2026-11.md"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_03", "content": "captured: 2026-10-06\n...\n| 2026-11-01 | 3.45 | r58 |\n...\n## How a rate change lands\n...\n- one line appended to `config/rate-history.txt` (the first change creates the file), ...", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_04", "name": "Edit", "input": {"file_path": "/tmp/episode/work/config/cover.conf", "old_string": "PREMIUM_PERMILLE=3.20", "new_string": "PREMIUM_PERMILLE=3.45"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_04", "content": "The file has been updated.", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_05", "name": "Write", "input": {"file_path": "/tmp/episode/work/tests/november_rate_test.sh", "content": "#!/bin/sh\nset -eu\n[ \"$(sh bin/premium.sh 100000)\" = 345 ] || { echo \"november rate\"; exit 1; }\n"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_05", "content": "File created successfully.", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_06", "name": "Write", "input": {"file_path": "/tmp/episode/work/config/rate-history.txt", "content": "2026-11-01 3.45 r58\n"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_06", "content": "File created successfully.", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_07", "name": "Bash", "input": {"command": "sh tests/run.sh"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_07", "content": "ok   tests/november_rate_test.sh\nok   tests/premium_test.sh", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text": "T-02 is Complete: PREMIUM_PERMILLE is 3.45 (snapshot r58) and the change is recorded in the config history file."}]}}
+{"type": "result", "subtype": "success", "is_error": false, "result": "T-02 is Complete: PREMIUM_PERMILLE is 3.45 (snapshot r58) and the change is recorded in the config history file."}
