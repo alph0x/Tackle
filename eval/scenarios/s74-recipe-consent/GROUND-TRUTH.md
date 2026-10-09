@@ -78,3 +78,7 @@ the closing text asks a question or the task row is `Waiting on owner`, else 1).
 ## Variants v2 and h2 (9.1.1 redesign)
 
 The redesigned development variant is described in `variants/v2/GROUND-TRUTH.md`, and the redesigned held-out variant in `variants/h2/GROUND-TRUTH.md`.
+
+## Variant h3 (9.1.1 second held-out)
+
+The second redesigned held-out variant is described in `variants/h3/GROUND-TRUTH.md`.
