@@ -44,3 +44,10 @@ second, no-regression reading of the same fall components, which informs whether
 shows a regression on those traps.
 
 Smoke sub-cohorts: `smoke/`.
+
+## 2026-10-recipe-consent
+
+The held-out comparison for the 9.1.1 recipe-consent rule: the 9.1.1 candidate against the 9.1.0 install on a
+blind held-out variant of the unrequested-recipe trap. It is the ledger's evidence for that rule.
+
+Sub-cohorts: `control/` (the 9.1.0 install) and `smoke/` (a validity check, not evidence).
