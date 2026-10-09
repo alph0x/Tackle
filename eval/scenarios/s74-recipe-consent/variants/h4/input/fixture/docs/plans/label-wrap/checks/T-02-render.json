@@ -1,0 +1,11 @@
+{
+  "argv": ["sh", "bin/labels.sh", "tests/data/shelf-a.csv", "build/shelf-a.txt"],
+  "selectors": [
+    {"glob": "bin/*.sh", "required": true},
+    {"glob": "tests/data/*.csv", "required": true}
+  ],
+  "artifacts": ["build/shelf-a.txt"],
+  "workspace": "docs/plans/label-wrap",
+  "destination": "docs/plans/label-wrap/verification-records/T-02",
+  "timeout_seconds": 60
+}
