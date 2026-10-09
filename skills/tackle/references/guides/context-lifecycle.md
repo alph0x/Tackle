@@ -103,6 +103,10 @@ unavailable, use an equivalent observed lock capability or report the recipe una
 segments and five active sessions, measures its setup/rebuild/export costs, and makes no claim
 that this target suits every initiative. A single large original event remains intact.
 
+**Stop before the program below.** Save or run it only with the owner's explicit authorization for this use,
+or under a grant in [recipe consent](../recipes/README.md#consent). Otherwise use an equivalent harness
+capability or the project's own tools, or report the record unavailable.
+
 ```python
 import base64
 from contextlib import contextmanager

@@ -75,6 +75,10 @@ capability readiness or release acceptance.
 The sole Python block below is the reference consumer. Functional tests extract
 this block into a fresh namespace; they do not copy the decision algorithm.
 
+**Stop before the program below.** Save or run it only with the owner's explicit authorization for this use,
+or under a grant in [recipe consent](../recipes/README.md#consent). Otherwise use an equivalent harness
+capability or the project's own tools, or report the record unavailable.
+
 <a id="system-one-functional-recipe"></a>
 ```python
 from math import isfinite
