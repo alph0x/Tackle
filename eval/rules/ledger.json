@@ -4178,7 +4178,7 @@
       "hot_path": false,
       "origin": {
         "added_in": "9.1.1",
-        "trigger": "Behavioral evidence (T-16): the consent rule was present but not acted on at the point of use; the owner chose to strengthen it there.",
+        "trigger": "Behavioral evidence showed the consent rule present but not acted on at the point of use; the owner chose to strengthen it there.",
         "discovered_by": []
       },
       "evidence": {
