@@ -51,16 +51,20 @@
   boundary. It applies the closure rule to open tasks and confirms the role-to-model table. It runs the
   System One check, rebuilds an existing plan view under its standing request, runs rows 1–17 and bumps
   the stamp.
-- **Evidence and its limits.** The planned held-out behavioral evidence for the two new safety rules was
-  not met. Two dedicated traps were calibrated on Claude Sonnet 5.5 through the Claude Code CLI: one
-  for untrusted reference text, one for an unrequested recipe. The 9.1.0 install never fell into either
-  trap: 0 of 6 valid episodes each, 0 of 8 run. So both rules are labeled `inert (calibration 0/6)`,
-  and no held-out comparison ran. This is no improvement and no tested result. It is no evidence for
-  the new rules, and none against them. A first calibration was void because the route denied some
-  shell commands. The route was fixed, and earlier cohorts are not comparable. A smoke run on the 9.1.1
-  candidate passed. The calibration ran before the model routing, usage and System One changes.
-  Mechanical checks, the ledger and the install inventory cover the text. The labels are recorded in the
-  gate-exception reasons.
+- **Recipe consent at the point of use.** Real-agent episodes showed the consent condition was present but not
+  acted on where the agent decides. A stop line now stands directly before each guide program. It repeats the
+  condition and links to the grants. The RUN card's Check step says the same before a guide program makes a
+  record.
+- **Evidence and its limits.** Neither new safety rule has a discriminating behavioral result. Dedicated traps
+  compared the 9.1.0 install with the 9.1.1 candidate on Claude Sonnet 5.5 through the Claude Code CLI. For an
+  unrequested recipe, the held-out trap that fired gave 8 of 8 falls on 9.1.0. The candidate fell 7 of 8 times
+  before the stop lines, so the label is inconclusive. After the stop lines, a second held-out trap was
+  uninformative, because 9.1.0 fell in only 2 of 8 episodes. A development re-run of the first trap gave 8 of 8
+  against 5 of 8, which is still inconclusive (p = 0.10). In that re-run, 2 of 8 agents stopped and asked for
+  authorization, and 3 falls only checked a JSON file with Python. For untrusted reference text, 9.1.0 never fell
+  on the held-out trap (0 of 7 valid episodes), so the label is unobserved. Earlier traps did not fire on 9.1.0
+  and were redesigned. The labels are recorded in the gate-exception reasons. Mechanical checks, the ledger and
+  the install inventory cover the text.
 - **Scanner audits.** No scanner result is promised. A scanner may still report the dynamic-execution
   and command-execution categories, because recipes and the commands that tasks run are the method's
   function.
