@@ -236,7 +236,7 @@ class UsageObservabilityTests(unittest.TestCase):
         self.assertIn('once', sentence)
 
     def claude_code_section(self):
-        return ' '.join(USAGE.split('## Claude Code native sources', 1)[1].split('\n## ', 1)[0].split())
+        return ' '.join(USAGE.split('## Host-native session transcripts', 1)[1].split('\n## ', 1)[0].split())
 
     def test_claude_code_native_sources_join_exactly_and_copy_no_content(self):
         section = self.claude_code_section()

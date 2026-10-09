@@ -105,9 +105,9 @@ three completed like-for-like runs. The universal ledger never depends on a coll
 daemon, plugin, provider API, or sidecar is required for a task to close.
 
 <a id="claude-code-native-sources"></a>
-## Claude Code native sources
+## Host-native session transcripts
 
-Each host has its own usage records; this section describes one host. On Claude Code, the coordinator
+Each host has its own usage records; this section describes one host. On that host, the coordinator
 can fill the sidecar from local files, with no collector or recipe. Check the installed version first,
 because these paths and fields can change. Copy only numbers, ids, model names and times; never copy
 prompt, response or tool content.

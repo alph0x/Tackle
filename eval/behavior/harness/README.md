@@ -11,7 +11,7 @@ the retired Plan → Run synthetic measurement for new work; git history keeps t
 
 Two routes reach a model. The broker routes below run in a container behind a host-side broker. The
 [subscription route](#subscription-route), `subscription_route.py`, is separate: it runs episodes through the
-pinned Claude Code CLI on the owner's subscription token, judges them with each variant's sealed oracle and
+pinned agent CLI of the `claude-code` adapter on the owner's subscription token, judges them with each variant's sealed oracle and
 appends the same episode records. It leaves the adapters, the broker and `harness.py` as they are.
 
 ```sh
@@ -89,9 +89,9 @@ No credential is mounted, copied or passed into a participant's container, HOME,
 
 - **The broker.** A real adapter starts a host-side broker (`broker.py`) that reads
   `--credential-file`, which holds either the bare key or a JSON object with a `"key"` string.
-  - The participant gets only the broker's base URL and a random dummy token per episode: Claude Code
-    through `ANTHROPIC_BASE_URL` and `ANTHROPIC_AUTH_TOKEN`, Codex through a `-c model_providers…`
-    override and `BROKER_TOKEN`.
+  - The participant gets only the broker's base URL and a random dummy token per episode: the `claude-code`
+    adapter through `ANTHROPIC_BASE_URL` and `ANTHROPIC_AUTH_TOKEN`, the `codex` adapter through a
+    `-c model_providers…` override and `BROKER_TOKEN`.
   - The broker checks the dummy token, swaps in the credential, and forwards to the adapter's single
     upstream. It refuses any other host.
   - It refuses a chunked request body with 411, rather than forwarding it empty.
@@ -108,11 +108,11 @@ No credential is mounted, copied or passed into a participant's container, HOME,
 
 Token fields are integers or `n/a`; unknown is never 0 (`usage.py`).
 
-- **Codex:** the `turn.completed` usage of `codex exec --json`, summed per session.
-- **Claude Code:** the session transcripts under the episode HOME, with rows grouped by `requestId` and
+- **`codex` adapter:** the `turn.completed` usage of `codex exec --json`, summed per session.
+- **`claude-code` adapter:** the session transcripts under the episode HOME, with rows grouped by `requestId` and
   the row with the most output tokens kept. The result event is the fallback.
 - **Per-role usage:**
-  - Claude Code's native subagent transcripts (`subagents/agent-*.jsonl` with `meta.json`) give one role
+  - The `claude-code` adapter's native subagent transcripts (`subagents/agent-*.jsonl` with `meta.json`) give one role
     each.
   - `dispatch`, exposed as `bin/tackle-dispatch` for treated arms under local isolation, starts a
     separate session bound to a tier of `--model-map`.
@@ -175,11 +175,11 @@ python3 eval/behavior/harness/subagent.py finish  --episode <dir> --transcript <
     `finish` refuses, writing nothing, unless the transcript holds exactly that many tool calls,
     deduplicated by id, its last tool call already has its result, and it ends on the assistant's
     message. So a read made before the session ended is never recorded. With a failed notice, the
-    outcome is `error`. Every tool call in a Claude Code transcript carries an id; an id-less one would
+    outcome is `error`. Every tool call in a `claude-code` session transcript carries an id; an id-less one would
     be counted once per appearance. Two fields mark this as a different execution path from a headless
     CLI session: `adapter` is `"subagent"` (not `"claude-code"`), and `executor.harness` is `"claude-code-subagent"`.
-    `judge.py` selects its correction-cycle parser by `adapter` and maps `"subagent"` to its Claude
-    Code parser, because `sessions/01/stdout` holds a Claude Code session transcript.
+    `judge.py` selects its correction-cycle parser by `adapter` and maps `"subagent"` to its `claude-code`
+    parser, because `sessions/01/stdout` holds a `claude-code` session transcript.
   - `audit.json` (`{outside_paths, skill_used, verdict, reason}`), this tool's own contamination check,
     independent of `run.json`. `outside_paths` names every tool-call path argument and every absolute
     path in a Bash command that does not resolve under the episode directory (a `~` or `$HOME`-led token
@@ -485,7 +485,7 @@ actual syscall errno; separate tool-wrapper operations deny outside, linked and
 hardlinked reads while permitting own-tree reads/writes. An owned
 closed loopback port supplies an observed ECONNREFUSED; a timeout or other result
 is unsupported. These facts establish
-synthetic controls, with no Codex invocation or OS sandbox claim.
+synthetic controls, with no agent-CLI invocation or OS sandbox claim.
 
 `run --repo R --install I --cohort C --stage smoke|held-out` accepts only generated
 synthetic fixtures. `C` holds an unchanged protocol-v2 manifest, episodes JSONL and

@@ -31,7 +31,7 @@ version and degrade missing fields to `n/a`; do not treat context fields as cumu
 
 ## Local transcripts
 
-Observed on Claude Code 2.1.293 (desktop app), 2026-10-08. Each session writes
+Observed on version 2.1.293, 2026-10-08. Each session writes
 `~/.claude/projects/<project>/<session>.jsonl`, and each subagent writes
 `<session>/subagents/agent-<id>.jsonl` with a `.meta.json` that names its description and a model
 alias. Each assistant event carries the full model name and a `usage` object with input,

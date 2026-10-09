@@ -44,12 +44,12 @@ Adopt only for a selected active workspace on a disposable copy at a Task bounda
 
 ## v8.2.0 → v8.2.1 checklist
 
-This patch adds optional Codex native usage capture; it does not require a sidecar for task
+This patch adds an optional native usage capture recipe for one host (`codex-native-usage.md`); it does not require a sidecar for task
 closure. Adopt only for a selected active workspace, on a disposable copy at a task boundary.
 
 1. Record the workspace's pinned procedure, current lifecycle rows and any sidecar bytes and
    hashes. Preserve neighboring workspaces and historical records exactly.
-2. For future Codex Desktop or `codex exec --json` roles, run the optional native capture recipe
+2. For future roles on that host (its desktop app or `codex exec --json`), run the optional native capture recipe
    at role start and after an externally observed close. Keep its receipt and exact thread ID
    with the Run ID. Leave unavailable fields `n/a`; do not backfill role tokens from session
    snapshots or assign a terminal clock without an exact Run ID/turn map.

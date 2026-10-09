@@ -576,7 +576,7 @@
       "disposition": "merged",
       "destination": "maintaining/migrations.md",
       "note": null,
-      "destination_unit_sha256": "74024d101434c2b0581167586ee27c33f85cdcc1dc96446c49abd15ad0b54def"
+      "destination_unit_sha256": "854802d817064d74bb2678e3797815de41876e56e016c7fe4bb956a1457ecec8"
     },
     {
       "path": "references/guides/migrate.md",
@@ -603,7 +603,7 @@
       "disposition": "merged",
       "destination": "maintaining/migrations.md",
       "note": null,
-      "destination_unit_sha256": "eafe96a755ace55d06e499ff4b623b2f6c8ed1201e1e9c0807ff170d2e8f60e3"
+      "destination_unit_sha256": "bd9183419a825761217819f8656bb9a5a94dae487d02301b15ce0b5d02bd8985"
     },
     {
       "path": "references/guides/migrate.md",
@@ -7295,6 +7295,24 @@
           "reason": "release version stamp bumped to 9.1.1"
         }
       ]
+    },
+    {
+      "path": "maintaining/migrations.md",
+      "line": 47,
+      "unit_sha256": "74024d101434c2b0581167586ee27c33f85cdcc1dc96446c49abd15ad0b54def",
+      "disposition": "reworded",
+      "destination": "maintaining/migrations.md",
+      "note": "This patch adds an optional native usage capture recipe for one host (`codex-native-usage.md`); it does not require a sidecar for task",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "maintaining/migrations.md",
+      "line": 52,
+      "unit_sha256": "eafe96a755ace55d06e499ff4b623b2f6c8ed1201e1e9c0807ff170d2e8f60e3",
+      "disposition": "reworded",
+      "destination": "maintaining/migrations.md",
+      "note": "For future roles on that host (its desktop app or `codex exec --json`), run the optional native capture recipe",
+      "destination_unit_sha256": null
     }
   ]
 }

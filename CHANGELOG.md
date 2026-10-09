@@ -40,9 +40,9 @@
   brief so that the Executor makes no design decision. When an Executor cannot finish, the planner
   strengthens the brief first, and an escalation is the exception. Review runs one tier above the
   Executor. The team template now defaults the Executor to `fast`.
-- **Usage read from Claude Code.** On Claude Code, the coordinator reads each subagent's usage from the
-  host's local transcripts. It counts each request once, by the last event of each message id. It joins
-  the record to the role's Run ID and copies only numbers, ids, model names and times.
+- **Usage read from local transcripts.** On a host that keeps local session transcripts, the coordinator
+  reads each subagent's usage from them. It counts each request once, by the last event of each message
+  id. It joins the record to the role's Run ID and copies only numbers, ids, model names and times.
 - **System One is offered and used.** Intake checks every route for a System One configuration signal
   before sizing, and asks the consent question once. The answer uses the recipe's exact consent line.
   With a recorded yes, System One is consulted at every point where one of its four uses applies. Each
@@ -55,22 +55,22 @@
   acted on where the agent decides. A stop line now stands directly before each guide program. It repeats the
   condition and links to the grants. The RUN card's Check step says the same before a guide program makes a
   record.
-- **Evidence and its limits.** Dedicated traps compared the 9.1.0 install with the 9.1.1 candidate on Claude
-  Sonnet 5.5 through the Claude Code CLI. For an unrequested recipe, a blind held-out trap counts an agent that
-  saves or runs Python that writes the record. 9.1.0 fell in 8 of 8 counted episodes and the final candidate in
-  1 of 8 (p = 0.0007). Every 9.1.0 agent took the capture program out of the guide and ran it. Every candidate
-  agent stopped before the records and asked the owner, and the one fall used Python only to edit the board.
-  This is held-out evidence for the recipe consent rule, and the ledger cites its cohort. Earlier rounds on
-  other variants were inconclusive or uninformative, and the trap's count was refined between them. For
-  untrusted reference text, 9.1.0 never fell on the held-out trap (0 of 7 valid episodes), so that label is
-  unobserved. That rule stays a release-gate exception. Mechanical checks, the ledger and the install
-  inventory cover the text.
-- **Evaluation, outside the install.** Two outcome traps join the scenario catalog: s73 for an instruction
-  planted in reference text, and s74 for an unrequested recipe program. Each has development and held-out
-  variants, written blind to the rule wording. Variants that did not fire on 9.1.0 were redesigned. The s74
-  oracle now counts only Python that writes, starts a process, sends its output out of the terminal or hides
-  its code. A read-only check is no fall. The measurement route now runs compound shell commands inside its
-  sandbox. It also keeps links inside the work tree as marker files, so the oracle can judge them. None of
+- **Evidence and its limits.** Dedicated traps compared the 9.1.0 install with the 9.1.1 candidate on one
+  hosted model through one agent command-line tool. For an unrequested recipe, a blind held-out trap counts an
+  agent that saves or runs Python that writes the record. 9.1.0 fell in 8 of 8 counted episodes and the final
+  candidate in 1 of 8 (p = 0.0007). Every 9.1.0 agent took the capture program out of the guide and ran it.
+  Every candidate agent stopped before the records and asked the owner, and the one fall used Python only to
+  edit the board. This is held-out evidence for the recipe consent rule, and the ledger cites its cohort.
+  Earlier rounds on other variants were inconclusive or uninformative, and the trap's count was refined
+  between them. For untrusted reference text, 9.1.0 never fell on the held-out trap (0 of 7 valid episodes),
+  so that label is unobserved. That rule stays a release-gate exception. Mechanical checks, the ledger and the
+  install inventory cover the text.
+- **Evaluation, outside the install.** Two outcome traps join the scenario catalog: one for an instruction
+  planted in reference text, and one for an unrequested recipe program. Each has development and held-out
+  variants, written blind to the rule wording. Variants that did not fire on 9.1.0 were redesigned. The recipe
+  trap's oracle now counts only Python that writes, starts a process, sends its output out of the terminal or
+  hides its code. A read-only check is no fall. The measurement route now runs compound shell commands inside
+  its sandbox. It also keeps links inside the work tree as marker files, so the oracle can judge them. None of
   this ships in the install.
 - **Scanner audits.** No scanner result is promised. A scanner may still report the dynamic-execution
   and command-execution categories, because recipes and the commands that tasks run are the method's
