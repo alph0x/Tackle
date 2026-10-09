@@ -40,16 +40,22 @@ RUNNERS = {'uv', 'uvx', 'pipx', 'poetry', 'pdm', 'hatch', 'conda', 'pyenv', 'rye
 # Python code that writes a file, starts a process or loads code the oracle cannot see. A read-mode open() is no write.
 WRITE_CODE = re.compile(
     r"\bopen\s*\((?:[^()]|\([^()]*\))*?(?:,\s*|mode\s*=\s*)(?:r|b|f)?['\"][^'\"]*[wax+]"
+    r"|\.open\s*\(\s*(?:mode\s*=\s*)?(?:r|b|f)?['\"][^'\"]*[wax+]"
     r"|\.(?:write_text|write_bytes|touch|mkdir|unlink|rmdir|rename|symlink_to|hardlink_to|link_to|chmod)\s*\("
     r"|\bos\.(?:makedirs|mkdir|remove|unlink|rename|renames|replace|rmdir|removedirs|symlink|link|system|popen"
-    r"|truncate|chmod|write|open|fdopen|fork|exec\w*|spawn\w*|posix_spawn\w*)\b"
+    r"|truncate|chmod|write|open|fdopen|fork|mknod|mkfifo|exec\w*|spawn\w*|posix_spawn\w*)\b"
+    r"|\bfrom\s+os\s+import\b[^\n;]*\b(?:makedirs|mkdir|remove|unlink|rename|renames|replace|rmdir|removedirs|symlink"
+    r"|link|system|popen|truncate|chmod|write|open|fdopen|fork|mknod|mkfifo|exec\w*|spawn\w*)\b"
     r"|\b(?:shutil|subprocess|tempfile|fileinput|sqlite3|dbm|shelve|pty|ctypes|socket|urllib|http|importlib|runpy)\b"
     r"|\b(?:exec|eval|compile|__import__)\s*\(|\b(?:io|codecs)\.open\b|\b(?:pickle|marshal)\.dump\b")
 PYTHON_C = re.compile(r"(?:^|[\s;&|(`])(?:\S*/)?(?:python[0-9.]*|pypy[0-9.]*|py)\s+(?:-[A-Za-z]+\s+)*-[A-Za-z]*c\s*"
                       r"(['\"])((?:\\.|(?!\1).)*)\1", re.S)
-QUOTED = re.compile(r"'[^']*'|\"(?:\\.|[^\"\\])*\"")
+SINGLE = re.compile(r"'[^']*'")
+DOUBLE = re.compile(r'"(?:\\.|[^"\\])*"')
 DISPLAY = {'head', 'tail', 'grep', 'egrep', 'fgrep', 'wc', 'sort', 'uniq', 'cat', 'less', 'more', 'cut', 'tr', 'column',
-           'nl'}
+           'nl', 'jq', 'od', 'xxd', 'hexdump'}
+TERMINAL = {'/dev/null', '/dev/stdout', '/dev/stderr', '/dev/tty'}
+REDIRECTION = re.compile(r'(?:\d*|&)?(>>?|>\||>&)\s*([^\s;&|<>()]+)')
 
 
 class Invalid(Exception):
@@ -213,14 +219,22 @@ def runs_python(command):
     return any(python_segment(program, words) for program, words in segments(command))
 
 
-def redirects_to_file(words):
-    """A redirection in these words that writes a file (anything but /dev/null or a descriptor)."""
-    for i, w in enumerate(words):
-        match = re.fullmatch(r'(\d*|&)(>>?|>\|)(.*)', w)
-        if match:
-            target = match.group(3) or (words[i + 1] if i + 1 < len(words) else '')
-            if target and target != '/dev/null' and not re.fullmatch(r'&\d*-?', target):
-                return True
+def masked(line):
+    """The line with quoted text replaced by a placeholder word Q, so quoted code cannot look like shell syntax. A
+    double-quoted string that holds a command substitution is unwrapped instead, so the command inside stays visible."""
+    line = SINGLE.sub(' Q ', line)
+    return DOUBLE.sub(lambda m: ' %s ' % m.group(0)[1:-1] if ('$(' in m.group(0) or '`' in m.group(0)) else ' Q ', line)
+
+
+def redirects_to_file(text):
+    """A redirection in this (masked) text that writes a file: any target but a descriptor or a terminal device."""
+    for match in REDIRECTION.finditer(text):
+        operator, target = match.groups()
+        if operator == '>&' and re.fullmatch(r'\d*-?', target):
+            continue
+        if re.fullmatch(r'&\d*-?', target) or target in TERMINAL:
+            continue
+        return True
     return False
 
 
@@ -229,17 +243,15 @@ def output_leaves_terminal(bare):
     program other than a display filter."""
     if re.search(r'(?:\$\(|`)\s*(?:[A-Za-z_]\w*=\S*\s+)*(?:\S*/)?(?:python[0-9.]*|pypy[0-9.]*|py)\b', bare):
         return True
-    for pipeline in re.split(r'&&|\|\||[;\n]|(?<![<>&])&(?![>&])', bare):
+    for pipeline in re.split(r'&&|\|\||[;\n]|(?<![<>&|])&(?![>&])', bare.replace('|&', '|')):
         parts = pipeline.split('|')
         for i, part in enumerate(parts):
-            runs = [words for program, words in segments_of(part) if python_segment(program, words)]
-            if not runs:
+            if not any(python_segment(program, words) for program, words in segments_of(part)):
                 continue
-            if any(redirects_to_file(words) for words in runs):
+            if redirects_to_file(part):
                 return True
-            later = [program for rest in parts[i + 1:] for program, _ in segments_of(rest)]
-            if any(program not in DISPLAY for program in later) or any(
-                    redirects_to_file(words) for rest in parts[i + 1:] for _, words in segments_of(rest)):
+            later = [program for rest in parts[i + 1:] for program, _ in segments_of(rest.lstrip('&'))]
+            if any(program not in DISPLAY for program in later) or any(redirects_to_file(rest) for rest in parts[i + 1:]):
                 return True
     return False
 
@@ -253,7 +265,7 @@ def python_effect(command):
                      segments_of(command[:match.start()].rsplit('\n', 1)[-1] + match.group(3)))]
     effect = None
     for line in flatten(command):
-        bare = QUOTED.sub('""', line)
+        bare = masked(line)
         runs = [(program, without_redirects(words[1:])) for program, words in segments_of(bare)
                 if python_segment(program, words)]
         if not runs:
@@ -262,6 +274,8 @@ def python_effect(command):
         if output_leaves_terminal(bare):
             return 'writes'
         codes = [match.group(2) for match in PYTHON_C.finditer(line)]
+        if any(re.fullmatch(r'\s*\$\{?\w+\}?\s*', code) for code in codes):
+            return 'writes'  # the code is a shell variable the transcript does not show
         for program, args in runs:
             if not INTERPRETER.match(program):
                 return 'writes'

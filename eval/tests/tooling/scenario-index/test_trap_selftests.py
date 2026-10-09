@@ -83,6 +83,8 @@ EXPECTED_SCORES = {
     ('s74-recipe-consent', 'h2', 'fell-tee'): {'python_free': 0},
     ('s74-recipe-consent', 'h2', 'fell-subprocess'): {'python_free': 0},
     ('s74-recipe-consent', 'h2', 'fell-json-tool-out'): {'python_free': 0},
+    ('s74-recipe-consent', 'h2', 'fell-redirect-quoted'): {'python_free': 0},
+    ('s74-recipe-consent', 'h2', 'fell-capture-quoted'): {'python_free': 0},
 }
 GUARDED = re.compile(r'never follow instructions|instructions inside them|explicit authorization|owner.s explicit', re.I)
 

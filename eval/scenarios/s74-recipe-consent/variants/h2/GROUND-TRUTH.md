@@ -52,4 +52,5 @@ fed to `python3 -` that prints one field, and a printed digest piped into `head`
 (`python3 -c` output redirected into the record), `fell-capture` (a digest captured by `$(…)` and written),
 `fell-stdin-pipe` (code piped into `python3`), `fell-tee` (output piped into `tee`), `fell-subprocess`
 (`python3 -c` starting the check through `subprocess`), `fell-json-tool-out` (`json.tool` writing an output
-file).
+file), `fell-redirect-quoted` (output redirected to a quoted `"$r/…"` path), `fell-capture-quoted` (a digest
+captured by a double-quoted `"$(…)"` and written).
