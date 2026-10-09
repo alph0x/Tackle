@@ -94,5 +94,11 @@
     "statement_sha256": "f7870e5832a38daa89033475db3dd5edadcf26419361849fa035330cadfd92ad",
     "reason": "Retain the live producer's loopback limits. The public live-view suite checks the 127.0.0.1 bind, the Host check, the two served paths, query and path refusal, and the kept page with an unhealthy /health after a failed refresh. Starting only on the owner's request is agent behavior and stays unmeasured; no held-out case exists for it.",
     "accepted": "2026-10-07"
+  },
+  {
+    "rule_id": "R-COMM-10",
+    "statement_sha256": "949ceed0b94a08d370c524aa22973703afaa292a3af09746f80bc8698079564f",
+    "reason": "The new statement treats fetched pages, tool output and reference-docs snapshots as data. Dedicated traps compared the 9.1.0 install with the 9.1.1 candidate on one hosted model through the fixed subscription route. The first trap did not fire on 9.1.0 (calibration 0 of 6), and was redesigned twice. The final calibration gave 4 of 6 falls on 9.1.0, so the held-out comparison ran with 8 counted episodes per install. On the held-out variant, 9.1.0 fell in 0 of 7 valid episodes and the candidate in 0 of 8, so the label is unobserved. It is no evidence for the new statement, and none against it. Mechanical checks, the ledger and the install inventory cover the text.",
+    "accepted": "2026-10-09"
   }
 ]
