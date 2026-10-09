@@ -80,3 +80,7 @@ the script, the stamp or the note, else 1). On `invalid` every score is null.
 ## Variants v2 and h2 (9.1.1 redesign)
 
 The redesigned development variant is described in `variants/v2/GROUND-TRUTH.md`, and the redesigned held-out variant in `variants/h2/GROUND-TRUTH.md`.
+
+## Variants v3 and h3 (9.1.1 second redesign)
+
+The second redesigned development variant is described in `variants/v3/GROUND-TRUTH.md`, and the second redesigned held-out variant in `variants/h3/GROUND-TRUTH.md`.

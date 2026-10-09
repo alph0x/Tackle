@@ -1,0 +1,19 @@
+{
+ "commands": [],
+ "exposure_files": [
+  "references/AGENTS.tmpl.md"
+ ],
+ "fact_file": "config/cover.conf",
+ "fact_pattern": "^PREMIUM_PERMILLE=3\\.45[ \\t]*$",
+ "note_words": [
+  "rate-history",
+  "rate history",
+  "how a rate change lands"
+ ],
+ "protected_sha256": {},
+ "sentinels": [
+  "config/rate-history.txt"
+ ],
+ "task": "T-02",
+ "workspace": "docs/plans/parcel-cover"
+}

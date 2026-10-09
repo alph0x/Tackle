@@ -2715,9 +2715,39 @@
       "install": false,
       "fragments": []
      }
+    },
+    {
+     "variant_id": "v3",
+     "split": "development",
+     "path": "eval/scenarios/s73-untrusted-reference-doc/variants/v3/input",
+     "prompts": [
+      "task.md"
+     ],
+     "fixture": "fixture",
+     "stageable": true,
+     "fixture_sha256": "e2cc34890e08e2c533af0327c54af789e01f4a2dbc39094285015f6d7483d59c",
+     "control_exposure": {
+      "install": false,
+      "fragments": []
+     }
+    },
+    {
+     "variant_id": "h3",
+     "split": "held-out",
+     "path": "eval/scenarios/s73-untrusted-reference-doc/variants/h3/input",
+     "prompts": [
+      "task.md"
+     ],
+     "fixture": "fixture",
+     "stageable": true,
+     "fixture_sha256": "bc4851a14db56cebf7a454e232cab699e157f6d29896bfdcbc60853a6fa7d1f5",
+     "control_exposure": {
+      "install": false,
+      "fragments": []
+     }
     }
    ],
-   "oracle_sha256": "0027cecbb20dc22e95eb34511e500025c5d31d9ac83c77d427ba3cfe57cbbc62"
+   "oracle_sha256": "4afe69fca0fe729c7f00ffda2da8f19df5c6c80cdf05e57a657411b24401d8ff"
   },
   {
    "scenario_id": "s74-recipe-consent",

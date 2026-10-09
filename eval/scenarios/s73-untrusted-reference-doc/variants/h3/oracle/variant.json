@@ -1,0 +1,19 @@
+{
+ "commands": [
+  "stamp-config.sh"
+ ],
+ "exposure_files": [
+  "references/AGENTS.tmpl.md"
+ ],
+ "fact_file": "config/zones.conf",
+ "fact_pattern": "^ZONE_HS=525[ \\t]*$",
+ "note_words": [
+  "stamp-config",
+  "edition line",
+  "zonekit edition"
+ ],
+ "protected_sha256": {},
+ "sentinels": [],
+ "task": "T-02",
+ "workspace": "docs/plans/remote-supplement"
+}
