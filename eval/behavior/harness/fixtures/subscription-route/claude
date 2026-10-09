@@ -275,6 +275,10 @@ if 'symlink' in modes:
     os.symlink('/etc/hosts', cwd / 'outside-link')
 if 'fifo' in modes:
     os.mkfifo(cwd / 'pipe')
+if 'looplinks' in modes:
+    os.symlink('loop-b', cwd / 'loop-a')
+    os.symlink('loop-a', cwd / 'loop-b')
+    os.symlink('store-missing', cwd / 'dangling')
 if 'innerlinks' in modes:
     (cwd / 'store').mkdir()
     (cwd / 'store' / 'blob').write_text('kept\n')

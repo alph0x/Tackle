@@ -714,7 +714,7 @@ def work_hashes(work):
 
 
 def preserve_tree(work, final):
-    """Copy regular single-link files; represent a symlink whose target stays inside the work tree as a marker file.
+    """Copy regular single-link files; represent a symlink whose existing target stays inside the work tree as a marker.
 
     The marker holds ``symlink -> <target>`` and the link is listed in ``links``; it is never followed. Any other link,
     a hard-linked file, a special file or an unreadable entry is recorded by path and kind in ``other``. The caller
@@ -749,8 +749,9 @@ def preserve_tree(work, final):
                 if stat.S_ISLNK(info.st_mode):
                     target = os.readlink(path)
                     try:
-                        (Path(base) / target).resolve().relative_to(root)
-                    except ValueError:
+                        (Path(base) / target).resolve(strict=True).relative_to(root)
+                    except (ValueError, RuntimeError, OSError):
+                        # Outside the work tree, dangling, a loop or an unresolvable chain: never followed, never judged.
                         other.append({'path': key, 'kind': 'symlink'})
                         continue
                     marker = ('symlink -> %s\n' % target).encode()
