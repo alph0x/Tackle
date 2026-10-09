@@ -1345,6 +1345,13 @@ class Outcomes(Base):
         self.assertFalse((final / 'blob-link').is_symlink())
         self.assertEqual((final / 'store' / 'blob').read_text(), 'kept\n')
 
+    def test_a_link_loop_or_a_dangling_link_is_refused_and_never_crashes_the_run(self):
+        _, episode = self.only(self.env.one('looplinks'), 'invalid', 'final tree not preserved', exit_code=0)
+        self.assertEqual(episode['final_tree']['other'], [{'path': 'dangling', 'kind': 'symlink'},
+                                                          {'path': 'loop-a', 'kind': 'symlink'},
+                                                          {'path': 'loop-b', 'kind': 'symlink'}])
+        self.assertEqual(episode['final_tree']['links'], [])
+
     def test_a_clean_root_with_a_read_only_directory_is_retired_and_does_not_wedge_later_runs(self):
         real = self.env.cli_dir / 'claude-real'
         shutil.copy(self.env.stub, real)
