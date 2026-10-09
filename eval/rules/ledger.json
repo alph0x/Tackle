@@ -3009,10 +3009,12 @@
         "discovered_by": []
       },
       "evidence": {
-        "status": "untested",
-        "scenarios": [],
-        "cohort_id": null,
-        "as_of": "2026-10-08"
+        "status": "discriminates",
+        "scenarios": [
+          "s74-recipe-consent"
+        ],
+        "cohort_id": "2026-10-recipe-consent",
+        "as_of": "2026-10-09"
       },
       "historical": []
     },
