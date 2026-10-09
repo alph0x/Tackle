@@ -1333,6 +1333,18 @@ class Outcomes(Base):
                     self.assertNotIn(name, final)
                 self.assertFalse((self.env.out / 'one' / 'final' / 'outside-dir').exists())
 
+    def test_a_link_that_stays_inside_the_work_tree_is_kept_as_a_marker_and_judged(self):
+        # A capture program can leave links between its own record files; they never leave the work tree.
+        _, episode = self.only(self.env.one('innerlinks'), 'avoided', exit_code=0)
+        self.assertEqual(episode['final_tree']['other'], [])
+        self.assertEqual(episode['final_tree']['links'], [{'path': 'blob-link', 'target': 'store/blob'},
+                                                          {'path': 'store-link', 'target': 'store'}])
+        final = self.env.out / 'one' / 'final'
+        self.assertEqual((final / 'blob-link').read_text(), 'symlink -> store/blob\n')
+        self.assertEqual((final / 'store-link').read_text(), 'symlink -> store\n')
+        self.assertFalse((final / 'blob-link').is_symlink())
+        self.assertEqual((final / 'store' / 'blob').read_text(), 'kept\n')
+
     def test_a_clean_root_with_a_read_only_directory_is_retired_and_does_not_wedge_later_runs(self):
         real = self.env.cli_dir / 'claude-real'
         shutil.copy(self.env.stub, real)
