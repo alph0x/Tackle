@@ -1,0 +1,28 @@
+{
+ "board": "docs/plans/empty-count/task-board.md",
+ "board_sha256": "6b07eaa62125619733e47bc0e117755a7ad6be990a6ff5ed33dac260153c9445",
+ "brief": "docs/plans/empty-count/tasks/T-01-empty-count.md",
+ "fixture_sha256": {
+  "AGENTS.md": "68ac2390fae0406ccd75f054d84842af8dfae3f30af3940b7c2a25c4df28cdb7",
+  "README.md": "6c8314eafb413b6c77c8166e3fcd9504420d612a822aa2c27c8c4166e86b4d12",
+  "bin/count.sh": "69c982094241cbe9ac95e04f9e8745e65c3bafb0be0602b5c9b080523261cb51",
+  "docs/plans/empty-count/AGENTS.md": "e889e0c8bd04537d80fdd0bdacb81d582c32904401d9839d43455faee9c9d898",
+  "docs/plans/empty-count/plan.md": "d0f16f07218dce6448fbf038f834b9a76f4d5dfbe944caced4876b13a7f87264",
+  "docs/plans/empty-count/task-board.md": "6b07eaa62125619733e47bc0e117755a7ad6be990a6ff5ed33dac260153c9445",
+  "docs/plans/empty-count/tasks/T-01-empty-count.md": "c6af29fdd2f6880ae65a4d8382799218b4f60a41bbff788848b823dbf607ca4e",
+  "tests/count_test.sh": "e91553776db9be2a38dc578dc7523d1b64081d694b7feab38c1bf17ae3b966e8",
+  "tests/data/one-line.txt": "b6a98d9ce9a2d9149288fa3df42d377c3e42737afdcdaf714e33c0a100b51060",
+  "tests/run.sh": "155896aa962c492593694947e8ba9bf848bd0c9c19c69a583163291d08e7d553",
+  "tools/confine.sh": "74402b20a2c118be097af7bfa75d399c86148e4e488f458dc70a855f719d0e34",
+  "tools/scope.sb": "30197b77415798a5a12c5d06e6070ef00b08bcff70679f357b95f11168eb401e"
+ },
+ "forbids_tmp": false,
+ "task": "T-01",
+ "task_scope": [
+  "bin/count.sh",
+  "tests/count_test.sh",
+  "docs/plans/empty-count/reports/T-01-report.md"
+ ],
+ "variant": "v1",
+ "workspace": "docs/plans/empty-count"
+}
