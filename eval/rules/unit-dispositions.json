@@ -7313,6 +7313,24 @@
       "destination": "maintaining/migrations.md",
       "note": "For future roles on that host (its desktop app or `codex exec --json`), run the optional native capture recipe",
       "destination_unit_sha256": null
+    },
+    {
+          "path": "references/guides/full-checks.md",
+          "line": 16,
+          "unit_sha256": "b5dfe1ca28540649698c525ceb4644e19121aeafd99cb879501f703140e3f9a9",
+          "disposition": "reworded",
+          "destination": "references/guides/full-checks.md",
+          "note": "Before the first task-scope write, use disposable sentinels to prove an allowed write succeeds and outside/protected writes are denied.",
+          "destination_unit_sha256": null
+    },
+    {
+          "path": "references/guides/full-checks.md",
+          "line": 18,
+          "unit_sha256": "943daec2c27e6a9b07b745c8173e190aabfaa74e917659b9b1f24bbf52bc5093",
+          "disposition": "reworded",
+          "destination": "references/guides/full-checks.md",
+          "note": "If effective confinement is a required capability and a channel stays uncovered, block only the affected scope and name the missing channel, operation or observation; do not claim that every alternative is impossible, do not disable confinement, and do not claim that an instruction or audit enforces it.",
+          "destination_unit_sha256": null
     }
   ]
 }

@@ -13,11 +13,25 @@ Record allowed writes, protected fixtures and the actual harness policy. Configu
 filesystem restrictions for shell children as well as patch tools; a container protects its host,
 not necessarily the task's Write scope inside the container. Put script revisions, evidence and
 TMPDIR under authorized paths. TMPDIR routes cooperative tools; it does not prohibit an explicit
-`/tmp/name`, a sibling path or a symlink escape. Before the first PLAN write or check, use disposable sentinels to
-prove an allowed write succeeds and outside/protected writes are denied. Never probe by changing
-a real protected file. Preserve the observed policy and results. If effective confinement is a
-required capability and is unavailable, block that scope; do not disable it or claim that an
-instruction/audit enforces it. Post-run hashes remain necessary for protected expectations.
+`/tmp/name`, a sibling path or a symlink escape.
+Name the selected executor and every write channel it has: shell children, the host's own edit or
+patch tool, and any tool that writes its own files. Mark each channel confined (observed with
+disposable sentinels through the mechanism the task will use), unavailable to that executor (shown
+by its configuration, not by intent) or uncovered (not observed, or observed only in part). An
+unavailable channel needs no probe. A promise not to use an available channel enforces nothing.
+Setup writes that prepare confinement, such as a profile, a probe script or its evidence, are
+coordinator writes inside authorized workspace paths and are recorded as setup. Before the first
+task-scope write, use disposable sentinels to prove an allowed write succeeds and outside/protected
+writes are denied. Never probe by changing a real protected file. Preserve the observed policy and
+results. A launcher that fails to start is a launch failure with a known or unknown cause, not proof
+that confinement is unavailable; while a host mechanism remains unevaluated, run one bounded
+diagnostic of it within existing authorization before asking for any exception. When every channel
+is confined or unavailable, record the evidence and proceed without an exception. If effective
+confinement is a required capability and a channel stays uncovered, block only the affected scope
+and name the missing channel, operation or observation; do not claim that every alternative is
+impossible, do not disable confinement, and do not claim that an instruction or audit enforces it. A
+later successful probe never covers earlier writes; declare the gap. Post-run hashes remain
+necessary for protected expectations.
 
 ## Prepare once, then capture
 

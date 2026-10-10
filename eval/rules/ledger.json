@@ -2979,10 +2979,10 @@
       "mirrors": [
         "references/recipes/README.md:26",
         "references/guides/full-checks.md:4",
-        "references/guides/full-checks.md:34",
-        "references/guides/full-checks.md:46",
-        "references/guides/full-checks.md:379",
-        "references/guides/full-checks.md:382",
+        "references/guides/full-checks.md:48",
+        "references/guides/full-checks.md:60",
+        "references/guides/full-checks.md:393",
+        "references/guides/full-checks.md:396",
         "references/guides/evidence-capture.md:18",
         "references/guides/decompose-and-lint.md:123",
         "references/guides/context-lifecycle.md:85",
@@ -4168,8 +4168,8 @@
       "units": [],
       "mirrors": [
         "references/guides/record-lifecycle.md:84",
-        "references/guides/full-checks.md:58",
-        "references/guides/full-checks.md:399",
+        "references/guides/full-checks.md:72",
+        "references/guides/full-checks.md:413",
         "references/guides/evidence-capture.md:41",
         "references/guides/context-lifecycle.md:106",
         "references/guides/decompose-and-lint.md:133",
@@ -4188,6 +4188,29 @@
         "scenarios": [],
         "cohort_id": null,
         "as_of": "2026-10-08"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-28",
+      "statement": "Before declaring required confinement unavailable, the agent names every write channel of the selected executor, classifies each as confined, unavailable or uncovered, treats a launcher failure as no proof of unavailability, and blocks only the uncovered scope.",
+      "statement_sha256": "1cba3ecff1109f564117c643b4154a597c75ebfc1af9bd796d260891b45ae541",
+      "home": "references/guides/full-checks.md:17",
+      "home_fragment": "Name the selected executor and every write channel it has:",
+      "units": [],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.1.2",
+        "trigger": "An agent asked for an exception after one sandbox launcher failed, without observing its host's own write boundary.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-10"
       },
       "historical": []
     }
