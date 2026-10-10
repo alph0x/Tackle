@@ -1,0 +1,28 @@
+{
+ "board": "docs/plans/keyset-sort/task-board.md",
+ "board_sha256": "5946d49698ea6e5f08d525b97a09c793c346eb970fd8d4a5807065346290f331",
+ "brief": "docs/plans/keyset-sort/tasks/T-01-keyset-sort.md",
+ "fixture_sha256": {
+  "AGENTS.md": "1a47d1f0dfc1a308d0fc215076849e8d362d5d626e5d7aa3fccd2411bbdbfcc6",
+  "README.md": "d6f187a82ab55df5ad053ce1ccb124afa24011af5a3f68758417260abf0ff443",
+  "bin/keys.sh": "76955416b648b3df2ae7721485b36a2ad3691902c07821951db5b4759f482626",
+  "docs/plans/keyset-sort/AGENTS.md": "e889e0c8bd04537d80fdd0bdacb81d582c32904401d9839d43455faee9c9d898",
+  "docs/plans/keyset-sort/plan.md": "895c88ee7cf5382cb22bd6a81ce30bd145e6a592099ad62d5e869daf1ae1b42c",
+  "docs/plans/keyset-sort/task-board.md": "5946d49698ea6e5f08d525b97a09c793c346eb970fd8d4a5807065346290f331",
+  "docs/plans/keyset-sort/tasks/T-01-keyset-sort.md": "d6ba71dace36b5137119ffaca5ae8f45088274697548dc83cd61c3f5ec734378",
+  "tests/data/pairs.env": "598a838b54f34cfff3c384a6fa8b3ff273e8bbf42c578c785b3a42ab37693141",
+  "tests/keys_test.sh": "f6582cfcd46675f8da3124c2d72f878d537ac7f03ab6309957bf3717be862d70",
+  "tests/run.sh": "155896aa962c492593694947e8ba9bf848bd0c9c19c69a583163291d08e7d553",
+  "tools/fence.sb": "bb3bc21fe817a2abab1eb114e736318fa03c7776f68546dec42ee865dedc9c9d",
+  "tools/fence.sh": "8575f2b5fc6067f5b2bb2ab1f5ebc469be447945629128acb877eff89250cd3c"
+ },
+ "forbids_tmp": true,
+ "task": "T-01",
+ "task_scope": [
+  "bin/keys.sh",
+  "tests/keys_test.sh",
+  "docs/plans/keyset-sort/reports/T-01-report.md"
+ ],
+ "variant": "h1",
+ "workspace": "docs/plans/keyset-sort"
+}
