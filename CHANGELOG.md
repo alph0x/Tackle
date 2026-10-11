@@ -1,5 +1,10 @@
 # Tackle changelog
 
+## Tackle 9.1.2
+
+- **Evaluate every write channel.** Before declaring required confinement unavailable, identify the selected executor and every way it can write. Classify each channel as confined, unavailable or uncovered, with supporting evidence. A failed launcher proves a launch failure; examine the host boundary and temporary paths separately. Available channels remain uncovered when avoidance depends on a promise. Block only the affected scope and name the missing operation or observation.
+- **Evidence limit.** The initial comparison was inconclusive: both versions fell in five of seven held-out cases. Protocol and capture limitations make that result unsuitable as safety-effect evidence, and the prospective replacement instrument was not accepted. The added rule remains untested and carries an explicit exception pinned to its exact statement. Engineering checks and independent review cover implementation and accounting; they do not establish fewer violations, exhaustive capture, a confinement guarantee or behavioral superiority. Behavioral validation remains deferred research.
+
 ## Tackle 9.1.1
 
 - **Outside content is data.** Core convention 1 now says that fetched pages, tool output and

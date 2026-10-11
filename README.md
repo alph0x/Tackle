@@ -20,7 +20,7 @@ Tackle turns a goal into a plan stored in your repository. Each task carries the
 
 Use it for features, refactors, and investigations that span sessions or involve handoffs between agents or people.
 
-**Tackle 9.1.1** · Model-agnostic · Markdown-only install · MIT
+**Tackle 9.1.2** · Model-agnostic · Markdown-only install · MIT
 
 ## Why Tackle
 
@@ -85,10 +85,10 @@ For 9.0.1, the update checks used skills@1.7.0 in controlled synthetic Git fixtu
 
 In two fresh synthetic global fixtures, default symlink mode for two agents (`--skill tackle -a <agent> <agent> -y -g`) replaced the canonical `.agents/skills/tackle` directory with the exact artifact and linked the first agent to it. An agent that resolves the canonical `.agents/skills` directory gets no separate link. Seeded floating and pinned ordinary updates exited successfully while retaining the old root-layout path and bytes; the pinned lock still named v9.0.0. These results do not establish automatic migration of older installs.
 
-After publication, sandboxed probes of 9.0.1 installed the exact 55-file artifact through both public routes: the `#v9.0.1` tag and the default no-ref source. For 9.1.1 the same flags apply to the tag once it exists:
+After publication, sandboxed probes of 9.0.1 installed the exact 55-file artifact through both public routes: the `#v9.0.1` tag and the default no-ref source. For 9.1.2 the same flags apply to the tag once it exists:
 
 ```sh
-npx --yes skills@1.7.0 add 'https://github.com/alph0x/Tackle.git#v9.1.1' --skill tackle -a claude-code codex -y -g
+npx --yes skills@1.7.0 add 'https://github.com/alph0x/Tackle.git#v9.1.2' --skill tackle -a claude-code codex -y -g
 ```
 
 The 9.1.1 routes are probed only after publication, and the GitHub API fast path has not been tested. The controlled source used `.invalid#packaging-preparation-02`, rewritten to a local clone, with synthetic old-lock seeds. An earlier parser-invalid root probe selected a same-name two-file fixture; the 1,476-file figure describes repository/package blast radius or conditional root-copy risk, not observed historical installed content. Restart your session after an update if your agent cannot reload skills.
