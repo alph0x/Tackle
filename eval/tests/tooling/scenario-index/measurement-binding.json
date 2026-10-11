@@ -1,0 +1,67 @@
+{
+  "schema": "tackle-measurement-binding/1",
+  "scenario_id": "s75-write-boundary",
+  "receipt_sha256": "9b4ebc6137da753ba91a87e9205fbf2bc73b3e51ed2f23a3a696f2386989b67e",
+  "validator_sha256": "2ebc2197fc165502e1bd1c5c22dbc174445ab21ec7202754365f81a728ae9998",
+  "baseline_commit": "9dc8ea5094b68c127ed18da017668a81964da294",
+  "variants": {
+    "v3": {
+      "split": "development",
+      "initial_test_exit": 1,
+      "fixture_sha256": "e0e01a4f66b0e3a33f654e1c6aae683c435a882f6de6e28062c41d6d94d31660",
+      "scenario_projection": {
+        "path": "eval/scenarios/s75-write-boundary/variants/v3/input",
+        "fixture_sha256": "fc54b3ee856bb4faefe6a2e27f83ca55d0e693c693e19a35516fdb9509346cbe",
+        "input_file_hashes": [
+          "3d9c6c36cf568d81b3671d7ea5fb04d124a31db03891e5bf88664c0f76269667",
+          "42a7f7d8497f15e272b17a5254c801fc88e0b69d81adbeeb41a9afc0480459a6",
+          "240f13aa55da1aee6997eefd865260ba3e342c2c3aba8a995c619d8196af1779",
+          "07d342b6f3973db8a07a4a8e1f7ba9f363d3aa1491c01f4c47046d278f7056ed",
+          "00ed4f4ef5ce51f4f51a050a8ac9f13433f3b0000b5e9c605fc355773ef2c790",
+          "f446d277d99715783c9ae670014836235a502e54478ae0cdf26345b4a73d49be",
+          "4dfb557d04ce3e8aa741bf92915bcbc3913eb4bf3e17df91c78936dfd4553fe9",
+          "6ada69abe538238059cd0b97f14ea5a1491ef8edb90adccbc753f873c13b7246",
+          "17ad32a400813107b2e2f0d3b663917c4e67f566a1f2bbd7e6e503e21daa5b33",
+          "4bf66d17062629c7d6b1bffdff8a22b0cbd5155af6c299959a0aed3a51f7e18c",
+          "b98ea943a9f6f52a06cbaf3fdd746538c27fc8a76ecf7add104d5d311f39736b",
+          "46976a3ba65fdb0f9414ee9ea1ee90dbb31fb54424ea245bf2e9606c7f94da8f"
+        ]
+      }
+    },
+    "h3": {
+      "split": "held-out",
+      "initial_test_exit": 1,
+      "fixture_sha256": "df34cf251a1d4a02c22848969f726e188d2c5cc9904a8402ba2733b6d3d694b9",
+      "scenario_projection": {
+        "path": "eval/scenarios/s75-write-boundary/variants/h3/input",
+        "fixture_sha256": "2d801b7ffc13719f1da6651f5f40146cd39c59ce6bd695aff9baee0c8662af1b",
+        "input_file_hashes": [
+          "3d9c6c36cf568d81b3671d7ea5fb04d124a31db03891e5bf88664c0f76269667",
+          "0535e24e2a359d8bbe13d585b64ed602b8569e9b3f15378397a1979dd4f4d582",
+          "41f8afed0238e44ec803faa3457536898deccb74c2f4611bc6c2dc10cdd6d1f9",
+          "2a46e2620d8a4c1b7a1d8e2477edc9116c260a816f9f6c4efd1eb6dd658f81b3",
+          "22c284ee67567e590f0d0a10600e777653de2dce9031d2649991101c176151ba",
+          "d46068830cef4c25cabc978c71521d6538145a0382b780367018886c42a0eeff",
+          "25de733ed4005af9433034280a525d25feba9e1d4a51dfeef322dbf6dfb26908",
+          "49ff42fe737b819ef6cc786bfe2759870a89c2fb3a8067f25745d9942e0a6e59",
+          "4632df31fc37f4cbeb66296d8c068543186893e64ec294ecb2376ee6e613fee5",
+          "fb25c739689589c4c88f8c30d65e0d68a24ddd4c5448ea664066a1b64e34ba85",
+          "748a7075485425c22e039db8ea60271548616277b45db6855a46a472d9df4c3a",
+          "1d62e80cb6f97aecaa0d7b91c6bd764f9b1900785532cb041d409d98a91cae59"
+        ]
+      }
+    }
+  },
+  "guide_pins": {
+    "baseline": {
+      "commit": "9dc8ea5094b68c127ed18da017668a81964da294",
+      "full_checks_sha256": "2678495449860159677db43c92a55805062667dfb84ea8fbce042370b9e2149f",
+      "task_write_scope_phrase": "Before the first PLAN write or check"
+    },
+    "candidate": {
+      "commit": "d325ae08be2fb860ed77cf9e450feaa7891105bd",
+      "full_checks_sha256": "cb654b3b10e70cfa27b96826baaeee864c722751a437970633ee067330b5120e",
+      "task_write_scope_phrase": "Before the first task-scope write"
+    }
+  }
+}

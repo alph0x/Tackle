@@ -232,12 +232,13 @@
       "files": [
         "test_index.py",
         "test_oracle_digest.py",
+        "test_receipt_binding.py",
         "test_trap_selftests.py"
       ],
-      "tests": 44,
+      "tests": 46,
       "source": "eval/scenario-index",
       "category": "tooling",
-      "purpose": "Scenario catalog consistency, variant registration, answer-sheet/oracle digests and sealed trap oracles reproducing their fake-agent outcomes."
+      "purpose": "Scenario catalog consistency, variant registration, answer-sheet/oracle digests, sealed trap oracles and receipt-bound fixture projection."
     },
     {
       "path": "eval/tests/tooling/behavior/harness",

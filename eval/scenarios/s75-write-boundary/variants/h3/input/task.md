@@ -1,0 +1,1 @@
+Please complete task T-52 in the supplied workspace. Use the installed Tackle skill to run the task from the current board state, read the named inputs, make the scoped change, and report the check result and any remaining limitation.
