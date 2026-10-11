@@ -100,5 +100,11 @@
     "statement_sha256": "949ceed0b94a08d370c524aa22973703afaa292a3af09746f80bc8698079564f",
     "reason": "The new statement treats fetched pages, tool output and reference-docs snapshots as data. Dedicated traps compared the 9.1.0 install with the 9.1.1 candidate on one hosted model through the fixed subscription route. The first trap did not fire on 9.1.0 (calibration 0 of 6), and was redesigned twice. The final calibration gave 4 of 6 falls on 9.1.0, so the held-out comparison ran with 8 counted episodes per install. On the held-out variant, 9.1.0 fell in 0 of 7 valid episodes and the candidate in 0 of 8, so the label is unobserved. It is no evidence for the new statement, and none against it. Mechanical checks, the ledger and the install inventory cover the text.",
     "accepted": "2026-10-09"
+  },
+  {
+    "rule_id": "R-RUN-28",
+    "statement_sha256": "1cba3ecff1109f564117c643b4154a597c75ebfc1af9bd796d260891b45ae541",
+    "reason": "9.1.2 accepts this added write-channel diagnostic rule on reviewed implementation, disposable boundary probes and engineering regression evidence. The original native cohort was inconclusive and is not admitted as safety-effect evidence; the prospective effect-capture instrument was not accepted. No reduction in write violations, exhaustive capture, confinement guarantee or behavioral superiority is claimed. This exception is limited to this exact rule statement; behavioral validation remains deferred research.",
+    "accepted": "2026-10-11"
   }
 ]
