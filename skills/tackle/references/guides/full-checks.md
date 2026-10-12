@@ -22,10 +22,10 @@ unavailable channel needs no probe. A promise not to use an available channel en
 Setup writes that prepare confinement, such as a profile, a probe script or its evidence, are
 coordinator writes inside authorized workspace paths and are recorded as setup. Before the first
 task-scope write, use disposable sentinels to prove an allowed write succeeds and outside/protected
-writes are denied. Never probe by changing a real protected file. Preserve the observed policy and
-results. A launcher that fails to start is a launch failure with a known or unknown cause, not proof
-that confinement is unavailable; while a host mechanism remains unevaluated, run one bounded
-diagnostic of it within existing authorization before asking for any exception. When every channel
+writes are denied. Never probe by writing, replacing or deleting a real file. Preserve the observed
+policy and results. A launcher that fails to start is a launch failure, not proof that confinement is
+unavailable. The executor's own sandbox (e.g. Codex workspace-write) is a host mechanism: probe it
+once within existing authorization before requesting an exception or requirement change. When every channel
 is confined or unavailable, record the evidence and proceed without an exception. If effective
 confinement is a required capability and a channel stays uncovered, block only the affected scope
 and name the missing channel, operation or observation; do not claim that every alternative is

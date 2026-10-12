@@ -4193,8 +4193,8 @@
     },
     {
       "rule_id": "R-RUN-28",
-      "statement": "Before declaring required confinement unavailable, the agent names every write channel of the selected executor, classifies each as confined, unavailable or uncovered, treats a launcher failure as no proof of unavailability, and blocks only the uncovered scope.",
-      "statement_sha256": "1cba3ecff1109f564117c643b4154a597c75ebfc1af9bd796d260891b45ae541",
+      "statement": "Before declaring required confinement unavailable or requesting an exception, the agent names every write channel of the selected executor, classifies each as confined, unavailable or uncovered, treats a launcher failure as no proof of unavailability, probes the executor's own sandbox with sentinels that never write, replace or delete a real file, and blocks only the uncovered scope.",
+      "statement_sha256": "8708b3d3091ea8ea790f466e0cd822fe0c863c49822d85d535f8fc6d1bf56df2",
       "home": "references/guides/full-checks.md:17",
       "home_fragment": "Name the selected executor and every write channel it has:",
       "units": [],

@@ -7376,6 +7376,15 @@
           "reason": "release version stamp bumped to9.1.2"
         }
       ]
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 17,
+      "unit_sha256": "8143cca198d0e972c52432ce345a095c5bf7bad3a23ac53f0b92ed6102ecb8d7",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Never probe by writing, replacing or deleting a real file.",
+      "destination_unit_sha256": null
     }
   ]
 }
