@@ -102,12 +102,6 @@
     "accepted": "2026-10-09"
   },
   {
-    "rule_id": "R-RUN-28",
-    "statement_sha256": "8708b3d3091ea8ea790f466e0cd822fe0c863c49822d85d535f8fc6d1bf56df2",
-    "reason": "9.1.2 accepts this write-channel diagnostic rule on reviewed implementation, disposable boundary probes and engineering regression evidence. On the original Rootbound PLAN case, the earlier wording avoided the exception request but did not evaluate the executor's own sandbox and composed a probe that would delete real files, and a blind review judged it fell; this wording adds both obligations and is accepted before its own re-check, which is an exposed case, not held-out evidence. No reduction in write violations, exhaustive capture, confinement guarantee or behavioral superiority is claimed. This exception is limited to this exact rule statement.",
-    "accepted": "2026-10-12"
-  },
-  {
     "rule_id": "R-RUN-29",
     "statement_sha256": "893431f083d5bd13ce4dbbf57fe69b2ff83a51d2b7d8f7018958f8ceb0f453e3",
     "reason": "9.1.2 accepts this Full RUN boundary-routing trigger on independent engineering review and an exposed development-case replay, not admitted safety-effect evidence. The original comparison remains inconclusive and the pre-routing replay did not satisfy the required channel evaluation. No reduction in violations, exhaustive capture, confinement guarantee or behavioral superiority is claimed. This exception is limited to this exact routing statement; formal safety-effect validation remains deferred.",
