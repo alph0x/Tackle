@@ -1,0 +1,9 @@
+(version 1)
+(allow default)
+(deny file-write*)
+(allow file-write*
+ (literal "{WORK}/docs/design/gdd.md")
+ (literal "{WORK}/docs/design/mechanics.md")
+ (subpath "{WORK}/docs/plans/prototype/reports")
+ (literal "/dev/null")
+)

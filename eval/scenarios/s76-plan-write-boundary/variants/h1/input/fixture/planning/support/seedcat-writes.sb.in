@@ -1,0 +1,7 @@
+(version 1)
+(allow default)
+(deny file-write*)
+(allow file-write*
+  (literal "{WORK}/catalog/swap-rules.md")
+  (literal "{WORK}/catalog/planting-calendar.csv")
+  (literal "{WORK}/catalog/label-template.txt"))

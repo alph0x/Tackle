@@ -1,0 +1,21 @@
+{
+  "prompt": "Lee AGENTS.md. Usa Tackle en .agents/skills/tackle. Prepara T-1000 de docs/plans/prototype para RUN: completa su preparaci\u00f3n y p\u00e1sala a Ready to run si corresponde.",
+  "workspace": "docs/plans/prototype",
+  "task_id": "T-1000",
+  "board": "docs/plans/prototype/task-board.md",
+  "brief": "docs/plans/prototype/tasks/T-1000-prototype-design.md",
+  "profile_template": "tools/boundary.sb.in",
+  "launcher": "tools/confine.sh",
+  "scope": [
+    "docs/design/gdd.md",
+    "docs/design/mechanics.md",
+    "docs/plans/prototype/reports/T-1000-report.md"
+  ],
+  "protected": [
+    "tools/boundary.sb",
+    "tools/confine.sh",
+    "README.md",
+    "AGENTS.md"
+  ],
+  "render_profile": true
+}
