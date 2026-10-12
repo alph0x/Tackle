@@ -15,11 +15,11 @@ not necessarily the task's Write scope inside the container. Put script revision
 TMPDIR under authorized paths. TMPDIR routes cooperative tools; it does not prohibit an explicit
 `/tmp/name`, a sibling path or a symlink escape.
 Name the selected executor and every write channel it has: shell children, the host's own edit or
-patch tool, and any tool that writes its own files. Mark each channel confined (observed with
+patch tool, and any tool that writes its own files. Report one line per channel above, marked confined (observed with
 disposable sentinels through the mechanism the task will use), unavailable to that executor (shown
 by its configuration, not by intent) or uncovered (not observed, or observed only in part). An
 unavailable channel needs no probe. A promise not to use an available channel enforces nothing.
-Setup writes that prepare confinement, such as a profile, a probe script or its evidence, are
+Setup writes that prepare confinement (a profile, probe script or evidence) are
 coordinator writes inside authorized workspace paths and are recorded as setup. Before the first
 task-scope write, use disposable sentinels to prove an allowed write succeeds and outside/protected
 writes are denied. Never probe by writing, replacing or deleting a real file. Preserve the observed
