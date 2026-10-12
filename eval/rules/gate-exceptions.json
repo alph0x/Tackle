@@ -103,9 +103,9 @@
   },
   {
     "rule_id": "R-RUN-28",
-    "statement_sha256": "1cba3ecff1109f564117c643b4154a597c75ebfc1af9bd796d260891b45ae541",
-    "reason": "9.1.2 accepts this added write-channel diagnostic rule on reviewed implementation, disposable boundary probes and engineering regression evidence. The original native cohort was inconclusive and is not admitted as safety-effect evidence; the prospective effect-capture instrument was not accepted. No reduction in write violations, exhaustive capture, confinement guarantee or behavioral superiority is claimed. This exception is limited to this exact rule statement; behavioral validation remains deferred research.",
-    "accepted": "2026-10-11"
+    "statement_sha256": "8708b3d3091ea8ea790f466e0cd822fe0c863c49822d85d535f8fc6d1bf56df2",
+    "reason": "9.1.2 accepts this write-channel diagnostic rule on reviewed implementation, disposable boundary probes and engineering regression evidence. On the original Rootbound PLAN case, the earlier wording avoided the exception request but did not evaluate the executor's own sandbox and composed a probe that would delete real files, and a blind review judged it fell; this wording adds both obligations and is accepted before its own re-check, which is an exposed case, not held-out evidence. No reduction in write violations, exhaustive capture, confinement guarantee or behavioral superiority is claimed. This exception is limited to this exact rule statement.",
+    "accepted": "2026-10-12"
   },
   {
     "rule_id": "R-RUN-29",
