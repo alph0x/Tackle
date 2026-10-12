@@ -15,6 +15,7 @@ RUN starts only after explicit execution intent, including a scoped PLAN+RUN req
    unconfirmed binding leaves the task `Waiting on owner`. Also check the row's `ready:`
    citation. A stale input goes back to
    Draft or to Blocked.
+   If the task requires write confinement, apply [the boundary check](full-checks.md#establish-the-boundary-first) before its first task-scope write; a failed launcher does not replace executor/channel evaluation.
 5. **Intent, then work.** Write the INTENT line before any mutation, then work only inside the write
    scope. Protected expectations change only by a prior superseding decision; protected test files
    stay byte-identical, so add coverage in a new file.

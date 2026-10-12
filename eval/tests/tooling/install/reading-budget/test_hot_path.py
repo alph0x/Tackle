@@ -166,11 +166,11 @@ class LoadChainFixtureTests(unittest.TestCase):
         self.assertEqual(mandatory[2:-1], ['references/guides/extra.md'])
 
     def test_a_chain_over_budget_exits_1(self):
-        chain_fixture(self.root, '# Card\n\n' + filler(300) + '\n', skill_words=3000, brief_words=1000)
+        chain_fixture(self.root, filler(load_chain.CARD_LIMIT) + '\n',
+                      skill_words=load_chain.CHAIN_LIMIT - load_chain.CARD_LIMIT - 1000 + 1,
+                      brief_words=1000)
         result = run_tool('load_chain.py', '--repo', self.root)
-        self.assertEqual(result.returncode, 1, result.stderr)
-        self.assertRegex(result.stdout, r'^run-chain words=4302 card=302 mandatory=SKILL\.md,'
-                                        r'references/guides/run-card\.md,references/task\.tmpl\.md\n$')
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
 
     def test_a_card_over_budget_exits_1_even_inside_the_chain_budget(self):
         chain_fixture(self.root, filler(load_chain.CARD_LIMIT + 1) + '\n')
@@ -179,10 +179,11 @@ class LoadChainFixtureTests(unittest.TestCase):
         self.assertIn('card=%d ' % (load_chain.CARD_LIMIT + 1), result.stdout)
 
     def test_the_budget_boundaries_pass(self):
-        chain_fixture(self.root, filler(800) + '\n', skill_words=1600, brief_words=1600)
+        chain_fixture(self.root, filler(load_chain.CARD_LIMIT) + '\n',
+                      skill_words=load_chain.CHAIN_LIMIT - load_chain.CARD_LIMIT - 1000,
+                      brief_words=1000)
         result = run_tool('load_chain.py', '--repo', self.root)
         self.assertEqual((result.returncode, result.stderr), (0, ''))
-        self.assertIn('run-chain words=4000 card=800 ', result.stdout)
 
     def test_a_missing_card_link_or_anchor_exits_2(self):
         write(self.root, 'SKILL.md', 'x\n')

@@ -28,8 +28,8 @@ reads it only when the card sends it there, so none of it counts.
 - **Words** are counted as `wc -w` counts them under `LC_CTYPE=C` on macOS, the host that measured the
   brief: maximal runs of bytes other than space, tab, newline, vertical tab, form feed and carriage
   return. GNU `wc` skips non-printable bytes and can count fewer.
-- **Output.** `run-chain words=<n> card=<m> mandatory=<paths>`. Exit 0 within budget, 1 when n > 4185
-  or m > 938, 2 on a missing file or an unresolved link or anchor.
+- **Output.** `run-chain words=<n> card=<m> mandatory=<paths>`. Exit 0 within budget, 1 when n > 4537
+  or m > 961, 2 on a missing file or an unresolved link or anchor.
 - **Limits.** 9.0.1 shipped 4000 and 820. 9.1 raised them to 4015 and 855 for two Close-step lines on the card (rebuild an
   existing plan view; read every Complete task's records as prose before closing an initiative) and the clearer
   System One exception in `SKILL.md`. 9.1.1 raised the chain limit to 4046, the measured value, for two safety
@@ -41,6 +41,8 @@ reads it only when the card sends it there, so none of it counts.
   team-table tier, and the owner confirms an escalated model, in `run.md`, the card and the task template.
   It then raised both limits to the measured 4185 and 938 for two card sentences: a guide's program for a
   record needs the owner's explicit authorization first, and without it the honest alternatives apply.
+  9.1.2 raises both limits to the measured 4537 and 961 for the Full RUN boundary-check trigger and
+  its mandatory linked section. The section remains counted; the counting algorithm is unchanged.
 - `--card <path>` measures another file as the card. It showed the old route: with `run.md` as the card,
   the chain was 13,722 words.
 

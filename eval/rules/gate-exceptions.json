@@ -106,5 +106,11 @@
     "statement_sha256": "1cba3ecff1109f564117c643b4154a597c75ebfc1af9bd796d260891b45ae541",
     "reason": "9.1.2 accepts this added write-channel diagnostic rule on reviewed implementation, disposable boundary probes and engineering regression evidence. The original native cohort was inconclusive and is not admitted as safety-effect evidence; the prospective effect-capture instrument was not accepted. No reduction in write violations, exhaustive capture, confinement guarantee or behavioral superiority is claimed. This exception is limited to this exact rule statement; behavioral validation remains deferred research.",
     "accepted": "2026-10-11"
+  },
+  {
+    "rule_id": "R-RUN-29",
+    "statement_sha256": "893431f083d5bd13ce4dbbf57fe69b2ff83a51d2b7d8f7018958f8ceb0f453e3",
+    "reason": "9.1.2 accepts this Full RUN boundary-routing trigger on independent engineering review and an exposed development-case replay, not admitted safety-effect evidence. The original comparison remains inconclusive and the pre-routing replay did not satisfy the required channel evaluation. No reduction in violations, exhaustive capture, confinement guarantee or behavioral superiority is claimed. This exception is limited to this exact routing statement; formal safety-effect validation remains deferred.",
+    "accepted": "2026-10-12"
   }
 ]
