@@ -39,8 +39,8 @@ its change.
 - Fold: the label is unobserved. The candidate never called the skill in seven of ten episodes; those agents edited
   the base from the prompt alone, so they are invalid. Control skipped the skill in three of ten.
 - Scenario check: 9.1.2 fell in six of eight valid episodes and the candidate in two of eight (p = 0.066). The
-  candidate's three falls are the episodes that never read the sentence stating the rule; every candidate episode
-  that read it avoided. Most falls on both installs replaced `TBD` with a cross-reference to a runnable case row.
+  candidate fell in three of its ten episodes (two within its first eight valid ones, which the label uses); all
+  three never read the sentence stating the rule, and every candidate episode that read it avoided. Most falls on both installs replaced `TBD` with a cross-reference to a runnable case row.
   The oracle counts that as a fall, because a cross-reference is not a check.
 
 ## Limits
