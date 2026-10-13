@@ -4252,6 +4252,77 @@
       "historical": []
     },
     {
+      "rule_id": "R-INTAKE-10",
+      "statement": "An explore request reads, ranks options and recommends one, writes nothing, and enters PLAN only on an explicit yes.",
+      "statement_sha256": "381a46afe86697b934af32a96f518b7926099ee765e40d68b77e8d113824f5a1",
+      "home": "SKILL.md:13",
+      "home_fragment": "An explore request reads, ranks options and",
+      "units": [
+        "An explore request reads, ranks options and reco"
+      ],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": true,
+      "origin": {
+        "added_in": "9.2.0",
+        "trigger": "OpenSpec takeaways plan, intake requests",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-13"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-INTAKE-11",
+      "statement": "Explore writes no workspace, seed, profile, requirements base, delta or source; it ends by offering PLAN, and only an explicit yes enters PLAN.",
+      "statement_sha256": "b843470b7e3eb002eb3432a640f91252126ea52f74361b8dbae0da69780835da",
+      "home": "references/guides/invocation.md:39",
+      "home_fragment": "Explore writes no workspace, seed, profile",
+      "units": [],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.2.0",
+        "trigger": "OpenSpec takeaways plan, intake requests",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-13"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-INTAKE-12",
+      "statement": "When a request touches an active workspace's goal, classify it before writing anything.",
+      "statement_sha256": "3394db3a582dc5c398d23f8c8d0bb91517592b3627ac47721bb62b2a5e574df8",
+      "home": "references/guides/intake-and-gate.md:92",
+      "home_fragment": "When a request touches an active workspace",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.2.0",
+        "trigger": "OpenSpec takeaways plan, intake requests",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-13"
+      },
+      "historical": []
+    },
+    {
       "rule_id": "R-EVID-18",
       "statement": "After a configuration signal, record each call and each local fallback as one [sidecar](usage-observability.md) record with `collector: system-one`. Use `scope: role` and the calling role's Run ID as `run_id`; without a Run ID, use `scope: session` and `run_id: n/a`. A Direct request has no workspace and writes no record. The record's metrics hold `requests` and, when the response reports them, token counts. `requests` is 1 when a request was sent and 0 when the fallback came before any send. The record's `provenance` holds the use, model, confidence and adopted decision or fallback reason. With a recorded `yes`, consult System One at every point where one of the four uses applies: each failure classification, each no-progress comparison, each cold-resume history choice and each intake sizing. Each consult keeps the thresholds and fallbacks above. A point with no admitted public fragment is a skipped point. Record a skipped point with its reason. Read-only STATUS makes no call and writes no record. A missing sidecar or a failed record write never fails the task.",
       "statement_sha256": "3304fc810b3951c0c10dbe27a85b48d2839150fe7ee14fadbf464696dd91aa55",

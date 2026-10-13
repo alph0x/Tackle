@@ -12,9 +12,10 @@
       "path": "eval/tests/product/plan",
       "files": [
         "test_controlled_writing.py",
+        "test_intake_requests.py",
         "test_plan.py"
       ],
-      "tests": 4,
+      "tests": 9,
       "source": "eval/plan",
       "category": "product",
       "purpose": "Plan section order, and the controlled-writing recipe and guide for owner texts and specifications."

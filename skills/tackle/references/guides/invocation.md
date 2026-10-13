@@ -31,6 +31,15 @@ never promise a separate menu entry for an action or a particular prefix in ever
 | `init <name>` | PLAN scaffolding with the existing setup consent | [Scaffold](scaffold.md) |
 | `migrate`, `upgrade`, “improve this plan” | Selected-workspace, copy-first migration preparation | [Migrate](migrate.md) |
 
+<a id="explore"></a>
+## Explore
+
+An explore request (`explore`, `explorar`, "think it through first") is PLAN intake that writes nothing.
+Read the repository and the named inputs, then answer with findings cited at `file:line`, two to four ranked options with their tradeoffs, and one recommendation.
+Explore writes no workspace, seed, profile, requirements base, delta or source; it ends by offering PLAN, and only an explicit yes enters PLAN.
+A capture request writes only the artifacts the owner named, through the ordinary scaffold consent.
+A request to implement during explore is not acted on there; offer PLAN or RUN with explicit intent instead.
+
 ## Continuing authorized work
 
 Route the request in its conversation context, applying the shared [decision and communication
