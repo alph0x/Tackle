@@ -17,6 +17,7 @@ consumer; dates and experiment identifiers belong to evidence provenance.
 | product | [product/lint/task-identity](product/lint/task-identity/) | Task identity, scaffold paths and workspace naming. |
 | product | [product/migration](product/migration/) | Workspace schema migration, recipes and census refusal. |
 | product | [product/plan](product/plan/) | Plan section order, and the controlled-writing recipe and guide for owner texts and specifications. |
+| product | [product/requirements-base](product/requirements-base/) | Requirements base parsing, delta validation, reconciliation and fold through the shipped recipe, and the guide's rules. |
 | product | [product/resume](product/resume/) | The cold-resume read order, its links from every read list, the spent-count source and the closure listing of open obligations. |
 | product | [product/run/card](product/run/card/) | Execution state transitions, template bindings and adversary-checkpoint records. |
 | product | [product/run/evidence-capture](product/run/evidence-capture/) | Child execution, streams, timeouts and evidence capture. |
