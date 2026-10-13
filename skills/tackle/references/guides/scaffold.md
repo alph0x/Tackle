@@ -94,3 +94,13 @@ Create only when their trigger fires:
 - `reference-docs/` — read-only external snapshots.
 
 (`task-board.md` is a core artifact, not depth — it is copied by the scaffold, per the §File map in `AGENTS.tmpl.md`.)
+
+<a id="multi-repository-workspace"></a>
+## Multi-repository workspace
+
+One workspace, in the repository where planning happens, may plan work that lands in several repositories.
+Its `AGENTS.md` then holds the Repositories table, and each brief states `**Repository**: <id>`.
+A task's Write scope paths are relative to its repository's root, and a task writes only inside its own repository.
+Each repository keeps its own requirements base and its own gitignore answer (see the requirements base guide), and each delta entry names its `Repository:`.
+Lint row 8 compares Write scope paths as text across active workspaces, so two workspaces naming the same relative path in different repositories are reported as a collision; read the Repository fields to resolve it. Row 8 does not compare tasks within one workspace.
+A single-repository workspace has no Repositories table and no Repository field.

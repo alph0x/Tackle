@@ -136,3 +136,5 @@ For compound checks, retain the exact checked script among hashed inputs. A pros
 is not a runnable substitute. When a native export is unavailable, this recipe, with the owner's explicit authorization, works without
 any installed collector; equivalent direct capture is valid if it preserves the same facts. Missing role clocks
 stay n/a in the lifecycle ledger even when the validation clock is known.
+
+In a multi-repository workspace, record the revision of every repository a check reads.

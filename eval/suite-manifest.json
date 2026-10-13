@@ -164,6 +164,7 @@
         "test_lint_rows.py",
         "test_awk_coverage.py",
         "test_row8_wrap.py",
+        "test_row8_repositories.py",
         "test_tier_escalation.py",
         "test_effort_only_deviation.py",
         "test_forward_only.py",
@@ -172,7 +173,7 @@
         "test_lifecycle_semantics.py",
         "test_obligations_and_entry_budget.py"
       ],
-      "tests": 114,
+      "tests": 115,
       "source": "eval/lint/rows",
       "category": "product",
       "purpose": "Canonical lint rows, formats, severities, AWK variants, lifecycle outcomes, clock coverage and Attempts evidence."
@@ -188,9 +189,10 @@
         "test_history_and_obligation_templates.py",
         "test_system_one_functional.py",
         "test_system_one_integration.py",
-        "test_recipe_consent_points.py"
+        "test_recipe_consent_points.py",
+        "test_multi_repo_templates.py"
       ],
-      "tests": 102,
+      "tests": 107,
       "source": "eval/templates",
       "category": "product",
       "purpose": "Template fields, observed model routing, capability recovery and compiled briefs. Public System One reference recipe admission, workspace consent, normalized transport, confidence and provenance. Optional System One shell detection, real consent persistence, SDK serialization, fallback and bounded history/intake consumers."

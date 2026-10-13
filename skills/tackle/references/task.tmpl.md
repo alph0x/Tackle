@@ -10,6 +10,7 @@
 - **Depends on**: {{none / T-0X — name the concrete artifact consumed}}.
 - **Traces to**: {{spec, ticket, or constitution anchor}}.
 - **Write scope**: {{complete file and directory write set; flag shipped paths}}.
+- **Repository**: {{repository id from the workspace Repositories table; omit this field in a single-repository workspace}}.
 - **Autonomy**: {{resolved concrete value; production paths cap at L2}}.
 - **Effort**: {{low / medium / high / max; bare token without trailing punctuation}}
 - **Tier**: (fast / standard / frontier; omit the whole field when the map cannot propose one)

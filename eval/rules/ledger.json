@@ -991,11 +991,11 @@
       "rule_id": "R-RUN-07",
       "statement": "Task, related regression and affected merged-tree integration checks pass before a task becomes Complete, and deliverable acceptance precedes initiative completion.",
       "statement_sha256": "d3301a1f5ebbba1c848bc0b74aecc74ef0aa2bbce18ca99a6a237e8064424f42",
-      "home": "references/guides/run-card.md:49",
+      "home": "references/guides/run-card.md:50",
       "home_fragment": "deliverable acceptance precedes initiative completion",
       "units": [],
       "mirrors": [
-        "references/guides/run-card.md:26"
+        "references/guides/run-card.md:27"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -1029,7 +1029,7 @@
       "rule_id": "R-RUN-08",
       "statement": "Three failed correction-validation cycles per task or two identical no-progress observations bound implementation correction, and lineage keeps spent cycles across split, merge and resume.",
       "statement_sha256": "9a6b0e2439703af8ce593d30e2c77c73bc87fa3af6a3b7d586613ea19e28bfb7",
-      "home": "references/guides/run-card.md:35",
+      "home": "references/guides/run-card.md:36",
       "home_fragment": "three failed correction-validation cycles per task",
       "units": [],
       "mirrors": [],
@@ -1267,7 +1267,7 @@
       "rule_id": "R-RUN-16",
       "statement": "A discovery task converges on consecutive dry rounds and deduplicates against everything seen.",
       "statement_sha256": "e92fe9a47b609bf869e0a2c1a84f588eabdc078572690e83e6002aa1691b4cb5",
-      "home": "references/task.tmpl.md:48",
+      "home": "references/task.tmpl.md:49",
       "home_fragment": "deduplicate against everything seen",
       "units": [],
       "mirrors": [
@@ -1338,7 +1338,7 @@
       "rule_id": "R-RUN-18",
       "statement": "A declared capability failure is corrected exactly once, at the model map's next tier with effort unchanged, spends one task-pool cycle always, never applies to an unbound tier, a next tier whose bound model id matches the model actually used for the failed attempt, or a further escalation, never skips to a further tier, never beyond the topmost bound tier, and never for an evaluation control arm.",
       "statement_sha256": "394cbc57ad5d115fcaa220a84036a0fcb79cdca4fb5f1ce83b281f90173a61e9",
-      "home": "references/guides/run-card.md:33",
+      "home": "references/guides/run-card.md:34",
       "home_fragment": "An implementation fault is corrected; a capability failure",
       "units": [],
       "mirrors": [
@@ -3368,7 +3368,7 @@
       "mirrors": [
         "references/guides/plan-view.md:35",
         "references/guides/plan-view.md:135",
-        "references/guides/run-card.md:48",
+        "references/guides/run-card.md:49",
         "references/guides/plan-view.md:16",
         "references/guides/plan-card.md:98"
       ],
@@ -3395,7 +3395,7 @@
       "home_fragment": "only the owner's request or a confirmed closure fold",
       "units": [],
       "mirrors": [
-        "references/guides/run-card.md:51"
+        "references/guides/run-card.md:52"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -3499,7 +3499,7 @@
       "home_fragment": "Before an initiative is declared closed, and at every cold",
       "units": [],
       "mirrors": [
-        "references/guides/run-card.md:50",
+        "references/guides/run-card.md:51",
         "references/guides/status.md:71"
       ],
       "class": "behavioral",
@@ -4023,7 +4023,7 @@
       "rule_id": "R-RUN-25",
       "statement": "Closing a Complete task sets its map delta changes to done before any view rebuild.",
       "statement_sha256": "63123fa9f2c6cd6a7386247812b9f677fa94a2a95b651238865145ad81f2076c",
-      "home": "references/guides/run-card.md:47",
+      "home": "references/guides/run-card.md:48",
       "home_fragment": "Set a Complete task's `map-delta.json` changes to `done`",
       "units": [],
       "mirrors": [
@@ -4278,7 +4278,7 @@
       "rule_id": "R-REL-06",
       "statement": "Before saving or running a guide's program to make a record, get the owner's explicit authorization. Without it, use a harness capability or the project's tools, or report the record unavailable.",
       "statement_sha256": "45b120f5e4037507533b3688b9d02c2818f87c20580a2da7e3451363bc349e00",
-      "home": "references/guides/run-card.md:24",
+      "home": "references/guides/run-card.md:25",
       "home_fragment": "Before saving or running a guide's program",
       "units": [],
       "mirrors": [
@@ -4351,6 +4351,52 @@
         "scenarios": [],
         "cohort_id": null,
         "as_of": "2026-10-12"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-30",
+      "statement": "A task's Write scope paths are relative to its repository's root, and a task writes only inside its own repository.",
+      "statement_sha256": "584e0d61f7bc0a5dd0f678e6e53e81979b2ec697c6b91a79fe029cabb5349d8a",
+      "home": "references/guides/scaffold.md:103",
+      "home_fragment": "A task's Write scope paths are relative to its",
+      "units": [],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.2.0",
+        "trigger": "OpenSpec takeaways plan, multi-repository scope",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-13"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-31",
+      "statement": "In a multi-repository workspace, also check that the task's repository path exists and is a git repository, and record its revision; a missing repository blocks only its tasks.",
+      "statement_sha256": "9789295115389a9cff5ef0138428ea1be03407e47bcaa3df1b661325ac1fea67",
+      "home": "references/guides/run-card.md:19",
+      "home_fragment": "In a multi-repository workspace, also check that",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.2.0",
+        "trigger": "OpenSpec takeaways plan, multi-repository scope",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-13"
       },
       "historical": []
     }
