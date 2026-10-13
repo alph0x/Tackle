@@ -4145,7 +4145,10 @@
       "home": "references/guides/decompose-and-lint.md:86",
       "home_fragment": "every WHEN/THEN scenario names its Check",
       "units": [],
-      "mirrors": [],
+      "mirrors": [
+        "references/guides/plan-card.md:81",
+        "references/task.tmpl.md:95"
+      ],
       "class": "behavioral",
       "hot_path": false,
       "origin": {
