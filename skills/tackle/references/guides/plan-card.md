@@ -78,7 +78,7 @@ tasks and stops before source execution.`
    verification-record slot; every task traces to a criterion) and one bounded semantic
    counterexample review: which wrong implementation would still pass the stated checks. Any HIGH
    finding, or an ungrounded task, blocks a task from Ready to run; a MEDIUM finding also blocks
-   unless the user explicitly accepts the risk, and a LOW finding is advisory. Three of this
+   unless the user explicitly accepts the risk, and a LOW finding is advisory. A WHEN/THEN case whose Check is `TBD`, a cross-reference or prose also blocks it from Ready to run. Three of this
    validation's checks are linked here directly, not as depth, because a stale citation, a broken
    seal or an unmet readiness criterion is as much a readiness check as the review itself:
    [step 0, mechanical grounding](verify.md#step-0--mechanical-grounding-two-phase-citation-check)

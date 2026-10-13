@@ -110,9 +110,10 @@
       "path": "eval/tests/product/lint/task-contracts",
       "files": [
         "test_task_contracts.py",
-        "test_scenario_checks.py"
+        "test_scenario_checks.py",
+        "test_scenario_check_reach.py"
       ],
-      "tests": 36,
+      "tests": 38,
       "source": "eval/lint/task-contracts",
       "category": "product",
       "purpose": "Task contracts, readiness and acceptance fields."
