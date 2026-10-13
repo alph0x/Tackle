@@ -1,0 +1,4 @@
+notes.txt 2048
+holiday photos.tar 9437184
+report.pdf 51200
+my diary.md 7340032

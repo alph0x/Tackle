@@ -1,0 +1,5 @@
+{
+ "scenario": "Expired coupon on a large order",
+ "task_number": 1,
+ "workspace": "docs/plans/coupon-expiry"
+}

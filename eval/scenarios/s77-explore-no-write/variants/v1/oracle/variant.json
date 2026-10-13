@@ -1,0 +1,13 @@
+{
+ "files": {
+  "README.md": "498a84a385e6f9f639bf60fd34e4713c52d75655804517c842ed37af00725942",
+  "splitbill/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "splitbill/cli.py": "16bbe222d02c844e16594daba5e622687dd98a47d782f2e096d072554dcaaf6f",
+  "splitbill/split.py": "4727060707acdd76ffa847df98bfd905e34df9ffc53526525832c639f4558d66",
+  "tests/test_split.py": "5bcc9d829a6827472251714812a980f03c42fc0f44f7a9bff0ffe824649bba80"
+ },
+ "sources": [
+  "splitbill/split.py",
+  "splitbill/cli.py"
+ ]
+}
