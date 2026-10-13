@@ -4161,7 +4161,7 @@
         "scenarios": [
           "s79-scenario-without-check"
         ],
-        "cohort_id": "2026-10-openspec-takeaways",
+        "cohort_id": "2026-10-openspec-takeaways-reach",
         "as_of": "2026-10-14"
       },
       "historical": []
