@@ -3629,12 +3629,12 @@
         "discovered_by": []
       },
       "evidence": {
-        "status": "untested",
+        "status": "unobserved",
         "scenarios": [
           "s78-fold-unreconciled"
         ],
-        "cohort_id": null,
-        "as_of": "2026-10-13"
+        "cohort_id": "2026-10-openspec-takeaways",
+        "as_of": "2026-10-14"
       },
       "historical": []
     },
@@ -4154,12 +4154,12 @@
         "discovered_by": []
       },
       "evidence": {
-        "status": "untested",
+        "status": "inconclusive",
         "scenarios": [
           "s79-scenario-without-check"
         ],
-        "cohort_id": null,
-        "as_of": "2026-10-13"
+        "cohort_id": "2026-10-openspec-takeaways",
+        "as_of": "2026-10-14"
       },
       "historical": []
     },
@@ -4273,12 +4273,12 @@
         "discovered_by": []
       },
       "evidence": {
-        "status": "untested",
+        "status": "inert",
         "scenarios": [
           "s77-explore-no-write"
         ],
-        "cohort_id": null,
-        "as_of": "2026-10-13"
+        "cohort_id": "2026-10-openspec-takeaways",
+        "as_of": "2026-10-14"
       },
       "historical": []
     },
@@ -4298,12 +4298,12 @@
         "discovered_by": []
       },
       "evidence": {
-        "status": "untested",
+        "status": "inert",
         "scenarios": [
           "s77-explore-no-write"
         ],
-        "cohort_id": null,
-        "as_of": "2026-10-13"
+        "cohort_id": "2026-10-openspec-takeaways",
+        "as_of": "2026-10-14"
       },
       "historical": []
     },
@@ -4449,12 +4449,12 @@
         "discovered_by": []
       },
       "evidence": {
-        "status": "untested",
+        "status": "inert",
         "scenarios": [
           "s80-cross-repo-scope"
         ],
-        "cohort_id": null,
-        "as_of": "2026-10-13"
+        "cohort_id": "2026-10-openspec-takeaways",
+        "as_of": "2026-10-14"
       },
       "historical": []
     },
