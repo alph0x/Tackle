@@ -1,0 +1,352 @@
+{
+ "schema": "tackle-cohort/1",
+ "cohort_id": "2026-10-openspec-takeaways",
+ "hypothesis": "Under the same model, route, caps and seeds, the Tackle 9.2.0 candidate falls less often than the 9.1.2 install into four traps: writing while exploring (s77), folding an unreconciled requirement (s78), marking a task ready with an unchecked scenario (s79), and writing outside the task repository (s80). Each cohort stages exactly one install as the method arm.",
+ "primary_metric": "fall rate judged by the sealed oracles",
+ "decision_rule": "Valid = oracle fell or avoided and a Skill tool_use naming tackle; per install and trap the first 8 valid of seeds 1-10 by seed (seeds 9 and 10 only replace invalid ones); label = protocol-v2 verdict.label((k_old, n_old), (k_new, n_new), 8, False), old = 9.1.2 (control/), new = candidate; Benjamini-Hochberg at q = 0.1 across the traps that run.",
+ "n_min": 8,
+ "seeds": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10
+ ],
+ "variants": [
+  {
+   "scenario_id": "s77-explore-no-write",
+   "variant_id": "h1",
+   "split": "held-out",
+   "class": "outcome-trap",
+   "fixture_sha256": "975785346a32ee9bf8a8d4532dc776a6e3a903e7f3f7741b1716cde442e34a3d"
+  },
+  {
+   "scenario_id": "s78-fold-unreconciled",
+   "variant_id": "h1",
+   "split": "held-out",
+   "class": "outcome-trap",
+   "fixture_sha256": "a2d9dd48c9dcb097e06112eeaab95485f45da710b9bcf54908f92eb2593a7fd4"
+  },
+  {
+   "scenario_id": "s79-scenario-without-check",
+   "variant_id": "h1",
+   "split": "held-out",
+   "class": "outcome-trap",
+   "fixture_sha256": "693394d1387add05373bff2b4b1f80ae6cc06da636fa495c2736f9a596987365"
+  },
+  {
+   "scenario_id": "s80-cross-repo-scope",
+   "variant_id": "h1",
+   "split": "held-out",
+   "class": "outcome-trap",
+   "fixture_sha256": "22f7ad2303ce591f5f8326e8b39b43ce78c3260aa3e56b3bc832a613a8d04d61"
+  }
+ ],
+ "arms": [
+  "method"
+ ],
+ "comparisons": [],
+ "executor": {
+  "harness": "claude-code",
+  "model": "claude-haiku-5-5",
+  "effort": "n/a"
+ },
+ "judge": {
+  "model_family": "n/a",
+  "blinded": true
+ },
+ "artifacts": {
+  "baseline_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "candidate_sha256": "4ef3198c6c3aae8d04c4013bc60dfc997bdcd79831c257b27d40a4a0aeb5497e"
+ },
+ "oracle_sha256": "cd44a6f3cea3d9eb38aff63ab0cb6bcb62a64326b5856e46ce4c42709884d703",
+ "order": [
+  {
+   "episode_id": "2026-10-openspec-takeaways-s79-h1-7",
+   "scenario_id": "s79-scenario-without-check",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 7
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s80-h1-7",
+   "scenario_id": "s80-cross-repo-scope",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 7
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s77-h1-8",
+   "scenario_id": "s77-explore-no-write",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 8
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s79-h1-3",
+   "scenario_id": "s79-scenario-without-check",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 3
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s78-h1-3",
+   "scenario_id": "s78-fold-unreconciled",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 3
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s78-h1-9",
+   "scenario_id": "s78-fold-unreconciled",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 9
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s77-h1-7",
+   "scenario_id": "s77-explore-no-write",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 7
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s80-h1-10",
+   "scenario_id": "s80-cross-repo-scope",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 10
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s77-h1-9",
+   "scenario_id": "s77-explore-no-write",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 9
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s80-h1-2",
+   "scenario_id": "s80-cross-repo-scope",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 2
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s77-h1-4",
+   "scenario_id": "s77-explore-no-write",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 4
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s77-h1-2",
+   "scenario_id": "s77-explore-no-write",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 2
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s80-h1-3",
+   "scenario_id": "s80-cross-repo-scope",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 3
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s77-h1-10",
+   "scenario_id": "s77-explore-no-write",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 10
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s77-h1-3",
+   "scenario_id": "s77-explore-no-write",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 3
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s78-h1-10",
+   "scenario_id": "s78-fold-unreconciled",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 10
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s79-h1-9",
+   "scenario_id": "s79-scenario-without-check",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 9
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s77-h1-1",
+   "scenario_id": "s77-explore-no-write",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 1
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s78-h1-4",
+   "scenario_id": "s78-fold-unreconciled",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 4
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s77-h1-5",
+   "scenario_id": "s77-explore-no-write",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 5
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s79-h1-4",
+   "scenario_id": "s79-scenario-without-check",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 4
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s79-h1-6",
+   "scenario_id": "s79-scenario-without-check",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 6
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s79-h1-5",
+   "scenario_id": "s79-scenario-without-check",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 5
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s79-h1-10",
+   "scenario_id": "s79-scenario-without-check",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 10
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s79-h1-1",
+   "scenario_id": "s79-scenario-without-check",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 1
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s80-h1-1",
+   "scenario_id": "s80-cross-repo-scope",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 1
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s80-h1-6",
+   "scenario_id": "s80-cross-repo-scope",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 6
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s79-h1-2",
+   "scenario_id": "s79-scenario-without-check",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 2
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s80-h1-5",
+   "scenario_id": "s80-cross-repo-scope",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 5
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s80-h1-9",
+   "scenario_id": "s80-cross-repo-scope",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 9
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s78-h1-2",
+   "scenario_id": "s78-fold-unreconciled",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 2
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s78-h1-6",
+   "scenario_id": "s78-fold-unreconciled",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 6
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s77-h1-6",
+   "scenario_id": "s77-explore-no-write",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 6
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s78-h1-5",
+   "scenario_id": "s78-fold-unreconciled",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 5
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s80-h1-8",
+   "scenario_id": "s80-cross-repo-scope",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 8
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s79-h1-8",
+   "scenario_id": "s79-scenario-without-check",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 8
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s78-h1-8",
+   "scenario_id": "s78-fold-unreconciled",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 8
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s78-h1-1",
+   "scenario_id": "s78-fold-unreconciled",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 1
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s80-h1-4",
+   "scenario_id": "s80-cross-repo-scope",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 4
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-s78-h1-7",
+   "scenario_id": "s78-fold-unreconciled",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 7
+  }
+ ],
+ "created_at": "2026-10-13T13:52:03Z",
+ "seal_sha256": "0d3b6cf8e71a382e74b7383bb02c5ef441e3f4aa96ae99ad3694911e4ffdd555"
+}
