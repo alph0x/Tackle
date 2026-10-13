@@ -10,7 +10,7 @@ description: "Use for durable planning and explicit task execution of multi-sess
 ## Public surface
 
 One entry: `tackle`. State requests in any language. Action names do not register
-host commands. Bare invocation or help offers choices without writes. Interpret
+host commands. Bare invocation or help offers choices without writes. An explore request reads, ranks options and recommends one, writes nothing, and enters PLAN only on an explicit yes. Interpret
 requests, including negation and quoted examples; see [invocation.md](references/guides/invocation.md).
 
 | Surface | Request | Result |
@@ -93,3 +93,4 @@ STATUS: [status](references/guides/status.md). Explicit [audit](references/guide
 
 Explicit [plan view](references/guides/plan-view.md) and [architecture map](references/guides/architecture-map.md).
 Owner texts and specifications: [controlled writing](references/guides/controlled-writing.md).
+Required behavior across plans: [requirements base](references/guides/requirements-base.md); several repositories: [multi-repo workspace](references/guides/scaffold.md#multi-repository-workspace).

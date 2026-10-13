@@ -86,6 +86,15 @@ right after the scaffold creates it. Without a signal, record nothing and contin
 Use the shared decision policy above. Distinguish an informational question, a pending material product decision, and a blocker. Record a Q-id only when an answer changes the work; identify the affected requirement and continue unaffected work. Reversible technical choices inside authorized scope are local freedom, with a recorded reason when consequential. Diagnose operational failures through permitted tools before asking for user input. Material product ambiguity blocks the affected criterion and its consumers. A reversible delegated
 technical choice is recorded with its decision and evidence and does not block unrelated scope.
 
+<a id="update-or-new"></a>
+## Update the plan or start a new one
+
+When a request touches an active workspace's goal, classify it before writing anything.
+The same goal with a better approach or a corrected detail updates this plan; a changed acceptance needs a superseding decision.
+A narrower scope updates this plan to the smaller scope, closes it, and starts a new initiative for the rest.
+A different problem, or scope grown into different work, starts a new initiative; never repurpose the old one silently.
+When the classification is ambiguous, it is the owner's product decision: ask with a recommendation.
+
 # Step 1.5 — Anchor the intake before sizing
 
 Lock the problem, observable result, top 2 non-goals, and highest-shape decision before choosing a gate.
