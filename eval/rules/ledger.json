@@ -772,7 +772,7 @@
       "rule_id": "R-PLAN-11",
       "statement": "The repository references/ template library is read-only during scaffolding; initiative-specific edits belong in the workspace copy.",
       "statement_sha256": "488ffc1715a3bdfe05ef2d92a2ae222b3fc024f69f727fafc06b233242df0571",
-      "home": "references/guides/scaffold.md:52",
+      "home": "references/guides/scaffold.md:53",
       "home_fragment": "template library is read-only during scaffolding",
       "units": [],
       "mirrors": [],
@@ -3614,6 +3614,52 @@
       "historical": []
     },
     {
+      "rule_id": "R-STATE-13",
+      "statement": "At closure, fold only done entries whose every scenario Check passed on the final revision, and only after the owner confirms.",
+      "statement_sha256": "b97a21c2df88366d91b250e3b2209d81279df625d0290a3a43453f9bb932f702",
+      "home": "references/guides/requirements-base.md:18",
+      "home_fragment": "At closure, fold only done entries whose every scenario Chec",
+      "units": [],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.2.0",
+        "trigger": "OpenSpec takeaways plan, requirements base",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-13"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATE-14",
+      "statement": "A project without a base is valid; never offer to document the whole system, and never write a base outside a confirmed fold.",
+      "statement_sha256": "912f82d661065157ac9f0f2a73034e46afb3b9cade69477082b560de30f77032",
+      "home": "references/guides/requirements-base.md:24",
+      "home_fragment": "A project without a base is valid; never offer to document t",
+      "units": [],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.2.0",
+        "trigger": "OpenSpec takeaways plan, requirements base",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-13"
+      },
+      "historical": []
+    },
+    {
       "rule_id": "R-EVID-16",
       "statement": "Send only admitted public fragments needed by one of four uses: older-history score, RUN failure-class choice, no-progress signature comparison, or Direct/Focused/Coordinated intake. Never send credentials, secrets, unknown/private fragments, sealed material or answer sheets. The agent must classify sensitivity before calling the adapter; this is no general secret detector.",
       "statement_sha256": "6a723e4a93ddf9159e4b4d4dc253a562f6082fa96a6088ac6182a4871b134aad",
@@ -4041,6 +4087,52 @@
         "scenarios": [],
         "cohort_id": null,
         "as_of": "2026-10-08"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-18",
+      "statement": "Before the first requirements delta in a project, ask once whether `docs/requirements/` is gitignored.",
+      "statement_sha256": "bc472dc9a212880c6ca57b144e8f91d8efb321ff8a6196071083fce7745d0415",
+      "home": "references/guides/requirements-base.md:7",
+      "home_fragment": "Before the first requirements delta in a project, ask once w",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.2.0",
+        "trigger": "OpenSpec takeaways plan, requirements base",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-13"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-19",
+      "statement": "Validate the delta before Ready of any task that owns an entry; validation reports every problem, and an invalid delta blocks those tasks.",
+      "statement_sha256": "4468c48bd6c292151f59cbe83844da65ebf1a757657944ea3363dc43c39deabb",
+      "home": "references/guides/requirements-base.md:13",
+      "home_fragment": "Validate the delta before Ready of any task that owns an ent",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.2.0",
+        "trigger": "OpenSpec takeaways plan, requirements base",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-13"
       },
       "historical": []
     },

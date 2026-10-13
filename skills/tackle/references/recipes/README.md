@@ -16,6 +16,7 @@ or changes a recipe adds or updates its row.
 | [plan-view.md](plan-view.md) | `e1011c41928de1b6d2b356117d935935a21f56e301e89250b5e138d7e9579aa5` |
 | [plan-view-live.md](plan-view-live.md) | `aa6456ed03a611e938952afdcf8127c694c0947bf242e366182e39fc7fbd0699` |
 | [architecture-map.md](architecture-map.md) | `5dff71f09364d689082f0b32748286748871c6184e8893c3d431670a4bd562c9` |
+| [requirements-base.md](requirements-base.md) | `4b31065e084c08123fc13c5bb1f2318f206aafe3c618eebd374896d06f74aa6b` |
 
 ## Consent
 

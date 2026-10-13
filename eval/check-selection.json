@@ -32,7 +32,8 @@
     "eval/tests/tooling/behavior/judges/resume",
     "eval/tests/historical/verdicts/resume-comparison",
     "eval/tests/historical/verdicts/no-regression",
-    "eval/tests/historical/migration/copy-and-adoption"
+    "eval/tests/historical/migration/copy-and-adoption",
+    "eval/tests/product/requirements-base"
   ],
   "rules": [
     {
@@ -736,6 +737,19 @@
       ],
       "exclude": [],
       "reason": "Public changelog/link and record currency consumers."
+    },
+    {
+      "patterns": [
+        "eval/requirements-base/**",
+        "skills/tackle/references/guides/requirements-base.md",
+        "skills/tackle/references/recipes/requirements-base.md",
+        "skills/tackle/references/requirements-delta.tmpl.md"
+      ],
+      "families": [
+        "eval/tests/product/requirements-base"
+      ],
+      "exclude": [],
+      "reason": "Owned sources/fixtures and the shipped requirements-base recipe and guide."
     }
   ],
   "global_patterns": [

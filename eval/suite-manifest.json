@@ -389,6 +389,16 @@
       "source": "eval/migration",
       "category": "historical",
       "purpose": "Historical local simulation of copy-first migration, checkpoint copies and selective adoption; not current migration recipes."
+    },
+    {
+      "path": "eval/tests/product/requirements-base",
+      "files": [
+        "test_requirements_base.py"
+      ],
+      "tests": 59,
+      "source": "eval/requirements-base",
+      "category": "product",
+      "purpose": "Requirements base parsing, delta validation, reconciliation and fold through the shipped recipe, and the guide's rules."
     }
   ]
 }

@@ -43,6 +43,7 @@ When the plan changes how the project is put together and `.tackle/map/architect
 offer once to create it, as the [architecture map guide](architecture-map.md) states, and write nothing without a yes.
 When that base exists and the plan adds or changes components, PLAN writes `<workspace>/map-delta.json`, as
 the [delta](architecture-map.md#the-delta) states.
+When the plan adds, changes or retires required behavior, PLAN writes `<workspace>/requirements-delta.md`, as the [requirements base](requirements-base.md) states.
 
 Create the workspace by copying the core set from the §File map: nine artifacts from
 `AGENTS.tmpl.md` plus an empty `tasks/`. Select `task-board.tmpl.md`, `history.tmpl.md` and
