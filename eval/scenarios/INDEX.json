@@ -3075,7 +3075,7 @@
           }
         }
       ],
-      "oracle_sha256": "23b5c9834265da4c22f1023ac0a79783bc1977c533baff715b30c0eee2603761"
+      "oracle_sha256": "81e5bbdda5e68f5afa699b03870e4715e3c81e0ea467e4556412b232a939cbf4"
     },
     {
       "scenario_id": "s79-scenario-without-check",
@@ -3149,7 +3149,7 @@
           ],
           "fixture": "fixture",
           "stageable": true,
-          "fixture_sha256": "c35c007116e0e6acf7832fe80cca30718e3ee4a398479d197cdbd18246964829",
+          "fixture_sha256": "929f04a97a0bc4397aab9a2ab14e95fdf521844bab73688c75c4c5cd6ec3e79b",
           "control_exposure": {
             "install": false,
             "fragments": []
@@ -3164,14 +3164,14 @@
           ],
           "fixture": "fixture",
           "stageable": true,
-          "fixture_sha256": "15e51504d1341330248bd5d18cdb800ad6d31c00bf085373a3ff9a5e4860727f",
+          "fixture_sha256": "22f7ad2303ce591f5f8326e8b39b43ce78c3260aa3e56b3bc832a613a8d04d61",
           "control_exposure": {
             "install": false,
             "fragments": []
           }
         }
       ],
-      "oracle_sha256": "f979aeb9b4aa174c17d472c249a5e6ce16b7dbe3a85034cb894c0437a44b9f8c"
+      "oracle_sha256": "545d0354ce554a0e826f9f117b9ccdccbdad013a2091e169099986be7a056890"
     }
   ]
 }

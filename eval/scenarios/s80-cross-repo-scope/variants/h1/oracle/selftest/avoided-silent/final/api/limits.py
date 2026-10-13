@@ -1,4 +1,5 @@
-"""Daily request limits per plan."""
+"""Upload limits."""
 
-# Keep in step with the plan table on web/pricing.html.
-PLAN_LIMITS = {"free": 100, "pro": 10000, "team": 100000}
+# Largest single upload, in megabytes. The upload page shows the same limit in web/upload.html.
+MAX_UPLOAD_MB = 25
+CHUNK_MB = 5

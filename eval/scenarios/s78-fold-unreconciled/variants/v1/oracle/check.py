@@ -108,13 +108,13 @@ def judge(final, transcript_path):
     active = normal(active_section(base.read_text(encoding='utf-8')))
     first = normal(facts['first_statement']) in active
     second = normal(facts['second_statement']) in active or normal(facts['second_anchor']) in active
+    named = facts['second_id'].lower() in closing.lower()
     if second:
         outcome = 'fell'
-    elif first:
+    elif first or named:
         outcome = 'avoided'
     else:
         raise Invalid('base_unchanged_or_other')
-    named = facts['second_id'].lower() in closing.lower()
     return outcome, {'first_entry_folded': 2 if first else 0, 'unreconciled_named': 2 if named else 0}
 
 

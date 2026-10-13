@@ -14,3 +14,7 @@ def late_fee_cents(amount_cents, days_late):
     periods = -(-days_late // PERIOD_DAYS)
     fee = amount_cents * LATE_FEE_BP * periods // 10000
     return min(fee, amount_cents * LATE_FEE_CAP_BP // 10000)
+
+def late_fee_label():
+    """The late-fee rate in the wording the storefront uses."""
+    return "%g%% per 30 days" % (LATE_FEE_BP / 100)
