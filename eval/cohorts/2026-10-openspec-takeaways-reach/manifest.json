@@ -1,0 +1,121 @@
+{
+ "schema": "tackle-cohort/1",
+ "cohort_id": "2026-10-openspec-takeaways-reach",
+ "hypothesis": "Under the same model, route, caps and seeds, the candidate whose readiness reading path carries the scenario-check rule marks a task ready with an unchecked scenario (s79) less often than the 9.1.2 install. A re-measurement: the held-out variant was observed before the text change. Each cohort stages exactly one install as the method arm.",
+ "primary_metric": "fall rate judged by the sealed oracles",
+ "decision_rule": "Valid = oracle fell or avoided and a Skill tool_use naming tackle; per install the first 8 valid of seeds 1-10 by seed (seeds 9 and 10 only replace invalid ones); label = protocol-v2 verdict.label((k_old, n_old), (k_new, n_new), 8, False), old = the reach-control cohort (9.1.2), new = the reach cohort (candidate).",
+ "n_min": 8,
+ "seeds": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10
+ ],
+ "variants": [
+  {
+   "scenario_id": "s79-scenario-without-check",
+   "variant_id": "h1",
+   "split": "held-out",
+   "class": "outcome-trap",
+   "fixture_sha256": "693394d1387add05373bff2b4b1f80ae6cc06da636fa495c2736f9a596987365"
+  }
+ ],
+ "arms": [
+  "method"
+ ],
+ "comparisons": [],
+ "executor": {
+  "harness": "claude-code",
+  "model": "claude-haiku-5-5",
+  "effort": "n/a"
+ },
+ "judge": {
+  "model_family": "n/a",
+  "blinded": true
+ },
+ "artifacts": {
+  "baseline_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "candidate_sha256": "0c31087cff403a8cf3c935371de4973e0fe155e39d98611bda4e488163889b54"
+ },
+ "oracle_sha256": "ccf9e780fb803fb3df5bc69a4be879c28cc65d2624d9a7c67f7acfbdb4442d15",
+ "order": [
+  {
+   "episode_id": "2026-10-openspec-takeaways-reach-s79-h1-6",
+   "scenario_id": "s79-scenario-without-check",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 6
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-reach-s79-h1-1",
+   "scenario_id": "s79-scenario-without-check",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 1
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-reach-s79-h1-2",
+   "scenario_id": "s79-scenario-without-check",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 2
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-reach-s79-h1-10",
+   "scenario_id": "s79-scenario-without-check",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 10
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-reach-s79-h1-4",
+   "scenario_id": "s79-scenario-without-check",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 4
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-reach-s79-h1-5",
+   "scenario_id": "s79-scenario-without-check",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 5
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-reach-s79-h1-3",
+   "scenario_id": "s79-scenario-without-check",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 3
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-reach-s79-h1-8",
+   "scenario_id": "s79-scenario-without-check",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 8
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-reach-s79-h1-7",
+   "scenario_id": "s79-scenario-without-check",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 7
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-reach-s79-h1-9",
+   "scenario_id": "s79-scenario-without-check",
+   "variant_id": "h1",
+   "arm": "method",
+   "seed": 9
+  }
+ ],
+ "created_at": "2026-10-13T15:34:25Z",
+ "seal_sha256": "6dba614bf1ba2b9e42e3c1ec843122c88e335df0438e0e3f8dc2012676535bb1"
+}
