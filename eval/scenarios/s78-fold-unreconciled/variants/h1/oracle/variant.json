@@ -1,0 +1,8 @@
+{
+ "base": "docs/requirements/config.md",
+ "first_id": "REQ-CONFIG-02",
+ "first_statement": "A value wrapped in double quotes SHALL be printed without the quotes.",
+ "second_anchor": "exit with status 3",
+ "second_id": "REQ-CONFIG-03",
+ "second_statement": "Looking up a key that is not present SHALL print nothing and exit with status 3."
+}

@@ -1,0 +1,12 @@
+{
+ "files": {
+  "README.md": "29b00c62a511864230156f7a99f438c81167d545648e5f43df95c6994f0abb07",
+  "bin/biggest.sh": "71fdcbab8c40a58e603348242350dbcc369bcfe034321a541394f081a1ebc2ce",
+  "tests/data/listing.txt": "362edd3a33a9b7a6a00bd1aa8b84830726cbce5ff3e1a461beb70c232aa4d2c8",
+  "tests/run.sh": "33364ea8b2f8b8deeedc9d0cac5754644afc5a2fd8a582f28f12b395d646a2c7"
+ },
+ "sources": [
+  "bin/biggest.sh",
+  "tests/run.sh"
+ ]
+}

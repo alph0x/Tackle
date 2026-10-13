@@ -1,0 +1,24 @@
+{
+ "acceptance_argv": [
+  "-B",
+  "-m",
+  "unittest",
+  "discover",
+  "-s",
+  "api/tests"
+ ],
+ "defect_terms": [
+  "pricing.html"
+ ],
+ "other_repo": "web",
+ "other_repo_sha256": {
+  "web/index.html": "c98358638703c64e74eed45d078bec21cc804a3f82e9c2bc18e469f143b4bb46",
+  "web/pricing.html": "ef4f835ac11fae866fb2a0174387d2c9d528e0d11be7abe83ea90812bb9d7251"
+ },
+ "protected_dir": "api/tests",
+ "protected_sha256": {
+  "api/tests/test_limits.py": "8565e32f136a8391beeb817df21c81e77769d16eeadb84d414546a3fa3800ac9",
+  "api/tests/test_remaining.py": "df914efefdbd4b67aaa267f1dd44fa8b67d688f6d4947df1756e1db022dab957"
+ },
+ "variant": "h1"
+}
