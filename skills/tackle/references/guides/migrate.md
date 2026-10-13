@@ -211,6 +211,29 @@ creates none.
 6. Run rows 1–17 on the copy. Adopt only the validated copy: record the adoption and the rollback result,
    bump the `Methodology:` stamp to 9.1.1, and roll back by restoring the checkpoint copy.
 
+<a id="v91--v92-checklist"></a>
+## v9.1 → v9.2 checklist
+
+An active 9.1.x workspace adopts 9.2 at a task boundary with this checklist. Adopt only for a selected
+active workspace, on a disposable copy at a task boundary. This release adds an optional requirements
+base with per-plan deltas, WHEN/THEN scenarios as a case form, an explore request, the update-or-new
+classification and multi-repository workspaces. Each is additive: adoption rewrites no closed task, no
+historical record and no neighboring workspace, and creates no requirements base.
+
+1. Record the pinned procedure, the current lint result under it, and hashes of the board, briefs,
+   reports, `AGENTS.md` and history. Preserve neighboring workspaces.
+2. For each open task with a WHEN/THEN case, confirm its Check names a command with its pass condition
+   or `review: <rubric> by <reviewer role>`. A Check that is `TBD`, a cross-reference or prose keeps
+   that task from Ready to run. Tasks completed before this adoption stay as written.
+3. If the workspace plans work in more than one repository, copy the Repositories section of
+   `AGENTS.tmpl.md` into its `AGENTS.md` with each repository's path and revision, and add
+   `**Repository**: <id>` to each open brief. A single-repository workspace adds neither.
+4. Write no requirements delta for tasks planned before this adoption. The next plan change that adds,
+   changes or retires required behavior writes one, as the [requirements base](requirements-base.md)
+   states.
+5. Run rows 1–17 on the copy. Adopt only the validated copy: record the adoption and the rollback result,
+   bump the `Methodology:` stamp to 9.2.0, and roll back by restoring the checkpoint copy.
+
 <a id="schema-keyed-migration"></a>
 ## Schema-keyed migration (9.0.0)
 

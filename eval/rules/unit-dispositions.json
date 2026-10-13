@@ -7344,45 +7344,57 @@
     {
       "path": "SKILL.md",
       "line": 4,
-      "unit_sha256": "99d171879d64c3b194d016ca6d923e8704b3629f6acf7ad02580b60b9366a4c5",
+      "unit_sha256": "e660afc79f32a3a5729dcca23e6c7a7a52d2bc7f259d236e2e1ce2f9e35c6aa8",
       "disposition": "reworded",
       "destination": "SKILL.md",
-      "note": "**Tackle 9.1.2** is a model-agnostic planning and execution method.",
+      "note": "**Tackle 9.2.0** is a model-agnostic planning and execution method.",
       "destination_unit_sha256": null,
       "dropped": [
         {
-          "token": "1",
-          "reason": "release version stamp bumped to9.1.2"
+          "token": "2",
+          "reason": "release version stamp bumped to 9.2.0"
+        },
+        {
+          "token": "9.1",
+          "reason": "release version stamp bumped to 9.2.0"
         }
       ]
     },
     {
       "path": "references/AGENTS.tmpl.md",
       "line": 3,
-      "unit_sha256": "06d3cc4fbb8b7f7783e0a300c0de291587ee7ef11860955f4da3d904d37086e1",
+      "unit_sha256": "e3a8bca1a269a058d3d630be5200cc88f3b3b05f5fc598eb6f463a467b7ed054",
       "disposition": "reworded",
       "destination": "references/AGENTS.tmpl.md",
-      "note": "**Methodology: Tackle 9.1.2** <!-- A future version reads this to decide whether to migrate. -->",
+      "note": "**Methodology: Tackle 9.2.0** <!-- A future version reads this to decide whether to migrate. -->",
       "destination_unit_sha256": null,
       "dropped": [
         {
-          "token": "1",
-          "reason": "release version stamp bumped to9.1.2"
+          "token": "2",
+          "reason": "release version stamp bumped to 9.2.0"
+        },
+        {
+          "token": "9.1",
+          "reason": "release version stamp bumped to 9.2.0"
         }
       ]
     },
     {
       "path": "references/README.tmpl.md",
       "line": 3,
-      "unit_sha256": "f38ca094789a9cb1c7e19f0f800f6df469eaf4e9199eb414fb5b21b2dfcadcf9",
+      "unit_sha256": "6ee3faa6b232414b368eaf27c32eeaf342ce6cc0b48d464f90439e23362babc7",
       "disposition": "reworded",
       "destination": "references/README.tmpl.md",
-      "note": "> **Methodology: Tackle 9.1.2.** See `AGENTS.md` for the workspace contract.",
+      "note": "> **Methodology: Tackle 9.2.0.** See `AGENTS.md` for the workspace contract.",
       "destination_unit_sha256": null,
       "dropped": [
         {
-          "token": "1",
-          "reason": "release version stamp bumped to9.1.2"
+          "token": "2",
+          "reason": "release version stamp bumped to 9.2.0"
+        },
+        {
+          "token": "9.1",
+          "reason": "release version stamp bumped to 9.2.0"
         }
       ]
     },
