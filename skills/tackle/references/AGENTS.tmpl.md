@@ -87,6 +87,15 @@ STATUS is the read-only query for status, list, next and plain resume; only an e
 Per-Task overrides are recorded in the Task brief. Moving up the ladder requires a D-id;
 moving down does not.
 
+<a id="repositories"></a>
+## Repositories
+
+Only for a workspace that plans work in more than one repository; delete this section otherwise.
+
+| id | path | revision at PLAN |
+|---|---|---|
+| {{id}} | {{absolute or planning-repository-relative path}} | {{commit}} |
+
 ## Harness map
 
 Tackle remains harness-agnostic. Record the concrete tools and whether each capability is supported.

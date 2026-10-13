@@ -16,6 +16,7 @@ RUN starts only after explicit execution intent, including a scoped PLAN+RUN req
    citation. A stale input goes back to
    Draft or to Blocked.
    If the task requires write confinement, apply [the boundary check](full-checks.md#establish-the-boundary-first) before its first task-scope write; a failed launcher does not replace executor/channel evaluation.
+   In a multi-repository workspace, also check that the task's repository path exists and is a git repository, and record its revision; a missing repository blocks only its tasks.
 5. **Intent, then work.** Write the INTENT line before any mutation, then work only inside the write
    scope. Protected expectations change only by a prior superseding decision; protected test files
    stay byte-identical, so add coverage in a new file.
