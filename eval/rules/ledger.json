@@ -721,7 +721,7 @@
       "rule_id": "R-PLAN-09",
       "statement": "Long initiatives may prepare milestones; every requirement keeps an owner, and deferred tasks stay Draft until verified Ready.",
       "statement_sha256": "69a94acb2074238280e8a2ac7a65098bcad79386d4384fc83f55ce0c84a13d05",
-      "home": "references/guides/decompose-and-lint.md:108",
+      "home": "references/guides/decompose-and-lint.md:109",
       "home_fragment": "Long initiatives may use optional milestones",
       "units": [],
       "mirrors": [],
@@ -820,7 +820,7 @@
       "rule_id": "R-PLAN-12",
       "statement": "Planning always runs on a more capable tier than the Executor's whenever more than one suitable tier binds; a one-tier harness records its limitation. These are role proposals, not claims that a host binding occurred.",
       "statement_sha256": "f2516914cd7def40bbf47bf3973d6b24cd128e5ac88a7d378b148c84cc53d2ff",
-      "home": "references/guides/decompose-and-lint.md:266",
+      "home": "references/guides/decompose-and-lint.md:267",
       "home_fragment": "Planning always runs on a more capable tier",
       "units": [],
       "mirrors": [],
@@ -3805,7 +3805,7 @@
       "rule_id": "R-PLAN-15",
       "statement": "Before Ready, when tasks touch shared guards, PLAN applies placeholder or plausible outputs of those tasks to a disposable copy and runs the project's full regression suite, every failing consumer gets an owner task or a recorded expected-red decision, and the rehearsal is readiness evidence, not source execution.",
       "statement_sha256": "970013aa53d9dbaefc0d96c82f11f2e76573aa868a08c3b53f8f326f780d150f",
-      "home": "references/guides/decompose-and-lint.md:96",
+      "home": "references/guides/decompose-and-lint.md:97",
       "home_fragment": "Before Ready, when tasks touch shared guards",
       "units": [],
       "mirrors": [],
@@ -4048,7 +4048,7 @@
       "rule_id": "R-PLAN-16",
       "statement": "Each subagent role targets the cheapest available model that fits its tier in the team table. Before the first dispatch, show the owner the concrete role-to-model table for every subagent role and get an explicit confirmation. A run intent is not a model confirmation. Any later model change for a role, an escalation included, needs a new confirmation before that dispatch. Without that confirmation, the affected task waits on the owner.",
       "statement_sha256": "9e1444771bd9b09f8349106d55d032baef3862449540e6d91dd19af142217542",
-      "home": "references/guides/decompose-and-lint.md:274",
+      "home": "references/guides/decompose-and-lint.md:275",
       "home_fragment": "Each subagent role targets the cheapest",
       "units": [],
       "mirrors": [],
@@ -4071,7 +4071,7 @@
       "rule_id": "R-PLAN-17",
       "statement": "When a task looks too hard for the cheapest bindable tier, strengthen its brief before any Tier deviation. Add the missing context, split the work into smaller steps, and give exact commands with their expected results. The planner, on a more capable tier, writes the brief so that the Executor makes no design decision. A brief that leaves one to the Executor is not ready. When an Executor cannot finish, the planner strengthens the brief first; an escalation is the exception. A Tier deviation is the last resort, and its `**Tier reason**` says why a stronger brief is not enough. A review role (lock or complete) runs one tier above the Executor whose task it reviews. When that tier does not bind, record the limitation. An audit runs at the Auditor's tier in the team table.",
       "statement_sha256": "5ee7a8f573a659ff497f3dca95293acb2c5b4a121321266cc4841a383194cc32",
-      "home": "references/guides/decompose-and-lint.md:280",
+      "home": "references/guides/decompose-and-lint.md:281",
       "home_fragment": "When a task looks too hard for the cheapest",
       "units": [],
       "mirrors": [],
@@ -4126,6 +4126,29 @@
       "origin": {
         "added_in": "9.2.0",
         "trigger": "OpenSpec takeaways plan, requirements base",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-13"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-20",
+      "statement": "Every WHEN/THEN scenario names its Check: a command with its pass condition, or a named rubric and reviewer role; TBD, a cross-reference or prose is not a Check.",
+      "statement_sha256": "fcc964a41bc5951d41d9513fd633693d5d5e5604a8d7404bd8dca28765b70990",
+      "home": "references/guides/decompose-and-lint.md:86",
+      "home_fragment": "every WHEN/THEN scenario names its Check",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.2.0",
+        "trigger": "OpenSpec takeaways plan, scenario checks",
         "discovered_by": []
       },
       "evidence": {
