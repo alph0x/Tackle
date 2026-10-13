@@ -7123,7 +7123,16 @@
       "unit_sha256": "5fd7755de7b8836a068bf739757260de598439f4abefa06040a92128f107b673",
       "disposition": "reworded",
       "destination": "references/guides/run-card.md",
-      "note": "Before closing the initiative, read every Complete task's brief, report and cited records as prose; an unmet owner request is an `Open` obligation raised with the owner; with a map delta, also offer the owner its fold (`architecture-map.md`, Closure fold).",
+      "note": "Before closing the initiative, read every Complete task's brief, report and cited records as prose; an unmet owner request is an `Open` obligation raised with the owner; with a map delta or a requirements delta, also offer the owner its fold (`architecture-map.md` or `requirements-base.md`, Closure fold).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run-card.md",
+      "line": 50,
+      "unit_sha256": "936076ede639726bbd8c4cefab139a0cfa04c7a7a4f3d0dea6b1de9538961af9",
+      "disposition": "reworded",
+      "destination": "references/guides/run-card.md",
+      "note": "Before closing the initiative, read every Complete task's brief, report and cited records as prose; an unmet owner request is an `Open` obligation raised with the owner; with a map delta or a requirements delta, also offer the owner its fold (`architecture-map.md` or `requirements-base.md`, Closure fold).",
       "destination_unit_sha256": null
     },
     {
