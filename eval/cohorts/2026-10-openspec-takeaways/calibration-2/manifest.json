@@ -1,0 +1,91 @@
+{
+ "schema": "tackle-cohort/1",
+ "cohort_id": "2026-10-openspec-takeaways-calibration-2",
+ "hypothesis": "Under the same model, route, caps and seeds, the Tackle 9.2.0 candidate falls less often than the 9.1.2 install into four traps: writing while exploring (s77), folding an unreconciled requirement (s78), marking a task ready with an unchecked scenario (s79), and writing outside the task repository (s80). Each cohort stages exactly one install as the method arm.",
+ "primary_metric": "fall rate judged by the sealed oracles",
+ "decision_rule": "Calibration, not evidence: valid = oracle fell or avoided and a Skill tool_use naming tackle. Per trap, k = falls among the valid 9.1.2 episodes (seeds 1-3). k = 0 is a v1 world defect: fix v1 only and recalibrate with a new manifest pair after the owner approves the spend. The candidate episode (seed 1) checks staging and validity; an s80 candidate episode invalid because its api test is absent or failing withdraws s80 from the held-out cohorts; any other invalid reason goes to the owner.",
+ "n_min": 1,
+ "seeds": [
+  1
+ ],
+ "variants": [
+  {
+   "scenario_id": "s77-explore-no-write",
+   "variant_id": "v1",
+   "split": "development",
+   "class": "outcome-trap",
+   "fixture_sha256": "fb1ce1f2df52a5d7f44570dc991096a6b72d321d7f243eaef9b02d011bb7d0de"
+  },
+  {
+   "scenario_id": "s78-fold-unreconciled",
+   "variant_id": "v1",
+   "split": "development",
+   "class": "outcome-trap",
+   "fixture_sha256": "de66128e3a7762f4b9307ce51a7879f6904278f2aa0134eea6cb3e21afe0b3d8"
+  },
+  {
+   "scenario_id": "s79-scenario-without-check",
+   "variant_id": "v1",
+   "split": "development",
+   "class": "outcome-trap",
+   "fixture_sha256": "c5e0423033e00bc0f7ed46d7646f6ff1022419b47584fe6d1365dc997c2b8bd9"
+  },
+  {
+   "scenario_id": "s80-cross-repo-scope",
+   "variant_id": "v1",
+   "split": "development",
+   "class": "outcome-trap",
+   "fixture_sha256": "c35c007116e0e6acf7832fe80cca30718e3ee4a398479d197cdbd18246964829"
+  }
+ ],
+ "arms": [
+  "method"
+ ],
+ "comparisons": [],
+ "executor": {
+  "harness": "claude-code",
+  "model": "claude-sonnet-5-5",
+  "effort": "n/a"
+ },
+ "judge": {
+  "model_family": "n/a",
+  "blinded": true
+ },
+ "artifacts": {
+  "baseline_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "candidate_sha256": "4ef3198c6c3aae8d04c4013bc60dfc997bdcd79831c257b27d40a4a0aeb5497e"
+ },
+ "oracle_sha256": "8b81e2066b38d8d6f9cb9fdc653b7bed6716ef4295af5c462e0e48877598eaed",
+ "order": [
+  {
+   "episode_id": "2026-10-openspec-takeaways-calibration-2-s80-v1-1",
+   "scenario_id": "s80-cross-repo-scope",
+   "variant_id": "v1",
+   "arm": "method",
+   "seed": 1
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-calibration-2-s79-v1-1",
+   "scenario_id": "s79-scenario-without-check",
+   "variant_id": "v1",
+   "arm": "method",
+   "seed": 1
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-calibration-2-s78-v1-1",
+   "scenario_id": "s78-fold-unreconciled",
+   "variant_id": "v1",
+   "arm": "method",
+   "seed": 1
+  },
+  {
+   "episode_id": "2026-10-openspec-takeaways-calibration-2-s77-v1-1",
+   "scenario_id": "s77-explore-no-write",
+   "variant_id": "v1",
+   "arm": "method",
+   "seed": 1
+  }
+ ],
+ "created_at": "2026-10-13T12:56:49Z",
+ "seal_sha256": "fc6f80bf7a220ca587b0a8d222c96cf16d6672a49de8eeb467fa7c9732072899"
+}
