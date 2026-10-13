@@ -201,7 +201,7 @@ def main():
     except SystemExit:
         return 2
     final = Path(args.final)
-    nulls = {name: None for name in SCORE_NAMES}
+    nulls = {name: 0 for name in SCORE_NAMES}
     if not final.is_dir():
         return emit('invalid', 'the final tree is not a directory', nulls)
     facts = json.loads((HERE / 'variant.json').read_text(encoding='utf-8'))

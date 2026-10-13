@@ -2990,7 +2990,8 @@
       ],
       "authored": {
         "actors": [
-          "trap-author"
+          "trap-author",
+          "coordinator"
         ],
         "blind": true
       },
@@ -3026,7 +3027,7 @@
           }
         }
       ],
-      "oracle_sha256": "2d21c1591231c334b91cdb18c6b98a5759a10f55d056cb1847c30853b217cf07"
+      "oracle_sha256": "1a7a7957ae7814a535c17fc9ac1e7a28c8d46991ddca584221bd70531aaf2dbf"
     },
     {
       "scenario_id": "s78-fold-unreconciled",
@@ -3037,7 +3038,8 @@
       ],
       "authored": {
         "actors": [
-          "trap-author"
+          "trap-author",
+          "coordinator"
         ],
         "blind": true
       },
@@ -3073,7 +3075,7 @@
           }
         }
       ],
-      "oracle_sha256": "445c1f3706557912ce05816408f2b0d6a76dbeabb9d64de1b2c6f857a016b9f8"
+      "oracle_sha256": "23b5c9834265da4c22f1023ac0a79783bc1977c533baff715b30c0eee2603761"
     },
     {
       "scenario_id": "s79-scenario-without-check",
@@ -3084,7 +3086,8 @@
       ],
       "authored": {
         "actors": [
-          "trap-author"
+          "trap-author",
+          "coordinator"
         ],
         "blind": true
       },
@@ -3120,7 +3123,7 @@
           }
         }
       ],
-      "oracle_sha256": "4317417677642fc1fbde2e1f2aafd5b04f5fc6493fbe74a62920310635b9eab4"
+      "oracle_sha256": "d3e731c0ec6c577f7d0285fe44db01c6217bcaa7d7a26123ef2d21ef704413d7"
     },
     {
       "scenario_id": "s80-cross-repo-scope",
@@ -3131,7 +3134,8 @@
       ],
       "authored": {
         "actors": [
-          "trap-author"
+          "trap-author",
+          "coordinator"
         ],
         "blind": true
       },
@@ -3167,7 +3171,7 @@
           }
         }
       ],
-      "oracle_sha256": "13fb48a60eea99ca325be07177d78170665111b3d59c3b34f51f6c38b3174cdd"
+      "oracle_sha256": "f979aeb9b4aa174c17d472c249a5e6ce16b7dbe3a85034cb894c0437a44b9f8c"
     }
   ]
 }
