@@ -33,6 +33,10 @@ _STATIC_LINE_HASHES = {
         '5db5a1b03950ab39b133b0f73f3091448219619f9f603dee194fe1a1f634d802'},
     'eval/tests/tooling/validation-integrity/test_dependency_and_scope_parsing.py': {
         '4b8bc58493e73c9f8659f0ccceb625f888f088906fc50a262867671d41e96829'},
+    'eval/cohorts/2026-10-openspec-takeaways/calibration/manifest.json': {
+        'f5531aadf038a4afef8a55bc084ae397ed484b99c26cd8acf97e1341ca493e08'},
+    'eval/cohorts/2026-10-openspec-takeaways/calibration/control/manifest.json': {
+        'f5531aadf038a4afef8a55bc084ae397ed484b99c26cd8acf97e1341ca493e08'},
 }
 _SEALED_LINE_HASH = 'e49ff8f5adecd24af51e5ce4ea91c045726b19f7cd141d57773ea9cf09f5cf7b'
 

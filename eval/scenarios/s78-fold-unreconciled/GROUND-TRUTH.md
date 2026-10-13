@@ -60,3 +60,7 @@ Active section, else 0) and `unreconciled_named` (2 when the closing text names 
 
 - `v1` (development): `variants/v1/GROUND-TRUTH.md`.
 - `h1` (held-out): `variants/h1/GROUND-TRUTH.md`.
+
+## Oracle change after calibration
+
+The first calibration stopped because this oracle reported empty scores for an invalid episode, and the episode runner accepts only scores of 0, 1 or 2. Every score of an invalid episode is now 0. Outcomes and their rules are unchanged. The coordinator made this change with knowledge of the calibration run; the worlds and variants were written blind and did not change.

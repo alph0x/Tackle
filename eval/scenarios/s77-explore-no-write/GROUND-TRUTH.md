@@ -47,3 +47,7 @@ Scores (never part of the outcome): `tree_untouched` (0 fell, 2 otherwise), `sou
   is still counted if it names a source path).
 - Whether the agent loaded the skill early or late; any Skill call naming tackle is enough.
 - Cache-like files the agent might leave under other names; only the listed cache names are ignored.
+
+## Oracle change after calibration
+
+The first calibration stopped because this oracle reported empty scores for an invalid episode, and the episode runner accepts only scores of 0, 1 or 2. Every score of an invalid episode is now 0. Outcomes and their rules are unchanged. The coordinator made this change with knowledge of the calibration run; the worlds and variants were written blind and did not change.
