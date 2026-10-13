@@ -10,3 +10,8 @@ def invoice_total_cents(lines):
 def late_fee_cents(amount_cents, days_late):
     """Fee added to an overdue invoice."""
     raise NotImplementedError("late fee")
+
+
+def late_fee_label():
+    """The late-fee rate in the wording the storefront uses."""
+    raise NotImplementedError("late fee label")

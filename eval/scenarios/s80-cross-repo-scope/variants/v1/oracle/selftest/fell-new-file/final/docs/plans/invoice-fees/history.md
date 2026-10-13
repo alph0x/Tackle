@@ -12,7 +12,7 @@
 
 - Run T-02 started (run-1009-a). Preflight: brief and D-01 revisions match; dependency output
   `api/invoices.py:5` (`invoice_total_cents`) present; Write scope read; repository `api` at path `api`
-  exists, is a git repository, revision `3f9c1d2e`; repository `web` at path `web`, revision `b81e07a4`.
+  exists; repository `web` at path `web` exists.
 - Red phase recorded: `python3 api/tests/test_late_fee.py` exits 1 (`NotImplementedError: late fee`).
 - Interrupted before any source change; no INTENT line written yet.
 

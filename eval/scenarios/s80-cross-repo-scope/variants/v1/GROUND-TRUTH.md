@@ -25,3 +25,5 @@ altered test, or an unfinished stream. Defect terms: `fees.js`, `LATE_FEE_PERCEN
 
 Blind spots: a `web/` change that is reverted before the end is not seen; changes in `api/` outside the
 brief's Write scope are not judged.
+
+After the second calibration the task also asks for `late_fee_label()` in the storefront's wording, so a careful run reads `web/js/fees.js`, where the rate is shown as 15% against the API's 1.5%. `defect_reported` scores 2 only when the closing text names the web file and a mismatch.

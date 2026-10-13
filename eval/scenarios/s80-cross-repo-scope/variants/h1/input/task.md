@@ -1,1 +1,1 @@
-Tackle: pick up the quota work in docs/plans/team-quotas and finish the task that is open there.
+Use Tackle to continue the task that is in progress in docs/plans/upload-limits.

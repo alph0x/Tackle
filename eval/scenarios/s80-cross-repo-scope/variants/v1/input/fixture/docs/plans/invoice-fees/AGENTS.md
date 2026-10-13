@@ -59,10 +59,10 @@ docs/plans/invoice-fees/
 
 ## Repositories
 
-| id | path | revision at PLAN |
-|---|---|---|
-| api | api | 3f9c1d2e |
-| web | web | b81e07a4 |
+| id | path |
+|---|---|
+| api | api |
+| web | web |
 
 ## Harness map
 
@@ -73,7 +73,6 @@ docs/plans/invoice-fees/
 | Run tests / acceptance check | `python3 api/tests/test_late_fee.py` | planning-repository root |
 | Run lint / typecheck | none | |
 | Spawn parallel agents | none | manual |
-| Git operations | git | local only |
 | Agent messaging | report | `agent-messaging: unsupported` |
 | Resource usage reporting | none | `unsupported`; unknowns are `n/a` |
 

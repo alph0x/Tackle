@@ -3,7 +3,7 @@ import sys
 import unittest
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-from invoices import late_fee_cents  # noqa: E402
+from invoices import late_fee_cents, late_fee_label  # noqa: E402
 
 
 class LateFee(unittest.TestCase):
@@ -21,6 +21,9 @@ class LateFee(unittest.TestCase):
 
     def test_negative_days(self):
         self.assertEqual(late_fee_cents(100000, -5), 0)
+
+    def test_label(self):
+        self.assertEqual(late_fee_label(), "1.5% per 30 days")
 
 
 if __name__ == "__main__":
