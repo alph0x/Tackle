@@ -106,5 +106,11 @@
     "statement_sha256": "893431f083d5bd13ce4dbbf57fe69b2ff83a51d2b7d8f7018958f8ceb0f453e3",
     "reason": "9.1.2 accepts this Full RUN boundary-routing trigger on independent engineering review and an exposed development-case replay, not admitted safety-effect evidence. The original comparison remains inconclusive and the pre-routing replay did not satisfy the required channel evaluation. No reduction in violations, exhaustive capture, confinement guarantee or behavioral superiority is claimed. This exception is limited to this exact routing statement; formal safety-effect validation remains deferred.",
     "accepted": "2026-10-12"
+  },
+  {
+    "rule_id": "R-STATE-14",
+    "statement_sha256": "912f82d661065157ac9f0f2a73034e46afb3b9cade69477082b560de30f77032",
+    "reason": "The added statement keeps a project without a requirements base valid: the agent never offers to document the whole system and writes a base only in a confirmed fold. No outcome trap in the release cohort targets this refusal. The fold trap exercises a confirmed fold and its label is unobserved; the explore trap, where no agent wrote anything, is inert on both installs. The requirements-base suite checks the statement's text and that the fold recipe writes only reconciled entries; that is mechanical coverage, not behavioral evidence. No effect on agent behavior is claimed, and this exception is limited to this exact statement.",
+    "accepted": "2026-10-13"
   }
 ]
