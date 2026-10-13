@@ -19,6 +19,8 @@ the behavior behind an id, not merely repeat the id.
 |---|---|---|---|---|
 | `{{R01}}` | {{...}} | {{...}} | {{...}} | {{...}} |
 
+A behavior may also be written as WHEN/THEN scenarios; each names its Check, as in `task.tmpl.md`.
+
 ### Acceptance and test strategy
 
 Map every criterion to a task check, related regression check, and evidence slot. Include positive and

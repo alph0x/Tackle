@@ -91,6 +91,8 @@ valid semantic equivalents are accepted.
 | {{boundary}} | {{...}} | {{...}} | {{test/artifact}} |
 | {{invalid}} | {{...}} | {{diagnostic/exit/error}} | {{negative fixture}} |
 
+A case may also be a scenario: `#### Scenario: <name>`, then `- WHEN`, `- THEN` and `- Check:` lines; `- GIVEN` and `- AND` are optional. The Check names a command with its pass condition, or `review: <rubric> by <reviewer role>`. A scenario without a Check is not ready.
+
 State exact output requirements separately from valid semantic alternatives. Include at least
 one valid alternative where formatting is intentionally irrelevant and a negative case that
 would expose an implementation satisfying only a keyword or count check.

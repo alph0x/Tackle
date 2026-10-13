@@ -83,6 +83,7 @@ Set a selected prepared task **Ready to run** only when all of these are true:
 - every selected criterion has its required behavior, observable, task case, task check and verification-record slot, and every task has a criterion; all later criteria retain Draft owners, outcomes/interfaces and a named future check obligation; unjustified scope is resolved or removed and is listed under scope drift only as a
   blocking finding;
 - interfaces and dependency crossings are coherent, including configuration consumers;
+- every WHEN/THEN scenario names its Check: a command with its pass condition, or a named rubric and reviewer role; `TBD`, a cross-reference or prose is not a Check;
 - positive and negative validator/contract-boundary fixtures pass with checked native results
   and exits, plus exact counts only where the contract requires them, and call each validator with
   the acceptance script's exact argv (revision names such as an annotated tag, the tree under test, a

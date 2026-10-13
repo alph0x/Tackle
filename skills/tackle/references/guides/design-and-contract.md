@@ -19,6 +19,7 @@ slot. Add a positive fixture and a negative fixture for each validator or contra
 negative fixture must expose an implementation that satisfies a keyword, file-existence, or test
 count check while violating the required behavior. A negative fixture also covers invalid or
 tampered evidence, not only a behavior violation.
+A scenario-form case counts only with its Check; a scenario without one is a readiness gap.
 
 Choose the check type during PLAN, before implementation. Prefer one end-to-end check through the
 real public consumer as the sole new test when it covers the criterion; a complex integrated
