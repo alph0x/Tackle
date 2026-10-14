@@ -1640,6 +1640,73 @@ def load_export_summary(ws):
     return None
 
 
+EXPORT_PROSE_ID_PATTERNS = (re.compile(r'\b[TPDOQCRG]-\d+\b'), re.compile(r'\bREQ-[A-Z0-9]+(?:-[A-Z0-9]+)*\b'),
+                   re.compile(r'\bR-[A-Z]+-\d+\b'))
+EXPORT_PROSE_EXTENSIONS = frozenset(('md swift json py kt kts ts tsx js jsx java rb go rs sh yml yaml toml txt html css xml '
+                            'plist storyboard xib gradle sql csv lock').split())
+EXPORT_PROSE_TRAILING = '.,;:!?)]'
+
+
+def _export_prose(value, path=''):
+    """Every string of the executive summary as (field path, text), in document order; keys are never scanned."""
+    if isinstance(value, str):
+        yield path, value
+    elif isinstance(value, dict):
+        for key, item in value.items():
+            if not path and key in ('schema', 'authority'):
+                continue
+            yield from _export_prose(item, '%s.%s' % (path, key) if path else key)
+    elif isinstance(value, list):
+        for index, item in enumerate(value):
+            yield from _export_prose(item, '%s[%d]' % (path, index))
+
+
+def _sibling_names(ws):
+    """Hyphenated directory names beside the workspace, the workspace itself included."""
+    try:
+        return [child.name for child in Path(ws).resolve().parent.iterdir() if child.is_dir() and '-' in child.name]
+    except OSError:
+        return []
+
+
+def _prose_kinds(text, names):
+    """The kinds of reader-facing prose the rule flags, each with its first match, in kind order."""
+    kinds = []
+    ids = [found for pattern in EXPORT_PROSE_ID_PATTERNS for found in pattern.finditer(text)]
+    if ids:
+        kinds.append(('Tackle id', min(ids, key=lambda found: found.start()).group(0)))
+    for token in text.split():
+        stripped = token.rstrip(EXPORT_PROSE_TRAILING)
+        if not stripped or stripped.lstrip('([\'"').startswith(('http://', 'https://')):
+            continue
+        if ('/' in stripped and re.search(r'\.[A-Za-z]{1,10}$', stripped)) or (
+                '.' in stripped and stripped.rsplit('.', 1)[1].lower() in EXPORT_PROSE_EXTENSIONS):
+            kinds.append(('file path', stripped))
+            break
+    if '`' in text:
+        kinds.append(('backtick', '`'))
+    places = [(text.index('docs/plans/'), 0, 'docs/plans/')] if 'docs/plans/' in text else []
+    for name in names:
+        found = re.search(r'(?<![\w-])%s(?![\w-])' % re.escape(name), text)
+        if found:
+            places.append((found.start(), -len(name), found.group(0)))
+    if places:
+        kinds.append(('workspace name', min(places)[2]))
+    return kinds
+
+
+def export_prose_notes(ws):
+    """One stderr line per field and kind of export prose that names an id, a path, a backtick or a workspace."""
+    path = next((candidate for candidate in (ws / 'view' / 'export-summary.json', ws / 'export-summary.json')
+                 if candidate.is_file()), None)
+    data = read_json(path)[0] if path else None
+    if not isinstance(data, dict):
+        return []
+    names = _sibling_names(ws)
+    return ['note: the executive summary field %s contains a %s: %s' % (field, kind, match)
+            for field, text in _export_prose(data) for kind, match in _prose_kinds(text, names)]
+
+
 def rel3(rel):
     return (rel[0], rel[1], rel[2] if len(rel) > 2 else '')
 
@@ -2292,6 +2359,9 @@ def main():
         stage = stages_of([t['id'] for t in tasks], {t['id']: list(t['deps']) for t in tasks})
         if stage is None:
             problems.append('the dependencies form a cycle')
+    if export_summary is not None:
+        for line in export_prose_notes(ws):
+            print(line, file=sys.stderr)
     if problems:
         for line in problems:
             print('refused: %s' % line)

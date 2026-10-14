@@ -4045,6 +4045,29 @@
       "historical": []
     },
     {
+      "rule_id": "R-STATUS-22",
+      "statement": "The export is read by people who do not know the plan, so its prose names no task, decision, question or requirement ids, file paths, backticks or workspace names. The build warns on stderr for each field that contains one and never fails.",
+      "statement_sha256": "f80a21add416a374605a056aa2d366d6962d229b42122ec98e7e5082a945fdf4",
+      "home": "references/guides/plan-view.md:139",
+      "home_fragment": "The export is read by people who do not know the plan, so it",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.2.1",
+        "trigger": "plan view export hotfix, executive prose",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-14"
+      },
+      "historical": []
+    },
+    {
       "rule_id": "R-RUN-25",
       "statement": "Closing a Complete task sets its map delta changes to done before any view rebuild.",
       "statement_sha256": "63123fa9f2c6cd6a7386247812b9f677fa94a2a95b651238865145ad81f2076c",
