@@ -713,6 +713,17 @@ def input_digests(ws, template_path, map_base, map_scope):
     return dict(schema='tackle-input-digest/1', digest=overall.hexdigest(), inputs=inputs, map=mode, map_scope=map_scope)
 
 
+def check_divergence_notes(ws):
+    """The divergence notes for --check: read-only, nothing for a Focused plan or a board with no task rows."""
+    try:
+        if re.search(r'^Gate:\s*Lite\b', read(ws, 'plan.md'), re.M):
+            return []
+        _, tasks = parse_board(read(ws, 'task-board.md'), [])
+        return state_divergence_notes(load_summary(ws), load_export_summary(ws), tasks)
+    except (OSError, ValueError, KeyError, TypeError, AttributeError):
+        return []
+
+
 def check_view(record, output):
     """Compare the digests a page recorded with the inputs now. Writes nothing."""
     try:
@@ -945,10 +956,12 @@ def executive_task_state_counts(tasks):
     return counts
 
 
-def executive_progress_story(export_summary, summary, fields, tasks, focused, ui, export_ui):
+def executive_progress_story(export_summary, summary, fields, tasks, focused, ui, export_ui, stale_as_of=''):
     source = export_summary or {}
     progress = source.get('progress', {})
     parts = []
+    if stale_as_of:
+        parts.append('<p class="executive-note" role="note">%s</p>' % esc(ui['stale_prose'].format(as_of=stale_as_of)))
     current = []
     if tasks:
         done = sum(1 for task in tasks if task['status'] == 'Complete')
@@ -1018,14 +1031,14 @@ def executive_progress_story(export_summary, summary, fields, tasks, focused, ui
     return ''.join(parts)
 
 
-def printable_reports(plan, focused, fields, reqs, requirement_rows, decisions, summary, export_summary, tasks, working, board, snapshot, stamp, method, title, ui, export_ui):
+def printable_reports(plan, focused, fields, reqs, requirement_rows, decisions, summary, export_summary, tasks, working, board, snapshot, stamp, method, title, ui, export_ui, stale_as_of=''):
     plan_scope = (export_ui['report_scope'], export_ui['plan'])
     progress_scope = (export_ui['report_scope'], export_ui['progress'])
     built = (export_ui['report_built'], stamp)
     methodology = (export_ui['report_method'], method)
     report_title, shared = executive_shared(export_summary, summary, title, objective_of(plan), ui, export_ui)
     plan_story = executive_plan_story(export_summary, summary, decisions, title, objective_of(plan), ui, export_ui)
-    progress_story = executive_progress_story(export_summary, summary, fields, tasks, focused, ui, export_ui)
+    progress_story = executive_progress_story(export_summary, summary, fields, tasks, focused, ui, export_ui, stale_as_of)
     compact_source = export_summary or {}
     compact_context_text = compact_source.get('context') or export_ui['report_context_fallback'].format(title=report_title)
     compact_purpose = compact_source.get('purpose') or (summary.get('objective') if summary else '') or objective_of(plan)
@@ -1530,11 +1543,15 @@ def _board_states(value):
 def set_aside_stale_prose(summary, export_summary, tasks):
     """Curated status prose describes one board. When it declares that board's task states and the current states
     differ, its time-bound fields are dropped so the canonical counts and records speak alone; prose that declares
-    no board is kept as before. Returns the as-of text of the first stale summary, or '' when none is stale."""
+    no board is kept as before. Returns (page, report): the as-of text of the first stale summary for the page
+    notice, and for the Progress and Both reports the as-of of the executive summary when its progress prose was
+    set aside, else of the curated summary when its next steps were set aside and the executive summary has none
+    of its own. Each is '' when nothing the report reads was set aside."""
     current = {task['id']: task['status'] for task in tasks}
-    stale = ''
+    stale, report, summary_next_set_aside = '', '', False
     if summary is not None and (summary.get('now') or summary.get('next') or summary.get('owner')) \
             and summary.get('board_states') is not None and summary.get('board_states') != current:
+        summary_next_set_aside = bool(summary.get('next'))
         summary.update(now='', next=[], owner=[])
         stale = summary.get('as_of') or '?'
     progress = export_summary.get('progress') if export_summary else None
@@ -1542,7 +1559,39 @@ def set_aside_stale_prose(summary, export_summary, tasks):
             and export_summary.get('board_states') is not None and export_summary.get('board_states') != current:
         progress.update(achievements=[], open_work=[], dependency='', next=[], evidence='')
         stale = stale or export_summary.get('as_of') or '?'
-    return stale
+        report = export_summary.get('as_of') or '?'
+    elif summary_next_set_aside and not (progress and progress.get('next')):
+        report = summary.get('as_of') or '?'
+    return stale, report
+
+
+def _task_order(ident):
+    found = re.fullmatch(r'T-(\d+)', ident)
+    return (0, int(found.group(1)), ident) if found else (1, 0, ident)
+
+
+def state_divergence_notes(summary, export_summary, tasks):
+    """One line per summary whose declared task states differ from the board's current states."""
+    if not tasks:
+        return []
+    current = {task['id']: task['status'] for task in tasks}
+    lines = []
+    for name, data in (('the curated summary', summary), ('the executive summary', export_summary)):
+        declared = data.get('board_states') if data else None
+        if declared is None or declared == current:
+            continue
+        segments = []
+        for ident in sorted(set(declared) | set(current), key=_task_order):
+            if ident in declared and ident in current:
+                if declared[ident] != current[ident]:
+                    segments.append('%s: %s → %s' % (ident, declared[ident], current[ident]))
+            elif ident in declared:
+                segments.append('%s: %s → not on the board' % (ident, declared[ident]))
+            else:
+                segments.append('%s: not in the summary → %s' % (ident, current[ident]))
+        if segments:
+            lines.append('note: %s (as of %s) describes an earlier board: %s' % (name, data.get('as_of') or '?', '; '.join(segments)))
+    return lines
 
 
 def _export_pairs(value):
@@ -2151,6 +2200,8 @@ def main():
     template = blocks[0]
     record = input_digests(ws, args.template, args.map_base, args.map_scope)
     if args.check:
+        for line in check_divergence_notes(ws):
+            print(line, file=sys.stderr)
         return check_view(record, args.output)
     problems = []
     plan = read(ws, 'plan.md')
@@ -2167,7 +2218,7 @@ def main():
     if focused and not reqs:
         problems.append('the Focused plan names no requirement id in its Purpose / requirements line or its criteria table')
     tasks, states, board = [], DEFAULT_STATES, ''
-    stale_prose = ''
+    stale_prose, report_stale = '', ''
     if not focused:
         board = read(ws, 'task-board.md')
         if not board:
@@ -2175,7 +2226,7 @@ def main():
         states, tasks = parse_board(board, problems)
         if board and not tasks:
             problems.append('the board has no task rows')
-        stale_prose = set_aside_stale_prose(summary, export_summary, tasks)
+        stale_prose, report_stale = set_aside_stale_prose(summary, export_summary, tasks)
         progress = export_summary.get('progress', {}) if export_summary else {}
         for name, data, prose in (
                 ('the curated summary', summary, summary and (summary.get('now') or summary.get('next') or summary.get('owner'))),
@@ -2184,6 +2235,8 @@ def main():
             if data is not None and prose and data.get('board_states') is None:
                 print('note: %s declares no board states, so its status prose cannot be checked for staleness'
                       % name, file=sys.stderr)
+        for line in state_divergence_notes(summary, export_summary, tasks):
+            print(line, file=sys.stderr)
         seen = set()
         for t in tasks:
             if t['id'] in seen:
@@ -2337,7 +2390,7 @@ def main():
         map=map_island),
         ensure_ascii=True).replace('<', '\\u003c').replace('>', '\\u003e').replace('&', '\\u0026')
     print_reports = printable_reports(plan, focused, fields, reqs, requirement_rows, decisions, summary, export_summary, tasks, working, board, snapshot,
-                                      stamp, method, title, ui, export_ui)
+                                      stamp, method, title, ui, export_ui, report_stale)
     values = dict(
         lang=lang, title=esc(presentation_title), brand=esc(presentation_title if len(presentation_title) <= 40 else presentation_title[:39] + '…'),
         kicker=esc(presentation_kicker), title_size='long' if len(presentation_title) > 28 else 'short',

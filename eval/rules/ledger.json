@@ -4022,6 +4022,29 @@
       "historical": []
     },
     {
+      "rule_id": "R-STATUS-21",
+      "statement": "The Progress and Both reports of the PDF carry the same note. The build and its check also name, on stderr, each task whose state differs from the states a summary declares.",
+      "statement_sha256": "05320f189fdd6c016ff9d60ddb136f59e81e4973780846df92a12a14e3215a0d",
+      "home": "references/guides/plan-view.md:138",
+      "home_fragment": "The Progress and Both reports of the PDF carry the same note",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.2.1",
+        "trigger": "plan view export hotfix, stale summaries",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-14"
+      },
+      "historical": []
+    },
+    {
       "rule_id": "R-RUN-25",
       "statement": "Closing a Complete task sets its map delta changes to done before any view rebuild.",
       "statement_sha256": "63123fa9f2c6cd6a7386247812b9f677fa94a2a95b651238865145ad81f2076c",
