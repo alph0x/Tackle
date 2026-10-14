@@ -7406,6 +7406,15 @@
       "destination": "references/guides/full-checks.md",
       "note": "Never probe by writing, replacing or deleting a real file.",
       "destination_unit_sha256": null
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 16,
+      "unit_sha256": "932fa2035bb02341fdf949e9ba99716453bb382ca1b1827a736b02d48a4b943e",
+      "disposition": "ruled",
+      "destination": null,
+      "note": "Digest index row for the plan-view recipe; its value is a sha256 of the recipe file that changes with every recipe edit, so it carries no normative text.",
+      "destination_unit_sha256": null
     }
   ]
 }

@@ -135,7 +135,7 @@ from the current board. Without curation, the report uses a concise source-deriv
 fallback. For a Full plan, a curated summary records the board it describes: `as_of` and `board_states` in `view/summary.json`, and
 `authority.as_of` and `authority.canonical_states` in `view/export-summary.json`. When the current task states
 differ, its status prose (now, next, you; achievements, open work, dependency, next steps, evidence) is set
-aside with a visible note, and the canonical records speak alone until the summary is updated. The build warns about
+aside with a visible note, and the canonical records speak alone until the summary is updated. The Progress and Both reports of the PDF carry the same note. The build and its check also name, on stderr, each task whose state differs from the states a summary declares. The build warns about
 a summary that declares no board, since its prose cannot be checked. The report is independent of screen filters, theme and collapsed sections.
 
 The light A4 report uses readable sections and wrapping text. The page restores its title, temporary
