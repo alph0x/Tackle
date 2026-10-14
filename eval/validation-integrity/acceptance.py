@@ -11,7 +11,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-TRUSTED_GATES_SHA256 = "dcf2b097791d2ff2e465e3ffb31fb9f5cb506bb7165d70ff8d3c11385d9906cd"
+TRUSTED_GATES_SHA256 = "d32667d1b9f34ed75e8f94c89658aa7faa301644d4492a511b56a772dde1d5a8"
 
 
 def stamp():
@@ -22,8 +22,8 @@ def canonical_gates(source):
     after = source.split("### Skill self-lint gates\n", 1)[1]
     section = re.split(r"\n#{1,6} ", after, maxsplit=1)[0]
     gates = [command.strip() for _, command in re.findall(r"^   (`+)(.+?)\1$", section, re.M)]
-    if len(gates) != 8:
-        raise ValueError("canonical self-lint gate extraction did not yield eight commands")
+    if len(gates) != 9:
+        raise ValueError("canonical self-lint gate extraction did not yield nine commands")
     encoded = json.dumps(gates, ensure_ascii=False, separators=(",", ":")).encode()
     if hashlib.sha256(encoded).hexdigest() != TRUSTED_GATES_SHA256:
         raise ValueError("canonical self-lint commands changed without trusted review")

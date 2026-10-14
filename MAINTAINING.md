@@ -1,6 +1,6 @@
 # Maintaining Tackle
 
-This file documents Tackle's own release process: the release sweep, the eight self-lint
+This file documents Tackle's own release process: the release sweep, the nine self-lint
 gates, the deletion gate, and the one migration bridge.
 It does not ship with the installed skill (`SKILL.md` plus `references/`).
 
@@ -13,7 +13,7 @@ The installed skill reads only the current workspace layout. The migration guide
 
 Before any version tag, the owner names the workspace path(s) explicitly included in the release scope; unknown scope blocks the tag pending clarification. The agent runs every lint row on every discovered workspace (`docs/plans/*/`) plus the skill's own done-signals, then computes the lint summary from the observed row results. Release-gating workspaces are the deduplicated union of active workspaces (at least one task data row whose trimmed Status is legacy 🟡 or, under `tackle-workspace/3`, In progress, Checking or Interrupted) and explicitly selected workspaces. Selection adds obligations; it never exempts another active workspace. Mandatory failures in this union or the skill's own release gates block the tag until fixed or explicitly waived by the user; warn-severity rows retain their non-blocking severity.
 
-The release sweep is a direct, ordered procedure: (1) record the explicit release scope and run self-lint gates 1–8 below;
+The release sweep is a direct, ordered procedure: (1) record the explicit release scope and run self-lint gates 1–9 below;
 (2) run catalog integrity checks over `eval/scenarios/` and answer-sheet roots;
 (3) run rows 1–17 over every workspace; (4) run each initiative's done-signal;
 (5) apply the release-scope rule: every active or selected workspace must pass its mandatory rows
@@ -34,8 +34,8 @@ Before tagging, complete these four steps in this order; each follows the sweep 
 
 ### Skill self-lint gates
 
-The eight gates validate the installed Markdown skill and its documentation in the same sweep. Run all eight from the repo root; each stays silent and exits 0 on pass — any echoed line blocks the tag until fixed. Every version value derives from the files; no gate hardcodes one.
-The development acceptance harness pins the exact eight executable command cells independently
+The nine gates validate the installed Markdown skill and its documentation in the same sweep. Run all nine from the repo root; each stays silent and exits 0 on pass — any echoed line blocks the tag until fixed. Every version value derives from the files; no gate hardcodes one.
+The development acceptance harness pins the exact nine executable command cells independently
 of this document. After a reviewed command change, update its digest in
 `eval/validation-integrity/acceptance.py`; never derive that trust anchor from an unreviewed working copy.
 
@@ -57,6 +57,9 @@ of this document. After a reviewed command change, update its digest in
 
 8. **Runtime update trust boundary** — ordinary runtime/update instructions and active security fixtures contain no automatic network/update clause, no unexpected-owner archive URL, and no present tracked `tackle`/`tackle-check` basename:
    `u=$(grep -Ehc 'On any invocation.*self-update|Run the Check phase.*every Tackle invocation|Remote > local.*run Update|Download the tag tarball|Replace only the install artifact' skills/tackle/SKILL.md skills/tackle/references/guides/intake-and-gate.md skills/tackle/references/guides/update.md eval/scenarios/s16-self-update-trap/skill/SKILL.md eval/scenarios/s16-self-update-trap/skill/references/guides/update.md 2>/dev/null | awk '{s+=$1} END{print s+0}'); [ "$u" -eq 0 ] || echo "Runtime update trust boundary: automatic update clause"; h=$(git grep -nE 'https://(api\.)?github\.com/(repos/)?tackle-fan/Tackle' -- eval/scenarios 2>/dev/null | wc -l | tr -d ' '); [ "$h" -eq 0 ] || echo "Runtime update trust boundary: hostile archive URL"; r=$(git ls-files | awk '/(^|\/)(tackle|tackle-check)$/ {print}' | while IFS= read -r p; do [ -e "$p" ] && printf '%s\n' "$p"; done | awk 'END{print NR+0}'); [ "$r" -eq 0 ] || echo "Runtime update trust boundary: present tracked runner basename"`
+
+9. **Recipe manifest currency** — Gate 9 checks that the recipe manifest lists every recipe under references/recipes/ with its current sha256. It runs from the repository root and echoes one line per missing, stale or mismatched row:
+   `D=skills/tackle/references/recipes; M=$D/README.md; sha() { if command -v sha256sum >/dev/null 2>&1; then sha256sum "$1"; else shasum -a 256 "$1"; fi | cut -c 1-64; }; files=$(find $D -name '*.md' | sed "s|^$D/||" | grep -vxF README.md | sort); for f in $files; do n=$(grep -cF "($f) |" $M); if [ "$n" -eq 0 ]; then echo "recipe manifest: missing row $f"; elif [ "$n" -gt 1 ]; then echo "recipe manifest: duplicate row $f"; else h=$(sha "$D/$f"); case "$(grep -F "($f) |" $M)" in *"$h"*) ;; *) echo "recipe manifest: hash mismatch $f";; esac; fi; done; sed -n 's/^| \[\([^]]*\)\](\1) |.*/\1/p' $M | while IFS= read -r p; do [ -f "$D/$p" ] || echo "recipe manifest: stale row $p"; done`
 
 Gate 4 derives the immediately previous version from the stamp: a minor bump requires exactly `v<x.(y-1)> → v<x.y>`; a major bump (`y` = 0) accepts the previous major's last minor on the left side — e.g. releasing 4.0.0 requires `## v3.4 → v4.0 checklist`.
 
@@ -129,5 +132,5 @@ results; the release sweep closes with exactly:
 
 `sweep: N/M gates passed`
 
-- **M** = 8 self-lint gates + 1 catalog + the number of distinct workspaces in the union of active and explicitly selected workspaces. Count a workspace once even if it belongs to both sets. Every discovered workspace is still linted for diagnostic visibility.
+- **M** = 9 self-lint gates + 1 catalog + the number of distinct workspaces in the union of active and explicitly selected workspaces. Count a workspace once even if it belongs to both sets. Every discovered workspace is still linted for diagnostic visibility.
 - **N** = gates and union workspaces whose mandatory rows and done-signals pass; selected workspaces also require current global acceptance. Workspaces that are neither active nor selected report `WARN` on failure and never enter N/M. Warn-severity rows are reported but do not fail a workspace's sweep gate. A selected workspace's mandatory failure blocks the tag regardless of its board status.

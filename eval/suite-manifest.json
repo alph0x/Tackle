@@ -271,7 +271,7 @@
         "test_install.py",
         "test_install_root.py"
       ],
-      "tests": 26,
+      "tests": 34,
       "source": "eval/install/inventory",
       "category": "product",
       "purpose": "Installed artifact inventory, links and root resolution."

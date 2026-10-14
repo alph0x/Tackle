@@ -44,7 +44,7 @@ class ExactFieldValidationTests(unittest.TestCase):
     def test_acceptance_pins_executable_gate_cells(self) -> None:
         loader = runpy.run_path(str(ROOT / 'eval/validation-integrity/acceptance.py'))['canonical_gates']
         source = (ROOT / 'MAINTAINING.md').read_text(encoding='utf-8')  # the release gates moved there
-        self.assertEqual(len(loader(source)), 8)
+        self.assertEqual(len(loader(source)), 9)
         altered = source.replace('SKILL.md over budget', 'SKILL.md changed by attacker', 1)
         with self.assertRaisesRegex(ValueError, 'without trusted review'):
             loader(altered)

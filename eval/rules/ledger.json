@@ -2538,8 +2538,8 @@
     },
     {
       "rule_id": "R-REL-02",
-      "statement": "Releases require separate authorization, the eight self-lint gates, a catalog and workspace sweep and the required behavioral evidence.",
-      "statement_sha256": "d86263add30ca9711724b76b21721bd0ed34bfbaf7151decf98d61366b68af2e",
+      "statement": "Releases require separate authorization, the self-lint gates, a catalog and workspace sweep and the required behavioral evidence.",
+      "statement_sha256": "6f611de23fac9cd4462a76252e8d0f2c8dfc4024c6931209232032741cf430b9",
       "home": "SKILL.md:86",
       "home_fragment": "Releases require separate",
       "units": [],
@@ -4431,6 +4431,29 @@
         "scenarios": [],
         "cohort_id": null,
         "as_of": "2026-10-08"
+      },
+      "historical": []
+    },
+{
+      "rule_id": "R-REL-07",
+      "statement": "Gate 9 checks that the recipe manifest lists every recipe under references/recipes/ with its current sha256.",
+      "statement_sha256": "ffb99ce000a1aa9926c87c5243bf3b20d2dd9a25ff291f135dd6220de1b4b9d3",
+      "home": "MAINTAINING.md:61",
+      "home_fragment": "Gate 9 checks that the recipe manifest lists",
+      "units": [],
+      "mirrors": [],
+      "class": "maintainer",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.2.1",
+        "trigger": "plan view export hotfix, recipe manifest",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-14"
       },
       "historical": []
     },

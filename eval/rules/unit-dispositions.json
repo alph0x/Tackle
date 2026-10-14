@@ -61,7 +61,7 @@
       "unit_sha256": "1a54bdf402a4fec935c0ea3bef5baf038bf6f8ddebb3f788dc7bc732234f71de",
       "disposition": "reworded",
       "destination": "MAINTAINING.md",
-      "note": "The release sweep is a direct, ordered procedure: (1) record the explicit release scope and run self-lint gates 1–8 below; (2) run catalog integrity checks over `eval/scenarios/` and answer-sheet roots; (3) run rows 1–17 over every workspace; (4) run each initiative's done-signal; (5) apply the release-scope rule: every active or selected workspace must pass its mandatory rows and done-signal.",
+      "note": "The release sweep is a direct, ordered procedure: (1) record the explicit release scope and run self-lint gates 1–9 below; (2) run catalog integrity checks over `eval/scenarios/` and answer-sheet roots; (3) run rows 1–17 over every workspace; (4) run each initiative's done-signal; (5) apply the release-scope rule: every active or selected workspace must pass its mandatory rows and done-signal.",
       "destination_unit_sha256": null
     },
     {
@@ -153,7 +153,7 @@
       "disposition": "merged",
       "destination": "MAINTAINING.md",
       "note": null,
-      "destination_unit_sha256": "e11d2ba9b1a8fba65b279f19c00ebb19ad7ff55767110835b7d9d50f7087fd53"
+      "destination_unit_sha256": "2b79825ac1171ed52cbd62ccb0725b17ff18913d176d63b94f026c14ca31df51"
     },
     {
       "path": "references/guides/lint-spec.md",
@@ -162,7 +162,7 @@
       "disposition": "merged",
       "destination": "MAINTAINING.md",
       "note": null,
-      "destination_unit_sha256": "e530f56cf33817bf1d148fd06e8d0e9650a89b43cab98969bbedd7e0218f2b39"
+      "destination_unit_sha256": "4be1fc8be7d5177da4b3d78e9b4990e0b02caeb067f06a13c5324a209f559123"
     },
     {
       "path": "references/guides/lint-spec.md",
@@ -180,7 +180,7 @@
       "disposition": "merged",
       "destination": "MAINTAINING.md",
       "note": null,
-      "destination_unit_sha256": "a6999bfcab98a32b83ab0290dce9915c597b9a500c208be29d7dafa636518a00"
+      "destination_unit_sha256": "5585b20d76fc8f3821ad87986f979ba3c3ae7ecbc4d67fe7151b890189a46b4f"
     },
     {
       "path": "references/guides/lint-spec.md",
@@ -288,7 +288,7 @@
       "disposition": "merged",
       "destination": "MAINTAINING.md",
       "note": null,
-      "destination_unit_sha256": "93fff7d70c5d437b6b6962e3ca0bee7f61a5eea11451eac8c94a3652b406a4b8"
+      "destination_unit_sha256": "9eb73c2a549841cf35fe98aa5aa407a01b9c651f94ecfbb07e8603f4d7be46a7"
     },
     {
       "path": "references/guides/lint-spec.md",
@@ -5309,7 +5309,7 @@
       "unit_sha256": "f18e37d8bdd3ab854cdfe15bd09801f2dce04cf895d0c3ea3e725f8fd244ebda",
       "disposition": "reworded",
       "destination": "MAINTAINING.md",
-      "note": "This file documents Tackle's own release process: the release sweep, the eight self-lint gates, the deletion gate, and the one migration bridge.",
+      "note": "This file documents Tackle's own release process: the release sweep, the nine self-lint gates, the deletion gate, and the one migration bridge.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -6652,7 +6652,7 @@
       "unit_sha256": "1a54bdf402a4fec935c0ea3bef5baf038bf6f8ddebb3f788dc7bc732234f71de",
       "disposition": "reworded",
       "destination": "MAINTAINING.md",
-      "note": "The release sweep is a direct, ordered procedure: (1) record the explicit release scope and run self-lint gates 1–8 below; (2) run catalog integrity checks over `eval/scenarios/` and answer-sheet roots; (3) run rows 1–17 over every workspace; (4) run each initiative's done-signal; (5) apply the release-scope rule: every active or selected workspace must pass its mandatory rows and done-signal.",
+      "note": "The release sweep is a direct, ordered procedure: (1) record the explicit release scope and run self-lint gates 1–9 below; (2) run catalog integrity checks over `eval/scenarios/` and answer-sheet roots; (3) run rows 1–17 over every workspace; (4) run each initiative's done-signal; (5) apply the release-scope rule: every active or selected workspace must pass its mandatory rows and done-signal.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -7414,6 +7414,180 @@
       "disposition": "ruled",
       "destination": null,
       "note": "Digest index row for the plan-view recipe; its value is a sha256 of the recipe file that changes with every recipe edit, so it carries no normative text.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "MAINTAINING.md",
+      "line": 3,
+      "unit_sha256": "e81a09a41fdead67e854d61c1ae6b47bf6b7335d53dfd1576155e8f3b72f753a",
+      "disposition": "reworded",
+      "destination": "MAINTAINING.md",
+      "note": "This file documents Tackle's own release process: the release sweep, the nine self-lint gates, the deletion gate, and the one migration bridge.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "8",
+          "reason": "the self-lint gate count moved from eight to nine when recipe manifest gate 9 was added"
+        }
+      ]
+    },
+    {
+      "path": "MAINTAINING.md",
+      "line": 16,
+      "unit_sha256": "64ae6dc5f3c28df848ffad35859422d57276de00f9e2237e5e83890a036f75e5",
+      "disposition": "reworded",
+      "destination": "MAINTAINING.md",
+      "note": "The release sweep is a direct, ordered procedure: (1) record the explicit release scope and run self-lint gates 1–9 below; (2) run catalog integrity checks over `eval/scenarios/` and answer-sheet roots; (3) run rows 1–17 over every workspace; (4) run each initiative's done-signal; (5) apply the release-scope rule: every active or selected workspace must pass its mandatory rows and done-signal.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "8",
+          "reason": "the gate count is now nine"
+        }
+      ]
+    },
+    {
+      "path": "MAINTAINING.md",
+      "line": 37,
+      "unit_sha256": "e11d2ba9b1a8fba65b279f19c00ebb19ad7ff55767110835b7d9d50f7087fd53",
+      "disposition": "reworded",
+      "destination": "MAINTAINING.md",
+      "note": "The nine gates validate the installed Markdown skill and its documentation in the same sweep.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "8",
+          "reason": "the self-lint gate count moved from eight to nine when recipe manifest gate 9 was added"
+        }
+      ]
+    },
+    {
+      "path": "MAINTAINING.md",
+      "line": 37,
+      "unit_sha256": "e530f56cf33817bf1d148fd06e8d0e9650a89b43cab98969bbedd7e0218f2b39",
+      "disposition": "reworded",
+      "destination": "MAINTAINING.md",
+      "note": "Run all nine from the repo root; each stays silent and exits 0 on pass — any echoed line blocks the tag until fixed.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "8",
+          "reason": "the self-lint gate count moved from eight to nine when recipe manifest gate 9 was added"
+        }
+      ]
+    },
+    {
+      "path": "MAINTAINING.md",
+      "line": 38,
+      "unit_sha256": "a6999bfcab98a32b83ab0290dce9915c597b9a500c208be29d7dafa636518a00",
+      "disposition": "reworded",
+      "destination": "MAINTAINING.md",
+      "note": "The development acceptance harness pins the exact nine executable command cells independently of this document.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "8",
+          "reason": "the self-lint gate count moved from eight to nine when recipe manifest gate 9 was added"
+        }
+      ]
+    },
+    {
+      "path": "MAINTAINING.md",
+      "line": 132,
+      "unit_sha256": "93fff7d70c5d437b6b6962e3ca0bee7f61a5eea11451eac8c94a3652b406a4b8",
+      "disposition": "reworded",
+      "destination": "MAINTAINING.md",
+      "note": "**M** = 9 self-lint gates + 1 catalog + the number of distinct workspaces in the union of active and explicitly selected workspaces.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "8",
+          "reason": "the self-lint gate count moved from eight to nine when recipe manifest gate 9 was added"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 53,
+      "unit_sha256": "6b0457a85f1417974b0a3d17f14e805f569440002a24800be2851cfba9f446a5",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "The release sweep and the self-lint gates are documented in the repository's `MAINTAINING.md`.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "8",
+          "reason": "the self-lint gate count moved from eight to nine when recipe manifest gate 9 was added"
+        }
+      ]
+    },
+    {
+      "path": "skills/tackle/references/guides/lint-spec.md",
+      "line": 53,
+      "unit_sha256": "6b0457a85f1417974b0a3d17f14e805f569440002a24800be2851cfba9f446a5",
+      "disposition": "reworded",
+      "destination": "skills/tackle/references/guides/lint-spec.md",
+      "note": "The release sweep and the self-lint gates are documented in the repository's `MAINTAINING.md`.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "8",
+          "reason": "the self-lint gate count moved from eight to nine when recipe manifest gate 9 was added"
+        }
+      ]
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 12,
+      "unit_sha256": "953473c219e7ece69a14031abeb44e586f3626edb92208b56ec97d982d7d79a5",
+      "disposition": "reworded",
+      "destination": "references/recipes/README.md",
+      "note": "| [migrate/schema.md](migrate/schema.md) | `cdca8720634be9fbda16e3e6bc28062986980f6b4af8cbce99cd4ff87930dce6` |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 13,
+      "unit_sha256": "48521db645b8185c3d9f654cfa90066331e0f25896cbce83af4799331549bb22",
+      "disposition": "reworded",
+      "destination": "references/recipes/README.md",
+      "note": "| [migrate/step-pre3-to-3.md](migrate/step-pre3-to-3.md) | `8443d76c5cd440f44cb7d21e1fbc53793e33d4f9863a92a0de4c3d37ae95f594` |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 14,
+      "unit_sha256": "1a75ac36f0e5280a233b4de963d06cfd03514619493a86cf01b3e4bcf75a15ff",
+      "disposition": "reworded",
+      "destination": "references/recipes/README.md",
+      "note": "| [migrate/step-3-to-4.md](migrate/step-3-to-4.md) | `af58980257f402fb833df362bd73c5788040642ed5dd97260da5b2461e5b440e` |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "skills/tackle/references/recipes/README.md",
+      "line": 12,
+      "unit_sha256": "953473c219e7ece69a14031abeb44e586f3626edb92208b56ec97d982d7d79a5",
+      "disposition": "reworded",
+      "destination": "skills/tackle/references/recipes/README.md",
+      "note": "| [migrate/schema.md](migrate/schema.md) | `cdca8720634be9fbda16e3e6bc28062986980f6b4af8cbce99cd4ff87930dce6` |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "skills/tackle/references/recipes/README.md",
+      "line": 13,
+      "unit_sha256": "48521db645b8185c3d9f654cfa90066331e0f25896cbce83af4799331549bb22",
+      "disposition": "reworded",
+      "destination": "skills/tackle/references/recipes/README.md",
+      "note": "| [migrate/step-pre3-to-3.md](migrate/step-pre3-to-3.md) | `8443d76c5cd440f44cb7d21e1fbc53793e33d4f9863a92a0de4c3d37ae95f594` |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "skills/tackle/references/recipes/README.md",
+      "line": 14,
+      "unit_sha256": "1a75ac36f0e5280a233b4de963d06cfd03514619493a86cf01b3e4bcf75a15ff",
+      "disposition": "reworded",
+      "destination": "skills/tackle/references/recipes/README.md",
+      "note": "| [migrate/step-3-to-4.md](migrate/step-3-to-4.md) | `af58980257f402fb833df362bd73c5788040642ed5dd97260da5b2461e5b440e` |",
       "destination_unit_sha256": null
     }
   ]
