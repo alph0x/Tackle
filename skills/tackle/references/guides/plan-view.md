@@ -36,7 +36,7 @@ owner says stop. After stop, nobody runs the check.
 
 The coordinator updates `view/summary.json` and `view/export-summary.json` before a rebuild that follows a
 change to task rows or states. It updates their time-bound prose, their declared board states and their as-of times.
-It removes prose that it cannot update honestly. A rebuild after a role start or finish needs no summary update.
+It removes prose that it cannot update honestly. A rebuild after a role start or finish needs no summary update. Its export prose follows the reader rule in Shared presentation and PDF.
 
 An open view reloads itself after
 a rebuild, keeping its selection, filter and reading position: the recipe writes a small stamp script beside
@@ -136,7 +136,7 @@ fallback. For a Full plan, a curated summary records the board it describes: `as
 `authority.as_of` and `authority.canonical_states` in `view/export-summary.json`. When the current task states
 differ, its status prose (now, next, you; achievements, open work, dependency, next steps, evidence) is set
 aside with a visible note, and the canonical records speak alone until the summary is updated. The Progress and Both reports of the PDF carry the same note. The build and its check also name, on stderr, each task whose state differs from the states a summary declares. The build warns about
-a summary that declares no board, since its prose cannot be checked. The report is independent of screen filters, theme and collapsed sections.
+a summary that declares no board, since its prose cannot be checked. The report is independent of screen filters, theme and collapsed sections. The export is read by people who do not know the plan, so its prose names no task, decision, question or requirement ids, file paths, backticks or workspace names. The build warns on stderr for each field that contains one and never fails.
 
 The light A4 report uses readable sections and wrapping text. The page restores its title, temporary
 print attributes and focus after printing, cancellation or a print exception. Ordinary browser print uses
