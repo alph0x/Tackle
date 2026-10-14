@@ -165,3 +165,23 @@ regenerates the page when those inputs change. A
 failed refresh keeps the last successful page and reports an unhealthy `/health`; it never calls that page
 live. The page remains file mode when the ordinary recipe is used. Theme, filter and task selection state
 belongs to the page's session storage, and the page restores it after a refresh. The producer sends nothing off the machine.
+
+## Auxiliary pages
+
+When a plan view exists, an authorized auxiliary page for the plan, such as a proposals, comparison or review page, uses the plan view's visual base by default without a question about style, built with the plan-view recipe's page mode.
+
+The recipe writes the page from the plan view's marked base in the template, with the command below. The fragment is the page's HTML body, written for the page, with no `<html>`, `<head>` or interface stylesheet. The page takes the plan's language, its title (or the fragment's first heading), the plan view's top bar and theme toggle, its typography, colors, spacing and both themes, and it shares the theme choice the plan view stores.
+
+Give the page's heading the plan view's section markup: a `<header class="sec-head">` holding an optional `<p class="kicker">`, an `<h2>` and a `<p class="sec-lede">`, as the plan view's sections do. The base styles these classes, so the heading reads like the view's section headings. The page's `<title>` comes from the fragment's first `<h1>` if it has one, and otherwise from the plan title.
+
+```sh
+python3 -I plan-view.py --template plan-view.template.md --page <fragment.html> <workspace> <output.html>
+```
+
+Add `--check` before the paths to compare the page with the workspace and the fragment without writing anything; the output is `view current` or `view stale: <inputs>`. The page mode needs a built `plan-view.html` in the workspace and refuses, with exit 2, an output path that is the plan view itself. A page records its template, its recipe and its fragment, so a later change to the plan's title or language does not mark the page stale; rebuild the page on request.
+
+Product samples, such as game palettes, sprites, screenshots and design alternatives, go inside an element with the class `tk-sample`. The base never selects that class, so a sample keeps its own appearance in both themes. Inherited text color and font still reach a sample that declares none, so sample content declares its own colors and fonts.
+
+Without recipe authorization the agent writes the page itself: it copies the CSS between the `tackle-base` markers (every range, in order) verbatim from the installed template, and copies the theme script between the `tackle-base-theme` markers verbatim inside `(function () { 'use strict'; … })();`, as the recipe does. The brand and toggle markup come from the template's top bar in its html block, not from memory. It records the template's sha256 in a `tackle-base-digest` meta. The narrow top bar shows the brand and the toggle only; the plan view's stacked bar and its section index are not part of the base. Printing an auxiliary page is not covered.
+
+An existing auxiliary page moves to the base only when the owner asks for it. An explicit owner preference for a page's style overrides the default and is recorded with the page. The recipe consent rules are unchanged: the owner's explicit request that names the page is the feature request that grants the recipe for that page, while a page the agent proposes and the owner merely accepts is not.

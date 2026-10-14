@@ -4068,6 +4068,29 @@
       "historical": []
     },
     {
+      "rule_id": "R-STATUS-23",
+      "statement": "When a plan view exists, an authorized auxiliary page for the plan, such as a proposals, comparison or review page, uses the plan view's visual base by default without a question about style, built with the plan-view recipe's page mode.",
+      "statement_sha256": "6d9aae937cffab5ddb9c49d27e9d2d133c3789d01990dcdd6918aa2dfe218437",
+      "home": "references/guides/plan-view.md:171",
+      "home_fragment": "When a plan view exists, an authorized auxiliary page for th",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.2.1",
+        "trigger": "plan view export hotfix, auxiliary pages",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-14"
+      },
+      "historical": []
+    },
+    {
       "rule_id": "R-RUN-25",
       "statement": "Closing a Complete task sets its map delta changes to done before any view rebuild.",
       "statement_sha256": "63123fa9f2c6cd6a7386247812b9f677fa94a2a95b651238865145ad81f2076c",

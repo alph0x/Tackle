@@ -7,6 +7,7 @@ import json
 import os
 import re
 import sys
+import urllib.parse
 from pathlib import Path
 
 REPO_URL = 'https://github.com/alph0x/Tackle'
@@ -2243,6 +2244,119 @@ def fill(template, values):
     return re.sub(r'\{\{(\w+)\}\}', lambda m: values[m.group(1)], template)
 
 
+def marked_text(lines, start, end):
+    """The text of each start-to-end range of marker lines, in order. A missing, reversed or duplicated marker raises."""
+    found, opened = [], None
+    for number, line in enumerate(lines):
+        if line.strip() == start:
+            if opened is not None:
+                raise ValueError('%s appears twice before its end' % start)
+            opened = number
+        elif line.strip() == end:
+            if opened is None:
+                raise ValueError('%s appears before its start' % end)
+            found.append('\n'.join(lines[opened + 1:number]))
+            opened = None
+    if opened is not None:
+        raise ValueError('%s has no end' % end)
+    return found
+
+
+def base_parts(block):
+    """The head metas, the base CSS, the theme script and the top-bar pieces of the template's marked base."""
+    lines = block.split('\n')
+    css = marked_text(lines, '/* tackle-base:start */', '/* tackle-base:end */')
+    theme = marked_text(lines, '/* tackle-base-theme:start */', '/* tackle-base-theme:end */')
+    if not css or len(theme) != 1:
+        raise ValueError('expected one or more base ranges and exactly one theme range')
+    pieces = {}
+    for name, pattern in (('charset', r'<meta charset="[^"]*">'), ('viewport', r'<meta name="viewport"[^>]*>'),
+                          ('color', r'<meta name="color-scheme"[^>]*>'),
+                          ('brand', r'<a class="brand" href="#main">.*?</a>'),
+                          ('button', r'<button type="button" class="theme-toggle" id="theme".*?</button>'),
+                          ('skip', r'<a class="skip" href="#main">\{\{ui_skip\}\}</a>')):
+        found = re.search(pattern, block, re.S)
+        if not found:
+            raise ValueError('the template has no %s markup' % name)
+        pieces[name] = found.group(0)
+    pieces['css'] = '\n'.join(css)
+    pieces['theme'] = theme[0]
+    return pieces
+
+
+def fill_some(text, values):
+    """Fill the named double-brace slots only; any other slot stays as written."""
+    return re.sub(r'\{\{(\w+)\}\}', lambda found: values.get(found.group(1), found.group(0)), text)
+
+
+def page_record(template_path, fragment_path):
+    """The input digest of an auxiliary page: the template, the plan-view recipe and the fragment, in the shape check_view reads."""
+    folder = Path(template_path).parent
+    inputs = dict(template=file_digest(template_path), fragment=file_digest(fragment_path),
+                  **{'plan-view recipe': file_digest(folder / 'recipes' / 'plan-view.md')})
+    inputs = dict(sorted(inputs.items()))
+    overall = hashlib.sha256()
+    for name, value in list(inputs.items()) + [('--map', 'none'), ('--map-scope', 'none')]:
+        overall.update(name.encode('utf-8') + b'\0' + value.encode('utf-8') + b'\0')
+    return dict(schema='tackle-input-digest/1', digest=overall.hexdigest(), inputs=inputs, map='none', map_scope='none')
+
+
+def page_mode(args, block):
+    """Write one auxiliary page that carries the plan view's marked base around a fragment, or check it read-only."""
+    def refuse(text):
+        print('usage: ' + text, file=sys.stderr)
+        return 2
+    ws, output = Path(args.workspace), Path(args.output)
+    view = ws / 'plan-view.html'
+    if args.map_base:
+        return refuse('page mode takes no map')
+    if not view.is_file():
+        return refuse('page mode needs a built plan-view.html in the workspace')
+    if output.resolve() == view.resolve():
+        return refuse('the output must not be the plan view')
+    try:
+        fragment = Path(args.page).read_bytes().decode('utf-8')
+    except (OSError, UnicodeDecodeError) as problem:
+        return refuse('cannot read the fragment: %s' % problem)
+    try:
+        parts = base_parts(block)
+    except ValueError as problem:
+        return refuse('the template base: %s' % problem)
+    record = page_record(args.template, args.page)
+    if args.check:
+        return check_view(record, output)
+    plan = read(ws, 'plan.md')
+    lang = language(plan)
+    ui = UI[lang]
+    summary = load_summary(ws)
+    heading = re.search(r'^# (.+)$', plan, re.M)
+    title_line = heading.group(1).strip() if heading else ''
+    plan_title = title_line.split('\u2014', 1)[-1].strip() if '\u2014' in title_line else title_line
+    presentation = (summary.get('title') if summary else '') or plan_title
+    found = re.search(r'<h1\b[^>]*>(.*?)</h1>', fragment, re.S | re.I)
+    heading_text = html.unescape(re.sub(r'<[^>]*>', '', found.group(1))).strip() if found else ''
+    brand = presentation if len(presentation) <= 40 else presentation[:39] + '\u2026'
+    link = urllib.parse.quote(os.path.relpath(view.resolve(), output.resolve().parent).replace(os.sep, '/'), safe='/')
+    digest_meta = '<meta name="tackle-input-digest" content="%s">' % esc(json.dumps(record, ensure_ascii=True, separators=(',', ':')))
+    head = '\n'.join((parts['charset'], parts['viewport'], parts['color'], digest_meta))
+    brand_html = fill_some(parts['brand'].replace('href="#main"', 'href="%s"' % esc(link), 1), {'brand': esc(brand)})
+    button_html = fill_some(parts['button'], {'ui_theme': esc(ui['theme'])})
+    skip_html = fill_some(parts['skip'], {'ui_skip': esc(ui['skip'])})
+    script = "<script>\n(function () {\n  'use strict';\n" + parts['theme'] + "\n})();\n</script>"
+    page = ('<!doctype html>\n<html lang="%s">\n<head>\n%s\n<title>%s</title>\n<style>\n%s\n</style>\n</head>\n<body>\n'
+            '%s\n<header class="topbar" id="top"><div class="topbar-inner">%s<div class="top-actions">%s</div></div></header>\n'
+            '<main id="main"><div class="sec">') % (
+        lang, head, esc(heading_text or presentation), parts['css'], skip_html, brand_html, button_html)
+    page += fragment + '</div></main>\n' + script + '\n</body>\n</html>\n'
+    try:
+        partial = output.with_name('.' + output.name + '.partial')
+        partial.write_bytes(page.encode('utf-8'))
+        os.replace(partial, output)
+    except OSError as problem:
+        return refuse('cannot write the output: %s' % problem)
+    return 0
+
+
 def main():
     parser = argparse.ArgumentParser(description='Write the plan view of a workspace.')
     parser.add_argument('--template', required=True)
@@ -2251,6 +2365,8 @@ def main():
                         help='draw the whole map, or only the changed components with their neighbors')
     parser.add_argument('--check', action='store_true',
                         help='compare the input digests recorded in the page with the inputs now, and write nothing')
+    parser.add_argument('--page', metavar='FRAGMENT',
+                        help='write an auxiliary page: the plan view base around this HTML body fragment')
     parser.add_argument('workspace')
     parser.add_argument('output')
     args = parser.parse_args()
@@ -2265,6 +2381,8 @@ def main():
         print('usage: the template needs one html block and the workspace must be a directory', file=sys.stderr)
         return 2
     template = blocks[0]
+    if args.page:
+        return page_mode(args, template)
     record = input_digests(ws, args.template, args.map_base, args.map_scope)
     if args.check:
         for line in check_divergence_notes(ws):
