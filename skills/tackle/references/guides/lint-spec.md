@@ -50,7 +50,7 @@ For optional exact extraction, row-specific interpretation and dependency-aware 
 Full execution, see [execution checks](full-checks.md). Saved canonical command bytes and raw
 stdout/stderr/exit remain authoritative; no generated PASS counter substitutes for them.
 
-The release sweep and the eight self-lint gates are documented in the repository's
+The release sweep and the self-lint gates are documented in the repository's
 `MAINTAINING.md`.
 
 ## Score line

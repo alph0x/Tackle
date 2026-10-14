@@ -20,7 +20,7 @@ Permanent, on the working tree:
 2. **Links** — every relative link in `SKILL.md`, `references/**`, `README.md`, `AGENTS.md`,
    `MAINTAINING.md`, `CHANGELOG.md`, `maintaining/**` and `extras/**` resolves to a file, and to
    an anchor where one is given.
-3. **Gates** — the eight self-lint gates, extracted from `MAINTAINING.md` the same way
+3. **Gates** — the self-lint gates, extracted from `MAINTAINING.md` the same way
    `eval/validation-integrity/acceptance.py`'s `canonical_gates` does, each run silent and exit 0.
 4. **Planted defects**, each built in a disposable temporary directory, never in this repository:
    a link to a path the relocation removed. It must make the relevant check fail, naming the file.

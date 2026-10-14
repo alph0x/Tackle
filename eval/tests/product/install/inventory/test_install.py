@@ -3,7 +3,7 @@
 Permanent checks read the working tree. The shipped install (``SKILL.md`` plus ``references/``)
 carries none of: the changelog, the historical migration checklists, Tackle's own release and
 self-lint gates, or the unreferenced vendor collectors and validator example. Every relative link
-in the listed files resolves, and the eight self-lint gates are silent.
+in the listed files resolves, and the self-lint gates are silent.
 
 Standard library only; no network, container or model call. Every "against a temporary copy"
 case below builds its own disposable directory and never touches this repository.
@@ -129,7 +129,7 @@ def check_links(root):
 # ---------------------------------------------------------------------------
 
 def extract_gates(maintaining_text):
-    """The eight self-lint gate commands, extracted the same way
+    """The self-lint gate commands, extracted the same way
     ``eval/validation-integrity/acceptance.py``'s ``canonical_gates`` does once it reads
     MAINTAINING.md: split after the gates heading, stop at the next heading of any level."""
     after = maintaining_text.split('### Skill self-lint gates\n', 1)[1]
@@ -241,14 +241,101 @@ class LinksTests(unittest.TestCase):
 class GatesTests(unittest.TestCase):
     """Case: gates -- the self-lint gates run from MAINTAINING.md, each silent and exit 0."""
 
-    def test_eight_gates_extracted_from_maintaining_are_silent(self):
+    def test_the_self_lint_gates_extracted_from_maintaining_are_silent(self):
         maintaining = (ROOT / 'MAINTAINING.md').read_text(encoding='utf-8')
         gates = extract_gates(maintaining)
-        self.assertEqual(len(gates), 8)
+        self.assertEqual(len(gates), 9)
         for index, command in enumerate(gates, 1):
             result = subprocess.run(['/bin/sh', '-c', command], cwd=ROOT, capture_output=True)
             self.assertEqual(result.returncode, 0, 'gate %d exited %d: %s' % (index, result.returncode, result.stderr))
             self.assertEqual(result.stdout, b'', 'gate %d printed a finding: %s' % (index, result.stdout))
+
+def recipe_manifest_gate(testcase):
+    """The self-lint gate that checks the recipe manifest, extracted from MAINTAINING.md."""
+    maintaining = (ROOT / 'MAINTAINING.md').read_text(encoding='utf-8')
+    matches = [command for command in extract_gates(maintaining) if 'references/recipes' in command]
+    testcase.assertEqual(len(matches), 1, 'MAINTAINING.md holds no recipe manifest gate')
+    return matches[0]
+
+
+class RecipeManifestTests(unittest.TestCase):
+    """Case: recipe manifest -- gate 9 is silent on this repository and, run from a temporary copy
+    of the recipes tree, echoes one line per drifted, missing, stale or duplicated manifest row."""
+
+    README = 'skills/tackle/references/recipes/README.md'
+
+    def setUp(self):
+        tmp = tempfile.TemporaryDirectory(prefix='tackle-recipe-manifest-')
+        self.addCleanup(tmp.cleanup)
+        self.root = Path(tmp.name)
+        shutil.copytree(ROOT / 'skills/tackle/references/recipes',
+                        self.root / 'skills/tackle/references/recipes')
+
+    def run_gate(self, root=None):
+        command = recipe_manifest_gate(self)
+        result = subprocess.run(['/bin/sh', '-c', command], cwd=root or self.root,
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        return [line for line in result.stdout.splitlines() if line.strip()]
+
+    def recipe(self, rel):
+        return self.root / 'skills/tackle/references/recipes' / rel
+
+    def manifest_lines(self):
+        return (self.root / self.README).read_text(encoding='utf-8').split('\n')
+
+    def write_manifest(self, lines):
+        (self.root / self.README).write_text('\n'.join(lines), encoding='utf-8')
+
+    def drop_row(self, rel):
+        lines = self.manifest_lines()
+        kept = [line for line in lines if not line.startswith('| [%s](' % rel)]
+        self.assertEqual(len(kept), len(lines) - 1, 'no single row for %s' % rel)
+        self.write_manifest(kept)
+
+    def assert_one_finding(self, name):
+        lines = self.run_gate()
+        self.assertEqual(len(lines), 1, lines)
+        self.assertIn(name, lines[0])
+
+    def test_repaired_repository_gate_is_silent(self):
+        self.assertEqual(self.run_gate(root=ROOT), [])
+
+    def test_drifted_hash_is_named(self):
+        path = self.recipe('correction-lineage.md')
+        path.write_bytes(path.read_bytes() + b'\n')
+        self.assert_one_finding('correction-lineage.md')
+
+    def test_nested_hash_drift_is_named(self):
+        path = self.recipe('migrate/schema.md')
+        path.write_bytes(path.read_bytes() + b'\n')
+        self.assert_one_finding('migrate/schema.md')
+
+    def test_missing_row_is_named(self):
+        self.drop_row('plan-view.md')
+        self.assert_one_finding('plan-view.md')
+
+    def test_nested_missing_row_is_named(self):
+        self.drop_row('migrate/step-4-to-5.md')
+        self.assert_one_finding('migrate/step-4-to-5.md')
+
+    def test_stale_row_is_named(self):
+        self.recipe('architecture-map.md').unlink()
+        self.assert_one_finding('architecture-map.md')
+
+    def test_duplicate_row_is_named(self):
+        lines = self.manifest_lines()
+        row = [line for line in lines if line.startswith('| [requirements-base.md](')][0]
+        self.write_manifest(lines + [row])
+        self.assert_one_finding('requirements-base.md')
+
+    def test_one_line_per_problem(self):
+        path = self.recipe('correction-lineage.md')
+        path.write_bytes(path.read_bytes() + b'\n')
+        self.drop_row('plan-view.md')
+        lines = self.run_gate()
+        self.assertEqual(len(lines), 2, lines)
+
 
 class ShippedEntryPointTests(unittest.TestCase):
     """Case: shipped entry point -- SKILL.md's frontmatter and command tables."""

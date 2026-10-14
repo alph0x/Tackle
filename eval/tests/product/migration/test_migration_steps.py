@@ -939,7 +939,7 @@ class CensusHygieneTests(unittest.TestCase):
 class MigrateGuideTests(unittest.TestCase):
     """The five sections are appended after the existing content; each recipe link resolves;
     the 8.x checklists are byte-identical to d024a3f; every migrate.md:N citation elsewhere in the
-    repository and in this workspace still resolves (lint row 4); install-inventory and the eight
+    repository and in this workspace still resolves (lint row 4); install-inventory and the self-lint
     gates stay green."""
 
     def setUp(self):
