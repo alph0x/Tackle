@@ -124,9 +124,22 @@ class ReadingLayoutTests(unittest.TestCase):
     def test_print_uses_the_light_screen_palette_and_content_shows_before_scripts(self):
         page = render(fixture(), 'palette')
         css = re.search(r'<style>(.*?)</style>', page, re.S).group(1)
-        light = dict(re.findall(r'--(ink|accent|accent-ink|mut):(#[0-9a-f]{6})', re.search(r':root\{([^}]*)\}', css).group(1)))
+        tokens_start = css.index('@layer tokens{')
+        depth, index = 0, tokens_start + len('@layer tokens')
+        while True:
+            depth += (css[index] == '{') - (css[index] == '}')
+            index += 1
+            if depth == 0:
+                break
+        tokens_text = css[tokens_start:index]
+        prims = dict(re.findall(r'--([a-z0-9-]+):(#[0-9a-f]{3,6}|rgba\([^)]*\));', tokens_text))
+        light = {}
+        for name in ('ink', 'accent', 'accent-ink', 'mut'):
+            match = re.search(r'--%s:light-dark\(var\(--([a-z0-9-]+)\)' % name, css)
+            light[name] = prims[match.group(1)]
         self.assertEqual(set(light), {'ink', 'accent', 'accent-ink', 'mut'})
-        report = css.split('/* Print:', 1)[1]
+        report = re.sub(r'var\(--([a-z0-9-]+)\)', lambda match: prims.get(match.group(1), match.group(0)),
+                        css.split('/* Print:', 1)[1])
         used = set(re.findall(r'#[0-9a-f]{6}', report))
         self.assertIn(light['ink'], used)
         self.assertIn(light['accent'], used)
