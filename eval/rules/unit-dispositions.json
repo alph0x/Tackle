@@ -7347,7 +7347,7 @@
       "unit_sha256": "e660afc79f32a3a5729dcca23e6c7a7a52d2bc7f259d236e2e1ce2f9e35c6aa8",
       "disposition": "reworded",
       "destination": "SKILL.md",
-      "note": "**Tackle 9.2.0** is a model-agnostic planning and execution method.",
+      "note": "is a model-agnostic planning and execution method.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -7366,7 +7366,7 @@
       "unit_sha256": "e3a8bca1a269a058d3d630be5200cc88f3b3b05f5fc598eb6f463a467b7ed054",
       "disposition": "reworded",
       "destination": "references/AGENTS.tmpl.md",
-      "note": "**Methodology: Tackle 9.2.0** <!-- A future version reads this to decide whether to migrate. -->",
+      "note": "**Methodology: Tackle",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -7385,7 +7385,7 @@
       "unit_sha256": "6ee3faa6b232414b368eaf27c32eeaf342ce6cc0b48d464f90439e23362babc7",
       "disposition": "reworded",
       "destination": "references/README.tmpl.md",
-      "note": "> **Methodology: Tackle 9.2.0.** See `AGENTS.md` for the workspace contract.",
+      "note": "See `AGENTS.md` for the workspace contract.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -7589,6 +7589,63 @@
       "destination": "skills/tackle/references/recipes/README.md",
       "note": "| [migrate/step-3-to-4.md](migrate/step-3-to-4.md) | `af58980257f402fb833df362bd73c5788040642ed5dd97260da5b2461e5b440e` |",
       "destination_unit_sha256": null
+    },
+    {
+      "path": "SKILL.md",
+      "line": 4,
+      "unit_sha256": "81c976b86fa95415dee06c33dc7148fc8bc9248a312dab468bb189def15c2b84",
+      "disposition": "reworded",
+      "destination": "SKILL.md",
+      "note": "is a model-agnostic planning and execution method.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "9.2",
+          "reason": "release version stamp bumped to 9.2.1"
+        },
+        {
+          "token": "0",
+          "reason": "release version stamp bumped to 9.2.1"
+        }
+      ]
+    },
+    {
+      "path": "references/AGENTS.tmpl.md",
+      "line": 3,
+      "unit_sha256": "7ee2a6a947eabca230375a60df69a759abb48e35057a9fe1d0ec8bdc71944a9c",
+      "disposition": "reworded",
+      "destination": "references/AGENTS.tmpl.md",
+      "note": "**Methodology: Tackle",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "9.2",
+          "reason": "release version stamp bumped to 9.2.1"
+        },
+        {
+          "token": "0",
+          "reason": "release version stamp bumped to 9.2.1"
+        }
+      ]
+    },
+    {
+      "path": "references/README.tmpl.md",
+      "line": 3,
+      "unit_sha256": "879fcd093e61ae42dbcd1420bacadabf67042519f4f9de474667638c398101f1",
+      "disposition": "reworded",
+      "destination": "references/README.tmpl.md",
+      "note": "See `AGENTS.md` for the workspace contract.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "9.2",
+          "reason": "release version stamp bumped to 9.2.1"
+        },
+        {
+          "token": "0",
+          "reason": "release version stamp bumped to 9.2.1"
+        }
+      ]
     }
   ]
 }
