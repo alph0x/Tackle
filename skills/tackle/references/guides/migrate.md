@@ -288,6 +288,8 @@ directory, and only `adopt` supplies that, then reassembles the result with ever
 holds `legacy-*/` straight to `transform` risks that step's rename or id-mapping logic reaching inside
 the legacy snapshot and rewriting it.
 
+The context passed to adopt holds date, run_id and methodology, and may hold workspace, the migrated workspace's directory name, so that the 8.3 to 8.4 step can tell its own links from links into other workspaces.
+
 - [`step-pre3-to-3`](../recipes/migrate/step-pre3-to-3.md) — generalizes `candidate_board()`
   (`maintaining/migrations.md`) three ways: it accepts P- and T-ids, it maps the legacy states exactly
   as [terminology.md](../terminology.md)'s States table does, and it never infers `Ready to run`. A

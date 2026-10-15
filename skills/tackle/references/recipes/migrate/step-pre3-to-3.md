@@ -44,6 +44,13 @@ def locate_pre3_columns(header):
     return located, matched_names
 
 
+def split_legacy_status(cell):
+    """(glyph, text) of a legacy Status cell: its leading glyph, an optional U+FE0F selector, optional
+    whitespace, then the text that follows. The glyph is empty when the cell is empty."""
+    match = re.fullmatch(r'(.?)️?\s*(.*)', cell, re.S)
+    return match.group(1), match.group(2)
+
+
 def detect(files):
     return schema_of(files) == 'pre-3'
 
@@ -66,7 +73,7 @@ def transform(files, context):
     confidence_is_verification = matched_names['Confidence or Verification'] == 'Verification'
     required = (id_col, what_col, brief_col, depends_col, status_col, confidence_col)
     reports = {path for path in files if path.startswith('reports/') and path.endswith('.md')}
-    identities, legacy, out_rows = set(), {}, []
+    identities, legacy, out_rows, notes = set(), {}, [], []
     for _, cells in rows:
         identity_cell = cells[id_col] if cells and id_col < len(cells) else ''
         if not cells or not re.fullmatch(ID_RE, identity_cell):
@@ -77,12 +84,15 @@ def transform(files, context):
         if identity in identities:
             raise ValueError('duplicate identity: ' + identity)
         status = cells[status_col]
-        if status not in LEGACY_STATE_MAP:
+        glyph, note = split_legacy_status(status)
+        if glyph not in LEGACY_STATE_MAP:
             raise ValueError('unsupported legacy state: ' + status)
         identities.add(identity)
         grade = cells[confidence_col]
-        legacy[identity] = {'status': status, 'grade': grade}
-        new_status = LEGACY_STATE_MAP[status]
+        legacy[identity] = {'status': glyph, 'grade': grade}
+        if note:
+            notes.append('Legacy status note · %s: %s' % (identity, note))
+        new_status = LEGACY_STATE_MAP[glyph]
         reference = 'reports/' + identity + '-report.md'
         if new_status in ('Complete', 'Blocked') and reference not in reports:
             raise ValueError('missing historical verification report: ' + identity)
@@ -100,7 +110,8 @@ def transform(files, context):
         raise ValueError('no legacy task rows')
     new_board = ('# Task board\n\nSchema: tackle-workspace/3\n\n'
                  '| Task | What | Brief | Depends on | Status | Verification |\n'
-                 '|---|---|---|---|---|---|\n' + '\n'.join(out_rows) + '\n')
+                 '|---|---|---|---|---|---|\n' + '\n'.join(out_rows) + '\n'
+                 + ('\n' + '\n'.join(notes) + '\n' if notes else ''))
     new_files = dict(files)
     new_files['board.md'] = new_board.encode('utf-8')
     if 'AGENTS.md' in files:

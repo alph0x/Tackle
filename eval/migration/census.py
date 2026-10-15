@@ -108,13 +108,16 @@ def is_active(files):
     return False
 
 
-def context_for(bucket_target, run_id):
+def context_for(bucket_target, run_id, workspace=None):
     date = datetime.now(timezone.utc).strftime('%Y-%m-%d')
     methodology = 'Tackle 9.0.0' if bucket_target == '5' else 'Tackle 8.4.0'
-    return {'date': date, 'run_id': run_id, 'methodology': methodology}
+    context = {'date': date, 'run_id': run_id, 'methodology': methodology}
+    if workspace is not None:
+        context['workspace'] = workspace
+    return context
 
 
-def chain_workspace(files, run_id):
+def chain_workspace(files, run_id, workspace=None):
     """Run every applicable step until detection reaches a terminal bucket (5, lite or unknown), a
     step's transform refuses, or a step's verify reports an error. Never raises.
 
@@ -135,7 +138,7 @@ def chain_workspace(files, run_id):
         if bucket not in CHAIN:
             return bucket, errors, residue, None, originals_ok
         step, target = CHAIN[bucket]
-        context = context_for(target, run_id)
+        context = context_for(target, run_id, workspace)
         before_scoped = SCHEMA['workspace_files'](current)
         pre_existing_legacy = {path: data for path, data in current.items() if SCHEMA['is_legacy_path'](path)}
         try:
@@ -190,7 +193,7 @@ def census(plans_dir, out_dir, record_dir, gate_names, held_out_re):
             bucket = 'unknown'
         active = is_active(files)
         gates = active or name in gate_names
-        final_bucket, errors, residue, refusal, originals_ok = chain_workspace(files, 'census-' + name)
+        final_bucket, errors, residue, refusal, originals_ok = chain_workspace(files, 'census-' + name, name)
         rows.append(dict(workspace=name, bucket=bucket, active=active, gates=gates,
                           final_bucket=final_bucket, errors=errors, residue=residue, refusal=refusal,
                           originals_ok=originals_ok))

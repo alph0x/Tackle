@@ -76,15 +76,90 @@ def build_id_map(header, rows):
     return id_map
 
 
-def rewrite_content(text, id_map):
-    """Rewrite every PAIRS artifact-name mention, then every mapped id -- each in one single,
+_SPAN_STOP = r'\s`\'")\]>|'
+_SPAN_START = r'(?<![^\s`\'"(\[<])'
+_SPAN_RE = re.compile(_SPAN_START + r'[^' + _SPAN_STOP + r'(\[<][^' + _SPAN_STOP + r']*')
+_SPAN_TRAILING = '.,;:!?'
+_DEFAULT_TOP_DIRS = ('evidence', 'points', 'tasks', 'reports', 'verification-records')
+
+
+def _path_target(path, id_map):
+    """The new path of one workspace path: the directory and root-file renames apply to every
+    path, and ids map only when the renamed path starts with 'tasks/' or 'reports/'."""
+    for old, new in RENAME_DIRS:
+        if path == old.rstrip('/') or path.startswith(old):
+            path = new + path[len(old):]
+            break
+    for old, new in RENAME_FILES:
+        if path == old:
+            path = new
+            break
+    if path.startswith(('tasks/', 'reports/')):
+        path = map_ids(path, id_map)
+    return path
+
+
+def _spans(text, top_dirs):
+    """(start, end, core) of every path span of `text`, in order. A span starts at a line
+    start, after whitespace, a backtick, a quote, '(', '[' or '<'; it runs to the next whitespace,
+    backtick, quote, ')', ']', '>' or '|', less trailing sentence punctuation. It must hold a '/', and
+    its first segment must be one of `top_dirs` (the default set when None) or 'docs'. A
+    'docs/plans/' span with an empty workspace name is not a span."""
+    dirs = set(_DEFAULT_TOP_DIRS if top_dirs is None else top_dirs) | {'docs'}
+    found = []
+    for match in _SPAN_RE.finditer(text):
+        core = match.group(0).rstrip(_SPAN_TRAILING)
+        if '/' not in core or core.split('/', 1)[0] not in dirs:
+            continue
+        segments = core.split('/')
+        if core.startswith('docs/plans/') and (len(segments) < 3 or not segments[2]):
+            continue
+        found.append((match.start(), match.start() + len(core), core))
+    return found
+
+
+def _span_replacement(core, id_map, workspace):
+    """The text a path span becomes: a 'docs/plans/<name>/' span is rewritten by the path rule only
+    when <name> equals the migrated workspace; every other 'docs/' span stays as it is."""
+    if core.startswith('docs/'):
+        segments = core.split('/', 3)
+        if len(segments) == 4 and segments[1] == 'plans' and segments[2] == workspace:
+            return 'docs/plans/%s/%s' % (segments[2], _path_target(segments[3], id_map))
+        return core
+    return _path_target(core, id_map)
+
+
+def _rewrite_plain(text, id_map):
+    """Today's rewrite for text outside path spans: PAIRS artifact names, then mapped ids."""
+    text = _PAIRS_PATTERN.sub(lambda m: _PAIRS_MAP[m.group(0)], text)
+    return map_ids(text, id_map)
+
+
+def _without_spans(text, top_dirs):
+    """`text` with every path span removed."""
+    pieces, position = [], 0
+    for start, end, _ in _spans(text, top_dirs):
+        pieces.append(text[position:start])
+        position = end
+    pieces.append(text[position:])
+    return ''.join(pieces)
+
+
+def rewrite_content(text, id_map, workspace=None, top_dirs=None):
+    """Rewrite the path spans by the path rule, then rewrite every other stretch of the
+    text as before: every PAIRS artifact-name mention, then every mapped id -- each in one single,
     boundary-guarded regex pass over the original text, never a chain of independent `str.replace`
     calls (that naive chain turns pre-existing 'resource-usage.md' into
     'resource-resource-usage.md', because 'usage.md' is a literal substring of it). `map_ids` already
     applies this same one-pass, longest-id-first technique for ids, so a short id such as 'P-1' can
     never swallow part of a longer one such as 'P-10'."""
-    text = _PAIRS_PATTERN.sub(lambda m: _PAIRS_MAP[m.group(0)], text)
-    return map_ids(text, id_map)
+    pieces, position = [], 0
+    for start, end, core in _spans(text, top_dirs):
+        pieces.append(_rewrite_plain(text[position:start], id_map))
+        pieces.append(_span_replacement(core, id_map, workspace))
+        position = end
+    pieces.append(_rewrite_plain(text[position:], id_map))
+    return ''.join(pieces)
 
 
 def is_rewritten(new_path):
@@ -111,6 +186,8 @@ def transform(files, context):
         if cells[status_col] not in VALID_STATES:
             raise ValueError('unsupported task row status: ' + cells[status_col])
     id_map = build_id_map(header, rows)
+    top_dirs = {path.split('/', 1)[0] for path in files if '/' in path}
+    workspace = context.get('workspace')
 
     # Every source path's final destination is computed up front, into one map, before
     # anything is written. Two different sources reaching the same target -- an old name and its new
@@ -121,7 +198,7 @@ def transform(files, context):
     renamable = [path for path in files if path not in UNTOUCHED]
     new_paths, claimed_by = {}, {}
     for path in renamable:
-        new_path = rename_path(path, id_map)
+        new_path = _path_target(path, id_map)
         new_paths[path] = new_path
         if new_path in claimed_by:
             raise ValueError('rename target collision: %s and %s both map to %s' % (
@@ -140,7 +217,7 @@ def transform(files, context):
             # already confirmed there is exactly one source for this target.
             new_files[new_path] = data
         elif is_rewritten(new_path):
-            text = rewrite_content(decode(data), id_map)
+            text = rewrite_content(decode(data), id_map, workspace, top_dirs)
             if new_path.startswith('tasks/'):
                 text = fix_task_heading(text)
             if new_path == 'task-board.md':
@@ -166,6 +243,44 @@ def transform(files, context):
                 context['date'], HISTORY_ADOPTION_MARKER, context['run_id'], summary)
             new_files['history.md'] = (original + entry).encode('utf-8')
     return new_files, id_map
+
+
+def _before_id_map(before):
+    """The id map transform() builds from the `before` board."""
+    _, _, header, rows = parse_board(decode(before['board.md']))
+    return build_id_map(header, rows)
+
+
+def _history_residue(before, after):
+    """`history cites <old>, now <new>`: one line for each moved path that holds a '/' and that the
+    migrated history still names, matched with the artifact-name boundary guard."""
+    id_map = _before_id_map(before)
+    history_text = '\n'.join(decode(after[name]) for name in ('history.md', 'history-archive.md') if name in after)
+    lines = set()
+    for path in before:
+        new_path = _path_target(path, id_map)
+        if '/' in path and new_path != path and re.search(_name_alternative(path), history_text):
+            lines.add('history cites %s, now %s' % (path, new_path))
+    return sorted(lines)
+
+
+def _link_residue(before, after):
+    """`link into another workspace left unchanged: <span>`: a 'docs/plans/<name>/' span of a rewritten
+    file that rewrite_content() would change for <name> but that the migrated file still holds."""
+    id_map = _before_id_map(before)
+    top_dirs = {path.split('/', 1)[0] for path in before if '/' in path}
+    lines = set()
+    for path in before:
+        new_path = _path_target(path, id_map)
+        if not is_rewritten(new_path) or new_path not in after:
+            continue
+        after_text = decode(after[new_path])
+        for _, _, core in _spans(decode(before[path]), top_dirs):
+            if core.startswith('docs/plans/'):
+                name = core.split('/')[2]
+                if rewrite_content(core, id_map, name) != core and core in after_text:
+                    lines.add('link into another workspace left unchanged: ' + core)
+    return sorted(lines)
 
 
 def verify(before, after):
@@ -194,10 +309,12 @@ def verify(before, after):
     else:
         errors.append('old artifact name left in root: board.md (task-board.md missing)')
     leftover = set()
+    after_top_dirs = {path.split('/', 1)[0] for path in after if '/' in path}
     for path, data in after.items():
         if path in ('task-board.md', 'plan.md', 'resource-usage.md') or (
                 (path.startswith('tasks/') or path.startswith('reports/')) and path.endswith('.md')):
-            leftover.update(re.findall(r'\bP-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*\b', decode(data)))
+            leftover.update(re.findall(r'\bP-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*\b',
+                                       _without_spans(decode(data), after_top_dirs)))
     residue.extend('P-id mention left in rewritten content: ' + identity for identity in sorted(leftover))
     if 'AGENTS.md' in after:
         # AGENTS.md's own prose is never rewritten (only its Methodology line is), so a stale
@@ -217,6 +334,9 @@ def verify(before, after):
             if status_col is not None and len(cells) > status_col and cells[status_col] == 'Interrupted':
                 residue.append(cells[id_col] + " is Interrupted; adopt this workspace only at that "
                                 "task's own boundary (R-MIGRATE-02).")
+    if 'board.md' in before:
+        residue.extend(_history_residue(before, after))
+        residue.extend(_link_residue(before, after))
     try:
         second, id_map_again = transform(after, PoisonContext())
     except Exception as exc:

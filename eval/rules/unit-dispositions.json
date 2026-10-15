@@ -7551,7 +7551,7 @@
       "unit_sha256": "48521db645b8185c3d9f654cfa90066331e0f25896cbce83af4799331549bb22",
       "disposition": "reworded",
       "destination": "references/recipes/README.md",
-      "note": "| [migrate/step-pre3-to-3.md](migrate/step-pre3-to-3.md) | `8443d76c5cd440f44cb7d21e1fbc53793e33d4f9863a92a0de4c3d37ae95f594` |",
+      "note": "| [migrate/step-pre3-to-3.md](migrate/step-pre3-to-3.md) | `6070ad996bed708322de1a35588bf33c2bfb3cf9f3ebd96dee9bc4fe59fd8fdb` |",
       "destination_unit_sha256": null
     },
     {
@@ -7560,7 +7560,7 @@
       "unit_sha256": "1a75ac36f0e5280a233b4de963d06cfd03514619493a86cf01b3e4bcf75a15ff",
       "disposition": "reworded",
       "destination": "references/recipes/README.md",
-      "note": "| [migrate/step-3-to-4.md](migrate/step-3-to-4.md) | `af58980257f402fb833df362bd73c5788040642ed5dd97260da5b2461e5b440e` |",
+      "note": "| [migrate/step-3-to-4.md](migrate/step-3-to-4.md) | `f73aca81c74b40d21298b83f6455f028b0dad23fcd4a3d69628d675bb04b1171` |",
       "destination_unit_sha256": null
     },
     {
@@ -7578,7 +7578,7 @@
       "unit_sha256": "48521db645b8185c3d9f654cfa90066331e0f25896cbce83af4799331549bb22",
       "disposition": "reworded",
       "destination": "skills/tackle/references/recipes/README.md",
-      "note": "| [migrate/step-pre3-to-3.md](migrate/step-pre3-to-3.md) | `8443d76c5cd440f44cb7d21e1fbc53793e33d4f9863a92a0de4c3d37ae95f594` |",
+      "note": "| [migrate/step-pre3-to-3.md](migrate/step-pre3-to-3.md) | `6070ad996bed708322de1a35588bf33c2bfb3cf9f3ebd96dee9bc4fe59fd8fdb` |",
       "destination_unit_sha256": null
     },
     {
@@ -7587,7 +7587,7 @@
       "unit_sha256": "1a75ac36f0e5280a233b4de963d06cfd03514619493a86cf01b3e4bcf75a15ff",
       "disposition": "reworded",
       "destination": "skills/tackle/references/recipes/README.md",
-      "note": "| [migrate/step-3-to-4.md](migrate/step-3-to-4.md) | `af58980257f402fb833df362bd73c5788040642ed5dd97260da5b2461e5b440e` |",
+      "note": "| [migrate/step-3-to-4.md](migrate/step-3-to-4.md) | `f73aca81c74b40d21298b83f6455f028b0dad23fcd4a3d69628d675bb04b1171` |",
       "destination_unit_sha256": null
     },
     {
@@ -7644,6 +7644,96 @@
         {
           "token": "0",
           "reason": "release version stamp bumped to 9.2.1"
+        }
+      ]
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 13,
+      "unit_sha256": "23431deb7905aa6b6fb7291a043e05843538ac05118063d6556e7c4e2fb2455e",
+      "disposition": "reworded",
+      "destination": "references/recipes/README.md",
+      "note": "| [migrate/step-pre3-to-3.md](migrate/step-pre3-to-3.md) | `6070ad996bed708322de1a35588bf33c2bfb3cf9f3ebd96dee9bc4fe59fd8fdb` |",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "8443d76c5cd440f44cb7d21e1fbc53793e33d4f9863a92a0de4c3d37ae95f594",
+          "reason": "recipe manifest hash updated with its recipe"
+        }
+      ]
+    },
+    {
+      "path": "skills/tackle/references/recipes/README.md",
+      "line": 13,
+      "unit_sha256": "23431deb7905aa6b6fb7291a043e05843538ac05118063d6556e7c4e2fb2455e",
+      "disposition": "reworded",
+      "destination": "skills/tackle/references/recipes/README.md",
+      "note": "| [migrate/step-pre3-to-3.md](migrate/step-pre3-to-3.md) | `6070ad996bed708322de1a35588bf33c2bfb3cf9f3ebd96dee9bc4fe59fd8fdb` |",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "8443d76c5cd440f44cb7d21e1fbc53793e33d4f9863a92a0de4c3d37ae95f594",
+          "reason": "recipe manifest hash updated with its recipe"
+        }
+      ]
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 14,
+      "unit_sha256": "f9e94cc3425c1e4836ac730872facf4cc258230f2c3e09812cef590e4b7df603",
+      "disposition": "reworded",
+      "destination": "references/recipes/README.md",
+      "note": "| [migrate/step-3-to-4.md](migrate/step-3-to-4.md) | `f73aca81c74b40d21298b83f6455f028b0dad23fcd4a3d69628d675bb04b1171` |",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "af58980257f402fb833df362bd73c5788040642ed5dd97260da5b2461e5b440e",
+          "reason": "recipe manifest hash updated with its recipe"
+        }
+      ]
+    },
+    {
+      "path": "skills/tackle/references/recipes/README.md",
+      "line": 14,
+      "unit_sha256": "f9e94cc3425c1e4836ac730872facf4cc258230f2c3e09812cef590e4b7df603",
+      "disposition": "reworded",
+      "destination": "skills/tackle/references/recipes/README.md",
+      "note": "| [migrate/step-3-to-4.md](migrate/step-3-to-4.md) | `f73aca81c74b40d21298b83f6455f028b0dad23fcd4a3d69628d675bb04b1171` |",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "af58980257f402fb833df362bd73c5788040642ed5dd97260da5b2461e5b440e",
+          "reason": "recipe manifest hash updated with its recipe"
+        }
+      ]
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 16,
+      "unit_sha256": "9e613e19bd277ed06fb0a059d8de02ec311f0224352a897c71d1067a4b923fdd",
+      "disposition": "reworded",
+      "destination": "references/recipes/README.md",
+      "note": "| [plan-view.md](plan-view.md) | `051417d516fc23a744ebbd30adac07ee4bc6e0bfc7b32428531399e825ea70da` |",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "97fc032536ce185da4d95bc1d07ec7ce1ccb97d3b6811a03f54f1b268a48e674",
+          "reason": "recipe manifest hash updated with its recipe"
+        }
+      ]
+    },
+    {
+      "path": "skills/tackle/references/recipes/README.md",
+      "line": 16,
+      "unit_sha256": "9e613e19bd277ed06fb0a059d8de02ec311f0224352a897c71d1067a4b923fdd",
+      "disposition": "reworded",
+      "destination": "skills/tackle/references/recipes/README.md",
+      "note": "| [plan-view.md](plan-view.md) | `051417d516fc23a744ebbd30adac07ee4bc6e0bfc7b32428531399e825ea70da` |",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "97fc032536ce185da4d95bc1d07ec7ce1ccb97d3b6811a03f54f1b268a48e674",
+          "reason": "recipe manifest hash updated with its recipe"
         }
       ]
     }
