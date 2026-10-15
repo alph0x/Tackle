@@ -114,14 +114,14 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
   --sans:Outfit,"Avenir Next","Segoe UI",system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono",SFMono-Regular,"Cascadia Mono","JetBrains Mono",Menlo,Consolas,"Liberation Mono",monospace;
   --max:1380px;--gutter:clamp(16px,4vw,56px);--top:61px;
-  --stone-100:#eff0ed;--stone-200:#e6e8e4;--stone-300:#d0d4d1;--stone-400:#adb2b0;--paper:#fafaf8;
+  --stone-100:#eff0ed;--stone-200:#e6e8e4;--stone-300:#d0d4d1;--stone-400:#818b87;--paper:#fafaf8;
   --graphite-900:#111315;--graphite-700:#3b4046;--graphite-500:#62686f;
   --orange-600:#f24a00;--orange-800:#ad3300;--orange-100:#fbdccd;
-  --night-950:#0e1012;--night-900:#15181b;--night-850:#161a1d;--night-700:#2b3035;--night-600:#495057;
+  --night-950:#0e1012;--night-900:#15181b;--night-850:#161a1d;--night-700:#2b3035;--night-600:#5e6770;
   --chalk-100:#eceeea;--chalk-300:#b9bdbf;--chalk-500:#8d9399;
   --orange-500:#ff5c1f;--orange-300:#ff8a57;--ember-950:#3a1d10;
-  --ink-grid:rgba(17,19,21,.06);--ink-edge:rgba(17,19,21,.36);
-  --chalk-grid:rgba(236,238,234,.05);--chalk-edge:rgba(236,238,234,.32);
+  --ink-grid:rgba(17,19,21,.06);--ink-edge:rgba(17,19,21,.46);
+  --chalk-grid:rgba(236,238,234,.05);--chalk-edge:rgba(236,238,234,.36);
   --white:#ffffff;--black:#000;--rule-print:#c9cdca;
   --bg:light-dark(var(--stone-100), var(--night-950));
   --bg2:light-dark(var(--stone-200), var(--night-900));
@@ -484,7 +484,7 @@ details>summary:hover{color:var(--accent-ink)}
 #architecture .agroup-head{font:700 14px var(--sans);fill:var(--ink)}
 #architecture .agroup-count{font:500 11px var(--mono);fill:var(--mut)}
 #architecture .anode{cursor:pointer;transition:opacity .2s}
-#architecture .anode>rect{fill:var(--surface);stroke:color-mix(in srgb,var(--ink) 45%,transparent);stroke-width:1}
+#architecture .anode>rect{fill:var(--surface);stroke:color-mix(in srgb,var(--ink) 46%,transparent);stroke-width:1}
 #architecture .anode[data-change]>rect{stroke:var(--accent);stroke-width:1.75}
 #architecture .anode[data-stale="true"]>rect{stroke-dasharray:5 3}
 #architecture .anode:hover>rect,#architecture .anode:focus-visible>rect{stroke:var(--ink);stroke-width:2}
