@@ -247,7 +247,7 @@ closed task, no historical record and no neighboring workspace, and it changes n
 2. If the workspace has a plan view, rebuild it under its standing view request and act on the new
    stderr notes. A note that a curated summary no longer matches the board means updating or removing
    its stale prose. A note about leaked identifiers means rewriting that prose in
-   `view/export-summary.json` without plan-internal identifiers. Without that request, build no view.
+   `view/export-summary.json` without plan-internal identifiers. Without that request, build no view. Existing auxiliary pages need nothing; move one to the plan view's base only when the owner asks.
 3. Run rows 1–17 on the copy. Adopt only the validated copy: record the adoption and the rollback result,
    bump the `Methodology:` stamp to 9.2.1, and roll back by restoring the checkpoint copy.
 
