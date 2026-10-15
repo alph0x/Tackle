@@ -67,7 +67,9 @@ def _sha_line(text):
 
 
 def _git_diff(repo, base_revision):
-    command = ['git', '-C', str(repo), 'diff', base_revision, '--unified=0']
+    # An explicit rename threshold keeps a file moved since the base paired with its old path even after
+    # later additions push it below git's default 50% similarity; otherwise every old line reads as added.
+    command = ['git', '-C', str(repo), 'diff', base_revision, '--unified=0', '--find-renames=30%']
     try:
         result = subprocess.run(command, capture_output=True, text=True, encoding='utf-8',
                                 errors='surrogateescape', check=False)

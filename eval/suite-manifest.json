@@ -219,7 +219,7 @@
         "test_sealed_scenario_admission.py",
         "test_unit_diff.py"
       ],
-      "tests": 108,
+      "tests": 109,
       "source": "eval/rules",
       "category": "tooling",
       "purpose": "Normative inventory, ledger gates, committed-text leak scanning (including digest-keyed admission of sealed scenario trees) and removed-unit accounting."
