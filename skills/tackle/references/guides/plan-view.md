@@ -185,3 +185,7 @@ Product samples, such as game palettes, sprites, screenshots and design alternat
 Without recipe authorization the agent writes the page itself: it copies the CSS between the `tackle-base` markers (every range, in order) verbatim from the installed template, and copies the theme script between the `tackle-base-theme` markers verbatim inside `(function () { 'use strict'; … })();`, as the recipe does. The brand and toggle markup come from the template's top bar in its html block, not from memory. It records the template's sha256 in a `tackle-base-digest` meta. The narrow top bar shows the brand and the toggle only; the plan view's stacked bar and its section index are not part of the base. Printing an auxiliary page is not covered.
 
 An existing auxiliary page moves to the base only when the owner asks for it. An explicit owner preference for a page's style overrides the default and is recorded with the page. The recipe consent rules are unchanged: the owner's explicit request that names the page is the feature request that grants the recipe for that page, while a page the agent proposes and the owner merely accepts is not.
+
+## Diagram export
+
+Each diagram the page draws, the task graph and each architecture picture, offers its Mermaid text to copy or download; the page never renders Mermaid and loads nothing. Download saves `tasks.mmd`, `architecture-today.mmd` or `architecture-after.mmd`. A Focused plan has no task graph and so draws no Mermaid text for one.

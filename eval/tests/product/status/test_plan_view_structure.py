@@ -34,6 +34,7 @@ MODULES = (
     ('architecture', ['view', 'canvases']),
     ('decisionLog', ['view']),
     ('exportScope', ['view']),
+    ('mermaidExport', ['view']),
     ('fileView', ['view']),
     ('escapeClearsSelection', ['view', 'selection', 'architecture']),
 )
@@ -47,6 +48,7 @@ ROOT_CALLS = (
     'var architectureState = architecture(view, canvases);',
     'decisionLog(view);',
     'exportScope(view);',
+    'mermaidExport(view);',
     'fileView(view);',
     'escapeClearsSelection(view, selection, architectureState);',
 )

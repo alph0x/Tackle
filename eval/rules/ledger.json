@@ -4091,6 +4091,29 @@
       "historical": []
     },
     {
+      "rule_id": "R-STATUS-24",
+      "statement": "Each diagram the page draws, the task graph and each architecture picture, offers its Mermaid text to copy or download; the page never renders Mermaid and loads nothing.",
+      "statement_sha256": "2ebe1b2bf811c5cb696900b5be1f51997ab88af77f7acb411f2b6e59c5d34aa8",
+      "home": "references/guides/plan-view.md:191",
+      "home_fragment": "Each diagram the page draws, the task graph and each archite",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.3.0",
+        "trigger": "plan view diagrams as Mermaid text",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-15"
+      },
+      "historical": []
+    },
+    {
       "rule_id": "R-RUN-25",
       "statement": "Closing a Complete task sets its map delta changes to done before any view rebuild.",
       "statement_sha256": "63123fa9f2c6cd6a7386247812b9f677fa94a2a95b651238865145ad81f2076c",

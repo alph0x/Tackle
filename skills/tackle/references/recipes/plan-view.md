@@ -44,7 +44,8 @@ UI = {
         technical_tasks_note='Original task states, brief paths and verification records from the board.',
         technical_decisions_note='The complete decision index. Open the decision archive above for each original body.',
         record_title='Title', technical_count='{count} records',
-        a_role='Role in the project',
+        a_role='Role in the project', mermaid='Mermaid', mermaid_copy='Copy Mermaid', mermaid_download='Download .mmd',
+        mermaid_copied='Copied to the clipboard.', mermaid_select='Select the text and copy it.', mermaid_downloaded='Downloaded {file}.',
         a_diagram_help='Columns are the project groups. Each arrow runs from a component to the one it connects to; its words sit where it starts.',
         a_in='Incoming', a_out='Outgoing', a_detail='Connections and source files', a_types={'guide': 'Guide', 'template': 'Templates', 'document': 'Markdown documents', 'tool': 'Python tools',
                  'data': 'Records and configuration', 'mixed': 'Files and records', 'workflow': 'Automation workflow',
@@ -136,7 +137,8 @@ UI = {
         technical_tasks_note='Estados originales, rutas de briefs y verificaciones del tablero.',
         technical_decisions_note='El índice completo de decisiones. El archivo de arriba conserva cada cuerpo original.',
         record_title='Título', technical_count='{count} registros',
-        a_role='Función en el proyecto',
+        a_role='Función en el proyecto', mermaid='Mermaid', mermaid_copy='Copiar Mermaid', mermaid_download='Descargar .mmd',
+        mermaid_copied='Copiado al portapapeles.', mermaid_select='Selecciona el texto y cópialo.', mermaid_downloaded='Descargado {file}.',
         a_diagram_help='Las columnas son los grupos del proyecto. Cada flecha va de un componente al que conecta; sus palabras están donde empieza.',
         a_in='Entrantes', a_out='Salientes', a_detail='Conexiones y archivos fuente', a_types={'guide': 'Guía', 'template': 'Plantillas', 'document': 'Documentos Markdown', 'tool': 'Herramientas Python',
                  'data': 'Registros y configuración', 'mixed': 'Archivos y registros', 'workflow': 'Flujo automatizado',
@@ -1510,6 +1512,109 @@ def graph_none_section(ui):
         esc(ui['graph']), esc(ui['graph_none'])))
 
 
+MERMAID_LABEL_ESCAPES = (('#', '#35;'), ('"', '#quot;'), ('<', '#lt;'), ('>', '#gt;'), ('|', '#124;'), ('`', '#96;'))
+MERMAID_CLASSES = {
+    'done': '  classDef done fill:#111315,stroke:#111315,color:#eff0ed',
+    'prog': '  classDef prog fill:#fbdccd,stroke:#f24a00,color:#111315',
+    'ready': '  classDef ready fill:#fafaf8,stroke:#111315,color:#111315',
+    'draft': '  classDef draft fill:#fafaf8,stroke:#62686f,stroke-dasharray:4 3,color:#111315',
+    'block': '  classDef block fill:#fbdccd,stroke:#f24a00,stroke-width:2px,color:#111315',
+    'wait': '  classDef wait fill:#fafaf8,stroke:#f24a00,color:#111315',
+    'external': '  classDef external fill:#fafaf8,stroke:#62686f,stroke-dasharray:5 3,color:#3b4046',
+}
+MERMAID_ADDED = '  classDef added fill:#fbdccd,stroke:#f24a00,color:#111315'
+MERMAID_CHANGED = '  classDef changed fill:#fafaf8,stroke:#f24a00,stroke-width:2px,color:#111315'
+
+
+def mermaid_label(text):
+    """A Mermaid label: whitespace runs become one space, and the grammar's characters become Mermaid entities."""
+    label = ' '.join(str(text).split())
+    for char, entity in MERMAID_LABEL_ESCAPES:
+        label = label.replace(char, entity)
+    return label
+
+
+def mermaid_ids(prefix, ids):
+    """Sanitized Mermaid node ids keyed by source id; a collision takes the first free _2, _3 suffix."""
+    taken, found = set(), {}
+    for ident in ids:
+        base = prefix + re.sub(r'[^A-Za-z0-9]', '_', ident)
+        candidate, number = base, 2
+        while candidate in taken:
+            candidate, number = '%s_%d' % (base, number), number + 1
+        taken.add(candidate)
+        found[ident] = candidate
+    return found
+
+
+def mermaid_tasks(tasks):
+    """The Mermaid text of the task graph: one node per task, one edge per dependency, then the classes used."""
+    nodes = mermaid_ids('t_', [t['id'] for t in tasks])
+    lines, used = ['flowchart LR'], []
+    for task in tasks:
+        klass = STATE_CLASS.get(task['status'], 'draft')
+        if klass not in used:
+            used.append(klass)
+        label = mermaid_label(' · '.join(part for part in (task['id'], task['title']) if part.strip()))
+        lines.append('  %s["%s"]:::%s' % (nodes[task['id']], label, klass))
+    for task in tasks:
+        for dep in task['deps']:
+            lines.append('  %s --> %s' % (nodes[dep], nodes[task['id']]))
+    return '\n'.join(lines + [MERMAID_CLASSES[klass] for klass in used])
+
+
+def mermaid_architecture(groups, comps, shown, rels, added, changed):
+    """The Mermaid text of one architecture picture: groups as subgraphs, components, then the drawn relations."""
+    group_nodes = mermaid_ids('g_', [g['id'] for g in groups])
+    comp_nodes = mermaid_ids('c_', shown)
+    used = []
+
+    def node(ident):
+        if ident in added:
+            used.append('added')
+            marker = ':::added'
+        elif ident in changed:
+            used.append('changed')
+            marker = ':::changed'
+        else:
+            marker = ''
+        return '%s["%s"]%s' % (comp_nodes[ident], mermaid_label(comps[ident]['title']), marker)
+
+    lines, placed = ['flowchart LR'], set()
+    for group in groups:
+        members = [ident for ident in shown if comps[ident]['group'] == group['id']]
+        if not members:
+            continue
+        lines.append('  subgraph %s["%s"]' % (group_nodes[group['id']], mermaid_label(group['title'])))
+        lines += ['    ' + node(ident) for ident in members]
+        lines.append('  end')
+        placed.update(members)
+    lines += ['  ' + node(ident) for ident in shown if ident not in placed]
+    for source, target, label in rels:
+        text = mermaid_label(label)
+        if text:
+            lines.append('  %s -->|"%s"| %s' % (comp_nodes[source], text, comp_nodes[target]))
+        else:
+            lines.append('  %s --> %s' % (comp_nodes[source], comp_nodes[target]))
+    classes = {'added': MERMAID_ADDED, 'changed': MERMAID_CHANGED}
+    return '\n'.join(lines + [classes[klass] for klass in ('added', 'changed') if klass in used])
+
+
+def mermaid_tools(element, file_name, ui):
+    """The Mermaid group beside a diagram's zoom tools: copy and download its text element."""
+    return ('<div class="mermaid-tools" role="group" aria-label="%s" data-copied="%s" data-select="%s" data-downloaded="%s">'
+            '<button type="button" class="tool" data-mermaid-copy="%s">%s</button>'
+            '<button type="button" class="tool" data-mermaid-download="%s" data-file="%s">%s</button>'
+            '<p class="mermaid-status" role="status"></p></div>') % (
+        esc(ui['mermaid']), esc(ui['mermaid_copied']), esc(ui['mermaid_select']), esc(ui['mermaid_downloaded']),
+        element, esc(ui['mermaid_copy']), element, file_name, esc(ui['mermaid_download']))
+
+
+def mermaid_element(element, text):
+    """The text element that holds one diagram's Mermaid text for the copy and download controls."""
+    return '<script type="text/plain" id="%s">%s</script>' % (element, text)
+
+
 def graph_section(tasks, present, stage, live, ui):
     """The graph section of a Full plan: legend, canvas, inspector, flow toggle and the stage list."""
     ids = [t['id'] for t in tasks]
@@ -1524,13 +1629,14 @@ def graph_section(tasks, present, stage, live, ui):
         '<div class="canvas-bar"><ul class="legend" aria-label="%s">%s</ul><div class="canvas-tools">'
         '<button type="button" class="tool" id="clear-trace" hidden>%s</button><div class="zoom" role="group" aria-label="%s">'
         '<button type="button" class="tool" data-zoom="out" aria-label="%s">−</button><output class="zoom-level">100%%</output>'
-        '<button type="button" class="tool" data-zoom="in" aria-label="%s">+</button><button type="button" class="tool" data-zoom="fit">%s</button></div></div></div>'
+        '<button type="button" class="tool" data-zoom="in" aria-label="%s">+</button><button type="button" class="tool" data-zoom="fit">%s</button></div>%s</div></div>%s'
         '<div class="flow-stage"><div class="map"><div class="gscroll canvas" tabindex="0" role="region" aria-label="%s">%s</div></div>'
         '<aside class="inspector" id="flow-inspector" aria-live="polite" data-open="%s"><p class="inspector-empty">%s</p><div class="inspector-body" hidden></div></aside></div>'
         '<button type="button" class="tool flow-toggle" aria-expanded="false" data-show="%s" data-hide="%s" hidden>%s</button>'
         '%s<p class="flow-note">%s %s</p></section>') % (
         esc(ui['graph']), esc(ui['graph_note']), esc(ui['legend']), legend, esc(ui['clear']), esc(ui['zoom']), esc(ui['zoom_out']),
-        esc(ui['zoom_in']), esc(ui['fit']), esc(ui['graph']), graph_svg(tasks, layout, live, ui), esc(ui['inspector_open']), esc(ui['inspector_empty']),
+        esc(ui['zoom_in']), esc(ui['fit']), mermaid_tools('plan-view-mermaid-tasks', 'tasks.mmd', ui), mermaid_element('plan-view-mermaid-tasks', mermaid_tasks(tasks)),
+        esc(ui['graph']), graph_svg(tasks, layout, live, ui), esc(ui['inspector_open']), esc(ui['inspector_empty']),
         esc(ui['show_diagram']), esc(ui['hide_diagram']), esc(ui['show_diagram']),
         stage_list(tasks, layout[0], edges, ui), esc(ui['graph_reduced']), esc(ui['stage_note']))
 
@@ -2120,6 +2226,8 @@ def arch_section(mapm, base, delta, scope, root, ui):
         return '<section class="sec" id="architecture" data-map="shown">%s<p class="anote">%s</p></section>' % (head, esc(ui['a_nochange'])), island
     marks = arch_marks(changes)
     fresh = {rel3(r) for c in changes for r in c.get('relations', [])}
+    added = sorted({c['id'] for c in changes if c['op'] == 'add'})
+    edited = sorted({c['id'] for c in changes if c['op'] != 'add'} - set(added))
     groups = base['groups']
     pictures = [('today', base, today_ids)] + ([('after', later, after_ids)] if changes else [])
     parts = []
@@ -2127,16 +2235,19 @@ def arch_section(mapm, base, delta, scope, root, ui):
         comps = {c['id']: c for c in source['components']}
         shown_set = set(shown)
         rels = [rel3(r) for r in source.get('relations', []) if r[0] in shown_set and r[1] in shown_set]
+        picture_added, picture_edited = (added, edited) if pic == 'after' else ([], [])
+        mermaid_text = mermaid_architecture(groups, comps, shown, rels, picture_added, picture_edited)
         parts.append(
             '<div class="arch-pic" data-pic="%s"><div class="arch-pic-head"><h3>%s</h3><span>%s</span></div>'
             '<div class="apanel" data-view="cards">%s</div>'
             '<div class="apanel" data-view="diagram"><div class="canvas-bar"><p>%s</p><div class="zoom" role="group" aria-label="%s">'
             '<button type="button" class="tool" data-zoom="out" aria-label="%s">−</button><output class="zoom-level">100%%</output>'
-            '<button type="button" class="tool" data-zoom="in" aria-label="%s">+</button><button type="button" class="tool" data-zoom="fit">%s</button></div></div>'
+            '<button type="button" class="tool" data-zoom="in" aria-label="%s">+</button><button type="button" class="tool" data-zoom="fit">%s</button></div>%s</div>%s'
             '<div class="ascroll canvas" tabindex="0" role="region" aria-label="%s">%s</div></div>%s</div>' % (
                 pic, esc(ui['a_today'] if pic == 'today' else ui['a_after']), esc(ui['a_rel_all'].format(count=len(rels))),
                 arch_cards(shown, groups, comps, rels, marks, stale_ids, pic, ui),
                 esc(ui['a_diagram_help']), esc(ui['zoom']), esc(ui['zoom_out']), esc(ui['zoom_in']), esc(ui['fit']),
+                mermaid_tools('plan-view-mermaid-' + pic, 'architecture-%s.mmd' % pic, ui), mermaid_element('plan-view-mermaid-' + pic, mermaid_text),
                 esc(ui['a_diagram']), arch_svg(shown, groups, comps, rels, marks, stale_ids, fresh, pic, ui),
                 arch_relation_guide(rels, comps, ui)))
     tabs = ('<div class="atabs segmented" role="tablist" aria-label="%s"><button type="button" role="tab" class="seg" data-view="cards" aria-selected="true">%s</button>'
@@ -2147,8 +2258,6 @@ def arch_section(mapm, base, delta, scope, root, ui):
         switch = ('<div class="apics segmented" role="radiogroup" aria-label="%s"><button type="button" role="radio" class="seg" data-pic="today" aria-checked="false">%s</button>'
                   '<button type="button" role="radio" class="seg" data-pic="after" aria-checked="true">%s</button></div>') % (
                      esc(ui['a_pics']), esc(ui['a_today']), esc(ui['a_after']))
-    added = sorted({c['id'] for c in changes if c['op'] == 'add'})
-    edited = sorted({c['id'] for c in changes if c['op'] != 'add'} - set(added))
     later_comps = {c['id']: c for c in later['components']}
     change_rows = ''.join(
         '<li><span class="abadge %s">%s</span><span class="change-title">%s</span><span class="change-tasks">%s</span></li>' % (
