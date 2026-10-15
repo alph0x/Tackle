@@ -15,7 +15,7 @@ consumer; dates and experiment identifiers belong to evidence provenance.
 | product | [product/lint/rows](product/lint/rows/) | Canonical lint rows, formats, severities, AWK variants, lifecycle outcomes, clock coverage and Attempts evidence. |
 | product | [product/lint/task-contracts](product/lint/task-contracts/) | Task contracts, readiness and acceptance fields. |
 | product | [product/lint/task-identity](product/lint/task-identity/) | Task identity, scaffold paths and workspace naming. |
-| product | [product/migration](product/migration/) | Workspace schema migration, recipes and census refusal. |
+| product | [product/migration](product/migration/) | Workspace schema migration, recipes and census refusal. Migration keeps historical record paths, makes citations follow their moved files, leaves links into other workspaces unchanged, reports what history still cites, and keeps the text after a legacy status glyph as a board note. |
 | product | [product/plan](product/plan/) | Plan section order, and the controlled-writing recipe and guide for owner texts and specifications. |
 | product | [product/requirements-base](product/requirements-base/) | Requirements base parsing, delta validation, reconciliation and fold through the shipped recipe, and the guide's rules. |
 | product | [product/resume](product/resume/) | The cold-resume read order, its links from every read list, the spent-count source and the closure listing of open obligations. |

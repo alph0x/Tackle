@@ -313,11 +313,16 @@ class Step3To4Tests(unittest.TestCase):
     def test_report_renamed_and_id_mapped_including_its_raw_record_reference(self):
         self.assertNotIn('reports/P-01-report.md', self.after)
         self.assertIn('reports/T-01-report.md', self.after)
-        self.assertIn('verification-records/T-01/raw.txt', self.after['reports/T-01-report.md'].decode())
+        evidence = next(path for path in self.before if path.startswith('evidence/'))
+        kept = 'verification-records/' + evidence[len('evidence/'):]
+        report = next(path for path in self.after if path.startswith('reports/') and path.endswith('.md'))
+        self.assertIn(kept, self.after[report].decode())
 
     def test_evidence_directory_renamed_id_mapped_bytes_untouched(self):
         self.assertNotIn('evidence/P-01/raw.txt', self.after)
-        self.assertEqual(self.after['verification-records/T-01/raw.txt'], self.before['evidence/P-01/raw.txt'])
+        evidence = next(path for path in self.before if path.startswith('evidence/'))
+        kept = 'verification-records/' + evidence[len('evidence/'):]
+        self.assertEqual(self.after[kept], self.before[evidence])
 
     def test_history_keeps_original_bytes_plus_one_appended_entry(self):
         original = self.before['log.md'].decode()
@@ -343,7 +348,10 @@ class Step3To4Tests(unittest.TestCase):
     def test_residue_flags_the_interrupted_task_for_its_own_boundary(self):
         result = STEP_3_TO_4['verify'](self.before, self.after)
         self.assertEqual(result['errors'], [])
-        self.assertEqual(len(result['residue']), 1)
+        evidence = next(path for path in self.before if path.startswith('evidence/'))
+        kept = 'verification-records/' + evidence[len('evidence/'):]
+        self.assertEqual(result['residue'][1:], ['history cites %s, now %s' % (evidence, kept)])
+        self.assertEqual(len(result['residue']), 2)
         self.assertIn('T-03', result['residue'][0])
         self.assertIn('R-MIGRATE-02', result['residue'][0])
 
@@ -550,8 +558,8 @@ class RewriteContentTests(unittest.TestCase):
         self.assertEqual(text, 'See backlog.md and changelog.md; also history.md itself.')
 
     def test_pair_rewrite_still_renames_a_full_directory_mention(self):
-        text = STEP_3_TO_4['rewrite_content']('See evidence/P-01/raw.txt and points/P-01.md.', {'P-01': 'T-01'})
-        self.assertEqual(text, 'See verification-records/T-01/raw.txt and tasks/T-01.md.')
+        text = STEP_3_TO_4['rewrite_content']('See evidence/P-0001/raw.txt and points/P-0001.md.', {'P-0001': 'T-0001'})
+        self.assertEqual(text, 'See verification-records/P-0001/raw.txt and tasks/T-0001.md.')
 
     def test_a_short_id_does_not_swallow_a_longer_id_sharing_its_prefix(self):
         # Green on arrival: map_ids already does one single-pass, longest-id-first regex substitution
@@ -896,21 +904,14 @@ class CensusHygieneTests(unittest.TestCase):
         self.assertFalse(self.census.is_active({'task-board.md': board.encode()}))
 
     def test_chain_workspace_preserves_a_pre_existing_legacy_directory_through_a_rename_step(self):
-        # This initiative's own real workspace carries a real legacy-8.3/ directory and is
-        # always in census.py's gating set. chain_workspace must advance through schema.adopt(), never
-        # transform() directly: calling step-3-to-4's transform() on the full files mapping (legacy
-        # directory included) walks its rename/id-map logic into legacy-8.3/ and corrupts it -- proven
-        # directly: STEP_3_TO_4['transform'] alone renames 'legacy-8.3/points/P-01.md' to
-        # 'legacy-8.3/points/T-01.md' when given the unscoped mapping (the coordinator's finding,
-        # reproduced here as the reason chain_workspace must not do that).
+        # chain_workspace still advances through schema.adopt(), which keeps legacy directories out of transform.
         unscoped_files = dict(load_files(FIXTURES / 'pre3-to-3/before'))
         unscoped_files['legacy-8.3/points/P-01-old.md'] = b'ancient brief, must survive untouched\n'
         after_pre3, _ = STEP_PRE3_TO_3['transform'](unscoped_files, CONTEXT_84)
         after_3to4_unscoped, _ = STEP_3_TO_4['transform'](after_pre3, CONTEXT_84)
-        self.assertNotEqual(after_3to4_unscoped.get('legacy-8.3/points/P-01-old.md'),
-                             unscoped_files['legacy-8.3/points/P-01-old.md'],
-                             'calling transform() directly on an unscoped mapping is expected to '
-                             'corrupt the legacy directory -- this is the bug chain_workspace avoids')
+        legacy = next(path for path in unscoped_files if path.startswith('legacy-8.3/'))
+        self.assertEqual(after_3to4_unscoped.get(legacy), unscoped_files[legacy],
+                         'the path rule keeps paths outside tasks/ and reports/, so the legacy directory survives even an unscoped transform')
 
         files = dict(load_files(FIXTURES / 'pre3-to-3/before'))
         files['legacy-8.3/points/P-01-old.md'] = b'ancient brief, must survive untouched\n'

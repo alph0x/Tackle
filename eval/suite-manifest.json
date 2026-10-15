@@ -302,14 +302,15 @@
       "path": "eval/tests/product/migration",
       "files": [
         "test_migration_steps.py",
+        "test_migration_history_paths.py",
         "test_unclosed_fence.py",
         "test_migration.py",
         "test_v90_v91_checklist.py"
       ],
-      "tests": 127,
+      "tests": 150,
       "source": "eval/migration",
       "category": "product",
-      "purpose": "Workspace schema migration, recipes and census refusal."
+      "purpose": "Workspace schema migration, recipes and census refusal. Migration keeps historical record paths, makes citations follow their moved files, leaves links into other workspaces unchanged, reports what history still cites, and keeps the text after a legacy status glyph as a board note."
     },
     {
       "path": "eval/tests/tooling/maintaining/field-report",
