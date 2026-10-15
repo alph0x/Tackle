@@ -30,7 +30,7 @@ ALLOWED_UNSCOPED = {':root', ':root[data-theme="dark"]', ':root:not([data-theme=
 # and theme-toggle rules style controls no page fragment contains, and the section heading rule is the one the page's
 # heading block uses (a sample inside a heading block takes that heading's size, by design).
 ALLOWED_REACH = ALLOWED_UNSCOPED | {'.theme-toggle svg', '.nav a', '.nav a:hover', '.nav a[aria-current="true"]',
-                                    '.sec-head h2'}
+                                    '.sec-head h2', '.chip b'}
 SAMPLE = ('<div class="tk-sample"><span style="background:#0f380f;color:#9bbc0f">a</span>'
           '<span style="background:#9bbc0f;color:#0f380f">b</span></div>')
 FRAGMENT = '<h1>Palette proposals</h1>\n<p>Two options.</p>\n'
@@ -84,6 +84,19 @@ def current_recipe():
 
 def strip_markers(text):
     return MARKER.sub('', text)
+
+
+def layer_block(text, opener):
+    start = text.index(opener)
+    depth = 0
+    for index in range(start + len(opener) - 1, len(text)):
+        if text[index] == '{':
+            depth += 1
+        elif text[index] == '}':
+            depth -= 1
+            if depth == 0:
+                return text[start:index + 1]
+    raise AssertionError('unclosed layer ' + opener)
 
 
 def style_of(page):
@@ -181,9 +194,8 @@ class AuxPageTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stderr)
             page = out.read_text(encoding='utf-8')
             template = TEMPLATE.read_text(encoding='utf-8')
-            tokens = template[template.index(':root{'):template.index('*,*::before,*::after')]
-            self.assertIn(':root[data-theme="dark"]{', tokens)
-            self.assertIn(':root:not([data-theme="light"])', tokens)
+            tokens = layer_block(template, '@layer tokens{')
+            self.assertIn('light-dark(', tokens)
             self.assertIn(tokens, page)
             self.assertIn('--sans:Outfit', page)
             self.assertIn('@font-face{font-family:Outfit;', page)
@@ -447,15 +459,17 @@ class AuxPageTests(unittest.TestCase):
     def test_single_source_follows_the_template(self):
         with tempfile.TemporaryDirectory() as tmp:
             text = TEMPLATE.read_text(encoding='utf-8')
-            self.assertEqual(text.count('--accent:#f24a00;'), 1)
-            changed = text.replace('--accent:#f24a00;', '--accent:#1d6fd0;').replace('tackle-plan-view-theme', 'probe-theme')
+            primitives = re.findall(r'--[a-z0-9-]+:#f24a00;', text)
+            self.assertEqual(len(primitives), 1)
+            name = primitives[0][:-len(':#f24a00;')]
+            changed = text.replace(primitives[0], name + ':#1d6fd0;').replace('tackle-plan-view-theme', 'probe-theme')
             template = template_copy(tmp, 'single-source', changed)
             workspace = workspace_with_view(tmp, 'single-source', template=template)
             result, out, _ = run_page(tmp, 'single-source', workspace, FRAGMENT, template=template)
             self.assertEqual(result.returncode, 0, result.stderr)
             page = out.read_text(encoding='utf-8')
-            self.assertIn('--accent:#1d6fd0;', page)
-            self.assertNotIn('--accent:#f24a00;', page)
+            self.assertIn(name + ':#1d6fd0;', page)
+            self.assertNotIn(name + ':#f24a00;', page)
             self.assertIn("stored('probe-theme')", page)
             self.assertNotIn('tackle-plan-view-theme', page)
 
