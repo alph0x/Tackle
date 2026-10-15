@@ -317,6 +317,58 @@ def parse_board(text, problems):
     return states, rows
 
 
+def read_board(ws, problems, lenient=False):
+    """The board text, its states and its task rows; a lenient read never fails and gives empty text when unreadable."""
+    path = ws / 'task-board.md'
+    if not lenient:
+        text = read(ws, 'task-board.md')
+    else:
+        try:
+            text = path.read_bytes().decode('utf-8', 'replace') if path.is_file() else ''
+        except OSError:
+            text = ''
+    states, rows = parse_board(text, problems)
+    return text, states, rows
+
+
+def resolve_brief(ws, cell):
+    """The brief's path under the workspace, its input-digest key and whether the path leaves the workspace."""
+    path = ws / cell
+    try:
+        path.resolve().relative_to(ws.resolve())
+    except ValueError:
+        return path, cell, True
+    return path, cell, False
+
+
+def validate_tasks(ws, tasks, states, problems):
+    """Record the board's task problems and each task's traces, which stay empty when its brief cannot be read."""
+    seen = set()
+    for t in tasks:
+        if t['id'] in seen:
+            problems.append('duplicate task id %s' % t['id'])
+        seen.add(t['id'])
+    for t in tasks:
+        for dep in t['deps']:
+            if dep not in seen:
+                problems.append('task %s depends on unknown task %s' % (t['id'], dep))
+        if t['status'] not in states:
+            problems.append('task %s has status %s, outside the board states' % (t['id'], t['status']))
+        traces = ''
+        if not t['brief']:
+            problems.append('task %s names no brief' % t['id'])
+        else:
+            path, _, outside = resolve_brief(ws, t['brief'])
+            if outside:
+                problems.append('brief %s for task %s is outside the workspace' % (t['brief'], t['id']))
+            elif not path.is_file():
+                problems.append('missing brief %s for task %s' % (t['brief'], t['id']))
+            else:
+                found = re.search(r'^- \*\*Traces to\*\*: (.+)$', path.read_text(encoding='utf-8'), re.M)
+                traces = found.group(1) if found else ''
+        t['traces'] = traces
+
+
 def covers(req, traces):
     number = int(req[1:])
     if re.search(r'\b%s\b' % re.escape(req), traces):
@@ -680,22 +732,11 @@ def input_digests(ws, template_path, map_base, map_scope):
     The recipes are read from the template's folder; without --map the default base under the repository root is
     recorded present or absent."""
     inputs = {name: file_digest(ws / name) for name in WORKSPACE_INPUTS}
-    board = ws / 'task-board.md'
-    if board.is_file():
-        try:
-            rows = parse_board(board.read_bytes().decode('utf-8', 'replace'), [])[1]
-        except OSError:
-            rows = []
-        for row in rows:
-            if not row['brief']:
-                continue
-            path = ws / row['brief']
-            try:
-                path.resolve().relative_to(ws.resolve())
-            except ValueError:
-                inputs[row['brief']] = 'outside the workspace'
-            else:
-                inputs[row['brief']] = file_digest(path)
+    for row in read_board(ws, [], lenient=True)[2]:
+        if not row['brief']:
+            continue
+        path, key, outside = resolve_brief(ws, row['brief'])
+        inputs[key] = 'outside the workspace' if outside else file_digest(path)
     folder = Path(template_path).parent
     inputs['template'] = file_digest(template_path)
     inputs['plan-view recipe'] = file_digest(folder / 'recipes' / 'plan-view.md')
@@ -719,7 +760,7 @@ def check_divergence_notes(ws):
     try:
         if re.search(r'^Gate:\s*Lite\b', read(ws, 'plan.md'), re.M):
             return []
-        _, tasks = parse_board(read(ws, 'task-board.md'), [])
+        _, _, tasks = read_board(ws, [])
         return state_divergence_notes(load_summary(ws), load_export_summary(ws), tasks)
     except (OSError, ValueError, KeyError, TypeError, AttributeError):
         return []
@@ -1461,6 +1502,37 @@ def stage_list(tasks, stage, edges, ui):
         groups.append('<li class="stage-group"><p class="stage-head"><span>%s</span><span>%s</span></p><ol>%s</ol></li>' % (
             esc(ui['stage'].format(n=number + 1)), esc(ui['stage_count'].format(done=done, total=len(listed))), ''.join(rows)))
     return '<ol class="stage-list" aria-label="%s">%s</ol>' % (esc(ui['stage_list']), ''.join(groups))
+
+
+def graph_none_section(ui):
+    """The graph section of a Focused plan, which has no task board."""
+    return ('<section class="sec flow" id="graph"><header class="sec-head"><h2>%s</h2><p class="sec-lede">%s</p></header></section>' % (
+        esc(ui['graph']), esc(ui['graph_none'])))
+
+
+def graph_section(tasks, present, stage, live, ui):
+    """The graph section of a Full plan: legend, canvas, inspector, flow toggle and the stage list."""
+    ids = [t['id'] for t in tasks]
+    edges = reduce_edges(ids, {t['id']: t['deps'] for t in tasks})
+    layout = choose_layout(ids, stage, edges)
+    legend = ''.join('<li><span class="glyph g-%s" aria-hidden="true"></span>%s</li>' % (
+        STATE_CLASS.get(s, 'draft'), esc(ui['states'].get(s, s))) for s in present)
+    legend += '<li><span class="line-mark met" aria-hidden="true"></span>%s</li><li><span class="line-mark open" aria-hidden="true"></span>%s</li>' % (
+        esc(ui['legend_met']), esc(ui['legend_open']))
+    return (
+        '<section class="sec flow" id="graph"><header class="sec-head"><h2>%s</h2><p class="sec-lede">%s</p></header>'
+        '<div class="canvas-bar"><ul class="legend" aria-label="%s">%s</ul><div class="canvas-tools">'
+        '<button type="button" class="tool" id="clear-trace" hidden>%s</button><div class="zoom" role="group" aria-label="%s">'
+        '<button type="button" class="tool" data-zoom="out" aria-label="%s">−</button><output class="zoom-level">100%%</output>'
+        '<button type="button" class="tool" data-zoom="in" aria-label="%s">+</button><button type="button" class="tool" data-zoom="fit">%s</button></div></div></div>'
+        '<div class="flow-stage"><div class="map"><div class="gscroll canvas" tabindex="0" role="region" aria-label="%s">%s</div></div>'
+        '<aside class="inspector" id="flow-inspector" aria-live="polite" data-open="%s"><p class="inspector-empty">%s</p><div class="inspector-body" hidden></div></aside></div>'
+        '<button type="button" class="tool flow-toggle" aria-expanded="false" data-show="%s" data-hide="%s" hidden>%s</button>'
+        '%s<p class="flow-note">%s %s</p></section>') % (
+        esc(ui['graph']), esc(ui['graph_note']), esc(ui['legend']), legend, esc(ui['clear']), esc(ui['zoom']), esc(ui['zoom_out']),
+        esc(ui['zoom_in']), esc(ui['fit']), esc(ui['graph']), graph_svg(tasks, layout, live, ui), esc(ui['inspector_open']), esc(ui['inspector_empty']),
+        esc(ui['show_diagram']), esc(ui['hide_diagram']), esc(ui['show_diagram']),
+        stage_list(tasks, layout[0], edges, ui), esc(ui['graph_reduced']), esc(ui['stage_note']))
 
 
 def load_map_recipe(template_path):
@@ -2405,10 +2477,9 @@ def main():
     tasks, states, board = [], DEFAULT_STATES, ''
     stale_prose, report_stale = '', ''
     if not focused:
-        board = read(ws, 'task-board.md')
+        board, states, tasks = read_board(ws, problems)
         if not board:
             problems.append('task-board.md is missing or empty')
-        states, tasks = parse_board(board, problems)
         if board and not tasks:
             problems.append('the board has no task rows')
         stale_prose, report_stale = set_aside_stale_prose(summary, export_summary, tasks)
@@ -2422,33 +2493,7 @@ def main():
                       % name, file=sys.stderr)
         for line in state_divergence_notes(summary, export_summary, tasks):
             print(line, file=sys.stderr)
-        seen = set()
-        for t in tasks:
-            if t['id'] in seen:
-                problems.append('duplicate task id %s' % t['id'])
-            seen.add(t['id'])
-        for t in tasks:
-            for dep in t['deps']:
-                if dep not in seen:
-                    problems.append('task %s depends on unknown task %s' % (t['id'], dep))
-            if t['status'] not in states:
-                problems.append('task %s has status %s, outside the board states' % (t['id'], t['status']))
-            traces = ''
-            if not t['brief']:
-                problems.append('task %s names no brief' % t['id'])
-            else:
-                path = ws / t['brief']
-                try:
-                    path.resolve().relative_to(ws.resolve())
-                except ValueError:
-                    problems.append('brief %s for task %s is outside the workspace' % (t['brief'], t['id']))
-                else:
-                    if not path.is_file():
-                        problems.append('missing brief %s for task %s' % (t['brief'], t['id']))
-                    else:
-                        found = re.search(r'^- \*\*Traces to\*\*: (.+)$', path.read_text(encoding='utf-8'), re.M)
-                        traces = found.group(1) if found else ''
-            t['traces'] = traces
+        validate_tasks(ws, tasks, states, problems)
     arch, missing_base = None, False
     if args.map_base:
         try:
@@ -2526,34 +2571,14 @@ def main():
 
     covered = sum(1 for r in cover if cover[r])
     if focused:
-        graph_html = ('<section class="sec flow" id="graph"><header class="sec-head"><h2>%s</h2><p class="sec-lede">%s</p></header></section>' % (
-            esc(ui['graph']), esc(ui['graph_none'])))
+        graph_html = graph_none_section(ui)
         tasks_html = ''
     else:
         counts = {}
         for t in tasks:
             counts[t['status']] = counts.get(t['status'], 0) + 1
         present = [s for s in states if s in counts]
-        edges = reduce_edges(ids, {t['id']: t['deps'] for t in tasks})
-        layout = choose_layout(ids, stage, edges)
-        legend = ''.join('<li><span class="glyph g-%s" aria-hidden="true"></span>%s</li>' % (
-            STATE_CLASS.get(s, 'draft'), esc(ui['states'].get(s, s))) for s in present)
-        legend += '<li><span class="line-mark met" aria-hidden="true"></span>%s</li><li><span class="line-mark open" aria-hidden="true"></span>%s</li>' % (
-            esc(ui['legend_met']), esc(ui['legend_open']))
-        graph_html = (
-            '<section class="sec flow" id="graph"><header class="sec-head"><h2>%s</h2><p class="sec-lede">%s</p></header>'
-            '<div class="canvas-bar"><ul class="legend" aria-label="%s">%s</ul><div class="canvas-tools">'
-            '<button type="button" class="tool" id="clear-trace" hidden>%s</button><div class="zoom" role="group" aria-label="%s">'
-            '<button type="button" class="tool" data-zoom="out" aria-label="%s">−</button><output class="zoom-level">100%%</output>'
-            '<button type="button" class="tool" data-zoom="in" aria-label="%s">+</button><button type="button" class="tool" data-zoom="fit">%s</button></div></div></div>'
-            '<div class="flow-stage"><div class="map"><div class="gscroll canvas" tabindex="0" role="region" aria-label="%s">%s</div></div>'
-            '<aside class="inspector" id="flow-inspector" aria-live="polite" data-open="%s"><p class="inspector-empty">%s</p><div class="inspector-body" hidden></div></aside></div>'
-            '<button type="button" class="tool flow-toggle" aria-expanded="false" data-show="%s" data-hide="%s" hidden>%s</button>'
-            '%s<p class="flow-note">%s %s</p></section>') % (
-            esc(ui['graph']), esc(ui['graph_note']), esc(ui['legend']), legend, esc(ui['clear']), esc(ui['zoom']), esc(ui['zoom_out']),
-            esc(ui['zoom_in']), esc(ui['fit']), esc(ui['graph']), graph_svg(tasks, layout, live, ui), esc(ui['inspector_open']), esc(ui['inspector_empty']),
-            esc(ui['show_diagram']), esc(ui['hide_diagram']), esc(ui['show_diagram']),
-            stage_list(tasks, layout[0], edges, ui), esc(ui['graph_reduced']), esc(ui['stage_note']))
+        graph_html = graph_section(tasks, present, stage, live, ui)
         tasks_html = task_list(tasks, cover, down, live, summary, ui, counts, present)
     overview_html = presentation_overview(summary, objective_of(plan), ui)
     status_html = status_section(summary, export_summary, fields, tasks, focused, snapshot, working_html, title, plan, ui, stale_prose)
