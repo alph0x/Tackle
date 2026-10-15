@@ -62,6 +62,27 @@ class CommittedTextTests(unittest.TestCase):
     def scan(self, root, base, slug='sample-workspace'):
         return scan_committed_text(root, base, slug)
 
+    def test_a_relocated_file_below_default_rename_similarity_keeps_old_lines_unflagged(self):
+        root, base = self.repository()
+        old_lines = ['Example: map P' + '-0' + '1 to T' + '-0' + '1 when migrating.\n'] + [
+            'Unchanged guide line %d about migration.\n' % number for number in range(30)]
+        self.write(root, 'old/guide.md', ''.join(old_lines))
+        self.git(root, 'add', '-A')
+        self.git(root, 'commit', '-q', '-m', 'guide at its old path')
+        base = self.git(root, 'rev-parse', 'HEAD').stdout.strip()
+        (root / 'old/guide.md').unlink()
+        added = ['Appended checklist line %d with plain words.\n' % number for number in range(36)]
+        self.write(root, 'new/guide.md', ''.join(old_lines + added))
+        self.git(root, 'add', '-A')
+        summary = self.git(root, 'diff', '--cached', base, '-M', '--summary').stdout
+        self.assertIn('create mode', summary, 'the fixture must fall below git default rename similarity')
+
+        self.assertEqual(self.scan(root, base), [])
+
+        self.write(root, 'new/guide.md', ''.join(old_lines + added + ['A new leak: T' + '-0' + '9.\n']))
+        self.git(root, 'add', '-A')
+        self.assertEqual([item.token for item in self.scan(root, base)], ['T' + '-0' + '9'])
+
     def test_every_class_case_hyphen_and_width_is_rejected(self):
         root, base = self.repository()
         tokens = []
