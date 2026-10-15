@@ -725,6 +725,9 @@ details>summary:hover{color:var(--accent-ink)}
   .lens-in .lens-verb::after{content:" ↓"}
   .lens-out .lens-verb::before{content:"↓ "}
 }
+.mermaid-tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 0 12px}
+.mermaid-status{margin:0;min-height:1em;font:500 11.5px/1.4 var(--mono);color:var(--ink2)}
+.mermaid-text{display:block;flex-basis:100%;width:100%;min-height:8em;margin:8px 0 0;padding:10px;font:12px/1.5 var(--mono);color:var(--ink);background:var(--surface);border:1px solid var(--line)}
 @media (max-width:420px){
   .tb-grid{grid-template-columns:1fr}
   .tb-grid>div:nth-child(odd){border-right:0}
@@ -746,6 +749,7 @@ details>summary:hover{color:var(--accent-ink)}
   *,*::before,*::after{animation:none!important;transition:none!important;box-shadow:none!important}
   body>*:not(.print-reports),.lens{display:none!important}
   .static-copy{display:none!important}
+  .mermaid-tools,.mermaid-text{display:none!important}
   .print-reports{display:block!important}
   .print-report{display:none!important}
   :root:not([data-print-scope]) #print-report-both,:root[data-print-scope="plan"] #print-report-plan,
@@ -1598,6 +1602,61 @@ details>summary:hover{color:var(--accent-ink)}
     }
   }
 
+  function mermaidExport(view) {
+    var doc = view.doc, all = view.all;
+    function textOf(id) {
+      var element = doc.getElementById(id);
+      return element ? element.textContent : '';
+    }
+    function announce(group, message) {
+      var status = group.querySelector('.mermaid-status');
+      if (status) { status.textContent = message; }
+    }
+    all('[data-mermaid-copy]').forEach(function (button) {
+      var group = button.parentNode;
+      button.addEventListener('click', function () {
+        var text = textOf(button.getAttribute('data-mermaid-copy'));
+        var clipboard = window.navigator && window.navigator.clipboard;
+        var offerText = function () {
+          var area = group.parentNode.querySelector('.mermaid-text');
+          if (!area) {
+            area = doc.createElement('textarea');
+            area.setAttribute('class', 'mermaid-text');
+            area.setAttribute('readonly', '');
+            group.parentNode.appendChild(area);
+          }
+          area.textContent = text;
+          area.focus();
+          if (typeof area.select === 'function') { area.select(); }
+          announce(group, group.getAttribute('data-select'));
+        };
+        if (clipboard && typeof clipboard.writeText === 'function') {
+          clipboard.writeText(text).then(function () {
+            announce(group, group.getAttribute('data-copied'));
+          }, offerText);
+        } else {
+          offerText();
+        }
+      });
+    });
+    all('[data-mermaid-download]').forEach(function (button) {
+      var group = button.parentNode;
+      button.addEventListener('click', function () {
+        if (!window.Blob || !window.URL) { return; }
+        var file = button.getAttribute('data-file');
+        var text = textOf(button.getAttribute('data-mermaid-download'));
+        var url = window.URL.createObjectURL(new window.Blob([text], { type: 'text/plain' }));
+        var link = doc.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', file);
+        group.appendChild(link);
+        if (typeof link.click === 'function') { link.click(); }
+        if (window.URL.revokeObjectURL) { window.URL.revokeObjectURL(url); }
+        announce(group, group.getAttribute('data-downloaded').replace('{file}', file));
+      });
+    });
+  }
+
   function fileView(view) {
     var doc = view.doc, root = view.root, all = view.all, one = view.one;
     var fileRevision = one('meta[name="tackle-file-revision"]');
@@ -1681,6 +1740,7 @@ details>summary:hover{color:var(--accent-ink)}
   var architectureState = architecture(view, canvases);
   decisionLog(view);
   exportScope(view);
+  mermaidExport(view);
   fileView(view);
   escapeClearsSelection(view, selection, architectureState);
 })();
