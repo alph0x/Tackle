@@ -234,6 +234,23 @@ historical record and no neighboring workspace, and creates no requirements base
 5. Run rows 1–17 on the copy. Adopt only the validated copy: record the adoption and the rollback result,
    bump the `Methodology:` stamp to 9.2.0, and roll back by restoring the checkpoint copy.
 
+<a id="v920--v921-checklist"></a>
+## v9.2.0 → v9.2.1 checklist
+
+An active 9.2.0 workspace adopts 9.2.1 at a task boundary with this checklist. Adopt only for a selected
+active workspace, on a disposable copy at a task boundary. This patch changes what the plan view reports
+about stale curated prose and leaked identifiers, and how auxiliary plan pages are styled. It rewrites no
+closed task, no historical record and no neighboring workspace, and it changes no file format.
+
+1. Record the pinned procedure, the current lint result under it, and hashes of the board, briefs,
+   reports, `AGENTS.md` and history. Preserve neighboring workspaces.
+2. If the workspace has a plan view, rebuild it under its standing view request and act on the new
+   stderr notes. A note that a curated summary no longer matches the board means updating or removing
+   its stale prose. A note about leaked identifiers means rewriting that prose in
+   `view/export-summary.json` without plan-internal identifiers. Without that request, build no view.
+3. Run rows 1–17 on the copy. Adopt only the validated copy: record the adoption and the rollback result,
+   bump the `Methodology:` stamp to 9.2.1, and roll back by restoring the checkpoint copy.
+
 <a id="schema-keyed-migration"></a>
 ## Schema-keyed migration (9.0.0)
 
