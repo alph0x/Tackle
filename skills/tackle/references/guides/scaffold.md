@@ -95,6 +95,12 @@ Create only when their trigger fires:
 
 (`task-board.md` is a core artifact, not depth — it is copied by the scaffold, per the §File map in `AGENTS.tmpl.md`.)
 
+## Sibling workspaces
+
+A workspace may declare sibling workspaces in its AGENTS.md, and a task may then depend on a sibling's task as T-NN [sibling] or keep its brief under that sibling's tasks/.
+
+A sibling is declared by a row of a `## Sibling workspaces` table in AGENTS.md under the header `| Sibling | Path | Relation |`, and its path must be `docs/plans/` followed by one folder name; rows, comments and fenced blocks are read the same way as the plan view reads them, and a row that fails these checks declares nothing. A dependency on a sibling's task is written `T-NN [sibling]` with exactly one space, and repeated references in one cell count once. A brief may be `../<name>/tasks/<file>` when `<name>` is a declared sibling, and it resolves only under that sibling's tasks/ folder. Lint row 2 checks each sibling a dependency names: an undeclared sibling, a missing or older sibling task-board.md, and a task id not on that board are reported, and a sibling named only by a brief is not checked. A task whose sibling dependency is not Complete is not Ready to run; lint does not check that state.
+
 <a id="multi-repository-workspace"></a>
 ## Multi-repository workspace
 

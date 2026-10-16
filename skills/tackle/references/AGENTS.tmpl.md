@@ -151,6 +151,15 @@ work:
 
 The Run report and raw evidence are records, not substitutes for deliverable acceptance or authorization.
 
+<!-- Optional: declare sibling workspaces when this initiative spans more than one plan folder.
+## Sibling workspaces
+
+| Sibling | Path | Relation |
+|---|---|---|
+| api | docs/plans/api-split | shares the release |
+
+Only declared siblings resolve; a dependency on an undeclared sibling is reported. -->
+
 ## Status / next
 
 Resume in the order of `references/guides/status.md#cold-resume-read-order`; see the Run guide for resuming

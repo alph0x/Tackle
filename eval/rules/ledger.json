@@ -4282,6 +4282,29 @@
       "historical": []
     },
     {
+      "rule_id": "R-PLAN-21",
+      "statement": "A workspace may declare sibling workspaces in its AGENTS.md, and a task may then depend on a sibling's task as T-NN [sibling] or keep its brief under that sibling's tasks/.",
+      "statement_sha256": "4ed116103230892e37ddbdf8ac29eac35f8b603166ac5ffc364165caeb269c6f",
+      "home": "references/guides/scaffold.md:100",
+      "home_fragment": "A workspace may declare sibling workspaces in its AGENTS.md,",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.3.0",
+        "trigger": "sibling workspaces",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-15"
+      },
+      "historical": []
+    },
+    {
       "rule_id": "R-RUN-26",
       "statement": "Dispatch only a role-to-model binding that the owner confirmed. A review role dispatches at the tier the team table gives it, never by default at the coordinator's model. An unconfirmed binding leaves the task `Waiting on owner`.",
       "statement_sha256": "f380e511807f71fbae0bc76bacadb1b69b856cf449c37ce91073a90418723327",
@@ -4578,7 +4601,7 @@
       "rule_id": "R-RUN-30",
       "statement": "A task's Write scope paths are relative to its repository's root, and a task writes only inside its own repository.",
       "statement_sha256": "584e0d61f7bc0a5dd0f678e6e53e81979b2ec697c6b91a79fe029cabb5349d8a",
-      "home": "references/guides/scaffold.md:103",
+      "home": "references/guides/scaffold.md:109",
       "home_fragment": "A task's Write scope paths are relative to its",
       "units": [],
       "mirrors": [],
