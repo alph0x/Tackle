@@ -313,9 +313,11 @@ def parse_board(text, problems):
         if len(parts) <= need:
             problems.append('task %s has fewer cells than the task table header' % parts[0])
             continue
+        dep_cell = parts[pick('depends on', 3)]
         rows.append(dict(id=parts[0], title=parts[pick('what', 1)], brief=brief_path(parts[pick('brief', 2)]),
-                         deps=re.findall(r'T-\d+', parts[pick('depends on', 3)]), status=parts[pick('status', 4)],
-                         verification=parts[pick('verification', 5)]))
+                         deps=re.findall(r'T-\d+(?!\d)(?! \[%s\])' % SIBLING_SLUG, dep_cell),
+                         sib_deps=list(dict.fromkeys((slug, 'T-' + digits) for digits, slug in re.findall(r'T-(\d+) \[(%s)\]' % SIBLING_SLUG, dep_cell))),
+                         status=parts[pick('status', 4)], verification=parts[pick('verification', 5)]))
     return states, rows
 
 
@@ -333,8 +335,82 @@ def read_board(ws, problems, lenient=False):
     return text, states, rows
 
 
-def resolve_brief(ws, cell):
+SIBLING_SLUG = r'[a-z0-9][a-z0-9-]*'
+
+
+def repo_root(ws):
+    """The repository root of a workspace at docs/plans/<name>: the third folder above it."""
+    above = Path(os.path.abspath(ws)).parents
+    return above[2] if len(above) > 2 else above[-1]
+
+
+def sibling_lines(text):
+    """The AGENTS.md lines with HTML comments removed (a one-line span, or a run to the line holding its close) and fenced blocks skipped."""
+    kept, comment, fenced = [], False, False
+    for line in text.splitlines():
+        if comment:
+            if '-->' not in line:
+                continue
+            line, comment = line.split('-->', 1)[1], False
+        while '<!--' in line:
+            head, rest = line.split('<!--', 1)
+            if '-->' in rest:
+                line = head + rest.split('-->', 1)[1]
+            else:
+                line, comment = head, True
+                break
+        if line.strip().startswith('```'):
+            fenced = not fenced
+            continue
+        if not fenced and not comment:
+            kept.append(line)
+    return kept
+
+
+def read_siblings(ws):
+    """The declared sibling workspaces by slug, each as its docs/plans/<name> folder under the repository root."""
+    lines = sibling_lines(read(ws, 'AGENTS.md'))
+    start = next((i for i, line in enumerate(lines) if line.strip() == '## Sibling workspaces'), None)
+    if start is None:
+        return {}
+    found, header = {}, False
+    for line in lines[start + 1:]:
+        if line.startswith('## '):
+            break
+        stripped = line.strip()
+        if not (stripped.startswith('|') and stripped.endswith('|') and len(stripped) > 1):
+            continue
+        parts = cells(line)
+        if not header:
+            header = parts == ['Sibling', 'Path', 'Relation']
+            continue
+        if len(parts) != 3:
+            continue
+        slug, path = parts[0], parts[1].strip('`').strip()
+        if re.fullmatch(SIBLING_SLUG, slug) and re.fullmatch(r'docs/plans/%s' % SIBLING_SLUG, path) and slug not in found:
+            found[slug] = repo_root(ws) / path
+    return found if header else {}
+
+
+def sibling_board(folder):
+    """The rows of a sibling's board when it declares tackle-workspace/5, else None; its own problems never reach the view."""
+    text = read(folder, 'task-board.md')
+    if not re.search(r'^Schema: tackle-workspace/5[ \t]*$', text, re.M):
+        return None
+    return parse_board(text, [])[1]
+
+
+def resolve_brief(ws, cell, siblings=None):
     """The brief's path under the workspace, its input-digest key and whether the path leaves the workspace."""
+    for slug, folder in (siblings or {}).items():
+        found = re.fullmatch(r'\.\./%s/tasks/(.+)' % re.escape(folder.name), cell)
+        if found:
+            path = folder / 'tasks' / found.group(1)
+            try:
+                path.resolve().relative_to((folder / 'tasks').resolve())
+            except ValueError:
+                break
+            return path, '%s:tasks/%s' % (slug, found.group(1)), False
     path = ws / cell
     try:
         path.resolve().relative_to(ws.resolve())
@@ -343,8 +419,10 @@ def resolve_brief(ws, cell):
     return path, cell, False
 
 
-def validate_tasks(ws, tasks, states, problems):
-    """Record the board's task problems and each task's traces, which stay empty when its brief cannot be read."""
+def validate_tasks(ws, tasks, states, problems, siblings=None):
+    """Record the board's task problems and each task's traces, which stay empty when its brief cannot be read; return the external nodes of resolved sibling references."""
+    siblings = siblings or {}
+    boards, reported, externals = {}, set(), []
     seen = set()
     for t in tasks:
         if t['id'] in seen:
@@ -360,7 +438,7 @@ def validate_tasks(ws, tasks, states, problems):
         if not t['brief']:
             problems.append('task %s names no brief' % t['id'])
         else:
-            path, _, outside = resolve_brief(ws, t['brief'])
+            path, _, outside = resolve_brief(ws, t['brief'], siblings)
             if outside:
                 problems.append('brief %s for task %s is outside the workspace' % (t['brief'], t['id']))
             elif not path.is_file():
@@ -369,6 +447,25 @@ def validate_tasks(ws, tasks, states, problems):
                 found = re.search(r'^- \*\*Traces to\*\*: (.+)$', path.read_text(encoding='utf-8'), re.M)
                 traces = found.group(1) if found else ''
         t['traces'] = traces
+        for slug, ref in t['sib_deps']:
+            if slug not in siblings:
+                problems.append('task %s depends on %s [%s], but no sibling named %s is declared' % (t['id'], ref, slug, slug))
+                continue
+            if slug not in boards:
+                boards[slug] = sibling_board(siblings[slug])
+            if boards[slug] is None:
+                if slug not in reported:
+                    reported.add(slug)
+                    problems.append('sibling %s has no tackle-workspace/5 task-board.md at docs/plans/%s' % (slug, siblings[slug].name))
+                continue
+            row = next((r for r in boards[slug] if r['id'] == ref), None)
+            if row is None:
+                problems.append("task %s depends on %s [%s], which is not on the sibling's board" % (t['id'], ref, slug))
+                continue
+            if not any(e['id'] == external_id(slug, ref) for e in externals):
+                externals.append(dict(id=external_id(slug, ref), slug=slug, task_id=ref, title=row['title'],
+                                      status=row['status'], deps=[], external=True))
+    return externals
 
 
 def covers(req, traces):
@@ -729,16 +826,26 @@ def file_digest(path):
         return 'unreadable'
 
 
+def external_id(slug, ref):
+    """The graph id of a reference to a sibling workspace's task."""
+    return 'x:%s:%s' % (slug, ref)
+
+
 def input_digests(ws, template_path, map_base, map_scope):
     """One sha256 per page input, as stored, named by workspace-relative path or by role, plus an overall digest.
     The recipes are read from the template's folder; without --map the default base under the repository root is
     recorded present or absent."""
+    siblings = read_siblings(ws)
     inputs = {name: file_digest(ws / name) for name in WORKSPACE_INPUTS}
-    for row in read_board(ws, [], lenient=True)[2]:
+    rows = read_board(ws, [], lenient=True)[2]
+    for row in rows:
         if not row['brief']:
             continue
-        path, key, outside = resolve_brief(ws, row['brief'])
+        path, key, outside = resolve_brief(ws, row['brief'], siblings)
         inputs[key] = 'outside the workspace' if outside else file_digest(path)
+    for slug in dict.fromkeys(slug for row in rows for slug, _ in row['sib_deps']):
+        if slug in siblings:
+            inputs['%s:task-board.md' % slug] = file_digest(siblings[slug] / 'task-board.md')
     folder = Path(template_path).parent
     inputs['template'] = file_digest(template_path)
     inputs['plan-view recipe'] = file_digest(folder / 'recipes' / 'plan-view.md')
@@ -746,9 +853,7 @@ def input_digests(ws, template_path, map_base, map_scope):
     if map_base:
         inputs['map base'] = file_digest(map_base)
     else:
-        above = Path(os.path.abspath(ws)).parents
-        root = above[2] if len(above) > 2 else above[-1]
-        inputs['map base'] = file_digest(root / '.tackle' / 'map' / 'architecture.json')
+        inputs['map base'] = file_digest(repo_root(ws) / '.tackle' / 'map' / 'architecture.json')
     inputs = dict(sorted(inputs.items()))
     mode = 'given' if map_base else 'default'
     overall = hashlib.sha256()
@@ -1324,6 +1429,7 @@ def graph_svg(tasks, layout, live, ui):
     shared only by arrows of that source, so the picture keeps few bends and few crossings."""
     title = {t['id']: t['title'] for t in tasks}
     state = {t['id']: t['status'] for t in tasks}
+    local = {t['id'] for t in tasks if not t.get('external')}
     _, order, chains = layout
     node_w, dummy_h, gap_node, gap_dummy, head, pad = 192, 8, 18, 8, 64, 24
     lines_of = {t['id']: wrap(t['title'], 23, 3) for t in tasks}
@@ -1443,8 +1549,8 @@ def graph_svg(tasks, layout, live, ui):
            '<path class="arrowhead-up" d="M 0 0.6 L 8 4 L 0 7.4 z"/></marker><marker id="arrow-down" viewBox="0 0 8 8" refX="7.4" refY="4" markerWidth="7" markerHeight="7" orient="auto">'
            '<path class="arrowhead-down" d="M 0 0.6 L 8 4 L 0 7.4 z"/></marker></defs>' % (width, height, width, height, esc(ui['graph']))]
     for c, col in enumerate(order):
-        done = sum(1 for n in col if n in title and state[n] == 'Complete')
-        count = sum(1 for n in col if n in title)
+        done = sum(1 for n in col if n in local and state[n] == 'Complete')
+        count = sum(1 for n in col if n in local)
         out.append('<g class="stage" data-stage="%d"><rect class="band" x="%.1f" y="0" width="%d" height="%d"/>'
                    '<text class="band-h" x="%.1f" y="27">%s</text><text class="band-c" x="%.1f" y="45">%s</text></g>' % (
                        c + 1, xs[c] - 12, node_w + 24, height, xs[c], esc(ui['stage'].format(n=c + 1)), xs[c],
@@ -1470,6 +1576,13 @@ def graph_svg(tasks, layout, live, ui):
         klass = STATE_CLASS.get(t['status'], 'draft')
         lines = lines_of[n]
         text = ''.join('<tspan x="%.1f" dy="%d">%s</tspan>' % (x + 14, 0 if k == 0 else 17, esc(line)) for k, line in enumerate(lines))
+        if t.get('external'):
+            label = '%s · %s · %s · %s' % (t['slug'], t['task_id'], t['title'], ui['states'].get(t['status'], t['status']))
+            out.append('<g class="xnode s-%s" role="img" aria-label="%s"><title>%s</title><rect class="node-box" x="%.1f" y="%.1f" width="%d" height="%d"/>'
+                       '<text class="nid" x="%.1f" y="%.1f">%s · %s</text><text class="nt" x="%.1f" y="%.1f">%s</text></g>' % (
+                           klass, esc(label), esc(label), x, y, node_w, node_h, x + 14, y + 24, esc(t['slug']), esc(t['task_id']),
+                           x + 14, y + 45, text))
+            continue
         label = '%s · %s · %s' % (n, t['title'], ui['states'].get(t['status'], t['status']))
         out.append('<g class="node s-%s" data-task="%s" data-status="%s"%s tabindex="0" role="button" aria-label="%s"><title>%s</title>'
                    '<rect class="node-box" x="%.1f" y="%.1f" width="%d" height="%d"/><g class="glyph">%s</g>'
@@ -1482,12 +1595,22 @@ def graph_svg(tasks, layout, live, ui):
     return ''.join(out)
 
 
-def stage_list(tasks, stage, edges, ui):
+def graph_nodes(tasks, externals=()):
+    """The graph's nodes and their dependencies: the external nodes, then each local task with its local and sibling dependencies."""
+    nodes = list(externals)
+    for t in tasks:
+        refs = [external_id(slug, ref) for slug, ref in t.get('sib_deps', [])]
+        nodes.append(dict(t, deps=list(dict.fromkeys(list(t['deps']) + refs))))
+    return nodes, {n['id']: n['deps'] for n in nodes}
+
+
+def stage_list(tasks, stage, edges, ui, externals=()):
     """The same stages as a reading list: each task with what it needs, for narrow screens and readers without the picture."""
     by_stage = {}
     for t in tasks:
         by_stage.setdefault(stage[t['id']], []).append(t)
-    needs = {t['id']: sorted(set(t['deps']), key=lambda i: int(i[2:])) for t in tasks}
+    needs = {t['id']: sorted(set(t['deps']), key=lambda i: int(i[2:]))
+             + ['%s · %s' % (slug, ref) for slug, ref in t.get('sib_deps', [])] for t in tasks}
     groups = []
     for number in sorted(by_stage):
         listed = by_stage[number]
@@ -1547,10 +1670,15 @@ def mermaid_ids(prefix, ids):
     return found
 
 
-def mermaid_tasks(tasks):
-    """The Mermaid text of the task graph: one node per task, one edge per dependency, then the classes used."""
+def mermaid_tasks(tasks, externals=()):
+    """The Mermaid text of the task graph: external sibling nodes, one node per task, one edge per dependency, then the classes used."""
     nodes = mermaid_ids('t_', [t['id'] for t in tasks])
-    lines, used = ['flowchart LR'], []
+    keys = ['%s:%s' % (e['slug'], e['task_id']) for e in externals]
+    xnodes = mermaid_ids('x_', keys)
+    external_nid = {e['id']: xnodes[k] for e, k in zip(externals, keys)}
+    lines, used = ['flowchart LR'], (['external'] if externals else [])
+    for e, k in zip(externals, keys):
+        lines.append('  %s["%s"]:::external' % (xnodes[k], mermaid_label('%s · %s %s' % (e['slug'], e['task_id'], e['title']))))
     for task in tasks:
         klass = STATE_CLASS.get(task['status'], 'draft')
         if klass not in used:
@@ -1560,6 +1688,8 @@ def mermaid_tasks(tasks):
     for task in tasks:
         for dep in task['deps']:
             lines.append('  %s --> %s' % (nodes[dep], nodes[task['id']]))
+        for slug, ref in task.get('sib_deps', []):
+            lines.append('  %s --> %s' % (external_nid[external_id(slug, ref)], nodes[task['id']]))
     return '\n'.join(lines + [MERMAID_CLASSES[klass] for klass in used])
 
 
@@ -1615,10 +1745,11 @@ def mermaid_element(element, text):
     return '<script type="text/plain" id="%s">%s</script>' % (element, text)
 
 
-def graph_section(tasks, present, stage, live, ui):
+def graph_section(tasks, present, stage, live, ui, externals=()):
     """The graph section of a Full plan: legend, canvas, inspector, flow toggle and the stage list."""
-    ids = [t['id'] for t in tasks]
-    edges = reduce_edges(ids, {t['id']: t['deps'] for t in tasks})
+    nodes, deps = graph_nodes(tasks, externals)
+    ids = [n['id'] for n in nodes]
+    edges = reduce_edges(ids, deps)
     layout = choose_layout(ids, stage, edges)
     legend = ''.join('<li><span class="glyph g-%s" aria-hidden="true"></span>%s</li>' % (
         STATE_CLASS.get(s, 'draft'), esc(ui['states'].get(s, s))) for s in present)
@@ -1635,10 +1766,10 @@ def graph_section(tasks, present, stage, live, ui):
         '<button type="button" class="tool flow-toggle" aria-expanded="false" data-show="%s" data-hide="%s" hidden>%s</button>'
         '%s<p class="flow-note">%s %s</p></section>') % (
         esc(ui['graph']), esc(ui['graph_note']), esc(ui['legend']), legend, esc(ui['clear']), esc(ui['zoom']), esc(ui['zoom_out']),
-        esc(ui['zoom_in']), esc(ui['fit']), mermaid_tools('plan-view-mermaid-tasks', 'tasks.mmd', ui), mermaid_element('plan-view-mermaid-tasks', mermaid_tasks(tasks)),
-        esc(ui['graph']), graph_svg(tasks, layout, live, ui), esc(ui['inspector_open']), esc(ui['inspector_empty']),
+        esc(ui['zoom_in']), esc(ui['fit']), mermaid_tools('plan-view-mermaid-tasks', 'tasks.mmd', ui), mermaid_element('plan-view-mermaid-tasks', mermaid_tasks(tasks, externals)),
+        esc(ui['graph']), graph_svg(nodes, layout, live, ui), esc(ui['inspector_open']), esc(ui['inspector_empty']),
         esc(ui['show_diagram']), esc(ui['hide_diagram']), esc(ui['show_diagram']),
-        stage_list(tasks, layout[0], edges, ui), esc(ui['graph_reduced']), esc(ui['stage_note']))
+        stage_list(tasks, layout[0], edges, ui, externals), esc(ui['graph_reduced']), esc(ui['stage_note']))
 
 
 def load_map_recipe(template_path):
@@ -2585,6 +2716,7 @@ def main():
         problems.append('the Focused plan names no requirement id in its Purpose / requirements line or its criteria table')
     tasks, states, board = [], DEFAULT_STATES, ''
     stale_prose, report_stale = '', ''
+    externals = []
     if not focused:
         board, states, tasks = read_board(ws, problems)
         if not board:
@@ -2602,7 +2734,7 @@ def main():
                       % name, file=sys.stderr)
         for line in state_divergence_notes(summary, export_summary, tasks):
             print(line, file=sys.stderr)
-        validate_tasks(ws, tasks, states, problems)
+        externals = validate_tasks(ws, tasks, states, problems, read_siblings(ws))
     arch, missing_base = None, False
     if args.map_base:
         try:
@@ -2628,7 +2760,8 @@ def main():
         arch = (base, delta, mapm) if base is not None else None
     stage = None
     if tasks and not problems:
-        stage = stages_of([t['id'] for t in tasks], {t['id']: list(t['deps']) for t in tasks})
+        nodes, deps = graph_nodes(tasks, externals)
+        stage = stages_of([n['id'] for n in nodes], deps)
         if stage is None:
             problems.append('the dependencies form a cycle')
     if export_summary is not None:
@@ -2687,7 +2820,7 @@ def main():
         for t in tasks:
             counts[t['status']] = counts.get(t['status'], 0) + 1
         present = [s for s in states if s in counts]
-        graph_html = graph_section(tasks, present, stage, live, ui)
+        graph_html = graph_section(tasks, present, stage, live, ui, externals)
         tasks_html = task_list(tasks, cover, down, live, summary, ui, counts, present)
     overview_html = presentation_overview(summary, objective_of(plan), ui)
     status_html = status_section(summary, export_summary, fields, tasks, focused, snapshot, working_html, title, plan, ui, stale_prose)

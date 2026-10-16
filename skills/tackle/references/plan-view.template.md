@@ -356,6 +356,11 @@ details>summary:hover{color:var(--accent-ink)}
 .flow-svg .node:focus,.flow-svg .node:focus-visible{outline:none}
 .flow-svg .nid{font:700 11px var(--mono);letter-spacing:.06em;fill:var(--mut)}
 .flow-svg .node.s-prog .nid,.flow-svg .node.s-block .nid,.flow-svg .node.s-wait .nid{fill:var(--accent-ink)}
+.flow-svg .xnode .node-box{fill:var(--surface);stroke:var(--line2);stroke-width:1.5;stroke-dasharray:5 3}
+.flow-svg .xnode.s-done .node-box{fill:var(--bg2);stroke:color-mix(in srgb,var(--ink) 30%,transparent);stroke-width:1}
+.flow-svg .xnode.s-prog .node-box,.flow-svg .xnode.s-block .node-box,.flow-svg .xnode.s-wait .node-box{stroke:var(--accent);stroke-width:1.75}
+.flow-svg .xnode .nid{font:700 11px var(--mono);letter-spacing:.06em;fill:var(--mut)}
+.flow-svg .xnode .nt{font:600 13.5px var(--sans);fill:var(--ink2)}
 .flow-svg .nt{font:600 13.5px var(--sans);fill:var(--ink)}
 .glyph-frame{fill:none;stroke:var(--ink);stroke-width:1.5}
 .glyph-fill{fill:var(--ink)}

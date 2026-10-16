@@ -4114,6 +4114,29 @@
       "historical": []
     },
     {
+      "rule_id": "R-STATUS-25",
+      "statement": "A dependency on a sibling workspace's task is drawn as an external node with the sibling's name and that task's state; it has no inspector.",
+      "statement_sha256": "0da04e082040a4cc38a6b5c1e454229ff808b95748d4120377299469cab52f4a",
+      "home": "references/guides/plan-view.md:195",
+      "home_fragment": "A dependency on a sibling workspace's task is drawn as an ex",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "9.3.0",
+        "trigger": "sibling workspaces",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-15"
+      },
+      "historical": []
+    },
+    {
       "rule_id": "R-RUN-25",
       "statement": "Closing a Complete task sets its map delta changes to done before any view rebuild.",
       "statement_sha256": "63123fa9f2c6cd6a7386247812b9f677fa94a2a95b651238865145ad81f2076c",
