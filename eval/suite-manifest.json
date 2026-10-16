@@ -34,12 +34,13 @@
     {
       "path": "eval/tests/product/lint/task-identity",
       "files": [
-        "test_identity.py"
+        "test_identity.py",
+        "test_lint_siblings.py"
       ],
-      "tests": 16,
+      "tests": 38,
       "source": "eval/lint/task-identity",
       "category": "product",
-      "purpose": "Task identity, scaffold paths and workspace naming."
+      "purpose": "Task identity, scaffold paths and workspace naming. Lint row 2 resolves and refuses sibling workspace references as the plan view does."
     },
     {
       "path": "eval/tests/tooling/validation-integrity",

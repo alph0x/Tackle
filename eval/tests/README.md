@@ -14,7 +14,7 @@ consumer; dates and experiment identifiers belong to evidence provenance.
 | product | [product/lessons](product/lessons/) | Learning confidence, coverage tables and retrospective identifiers. |
 | product | [product/lint/rows](product/lint/rows/) | Canonical lint rows, formats, severities, AWK variants, lifecycle outcomes, clock coverage and Attempts evidence. |
 | product | [product/lint/task-contracts](product/lint/task-contracts/) | Task contracts, readiness and acceptance fields. |
-| product | [product/lint/task-identity](product/lint/task-identity/) | Task identity, scaffold paths and workspace naming. |
+| product | [product/lint/task-identity](product/lint/task-identity/) | Task identity, scaffold paths and workspace naming. Lint row 2 resolves and refuses sibling workspace references as the plan view does. |
 | product | [product/migration](product/migration/) | Workspace schema migration, recipes and census refusal. Migration keeps historical record paths, makes citations follow their moved files, leaves links into other workspaces unchanged, reports what history still cites, and keeps the text after a legacy status glyph as a board note. |
 | product | [product/plan](product/plan/) | Plan section order, and the controlled-writing recipe and guide for owner texts and specifications. |
 | product | [product/requirements-base](product/requirements-base/) | Requirements base parsing, delta validation, reconciliation and fold through the shipped recipe, and the guide's rules. |
