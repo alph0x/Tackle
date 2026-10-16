@@ -1,5 +1,15 @@
 # Tackle changelog
 
+## Tackle 9.3.0
+
+- **The plan view's page reads as a design system.** Its stylesheet is five cascade layers: tokens, base, components, features and print. Each color is defined once for both themes. Its script is a set of small named parts that share one context. Readers see the same page, apart from the contrast changes below. Auxiliary pages built from the plan view's base now also carry its buttons, chips and segmented controls.
+- **Contrast and keyboard.** Dependency lines, the borders of interactive cards and the outlines of architecture components now reach a 3:1 contrast. They are slightly darker in the light theme and lighter in the dark theme. Every text color reaches 4.5:1 in both themes. Task nodes, architecture cards and components work from the keyboard, and Escape clears a selection.
+- **Diagrams as Mermaid text.** The task graph and each architecture picture offer their Mermaid text to copy or download as a `.mmd` file. The page never renders Mermaid and loads nothing from the network.
+- **Plans across sibling workspaces.** A workspace may declare sibling workspaces in its `AGENTS.md`. A task may then depend on a sibling's task, written `T-NN [sibling]`, or keep its brief under that sibling's `tasks/` folder. The plan view, its check and lint row 2 resolve these references. They refuse undeclared siblings, missing boards and missing tasks, and they record the sibling files as page inputs. The graph draws a sibling task as an external node with its current state. Sibling files are only read.
+- **Migration keeps history.** Moving an 8.3 workspace to the 8.4 layout keeps old ids in paths outside the task and report folders. The paths that history and run scripts cite therefore stay valid. Citations in rewritten files follow their moved files, and links into other workspaces stay unchanged. The step lists what history still cites. Moving a pre-3 board keeps the text written after a status mark as a board note instead of refusing the board.
+- **Migration.** A 9.2 workspace adopts 9.3 with the new `v9.2 → v9.3` checklist: rebuild an existing plan view. Existing auxiliary pages change only on request, and sibling workspaces are optional. No file format changes.
+- **Evidence.** Tests through the shipped recipe, templates and migration steps check the changes, and so do the release gates. The restructured page was compared with the previous release's page in a browser, element by element. The comparison covered the light, dark, system-dark, print and narrow views, before and after scripted interactions. The pages matched, and planted one-line changes were caught. The three new rules carry ledger entries; no held-out behavioral evidence is claimed.
+
 ## Tackle 9.2.1
 
 - **A stale summary is visible in the PDF.** When the curated progress prose of `view/export-summary.json` (or the curated next steps it falls back to) was written for an earlier board, the plan view sets it aside as before, and the Progress and Both reports of the PDF now show the same notice as the page, in English or Spanish, with the summary's as-of time.

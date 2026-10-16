@@ -251,6 +251,22 @@ closed task, no historical record and no neighboring workspace, and it changes n
 3. Run rows 1–17 on the copy. Adopt only the validated copy: record the adoption and the rollback result,
    bump the `Methodology:` stamp to 9.2.1, and roll back by restoring the checkpoint copy.
 
+<a id="v92--v93-checklist"></a>
+## v9.2 → v9.3 checklist
+
+An active 9.2 workspace adopts 9.3.0 at a task boundary with this checklist. Adopt only on a disposable copy
+at a task boundary, and preserve neighboring workspaces. This release changes the plan view's template and
+the styling of auxiliary pages, and it changes no file format.
+
+1. Record the pinned procedure, the current lint result under it, and hashes of the board, briefs,
+   reports, `AGENTS.md` and history.
+2. If the workspace has a plan view, rebuild it under its standing view request, since the template changed.
+   Without that request, build no view. Existing auxiliary pages change only on request; move one to the
+   plan view's base only when the owner asks.
+3. Sibling workspaces are optional. A workspace that declares none needs no change.
+4. Run the lint on the copy. Adopt only the validated copy: record the adoption and the rollback result,
+   bump the `Methodology:` stamp to 9.3.0, and roll back by restoring the checkpoint copy.
+
 <a id="schema-keyed-migration"></a>
 ## Schema-keyed migration (9.0.0)
 
