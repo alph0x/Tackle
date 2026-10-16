@@ -189,3 +189,15 @@ An existing auxiliary page moves to the base only when the owner asks for it. An
 ## Diagram export
 
 Each diagram the page draws, the task graph and each architecture picture, offers its Mermaid text to copy or download; the page never renders Mermaid and loads nothing. Download saves `tasks.mmd`, `architecture-today.mmd` or `architecture-after.mmd`. A Focused plan has no task graph and so draws no Mermaid text for one.
+
+## Sibling workspaces
+
+A dependency on a sibling workspace's task is drawn as an external node with the sibling's name and that task's state; it has no inspector.
+
+A plan declares its sibling workspaces in `AGENTS.md`, under `## Sibling workspaces`, in a table whose header row is `| Sibling | Path | Relation |`. A sibling's path is `docs/plans/<name>`; only declared siblings resolve. A dependency on a sibling's task is written `T-<digits> [<slug>]` in a Depends on cell. The view refuses these cases, in board order:
+
+- `task <id> depends on <ref> [<slug>], but no sibling named <slug> is declared`
+- `task <id> depends on <ref> [<slug>], which is not on the sibling's board`
+- `sibling <slug> has no tackle-workspace/5 task-board.md at docs/plans/<name>`, printed once for each sibling
+
+A sibling's files are read only. A Brief cell may name a sibling's brief as `../<name>/tasks/<file>`; a path that leaves the sibling's `tasks/` folder keeps the refusal `brief <path> for task <id> is outside the workspace`.

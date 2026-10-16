@@ -7713,7 +7713,7 @@
       "unit_sha256": "9e613e19bd277ed06fb0a059d8de02ec311f0224352a897c71d1067a4b923fdd",
       "disposition": "reworded",
       "destination": "references/recipes/README.md",
-      "note": "| [plan-view.md](plan-view.md) | `f773f82a1aa9a27425a97835208435c327095478f4744a5c5a386584971b8b0d` |",
+      "note": "| [plan-view.md](plan-view.md) | `54cbb12699c3b82141b490e49fdde49ebe00db411dad6c9859b4ef6671edcbb0` |",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -7728,7 +7728,7 @@
       "unit_sha256": "9e613e19bd277ed06fb0a059d8de02ec311f0224352a897c71d1067a4b923fdd",
       "disposition": "reworded",
       "destination": "skills/tackle/references/recipes/README.md",
-      "note": "| [plan-view.md](plan-view.md) | `f773f82a1aa9a27425a97835208435c327095478f4744a5c5a386584971b8b0d` |",
+      "note": "| [plan-view.md](plan-view.md) | `54cbb12699c3b82141b490e49fdde49ebe00db411dad6c9859b4ef6671edcbb0` |",
       "destination_unit_sha256": null,
       "dropped": [
         {
