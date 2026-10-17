@@ -734,7 +734,7 @@ details>summary:hover{color:var(--accent-ink)}
 .canvas-tools{position:relative}
 .mermaid-tools{position:relative;display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 0 12px}
 .mermaid-status{position:absolute;top:calc(100% + 4px);right:0;z-index:4;margin:0;padding:0 4px;white-space:nowrap;pointer-events:none;background:var(--bg);font:500 11.5px/1.4 var(--mono);color:var(--ink2)}
-.mermaid-status:empty{display:none}
+.mermaid-status:empty{padding:0}
 .mermaid-text{position:absolute;top:calc(100% + 44px);right:0;z-index:4;display:block;width:min(36rem,calc(100vw - 2 * var(--gutter)));min-height:8em;margin:0;padding:10px;font:12px/1.5 var(--mono);color:var(--ink);background:var(--surface);border:1px solid var(--line)}
 #clear-trace{position:absolute;top:calc(100% + 4px);left:0;z-index:4}
 @media (min-width:761px){.inspector{height:14rem;overflow-y:auto}}

@@ -3,7 +3,8 @@
 The DOM stub (plan_view_dom.js) has no layout, so this suite is a static guard plus behavior checks. The guard
 reads the stylesheet of a page the shipped script builds: every action status (`role="status"`) and every control
 an action shows or adds inside the flex rows of a diagram's tools is positioned out of flow, and the selected
-title-strip cell does not move. A mutation that puts the Mermaid status back into the row fails the guard. The
+title-strip cell does not move. An empty status region is never display:none or visibility:hidden, so a
+screen reader that watches it announces the text the action writes into it. A mutation that puts the Mermaid status back into the row fails the guard. The
 behavior checks run the page's own controller in the stub: the download leaves no link in the row, a zoom keeps
 the canvas box, a filter keeps the task list's height until All. Real-browser boxes are measured by the plan's
 own layout check in headless Chrome, not here.
@@ -64,6 +65,17 @@ def reflow_problems(page):
     return problems
 
 
+def hidden_empty_statuses(page):
+    """Each status class in a control row whose rules (plain or :empty) hide the live region with display:none or
+    visibility:hidden. The static-copy notice is a separate, deliberately hidden notice outside the control rows."""
+    css, found = stylesheet(page), []
+    for klass in dict.fromkeys(klass for _, klass in row_statuses(page)):
+        rules = declarations(css, '.' + klass) + ';' + declarations(css, '.%s:empty' % klass)
+        if re.search(r'display:\s*none|visibility:\s*hidden', rules):
+            found.append('.' + klass)
+    return found
+
+
 class LayoutStabilityGuardTests(unittest.TestCase):
     page = None
 
@@ -88,6 +100,16 @@ class LayoutStabilityGuardTests(unittest.TestCase):
         lifted = self.page.replace('.tb-cell:hover{transform:translateY(-3px)}', '.tb-cell:hover,.tb-cell.on{transform:translateY(-3px)}', 1)
         self.assertNotEqual(lifted, self.page)
         self.assertIn('the selected title-strip cell moves', reflow_problems(lifted))
+
+    def test_an_empty_status_region_stays_rendered_for_assistive_technology(self):
+        css = stylesheet(self.page)
+        self.assertEqual(hidden_empty_statuses(self.page), [])
+        self.assertTrue(any(klass == 'mermaid-status' for _, klass in row_statuses(self.page)))
+        for hiding in ('display:none', 'visibility:hidden'):
+            rule = '.mermaid-status:empty{padding:0}'
+            self.assertIn(rule, css)
+            mutated = self.page.replace(rule, '.mermaid-status:empty{%s}' % hiding, 1)
+            self.assertEqual(hidden_empty_statuses(mutated), ['.mermaid-status'], hiding)
 
     def test_the_inspector_has_reserved_room_on_wide_screens(self):
         css = stylesheet(self.page)
