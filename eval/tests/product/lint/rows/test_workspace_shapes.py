@@ -20,7 +20,7 @@ from maintaining.install_root import current_root  # noqa: E402
 from eval.support.lint import lint_namespace, write_files, run_lint_row  # noqa: E402
 INSTALL = current_root(ROOT)
 
-SOURCE = (INSTALL / 'references/guides/lint-spec.md').read_bytes()
+SOURCE = (INSTALL / 'scripts/lint.py').read_bytes()
 DIGEST = hashlib.sha256(SOURCE).hexdigest()
 NAMESPACE = lint_namespace()
 

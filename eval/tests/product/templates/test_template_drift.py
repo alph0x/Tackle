@@ -87,7 +87,7 @@ def clause_bytes(contract, cid):
 
 
 def lint(root):
-    source = (REF / 'guides/lint-spec.md').read_bytes()
+    source = (REF.parent / 'scripts/lint.py').read_bytes()
     verdicts = {}
     for number in range(1, 18):
         child = run_lint_row(root, number, slug=SLUG, source=source, timeout=60)

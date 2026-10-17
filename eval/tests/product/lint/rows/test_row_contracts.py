@@ -1,7 +1,7 @@
 """Rows 6, 11 and 16 on current workspaces: history chronology, a usage row for each Complete task, and the
 lifecycle validity of `resource-usage.md`, including a pre-v2 table that a migration carried there.
 
-Each test copies the row's command from `references/guides/lint-spec.md`, substitutes the slug, and runs it with
+Each test copies the row's program from `scripts/lint.py`, substitutes the slug, and runs it with
 `sh` from a disposable root.
 """
 from pathlib import Path
@@ -17,7 +17,7 @@ from maintaining.install_root import current_root  # noqa: E402
 from eval.support.lint import literal_command, write_files  # noqa: E402
 INSTALL = current_root(ROOT)
 
-LINT = (INSTALL / 'references/guides/lint-spec.md').read_text()
+LINT = (INSTALL / 'scripts/lint.py').read_text()
 BOARD = ('Schema: tackle-workspace/5\n\n| Task | What | Brief | Depends on | Status | Verification |\n'
          '|---|---|---|---|---|---|\n| T-A | Work | tasks/T-A.md | none | Complete | reports/T-A-report.md |\n')
 HEADER = ('| Run ID | Event | Task | Role | Harness | Tier | Model | Effort | At | Outcome | Attempts | Rework | '
@@ -36,7 +36,7 @@ def event(kind='start', *, run='run-1', task='T-A', role='Driver', attempts='n/a
 
 
 def literal_row(number):
-    return literal_command(number, LINT, single_backtick=True)
+    return literal_command(number, LINT)
 
 
 def run_row(number, files):

@@ -22,7 +22,7 @@ from maintaining.install_root import current_root  # noqa: E402
 INSTALL = current_root(ROOT)
 REFERENCES = INSTALL / 'references'
 MIGRATE = REFERENCES / 'guides/migrate.md'
-SPEC = (REFERENCES / 'guides/lint-spec.md').read_bytes()
+SPEC = (REFERENCES.parent / 'scripts/lint.py').read_bytes()
 FIXTURE = ROOT / 'eval/lint/rows/fixtures/pass-obligations'
 SLUG = 'demo'
 WS = 'docs/plans/' + SLUG

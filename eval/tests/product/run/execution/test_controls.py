@@ -1,4 +1,5 @@
 """Execute the shipped capture and lint scripts; no installed runtime helper."""
+import ast
 from pathlib import Path
 import hashlib
 import importlib.util
@@ -16,7 +17,7 @@ INSTALL = current_root(ROOT)
 
 CAPTURE = (INSTALL / 'scripts/capture.py').read_text()
 LINT_PATH = INSTALL / 'scripts/lint_runner.py'
-CANONICAL = (INSTALL / 'references/guides/lint-spec.md').read_bytes()
+CANONICAL = (INSTALL / 'scripts/lint.py').read_bytes()
 DIGEST = hashlib.sha256(CANONICAL).hexdigest()
 _spec = importlib.util.spec_from_file_location('controls_lint_runner', LINT_PATH)
 _module = importlib.util.module_from_spec(_spec)
@@ -111,16 +112,15 @@ class CanonicalTests(unittest.TestCase):
         r.update(changes);return NS['lint_verdict'](row,r,out,err)
     def test_all_literal_cells_preserved(self):
         rows=self.rows();self.assertEqual(len(rows),17)
-        for line in CANONICAL.decode().splitlines():
-            if not re.match(r'^\| [0-9]+ ·',line):continue
-            head,cell,_=line.split(' | ',2);n=int(head[2:].split(' ·')[0])
-            # Independent expected bytes: canonical has no meaningful boundary padding.
-            expected=cell.strip('`').strip().replace('<slug>','demo').encode()
-            self.assertEqual(rows[n]['command'],expected)
+        for node in ast.parse(CANONICAL.decode()).body:
+            if not (isinstance(node,ast.Assign) and re.fullmatch(r'ROW_[0-9]{2}',node.targets[0].id)):continue
+            # Independent expected bytes: the stored program with only the slug substituted.
+            expected=ast.literal_eval(node.value).replace('<slug>','demo').encode()
+            self.assertEqual(rows[int(node.targets[0].id[4:])]['command'],expected)
     def test_source_mutation_rejected(self):
         with self.assertRaises(ValueError):self.rows(CANONICAL.replace(b'awk ',b'true ',1))
     def test_missing_and_duplicate_rows_rejected(self):
-        row=next(x for x in CANONICAL.splitlines(True) if x.startswith(b'| 5 '))
+        row=next(x for x in CANONICAL.splitlines(True) if x.startswith(b'ROW_05 = '))
         for altered in [CANONICAL.replace(row,b''),CANONICAL+row]:
             with self.assertRaises(ValueError):self.rows(altered,hashlib.sha256(altered).hexdigest())
     def test_slug_cannot_inject_shell(self):

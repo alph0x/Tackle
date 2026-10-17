@@ -47,6 +47,8 @@ reads it only when the card sends it there, so none of it counts.
   sentence and `run.md`'s adversary-check line now name the scripts under `scripts/`.
   It then raises the chain limit to the measured 4703 because `SKILL.md` now states that a System One
   judgment goes through the host's `typesafe-ai` skill and that importing a script needs consent.
+  It then raises the chain limit to the measured 4711 because `SKILL.md`'s consent sentence now states that
+  an explicit plan or run request authorizes `scripts/lint.py`, which runs the lint rows.
 - `--card <path>` measures another file as the card. It showed the old route: with `run.md` as the card,
   the chain was 13,722 words.
 

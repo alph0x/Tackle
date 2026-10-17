@@ -78,6 +78,7 @@
         "skills/tackle/references/resource-usage.tmpl.md",
         "skills/tackle/references/task-board.tmpl.md",
         "skills/tackle/references/task.tmpl.md",
+        "skills/tackle/scripts/lint.py",
         "skills/tackle/scripts/lint_runner.py"
       ],
       "families": [
@@ -92,6 +93,7 @@
         "eval/validation-integrity/**",
         "skills/tackle/references/guides/lint-spec.md",
         "skills/tackle/references/plan.tmpl.md",
+        "skills/tackle/scripts/lint.py",
         "skills/tackle/scripts/lint_runner.py"
       ],
       "families": [
@@ -106,6 +108,7 @@
         "skills/tackle/references/guides/full-checks.md",
         "skills/tackle/references/guides/lint-spec.md",
         "skills/tackle/scripts/capture.py",
+        "skills/tackle/scripts/lint.py",
         "skills/tackle/scripts/lint_runner.py"
       ],
       "families": [
@@ -155,6 +158,7 @@
         "eval/maintaining/suite-integrity/**",
         "eval/run_suites.py",
         "eval/suite-manifest.json",
+        "skills/tackle/scripts/lint.py",
         "skills/tackle/scripts/lint_runner.py"
       ],
       "families": [
@@ -171,7 +175,8 @@
         "skills/tackle/references/retro.tmpl.md",
         "skills/tackle/scripts/correction_lineage.py",
         "skills/tackle/scripts/lint_runner.py",
-        "skills/tackle/scripts/decompose_check.py"
+        "skills/tackle/scripts/decompose_check.py",
+        "skills/tackle/scripts/lint.py"
       ],
       "families": [
         "eval/tests/product/lint/task-contracts"
@@ -189,7 +194,8 @@
         "skills/tackle/scripts/capture.py",
         "skills/tackle/scripts/lint_runner.py",
         "skills/tackle/scripts/evidence_capture.py",
-        "skills/tackle/scripts/record_store.py"
+        "skills/tackle/scripts/record_store.py",
+        "skills/tackle/scripts/lint.py"
       ],
       "families": [
         "eval/tests/product/run/verification-records"
@@ -242,6 +248,7 @@
         "skills/tackle/references/guides/lint-spec.md",
         "skills/tackle/references/guides/verify.md",
         "skills/tackle/references/task.tmpl.md",
+        "skills/tackle/scripts/lint.py",
         "skills/tackle/scripts/lint_runner.py"
       ],
       "families": [
@@ -281,7 +288,8 @@
         "skills/tackle/scripts/system_one_decide.py",
         "skills/tackle/scripts/system_one_state.py",
         "skills/tackle/scripts/lint_runner.py",
-        "skills/tackle/scripts/decompose_check.py"
+        "skills/tackle/scripts/decompose_check.py",
+        "skills/tackle/scripts/lint.py"
       ],
       "families": [
         "eval/tests/product/templates"
@@ -304,7 +312,8 @@
         "MAINTAINING.md",
         "eval/rules/**",
         "skills/tackle/references/guides/lint-spec.md",
-        "skills/tackle/references/guides/plan-card.md"
+        "skills/tackle/references/guides/plan-card.md",
+        "skills/tackle/scripts/lint.py"
       ],
       "families": [
         "eval/tests/tooling/rules"
@@ -424,7 +433,8 @@
         "skills/tackle/references/guides/invocation.md",
         "skills/tackle/references/guides/lint-spec.md",
         "skills/tackle/references/guides/migrate.md",
-        "skills/tackle/references/guides/update.md"
+        "skills/tackle/references/guides/update.md",
+        "skills/tackle/scripts/lint.py"
       ],
       "families": [
         "eval/tests/product/install/inventory"
@@ -469,7 +479,8 @@
         "skills/tackle/scripts/migrate/step_4_to_5.py",
         "skills/tackle/scripts/migrate/step_pre3_to_3.py",
         "skills/tackle/references/terminology.md",
-        "skills/tackle/scripts/lint_runner.py"
+        "skills/tackle/scripts/lint_runner.py",
+        "skills/tackle/scripts/lint.py"
       ],
       "families": [
         "eval/tests/product/migration"
@@ -485,7 +496,8 @@
         "skills/tackle/references/AGENTS.tmpl.md",
         "skills/tackle/references/guides/full-checks.md",
         "skills/tackle/references/guides/lint-spec.md",
-        "skills/tackle/references/task-board.tmpl.md"
+        "skills/tackle/references/task-board.tmpl.md",
+        "skills/tackle/scripts/lint.py"
       ],
       "families": [
         "eval/tests/product/migration"

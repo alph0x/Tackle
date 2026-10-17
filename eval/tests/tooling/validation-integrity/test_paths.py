@@ -13,7 +13,7 @@ from maintaining.install_root import current_root  # noqa: E402
 from eval.support.lint import literal_command, write_files  # noqa: E402
 INSTALL = current_root(ROOT)
 
-LINT_SPEC = INSTALL / "references/guides/lint-spec.md"
+LINT_SPEC = INSTALL / "scripts/lint.py"
 
 
 def canonical_command(row: int) -> str:

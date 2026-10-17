@@ -58,7 +58,7 @@ def preparation(tasks=None, selected=None, available=None, requirements=None):
 
 
 def row(number, files):
-    source = (INSTALL / 'references/guides/lint-spec.md').read_bytes()
+    source = (INSTALL / 'scripts/lint.py').read_bytes()
     with tempfile.TemporaryDirectory() as tmp:
         workspace = Path(tmp) / 'docs/plans/sample'
         workspace.mkdir(parents=True)
@@ -312,7 +312,7 @@ class TaskContracts(unittest.TestCase):
         self.assertTrue(result['exhausted'])
 
     def test_new_workspace_runs_all_canonical_rows(self):
-        source = (INSTALL / 'references/guides/lint-spec.md').read_bytes()
+        source = (INSTALL / 'scripts/lint.py').read_bytes()
         commands = LINT['canonical_rows'](source, hashlib.sha256(source).hexdigest(), 'sample')
         files = layout(**{'task-board.md': task_board('Ready to run', 'ready: readiness record'),
                           'tasks/T-A.md': '# Task T-A\n- **Depends on**: none\n- **Write scope**: src/\n- **Effort**: low\n',

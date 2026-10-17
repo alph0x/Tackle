@@ -23,6 +23,7 @@ INSTALL = current_root(ROOT)
 HERE = (Path(__file__).resolve().parents[5] / 'eval/lint/rows')
 FIXTURES = HERE / 'fixtures'
 SPEC = INSTALL / 'references/guides/lint-spec.md'
+ROW_SOURCE = INSTALL / 'scripts/lint.py'
 TEMPLATE = INSTALL / 'references/task.tmpl.md'
 SLUG = 'demo'
 NAMESPACE = lint_namespace()
@@ -36,7 +37,7 @@ CONTRACT_CLAUSE = '## C01 · Demo clause <!-- SEALED: D-01 -->\n\nThe demo outpu
 
 
 def rows():
-    return lint_rows(SLUG, SPEC.read_bytes())
+    return lint_rows(SLUG, ROW_SOURCE.read_bytes())
 
 
 def awk_variants():
@@ -195,7 +196,7 @@ def run_row(number, root, awk):
         wrapper.write_text('#!/bin/sh\n' + invocation + 'exec ' + ' '.join(shlex.quote(part) for part in command) + ' "$@"\n')
         wrapper.chmod(0o755)
         env['PATH'] = str(bin_dir) + os.pathsep + env['PATH']
-    child = run_lint_row(root, number, slug=SLUG, source=SPEC.read_bytes(), env=env, timeout=30)
+    child = run_lint_row(root, number, slug=SLUG, source=ROW_SOURCE.read_bytes(), env=env, timeout=30)
     record = dict(child_exit=child.returncode, timeout=False, launch_error=None,
                   signal=(-child.returncode if child.returncode < 0 else None),
                   inputs_stable=True, artifacts_present=True)
@@ -247,12 +248,15 @@ class LintRowTests(unittest.TestCase):
         verdict, child = run_row(2, root, None)
         self.assertEqual(verdict, 'PASS', child.stdout)
 
-    def test_row_cells_are_pipe_free(self):
+    def test_spec_rows_have_two_cells_and_row_programs_are_pipe_free(self):
         for line in SPEC.read_text().splitlines():
             if re.match(r'^\| [0-9]+ ·', line):
                 with self.subTest(row=line[2:5]):
                     cells = re.split(r'(?<!\\)\|', line)
-                    self.assertEqual(len(cells), 5, 'GFM splits this row into %d cells' % (len(cells) - 2))
+                    self.assertEqual(len(cells), 4, 'GFM splits this row into %d cells' % (len(cells) - 2))
+        for number, row in rows().items():
+            with self.subTest(program=number):
+                self.assertNotIn(b'|', row['command'])
 
     def test_status_rows_share_the_header_extractor(self):
         for number in (3, 8, 10, 11, 12, 14):

@@ -1,7 +1,7 @@
 """Rows 13 and 17 through the canonical rows: the session-entry budget and the post-task obligations.
 
 Every case copies a fixture into a disposable root, or builds a variant of one, runs the row that the shipped
-extractor takes from ``lint-spec.md``, and reads the verdict with the shipped ``lint_verdict``, under every AWK
+extractor takes from ``scripts/lint.py``, and reads the verdict with the shipped ``lint_verdict``, under every AWK
 this host has. No case reads a row's text or re-implements its logic; the only independent implementation here is
 the deliberately naive "keyword" checker, which exists to show that the fixtures cannot be passed by it.
 """

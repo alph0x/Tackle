@@ -3,6 +3,7 @@
 Import the shipped extractor and verdict rather than mirroring their implementation.
 The independent extractor contract tests remain in eval/run/execution.
 """
+import ast
 import hashlib
 import importlib.util
 import re
@@ -25,24 +26,27 @@ def lint_namespace():
     return vars(module)
 
 
+ROW_SOURCE = INSTALL / 'scripts/lint.py'
+
+
 def lint_rows(slug, source=None):
+    """Compile the rows from scripts/lint.py bytes (or a mutated copy of them) with the shipped extractor."""
     if source is None:
-        source = (INSTALL / 'references/guides/lint-spec.md').read_bytes()
+        source = ROW_SOURCE.read_bytes()
     return lint_namespace()['canonical_rows'](source, hashlib.sha256(source).hexdigest(), slug)
 
 
-def literal_command(number, source=None, *, single_backtick=False):
-    """Copy the documented cell verbatim, including its code-span padding and slug.
+def literal_command(number, source=None):
+    """Row `number`'s program exactly as scripts/lint.py stores it, `<slug>` not yet substituted.
 
-    Keep the single-delimiter behavior of the older literal-command suites until
-    their own extractor contract is changed. Compiled-row callers use lint_rows.
+    Parsed independently of the shipped extractor; compiled-row callers use lint_rows.
     """
     if source is None:
-        source = (INSTALL / 'references/guides/lint-spec.md').read_text(encoding='utf-8')
-    for line in source.splitlines():
-        if line.startswith(f'| {number} ·'):
-            cell = line.split(' | ', 2)[1]
-            return cell[1:-1] if single_backtick else cell.strip('`')
+        source = ROW_SOURCE.read_text(encoding='utf-8')
+    for node in ast.parse(source).body:
+        if (isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name)
+                and node.targets[0].id == 'ROW_%02d' % number):
+            return ast.literal_eval(node.value)
     raise AssertionError(f'canonical lint row {number} not found')
 
 

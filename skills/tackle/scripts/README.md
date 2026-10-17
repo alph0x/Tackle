@@ -20,7 +20,8 @@ a script adds or updates its row.
 | [migrate/step_pre3_to_3.py](migrate/step_pre3_to_3.py) | `b08e63d7182d5a51d30a1973ba3f098448a174e208e9739783688d7ca82ab4b3` |
 | [capture.py](capture.py) | `5fd79dbbd5edd2efb308e22d9bb71e5007a80f425fde41aa5b297adc02cb755d` |
 | [evidence_capture.py](evidence_capture.py) | `f542532dc57a0e1dc7b101da8371822f66959683b2852e29b816000fef6e1ce0` |
-| [lint_runner.py](lint_runner.py) | `26331f5dc33bd0fe7b1535ebeb839a8008b43aa0de3244e05e58b2b9997180f5` |
+| [lint_runner.py](lint_runner.py) | `cc1d21f87dbcfd4dde744db8586a367efa5d25636e306e444c67d0033effd22f` |
+| [lint.py](lint.py) | `e105af7d3505fcfbdc81f0d595c8ba5076abbb37895a65b2d939872a1de2b5a1` |
 | [context_bundle.py](context_bundle.py) | `5bed1907877c5bb016d8555969eef0c564f70b11aa7bf707849b3cf4b1c0d63f` |
 | [record_store.py](record_store.py) | `8983f36d60a19894cbc215b8d34a3805d82fa50d03195650af9c58d3b8e4d640` |
 | [decompose_check.py](decompose_check.py) | `22a9efddfbcf7ef33dfeac625c3c2fcdd786b99bb3beda6f555b872f2c15a6f5` |
@@ -31,17 +32,18 @@ a script adds or updates its row.
 ## Consent
 
 A script is a Python 3 file under `scripts/` that a guide tells the agent to run or import. A
-documented one-line check command, such as a lint row or a retro metric command, is not a script.
+documented one-line check command, such as a retro metric command, is not a script.
 
 Running or importing a script needs the owner's explicit authorization, under the shared
 [decision and communication policy](../references/guides/communication.md). Prefer an equivalent
 harness capability when one exists. A prior general request to plan or run does not count unless it
-names the script use.
+names the script use, except for `lint.py` below.
 
-An explicit owner request for a feature whose documented procedure is a script authorizes that script
-for that request, such as the plan view, a migration, or a System One use that the workspace recorded
-`yes` for. A general request to plan or run does not. A script being part of the install authorizes
-nothing.
+An explicit Tackle plan or run request authorizes [lint.py](lint.py), which runs the lint rows, for
+that request and authorizes no other script. An explicit owner request for a feature whose documented
+procedure is a script authorizes that script for that request, such as the plan view, a migration, or a
+System One use that the workspace recorded `yes` for. Otherwise a general request to plan or run
+authorizes no script. A script being part of the install authorizes nothing.
 
 Declining is a normal outcome. The affected record is reported unavailable or produced by another
 permitted route; it is never faked.
@@ -54,5 +56,5 @@ registry runs on Python 3.10 and on the current Python; 3.10 is the oldest versi
 ## Windows
 
 On Windows, run a script with `py -3` (or `python`) in place of `python3`, for example
-`py -3 -I <skill>/scripts/plan_view.py ...`. The lint rows and the release self-lint gates are POSIX
-shell commands: run them in a POSIX shell such as Git Bash or WSL.
+`py -3 -I <skill>/scripts/plan_view.py ...`. The lint rows, which `lint.py` runs with `sh`, and the
+release self-lint gates are POSIX shell programs: run them in a POSIX shell such as Git Bash or WSL.

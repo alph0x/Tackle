@@ -90,7 +90,7 @@ class OutsideCwdPrograms(unittest.TestCase):
                     self.reader.read_record(out)
 
     def test_lint_runner_outside_cwd_names_both_scripts_in_its_summary(self):
-        source = INSTALL / 'references/guides/lint-spec.md'
+        source = INSTALL / 'scripts/lint.py'
         config = dict(source=str(source), source_sha256=sha(source), workspace='initiative', slug='demo',
                       rows=[12], selectors=[dict(glob='input.txt', required=True)], timeout_seconds=5)
         (self.root / 'lint.json').write_text(json.dumps(config))
@@ -106,7 +106,7 @@ class OutsideCwdPrograms(unittest.TestCase):
         lint = load('outside_cwd_lint', LINT)
         out = self.capture(CAPTURE)
         record = json.loads((out / 'result.json').read_text())
-        source = (INSTALL / 'references/guides/lint-spec.md').read_bytes()
+        source = (INSTALL / 'scripts/lint.py').read_bytes()
         digest = hashlib.sha256(source).hexdigest()
         wrong = dict(path=str(CAPTURE.resolve()), sha256='0' * 64)
         self.assertEqual(lint.captured_lint_verdict(source, digest, 'demo', 12, 'row.sh', record, out, wrong), 'ERROR')

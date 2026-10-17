@@ -84,15 +84,18 @@ review of the declared selectors establishes whether those bytes cover the oblig
 
 ## Execute canonical lint faithfully
 
-Run all 17 rows during PLAN before Ready. Read the current `lint-spec.md`; extract the literal
-command cell of each numbered row, respecting its backtick delimiter (some use two or four), and
-substitute only a validated single-component slug (`[a-z0-9][a-z0-9.-]*`). Save the canonical source snapshot/hash,
-row number, command bytes and pass condition. Reject missing/duplicate rows, malformed cells and
+Run all 17 rows during PLAN before Ready with [`scripts/lint.py`](../../scripts/lint.py), which an
+explicit plan or run request authorizes ([script consent](../../scripts/README.md#consent)):
+`python3 -I <skill>/scripts/lint.py <slug>` from the repository root runs rows 1-17 in order, and
+`--row N` runs one row, passing its stdout, stderr and exit through unchanged. Each row's program is
+that file's `ROW_NN` constant with only a validated single-component slug (`[a-z0-9][a-z0-9.-]*`)
+substituted for `<slug>`. For a captured record, save the canonical source snapshot/hash,
+row number, command bytes and pass condition. Reject missing/duplicate rows, malformed row constants and
 an unexpected source revision. Establish the expected hash from a reviewed, trusted skill revision
 before reading workspace-provided input; a hash copied from the same unreviewed file proves only
-byte consistency, not authority. Review any change to an executable command cell before updating
+byte consistency, not authority. Review any change to a row program before updating
 that trust anchor. Do not invent an equivalent short validator, replace a row with
-`true`, or paste the table into an interpolated shell string. Execute each saved command using
+`true`, or paste the programs into an interpolated shell string. Execute each saved command using
 `['sh', saved_script]`; retain a separate raw check record for each row. The snapshot of the saved
 script must match the extracted bytes. A script's trailing `printf` cannot supply the row result.
 Apply the same reviewed-revision rule to the configured capture script and its imports before
@@ -110,7 +113,7 @@ these functions needs the owner's explicit authorization.
 When equivalent harness automation is absent, the connected path below needs the owner's explicit
 authorization; with it, run `python3 -I <skill>/scripts/lint_runner.py <lint.json>` from an authorized cwd.
 It uses the `capture.py` beside it.
-The JSON specifies `source` (current lint-spec path), preflight `source_sha256`, `slug`,
+The JSON specifies `source` (the current `scripts/lint.py` path), preflight `source_sha256`, `slug`,
 `selectors`, `workspace` and `timeout_seconds`. The capture script is pinned by the lint script by
 sha256; only final newlines may vary, and any other bytes stop the run with `capture script revision
 changed`. An optional `capture_script` names a copy of it inside cwd, held to the same pin. Review both
@@ -120,7 +123,7 @@ configurations name workspace. Optional `rows` selects
 affected checks; omission runs all 17. Initial PLAN still requires all 17. Include citation targets
 and other actual dependencies in selectors. An authorized read-only source outside cwd is read
 and hash-verified, then snapshotted locally; helpers and outputs remain inside cwd. The script extracts, saves, captures and verifies
-each command itself; do not manually transcribe command cells into another script. A custom
+each command itself; do not manually transcribe row programs into another script. A custom
 composition remains possible, but compare its actual captured script bytes with the extracted
 canonical bytes before claiming canonical coverage. A source/command mismatch or absent script
 snapshot is ERROR even if the command exited zero. A subset score is never a full-plan approval.

@@ -16,7 +16,7 @@ INSTALL = current_root(ROOT)
 
 CAPTURE = (INSTALL/'scripts/capture.py').read_text()
 LINT = (INSTALL/'scripts/lint_runner.py').read_text()
-SOURCE = (INSTALL/'references/guides/lint-spec.md').read_bytes()
+SOURCE = (INSTALL/'scripts/lint.py').read_bytes()
 SHA = hashlib.sha256(SOURCE).hexdigest()
 _spec = importlib.util.spec_from_file_location('documented_lint', INSTALL/'scripts/lint_runner.py')
 _module = importlib.util.module_from_spec(_spec)
@@ -29,7 +29,7 @@ class IsolatedVeracity(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
-        for name, data in [('capture.py', CAPTURE.encode()), ('lint.py', LINT.encode()), ('lint-spec.md', SOURCE)]:
+        for name, data in [('capture.py', CAPTURE.encode()), ('lint_runner.py', LINT.encode()), ('lint.py', SOURCE)]:
             (self.root/name).write_bytes(data)
         self.workspace = self.root/'docs/plans/demo'
         (self.workspace/'tasks').mkdir(parents=True)
@@ -118,28 +118,28 @@ class IsolatedVeracity(unittest.TestCase):
         self.run_connected_subset()
 
     def test_connected_path_rejects_changed_capture_helper(self):
-        config = dict(source='lint-spec.md', source_sha256=SHA, slug='demo', rows=[12],
+        config = dict(source='lint.py', source_sha256=SHA, slug='demo', rows=[12],
                       capture_script='capture.py',
                       selectors=[dict(glob='docs/plans/demo/**/*.md', required=True)],
                       workspace='docs/plans/demo', timeout_seconds=2)
         (self.root/'lint.json').write_text(json.dumps(config))
         (self.root/'capture.py').write_text(CAPTURE + '\nprint("changed")\n')
-        run = subprocess.run([sys.executable, 'lint.py', 'lint.json'], cwd=self.root, capture_output=True, timeout=10)
+        run = subprocess.run([sys.executable, 'lint_runner.py', 'lint.json'], cwd=self.root, capture_output=True, timeout=10)
         self.assertNotEqual(run.returncode, 0)
         self.assertIn(b'capture script revision changed', run.stderr)
         self.assertFalse((self.workspace/'evidence').exists())
 
     def run_connected_subset(self, external=False):
         (self.workspace/'tasks/T-A.md').write_text('- **Effort**: impossible\n')
-        config = dict(source='lint-spec.md', source_sha256=SHA, slug='demo', rows=[5,12,15],
+        config = dict(source='lint.py', source_sha256=SHA, slug='demo', rows=[5,12,15],
                       capture_script='capture.py',
                       selectors=[dict(glob='docs/plans/demo/**/*.md',required=True)],
                       destination='lint-evidence', timeout_seconds=2)
         (self.workspace/'AGENTS.md').write_text('Reference staleness window: 14\n')
         if external:
-            config['source'] = str(INSTALL/'references/guides/lint-spec.md')
+            config['source'] = str(INSTALL/'scripts/lint.py')
         (self.root/'lint.json').write_text(json.dumps(config))
-        run = subprocess.run([sys.executable, 'lint.py', 'lint.json'], cwd=self.root, capture_output=True, timeout=10)
+        run = subprocess.run([sys.executable, 'lint_runner.py', 'lint.json'], cwd=self.root, capture_output=True, timeout=10)
         self.assertEqual(run.returncode, 1, run.stderr)
         summary = json.loads(Path(run.stdout.decode().strip()).read_text())
         self.assertEqual((summary['passed'],summary['total'],summary['complete']), (2,3,False))

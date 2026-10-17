@@ -1,3 +1,4 @@
+import ast
 import hashlib
 import re
 from pathlib import Path
@@ -8,26 +9,25 @@ import tempfile
 
 
 def canonical_rows(source, expected_sha256, slug):
+    """Compile the row programs that scripts/lint.py holds as ROW_NN constants, without running it."""
     if hashlib.sha256(source).hexdigest() != expected_sha256:
         raise ValueError('canonical source revision changed')
     if not re.fullmatch(r'[a-z0-9][a-z0-9.-]*', slug):
         raise ValueError('invalid slug')
+    try:
+        tree = ast.parse(source.decode('utf-8'))
+    except SyntaxError:
+        raise ValueError('malformed row source') from None
     rows = {}
-    for line in source.decode('utf-8').splitlines():
-        if not re.match(r'^\| [0-9]+ ·', line):
+    for node in tree.body:
+        if not (isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name)
+                and re.fullmatch(r'ROW_[0-9]+', node.targets[0].id)):
             continue
-        head, cell, condition = line.split(' | ', 2)
-        number = int(head.split(' ·', 1)[0][2:])
-        match = re.fullmatch(r'(`+)(.*?)\1', cell)
-        if number in rows or not match or not condition.endswith(' |'):
+        number = int(node.targets[0].id[4:])
+        if number in rows or not isinstance(node.value, ast.Constant) or type(node.value.value) is not str:
             raise ValueError('duplicate or malformed row')
-        command = match[2]
-        # Markdown code spans with padding remove one surrounding space.
-        if command.startswith(' ') and command.endswith(' ') and command.strip():
-            command = command[1:-1]
-        command = command.replace('<slug>', slug).encode('utf-8')
-        rows[number] = dict(command=command, condition=condition[:-2],
-                            command_sha256=hashlib.sha256(command).hexdigest())
+        command = node.value.value.replace('<slug>', slug).encode('utf-8')
+        rows[number] = dict(command=command, command_sha256=hashlib.sha256(command).hexdigest())
     if sorted(rows) != list(range(1, 18)):
         raise ValueError('expected exactly rows 1 through 17')
     return rows
@@ -116,9 +116,9 @@ def run_lint(config_path):
     destination.resolve().relative_to(workspace)
     destination.mkdir(parents=True, exist_ok=True)
     batch = Path(tempfile.mkdtemp(prefix='lint-', dir=destination))
-    (batch / 'lint-spec.md').write_bytes(source)
+    (batch / 'lint.py').write_bytes(source)
     selectors = list(config['selectors'])
-    for path in [config_path, batch / 'lint-spec.md', __file__, capture_script]:
+    for path in [config_path, batch / 'lint.py', __file__, capture_script]:
         resolved = (root / path).resolve()
         if root in resolved.parents:
             selectors.append(dict(glob=str(resolved.relative_to(root)), required=True))

@@ -11,7 +11,7 @@ from maintaining.install_root import current_root  # noqa: E402
 from eval.support.lint import lint_rows, literal_command, write_files, run_lint_row  # noqa: E402
 INSTALL = current_root(ROOT)
 
-SOURCE = (INSTALL / "references/guides/lint-spec.md").read_bytes()
+SOURCE = (INSTALL / "scripts/lint.py").read_bytes()
 HEAD = "| Task | What | Brief | Depends on | Status | Verification |\n|---|---|---|---|---|---|\n"
 SECTION = ("## Sibling workspaces\n\n| Sibling | Path | Relation |\n|---|---|---|\n"
            "| beta | docs/plans/beta | shares the release |\n")

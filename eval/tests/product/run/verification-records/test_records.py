@@ -180,7 +180,7 @@ class Records(unittest.TestCase):
 
     def test_new_lint_specs_use_explicit_shared_workspace(self):
         (self.root / 'lint.py').write_text(recipe('lint_runner.py'))
-        source = INSTALL / 'references/guides/lint-spec.md'
+        source = INSTALL / 'scripts/lint.py'
         config = dict(source=str(source), source_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
                       workspace='initiative', slug='demo', rows=[12], capture_script='capture.py',
                       selectors=[dict(glob='input.bin', required=True)], timeout_seconds=2)
@@ -199,7 +199,7 @@ class Records(unittest.TestCase):
     def test_the_shipped_lint_script_runs_from_the_install_folder_with_its_own_capture(self):
         # cwd is the disposable root, outside the install: the capture script beside the lint script
         # is used, pinned by its bytes, and neither script needs to sit inside cwd.
-        source = INSTALL / 'references/guides/lint-spec.md'
+        source = INSTALL / 'scripts/lint.py'
         config = dict(source=str(source), source_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
                       workspace='initiative', slug='demo', rows=[12],
                       selectors=[dict(glob='input.bin', required=True)], timeout_seconds=2)

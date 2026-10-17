@@ -18,14 +18,14 @@ from eval.support.lint import literal_command, write_files  # noqa: E402
 
 INSTALL = current_root(ROOT)
 TEMPLATE = INSTALL / 'references/task.tmpl.md'
-LINT = (INSTALL / 'references/guides/lint-spec.md').read_text()
+LINT = (INSTALL / 'scripts/lint.py').read_text()
 FIXTURES = (Path(__file__).resolve().parents[4] / 'eval/templates') / 'fixtures/compiled-brief'
 BOARD = ('Schema: tackle-workspace/5\n\n| Task | What | Brief | Depends on | Status | Verification |\n'
          '|---|---|---|---|---|---|\n| T-A | Work | tasks/T-A.md | none | Draft | pending |\n')
 
 
 def literal_row(number):
-    return literal_command(number, LINT, single_backtick=True)
+    return literal_command(number, LINT)
 
 
 def run_row12(brief):
