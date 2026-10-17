@@ -3305,7 +3305,7 @@
       "unit_sha256": "67fc903a87d69a822836aac7d233f8e2949158f11830d6dbca17390a71a88669",
       "disposition": "reworded",
       "destination": "references/guides/plan-card.md",
-      "note": "**Lint.** Run every row of `lint-spec.md` — the 17 mechanical, copy-paste checks that decide wiring, grounding, statuses, citations, seals and collisions — and report the agent-computed summary.",
+      "note": "**Lint.** Run every row of `lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py), which the plan request authorizes ([script consent](../../scripts/README.md#consent)) — the 17 mechanical checks that decide wiring, grounding, statuses, citations, seals and collisions — and report the agent-computed summary.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -4468,7 +4468,7 @@
       "unit_sha256": "4b2a7d9d6424f8a36079661fa12f216520c3e0e659e8ee10ca49ca198716ff5e",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 2 · Task identity and dependencies — every T id, brief path and dependency resolves in the `/5` workspace; mixed identities, absent briefs and an older layout fail | ```` ws=docs/plans/<slug>; board=\"$ws/task-board.md\"; if [ -f docs/plans/<slug>/plan.md ] && [ \"$(sed -n '1p' docs/plans/<slug>/plan.md)\" = 'Gate: Lite' ]; then exit 0; fi; if [ -f \"$ws/task-board.md\" ] && grep -Eq '^Schema: tackle-workspace/5$' \"$ws/task-board.md\"; then :; else echo \"migrate first: $ws has no tackle-workspace/5 task-board.md with LF line endings (references/guides/migrate.md)\"; exit 1; fi; for f in \"$ws/board.md\" \"$ws/log.md\" \"$ws/usage.md\" \"$ws/log-archive.md\" \"$ws/coordinator.md\" \"$ws/HANDOFF.md\" \"$ws/evidence\" \"$ws/points\"; do if ! { [ ! -e \"$f\" ] && [ ! -L \"$f\" ]; }; then echo \"mixed workspace paths: $f\"; exit 1; fi; done; for f in \"$ws/plan.md\" \"$ws/history.md\" \"$ws/resource-usage.md\"; do if [ ! -f \"$f\" ]; then echo \"missing: $f\"; exit 1; fi; done; if [ ! -d \"$ws/tasks\" ]; then echo \"missing tasks directory: $ws\"; exit 1; fi; prefix=T-; set -- \"$ws\"/tasks/*.md; if [ ! -f \"$1\" ]; then echo \"missing task briefs: $ws\"; exit 1; fi; if awk -v prefix=\"$prefix\" -v ws=\"$ws\" -v boardfile=\"$board\" -v agents=\"$ws/AGENTS.md\" 'BEGIN{FS=sprintf(\"%c\",124); ag_pipe=sprintf(\"%c\",124); ag_hdr=0; ag_seen=0; ag_incomment=0; nref=0; while((getline ag_line < agents)>0){ ag_out=\"\"; ag_rest=ag_line; while(1){ if(ag_incomment){ ag_p=index(ag_rest,\"-->\"); if(ag_p==0){ag_rest=\"\"; break} ag_rest=substr(ag_rest,ag_p+3); ag_incomment=0; continue } ag_p=index(ag_rest,\"<!--\"); if(ag_p==0){ag_out=ag_out ag_rest; break} ag_out=ag_out substr(ag_rest,1,ag_p-1); ag_rest=substr(ag_rest,ag_p+4); ag_incomment=1 } if(ag_incomment) continue; ag_t=trim(ag_out); if(substr(ag_t,1,3)==\"```\"){fence=!fence; continue} if(fence) continue; if(!ag_seen && ag_t==\"## Sibling workspaces\"){section=1; ag_seen=1; ag_hdr=0; continue} if(substr(ag_out,1,3)==\"## \"){section=0; continue} if(!section) continue; if(!(substr(ag_t,1,1)==ag_pipe && substr(ag_t,length(ag_t),1)==ag_pipe && length(ag_t)>1)) continue; ag_n=split(ag_t,ag_cell,ag_pipe); ag_c1=trim(ag_cell[2]); ag_c2=trim(ag_cell[3]); if(!ag_hdr){ if(ag_n==5 && ag_c1==\"Sibling\" && ag_c2==\"Path\" && trim(ag_cell[4])==\"Relation\") ag_hdr=1; continue} if(ag_n!=5) continue; sub(/^`+/,\"\",ag_c2); sub(/`+$/,\"\",ag_c2); ag_c2=trim(ag_c2); if(!(ag_c1 ~ /^[a-z0-9][a-z0-9-]*$/)) continue; if(substr(ag_c2,1,11)!=\"docs/plans/\") continue; ag_name=substr(ag_c2,12); if(!(ag_name ~ /^[a-z0-9][a-z0-9-]*$/)) continue; if(!(ag_c1 in sibling)) sibling[ag_c1]=ag_name } close(agents); fence=\"\"; section=0} function sibscan(s,owner,record,   m,ref,slug,key,out){ out=\"\"; while(match(s,/T-[0-9]+ [[][a-z0-9][a-z0-9-]*[]]/)){ m=substr(s,RSTART,RLENGTH); ref=substr(m,1,index(m,\" \")-1); slug=substr(m,index(m,\"[\")+1); slug=substr(slug,1,length(slug)-1); if(record){ key=owner SUBSEP ref SUBSEP slug; if(!(key in sseen)){sseen[key]=1; sref[++nref]=key} } if(record + (slug in sibling)) out=out substr(s,1,RSTART-1) \" \"; else out=out substr(s,1,RSTART+RLENGTH-1); s=substr(s,RSTART+RLENGTH) } return out s} function sibbrief(b,   rest,sx,name,file,s){ rest=substr(b,4); sx=index(rest,\"/\"); if(sx<2) return \"\"; name=substr(rest,1,sx-1); if(substr(rest,sx+1,6)!=\"tasks/\") return \"\"; file=substr(rest,sx+7); if(file==\"\") return \"\"; if(index(file,\"/\")>0) return \"\"; if(index(file,\"..\")>0) return \"\"; for(s in sibling) if(sibling[s]==name) return \"docs/plans/\" name \"/tasks/\" file; return \"\"} function trim(s){sub(/^[[:space:]]+/,\"\",s); sub(/[[:space:]]+$/,\"\",s); return s} function refs(s,id){while(match(s,/[PT]-[A-Za-z0-9]+(-[A-Za-z0-9]+)*/)){id=substr(s,RSTART,RLENGTH); used[id]=1; s=substr(s,RSTART+RLENGTH)}} FILENAME==ws \"/plan.md\" {if(($0 ~ /^ ? ? ?```/) + ($0 ~ /^ ? ? ?~~~/)){t=trim($0); if(!match(t,/^```+/)) match(t,/^~~~+/); marker=substr(t,RSTART,RLENGTH); tail=trim(substr(t,RLENGTH+1)); if(!fence) fence=marker; else if(substr(marker,1,1)==substr(fence,1,1) && length(marker)>=length(fence) && tail==\"\") fence=\"\"; next} if(fence) next; if((($0 \" \") ~ /^ ? ? ?##[[:space:]]+5[.] Point decomposition[[:space:]]/) + (($0 \" \") ~ /^ ? ? ?##[[:space:]]+5[.] Task decomposition[[:space:]]/)){section=1; next} if(($0 \" \") ~ /^ ? ? ?##?[[:space:]]/) section=0; if(section && NF>1 && $1 ~ /^[[:space:]]*$/){id=trim($2); sub(/^[*][*]/,\"\",id); sub(/[*][*]$/,\"\",id); if(match(id,/^[PT]-[A-Za-z0-9]+(-[A-Za-z0-9]+)*/)){id=substr(id,RSTART,RLENGTH); declared[id]=1; if(substr(id,1,2)!=prefix) print \"mixed plan identity: \" id}} next} FILENAME==boardfile {id=trim($2); if(id ~ /^[PT]-[A-Za-z0-9]+(-[A-Za-z0-9]+)*$/){used[id]=1; board[id]=1; if(substr(id,1,2)!=prefix) print \"mixed board identity: \" id; refs(sibscan($5,id,1)); brief=trim($4); if(brief ~ /^`[^`]+`$/) brief=substr(brief,2,length(brief)-2); path=\"\"; if(index(brief,\"../\")==1){path=sibbrief(brief); if(path==\"\") print \"brief \" brief \" for task \" id \" is outside the workspace\"} else {if(index(brief,\"tasks/\")!=1) print \"mixed brief path: \" brief; path=ws \"/\" brief} if(path!=\"\"){result=0; first=\"\"; while((getline line < path)>0){result=1; if((line ~ /^[[:space:]]*$/) + (line ~ /^[[:space:]]*<a[[:space:]]+id=/)) continue; first=line; break} close(path); if(result<1) print \"missing brief: \" brief; else if((first \" \") !~ (\"^# Task \" id \"[[:space:]]\")) print \"mismatched brief heading: \" brief} } next} (($0 \" \") ~ /^[[:space:]]*#[[:space:]]*[PT]-[A-Za-z0-9]+(-[A-Za-z0-9]+)*[[:space:]]/) + (($0 \" \") ~ /^[[:space:]]*#[[:space:]]*Task[[:space:]]+[PT]-[A-Za-z0-9]+(-[A-Za-z0-9]+)*[[:space:]]/) {ln=sibscan($0,\"\",0); if(match(ln,/[PT]-[A-Za-z0-9]+(-[A-Za-z0-9]+)*/)) used[substr(ln,RSTART,RLENGTH)]=1} /^[[:space:]]*(-[[:space:]]*)?([*][*])?Depends([ -])on([*][*])?:/ {refs(sibscan($0,\"\",0))} END{for(k=1;k<=nref;k++){split(sref[k],sp,SUBSEP); owner=sp[1]; rf=sp[2]; sl=sp[3]; if(!(sl in sibling)){print \"task \" owner \" depends on \" rf \" [\" sl \"], but no sibling named \" sl \" is declared\"; continue} if(!(sl in bstate)){bstate[sl]=\"refused\"; bp=\"docs/plans/\" sibling[sl] \"/task-board.md\"; while((getline bl < bp)>0){if(bl==\"Schema: tackle-workspace/5\") bstate[sl]=\"ok\"; nb=split(bl,bf,sprintf(\"%c\",124)); if(nb>=2) sboard[sl SUBSEP trim(bf[2])]=1} close(bp); if(bstate[sl]==\"refused\") print \"sibling \" sl \" has no tackle-workspace/5 task-board.md at docs/plans/\" sibling[sl]} if(bstate[sl]==\"refused\") continue; if(!((sl SUBSEP rf) in sboard)) print \"task \" owner \" depends on \" rf \" [\" sl \"], which is not on the sibling\" sprintf(\"%c\",39) \"s board\"} for(id in used) if(!(id in declared)) print \"unresolved: \" id; for(id in declared) if(!(id in board)) print \"missing board task: \" id}' \"$ws/plan.md\" \"$board\" \"$@\"; then :; else exit $?; fi ```` | 0 lines of output |",
+      "note": "| 2 · Task identity and dependencies — every T id, brief path and dependency resolves in the `/5` workspace; mixed identities, absent briefs and an older layout fail | 0 lines of output |",
       "destination_unit_sha256": null
     },
     {
@@ -4477,7 +4477,7 @@
       "unit_sha256": "9127cca27bf1fde43244e7e2dabc1a1928d5303f1864d76ff428e7bfbcac1244",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 3 · Invalid status vocabulary — the `Status` field in `task-board.md` uses the ten `/5` states, the nine English states and `Waiting on owner` (the field is found by its `Status` header, the fifth data column when no header names it; an emoji in another column does not count); an older board is refused | ` ws=docs/plans/<slug>; board=\"$ws/task-board.md\"; if [ -f docs/plans/<slug>/plan.md ] && [ \"$(sed -n '1p' docs/plans/<slug>/plan.md)\" = 'Gate: Lite' ]; then exit 0; fi; if [ -f \"$ws/task-board.md\" ] && grep -Eq '^Schema: tackle-workspace/5$' \"$ws/task-board.md\"; then :; else echo \"migrate first: $ws has no tackle-workspace/5 task-board.md with LF line endings (references/guides/migrate.md)\"; exit 1; fi; awk 'BEGIN{FS=sprintf(\"%c\",124)} function cell(i,c){c=$i; sub(/^[[:space:]]+/,\"\",c); sub(/[[:space:]]+$/,\"\",c); return c} function colof(name,i){for(i=2;i<=NF;i++) if(cell(i)==name) return i; return 0} FNR==1{col=0; pend=0} pend && $2 ~ /^[[:space:]]*:?-+:?[[:space:]]*$/ {col=pend} {pend=0} $2 !~ /[PT]-[A-Za-z0-9]/ && colof(\"Status\"){pend=colof(\"Status\")} $2 ~ /^[[:space:]]*[PT]-[A-Za-z0-9]+(-[A-Za-z0-9]+)*[[:space:]]*$/ && NF>3 {status=cell(col ? col : 6); ok=(status==\"Draft\") + (status==\"Ready to run\") + (status==\"In progress\") + (status==\"Checking\") + (status==\"Complete\") + (status==\"Blocked\") + (status==\"Interrupted\") + (status==\"Skipped\") + (status==\"Unverifiable\") + (status==\"Waiting on owner\"); if(!ok) print \"bad status:\" $0}' \"$board\" ` | 0 lines of output |",
+      "note": "| 3 · Invalid status vocabulary — the `Status` field in `task-board.md` uses the ten `/5` states, the nine English states and `Waiting on owner` (the field is found by its `Status` header, the fifth data column when no header names it; an emoji in another column does not count); an older board is refused | 0 lines of output |",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -4492,7 +4492,7 @@
       "unit_sha256": "2298b60a811dc88009dbd87a7fc3e53d9d95b414613cfcd881adb22955911dde",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 10 · Terminal rows carry a verification reference, and a Ready to run row cites its readiness — every `task-board.md` row whose status is Complete, Blocked or Unverifiable carries exactly `reports/<id>-report.md` in Verification (the status is read like row 3), and a `Ready to run` row's Verification cell starts with `ready: ` plus a non-empty reference; an older board is refused | ` ws=docs/plans/<slug>; board=\"$ws/task-board.md\"; if [ -f docs/plans/<slug>/plan.md ] && [ \"$(sed -n '1p' docs/plans/<slug>/plan.md)\" = 'Gate: Lite' ]; then exit 0; fi; if [ -f \"$ws/task-board.md\" ] && grep -Eq '^Schema: tackle-workspace/5$' \"$ws/task-board.md\"; then :; else echo \"migrate first: $ws has no tackle-workspace/5 task-board.md with LF line endings (references/guides/migrate.md)\"; exit 1; fi; awk 'BEGIN{FS=sprintf(\"%c\",124)} function cell(i,c){c=$i; sub(/^[[:space:]]+/,\"\",c); sub(/[[:space:]]+$/,\"\",c); return c} function colof(name,i){for(i=2;i<=NF;i++) if(cell(i)==name) return i; return 0} FNR==1{col=0; pend=0} pend && $2 ~ /^[[:space:]]*:?-+:?[[:space:]]*$/ {col=pend} {pend=0} $2 !~ /[PT]-[A-Za-z0-9]/ && colof(\"Status\"){pend=colof(\"Status\")} $2 !~ /[PT]-[A-Za-z0-9]/ && colof(\"Verification\"){vcol=colof(\"Verification\")} $2 ~ /[PT]-[A-Za-z0-9]/ && NF>3 {status=cell(col ? col : 6); id=cell(2); ref=cell(vcol ? vcol : 7); if((status==\"Complete\") + (status==\"Blocked\") + (status==\"Unverifiable\")) if(ref!=\"reports/\" id \"-report.md\") print \"terminal task without verification reference: \" $0; if(status==\"Ready to run\" && !(index(ref,\"ready: \")==1 && length(ref)>7)) print \"ready-to-run task missing ready citation: \" $0}' \"$board\" ` | 0 lines of output |",
+      "note": "| 10 · Terminal rows carry a verification reference, and a Ready to run row cites its readiness — every `task-board.md` row whose status is Complete, Blocked or Unverifiable carries exactly `reports/<id>-report.md` in Verification (the status is read like row 3), and a `Ready to run` row's Verification cell starts with `ready: ` plus a non-empty reference; an older board is refused | 0 lines of output |",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -4515,7 +4515,7 @@
       "unit_sha256": "896eeab630c94028d7995dfec65fff19861487280deb536df2e0eeb535183d1c",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 12 · Effort, Tier and Escalation vocabulary — every `**Effort**:` declaration in the `tasks/` brief of a task that is not closed (the board shows it neither Complete, Skipped nor Unverifiable) is exactly a §3 level (`low`/`medium`/`high`/`max`), checked even inside a fenced block; outside any fenced block, a present `**Tier**:` is `fast`/`standard`/`frontier` and requires a `**Tier reason**:` (which may also appear alone, recording an Effort-only deviation from the compiled default), and an Effort other than `low` needs one of the two; a present `**Escalation**:` is `declared` and never present without `**Tier**:`; fenced examples (`` ``` `` or `~~~`, as row 1 also skips) exempt only the Tier/Tier reason/Escalation checks, never Effort; peripheral whitespace and any bullet marker (`-`, `*`, `+`) are allowed; an older board is refused | ` ws=docs/plans/<slug>; board=\"$ws/task-board.md\"; if [ -f docs/plans/<slug>/plan.md ] && [ \"$(sed -n '1p' docs/plans/<slug>/plan.md)\" = 'Gate: Lite' ]; then exit 0; fi; if [ -f \"$ws/task-board.md\" ] && grep -Eq '^Schema: tackle-workspace/5$' \"$ws/task-board.md\"; then :; else echo \"migrate first: $ws has no tackle-workspace/5 task-board.md with LF line endings (references/guides/migrate.md)\"; exit 1; fi; set --; for f in docs/plans/<slug>/tasks/*.md; do if [ -f \"$f\" ]; then set -- \"$@\" \"$f\"; fi; done; if [ \"$#\" -eq 0 ]; then echo \"missing task briefs\"; exit 1; fi; awk -v ws=\"$ws\" -v boardfile=\"$board\" 'BEGIN{FS=sprintf(\"%c\",124); fence3=sprintf(\"%c%c%c\",96,96,96); bt=sprintf(\"%c\",96)} function report(){if(tier && !reason) print file \": Tier without Tier reason\"; if(esc && !tier) print file \": Escalation without Tier\"; if(effdev && !tier && !reason) print file \": Effort without Tier reason\"} function cell(i,c){c=$i; sub(/^[[:space:]]+/,\"\",c); sub(/[[:space:]]+$/,\"\",c); return c} function colof(name,i){for(i=2;i<=NF;i++) if(cell(i)==name) return i; return 0} FNR==1{col=0; pend=0} pend && $2 ~ /^[[:space:]]*:?-+:?[[:space:]]*$/ {col=pend} {pend=0} $2 !~ /[PT]-[A-Za-z0-9]/ && colof(\"Status\"){pend=colof(\"Status\")} FILENAME==boardfile && $2 ~ /[PT]-[A-Za-z0-9]/ && NF>3 {status=cell(col ? col : 6); tid=cell(2); brief=cell(4); if(substr(brief,1,1)==bt && substr(brief,length(brief),1)==bt) brief=substr(brief,2,length(brief)-2); bpath=ws \"/\" brief; bfirst=\"\"; if(brief ~ /[.]md$/){while((getline bline < bpath)>0){if((bline ~ /^[[:space:]]*$/) + (bline ~ /^[[:space:]]*<a[[:space:]]+id=/)) continue; bfirst=bline; break} close(bpath)} own=((bfirst \" \") ~ (\"^# Task \" tid \"[[:space:]]\")); if(own && ((status==\"Complete\") + (status==\"Skipped\") + (status==\"Unverifiable\"))) closed[bpath]=1; else opened[bpath]=1} FILENAME==boardfile {next} FNR==1{if(active) report(); file=FILENAME; active=(!(FILENAME in closed)) + (FILENAME in opened); tier=0; reason=0; esc=0; fenced=0; effdev=0} !active {next} {t=$0; sub(/^[[:space:]]*/,\"\",t)} (substr(t,1,3)==fence3) + (substr(t,1,3)==\"~~~\"){fenced=!fenced; next} /^[[:space:]]*([-*+][[:space:]]+)?\\*\\*Effort\\*\\*:/ {value=$0; sub(/^[[:space:]]*([-*+][[:space:]]+)?\\*\\*Effort\\*\\*:[[:space:]]*/, \"\", value); sub(/[[:space:]]+$/, \"\", value); if(value!=\"low\" && value!=\"medium\" && value!=\"high\" && value!=\"max\") print FILENAME \":\" FNR \": \" $0; if(!fenced && value!=\"low\") effdev=1} !fenced && /^[[:space:]]*([-*+][[:space:]]+)?\\*\\*Tier\\*\\*:/ {tier=1; value=$0; sub(/^[[:space:]]*([-*+][[:space:]]+)?\\*\\*Tier\\*\\*:[[:space:]]*/, \"\", value); sub(/[[:space:]]+$/, \"\", value); if(value!=\"fast\" && value!=\"standard\" && value!=\"frontier\") print FILENAME \":\" FNR \": \" $0} !fenced && /^[[:space:]]*([-*+][[:space:]]+)?\\*\\*Tier reason\\*\\*:/ {reason=1} !fenced && /^[[:space:]]*([-*+][[:space:]]+)?\\*\\*Escalation\\*\\*:/ {esc=1; value=$0; sub(/^[[:space:]]*([-*+][[:space:]]+)?\\*\\*Escalation\\*\\*:[[:space:]]*/, \"\", value); sub(/[[:space:]]+$/, \"\", value); if(value!=\"declared\") print FILENAME \":\" FNR \": \" $0} END{if(active) report()}' \"$board\" \"$@\" ` | 0 lines of output |",
+      "note": "| 12 · Effort, Tier and Escalation vocabulary — every `**Effort**:` declaration in the `tasks/` brief of a task that is not closed (the board shows it neither Complete, Skipped nor Unverifiable) is exactly a §3 level (`low`/`medium`/`high`/`max`), checked even inside a fenced block; outside any fenced block, a present `**Tier**:` is `fast`/`standard`/`frontier` and requires a `**Tier reason**:` (which may also appear alone, recording an Effort-only deviation from the compiled default), and an Effort other than `low` needs one of the two; a present `**Escalation**:` is `declared` and never present without `**Tier**:`; fenced examples (`` ``` `` or `~~~`, as row 1 also skips) exempt only the Tier/Tier reason/Escalation checks, never Effort; peripheral whitespace and any bullet marker (`-`, `*`, `+`) are allowed; an older board is refused | 0 lines of output |",
       "destination_unit_sha256": null
     },
     {
@@ -4523,7 +4523,7 @@
       "line": 34,
       "unit_sha256": "982b2c68d69dfa3bab79d931a4a51fb5a86b5f779b9e1d7e9e5b2dcdfcdffb50",
       "disposition": "reworded",
-      "destination": "references/guides/lint-spec.md",
+      "destination": "skills/tackle/scripts/lint.py",
       "note": "(status==\"Waiting on owner\"))) active[ws]=1; next} !active[ws] {next} (($0 \" \") ~ /^[[:space:]]*([-*+][[:space:]]*)?([*][*])?Write scope([*][*])?[[:space:]:]/)",
       "destination_unit_sha256": null,
       "dropped": [
@@ -4750,7 +4750,7 @@
       "unit_sha256": "131bdba294b1b4f8a275d4569831c58e205442a5aa352460d8cd3d4d01697541",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 5 · Status duplicated outside `task-board.md` — a `Status:` declaration, or a status emoji (incl. ⚪), in `plan.md` or `tasks/`; an older board is refused | ` ws=docs/plans/<slug>; if [ -f docs/plans/<slug>/plan.md ] && [ \"$(sed -n '1p' docs/plans/<slug>/plan.md)\" = 'Gate: Lite' ]; then exit 1; fi; if [ -f \"$ws/task-board.md\" ] && grep -Eq '^Schema: tackle-workspace/5$' \"$ws/task-board.md\"; then :; else echo \"migrate first: $ws has no tackle-workspace/5 task-board.md with LF line endings (references/guides/migrate.md)\"; exit 1; fi; set -- docs/plans/<slug>/plan.md; for f in docs/plans/<slug>/tasks/*.md; do if [ -f \"$f\" ]; then set -- \"$@\" \"$f\"; fi; done; if awk '/^```/{f=!f;next} !f && /^[[:space:]]*(-[[:space:]]*)?([*][*])?Status([*][*])?:/ {print FILENAME \":\" FNR \": duplicated Status declaration\";bad=1} END{exit !bad}' \"$@\"; then exit 0; else code=$?; if [ \"$code\" -ne 1 ]; then exit \"$code\"; fi; fi; grep -n -e 🔴 -e 🟡 -e ⏸ -e 🟢 -e ⚪ \"$@\" ` | 0 lines of output (grep exits 1) |",
+      "note": "| 5 · Status duplicated outside `task-board.md` — a `Status:` declaration, or a status emoji (incl. ⚪), in `plan.md` or `tasks/`; an older board is refused | 0 lines of output (grep exits 1) |",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -5474,7 +5474,7 @@
       "unit_sha256": "bb760ff20b933d11e4835c3e30aeaac46bb5c3ea3a6c9571812ee66b49d6fbeb",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 1 · Lite shape and unfilled placeholders — no `{{…}}` left outside fenced code blocks in shipped workspace files, `legacy-*/` snapshots skipped; a Focused workspace still on `log.md`, `log-archive.md` or `usage.md` is refused | ```` ws=docs/plans/<slug>; if [ -f docs/plans/<slug>/plan.md ] && [ \"$(sed -n '1p' docs/plans/<slug>/plan.md)\" = 'Gate: Lite' ]; then for f in \"$ws/log.md\" \"$ws/log-archive.md\" \"$ws/usage.md\"; do if ! { [ ! -e \"$f\" ] && [ ! -L \"$f\" ]; }; then echo \"migrate first: $ws is a Focused workspace on ${f##*/} (references/guides/migrate.md)\"; exit 1; fi; done; for f in \"$ws/plan.md\" \"$ws/history.md\" \"$ws/resource-usage.md\"; do if [ ! -f \"$f\" ]; then echo \"row1: Lite missing $f\"; exit 1; fi; done; for f in \"$ws/board.md\" \"$ws/task-board.md\" \"$ws/tasks\" \"$ws/points\"; do if ! { [ ! -e \"$f\" ] && [ ! -L \"$f\" ]; }; then echo \"row1: Lite has Full artifact $f\"; exit 1; fi; done; if awk 'function trim(s){sub(/^[[:space:]]+/,\"\",s); sub(/[[:space:]]+$/,\"\",s); return s} ($0 ~ /^ ? ? ?```/) + ($0 ~ /^ ? ? ?~~~/){t=trim($0); if(!match(t,/^```+/)) match(t,/^~~~+/); marker=substr(t,RSTART,RLENGTH); tail=trim(substr(t,RLENGTH+1)); if(!fence) fence=marker; else if(substr(marker,1,1)==substr(fence,1,1) && length(marker)>=length(fence) && tail==\"\") fence=\"\"; next} !fence && ((($0 \" \") ~ /^ ? ? ?##[[:space:]]+5[.] Point decomposition[[:space:]]/) + (($0 \" \") ~ /^ ? ? ?##[[:space:]]+5[.] Task decomposition[[:space:]]/)){print \"row1: Lite has Full Task decomposition\"; bad=1} END{if(bad) exit 1}' docs/plans/<slug>/plan.md; then :; else exit $?; fi; fi; set --; for f in docs/plans/<slug>/*.md docs/plans/<slug>/*/*.md; do case \"$f\" in docs/plans/<slug>/legacy-*/*) continue;; esac; if ! { [ ! -e \"$f\" ] && [ ! -L \"$f\" ]; }; then set -- \"$@\" \"$f\"; fi; done; if [ \"$#\" -eq 0 ]; then echo \"row1: missing workspace files\"; exit 1; fi; awk 'BEGIN{f=0} /^```/{f=!f; next} !f && /[{][{]/{print FILENAME \":\" FNR \": \" $0}' \"$@\" ```` | 0 lines of output |",
+      "note": "| 1 · Lite shape and unfilled placeholders — no `{{…}}` left outside fenced code blocks in shipped workspace files, `legacy-*/` snapshots skipped; a Focused workspace still on `log.md`, `log-archive.md` or `usage.md` is refused | 0 lines of output |",
       "destination_unit_sha256": null
     },
     {
@@ -5483,7 +5483,7 @@
       "unit_sha256": "3e1250fc9d565445e7fbccf24c415a4e943e8e4cd734edea95acc5e4402b8057",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 2 · Task identity and dependencies — every T id, brief path and dependency resolves in the `/5` workspace; mixed identities, absent briefs and an older layout fail | ```` ws=docs/plans/<slug>; board=\"$ws/task-board.md\"; if [ -f docs/plans/<slug>/plan.md ] && [ \"$(sed -n '1p' docs/plans/<slug>/plan.md)\" = 'Gate: Lite' ]; then exit 0; fi; if [ -f \"$ws/task-board.md\" ] && grep -Eq '^Schema: tackle-workspace/5$' \"$ws/task-board.md\"; then :; else echo \"migrate first: $ws has no tackle-workspace/5 task-board.md with LF line endings (references/guides/migrate.md)\"; exit 1; fi; for f in \"$ws/board.md\" \"$ws/log.md\" \"$ws/usage.md\" \"$ws/log-archive.md\" \"$ws/coordinator.md\" \"$ws/HANDOFF.md\" \"$ws/evidence\" \"$ws/points\"; do if ! { [ ! -e \"$f\" ] && [ ! -L \"$f\" ]; }; then echo \"mixed workspace paths: $f\"; exit 1; fi; done; for f in \"$ws/plan.md\" \"$ws/history.md\" \"$ws/resource-usage.md\"; do if [ ! -f \"$f\" ]; then echo \"missing: $f\"; exit 1; fi; done; if [ ! -d \"$ws/tasks\" ]; then echo \"missing tasks directory: $ws\"; exit 1; fi; prefix=T-; set -- \"$ws\"/tasks/*.md; if [ ! -f \"$1\" ]; then echo \"missing task briefs: $ws\"; exit 1; fi; if awk -v prefix=\"$prefix\" -v ws=\"$ws\" -v boardfile=\"$board\" -v agents=\"$ws/AGENTS.md\" 'BEGIN{FS=sprintf(\"%c\",124); ag_pipe=sprintf(\"%c\",124); ag_hdr=0; ag_seen=0; ag_incomment=0; nref=0; while((getline ag_line < agents)>0){ ag_out=\"\"; ag_rest=ag_line; while(1){ if(ag_incomment){ ag_p=index(ag_rest,\"-->\"); if(ag_p==0){ag_rest=\"\"; break} ag_rest=substr(ag_rest,ag_p+3); ag_incomment=0; continue } ag_p=index(ag_rest,\"<!--\"); if(ag_p==0){ag_out=ag_out ag_rest; break} ag_out=ag_out substr(ag_rest,1,ag_p-1); ag_rest=substr(ag_rest,ag_p+4); ag_incomment=1 } if(ag_incomment) continue; ag_t=trim(ag_out); if(substr(ag_t,1,3)==\"```\"){fence=!fence; continue} if(fence) continue; if(!ag_seen && ag_t==\"## Sibling workspaces\"){section=1; ag_seen=1; ag_hdr=0; continue} if(substr(ag_out,1,3)==\"## \"){section=0; continue} if(!section) continue; if(!(substr(ag_t,1,1)==ag_pipe && substr(ag_t,length(ag_t),1)==ag_pipe && length(ag_t)>1)) continue; ag_n=split(ag_t,ag_cell,ag_pipe); ag_c1=trim(ag_cell[2]); ag_c2=trim(ag_cell[3]); if(!ag_hdr){ if(ag_n==5 && ag_c1==\"Sibling\" && ag_c2==\"Path\" && trim(ag_cell[4])==\"Relation\") ag_hdr=1; continue} if(ag_n!=5) continue; sub(/^`+/,\"\",ag_c2); sub(/`+$/,\"\",ag_c2); ag_c2=trim(ag_c2); if(!(ag_c1 ~ /^[a-z0-9][a-z0-9-]*$/)) continue; if(substr(ag_c2,1,11)!=\"docs/plans/\") continue; ag_name=substr(ag_c2,12); if(!(ag_name ~ /^[a-z0-9][a-z0-9-]*$/)) continue; if(!(ag_c1 in sibling)) sibling[ag_c1]=ag_name } close(agents); fence=\"\"; section=0} function sibscan(s,owner,record,   m,ref,slug,key,out){ out=\"\"; while(match(s,/T-[0-9]+ [[][a-z0-9][a-z0-9-]*[]]/)){ m=substr(s,RSTART,RLENGTH); ref=substr(m,1,index(m,\" \")-1); slug=substr(m,index(m,\"[\")+1); slug=substr(slug,1,length(slug)-1); if(record){ key=owner SUBSEP ref SUBSEP slug; if(!(key in sseen)){sseen[key]=1; sref[++nref]=key} } if(record + (slug in sibling)) out=out substr(s,1,RSTART-1) \" \"; else out=out substr(s,1,RSTART+RLENGTH-1); s=substr(s,RSTART+RLENGTH) } return out s} function sibbrief(b,   rest,sx,name,file,s){ rest=substr(b,4); sx=index(rest,\"/\"); if(sx<2) return \"\"; name=substr(rest,1,sx-1); if(substr(rest,sx+1,6)!=\"tasks/\") return \"\"; file=substr(rest,sx+7); if(file==\"\") return \"\"; if(index(file,\"/\")>0) return \"\"; if(index(file,\"..\")>0) return \"\"; for(s in sibling) if(sibling[s]==name) return \"docs/plans/\" name \"/tasks/\" file; return \"\"} function trim(s){sub(/^[[:space:]]+/,\"\",s); sub(/[[:space:]]+$/,\"\",s); return s} function refs(s,id){while(match(s,/[PT]-[A-Za-z0-9]+(-[A-Za-z0-9]+)*/)){id=substr(s,RSTART,RLENGTH); used[id]=1; s=substr(s,RSTART+RLENGTH)}} FILENAME==ws \"/plan.md\" {if(($0 ~ /^ ? ? ?```/) + ($0 ~ /^ ? ? ?~~~/)){t=trim($0); if(!match(t,/^```+/)) match(t,/^~~~+/); marker=substr(t,RSTART,RLENGTH); tail=trim(substr(t,RLENGTH+1)); if(!fence) fence=marker; else if(substr(marker,1,1)==substr(fence,1,1) && length(marker)>=length(fence) && tail==\"\") fence=\"\"; next} if(fence) next; if((($0 \" \") ~ /^ ? ? ?##[[:space:]]+5[.] Point decomposition[[:space:]]/) + (($0 \" \") ~ /^ ? ? ?##[[:space:]]+5[.] Task decomposition[[:space:]]/)){section=1; next} if(($0 \" \") ~ /^ ? ? ?##?[[:space:]]/) section=0; if(section && NF>1 && $1 ~ /^[[:space:]]*$/){id=trim($2); sub(/^[*][*]/,\"\",id); sub(/[*][*]$/,\"\",id); if(match(id,/^[PT]-[A-Za-z0-9]+(-[A-Za-z0-9]+)*/)){id=substr(id,RSTART,RLENGTH); declared[id]=1; if(substr(id,1,2)!=prefix) print \"mixed plan identity: \" id}} next} FILENAME==boardfile {id=trim($2); if(id ~ /^[PT]-[A-Za-z0-9]+(-[A-Za-z0-9]+)*$/){used[id]=1; board[id]=1; if(substr(id,1,2)!=prefix) print \"mixed board identity: \" id; refs(sibscan($5,id,1)); brief=trim($4); if(brief ~ /^`[^`]+`$/) brief=substr(brief,2,length(brief)-2); path=\"\"; if(index(brief,\"../\")==1){path=sibbrief(brief); if(path==\"\") print \"brief \" brief \" for task \" id \" is outside the workspace\"} else {if(index(brief,\"tasks/\")!=1) print \"mixed brief path: \" brief; path=ws \"/\" brief} if(path!=\"\"){result=0; first=\"\"; while((getline line < path)>0){result=1; if((line ~ /^[[:space:]]*$/) + (line ~ /^[[:space:]]*<a[[:space:]]+id=/)) continue; first=line; break} close(path); if(result<1) print \"missing brief: \" brief; else if((first \" \") !~ (\"^# Task \" id \"[[:space:]]\")) print \"mismatched brief heading: \" brief} } next} (($0 \" \") ~ /^[[:space:]]*#[[:space:]]*[PT]-[A-Za-z0-9]+(-[A-Za-z0-9]+)*[[:space:]]/) + (($0 \" \") ~ /^[[:space:]]*#[[:space:]]*Task[[:space:]]+[PT]-[A-Za-z0-9]+(-[A-Za-z0-9]+)*[[:space:]]/) {ln=sibscan($0,\"\",0); if(match(ln,/[PT]-[A-Za-z0-9]+(-[A-Za-z0-9]+)*/)) used[substr(ln,RSTART,RLENGTH)]=1} /^[[:space:]]*(-[[:space:]]*)?([*][*])?Depends([ -])on([*][*])?:/ {refs(sibscan($0,\"\",0))} END{for(k=1;k<=nref;k++){split(sref[k],sp,SUBSEP); owner=sp[1]; rf=sp[2]; sl=sp[3]; if(!(sl in sibling)){print \"task \" owner \" depends on \" rf \" [\" sl \"], but no sibling named \" sl \" is declared\"; continue} if(!(sl in bstate)){bstate[sl]=\"refused\"; bp=\"docs/plans/\" sibling[sl] \"/task-board.md\"; while((getline bl < bp)>0){if(bl==\"Schema: tackle-workspace/5\") bstate[sl]=\"ok\"; nb=split(bl,bf,sprintf(\"%c\",124)); if(nb>=2) sboard[sl SUBSEP trim(bf[2])]=1} close(bp); if(bstate[sl]==\"refused\") print \"sibling \" sl \" has no tackle-workspace/5 task-board.md at docs/plans/\" sibling[sl]} if(bstate[sl]==\"refused\") continue; if(!((sl SUBSEP rf) in sboard)) print \"task \" owner \" depends on \" rf \" [\" sl \"], which is not on the sibling\" sprintf(\"%c\",39) \"s board\"} for(id in used) if(!(id in declared)) print \"unresolved: \" id; for(id in declared) if(!(id in board)) print \"missing board task: \" id}' \"$ws/plan.md\" \"$board\" \"$@\"; then :; else exit $?; fi ```` | 0 lines of output |",
+      "note": "| 2 · Task identity and dependencies — every T id, brief path and dependency resolves in the `/5` workspace; mixed identities, absent briefs and an older layout fail | 0 lines of output |",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -5498,7 +5498,7 @@
       "unit_sha256": "cb5038d6b3f9531b5293e41486dca6382174a978205dd5d3da4802313cb03490",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 3 · Invalid status vocabulary — the `Status` field in `task-board.md` uses the ten `/5` states, the nine English states and `Waiting on owner` (the field is found by its `Status` header, the fifth data column when no header names it; an emoji in another column does not count); an older board is refused | ` ws=docs/plans/<slug>; board=\"$ws/task-board.md\"; if [ -f docs/plans/<slug>/plan.md ] && [ \"$(sed -n '1p' docs/plans/<slug>/plan.md)\" = 'Gate: Lite' ]; then exit 0; fi; if [ -f \"$ws/task-board.md\" ] && grep -Eq '^Schema: tackle-workspace/5$' \"$ws/task-board.md\"; then :; else echo \"migrate first: $ws has no tackle-workspace/5 task-board.md with LF line endings (references/guides/migrate.md)\"; exit 1; fi; awk 'BEGIN{FS=sprintf(\"%c\",124)} function cell(i,c){c=$i; sub(/^[[:space:]]+/,\"\",c); sub(/[[:space:]]+$/,\"\",c); return c} function colof(name,i){for(i=2;i<=NF;i++) if(cell(i)==name) return i; return 0} FNR==1{col=0; pend=0} pend && $2 ~ /^[[:space:]]*:?-+:?[[:space:]]*$/ {col=pend} {pend=0} $2 !~ /[PT]-[A-Za-z0-9]/ && colof(\"Status\"){pend=colof(\"Status\")} $2 ~ /^[[:space:]]*[PT]-[A-Za-z0-9]+(-[A-Za-z0-9]+)*[[:space:]]*$/ && NF>3 {status=cell(col ? col : 6); ok=(status==\"Draft\") + (status==\"Ready to run\") + (status==\"In progress\") + (status==\"Checking\") + (status==\"Complete\") + (status==\"Blocked\") + (status==\"Interrupted\") + (status==\"Skipped\") + (status==\"Unverifiable\") + (status==\"Waiting on owner\"); if(!ok) print \"bad status:\" $0}' \"$board\" ` | 0 lines of output |",
+      "note": "| 3 · Invalid status vocabulary — the `Status` field in `task-board.md` uses the ten `/5` states, the nine English states and `Waiting on owner` (the field is found by its `Status` header, the fifth data column when no header names it; an emoji in another column does not count); an older board is refused | 0 lines of output |",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -5513,7 +5513,7 @@
       "unit_sha256": "9ccb5c1f5ccfbc263a2819cf9144477ddf4b762c1a435e10824d88f4ec9b160d",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 4 · Malformed/stale citations — every anchored citation, including every citation of a line, passes the anchored-citation drift check; an opened citation without a non-empty, closed quoted fragment is malformed (fragment still on line NN; fix path: the two-phase re-anchor flow in `verify.md` step 0) | `` set -- docs/plans/<slug>/plan.md docs/plans/<slug>/reference.md; for f in docs/plans/<slug>/tasks/*.md; do if [ -f \"$f\" ]; then set -- \"$@\" \"$f\"; fi; done; if [ -f docs/plans/<slug>/plan.md ] && [ \"$(sed -n '1p' docs/plans/<slug>/plan.md)\" = 'Gate: Lite' ]; then set -- docs/plans/<slug>/plan.md; if ! { [ ! -e docs/plans/<slug>/reference.md ] && [ ! -L docs/plans/<slug>/reference.md ]; }; then set -- \"$@\" docs/plans/<slug>/reference.md; fi; fi; awk 'function check(c,p,n,q,s,ok,f,i,L){p=c; sub(/:.*/,\"\",p); n=c; sub(/^[^:]*:/,\"\",n); n=n+0; split(c,q,\"\\\"\"); s=q[2]; ok=0; f=p; i=0; while((getline L < f)>0){i++; if(i==n && index(L,s)) ok=1} close(f); if(i==0){f=\"docs/plans/<slug>/\" p; while((getline L < f)>0){i++; if(i==n && index(L,s)) ok=1} close(f)} if(!ok) print FILENAME \":\" FNR \" stale: \" c} {rest=$0; while(match(rest,/[A-Za-z0-9_\\/.-]+\\.[a-z]+:[0-9]+(-[0-9]+)? — \"/)){head=substr(rest,RSTART,RLENGTH); rest=substr(rest,RSTART+RLENGTH); if(match(rest,/^[^\"]+\"/)){check(head substr(rest,1,RLENGTH)); rest=substr(rest,RLENGTH+1)} else {print FILENAME \":\" FNR \" malformed: \" head rest; rest=\"\"}}}' \"$@\" `` | 0 lines of output (0 stale) |",
+      "note": "| 4 · Malformed/stale citations — every anchored citation, including every citation of a line, passes the anchored-citation drift check; an opened citation without a non-empty, closed quoted fragment is malformed (fragment still on line NN; fix path: the two-phase re-anchor flow in `verify.md` step 0) | 0 lines of output (0 stale) |",
       "destination_unit_sha256": null
     },
     {
@@ -5522,7 +5522,7 @@
       "unit_sha256": "24d1805860f871a9a3487a204271942c5cb95485c3f6d760bcb88076d3e3c669",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 5 · Status duplicated outside `task-board.md` — a `Status:` declaration, or a status emoji (incl. ⚪), in `plan.md` or `tasks/`; an older board is refused | ` ws=docs/plans/<slug>; if [ -f docs/plans/<slug>/plan.md ] && [ \"$(sed -n '1p' docs/plans/<slug>/plan.md)\" = 'Gate: Lite' ]; then exit 1; fi; if [ -f \"$ws/task-board.md\" ] && grep -Eq '^Schema: tackle-workspace/5$' \"$ws/task-board.md\"; then :; else echo \"migrate first: $ws has no tackle-workspace/5 task-board.md with LF line endings (references/guides/migrate.md)\"; exit 1; fi; set -- docs/plans/<slug>/plan.md; for f in docs/plans/<slug>/tasks/*.md; do if [ -f \"$f\" ]; then set -- \"$@\" \"$f\"; fi; done; if awk '/^```/{f=!f;next} !f && /^[[:space:]]*(-[[:space:]]*)?([*][*])?Status([*][*])?:/ {print FILENAME \":\" FNR \": duplicated Status declaration\";bad=1} END{exit !bad}' \"$@\"; then exit 0; else code=$?; if [ \"$code\" -ne 1 ]; then exit \"$code\"; fi; fi; grep -n -e 🔴 -e 🟡 -e ⏸ -e 🟢 -e ⚪ \"$@\" ` | 0 lines of output (grep exits 1) |",
+      "note": "| 5 · Status duplicated outside `task-board.md` — a `Status:` declaration, or a status emoji (incl. ⚪), in `plan.md` or `tasks/`; an older board is refused | 0 lines of output (grep exits 1) |",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -5537,7 +5537,7 @@
       "unit_sha256": "9846b9bf5dbb63550c4bd567a0b2a70a00ba85699c24da2ccddcaf1478032ab4",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 6 · History entries out of chronological order — `## YYYY-MM-DD` headings ascending (append-only); covers `history-archive.md` when present; the archive's newest entry must not be younger than `history.md`'s oldest | ` ws=docs/plans/<slug>; history=\"$ws/history.md\"; archive=\"$ws/history-archive.md\"; set -e; if [ ! -f \"$history\" ]; then echo \"row6: missing ${history##*/}\"; exit 1; fi; for f in \"$archive\" \"$history\"; do if [ -f \"$f\" ]; then awk 'BEGIN{prev=\"\"} /^## 20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]/{d=substr($2,1,10); if(prev != \"\" && d < prev) {print \"row6: out of order: \" FILENAME \": \" $0; bad=1} prev=d} END{if(bad) exit 1}' \"$f\"; fi; done; if [ -f \"$archive\" ]; then awk 'FNR==1{file++} file==1 && /^## 20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]/{archive_last=substr($2,1,10)} file==2 && /^## 20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]/ && history_first==\"\"{history_first=substr($2,1,10)} END{if(archive_last!=\"\" && history_first!=\"\" && archive_last>history_first){print \"row6: archive newer than log oldest: \" archive_last \" > \" history_first; exit 1}}' \"$archive\" \"$history\"; fi ` | 0 lines of output and exit 0; invalid chronology or missing history prints a diagnostic and exits nonzero |",
+      "note": "| 6 · History entries out of chronological order — `## YYYY-MM-DD` headings ascending (append-only); covers `history-archive.md` when present; the archive's newest entry must not be younger than `history.md`'s oldest | 0 lines of output and exit 0; invalid chronology or missing history prints a diagnostic and exits nonzero |",
       "destination_unit_sha256": null
     },
     {
@@ -5546,7 +5546,7 @@
       "unit_sha256": "9e13409e01f75044397c4acde67a16da080eb7ee4af526b95fd222b653006246",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 7 · SEALED ids — every `SEALED: D-xx` marker resolves as an exact decision heading in `decisions.md` that is not marked superseded (`⤴`, or a `· superseded by D-` segment) | ` set -- docs/plans/<slug>/design-contract.md docs/plans/<slug>/tasks/*.md; if [ -f docs/plans/<slug>/plan.md ] && [ \"$(sed -n '1p' docs/plans/<slug>/plan.md)\" = 'Gate: Lite' ]; then set -- \"$@\" docs/plans/<slug>/plan.md; fi; for f do if [ -f \"$f\" ]; then :; else continue; fi; for id in $(awk '{while(match($0,/SEALED: D-[0-9]+/)){print substr($0,RSTART+8,RLENGTH-8); $0=substr($0,RSTART+RLENGTH)}}' \"$f\"); do if [ -f docs/plans/<slug>/decisions.md ]; then state=$(awk -v id=\"$id\" '{sub(/\\r$/,\"\")} substr($0,1,2)==\"##\" && $1==\"##\" && $2==id {found=1; if(index($0,\"⤴\") + index(tolower($0),\"· superseded by d-\")) superseded=1} END{if(superseded) print \"superseded\"; else if(found) print \"active\"; else print \"missing\"}' docs/plans/<slug>/decisions.md); else state=missing; fi; if [ \"$state\" = missing ]; then echo \"missing seal: $id\"; elif [ \"$state\" = superseded ]; then echo \"superseded seal: $id\"; fi; done; done ` | 0 lines of output |",
+      "note": "| 7 · SEALED ids — every `SEALED: D-xx` marker resolves as an exact decision heading in `decisions.md` that is not marked superseded (`⤴`, or a `· superseded by D-` segment) | 0 lines of output |",
       "destination_unit_sha256": null
     },
     {
@@ -5555,7 +5555,7 @@
       "unit_sha256": "e886314752e0779d42b9d9e607d0373d8db12f4a90d65ff429693f52ddfaf0f4",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 8 · Cross-initiative collision — two active initiatives (a `task-board.md` with ≥ 1 active **data row**; the legend line does not count) declare intersecting Write scope; lexical equality, normalized equality, or directory/descendant containment is a collision, while unsupported scope forms are reported as unresolved | `` set --; for f in docs/plans/*/task-board.md docs/plans/*/tasks/*.md; do if ! { [ ! -e \"$f\" ] && [ ! -L \"$f\" ]; }; then set -- \"$@\" \"$f\"; fi; done; if [ \"$#\" -gt 0 ] && l=$(mktemp); then find . -type l > \"$l\" 2>/dev/null; awk -v links=\"$l\" 'BEGIN{FS=sprintf(\"%c\",124); while((getline line < links) > 0) link[line]=1; close(links)} function cell(i,c){c=$i; sub(/^[[:space:]]+/,\"\",c); sub(/[[:space:]]+$/,\"\",c); return c} function colof(name,i){for(i=2;i<=NF;i++) if(cell(i)==name) return i; return 0} FNR==1{col=0; pend=0} pend && $2 ~ /^[[:space:]]*:?-+:?[[:space:]]*$/ {col=pend} {pend=0} $2 !~ /[PT]-[A-Za-z0-9]/ && colof(\"Status\"){pend=colof(\"Status\")} function trim(s){sub(/^[[:space:]]+/,\"\",s); sub(/[[:space:]]+$/,\"\",s); return s} function finish(){if(cont){flush()}else if(touches && !count) print \"unresolved scope: \" location \" (empty Write scope)\"; touches=0; count=0} function flush(){if(wrapped) sub(/[[:space:]]*[.,][[:space:]]*$/,\"\",buf); if(buf!=\"\") parse(buf); touches=0; count=0; buf=\"\"; cont=0; wrapped=0} function scope(raw,a,n,i,path,k,prefix){raw=trim(raw); count++; if((raw !~ /^[[:alnum:]_.\\/-]+$/) + (raw ~ /^\\//) + ((\"/\" raw \"/\") ~ /\\/[.][.]\\//)){print \"unresolved scope: \" raw; return} n=split(raw,a,\"/\"); for(i=1;i<=n;i++){if((a[i]==\"\") + (a[i]==\".\")) continue; if(path!=\"\") path=path \"/\"; path=path a[i]; prefix=\"./\" path; if(prefix in link){print \"unresolved scope: \" raw \" (symlink component)\"; return}} if(path==\"\"){print \"unresolved scope: \" raw; return} for(k in paths) if(owners[k]!=ws && ((path==paths[k]) + (index(path,paths[k] \"/\")==1) + (index(paths[k],path \"/\")==1))) print \"collision: \" raw \" (\" owners[k] \" + \" ws \")\"; k=ws SUBSEP path; paths[k]=path; owners[k]=ws} function annotations(s,i,c,quoted,depth,out){for(i=1;i<=length(s);i++){c=substr(s,i,1); if(c==\"`\" && !depth){quoted=!quoted; out=out c} else if(!quoted && c==\"(\" && (depth + (i==1) + (substr(s,i-1,1) ~ /[[:space:]]/))) depth++; else if(depth){if(c==\")\") depth--} else out=out c} if(depth){print \"unresolved scope: \" s; return \"\"} return out} function parse(s,a,n,i,part,quoted){s=annotations(s); n=split(s,a,\",\"); for(i=1;i<=n;i++){part=trim(a[i]); quoted=0; while(match(part,/^`[^`]+`/)){quoted=1; scope(substr(part,RSTART+1,RLENGTH-2)); part=trim(substr(part,RSTART+RLENGTH))} if(!quoted){sub(/[[:space:]]+[(].*$/,\"\",part); scope(part)} else if(part!=\"\" && part !~ /^[(].*[)]$/) print \"unresolved scope: \" part}} FNR==1 {finish(); split(FILENAME,w,\"/\"); ws=w[3]} FILENAME ~ /\\/task-board[.]md$/ {id=trim($2); status=cell(col ? col : 6); if(id ~ /^[PT]-[A-Za-z0-9]+(-[A-Za-z0-9]+)*$/ && ((status==\"In progress\") + (status==\"Checking\") + (status==\"Interrupted\") + (status==\"Waiting on owner\"))) active[ws]=1; next} !active[ws] {next} (($0 \" \") ~ /^[[:space:]]*([-*+][[:space:]]*)?([*][*])?Write scope([*][*])?[[:space:]:]/) {finish(); touches=1; location=FILENAME \":\" FNR; s=$0; sub(/^[[:space:]]*([-*+][[:space:]]*)?([*][*])?Write scope([*][*])?/,\"\",s); s=trim(s); sub(/^[(][^)]*[)][[:space:]]*:/,\":\",s); if(substr(s,1,1)==\":\"){s=trim(substr(s,2)); if(s!=\"\"){buf=s; cont=1; wrapped=0}} next} touches && cont && /^[[:space:]]*$/ {flush(); next} touches && cont && /^[[:space:]]*[-*+][[:space:]]+[*][*]/ {flush(); next} touches && cont {buf=buf \" \" trim($0); wrapped=1; next} touches && /^[[:space:]]*$/ {next} touches && /^[[:space:]]*[-*+][[:space:]]+/ && $0 !~ /^[[:space:]]*[-*+][[:space:]]+[*][*]/ {s=$0; sub(/^[[:space:]]*[-*+][[:space:]]+/,\"\",s); parse(s); next} touches {finish()} END{finish()}' \"$@\"; rm -f \"$l\"; fi `` | 0 lines of output — any line is a **warn** |",
+      "note": "| 8 · Cross-initiative collision — two active initiatives (a `task-board.md` with ≥ 1 active **data row**; the legend line does not count) declare intersecting Write scope; lexical equality, normalized equality, or directory/descendant containment is a collision, while unsupported scope forms are reported as unresolved | 0 lines of output — any line is a **warn** |",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -5570,7 +5570,7 @@
       "unit_sha256": "d7f01b11b8e45080330d8dd504e331767de6bc5ba61c642d538dec16cc45d9b9",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 9 · Loop-task budget fields — every `Type: discovery` task declares `Rounds:`, every `Type: experiment` task declares `Metric:`, `Threshold:` and `Rounds:`, each as a field (bold, or at the start of its line), never in quoted prose | ` if [ -f docs/plans/<slug>/plan.md ] && [ \"$(sed -n '1p' docs/plans/<slug>/plan.md)\" = 'Gate: Lite' ]; then exit 0; fi; set --; for f in docs/plans/<slug>/tasks/*.md; do if [ -f \"$f\" ]; then set -- \"$@\" \"$f\"; fi; done; if [ \"$#\" -gt 0 ]; then awk 'function report(){if(type==\"discovery\" && !rounds) print \"discovery task without Rounds budget: \" file; if(type==\"experiment\" && !(metric && threshold && rounds)) print \"experiment task missing metric fields: \" file} FNR==1{if(file!=\"\") report(); file=FILENAME; type=\"\"; rounds=0; metric=0; threshold=0; fence=0} /^```/{fence=!fence; next} fence{next} /^[[:space:]]*([-*+][[:space:]]+)?[*][*]Type[*][*]:[[:space:]]*`?discovery/{type=\"discovery\"} /^[[:space:]]*([-*+][[:space:]]+)?[*][*]Type[*][*]:[[:space:]]*`?experiment/{type=\"experiment\"} (($0 ~ /[*][*]Rounds[*][*]:[[:space:]]*[^[:space:]]/) + ($0 ~ /[*][*]Rounds:[*][*][[:space:]]*[^[:space:]]/) + ($0 ~ /^[[:space:]]*([-*+][[:space:]]+)?Rounds:[[:space:]]*[^[:space:]]/)){rounds=1} (($0 ~ /[*][*]Metric[*][*]:[[:space:]]*[^[:space:]]/) + ($0 ~ /[*][*]Metric:[*][*][[:space:]]*[^[:space:]]/) + ($0 ~ /^[[:space:]]*([-*+][[:space:]]+)?Metric:[[:space:]]*[^[:space:]]/)){metric=1} (($0 ~ /[*][*]Threshold[*][*]:[[:space:]]*[^[:space:]]/) + ($0 ~ /[*][*]Threshold:[*][*][[:space:]]*[^[:space:]]/) + ($0 ~ /^[[:space:]]*([-*+][[:space:]]+)?Threshold:[[:space:]]*[^[:space:]]/)){threshold=1} END{if(file!=\"\") report()}' \"$@\"; fi ` | 0 lines of output |",
+      "note": "| 9 · Loop-task budget fields — every `Type: discovery` task declares `Rounds:`, every `Type: experiment` task declares `Metric:`, `Threshold:` and `Rounds:`, each as a field (bold, or at the start of its line), never in quoted prose | 0 lines of output |",
       "destination_unit_sha256": null
     },
     {
@@ -5579,7 +5579,7 @@
       "unit_sha256": "ff21756204c7701d30930177a822510984276d2ae8cf21bf29ef6aebc735d34d",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 10 · Terminal rows carry a verification reference, and a Ready to run row cites its readiness — every `task-board.md` row whose status is Complete, Blocked or Unverifiable carries exactly `reports/<id>-report.md` in Verification (the status is read like row 3), and a `Ready to run` row's Verification cell starts with `ready: ` plus a non-empty reference; an older board is refused | ` ws=docs/plans/<slug>; board=\"$ws/task-board.md\"; if [ -f docs/plans/<slug>/plan.md ] && [ \"$(sed -n '1p' docs/plans/<slug>/plan.md)\" = 'Gate: Lite' ]; then exit 0; fi; if [ -f \"$ws/task-board.md\" ] && grep -Eq '^Schema: tackle-workspace/5$' \"$ws/task-board.md\"; then :; else echo \"migrate first: $ws has no tackle-workspace/5 task-board.md with LF line endings (references/guides/migrate.md)\"; exit 1; fi; awk 'BEGIN{FS=sprintf(\"%c\",124)} function cell(i,c){c=$i; sub(/^[[:space:]]+/,\"\",c); sub(/[[:space:]]+$/,\"\",c); return c} function colof(name,i){for(i=2;i<=NF;i++) if(cell(i)==name) return i; return 0} FNR==1{col=0; pend=0} pend && $2 ~ /^[[:space:]]*:?-+:?[[:space:]]*$/ {col=pend} {pend=0} $2 !~ /[PT]-[A-Za-z0-9]/ && colof(\"Status\"){pend=colof(\"Status\")} $2 !~ /[PT]-[A-Za-z0-9]/ && colof(\"Verification\"){vcol=colof(\"Verification\")} $2 ~ /[PT]-[A-Za-z0-9]/ && NF>3 {status=cell(col ? col : 6); id=cell(2); ref=cell(vcol ? vcol : 7); if((status==\"Complete\") + (status==\"Blocked\") + (status==\"Unverifiable\")) if(ref!=\"reports/\" id \"-report.md\") print \"terminal task without verification reference: \" $0; if(status==\"Ready to run\" && !(index(ref,\"ready: \")==1 && length(ref)>7)) print \"ready-to-run task missing ready citation: \" $0}' \"$board\" ` | 0 lines of output |",
+      "note": "| 10 · Terminal rows carry a verification reference, and a Ready to run row cites its readiness — every `task-board.md` row whose status is Complete, Blocked or Unverifiable carries exactly `reports/<id>-report.md` in Verification (the status is read like row 3), and a `Ready to run` row's Verification cell starts with `ready: ` plus a non-empty reference; an older board is refused | 0 lines of output |",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -5606,7 +5606,7 @@
       "unit_sha256": "9fb1130912ca277de7212464e4a5c7d5d14e15967b2b12e3ca5f41cad0347cac",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 11 · Usage rows for completed tasks — every `task-board.md` row whose status is Complete has at least one `resource-usage.md` row (`grep -q \"\\| $id \"`); a workspace without `resource-usage.md` guard-skips (rows 2 and 16 report it); an older board is refused | ` ws=docs/plans/<slug>; board=\"$ws/task-board.md\"; usage=\"$ws/resource-usage.md\"; if [ -f docs/plans/<slug>/plan.md ] && [ \"$(sed -n '1p' docs/plans/<slug>/plan.md)\" = 'Gate: Lite' ]; then exit 0; fi; if [ -f \"$ws/task-board.md\" ] && grep -Eq '^Schema: tackle-workspace/5$' \"$ws/task-board.md\"; then :; else echo \"migrate first: $ws has no tackle-workspace/5 task-board.md with LF line endings (references/guides/migrate.md)\"; exit 1; fi; set -e; sep=$(printf '\\174'); if [ -f \"$usage\" ]; then ids=$(awk 'BEGIN{FS=sprintf(\"%c\",124)} function cell(i,c){c=$i; sub(/^[[:space:]]+/,\"\",c); sub(/[[:space:]]+$/,\"\",c); return c} function colof(name,i){for(i=2;i<=NF;i++) if(cell(i)==name) return i; return 0} FNR==1{col=0; pend=0} pend && $2 ~ /^[[:space:]]*:?-+:?[[:space:]]*$/ {col=pend} {pend=0} $2 !~ /[PT]-[A-Za-z0-9]/ && colof(\"Status\"){pend=colof(\"Status\")} $2 ~ /[PT]-[A-Za-z0-9]/ && NF>3 {status=cell(col ? col : 6); if(status==\"Complete\") print cell(2)}' \"$board\"); for id in $ids; do if ! grep -Fq \"${sep} $id \" \"$usage\"; then echo \"row11: done task without usage row: $id\"; exit 1; fi; done; fi ` | 0 lines of output and exit 0; an older board or a done task without its usage row prints a diagnostic and exits nonzero; a missing `resource-usage.md` is a checked skip |",
+      "note": "| 11 · Usage rows for completed tasks — every `task-board.md` row whose status is Complete has at least one `resource-usage.md` row (`grep -q \"\\| $id \"`); a workspace without `resource-usage.md` guard-skips (rows 2 and 16 report it); an older board is refused | 0 lines of output and exit 0; an older board or a done task without its usage row prints a diagnostic and exits nonzero; a missing `resource-usage.md` is a checked skip |",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -5621,7 +5621,7 @@
       "unit_sha256": "df89af1904462abeb7f7dc8cd6667912c5e9e160ebd9317731363e422d9924f5",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 12 · Effort, Tier and Escalation vocabulary — every `**Effort**:` declaration in the `tasks/` brief of a task that is not closed (the board shows it neither Complete, Skipped nor Unverifiable) is exactly a §3 level (`low`/`medium`/`high`/`max`), checked even inside a fenced block; outside any fenced block, a present `**Tier**:` is `fast`/`standard`/`frontier` and requires a `**Tier reason**:` (which may also appear alone, recording an Effort-only deviation from the compiled default), and an Effort other than `low` needs one of the two; a present `**Escalation**:` is `declared` and never present without `**Tier**:`; fenced examples (`` ``` `` or `~~~`, as row 1 also skips) exempt only the Tier/Tier reason/Escalation checks, never Effort; peripheral whitespace and any bullet marker (`-`, `*`, `+`) are allowed; an older board is refused | ` ws=docs/plans/<slug>; board=\"$ws/task-board.md\"; if [ -f docs/plans/<slug>/plan.md ] && [ \"$(sed -n '1p' docs/plans/<slug>/plan.md)\" = 'Gate: Lite' ]; then exit 0; fi; if [ -f \"$ws/task-board.md\" ] && grep -Eq '^Schema: tackle-workspace/5$' \"$ws/task-board.md\"; then :; else echo \"migrate first: $ws has no tackle-workspace/5 task-board.md with LF line endings (references/guides/migrate.md)\"; exit 1; fi; set --; for f in docs/plans/<slug>/tasks/*.md; do if [ -f \"$f\" ]; then set -- \"$@\" \"$f\"; fi; done; if [ \"$#\" -eq 0 ]; then echo \"missing task briefs\"; exit 1; fi; awk -v ws=\"$ws\" -v boardfile=\"$board\" 'BEGIN{FS=sprintf(\"%c\",124); fence3=sprintf(\"%c%c%c\",96,96,96); bt=sprintf(\"%c\",96)} function report(){if(tier && !reason) print file \": Tier without Tier reason\"; if(esc && !tier) print file \": Escalation without Tier\"; if(effdev && !tier && !reason) print file \": Effort without Tier reason\"} function cell(i,c){c=$i; sub(/^[[:space:]]+/,\"\",c); sub(/[[:space:]]+$/,\"\",c); return c} function colof(name,i){for(i=2;i<=NF;i++) if(cell(i)==name) return i; return 0} FNR==1{col=0; pend=0} pend && $2 ~ /^[[:space:]]*:?-+:?[[:space:]]*$/ {col=pend} {pend=0} $2 !~ /[PT]-[A-Za-z0-9]/ && colof(\"Status\"){pend=colof(\"Status\")} FILENAME==boardfile && $2 ~ /[PT]-[A-Za-z0-9]/ && NF>3 {status=cell(col ? col : 6); tid=cell(2); brief=cell(4); if(substr(brief,1,1)==bt && substr(brief,length(brief),1)==bt) brief=substr(brief,2,length(brief)-2); bpath=ws \"/\" brief; bfirst=\"\"; if(brief ~ /[.]md$/){while((getline bline < bpath)>0){if((bline ~ /^[[:space:]]*$/) + (bline ~ /^[[:space:]]*<a[[:space:]]+id=/)) continue; bfirst=bline; break} close(bpath)} own=((bfirst \" \") ~ (\"^# Task \" tid \"[[:space:]]\")); if(own && ((status==\"Complete\") + (status==\"Skipped\") + (status==\"Unverifiable\"))) closed[bpath]=1; else opened[bpath]=1} FILENAME==boardfile {next} FNR==1{if(active) report(); file=FILENAME; active=(!(FILENAME in closed)) + (FILENAME in opened); tier=0; reason=0; esc=0; fenced=0; effdev=0} !active {next} {t=$0; sub(/^[[:space:]]*/,\"\",t)} (substr(t,1,3)==fence3) + (substr(t,1,3)==\"~~~\"){fenced=!fenced; next} /^[[:space:]]*([-*+][[:space:]]+)?\\*\\*Effort\\*\\*:/ {value=$0; sub(/^[[:space:]]*([-*+][[:space:]]+)?\\*\\*Effort\\*\\*:[[:space:]]*/, \"\", value); sub(/[[:space:]]+$/, \"\", value); if(value!=\"low\" && value!=\"medium\" && value!=\"high\" && value!=\"max\") print FILENAME \":\" FNR \": \" $0; if(!fenced && value!=\"low\") effdev=1} !fenced && /^[[:space:]]*([-*+][[:space:]]+)?\\*\\*Tier\\*\\*:/ {tier=1; value=$0; sub(/^[[:space:]]*([-*+][[:space:]]+)?\\*\\*Tier\\*\\*:[[:space:]]*/, \"\", value); sub(/[[:space:]]+$/, \"\", value); if(value!=\"fast\" && value!=\"standard\" && value!=\"frontier\") print FILENAME \":\" FNR \": \" $0} !fenced && /^[[:space:]]*([-*+][[:space:]]+)?\\*\\*Tier reason\\*\\*:/ {reason=1} !fenced && /^[[:space:]]*([-*+][[:space:]]+)?\\*\\*Escalation\\*\\*:/ {esc=1; value=$0; sub(/^[[:space:]]*([-*+][[:space:]]+)?\\*\\*Escalation\\*\\*:[[:space:]]*/, \"\", value); sub(/[[:space:]]+$/, \"\", value); if(value!=\"declared\") print FILENAME \":\" FNR \": \" $0} END{if(active) report()}' \"$board\" \"$@\" ` | 0 lines of output |",
+      "note": "| 12 · Effort, Tier and Escalation vocabulary — every `**Effort**:` declaration in the `tasks/` brief of a task that is not closed (the board shows it neither Complete, Skipped nor Unverifiable) is exactly a §3 level (`low`/`medium`/`high`/`max`), checked even inside a fenced block; outside any fenced block, a present `**Tier**:` is `fast`/`standard`/`frontier` and requires a `**Tier reason**:` (which may also appear alone, recording an Effort-only deviation from the compiled default), and an Effort other than `low` needs one of the two; a present `**Escalation**:` is `declared` and never present without `**Tier**:`; fenced examples (`` ``` `` or `~~~`, as row 1 also skips) exempt only the Tier/Tier reason/Escalation checks, never Effort; peripheral whitespace and any bullet marker (`-`, `*`, `+`) are allowed; an older board is refused | 0 lines of output |",
       "destination_unit_sha256": null
     },
     {
@@ -5630,7 +5630,7 @@
       "unit_sha256": "f4b733883aea7c79e29ed3bcc1e3d951b2c06757c028a934367c493c0475898e",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 13 · History over archive threshold or entry budget — `history.md` exceeds the archive threshold (default 400 lines; workspace-overridable via `Log archive threshold: N` in the workspace `AGENTS.md`), or a session entry (from its `## YYYY-MM-DD` heading through the line before the next `## ` heading, trailing blank lines excluded, `###` lines inside) runs past the entry budget (default 120 lines; workspace-overridable via `History entry budget: N`); a missing `history.md` is an error; fix path: RUN archives or shortens under the workspace's maintenance policy (default in `AGENTS.md`, recoverable maintenance in `context-lifecycle.md`), never STATUS | ` ws=docs/plans/<slug>; history=\"$ws/history.md\"; if [ -f \"$history\" ]; then :; else echo \"row13: missing ${history##*/}\"; exit 1; fi; t=; b=; if ! { [ ! -e docs/plans/<slug>/AGENTS.md ] && [ ! -L docs/plans/<slug>/AGENTS.md ]; }; then t=$(awk '/^Log archive threshold: [0-9]+/{print $NF; exit}' docs/plans/<slug>/AGENTS.md); b=$(awk '/^History entry budget: [0-9]+/{print $4; exit}' docs/plans/<slug>/AGENTS.md); fi; t=${t:-400}; b=${b:-120}; if [ \"$(wc -l < \"$history\")\" -le \"$t\" ]; then :; else echo \"$history over archive threshold ($t)\"; fi; awk -v f=\"$history\" -v b=\"$b\" 'BEGIN{m=b+0} function flush(n){n=last-start+1; if(open && n>m) print f \":\" start \": entry over budget (\" n \" > \" m \")\"} /^## /{flush(); open=($0 ~ /^## 20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]/); start=NR; last=NR; next} open && $0 !~ /^[[:space:]]*$/ {last=NR} END{flush()}' \"$history\" ` | 0 lines of output — any line is a **warn** |",
+      "note": "| 13 · History over archive threshold or entry budget — `history.md` exceeds the archive threshold (default 400 lines; workspace-overridable via `Log archive threshold: N` in the workspace `AGENTS.md`), or a session entry (from its `## YYYY-MM-DD` heading through the line before the next `## ` heading, trailing blank lines excluded, `###` lines inside) runs past the entry budget (default 120 lines; workspace-overridable via `History entry budget: N`); a missing `history.md` is an error; fix path: RUN archives or shortens under the workspace's maintenance policy (default in `AGENTS.md`, recoverable maintenance in `context-lifecycle.md`), never STATUS | 0 lines of output — any line is a **warn** |",
       "destination_unit_sha256": null
     },
     {
@@ -5639,7 +5639,7 @@
       "unit_sha256": "177523d6927fefb13599438da1a443f7b5803a2537f566ee596fcc2827a34c84",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 14 · Closure reports for done tasks — every `task-board.md` row whose status is Complete has `reports/T-0N-report.md` (the report may be a stub naming its reviewer, ending with the receipt described in `run.md` §Run record); explicit Lite workspaces guard-skip after row 1 validates their shape; an older board is refused | ` ws=docs/plans/<slug>; board=\"$ws/task-board.md\"; if [ -f docs/plans/<slug>/plan.md ] && [ \"$(sed -n '1p' docs/plans/<slug>/plan.md)\" = 'Gate: Lite' ]; then exit 0; fi; if [ -f \"$ws/task-board.md\" ] && grep -Eq '^Schema: tackle-workspace/5$' \"$ws/task-board.md\"; then :; else echo \"migrate first: $ws has no tackle-workspace/5 task-board.md with LF line endings (references/guides/migrate.md)\"; exit 1; fi; for id in $(awk 'BEGIN{FS=sprintf(\"%c\",124)} function cell(i,c){c=$i; sub(/^[[:space:]]+/,\"\",c); sub(/[[:space:]]+$/,\"\",c); return c} function colof(name,i){for(i=2;i<=NF;i++) if(cell(i)==name) return i; return 0} FNR==1{col=0; pend=0} pend && $2 ~ /^[[:space:]]*:?-+:?[[:space:]]*$/ {col=pend} {pend=0} $2 !~ /[PT]-[A-Za-z0-9]/ && colof(\"Status\"){pend=colof(\"Status\")} $2 ~ /[PT]-[A-Za-z0-9]/ && NF>3 {status=cell(col ? col : 6); if(status==\"Complete\") print cell(2)}' \"$board\"); do if [ -f \"docs/plans/<slug>/reports/$id-report.md\" ]; then :; else echo \"done task without closure report: $id\"; fi; done ` | 0 lines of output |",
+      "note": "| 14 · Closure reports for done tasks — every `task-board.md` row whose status is Complete has `reports/T-0N-report.md` (the report may be a stub naming its reviewer, ending with the receipt described in `run.md` §Run record); explicit Lite workspaces guard-skip after row 1 validates their shape; an older board is refused | 0 lines of output |",
       "destination_unit_sha256": null
     },
     {
@@ -5648,7 +5648,7 @@
       "unit_sha256": "ea13427d713da2dd2c12b3bdd94b2051bf7d045ec68a557fb9678318c613ad38",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 16 · Lifecycle validity — exactly one start, at most one legal terminal after it, stable Task/Role, valid Outcome and nonnegative or unknown counters; a positive Attempts count requires task-linked failed correction or one authorized escalation rather than a count label; legacy Point remains readable | ` ws=docs/plans/<slug>; usage=\"$ws/resource-usage.md\"; if [ ! -f \"$usage\" ]; then echo \"row16: missing ${usage##*/}\"; exit 1; fi; if row16_program=$(printf '%b' 'BEGIN { FS=sprintf(\"%c\",124) } function trim(s) { sub(/^[[:space:]]+/,\"\",s); sub(/[[:space:]]+$/,\"\",s); return s } function diag(line,id,msg) { print \"row16: line \" line \": \" id \": \" msg; failed=1 } function reset_record() { recid=\"\"; rectask=\"\"; recrun=\"\"; reckind=\"\"; recfault=\"\"; recobserved=\"\"; recrepair=\"\"; reccheck=\"\"; recresult=\"\"; recclaim=\"\"; recauth=\"\" } function declared(path, line, file, heading, ok, title, prefix, tail, fenced) { if(path !~ /^tasks\\\\/[A-Za-z0-9._-]+[.]md$/) return 0; file=ws \"/\" path; heading=0; ok=0; fenced=0; prefix=\"# Task \" wanted_task; while((getline line < file)>0) { title=trim(line); if(substr(title,1,3)==\"~~~\" \\0174\\0174 substr(title,1,3)==sprintf(\"%c%c%c\",96,96,96)) { fenced=!fenced; continue }; if(fenced) continue; tail=substr(title,length(prefix)+1); if(substr(title,1,length(prefix))==prefix && (tail==\"\" \\0174\\0174 tail ~ /^[[:space:]:-]/)) heading=1; if(title ~ /^[-*+]?[[:space:]]*(\\\\*\\\\*)?Escalation(\\\\*\\\\*)?:[[:space:]]*declared[[:space:]]*$/) ok=1 }; close(file); return heading && ok } function failed_check(result, check) { if(result!=\"\") return result ~ /exit[[:space:]]*[1-9][0-9]*/ \\0174\\0174 result ~ /nonzero/ \\0174\\0174 result ~ /^failed([[:space:];]\\0174$)/; return check ~ /exit[[:space:]]*[1-9][0-9]*/ \\0174\\0174 check ~ /nonzero/ } function flush_record() { if(recid==\"\" \\0174\\0174 rectask!=wanted_task \\0174\\0174 (wanted_id!=\"\" && recid!=wanted_id)) return; if(reckind==\"observed-absence\") { if(recrun==wanted_run && recobserved!=\"\") absence_seen=1; return }; if(reckind==\"declared-capability-escalation\") { if(!(recid in seen_event) && !seen_escalation && declared(recauth) && recobserved!=\"\" && recresult!=\"\") { seen_event[recid]=1; seen_escalation=1; supported++ }; return }; if(reckind!=\"\" && reckind!=\"correction-validation\") return; if(recfault==\"\" \\0174\\0174 recfault==\"n/a\" \\0174\\0174 recobserved==\"\" \\0174\\0174 recrepair==\"\" \\0174\\0174 reccheck==\"\" \\0174\\0174 !failed_check(recresult,reccheck)) return; if(recid in seen_event) return; seen_event[recid]=1; supported++ } function scan_reference(source,verification, path,hash,heading,raw,p,key,value,file,k) { source=trim(source); verification=trim(verification); if(source==\"n/a\" && verification!=\"n/a\") source=(index(verification,\".md\") \\0174\\0174 index(verification,\"/\") \\0174\\0174 substr(verification,1,1)==\"[\" ? verification : \"history.md\"); if(source ~ /^\\\\[[^]]+\\\\]\\\\([^)]+\\\\)$/) { sub(/^\\\\[[^]]+\\\\]\\\\(/,\"\",source); sub(/\\\\)$/, \"\",source) }; hash=index(source,\"#\"); wanted_id=\"\"; if(hash) { wanted_id=substr(source,hash+1); source=substr(source,1,hash-1); sub(/^event-/,\"\",wanted_id) }; if(wanted_id==\"\" && verification!=\"n/a\" && verification !~ /\\\\// && verification !~ /[.]md/) wanted_id=verification; if(source !~ /^[A-Za-z0-9._\\\\/-]+$/ \\0174\\0174 source ~ /^[\\\\/]/ \\0174\\0174 source ~ /[.][.]/) return 0; reset_record(); file=ws \"/\" source; while((getline raw < file)>0) { raw=trim(raw); if(raw ~ /^###[[:space:]]+/) { flush_record(); reset_record(); heading=raw; sub(/^###[[:space:]]+/,\"\",heading); if(heading ~ /^Event[[:space:]]+/) { sub(/^Event[[:space:]]+/,\"\",heading); recid=trim(heading) }; continue }; path=index(raw,\":\"); if(!path) continue; key=tolower(trim(substr(raw,1,path-1))); gsub(/[[:space:]*_-]/,\"\",key); value=trim(substr(raw,path+1)); if(key==\"task\" \\0174\\0174 key==\"taskid\") { if(rectask!=\"\" && recid!=\"\") { flush_record(); reset_record() }; rectask=value } else if(key==\"eventid\") { if(recid!=\"\" && recid!=value) { flush_record(); reset_record() }; recid=value } else if(key==\"runid\") recrun=value; else if(key==\"kind\") reckind=value; else if(key==\"failureid\" \\0174\\0174 key==\"fault\") recfault=value; else if(key==\"observedfailure\" \\0174\\0174 key==\"observed\") recobserved=value; else if(key==\"correction\" \\0174\\0174 key==\"repair\") recrepair=value; else if(key==\"validationcommand\" \\0174\\0174 key==\"check\") reccheck=value; else if(key==\"result\") recresult=value; else if(key==\"cyclecount\" \\0174\\0174 key==\"countedcycle\") recclaim=value; else if(key==\"authorization\") recauth=value }; flush_record(); close(file) } function evidence(source,verification,task,run,k) { wanted_task=task; wanted_run=run; supported=0; absence_seen=0; seen_escalation=0; for(k in seen_event) delete seen_event[k]; scan_reference(source,verification); if(source!=\"n/a\" && (index(verification,\".md\") \\0174\\0174 substr(verification,1,1)==\"[\")) scan_reference(verification,\"n/a\"); return supported } { line=$0; sub(/^[[:space:]]*/,\"\",line); if(substr(line,1,1)!=\"\\0174\") next; for(i=2;i<=NF;i++) $i=trim($i); if($2==\"Point\" && NF==10 && $3==\"Role\" && $4==\"Tier\" && $5==\"Model\" && $6==\"Effort\" && $7==\"Tokens in\" && $8==\"Tokens out\" && $9==\"Session\") { if(v2) diag(NR,\"n/a\",\"legacy header after v2\"); else legacy=1; next }; if($2==\"Run ID\") { legacy=0; v2=1; if(NF!=16) diag(NR,\"n/a\",\"malformed header\"); task_header=($4==\"Task\"); next }; if($2 ~ /^-+$/) next; if(legacy && NF==10) next; if(NF!=16) { diag(NR,\"n/a\",\"malformed data row\"); next }; id=$2; ev=$3; if(id==\"\") diag(NR,\"n/a\",\"missing Run ID\"); else if($4==\"\") diag(NR,id,task_header?\"missing Task\":\"missing Point\"); else if($5==\"\") diag(NR,id,\"missing Role\"); if(ev!=\"start\" && ev!=\"finish\" && ev!=\"observe-incomplete\") diag(NR,id,\"unknown Event\"); if($12!=\"n/a\" && $12 !~ /^[0-9]+$/) diag(NR,id,\"missing, invalid, or negative Attempts/Rework\"); if($13!=\"n/a\" && $13 !~ /^[0-9]+$/) diag(NR,id,\"missing, invalid, or negative Attempts/Rework\"); if(id!=\"\" && !(id in seen)) { seen[id]=1; task[id]=$4; role[id]=$5 }; if(id!=\"\" && seen[id] && (task[id]!=$4 \\0174\\0174 role[id]!=$5)) diag(NR,id,task_header?\"Task/Role changed\":\"Point/Role changed\"); if(id!=\"\" && ev==\"start\") { starts[id]++; if(starts[id]>1) diag(NR,id,\"duplicate start\"); if($11!=\"running\") diag(NR,id,\"invalid start Outcome\") }; if(id!=\"\" && ev==\"finish\") { terminals[id]++; if(terminals[id]>1) diag(NR,id,\"duplicate terminal\"); if(starts[id]==0) diag(NR,id,\"terminal before start\"); if($11!=\"success\" && $11!=\"failed\" && $11!=\"blocked\" && $11!=\"aborted\") diag(NR,id,\"invalid finish Outcome\") }; if(id!=\"\" && ev==\"observe-incomplete\") { terminals[id]++; if(terminals[id]>1) diag(NR,id,\"duplicate terminal\"); if(starts[id]==0) diag(NR,id,\"terminal before start\"); if($11!=\"incomplete\") diag(NR,id,\"invalid incomplete Outcome\") }; if(id!=\"\" && $12 ~ /^[0-9]+$/) { checks++; checkline[checks]=NR; checkid[checks]=id; checktask[checks]=$4; checkrun[checks]=id; checkcount[checks]=$12+0; checksource[checks]=$15; checkverification[checks]=$14 } } END { for(id in seen) if(starts[id]!=1) diag(NR,id,\"start count is not exactly one\"); for(i=1;i<=checks;i++) { found=evidence(checksource[i],checkverification[i],checktask[i],checkrun[i]); if(checkcount[i]==0) { if(!absence_seen) diag(checkline[i],checkid[i],\"zero Attempts lacks observed absence\") } else if(found<checkcount[i]) diag(checkline[i],checkid[i],\"Attempts lacks task-linked failed correction or authorized escalation evidence\") }; if(failed) exit 1 }'); then awk -v ws=\"$ws\" \"$row16_program\" \"$usage\"; else exit $?; fi ` | 0 lines of output and exit 0; malformed state or unsupported known Attempts prints row16, line and Run ID diagnostics and exits nonzero |",
+      "note": "| 16 · Lifecycle validity — exactly one start, at most one legal terminal after it, stable Task/Role, valid Outcome and nonnegative or unknown counters; a positive Attempts count requires task-linked failed correction or one authorized escalation rather than a count label; legacy Point remains readable | 0 lines of output and exit 0; malformed state or unsupported known Attempts prints row16, line and Run ID diagnostics and exits nonzero |",
       "destination_unit_sha256": null
     },
     {
@@ -6514,7 +6514,7 @@
       "unit_sha256": "f5a3b54660f2cdc011c6a2cfe94bd962d7e0d10172bc1a3def8ef689df38691d",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 16 · Lifecycle validity — exactly one start, at most one legal terminal after it, stable Task/Role, valid Outcome and nonnegative or unknown counters; a positive Attempts count requires task-linked failed correction or one authorized escalation rather than a count label; legacy Point remains readable | ` ws=docs/plans/<slug>; usage=\"$ws/resource-usage.md\"; if [ ! -f \"$usage\" ]; then echo \"row16: missing ${usage##*/}\"; exit 1; fi; if row16_program=$(printf '%b' 'BEGIN { FS=sprintf(\"%c\",124) } function trim(s) { sub(/^[[:space:]]+/,\"\",s); sub(/[[:space:]]+$/,\"\",s); return s } function diag(line,id,msg) { print \"row16: line \" line \": \" id \": \" msg; failed=1 } function reset_record() { recid=\"\"; rectask=\"\"; recrun=\"\"; reckind=\"\"; recfault=\"\"; recobserved=\"\"; recrepair=\"\"; reccheck=\"\"; recresult=\"\"; recclaim=\"\"; recauth=\"\" } function declared(path, line, file, heading, ok, title, prefix, tail, fenced) { if(path !~ /^tasks\\\\/[A-Za-z0-9._-]+[.]md$/) return 0; file=ws \"/\" path; heading=0; ok=0; fenced=0; prefix=\"# Task \" wanted_task; while((getline line < file)>0) { title=trim(line); if(substr(title,1,3)==\"~~~\" \\0174\\0174 substr(title,1,3)==sprintf(\"%c%c%c\",96,96,96)) { fenced=!fenced; continue }; if(fenced) continue; tail=substr(title,length(prefix)+1); if(substr(title,1,length(prefix))==prefix && (tail==\"\" \\0174\\0174 tail ~ /^[[:space:]:-]/)) heading=1; if(title ~ /^[-*+]?[[:space:]]*(\\\\*\\\\*)?Escalation(\\\\*\\\\*)?:[[:space:]]*declared[[:space:]]*$/) ok=1 }; close(file); return heading && ok } function failed_check(result, check) { if(result!=\"\") return result ~ /exit[[:space:]]*[1-9][0-9]*/ \\0174\\0174 result ~ /nonzero/ \\0174\\0174 result ~ /^failed([[:space:];]\\0174$)/; return check ~ /exit[[:space:]]*[1-9][0-9]*/ \\0174\\0174 check ~ /nonzero/ } function flush_record() { if(recid==\"\" \\0174\\0174 rectask!=wanted_task \\0174\\0174 (wanted_id!=\"\" && recid!=wanted_id)) return; if(reckind==\"observed-absence\") { if(recrun==wanted_run && recobserved!=\"\") absence_seen=1; return }; if(reckind==\"declared-capability-escalation\") { if(!(recid in seen_event) && !seen_escalation && declared(recauth) && recobserved!=\"\" && recresult!=\"\") { seen_event[recid]=1; seen_escalation=1; supported++ }; return }; if(reckind!=\"\" && reckind!=\"correction-validation\") return; if(recfault==\"\" \\0174\\0174 recfault==\"n/a\" \\0174\\0174 recobserved==\"\" \\0174\\0174 recrepair==\"\" \\0174\\0174 reccheck==\"\" \\0174\\0174 !failed_check(recresult,reccheck)) return; if(recid in seen_event) return; seen_event[recid]=1; supported++ } function scan_reference(source,verification, path,hash,heading,raw,p,key,value,file,k) { source=trim(source); verification=trim(verification); if(source==\"n/a\" && verification!=\"n/a\") source=(index(verification,\".md\") \\0174\\0174 index(verification,\"/\") \\0174\\0174 substr(verification,1,1)==\"[\" ? verification : \"history.md\"); if(source ~ /^\\\\[[^]]+\\\\]\\\\([^)]+\\\\)$/) { sub(/^\\\\[[^]]+\\\\]\\\\(/,\"\",source); sub(/\\\\)$/, \"\",source) }; hash=index(source,\"#\"); wanted_id=\"\"; if(hash) { wanted_id=substr(source,hash+1); source=substr(source,1,hash-1); sub(/^event-/,\"\",wanted_id) }; if(wanted_id==\"\" && verification!=\"n/a\" && verification !~ /\\\\// && verification !~ /[.]md/) wanted_id=verification; if(source !~ /^[A-Za-z0-9._\\\\/-]+$/ \\0174\\0174 source ~ /^[\\\\/]/ \\0174\\0174 source ~ /[.][.]/) return 0; reset_record(); file=ws \"/\" source; while((getline raw < file)>0) { raw=trim(raw); if(raw ~ /^###[[:space:]]+/) { flush_record(); reset_record(); heading=raw; sub(/^###[[:space:]]+/,\"\",heading); if(heading ~ /^Event[[:space:]]+/) { sub(/^Event[[:space:]]+/,\"\",heading); recid=trim(heading) }; continue }; path=index(raw,\":\"); if(!path) continue; key=tolower(trim(substr(raw,1,path-1))); gsub(/[[:space:]*_-]/,\"\",key); value=trim(substr(raw,path+1)); if(key==\"task\" \\0174\\0174 key==\"taskid\") { if(rectask!=\"\" && recid!=\"\") { flush_record(); reset_record() }; rectask=value } else if(key==\"eventid\") { if(recid!=\"\" && recid!=value) { flush_record(); reset_record() }; recid=value } else if(key==\"runid\") recrun=value; else if(key==\"kind\") reckind=value; else if(key==\"failureid\" \\0174\\0174 key==\"fault\") recfault=value; else if(key==\"observedfailure\" \\0174\\0174 key==\"observed\") recobserved=value; else if(key==\"correction\" \\0174\\0174 key==\"repair\") recrepair=value; else if(key==\"validationcommand\" \\0174\\0174 key==\"check\") reccheck=value; else if(key==\"result\") recresult=value; else if(key==\"cyclecount\" \\0174\\0174 key==\"countedcycle\") recclaim=value; else if(key==\"authorization\") recauth=value }; flush_record(); close(file) } function evidence(source,verification,task,run,k) { wanted_task=task; wanted_run=run; supported=0; absence_seen=0; seen_escalation=0; for(k in seen_event) delete seen_event[k]; scan_reference(source,verification); if(source!=\"n/a\" && (index(verification,\".md\") \\0174\\0174 substr(verification,1,1)==\"[\")) scan_reference(verification,\"n/a\"); return supported } { line=$0; sub(/^[[:space:]]*/,\"\",line); if(substr(line,1,1)!=\"\\0174\") next; for(i=2;i<=NF;i++) $i=trim($i); if($2==\"Point\" && NF==10 && $3==\"Role\" && $4==\"Tier\" && $5==\"Model\" && $6==\"Effort\" && $7==\"Tokens in\" && $8==\"Tokens out\" && $9==\"Session\") { if(v2) diag(NR,\"n/a\",\"legacy header after v2\"); else legacy=1; next }; if($2==\"Run ID\") { legacy=0; v2=1; if(NF!=16) diag(NR,\"n/a\",\"malformed header\"); task_header=($4==\"Task\"); next }; if($2 ~ /^-+$/) next; if(legacy && NF==10) next; if(NF!=16) { diag(NR,\"n/a\",\"malformed data row\"); next }; id=$2; ev=$3; if(id==\"\") diag(NR,\"n/a\",\"missing Run ID\"); else if($4==\"\") diag(NR,id,task_header?\"missing Task\":\"missing Point\"); else if($5==\"\") diag(NR,id,\"missing Role\"); if(ev!=\"start\" && ev!=\"finish\" && ev!=\"observe-incomplete\") diag(NR,id,\"unknown Event\"); if($12!=\"n/a\" && $12 !~ /^[0-9]+$/) diag(NR,id,\"missing, invalid, or negative Attempts/Rework\"); if($13!=\"n/a\" && $13 !~ /^[0-9]+$/) diag(NR,id,\"missing, invalid, or negative Attempts/Rework\"); if(id!=\"\" && !(id in seen)) { seen[id]=1; task[id]=$4; role[id]=$5 }; if(id!=\"\" && seen[id] && (task[id]!=$4 \\0174\\0174 role[id]!=$5)) diag(NR,id,task_header?\"Task/Role changed\":\"Point/Role changed\"); if(id!=\"\" && ev==\"start\") { starts[id]++; if(starts[id]>1) diag(NR,id,\"duplicate start\"); if($11!=\"running\") diag(NR,id,\"invalid start Outcome\") }; if(id!=\"\" && ev==\"finish\") { terminals[id]++; if(terminals[id]>1) diag(NR,id,\"duplicate terminal\"); if(starts[id]==0) diag(NR,id,\"terminal before start\"); if($11!=\"success\" && $11!=\"failed\" && $11!=\"blocked\" && $11!=\"aborted\") diag(NR,id,\"invalid finish Outcome\") }; if(id!=\"\" && ev==\"observe-incomplete\") { terminals[id]++; if(terminals[id]>1) diag(NR,id,\"duplicate terminal\"); if(starts[id]==0) diag(NR,id,\"terminal before start\"); if($11!=\"incomplete\") diag(NR,id,\"invalid incomplete Outcome\") }; if(id!=\"\" && $12 ~ /^[0-9]+$/) { checks++; checkline[checks]=NR; checkid[checks]=id; checktask[checks]=$4; checkrun[checks]=id; checkcount[checks]=$12+0; checksource[checks]=$15; checkverification[checks]=$14 } } END { for(id in seen) if(starts[id]!=1) diag(NR,id,\"start count is not exactly one\"); for(i=1;i<=checks;i++) { found=evidence(checksource[i],checkverification[i],checktask[i],checkrun[i]); if(checkcount[i]==0) { if(!absence_seen) diag(checkline[i],checkid[i],\"zero Attempts lacks observed absence\") } else if(found<checkcount[i]) diag(checkline[i],checkid[i],\"Attempts lacks task-linked failed correction or authorized escalation evidence\") }; if(failed) exit 1 }'); then awk -v ws=\"$ws\" \"$row16_program\" \"$usage\"; else exit $?; fi ` | 0 lines of output and exit 0; malformed state or unsupported known Attempts prints row16, line and Run ID diagnostics and exits nonzero |",
+      "note": "| 16 · Lifecycle validity — exactly one start, at most one legal terminal after it, stable Task/Role, valid Outcome and nonnegative or unknown counters; a positive Attempts count requires task-linked failed correction or one authorized escalation rather than a count label; legacy Point remains readable | 0 lines of output and exit 0; malformed state or unsupported known Attempts prints row16, line and Run ID diagnostics and exits nonzero |",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -6666,7 +6666,7 @@
       "unit_sha256": "a24ab0eeaa64730e11e976de7e1d9ba6f21732c8ec3702a8e5fc910f475373a5",
       "disposition": "reworded",
       "destination": "references/guides/plan-card.md",
-      "note": "**Lint.** Run every row of `lint-spec.md` — the 17 mechanical, copy-paste checks that decide wiring, grounding, statuses, citations, seals and collisions — and report the agent-computed summary.",
+      "note": "**Lint.** Run every row of `lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py), which the plan request authorizes ([script consent](../../scripts/README.md#consent)) — the 17 mechanical checks that decide wiring, grounding, statuses, citations, seals and collisions — and report the agent-computed summary.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -6714,7 +6714,7 @@
       "unit_sha256": "f869ce87836fc3351dc2aca5753581d7d0b724bc914f28488ad74a893dab96a3",
       "disposition": "reworded",
       "destination": "references/guides/scaffold.md",
-      "note": "After completing the brief and core files, run all 17 direct lint rows in `lint-spec.md` before any PLAN handoff, including when a task remains Draft or a product question is unanswered.",
+      "note": "After completing the brief and core files, run all 17 direct lint rows in `lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py), which the plan request authorizes ([script consent](../../scripts/README.md#consent)), before any PLAN handoff, including when a task remains Draft or a product question is unanswered.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -6729,7 +6729,7 @@
       "unit_sha256": "e9c55d68b5f765facbe420e1b664b6f00b20e03d52fd2e410b5755476f0b7778",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 13 · History over archive threshold or entry budget — `history.md` exceeds the archive threshold (default 400 lines; workspace-overridable via `Log archive threshold: N` in the workspace `AGENTS.md`), or a session entry (from its `## YYYY-MM-DD` heading through the line before the next `## ` heading, trailing blank lines excluded, `###` lines inside) runs past the entry budget (default 120 lines; workspace-overridable via `History entry budget: N`); a missing `history.md` is an error; fix path: RUN archives or shortens under the workspace's maintenance policy (default in `AGENTS.md`, recoverable maintenance in `context-lifecycle.md`), never STATUS | ` ws=docs/plans/<slug>; history=\"$ws/history.md\"; if [ -f \"$history\" ]; then :; else echo \"row13: missing ${history##*/}\"; exit 1; fi; t=; b=; if ! { [ ! -e docs/plans/<slug>/AGENTS.md ] && [ ! -L docs/plans/<slug>/AGENTS.md ]; }; then t=$(awk '/^Log archive threshold: [0-9]+/{print $NF; exit}' docs/plans/<slug>/AGENTS.md); b=$(awk '/^History entry budget: [0-9]+/{print $4; exit}' docs/plans/<slug>/AGENTS.md); fi; t=${t:-400}; b=${b:-120}; if [ \"$(wc -l < \"$history\")\" -le \"$t\" ]; then :; else echo \"$history over archive threshold ($t)\"; fi; awk -v f=\"$history\" -v b=\"$b\" 'BEGIN{m=b+0} function flush(n){n=last-start+1; if(open && n>m) print f \":\" start \": entry over budget (\" n \" > \" m \")\"} /^## /{flush(); open=($0 ~ /^## 20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]/); start=NR; last=NR; next} open && $0 !~ /^[[:space:]]*$/ {last=NR} END{flush()}' \"$history\" ` | 0 lines of output — any line is a **warn** |",
+      "note": "| 13 · History over archive threshold or entry budget — `history.md` exceeds the archive threshold (default 400 lines; workspace-overridable via `Log archive threshold: N` in the workspace `AGENTS.md`), or a session entry (from its `## YYYY-MM-DD` heading through the line before the next `## ` heading, trailing blank lines excluded, `###` lines inside) runs past the entry budget (default 120 lines; workspace-overridable via `History entry budget: N`); a missing `history.md` is an error; fix path: RUN archives or shortens under the workspace's maintenance policy (default in `AGENTS.md`, recoverable maintenance in `context-lifecycle.md`), never STATUS | 0 lines of output — any line is a **warn** |",
       "destination_unit_sha256": null
     },
     {
@@ -6738,7 +6738,7 @@
       "unit_sha256": "cd6a7a7b33e9f32901861c946a5d5995dbb198d63db1c99c41eed7657e4cb31a",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 14 · Closure reports for done tasks — every `task-board.md` row whose status is Complete has `reports/T-0N-report.md` (the report may be a stub naming its reviewer, ending with the receipt described in `run.md` §Run record); explicit Lite workspaces guard-skip after row 1 validates their shape; an older board is refused | ` ws=docs/plans/<slug>; board=\"$ws/task-board.md\"; if [ -f docs/plans/<slug>/plan.md ] && [ \"$(sed -n '1p' docs/plans/<slug>/plan.md)\" = 'Gate: Lite' ]; then exit 0; fi; if [ -f \"$ws/task-board.md\" ] && grep -Eq '^Schema: tackle-workspace/5$' \"$ws/task-board.md\"; then :; else echo \"migrate first: $ws has no tackle-workspace/5 task-board.md with LF line endings (references/guides/migrate.md)\"; exit 1; fi; for id in $(awk 'BEGIN{FS=sprintf(\"%c\",124)} function cell(i,c){c=$i; sub(/^[[:space:]]+/,\"\",c); sub(/[[:space:]]+$/,\"\",c); return c} function colof(name,i){for(i=2;i<=NF;i++) if(cell(i)==name) return i; return 0} FNR==1{col=0; pend=0} pend && $2 ~ /^[[:space:]]*:?-+:?[[:space:]]*$/ {col=pend} {pend=0} $2 !~ /[PT]-[A-Za-z0-9]/ && colof(\"Status\"){pend=colof(\"Status\")} $2 ~ /[PT]-[A-Za-z0-9]/ && NF>3 {status=cell(col ? col : 6); if(status==\"Complete\") print cell(2)}' \"$board\"); do if [ -f \"docs/plans/<slug>/reports/$id-report.md\" ]; then :; else echo \"done task without closure report: $id\"; fi; done ` | 0 lines of output |",
+      "note": "| 14 · Closure reports for done tasks — every `task-board.md` row whose status is Complete has `reports/T-0N-report.md` (the report may be a stub naming its reviewer, ending with the receipt described in `run.md` §Run record); explicit Lite workspaces guard-skip after row 1 validates their shape; an older board is refused | 0 lines of output |",
       "destination_unit_sha256": null
     },
     {
@@ -7454,7 +7454,7 @@
       "unit_sha256": "0ed6a9919b29164172cb6d0763fd2503660ed66a6e6c8f432c22a19af7910a6b",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 2 · Task identity and dependencies — every T id, brief path and dependency resolves in the `/5` workspace; mixed identities, absent briefs and an older layout fail | ```` ws=docs/plans/<slug>; board=\"$ws/task-board.md\"; if [ -f docs/plans/<slug>/plan.md ] && [ \"$(sed -n '1p' docs/plans/<slug>/plan.md)\" = 'Gate: Lite' ]; then exit 0; fi; if [ -f \"$ws/task-board.md\" ] && grep -Eq '^Schema: tackle-workspace/5$' \"$ws/task-board.md\"; then :; else echo \"migrate first: $ws has no tackle-workspace/5 task-board.md with LF line endings (references/guides/migrate.md)\"; exit 1; fi; for f in \"$ws/board.md\" \"$ws/log.md\" \"$ws/usage.md\" \"$ws/log-archive.md\" \"$ws/coordinator.md\" \"$ws/HANDOFF.md\" \"$ws/evidence\" \"$ws/points\"; do if ! { [ ! -e \"$f\" ] && [ ! -L \"$f\" ]; }; then echo \"mixed workspace paths: $f\"; exit 1; fi; done; for f in \"$ws/plan.md\" \"$ws/history.md\" \"$ws/resource-usage.md\"; do if [ ! -f \"$f\" ]; then echo \"missing: $f\"; exit 1; fi; done; if [ ! -d \"$ws/tasks\" ]; then echo \"missing tasks directory: $ws\"; exit 1; fi; prefix=T-; set -- \"$ws\"/tasks/*.md; if [ ! -f \"$1\" ]; then echo \"missing task briefs: $ws\"; exit 1; fi; if awk -v prefix=\"$prefix\" -v ws=\"$ws\" -v boardfile=\"$board\" -v agents=\"$ws/AGENTS.md\" 'BEGIN{FS=sprintf(\"%c\",124); ag_pipe=sprintf(\"%c\",124); ag_hdr=0; ag_seen=0; ag_incomment=0; nref=0; while((getline ag_line < agents)>0){ ag_out=\"\"; ag_rest=ag_line; while(1){ if(ag_incomment){ ag_p=index(ag_rest,\"-->\"); if(ag_p==0){ag_rest=\"\"; break} ag_rest=substr(ag_rest,ag_p+3); ag_incomment=0; continue } ag_p=index(ag_rest,\"<!--\"); if(ag_p==0){ag_out=ag_out ag_rest; break} ag_out=ag_out substr(ag_rest,1,ag_p-1); ag_rest=substr(ag_rest,ag_p+4); ag_incomment=1 } if(ag_incomment) continue; ag_t=trim(ag_out); if(substr(ag_t,1,3)==\"```\"){fence=!fence; continue} if(fence) continue; if(!ag_seen && ag_t==\"## Sibling workspaces\"){section=1; ag_seen=1; ag_hdr=0; continue} if(substr(ag_out,1,3)==\"## \"){section=0; continue} if(!section) continue; if(!(substr(ag_t,1,1)==ag_pipe && substr(ag_t,length(ag_t),1)==ag_pipe && length(ag_t)>1)) continue; ag_n=split(ag_t,ag_cell,ag_pipe); ag_c1=trim(ag_cell[2]); ag_c2=trim(ag_cell[3]); if(!ag_hdr){ if(ag_n==5 && ag_c1==\"Sibling\" && ag_c2==\"Path\" && trim(ag_cell[4])==\"Relation\") ag_hdr=1; continue} if(ag_n!=5) continue; sub(/^`+/,\"\",ag_c2); sub(/`+$/,\"\",ag_c2); ag_c2=trim(ag_c2); if(!(ag_c1 ~ /^[a-z0-9][a-z0-9-]*$/)) continue; if(substr(ag_c2,1,11)!=\"docs/plans/\") continue; ag_name=substr(ag_c2,12); if(!(ag_name ~ /^[a-z0-9][a-z0-9-]*$/)) continue; if(!(ag_c1 in sibling)) sibling[ag_c1]=ag_name } close(agents); fence=\"\"; section=0} function sibscan(s,owner,record,   m,ref,slug,key,out){ out=\"\"; while(match(s,/T-[0-9]+ [[][a-z0-9][a-z0-9-]*[]]/)){ m=substr(s,RSTART,RLENGTH); ref=substr(m,1,index(m,\" \")-1); slug=substr(m,index(m,\"[\")+1); slug=substr(slug,1,length(slug)-1); if(record){ key=owner SUBSEP ref SUBSEP slug; if(!(key in sseen)){sseen[key]=1; sref[++nref]=key} } if(record + (slug in sibling)) out=out substr(s,1,RSTART-1) \" \"; else out=out substr(s,1,RSTART+RLENGTH-1); s=substr(s,RSTART+RLENGTH) } return out s} function sibbrief(b,   rest,sx,name,file,s){ rest=substr(b,4); sx=index(rest,\"/\"); if(sx<2) return \"\"; name=substr(rest,1,sx-1); if(substr(rest,sx+1,6)!=\"tasks/\") return \"\"; file=substr(rest,sx+7); if(file==\"\") return \"\"; if(index(file,\"/\")>0) return \"\"; if(index(file,\"..\")>0) return \"\"; for(s in sibling) if(sibling[s]==name) return \"docs/plans/\" name \"/tasks/\" file; return \"\"} function trim(s){sub(/^[[:space:]]+/,\"\",s); sub(/[[:space:]]+$/,\"\",s); return s} function refs(s,id){while(match(s,/[PT]-[A-Za-z0-9]+(-[A-Za-z0-9]+)*/)){id=substr(s,RSTART,RLENGTH); used[id]=1; s=substr(s,RSTART+RLENGTH)}} FILENAME==ws \"/plan.md\" {if(($0 ~ /^ ? ? ?```/) + ($0 ~ /^ ? ? ?~~~/)){t=trim($0); if(!match(t,/^```+/)) match(t,/^~~~+/); marker=substr(t,RSTART,RLENGTH); tail=trim(substr(t,RLENGTH+1)); if(!fence) fence=marker; else if(substr(marker,1,1)==substr(fence,1,1) && length(marker)>=length(fence) && tail==\"\") fence=\"\"; next} if(fence) next; if((($0 \" \") ~ /^ ? ? ?##[[:space:]]+5[.] Point decomposition[[:space:]]/) + (($0 \" \") ~ /^ ? ? ?##[[:space:]]+5[.] Task decomposition[[:space:]]/)){section=1; next} if(($0 \" \") ~ /^ ? ? ?##?[[:space:]]/) section=0; if(section && NF>1 && $1 ~ /^[[:space:]]*$/){id=trim($2); sub(/^[*][*]/,\"\",id); sub(/[*][*]$/,\"\",id); if(match(id,/^[PT]-[A-Za-z0-9]+(-[A-Za-z0-9]+)*/)){id=substr(id,RSTART,RLENGTH); declared[id]=1; if(substr(id,1,2)!=prefix) print \"mixed plan identity: \" id}} next} FILENAME==boardfile {id=trim($2); if(id ~ /^[PT]-[A-Za-z0-9]+(-[A-Za-z0-9]+)*$/){used[id]=1; board[id]=1; if(substr(id,1,2)!=prefix) print \"mixed board identity: \" id; refs(sibscan($5,id,1)); brief=trim($4); if(brief ~ /^`[^`]+`$/) brief=substr(brief,2,length(brief)-2); path=\"\"; if(index(brief,\"../\")==1){path=sibbrief(brief); if(path==\"\") print \"brief \" brief \" for task \" id \" is outside the workspace\"} else {if(index(brief,\"tasks/\")!=1) print \"mixed brief path: \" brief; path=ws \"/\" brief} if(path!=\"\"){result=0; first=\"\"; while((getline line < path)>0){result=1; if((line ~ /^[[:space:]]*$/) + (line ~ /^[[:space:]]*<a[[:space:]]+id=/)) continue; first=line; break} close(path); if(result<1) print \"missing brief: \" brief; else if((first \" \") !~ (\"^# Task \" id \"[[:space:]]\")) print \"mismatched brief heading: \" brief} } next} (($0 \" \") ~ /^[[:space:]]*#[[:space:]]*[PT]-[A-Za-z0-9]+(-[A-Za-z0-9]+)*[[:space:]]/) + (($0 \" \") ~ /^[[:space:]]*#[[:space:]]*Task[[:space:]]+[PT]-[A-Za-z0-9]+(-[A-Za-z0-9]+)*[[:space:]]/) {ln=sibscan($0,\"\",0); if(match(ln,/[PT]-[A-Za-z0-9]+(-[A-Za-z0-9]+)*/)) used[substr(ln,RSTART,RLENGTH)]=1} /^[[:space:]]*(-[[:space:]]*)?([*][*])?Depends([ -])on([*][*])?:/ {refs(sibscan($0,\"\",0))} END{for(k=1;k<=nref;k++){split(sref[k],sp,SUBSEP); owner=sp[1]; rf=sp[2]; sl=sp[3]; if(!(sl in sibling)){print \"task \" owner \" depends on \" rf \" [\" sl \"], but no sibling named \" sl \" is declared\"; continue} if(!(sl in bstate)){bstate[sl]=\"refused\"; bp=\"docs/plans/\" sibling[sl] \"/task-board.md\"; while((getline bl < bp)>0){if(bl==\"Schema: tackle-workspace/5\") bstate[sl]=\"ok\"; nb=split(bl,bf,sprintf(\"%c\",124)); if(nb>=2) sboard[sl SUBSEP trim(bf[2])]=1} close(bp); if(bstate[sl]==\"refused\") print \"sibling \" sl \" has no tackle-workspace/5 task-board.md at docs/plans/\" sibling[sl]} if(bstate[sl]==\"refused\") continue; if(!((sl SUBSEP rf) in sboard)) print \"task \" owner \" depends on \" rf \" [\" sl \"], which is not on the sibling\" sprintf(\"%c\",39) \"s board\"} for(id in used) if(!(id in declared)) print \"unresolved: \" id; for(id in declared) if(!(id in board)) print \"missing board task: \" id}' \"$ws/plan.md\" \"$board\" \"$@\"; then :; else exit $?; fi ```` | 0 lines of output |",
+      "note": "| 2 · Task identity and dependencies — every T id, brief path and dependency resolves in the `/5` workspace; mixed identities, absent briefs and an older layout fail | 0 lines of output |",
       "destination_unit_sha256": null
     },
     {
@@ -8166,8 +8166,30 @@
       "unit_sha256": "7f37a8dd3c9ec92dbf2a6d3bdecd4dd9e2ab4c5faed4c96c173e4c04451f2e6b",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 8 · Cross-initiative collision — two active initiatives (a `task-board.md` with ≥ 1 active **data row**; the legend line does not count) declare intersecting Write scope; lexical equality, normalized equality, or directory/descendant containment is a collision, while unsupported scope forms are reported as unresolved | `` set --; for f in docs/plans/*/task-board.md docs/plans/*/tasks/*.md; do if ! { [ ! -e \"$f\" ] && [ ! -L \"$f\" ]; }; then set -- \"$@\" \"$f\"; fi; done; if [ \"$#\" -gt 0 ] && l=$(mktemp); then find . -type l > \"$l\" 2>/dev/null; awk -v links=\"$l\" 'BEGIN{FS=sprintf(\"%c\",124); while((getline line < links) > 0) link[line]=1; close(links)} function cell(i,c){c=$i; sub(/^[[:space:]]+/,\"\",c); sub(/[[:space:]]+$/,\"\",c); return c} function colof(name,i){for(i=2;i<=NF;i++) if(cell(i)==name) return i; return 0} FNR==1{col=0; pend=0} pend && $2 ~ /^[[:space:]]*:?-+:?[[:space:]]*$/ {col=pend} {pend=0} $2 !~ /[PT]-[A-Za-z0-9]/ && colof(\"Status\"){pend=colof(\"Status\")} function trim(s){sub(/^[[:space:]]+/,\"\",s); sub(/[[:space:]]+$/,\"\",s); return s} function finish(){if(cont){flush()}else if(touches && !count) print \"unresolved scope: \" location \" (empty Write scope)\"; touches=0; count=0} function flush(){if(wrapped) sub(/[[:space:]]*[.,][[:space:]]*$/,\"\",buf); if(buf!=\"\") parse(buf); touches=0; count=0; buf=\"\"; cont=0; wrapped=0} function scope(raw,a,n,i,path,k,prefix){raw=trim(raw); count++; if((raw !~ /^[[:alnum:]_.\\/-]+$/) + (raw ~ /^\\//) + ((\"/\" raw \"/\") ~ /\\/[.][.]\\//)){print \"unresolved scope: \" raw; return} n=split(raw,a,\"/\"); for(i=1;i<=n;i++){if((a[i]==\"\") + (a[i]==\".\")) continue; if(path!=\"\") path=path \"/\"; path=path a[i]; prefix=\"./\" path; if(prefix in link){print \"unresolved scope: \" raw \" (symlink component)\"; return}} if(path==\"\"){print \"unresolved scope: \" raw; return} for(k in paths) if(owners[k]!=ws && ((path==paths[k]) + (index(path,paths[k] \"/\")==1) + (index(paths[k],path \"/\")==1))) print \"collision: \" raw \" (\" owners[k] \" + \" ws \")\"; k=ws SUBSEP path; paths[k]=path; owners[k]=ws} function annotations(s,i,c,quoted,depth,out){for(i=1;i<=length(s);i++){c=substr(s,i,1); if(c==\"`\" && !depth){quoted=!quoted; out=out c} else if(!quoted && c==\"(\" && (depth + (i==1) + (substr(s,i-1,1) ~ /[[:space:]]/))) depth++; else if(depth){if(c==\")\") depth--} else out=out c} if(depth){print \"unresolved scope: \" s; return \"\"} return out} function parse(s,a,n,i,part,quoted){s=annotations(s); n=split(s,a,\",\"); for(i=1;i<=n;i++){part=trim(a[i]); quoted=0; while(match(part,/^`[^`]+`/)){quoted=1; scope(substr(part,RSTART+1,RLENGTH-2)); part=trim(substr(part,RSTART+RLENGTH))} if(!quoted){sub(/[[:space:]]+[(].*$/,\"\",part); scope(part)} else if(part!=\"\" && part !~ /^[(].*[)]$/) print \"unresolved scope: \" part}} FNR==1 {finish(); split(FILENAME,w,\"/\"); ws=w[3]} FILENAME ~ /\\/task-board[.]md$/ {id=trim($2); status=cell(col ? col : 6); if(id ~ /^[PT]-[A-Za-z0-9]+(-[A-Za-z0-9]+)*$/ && ((status==\"In progress\") + (status==\"Checking\") + (status==\"Interrupted\") + (status==\"Waiting on owner\"))) active[ws]=1; next} !active[ws] {next} (($0 \" \") ~ /^[[:space:]]*([-*+][[:space:]]*)?([*][*])?Write scope([*][*])?[[:space:]:]/) {finish(); touches=1; location=FILENAME \":\" FNR; s=$0; sub(/^[[:space:]]*([-*+][[:space:]]*)?([*][*])?Write scope([*][*])?/,\"\",s); s=trim(s); sub(/^[(][^)]*[)][[:space:]]*:/,\":\",s); if(substr(s,1,1)==\":\"){s=trim(substr(s,2)); if(s!=\"\"){buf=s; cont=1; wrapped=0}} next} touches && cont && /^[[:space:]]*$/ {flush(); next} touches && cont && /^[[:space:]]*[-*+][[:space:]]+[*][*]/ {flush(); next} touches && cont {buf=buf \" \" trim($0); wrapped=1; next} touches && /^[[:space:]]*$/ {next} touches && /^[[:space:]]*[-*+][[:space:]]+/ && $0 !~ /^[[:space:]]*[-*+][[:space:]]+[*][*]/ {s=$0; sub(/^[[:space:]]*[-*+][[:space:]]+/,\"\",s); parse(s); next} touches {finish()} END{finish()}' \"$@\"; rm -f \"$l\"; fi `` | 0 lines of output — any line is a **warn** |",
-      "destination_unit_sha256": null
+      "note": "| 8 · Cross-initiative collision — two active initiatives (a `task-board.md` with ≥ 1 active **data row**; the legend line does not count) declare intersecting Write scope; lexical equality, normalized equality, or directory/descendant containment is a collision, while unsupported scope forms are reported as unresolved | 0 lines of output — any line is a **warn** |",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "124",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "3",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "6",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "9",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "owner",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        }
+      ]
     },
     {
       "path": "references/guides/system-one.md",
@@ -8392,7 +8414,7 @@
       "unit_sha256": "4287d1d3cdba8f953dfda31836c9c8c61f880b084cebd5c243bb1f751f4ee117",
       "disposition": "reworded",
       "destination": "SKILL.md",
-      "note": "Running or importing a [script](scripts/README.md#consent) from `scripts/` needs the owner's explicit authorization; prefer an equivalent harness capability.",
+      "note": "Running or importing a [script](scripts/README.md#consent) from `scripts/` needs the owner's explicit authorization (an explicit plan or run request authorizes `scripts/lint.py` for it); prefer an equivalent harness capability.",
       "destination_unit_sha256": null
     },
     {
@@ -8830,7 +8852,7 @@
       "unit_sha256": "542b5d2d6b79ed2c6f38af7ee3a65b4ebf9d658855a0d6ed32743e40049ce0a9",
       "disposition": "reworded",
       "destination": "references/guides/full-checks.md",
-      "note": "The JSON specifies `source` (current lint-spec path), preflight `source_sha256`, `slug`, `selectors`, `workspace` and `timeout_seconds`.",
+      "note": "The JSON specifies `source` (the current `scripts/lint.py` path), preflight `source_sha256`, `slug`, `selectors`, `workspace` and `timeout_seconds`.",
       "destination_unit_sha256": null
     },
     {
@@ -8857,7 +8879,7 @@
       "unit_sha256": "48eecd21ca89cae2b29b47300eb3d0e4953ae83c9800e4bb31bda32992c3b01e",
       "disposition": "reworded",
       "destination": "references/guides/full-checks.md",
-      "note": "The script extracts, saves, captures and verifies each command itself; do not manually transcribe command cells into another script.",
+      "note": "The script extracts, saves, captures and verifies each command itself; do not manually transcribe row programs into another script.",
       "destination_unit_sha256": null
     },
     {
@@ -9235,7 +9257,7 @@
       "unit_sha256": "a4bbea8e1fd0d48bbf893563ee6955f3b70787fd386c37be930e777c98355fc8",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
-      "note": "A documented one-line check command, such as a lint row or a retro metric command, is not a script.",
+      "note": "A documented one-line check command, such as a retro metric command, is not a script.",
       "destination_unit_sha256": null
     },
     {
@@ -9259,7 +9281,7 @@
       "unit_sha256": "228d578dc9c27b2a65fd15630cfd7e9f047dd8d68ac2fb0940b3143226899f7f",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
-      "note": "A prior general request to plan or run does not count unless it names the script use.",
+      "note": "A prior general request to plan or run does not count unless it names the script use, except for `lint.py` below.",
       "destination_unit_sha256": null
     },
     {
@@ -9286,8 +9308,14 @@
       "unit_sha256": "8001b3be986871ba7b32763738e32747f0f6c68224d3645d083bb0fa65e96181",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
-      "note": "A general request to plan or run does not.",
-      "destination_unit_sha256": null
+      "note": "Otherwise a general request to plan or run authorizes no script.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "the negation is now spelled 'authorizes no script'; a general request still authorizes nothing beyond the stated grants"
+        }
+      ]
     },
     {
       "path": "references/recipes/README.md",
@@ -9340,7 +9368,7 @@
       "unit_sha256": "f1fe81548f935a952e1c02a5f8e2927793fd2ee6c85728c19c63729b2231b0ee",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/lint_runner.py",
-      "note": "import hashlib import re from pathlib import Path import json import subprocess import sys import tempfile def canonical_rows(source, expected_sha256, slug): if hashlib.sha256(source).hexdigest() != expected_sha256: raise ValueError('canonical source revision changed') if not re.fullmatch(r'[a-z0-9][a-z0-9.-]*', slug): raise ValueError('invalid slug') rows = {} for line in source.decode('utf-8').splitlines(): if not re.match(r'^\\| [0-9]+ ·', line): continue head, cell, condition = line.split(' | ', 2) number = int(head.split(' ·', 1)[0][2:]) match = re.fullmatch(r'(`+)(.*?)\\1', cell) if number in rows or not match or not condition.endswith(' |'): raise ValueError('duplicate or malformed row') command = match[2] # Markdown code spans with padding remove one surrounding space. if command.startswith(' ') and command.endswith(' ') and command.strip(): command = command[1:-1] command = command.replace('<slug>', slug).encode('utf-8') rows[number] = dict(command=command, condition=condition[:-2], command_sha256=hashlib.sha256(command).hexdigest()) if sorted(rows) != list(range(1, 18)): raise ValueError('expected exactly rows 1 through 17') return rows def lint_verdict(row, record, stdout, stderr): if row not in range(1, 18): raise ValueError('unknown row') code = record['child_exit'] if type(code) is not int or any(type(record.get(key)) is not bool for key in ('timeout', 'inputs_stable', 'artifacts_present')): return 'ERROR' allowed = (0, 1) if row in (5, 6, 11, 15, 16) else (0,) if (record['timeout'] or record['launch_error'] or record['signal'] is not None or stderr or code not in allowed or not record['inputs_stable'] or not record['artifacts_present']): return 'ERROR' if stdout: return 'WARN' if row in (8, 13, 15) else 'FAIL' if (row == 5 and code != 1) or (row != 5 and row != 15 and code != 0): return 'ERROR' return 'PASS' def captured_lint_verdict(source, expected_sha256, slug, row, script, record, observation, capture_program=None): try: if capture_program is not None and record.get('program') != capture_program: return 'ERROR' if (observation / 'retired.json').exists() or observation.name.startswith('.pending-'): return 'ERROR' if type(record.get('accepted')) is not bool: return 'ERROR' expected = canonical_rows(source, expected_sha256, slug)[row]['command'] if record['argv'] != ['sh', script]: return 'ERROR' digest = record['inputs_before'][script] if not re.fullmatch(r'[0-9a-f]{64}', digest) or record['inputs_after'][script] != digest: return 'ERROR' actual = (observation / 'blobs' / digest).read_bytes() if hashlib.sha256(actual).hexdigest() != digest or actual not in (expected, expected + b'\\n'): return 'ERROR' required = set(record.get('prior_objects', [])) for key in ('inputs_before', 'inputs_after', 'artifacts', 'prior_records'): required.update(record.get(key, {}).values()) for fingerprint in required: if not re.fullmatch(r'[0-9a-f]{64}', fingerprint): return 'ERROR' if hashlib.sha256((observation / 'blobs' / fingerprint).read_bytes()).hexdigest() != fingerprint: return 'ERROR' streams = [(observation / name).read_bytes() for name in ['stdout.bin', 'stderr.bin']] for name, data in zip(['stdout.bin', 'stderr.bin'], streams): if hashlib.sha256(data).hexdigest() != record['streams'][name]: return 'ERROR' return lint_verdict(row, record, *streams) except (KeyError, OSError, ValueError, TypeError): return 'ERROR' def run_lint(config_path): root = Path.cwd().resolve() trusted_capture_sha256 = '3b0aaef26047e779c96735aa612858903db922c9e6921ed5a4d408aeaa304aea' def local(name): path = (root / name).resolve() path.relative_to(root) return path config = json.loads(local(config_path).read_text()) source = Path(config['source']).read_bytes() rows = canonical_rows(source, config['source_sha256'], config['slug']) if 'capture_script' in config: capture_script = local(config['capture_script']) else: capture_script = Path(__file__).resolve().with_name('capture.py') if hashlib.sha256(capture_script.read_bytes().rstrip(b'\\n')).hexdigest() != trusted_capture_sha256: raise ValueError('capture script revision changed') selected = config.get('rows', list(rows)) if not selected or len(set(selected)) != len(selected) or any(n not in rows for n in selected): raise ValueError('invalid selected rows') if 'workspace' in config: workspace = local(config['workspace']).resolve() if not workspace.is_dir(): raise ValueError('authorized workspace must already exist') else: workspace = local(config['destination']).resolve() workspace.mkdir(parents=True, exist_ok=True) destination = workspace / ('verification-records' if (workspace / 'task-board.md').is_file() else 'evidence') destination.resolve().relative_to(workspace) destination.mkdir(parents=True, exist_ok=True) batch = Path(tempfile.mkdtemp(prefix='lint-', dir=destination)) (batch / 'lint-spec.md').write_bytes(source) selectors = list(config['selectors']) for path in [config_path, batch / 'lint-spec.md', __file__, capture_script]: resolved = (root / path).resolve() if root in resolved.parents: selectors.append(dict(glob=str(resolved.relative_to(root)), required=True)) programs = {} for label, path in (('lint_runner', Path(__file__)), ('capture', capture_script)): resolved = (root / path).resolve() if root not in resolved.parents: programs[label] = dict(path=str(resolved), sha256=hashlib.sha256(resolved.read_bytes()).hexdigest()) results = {} for number in selected: script_path = batch / ('row-%02d.sh' % number) script_path.write_bytes(rows[number]['command']) script = str(script_path.relative_to(root)) spec = dict(workspace=str(workspace.relative_to(root)), argv=['sh', script], selectors=selectors, artifacts=[], destination=str((batch / ('row-%02d' % number)).relative_to(root)), timeout_seconds=config['timeout_seconds']) spec_path = batch / ('row-%02d.json' % number) spec_path.write_text(json.dumps(spec, indent=2)) result = subprocess.run([sys.executable, str(capture_script), str(spec_path)], cwd=root, capture_output=True) (batch / ('capture-%02d.stdout' % number)).write_bytes(result.stdout) (batch / ('capture-%02d.stderr' % number)).write_bytes(result.stderr) observation = None verdict = 'ERROR' try: if not result.stdout.strip(): raise ValueError('missing capture receipt') receipt = local(result.stdout.decode().strip()) receipt.relative_to(batch) observation = receipt.parent record = json.loads((observation / 'result.json').read_text()) if result.returncode in (0, 1) and not result.stderr: verdict = captured_lint_verdict(source, config['source_sha256'], config['slug'], number, script, record, observation, programs.get('capture')) except (OSError, ValueError, UnicodeError): pass results[number] = dict(row=number, source_sha256=config['source_sha256'], command_sha256=rows[number]['command_sha256'], verdict=verdict, capture_exit=result.returncode, observation=str(observation.relative_to(root)) if observation else None) summary = dict(rows=results, total=len(results), passed=sum(r['verdict'] == 'PASS' for r in results.values()), complete=len(results) == 17 and all(r['verdict'] in ('PASS', 'WARN') for r in results.values())) if programs: summary['programs'] = programs summary_path = batch / 'summary.json' summary_path.write_text(json.dumps(summary, indent=2)) print(summary_path) return all(r['verdict'] in ('PASS', 'WARN') for r in results.values()) if __name__ == '__main__': raise SystemExit(0 if run_lint(sys.argv[1]) else 1)",
+      "note": "import ast import hashlib import re from pathlib import Path import json import subprocess import sys import tempfile def canonical_rows(source, expected_sha256, slug): \"\"\"Compile the row programs that scripts/lint.py holds as ROW_NN constants, without running it.\"\"\" if hashlib.sha256(source).hexdigest() != expected_sha256: raise ValueError('canonical source revision changed') if not re.fullmatch(r'[a-z0-9][a-z0-9.-]*', slug): raise ValueError('invalid slug') try: tree = ast.parse(source.decode('utf-8')) except SyntaxError: raise ValueError('malformed row source') from None rows = {} for node in tree.body: if not (isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name) and re.fullmatch(r'ROW_[0-9]+', node.targets[0].id)): continue number = int(node.targets[0].id[4:]) if number in rows or not isinstance(node.value, ast.Constant) or type(node.value.value) is not str: raise ValueError('duplicate or malformed row') command = node.value.value.replace('<slug>', slug).encode('utf-8') rows[number] = dict(command=command, command_sha256=hashlib.sha256(command).hexdigest()) if sorted(rows) != list(range(1, 18)): raise ValueError('expected exactly rows 1 through 17') return rows def lint_verdict(row, record, stdout, stderr): if row not in range(1, 18): raise ValueError('unknown row') code = record['child_exit'] if type(code) is not int or any(type(record.get(key)) is not bool for key in ('timeout', 'inputs_stable', 'artifacts_present')): return 'ERROR' allowed = (0, 1) if row in (5, 6, 11, 15, 16) else (0,) if (record['timeout'] or record['launch_error'] or record['signal'] is not None or stderr or code not in allowed or not record['inputs_stable'] or not record['artifacts_present']): return 'ERROR' if stdout: return 'WARN' if row in (8, 13, 15) else 'FAIL' if (row == 5 and code != 1) or (row != 5 and row != 15 and code != 0): return 'ERROR' return 'PASS' def captured_lint_verdict(source, expected_sha256, slug, row, script, record, observation, capture_program=None): try: if capture_program is not None and record.get('program') != capture_program: return 'ERROR' if (observation / 'retired.json').exists() or observation.name.startswith('.pending-'): return 'ERROR' if type(record.get('accepted')) is not bool: return 'ERROR' expected = canonical_rows(source, expected_sha256, slug)[row]['command'] if record['argv'] != ['sh', script]: return 'ERROR' digest = record['inputs_before'][script] if not re.fullmatch(r'[0-9a-f]{64}', digest) or record['inputs_after'][script] != digest: return 'ERROR' actual = (observation / 'blobs' / digest).read_bytes() if hashlib.sha256(actual).hexdigest() != digest or actual not in (expected, expected + b'\\n'): return 'ERROR' required = set(record.get('prior_objects', [])) for key in ('inputs_before', 'inputs_after', 'artifacts', 'prior_records'): required.update(record.get(key, {}).values()) for fingerprint in required: if not re.fullmatch(r'[0-9a-f]{64}', fingerprint): return 'ERROR' if hashlib.sha256((observation / 'blobs' / fingerprint).read_bytes()).hexdigest() != fingerprint: return 'ERROR' streams = [(observation / name).read_bytes() for name in ['stdout.bin', 'stderr.bin']] for name, data in zip(['stdout.bin', 'stderr.bin'], streams): if hashlib.sha256(data).hexdigest() != record['streams'][name]: return 'ERROR' return lint_verdict(row, record, *streams) except (KeyError, OSError, ValueError, TypeError): return 'ERROR' def run_lint(config_path): root = Path.cwd().resolve() trusted_capture_sha256 = '3b0aaef26047e779c96735aa612858903db922c9e6921ed5a4d408aeaa304aea' def local(name): path = (root / name).resolve() path.relative_to(root) return path config = json.loads(local(config_path).read_text()) source = Path(config['source']).read_bytes() rows = canonical_rows(source, config['source_sha256'], config['slug']) if 'capture_script' in config: capture_script = local(config['capture_script']) else: capture_script = Path(__file__).resolve().with_name('capture.py') if hashlib.sha256(capture_script.read_bytes().rstrip(b'\\n')).hexdigest() != trusted_capture_sha256: raise ValueError('capture script revision changed') selected = config.get('rows', list(rows)) if not selected or len(set(selected)) != len(selected) or any(n not in rows for n in selected): raise ValueError('invalid selected rows') if 'workspace' in config: workspace = local(config['workspace']).resolve() if not workspace.is_dir(): raise ValueError('authorized workspace must already exist') else: workspace = local(config['destination']).resolve() workspace.mkdir(parents=True, exist_ok=True) destination = workspace / ('verification-records' if (workspace / 'task-board.md').is_file() else 'evidence') destination.resolve().relative_to(workspace) destination.mkdir(parents=True, exist_ok=True) batch = Path(tempfile.mkdtemp(prefix='lint-', dir=destination)) (batch / 'lint.py').write_bytes(source) selectors = list(config['selectors']) for path in [config_path, batch / 'lint.py', __file__, capture_script]: resolved = (root / path).resolve() if root in resolved.parents: selectors.append(dict(glob=str(resolved.relative_to(root)), required=True)) programs = {} for label, path in (('lint_runner', Path(__file__)), ('capture', capture_script)): resolved = (root / path).resolve() if root not in resolved.parents: programs[label] = dict(path=str(resolved), sha256=hashlib.sha256(resolved.read_bytes()).hexdigest()) results = {} for number in selected: script_path = batch / ('row-%02d.sh' % number) script_path.write_bytes(rows[number]['command']) script = str(script_path.relative_to(root)) spec = dict(workspace=str(workspace.relative_to(root)), argv=['sh', script], selectors=selectors, artifacts=[], destination=str((batch / ('row-%02d' % number)).relative_to(root)), timeout_seconds=config['timeout_seconds']) spec_path = batch / ('row-%02d.json' % number) spec_path.write_text(json.dumps(spec, indent=2)) result = subprocess.run([sys.executable, str(capture_script), str(spec_path)], cwd=root, capture_output=True) (batch / ('capture-%02d.stdout' % number)).write_bytes(result.stdout) (batch / ('capture-%02d.stderr' % number)).write_bytes(result.stderr) observation = None verdict = 'ERROR' try: if not result.stdout.strip(): raise ValueError('missing capture receipt') receipt = local(result.stdout.decode().strip()) receipt.relative_to(batch) observation = receipt.parent record = json.loads((observation / 'result.json').read_text()) if result.returncode in (0, 1) and not result.stderr: verdict = captured_lint_verdict(source, config['source_sha256'], config['slug'], number, script, record, observation, programs.get('capture')) except (OSError, ValueError, UnicodeError): pass results[number] = dict(row=number, source_sha256=config['source_sha256'], command_sha256=rows[number]['command_sha256'], verdict=verdict, capture_exit=result.returncode, observation=str(observation.relative_to(root)) if observation else None) summary = dict(rows=results, total=len(results), passed=sum(r['verdict'] == 'PASS' for r in results.values()), complete=len(results) == 17 and all(r['verdict'] in ('PASS', 'WARN') for r in results.values())) if programs: summary['programs'] = programs summary_path = batch / 'summary.json' summary_path.write_text(json.dumps(summary, indent=2)) print(summary_path) return all(r['verdict'] in ('PASS', 'WARN') for r in results.values()) if __name__ == '__main__': raise SystemExit(0 if run_lint(sys.argv[1]) else 1)",
       "destination_unit_sha256": null
     },
     {
@@ -9459,6 +9487,757 @@
           "reason": "release version stamp bumped to 10.0.0"
         }
       ]
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 39,
+      "unit_sha256": "e8d2e7798e30211d362176f42ac23fa6853b0820a254876131ab7f86e4e0246a",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "Mechanical first: the agent runs every row of `guides/lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py) from the repo root, computes the **agent-computed summary** from the observed row results, and reports `lint: N/M checks passed`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 374,
+      "unit_sha256": "8047b8f1035f900ada17f1dbc390fc95f8643b6237e84b51306435d66cce479a",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Run all 17 rows during PLAN before Ready with [`scripts/lint.py`](../../scripts/lint.py), which an explicit plan or run request authorizes ([script consent](../../scripts/README.md#consent)): `python3 -I <skill>/scripts/lint.py <slug>` from the repository root runs rows 1-17 in order, and `--row N` runs one row, passing its stdout, stderr and exit through unchanged.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 374,
+      "unit_sha256": "b8db3018a0e63c1562837f51215a7e459420f735871363882e0d289f96c318a6",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Each row's program is that file's `ROW_NN` constant with only a validated single-component slug (`[a-z0-9][a-z0-9.-]*`) substituted for `<slug>`.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "2",
+          "reason": "it counted the backticks delimiting a Markdown command cell; row programs are no longer cells"
+        },
+        {
+          "token": "4",
+          "reason": "it counted the backticks delimiting a Markdown command cell; row programs are no longer cells"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 376,
+      "unit_sha256": "d41a08c9f1a2bffedb5538a2f89250e7259c1768ac67778fdf0375a94875c3fa",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "For a captured record, save the canonical source snapshot/hash, row number, command bytes and pass condition.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 377,
+      "unit_sha256": "d96a5d62e267e33cfdbb27af2bdadb5ea9ccd823262889348264405b70d90756",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Reject missing/duplicate rows, malformed row constants and an unexpected source revision.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 380,
+      "unit_sha256": "f2ad5f89337fe9573b01e170cb675bf78fa99c03bef85378749c464e6646d42e",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Review any change to a row program before updating that trust anchor.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 381,
+      "unit_sha256": "bd1bc758431064d5cd5e53ac0c677bccf2bfc20685c2bb0ac7641c9c73428d00",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Do not invent an equivalent short validator, replace a row with `true`, or paste the programs into an interpolated shell string.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 3,
+      "unit_sha256": "a59e3f43d8c486ac355542a00ee347bf066e9b42c69efec295ddc95c115b4734",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/lint.py",
+      "note": "The programs use plain sh, grep, sed and awk only",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "every",
+          "reason": "the copy-paste form is retired; scripts/lint.py runs each row, so every check is still run"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 3,
+      "unit_sha256": "43f93911e82bdb39874a36617f536baad2889b4b3fca18d30ffacce8da18b5cf",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "where `<slug>` is the initiative directory name (workspace = `docs/plans/<slug>/`)",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 3,
+      "unit_sha256": "f22bf872c9a89d78349392b01a00395018820b72e8c3d8a316fef3061ae9500b",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "This table specifies the 17 mechanical checks; [`scripts/lint.py`](../../scripts/lint.py) holds each row's program and runs it with `sh -c` from the **repo root**",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 10,
+      "unit_sha256": "f28827a785a524b6bb2dfbb13d8844b1dd3f4d4ff7a93236d5ed7db268e6f752",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/lint.py",
+      "note": "none of them contains the pipe character: shell `A || B` is spelled `if A; then :; else B; fi`, an alternation in awk is spelled as summed tests, and a table separator is `sprintf(\"%c\",124)`.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "every",
+          "reason": "copy-pasting cells is retired; the pipe-free rule now covers each program in scripts/lint.py"
+        },
+        {
+          "token": "no",
+          "reason": "the pipe-free rule is kept as 'none of them contains the pipe character'"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 23,
+      "unit_sha256": "a0c3c369f4003dff83df03fb9974bc26b38e6a2ea9c43a9296f9e0b60c4e1d60",
+      "disposition": "ruled",
+      "destination": null,
+      "note": "Described how row 6's command cell was composed; the program moved to scripts/lint.py and the row 6 note keeps the cross-file rule.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 27,
+      "unit_sha256": "a3a90a648c9366e7d35a92df08c95e9c50f0115076b61f6b25e9b27079f75aaa",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "| Check | Pass condition |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 29,
+      "unit_sha256": "30c857b1b7820c191fac02f3270d890d7deddb55d6bb9f5182b1c48cf6168977",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "| 1 · Lite shape and unfilled placeholders — no `{{…}}` left outside fenced code blocks in shipped workspace files, `legacy-*/` snapshots skipped; a Focused workspace still on `log.md`, `log-archive.md` or `usage.md` is refused | 0 lines of output |",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "5",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 30,
+      "unit_sha256": "aaa6eebf4c720740bbdeb36dc5d6c6f6d2d7bbbe8566c5c55439a5c3ca0c8981",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "| 2 · Task identity and dependencies — every T id, brief path and dependency resolves in the `/5` workspace; mixed identities, absent briefs and an older layout fail | 0 lines of output |",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "1",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "11",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "12",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "124",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "3",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "39",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "4",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "6",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "7",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "9",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "agent",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "coordinator",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "no",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "not",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "owner",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 31,
+      "unit_sha256": "0b9256ae777fa9cad77401b7e5fd7815f76398aa7363a203c2a99718ea37f3da",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "| 3 · Invalid status vocabulary — the `Status` field in `task-board.md` uses the ten `/5` states, the nine English states and `Waiting on owner` (the field is found by its `Status` header, the fifth data column when no header names it; an emoji in another column does not count); an older board is refused | 0 lines of output |",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "1",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "124",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "2",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "6",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 32,
+      "unit_sha256": "f8a9335d16f28ad14dd176db7b32362a532e71c8a7d96b8a15edd3c5ed14f911",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "| 4 · Malformed/stale citations — every anchored citation, including every citation of a line, passes the anchored-citation drift check; an opened citation without a non-empty, closed quoted fragment is malformed (fragment still on line NN; fix path: the two-phase re-anchor flow in `verify.md` step 0) | 0 lines of output (0 stale) |",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "1",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "9",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 33,
+      "unit_sha256": "cde23ba3d78c015b251415d660769497216d7f6cf40f4160364eac90668d0db9",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "| 5 · Status duplicated outside `task-board.md` — a `Status:` declaration, or a status emoji (incl. ⚪), in `plan.md` or `tasks/`; an older board is refused | 0 lines of output (grep exits 1) |",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "no",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 34,
+      "unit_sha256": "76001f3de53e697c346ab348d5d33e4103b4162c84be4745c71b8256cb5996fa",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "| 6 · History entries out of chronological order — `## YYYY-MM-DD` headings ascending (append-only); covers `history-archive.md` when present; the archive's newest entry must not be younger than `history.md`'s oldest | 0 lines of output and exit 0; invalid chronology or missing history prints a diagnostic and exits nonzero |",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "1",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "10",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "2",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "20",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "9",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 35,
+      "unit_sha256": "4af04ad1a6ec1701d97144cd79267337e80fd3f44f91658c30bebfca54c2f9a2",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "| 7 · SEALED ids — every `SEALED: D-xx` marker resolves as an exact decision heading in `decisions.md` that is not marked superseded (`⤴`, or a `· superseded by D-` segment) | 0 lines of output |",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "1",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "2",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "8",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "9",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 37,
+      "unit_sha256": "192bf35122c3d4d3df0e468bce4e1be5c7afe42555fb58ed2f18adbb3bcf6997",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "| 9 · Loop-task budget fields — every `Type: discovery` task declares `Rounds:`, every `Type: experiment` task declares `Metric:`, `Threshold:` and `Rounds:`, each as a field (bold, or at the start of its line), never in quoted prose | 0 lines of output |",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "1",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 38,
+      "unit_sha256": "b096b2da6de6009457456b24eb79488d3668ef8b71e88bb335e825f66da86f7d",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "| 10 · Terminal rows carry a verification reference, and a Ready to run row cites its readiness — every `task-board.md` row whose status is Complete, Blocked or Unverifiable carries exactly `reports/<id>-report.md` in Verification (the status is read like row 3), and a `Ready to run` row's Verification cell starts with `ready: ` plus a non-empty reference; an older board is refused | 0 lines of output |",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "1",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "124",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "2",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "5",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "6",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "7",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "9",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "no",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 39,
+      "unit_sha256": "ae9e8c776442b7d33e4459676dd19b1bd0ca4140eefa1a8c367c81698352cd4a",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "| 11 · Usage rows for completed tasks — every `task-board.md` row whose status is Complete has at least one `resource-usage.md` row (`grep -q \"\\| $id \"`); a workspace without `resource-usage.md` guard-skips (rows 2 and 16 report it); an older board is refused | 0 lines of output and exit 0; an older board or a done task without its usage row prints a diagnostic and exits nonzero; a missing `resource-usage.md` is a checked skip |",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "124",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "174",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "3",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "5",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "6",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "9",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "no",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 40,
+      "unit_sha256": "803b264db0d706fafa6402e39c273edae1881d1fb9e7fcc7fd9e4c3a5178711e",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "| 12 · Effort, Tier and Escalation vocabulary — every `**Effort**:` declaration in the `tasks/` brief of a task that is not closed (the board shows it neither Complete, Skipped nor Unverifiable) is exactly a §3 level (`low`/`medium`/`high`/`max`), checked even inside a fenced block; outside any fenced block, a present `**Tier**:` is `fast`/`standard`/`frontier` and requires a `**Tier reason**:` (which may also appear alone, recording an Effort-only deviation from the compiled default), and an Effort other than `low` needs one of the two; a present `**Escalation**:` is `declared` and never present without `**Tier**:`; fenced examples (`` ``` `` or `~~~`, as row 1 also skips) exempt only the Tier/Tier reason/Escalation checks, never Effort; peripheral whitespace and any bullet marker (`-`, `*`, `+`) are allowed; an older board is refused | 0 lines of output |",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "124",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "4",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "5",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "6",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "9",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "96",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "no",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 41,
+      "unit_sha256": "6beab43e15ae51914b59ff2781e68aa0481b85d9b1f927d17e1d598b201f5412",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "| 13 · History over archive threshold or entry budget — `history.md` exceeds the archive threshold (default 400 lines; workspace-overridable via `Log archive threshold: N` in the workspace `AGENTS.md`), or a session entry (from its `## YYYY-MM-DD` heading through the line before the next `## ` heading, trailing blank lines excluded, `###` lines inside) runs past the entry budget (default 120 lines; workspace-overridable via `History entry budget: N`); a missing `history.md` is an error; fix path: RUN archives or shortens under the workspace's maintenance policy (default in `AGENTS.md`, recoverable maintenance in `context-lifecycle.md`), never STATUS | 0 lines of output — any line is a **warn** |",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "1",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "20",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "4",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "9",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 42,
+      "unit_sha256": "29fca5b9f2c73e42f7b2c9398409ee531e389936751fe8cd2a8f8bf771199978",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "| 14 · Closure reports for done tasks — every `task-board.md` row whose status is Complete has `reports/T-0N-report.md` (the report may be a stub naming its reviewer, ending with the receipt described in `run.md` §Run record); explicit Lite workspaces guard-skip after row 1 validates their shape; an older board is refused | 0 lines of output |",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "124",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "2",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "3",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "5",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "6",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "9",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "no",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 43,
+      "unit_sha256": "330e903e257261f2344e3752b62d0e014d3a8f9f46f897e15a4bb85f75371e6f",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "| 15 · Reference-doc staleness — every `reference-docs/*.md` carrying a `captured: YYYY-MM-DD` first-line header is younger than the staleness window (default 14 days; workspace-overridable via `Reference staleness window: N` in the workspace `AGENTS.md`); undated files skip (the header convention lands in `reference-docs-README.tmpl.md`); fix path: re-snapshot from the live source and update `captured:` | 0 lines of output — any line is a **warn** |",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "1",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "2",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "20",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "86400",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "9",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 44,
+      "unit_sha256": "fbb8a97fbcf2b85d54c93a670edb0f7c3c932e04a190cf519f875cf998d877bf",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "| 16 · Lifecycle validity — exactly one start, at most one legal terminal after it, stable Task/Role, valid Outcome and nonnegative or unknown counters; a positive Attempts count requires task-linked failed correction or one authorized escalation rather than a count label; legacy Point remains readable | 0 lines of output and exit 0; malformed state or unsupported known Attempts prints row16, line and Run ID diagnostics and exits nonzero |",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "0174",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "10",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "11",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "12",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "124",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "13",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "14",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "15",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "2",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "3",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "4",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "5",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "6",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "7",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "8",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "9",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "96",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "not",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "sessions",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 45,
+      "unit_sha256": "afa8519c83f21c5feba2aa59f5132b3651d5cbaaa759562a1d8dcee259d281c4",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "| 17 · Post-task obligations — every Complete task's report carries a receipt line, `**Remains**: none` or `**Remains**: O-NN[, O-NN…]` (code fences are not read); every `O-NN` cited in a receipt or in the newest State snapshot's `Active obligations` line has a row in the board's obligations table; every `Open` row is named in that snapshot line; a row's state is `Open`, `Discharged` or `Withdrawn`, and a `Discharged` or `Withdrawn` row cites a reference (a decision id, or a report or record path); every row of the table headed `Obligation`, and any row whose first cell starts with `O-`, is an obligation, and a first cell that is not exactly an `O-NN` id, whatever its decoration, is malformed; explicit Lite workspaces guard-skip after row 1 validates their shape; an older board is refused | 0 lines of output |",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "10",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "124",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "2",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "3",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "5",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "6",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "9",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "96",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        },
+        {
+          "token": "no",
+          "reason": "the token is in the row's program, which moved byte for byte to scripts/lint.py as its ROW constant"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 47,
+      "unit_sha256": "92fd0af279d6dff0a32c917c581915dbdb9c3934b00d444e4f43f419a74cba13",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "Per citation, row 4 is equivalent to the canonical anchored-citation check (`sed -n 'NNp' path` piped to `grep -Fq \"fragment\"`), run as one loop over every citation.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 58,
+      "unit_sha256": "2b4b8047dc5bbcca9a63a3acd5287441874de85b72a6c345788ef58f6f5cd37e",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "the agent computes the numerator and denominator from the observed row results; this **agent-computed summary** closes the lint digest with exactly:",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-card.md",
+      "line": 66,
+      "unit_sha256": "6e51987d95a3678daef89ce59b1b9535a7f0d8236cd7e88a5e3fef78ff420c8c",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-card.md",
+      "note": "**Lint.** Run every row of `lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py), which the plan request authorizes ([script consent](../../scripts/README.md#consent)) — the 17 mechanical checks that decide wiring, grounding, statuses, citations, seals and collisions — and report the agent-computed summary.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/scaffold.md",
+      "line": 76,
+      "unit_sha256": "bfd0821d0ac3051937c3c005dd6363fad48a47099d1754413e05872f147bea53",
+      "disposition": "reworded",
+      "destination": "references/guides/scaffold.md",
+      "note": "After completing the brief and core files, run all 17 direct lint rows in `lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py), which the plan request authorizes ([script consent](../../scripts/README.md#consent)), before any PLAN handoff, including when a task remains Draft or a product question is unanswered.",
+      "destination_unit_sha256": null
     }
   ]
 }

@@ -610,7 +610,7 @@
       "rule_id": "R-PLAN-06",
       "statement": "PLAN validates coverage, dependencies, interfaces and semantic counterexamples.",
       "statement_sha256": "a46fb72de469b3c53649cac3eaf84fcc223ce869b64948a3bcb7499c0b2ef663",
-      "home": "references/guides/plan-card.md:76",
+      "home": "references/guides/plan-card.md:77",
       "home_fragment": "Readiness validation",
       "units": [],
       "mirrors": [],
@@ -660,10 +660,10 @@
     },
     {
       "rule_id": "R-PLAN-07",
-      "statement": "A workspace PLAN verifies its scaffold files and all 17 lint rows, and reports and fixes failures before handoff.",
-      "statement_sha256": "7ece37d90a3d0cccc6f7a66bcc1747b545c1dc9e5bba0a09de3c4922f9ebe8ec",
+      "statement": "A workspace PLAN verifies its scaffold files and runs all 17 lint rows with `scripts/lint.py`, and reports and fixes failures before handoff.",
+      "statement_sha256": "1872f77b88544fc04e2e34363679a86b5abbddfd808a15f8dd3a4f81d6f13877",
       "home": "references/guides/plan-card.md:66",
-      "home_fragment": "17 mechanical, copy-paste checks",
+      "home_fragment": "with [`scripts/lint.py`](../../scripts/lint.py)",
       "units": [],
       "mirrors": [],
       "class": "behavioral",
@@ -1305,7 +1305,7 @@
       "rule_id": "R-RUN-17",
       "statement": "Every task the board shows as done has its closure report.",
       "statement_sha256": "9083b7da6a59b2a9bde0d19581b4cc6db02a6a8b56cb05916afa9fc3ad5c64f8",
-      "home": "references/guides/lint-spec.md:42",
+      "home": "references/guides/lint-spec.md:41",
       "home_fragment": "Closure reports for done tasks",
       "units": [],
       "mirrors": [
@@ -2969,20 +2969,21 @@
     },
     {
       "rule_id": "R-REL-05",
-      "statement": "Running or importing a [script](scripts/README.md#consent) from `scripts/` needs the owner's explicit authorization; prefer an equivalent harness capability.",
-      "statement_sha256": "1cd01933734cf926b03b3d3f3795ccbc2943dafe5d249defff8f9640b4f0e6a8",
+      "statement": "Running or importing a [script](scripts/README.md#consent) from `scripts/` needs the owner's explicit authorization (an explicit plan or run request authorizes `scripts/lint.py` for it); prefer an equivalent harness capability.",
+      "statement_sha256": "052eb5011dd593012d9e022f33464749dc0475d7644a3f473c633041a0abc353",
       "home": "SKILL.md:65",
       "home_fragment": "Running or importing a [script](scripts/README.m",
       "units": [
         "Running or importing a [script](scripts/README.m"
       ],
       "mirrors": [
-        "skills/tackle/scripts/README.md:36",
+        "skills/tackle/scripts/README.md:37",
+        "skills/tackle/scripts/README.md:42",
         "references/guides/full-checks.md:4",
         "references/guides/full-checks.md:49",
         "references/guides/full-checks.md:60",
-        "references/guides/full-checks.md:108",
-        "references/guides/full-checks.md:110",
+        "references/guides/full-checks.md:111",
+        "references/guides/full-checks.md:113",
         "references/guides/evidence-capture.md:22",
         "references/guides/decompose-and-lint.md:124",
         "references/guides/context-lifecycle.md:86",
@@ -2997,7 +2998,7 @@
         "references/guides/context-lifecycle.md:77",
         "references/guides/evidence-capture.md:65",
         "references/guides/plan-view.md:16",
-        "references/guides/plan-card.md:98",
+        "references/guides/plan-card.md:99",
         "references/guides/architecture-map.md:60"
       ],
       "class": "safety-invariant",
@@ -3267,7 +3268,7 @@
       "home_fragment": "An obligation that outlives its task is recorded when it is",
       "units": [],
       "mirrors": [
-        "references/guides/lint-spec.md:45"
+        "references/guides/lint-spec.md:44"
       ],
       "class": "safety-invariant",
       "hot_path": false,
@@ -3315,7 +3316,7 @@
       "rule_id": "R-STATE-10",
       "statement": "A history session entry stays within its line budget (120 lines by default, or History entry budget: N in the workspace AGENTS.md), and lint row 13 warns on each entry over it.",
       "statement_sha256": "7b2e75a31d78564efe83a1304310d8d4173a762d378cbfded291533d4bdaad91",
-      "home": "references/guides/lint-spec.md:41",
+      "home": "references/guides/lint-spec.md:40",
       "home_fragment": "13 · History over archive threshold or entry budget",
       "units": [],
       "mirrors": [],
@@ -3369,7 +3370,7 @@
         "references/guides/plan-view.md:137",
         "references/guides/run-card.md:49",
         "references/guides/plan-view.md:16",
-        "references/guides/plan-card.md:98"
+        "references/guides/plan-card.md:99"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -3958,7 +3959,7 @@
       "units": [],
       "mirrors": [
         "references/guides/plan-view.md:68",
-        "references/guides/plan-card.md:100"
+        "references/guides/plan-card.md:101"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -4261,7 +4262,7 @@
       "home_fragment": "every WHEN/THEN scenario names its Check",
       "units": [],
       "mirrors": [
-        "references/guides/plan-card.md:81",
+        "references/guides/plan-card.md:82",
         "references/task.tmpl.md:95"
       ],
       "class": "behavioral",
@@ -4285,7 +4286,7 @@
       "rule_id": "R-PLAN-21",
       "statement": "A workspace may declare sibling workspaces in its AGENTS.md, and a task may then depend on a sibling's task as T-NN [sibling] or keep its brief under that sibling's tasks/.",
       "statement_sha256": "4ed116103230892e37ddbdf8ac29eac35f8b603166ac5ffc364165caeb269c6f",
-      "home": "references/guides/scaffold.md:100",
+      "home": "references/guides/scaffold.md:102",
       "home_fragment": "A workspace may declare sibling workspaces in its AGENTS.md,",
       "units": [],
       "mirrors": [],
@@ -4504,7 +4505,7 @@
       "mirrors": [
         "references/guides/record-lifecycle.md:87",
         "references/guides/full-checks.md:73",
-        "references/guides/full-checks.md:129",
+        "references/guides/full-checks.md:132",
         "references/guides/evidence-capture.md:47",
         "references/guides/context-lifecycle.md:107",
         "references/guides/decompose-and-lint.md:138"
@@ -4599,7 +4600,7 @@
       "rule_id": "R-RUN-30",
       "statement": "A task's Write scope paths are relative to its repository's root, and a task writes only inside its own repository.",
       "statement_sha256": "584e0d61f7bc0a5dd0f678e6e53e81979b2ec697c6b91a79fe029cabb5349d8a",
-      "home": "references/guides/scaffold.md:109",
+      "home": "references/guides/scaffold.md:111",
       "home_fragment": "A task's Write scope paths are relative to its",
       "units": [],
       "mirrors": [],
