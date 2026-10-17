@@ -5229,25 +5229,6 @@
     },
     {
       "path": "references/guides/migrate.md",
-      "line": 95,
-      "unit_sha256": "cae963e1b991b5afd8a400b2d4001a6390795206474adee479be7cb705627d02",
-      "disposition": "reworded",
-      "destination": "references/guides/migrate.md",
-      "note": "Migration keys on the board's `Schema:` line, or on structure when the line is absent — never on the free-text `Methodology:` stamp, which is display-only. [`recipes/migrate/schema.md`](../recipes/migrate/schema.md)'s `schema_of(files)` reads only the workspace root (top-level files; nested paths are ignored for detection) and ignores any `legacy-*/` directory, so a stray legacy snapshot next to a current board never changes the bucket.",
-      "destination_unit_sha256": null,
-      "dropped": [
-        {
-          "token": "69",
-          "reason": "the decision-reference number is deleted along with its citation, not restated"
-        },
-        {
-          "token": "3",
-          "reason": "the citation's item number is deleted along with the citation itself, not restated"
-        }
-      ]
-    },
-    {
-      "path": "references/guides/migrate.md",
       "line": 168,
       "unit_sha256": "7992f98d515a73d36b8e26bf49515867b3cbf5caadf45a9f4030b86fea2aed6e",
       "disposition": "reworded",
@@ -5323,21 +5304,6 @@
       ]
     },
     {
-      "path": "MAINTAINING.md",
-      "line": 9,
-      "unit_sha256": "38f921719d308a295d59ee34a528624f2164ad80802716457302f879a42a154e",
-      "disposition": "reworded",
-      "destination": "MAINTAINING.md",
-      "note": "The migration guide, its recipes and `eval/migration/` stay the one bridge: they keep detecting and transforming every older schema.",
-      "destination_unit_sha256": null,
-      "dropped": [
-        {
-          "token": "coordinator",
-          "reason": "the five legacy templates left the install with forward only"
-        }
-      ]
-    },
-    {
       "path": "SKILL.md",
       "line": 68,
       "unit_sha256": "422fb8cdae613479ccfbbfedeb36dd203e416ff8c71df29412b87e0bb0c0c6a9",
@@ -5354,21 +5320,6 @@
       "destination": "references/guides/run.md",
       "note": null,
       "destination_unit_sha256": "6b2f42d8505d09fddaa185dd4601d42d447c1d4713488c7f7adfab0cd5a7fff0"
-    },
-    {
-      "path": "references/guides/context-lifecycle.md",
-      "line": 8,
-      "unit_sha256": "9c5a9811416a72a77735d111b2364970c93f3358fde878710bb8c9f70dc7dfde",
-      "disposition": "reworded",
-      "destination": "references/guides/context-lifecycle.md",
-      "note": "The recipe reads only these current paths and refuses an older workspace with `migrate first` ([forward only](migrate.md#forward-only)).",
-      "destination_unit_sha256": null,
-      "dropped": [
-        {
-          "token": "coordinator",
-          "reason": "names an older layout or vocabulary that the install no longer reads; an older workspace is migrated first"
-        }
-      ]
     },
     {
       "path": "references/guides/context-lifecycle.md",
@@ -5389,15 +5340,6 @@
       "destination_unit_sha256": null
     },
     {
-      "path": "references/guides/context-lifecycle.md",
-      "line": 102,
-      "unit_sha256": "e9e61936c847d89ec5aeb180f4fd6487695ec66274d6b46faedae972db2dadbd",
-      "disposition": "reworded",
-      "destination": "references/guides/context-lifecycle.md",
-      "note": "```python import base64 from contextlib import contextmanager import hashlib import json import os from pathlib import Path import re import stat import tempfile def digest(data): return hashlib.sha256(data).hexdigest() def document(title, value): return (\"# \" + title + \"\\n\\n```json\\n\" + json.dumps(value, ensure_ascii=False, sort_keys=True, indent=2) + \"\\n```\\n\").encode() def decode(data): return json.loads(data.decode().split(\"```json\\n\", 1)[1].rsplit(\"\\n```\", 1)[0]) class Context: def __init__(self, root): self.root = Path(root).resolve(strict=True) self.board_name = \"task-board.md\" self.history_name = \"history.md\" self.archive_name = \"history-archive.md\" self.projection_name = \"current-work.md\" self.handoff_name = \"handoff-brief.md\" older = [name for name in (\"board.md\", \"log.md\", \"log-archive.md\", \"coordinator.md\", \"HANDOFF.md\") if (self.root / name).exists()] if older: raise ValueError(\"migrate first: older workspace path \" + older[0] + \" (references/guides/migrate.md#forward-only)\") board = self.root / self.board_name if board.is_file() and b\"Schema: tackle-workspace/5\" not in board.read_bytes().split(b\"\\n\"): raise ValueError(\"migrate first: task-board.md has no tackle-workspace/5 schema line with LF line \" \"endings (references/guides/migrate.md#forward-only)\") self.bytes_read = self.bytes_written = self.metadata_checks = 0 def path(self, name): relative = Path(name) if relative.is_absolute() or \"..\" in relative.parts or not relative.parts: raise ValueError(\"unsafe workspace path\") path = self.root / relative for part in [path, *path.parents]: if part == self.root: break if part.is_symlink(): raise ValueError(\"symlink is not an authorized source\") if path.resolve().is_relative_to(self.root) is False: raise ValueError(\"unsafe workspace path\") return path def read(self, name): data = self.path(name).read_bytes() self.bytes_read += len(data) return data def write(self, name, data): path = self.path(name) path.parent.mkdir(parents=True, exist_ok=True) handle, staged = tempfile.mkstemp(prefix=\".context-\", dir=path.parent) try: with os.fdopen(handle, \"wb\") as stream: stream.write(data) self.bytes_written += len(data) stream.flush() os.fsync(stream.fileno()) os.replace(staged, path) self.sync(path.parent) finally: if os.path.exists(staged): os.unlink(staged) @staticmethod def sync(directory): handle = os.open(directory, os.O_RDONLY) try: os.fsync(handle) finally: os.close(handle) @contextmanager def writer(self): import fcntl with self.path(\".context-lock\").open(\"a+b\") as stream: try: fcntl.flock(stream, fcntl.LOCK_EX | fcntl.LOCK_NB) except BlockingIOError as error: raise ValueError(\"writer active\") from error try: yield finally: fcntl.flock(stream, fcntl.LOCK_UN) @contextmanager def reader(self): import fcntl path = self.path(\".context-lock\") if not path.exists(): yield return with path.open(\"rb\") as stream: try: fcntl.flock(stream, fcntl.LOCK_SH | fcntl.LOCK_NB) except BlockingIOError as error: raise ValueError(\"writer active\") from error try: yield finally: fcntl.flock(stream, fcntl.LOCK_UN) @staticmethod def events(data): positions = [m.start() for m in re.finditer(rb\"(?m)^## [0-9]{4}-[0-9]{2}-[0-9]{2}[^\\n]*\\n\", data)] if not positions: raise ValueError(\"history has no complete event heading\") chunks = [data[a:b] for a, b in zip(positions, positions[1:] + [len(data)])] dates = [chunk[3:13] for chunk in chunks] if dates != sorted(dates): raise ValueError(\"history out of order\") return data[:positions[0]], chunks def pending(self): if self.path(\"history/transaction.md\").exists(): raise ValueError(\"incomplete maintenance; recover before reuse\") def index(self): if self.path(\"history/index.md\").exists(): index = decode(self.read(\"history/index.md\")) else: index = {\"schema\": \"tackle-history/1\", \"segments\": []} if self.path(self.archive_name).exists(): data = self.read(self.archive_name) index[\"segments\"].append(self.segment(self.archive_name, data, 1)) if index.get(\"schema\") != \"tackle-history/1\": raise ValueError(\"unknown history schema\") start, prior_date = 1, \"\" for segment in index[\"segments\"]: self.metadata_checks += 1 path = self.path(segment[\"path\"]) if not path.is_file(): raise ValueError(\"missing archive: \" + segment[\"path\"]) if (segment[\"first\"] != start or segment[\"last\"] < start or path.stat().st_size != segment[\"bytes\"]): raise ValueError(\"corrupt archive index or size\") if segment[\"first_date\"] < prior_date or segment[\"last_date\"] < segment[\"first_date\"]: raise ValueError(\"history out of order\") start, prior_date = segment[\"last\"] + 1, segment[\"last_date\"] return index def segment(self, name, data, first): _, entries = self.events(data) return {\"path\": name, \"sha256\": digest(data), \"bytes\": len(data), \"first\": first, \"last\": first + len(entries) - 1, \"first_date\": entries[0][3:13].decode(), \"last_date\": entries[-1][3:13].decode()} def sealed(self, segment): data = self.read(segment[\"path\"]) if digest(data) != segment[\"sha256\"] or self.segment(segment[\"path\"], data, segment[\"first\"]) != segment: raise ValueError(\"corrupt archive: \" + segment[\"path\"]) return data def snapshot(self, scope, sources): self.pending() names = sorted(set(sources)) if not {self.board_name, \"decisions.md\", \"questions.md\"}.issubset(names): raise ValueError(\"current authority sources missing\") if any(name in names for name in [self.projection_name, self.handoff_name, \"inventory.md\", \"history/transaction.md\", \".context-lock\"]): raise ValueError(\"projection cannot be its own authority\") source_bytes = {name: self.read(name) for name in names} index = self.index() log = self.read(self.history_name) _, active = self.events(log) closed = index[\"segments\"][-1][\"last\"] if index[\"segments\"] else 0 if index[\"segments\"] and active[0][3:13].decode() < index[\"segments\"][-1][\"last_date\"]: raise ValueError(\"history out of order\") revisions = {name: digest(data) for name, data in source_bytes.items()} return {\"schema\": \"tackle-current-work/1\", \"scope\": scope, \"revisions\": revisions, \"state_revision\": digest(json.dumps(revisions, sort_keys=True).encode()), \"history_revision\": digest(document(\"History index\", index)), \"active_history_revision\": digest(log), \"last_event\": closed + len(active), \"last_event_revision\": digest(active[-1]), \"sources\": {name: data.decode(\"utf-8\") for name, data in source_bytes.items()}} def project(self, scope, sources): with self.writer(): projection = self.snapshot(scope, sources) self.write(self.projection_name, document(\"Current work — verified source projection\", projection)) return projection def current(self, scope, sources): with self.reader(): actual = self.snapshot(scope, sources) projection = decode(self.read(self.projection_name)) if projection.get(\"sources\") != actual[\"sources\"]: if projection.get(\"revisions\") == actual[\"revisions\"]: raise ValueError(\"projection source mismatch\") raise ValueError(\"stale current-work projection\") if projection != actual: raise ValueError(\"stale current-work projection\") return projection def last_event(self): self.pending() index = self.index() return (index[\"segments\"][-1][\"last\"] if index[\"segments\"] else 0) + len(self.events(self.read(self.history_name))[1]) def history(self): with self.reader(): self.pending() index = self.index() prefix, active = self.events(self.read(self.history_name)) result = prefix + b\"\".join(self.sealed(s) for s in index[\"segments\"]) + b\"\".join(active) self.events(result) return result def event(self, number): with self.reader(): self.pending() index = self.index() for segment in index[\"segments\"]: if segment[\"first\"] <= number <= segment[\"last\"]: return self.events(self.sealed(segment))[1][number - segment[\"first\"]] closed = index[\"segments\"][-1][\"last\"] if index[\"segments\"] else 0 entries = self.events(self.read(self.history_name))[1] if type(number) is int and 1 <= number - closed <= len(entries): return entries[number - closed - 1] raise ValueError(\"missing event\") def lookup(self, heading): matches = [entry for entry in self.events(self.history())[1] if entry.split(b\"\\n\", 1)[0].decode().rstrip(\"\\r\") == heading] if len(matches) != 1: raise ValueError(\"missing or ambiguous original heading\") return matches[0] def append_event(self, data, expected_event, expected_revision): prefix, new_entries = self.events(data) if prefix or len(new_entries) != 1: raise ValueError(\"append requires one original event\") with self.writer(): self.pending() index = self.index() old_log = self.read(self.history_name) _, entries = self.events(old_log) number = (index[\"segments\"][-1][\"last\"] if index[\"segments\"] else 0) + len(entries) if number == expected_event + 1 and entries[-1] == data: return False if number != expected_event or digest(entries[-1]) != expected_revision: raise ValueError(\"history head changed; reconcile before appending\") if data[3:13] < entries[-1][3:13]: raise ValueError(\"history out of order\") self.write(self.history_name, old_log + data) return True def archive(self, keep=5, segment_bytes=65536, fail_after=None): if type(keep) is not int or keep < 1 or type(segment_bytes) is not int or segment_bytes < 1: raise ValueError(\"invalid archive policy\") with self.writer(): self.pending() index = self.index() for segment in index[\"segments\"]: self.sealed(segment) old_log = self.read(self.history_name) prefix, entries = self.events(old_log) if len(entries) <= keep: return False groups, group = [], b\"\" for entry in entries[:-keep]: if group and len(group) + len(entry) > segment_bytes: groups.append(group) group = b\"\" group += entry groups.append(group) new_index = json.loads(json.dumps(index)) first = index[\"segments\"][-1][\"last\"] + 1 if index[\"segments\"] else 1 for data in groups: name = \"history/segment-\" + digest(data) + \".md\" if self.path(name).exists(): if self.read(name) != data: raise ValueError(\"archive content collision\") else: self.write(name, data) self.path(name).chmod(stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH) segment = self.segment(name, data, first) new_index[\"segments\"].append(segment) first = segment[\"last\"] + 1 self.stop(fail_after, \"segment\") old_index = self.read(\"history/index.md\") if self.path(\"history/index.md\").exists() else None transaction = {\"old_log\": digest(old_log), \"old_index\": digest(old_index) if old_index else None, \"next_log\": base64.b64encode(prefix + b\"\".join(entries[-keep:])).decode(), \"next_index\": new_index, \"old_segments\": index[\"segments\"], \"moved_segments\": new_index[\"segments\"][len(index[\"segments\"]):]} self.write(\"history/transaction.md\", document(\"Pending history maintenance\", transaction)) self.stop(fail_after, \"journal\") self.finish(transaction, fail_after) return True @staticmethod def stop(requested, phase): if requested == phase: raise RuntimeError(\"injected interruption at \" + phase) def finish(self, transaction, fail_after=None): next_log = base64.b64decode(transaction[\"next_log\"], validate=True) next_index = document(\"History index\", transaction[\"next_index\"]) current_log = self.read(self.history_name) current_index = self.read(\"history/index.md\") if self.path(\"history/index.md\").exists() else None if (digest(current_log) not in [transaction[\"old_log\"], digest(next_log)] or (digest(current_index) if current_index else None) not in [transaction[\"old_index\"], digest(next_index)]): raise ValueError(\"history changed during maintenance; reconcile original records\") if transaction[\"next_index\"][\"segments\"] != transaction[\"old_segments\"] + transaction[\"moved_segments\"]: raise ValueError(\"maintenance index lineage mismatch\") checked = {segment[\"path\"]: self.sealed(segment) for segment in transaction[\"next_index\"][\"segments\"]} prefix, entries = self.events(next_log) reconstructed = prefix + b\"\".join(checked[s[\"path\"]] for s in transaction[\"moved_segments\"]) + b\"\".join(entries) if digest(reconstructed) != transaction[\"old_log\"]: raise ValueError(\"maintenance originals mismatch\") self.events(reconstructed) if current_index != next_index: self.write(\"history/index.md\", next_index) self.stop(fail_after, \"index\") if current_log != next_log: self.write(self.history_name, next_log) self.stop(fail_after, \"log\") self.path(\"history/transaction.md\").unlink() self.sync(self.path(\"history\")) def recover(self): with self.writer(): if not self.path(\"history/transaction.md\").exists(): return False self.finish(decode(self.read(\"history/transaction.md\"))) return True def export(self, scope, sources, destination, event_numbers=(), record_bundles=None): with self.reader(): return self.export_locked(scope, sources, destination, event_numbers, record_bundles) def export_locked(self, scope, sources, destination, event_numbers, record_bundles): projection = self.current(scope, sources) if any(type(number) is not int or not 1 <= number <= projection[\"last_event\"] for number in event_numbers): raise ValueError(\"requested event outside checkpoint\") destination = Path(destination) destination.mkdir(parents=True, exist_ok=False) bundle = Context(destination) for name, value in projection[\"sources\"].items(): bundle.write(name, value.encode()) for number in sorted(set(event_numbers)): bundle.write(\"history/event-\" + str(number) + \".md\", self.event(number)) for prefix, exported in (record_bundles or {}).items(): exported = Path(exported).resolve(strict=True) for path in sorted(exported.rglob(\"*\")): name = str(Path(prefix) / path.relative_to(exported)) if path.is_symlink() or path.is_file(): target = bundle.path(name) if target.exists() or target.is_symlink() or name in [self.handoff_name, \"inventory.md\"]: raise ValueError(\"record bundle path collision\") if path.is_symlink(): link = os.readlink(path) if (path.name not in [\"blobs\", \"stdout.bin\", \"stderr.bin\"] or Path(link).is_absolute() or not path.resolve(strict=True).is_relative_to(exported)): raise ValueError(\"unsafe record alias\") target.parent.mkdir(parents=True, exist_ok=True) target.symlink_to(link) self.bytes_read += len(link.encode()) bundle.bytes_written += len(link.encode()) else: data = path.read_bytes() self.bytes_read += len(data) bundle.write(name, data) bundle.write(self.handoff_name, document(\"Portable current work\", projection)) if self.snapshot(scope, sources) != projection: raise ValueError(\"sources changed during handoff\") inventory = bundle.file_inventory() bundle.write(\"inventory.md\", document(\"Handoff inventory\", inventory)) self.bytes_read += bundle.bytes_read self.bytes_written += bundle.bytes_written verified = self.verify_export(destination) self.bytes_read += verified[\"bytes_read\"] return destination def file_inventory(self): inventory = {} for path in sorted(self.root.rglob(\"*\")): if path == self.root / \"inventory.md\": continue name = str(path.relative_to(self.root)) if path.is_symlink(): target = os.readlink(path) if Path(target).is_absolute() or not path.resolve(strict=True).is_relative_to(self.root): raise ValueError(\"export inventory unsafe alias\") self.bytes_read += len(target.encode()) inventory[name] = \"symlink:\" + target elif path.is_file(): inventory[name] = digest(self.read(name)) return inventory @staticmethod def verify_export(destination): bundle = Context(destination) inventory = decode(bundle.read(\"inventory.md\")) actual = bundle.file_inventory() if actual != inventory: raise ValueError(\"export inventory mismatch\") projection = decode(bundle.read(bundle.handoff_name)) if set(projection[\"sources\"]) != set(projection[\"revisions\"]): raise ValueError(\"export source membership mismatch\") for name, revision in projection[\"revisions\"].items(): data = bundle.read(name) if digest(data) != revision or data.decode(\"utf-8\") != projection[\"sources\"][name]: raise ValueError(\"export source text/revision mismatch\") return {\"projection\": projection, \"inventory\": inventory, \"bytes_read\": bundle.bytes_read} ```",
-      "destination_unit_sha256": null
-    },
-    {
       "path": "references/guides/decompose-and-lint.md",
       "line": 6,
       "unit_sha256": "911b67d982a188486b5f58bc5d029060807bbe7ec64dfe90ef7ee302dce39f0f",
@@ -5413,15 +5355,6 @@
       "disposition": "reworded",
       "destination": "references/guides/decompose-and-lint.md",
       "note": "If a task's `Write scope` are a subset of another task's and their acceptance checks run together, merge them.",
-      "destination_unit_sha256": null
-    },
-    {
-      "path": "references/guides/decompose-and-lint.md",
-      "line": 113,
-      "unit_sha256": "f2b4759ccfc3b9c6a99c88320b3fbf62bc27d9cc48b23550c5ac6ff4eff77fcc",
-      "disposition": "reworded",
-      "destination": "references/guides/decompose-and-lint.md",
-      "note": "```python import hashlib import json import re def task_fields(text): retired = {'Touches', 'Done-signal', 'Run', 'Target check', 'Surround check'} fields = {} for line in text.splitlines(): match = re.fullmatch(r'\\s*(?:-\\s*)?\\*\\*([^*:]+)(?:\\*\\*\\s*:|:\\*\\*)\\s*(.*?)\\s*', line) if not match: continue key = match[1] if key in retired: raise ValueError('migrate first: retired field name ' + key + ' (references/guides/migrate.md#forward-only)') if key in fields and fields[key] != match[2]: raise ValueError('conflicting field values: ' + key) fields[key] = match[2] return fields def prepare_tasks(requirements, tasks, selected, available, fingerprints, delivery): identities = [task['id'] for task in tasks] if len(set(identities)) != len(identities) or not identities: raise ValueError('duplicate or empty task identities') if any(not re.fullmatch(r'T-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*', identity) for identity in identities): raise ValueError('invalid stable task identity') by_id = dict(zip(identities, tasks)) if len(requirements) != len(set(requirements)) or not requirements: raise ValueError('duplicate or missing requirements') if not selected or len(selected) != len(set(selected)) or set(selected) - by_id.keys(): raise ValueError('invalid readiness scope') owners = {requirement: [] for requirement in requirements} for task in tasks: if not task.get('requirements') or not task.get('outcome'): raise ValueError('task lacks required outcome or scope') for requirement in task['requirements']: if requirement not in owners: raise ValueError('unjustified task scope') owners[requirement].append(task['id']) for dependency in task.get('consumes', []): producer = by_id.get(dependency['task']) if producer is None: raise ValueError('missing dependency identity') output = producer.get('produces', {}).get(dependency['artifact']) expected = {'interface': dependency['interface'], 'revision': dependency['revision']} if output != expected: raise ValueError('incompatible declared producer/consumer') if any(not names for names in owners.values()): raise ValueError('unowned requirement') if not delivery or any(not row.get(k) for row in delivery for k in ('owner', 'check', 'record')): raise ValueError('unowned deliverable obligation') visiting, visited = set(), set() def visit(identity): if identity in visiting: raise ValueError('cyclic dependency') if identity in visited: return visiting.add(identity) for dependency in by_id[identity].get('consumes', []): visit(dependency['task']) visiting.remove(identity) visited.add(identity) for identity in identities: visit(identity) required_inputs = {'contract', 'source', 'configuration', 'dependencies', 'selectors', 'runtime'} if not required_inputs.issubset(fingerprints): raise ValueError('missing relevant fingerprint') for key in required_inputs - {'selectors'}: if not isinstance(fingerprints[key], str) or not fingerprints[key].strip(): raise ValueError('missing relevant fingerprint: ' + key) if not isinstance(fingerprints['selectors'], (dict, list)) or not fingerprints['selectors']: raise ValueError('missing selector membership fingerprint') states, findings = {}, {} for identity, task in by_id.items(): states[identity] = 'Draft' if identity not in selected: if not task.get('milestone') or not task.get('future_check'): raise ValueError('deferred scope lacks milestone/check owner') continue gaps = [] for key in ('write_scope', 'inputs', 'acceptance_check', 'regression_check', 'record'): if not task.get(key): gaps.append('missing ' + key) for requirement in task['requirements']: cases = [case for case in task.get('cases', []) if case.get('requirement') == requirement] if not cases or any(k not in case for case in cases for k in ('input', 'expected', 'check')) or any(not case['check'] for case in cases): gaps.append('missing observable case: ' + requirement) if task.get('pending_product_decisions'): gaps.append('material decision unresolved') if task.get('semantic_review') != 'passed' or task.get('boundary_fixtures') != 'passed': gaps.append('readiness observations unavailable') for dependency in task.get('consumes', []): key = dependency['task'] + '/' + dependency['artifact'] expected = {'interface': dependency['interface'], 'revision': dependency['revision']} if available.get(key) != expected: gaps.append('missing or stale dependency output: ' + key) findings[identity] = gaps if not gaps: states[identity] = 'Ready to run' revision = hashlib.sha256(json.dumps( [requirements, tasks, selected, available, fingerprints, delivery], sort_keys=True, separators=(',', ':')).encode()).hexdigest() return {'states': states, 'findings': findings, 'owners': owners, 'revision': revision, 'execution_authorized': False, 'product_pass': False} ```",
       "destination_unit_sha256": null
     },
     {
@@ -7001,102 +6934,12 @@
       "destination_unit_sha256": null
     },
     {
-      "path": "references/guides/context-lifecycle.md",
-      "line": 85,
-      "unit_sha256": "5d69ec30d9fa8e0c46dce64c9aa751c88155fd3b82514aed215fe276589f29a5",
-      "disposition": "reworded",
-      "destination": "references/guides/context-lifecycle.md",
-      "note": "With the owner's explicit authorization, save the code in an authorized scratch path and instantiate `Context(workspace)`.",
-      "destination_unit_sha256": null
-    },
-    {
-      "path": "references/guides/controlled-writing.md",
-      "line": 33,
-      "unit_sha256": "3515b38055e6adfff8cb66598e048b1b832c393091b01ed9de57788aeb2f3534",
-      "disposition": "reworded",
-      "destination": "references/guides/controlled-writing.md",
-      "note": "With that authorization, run it as `findings(text, language)` from the recipe.",
-      "destination_unit_sha256": null
-    },
-    {
-      "path": "references/guides/decompose-and-lint.md",
-      "line": 113,
-      "unit_sha256": "94a7fd78059c9b3ca2af7208db50d5fb80b64cf9f9477fd9870f87ed88695668",
-      "disposition": "reworded",
-      "destination": "references/guides/decompose-and-lint.md",
-      "note": "For a nontrivial graph, and with the owner's explicit authorization, an existing planner may save this standard-library recipe locally and pass its compiled task data; an equivalent harness check is preferred.",
-      "destination_unit_sha256": null
-    },
-    {
-      "path": "references/guides/evidence-capture.md",
-      "line": 18,
-      "unit_sha256": "1e5eda58a17d4661def7bcf62ffd915c518b66696922b5572cb6925e747aa1b9",
-      "disposition": "reworded",
-      "destination": "references/guides/evidence-capture.md",
-      "note": "With the owner's explicit authorization, save the recipe in an authorized location and pass the existing initiative workspace as its single argument",
-      "destination_unit_sha256": null
-    },
-    {
-      "path": "references/guides/full-checks.md",
-      "line": 4,
-      "unit_sha256": "1d50ed956f20d006eff3bcc5941b357f3540b870fd38800497d0b8a74697044e",
-      "disposition": "reworded",
-      "destination": "references/guides/full-checks.md",
-      "note": "Otherwise, with the owner's explicit authorization ([recipe consent](../recipes/README.md#consent)), save this Python 3 recipe inside the authorized workspace before running checks.",
-      "destination_unit_sha256": null
-    },
-    {
-      "path": "references/guides/full-checks.md",
-      "line": 44,
-      "unit_sha256": "96f87c8109f0014735754fc41b6ce036f5a8322888d6d079cbb8578e301a25fe",
-      "disposition": "reworded",
-      "destination": "references/guides/full-checks.md",
-      "note": "With the owner's explicit authorization, save the block as a workspace-local `capture.py`.",
-      "destination_unit_sha256": null
-    },
-    {
-      "path": "references/guides/full-checks.md",
-      "line": 375,
-      "unit_sha256": "69880f345adaf6a422ec6746ad78f31ff5d0c38f931e98cc9f8c35311b4fef4e",
-      "disposition": "reworded",
-      "destination": "references/guides/full-checks.md",
-      "note": "When equivalent harness automation is absent, the connected path below needs the owner's explicit authorization; with it, save this second block as workspace-local `lint.py` beside `capture.py`, then run `python3 <lint.py> <lint.json>`.",
-      "destination_unit_sha256": null
-    },
-    {
       "path": "references/guides/plan-view.md",
       "line": 27,
       "unit_sha256": "4d48d28c108da8993e2e17810b35d7dcc2cc8413bb93f418b04bb8f8839f97f2",
       "disposition": "reworded",
       "destination": "references/guides/plan-view.md",
       "note": "With that authorization, run [`<skill>/scripts/plan_view.py`](../../scripts/plan_view.py) with the [template](../plan-view.template.md), where `<skill>` is the installed skill folder:",
-      "destination_unit_sha256": null
-    },
-    {
-      "path": "references/guides/record-lifecycle.md",
-      "line": 67,
-      "unit_sha256": "9e6a6795a5038eb9f8400fa1bf4b6a6934118e74c514ef74416d2c4939583ce1",
-      "disposition": "reworded",
-      "destination": "references/guides/record-lifecycle.md",
-      "note": "With the owner's explicit authorization, the optional standard-library recipe below is saved next to the Coordinated `capture.py`.",
-      "destination_unit_sha256": null
-    },
-    {
-      "path": "references/guides/context-lifecycle.md",
-      "line": 76,
-      "unit_sha256": "abbcafbc312535c20609060313702f7e5a0ba4f4bfeec22b4deb91c5d1989018",
-      "disposition": "reworded",
-      "destination": "references/guides/context-lifecycle.md",
-      "note": "Export required check records, including transitively retained prior records and their content objects, through an equivalent harness export or, with the owner's explicit authorization, the record lifecycle recipe.",
-      "destination_unit_sha256": null
-    },
-    {
-      "path": "references/guides/evidence-capture.md",
-      "line": 132,
-      "unit_sha256": "b59a9b38b8ea5a7f0bdf2b6916ce5a4be86149d87c83862f39bb74281503516f",
-      "disposition": "reworded",
-      "destination": "references/guides/evidence-capture.md",
-      "note": "When a native export is unavailable, this recipe, with the owner's explicit authorization, works without any installed collector; equivalent direct capture is valid if it preserves the same facts.",
       "destination_unit_sha256": null
     },
     {
@@ -7531,60 +7374,6 @@
       ]
     },
     {
-      "path": "references/recipes/README.md",
-      "line": 12,
-      "unit_sha256": "953473c219e7ece69a14031abeb44e586f3626edb92208b56ec97d982d7d79a5",
-      "disposition": "reworded",
-      "destination": "references/recipes/README.md",
-      "note": "| [migrate/schema.md](migrate/schema.md) | `cdca8720634be9fbda16e3e6bc28062986980f6b4af8cbce99cd4ff87930dce6` |",
-      "destination_unit_sha256": null
-    },
-    {
-      "path": "references/recipes/README.md",
-      "line": 13,
-      "unit_sha256": "48521db645b8185c3d9f654cfa90066331e0f25896cbce83af4799331549bb22",
-      "disposition": "reworded",
-      "destination": "references/recipes/README.md",
-      "note": "| [migrate/step-pre3-to-3.md](migrate/step-pre3-to-3.md) | `6070ad996bed708322de1a35588bf33c2bfb3cf9f3ebd96dee9bc4fe59fd8fdb` |",
-      "destination_unit_sha256": null
-    },
-    {
-      "path": "references/recipes/README.md",
-      "line": 14,
-      "unit_sha256": "1a75ac36f0e5280a233b4de963d06cfd03514619493a86cf01b3e4bcf75a15ff",
-      "disposition": "reworded",
-      "destination": "references/recipes/README.md",
-      "note": "| [migrate/step-3-to-4.md](migrate/step-3-to-4.md) | `f73aca81c74b40d21298b83f6455f028b0dad23fcd4a3d69628d675bb04b1171` |",
-      "destination_unit_sha256": null
-    },
-    {
-      "path": "skills/tackle/references/recipes/README.md",
-      "line": 12,
-      "unit_sha256": "953473c219e7ece69a14031abeb44e586f3626edb92208b56ec97d982d7d79a5",
-      "disposition": "reworded",
-      "destination": "skills/tackle/references/recipes/README.md",
-      "note": "| [migrate/schema.md](migrate/schema.md) | `cdca8720634be9fbda16e3e6bc28062986980f6b4af8cbce99cd4ff87930dce6` |",
-      "destination_unit_sha256": null
-    },
-    {
-      "path": "skills/tackle/references/recipes/README.md",
-      "line": 13,
-      "unit_sha256": "48521db645b8185c3d9f654cfa90066331e0f25896cbce83af4799331549bb22",
-      "disposition": "reworded",
-      "destination": "skills/tackle/references/recipes/README.md",
-      "note": "| [migrate/step-pre3-to-3.md](migrate/step-pre3-to-3.md) | `6070ad996bed708322de1a35588bf33c2bfb3cf9f3ebd96dee9bc4fe59fd8fdb` |",
-      "destination_unit_sha256": null
-    },
-    {
-      "path": "skills/tackle/references/recipes/README.md",
-      "line": 14,
-      "unit_sha256": "1a75ac36f0e5280a233b4de963d06cfd03514619493a86cf01b3e4bcf75a15ff",
-      "disposition": "reworded",
-      "destination": "skills/tackle/references/recipes/README.md",
-      "note": "| [migrate/step-3-to-4.md](migrate/step-3-to-4.md) | `f73aca81c74b40d21298b83f6455f028b0dad23fcd4a3d69628d675bb04b1171` |",
-      "destination_unit_sha256": null
-    },
-    {
       "path": "SKILL.md",
       "line": 4,
       "unit_sha256": "81c976b86fa95415dee06c33dc7148fc8bc9248a312dab468bb189def15c2b84",
@@ -7638,66 +7427,6 @@
         {
           "token": "0",
           "reason": "release version stamp bumped to 9.2.1"
-        }
-      ]
-    },
-    {
-      "path": "references/recipes/README.md",
-      "line": 13,
-      "unit_sha256": "23431deb7905aa6b6fb7291a043e05843538ac05118063d6556e7c4e2fb2455e",
-      "disposition": "reworded",
-      "destination": "references/recipes/README.md",
-      "note": "| [migrate/step-pre3-to-3.md](migrate/step-pre3-to-3.md) | `6070ad996bed708322de1a35588bf33c2bfb3cf9f3ebd96dee9bc4fe59fd8fdb` |",
-      "destination_unit_sha256": null,
-      "dropped": [
-        {
-          "token": "8443d76c5cd440f44cb7d21e1fbc53793e33d4f9863a92a0de4c3d37ae95f594",
-          "reason": "recipe manifest hash updated with its recipe"
-        }
-      ]
-    },
-    {
-      "path": "skills/tackle/references/recipes/README.md",
-      "line": 13,
-      "unit_sha256": "23431deb7905aa6b6fb7291a043e05843538ac05118063d6556e7c4e2fb2455e",
-      "disposition": "reworded",
-      "destination": "skills/tackle/references/recipes/README.md",
-      "note": "| [migrate/step-pre3-to-3.md](migrate/step-pre3-to-3.md) | `6070ad996bed708322de1a35588bf33c2bfb3cf9f3ebd96dee9bc4fe59fd8fdb` |",
-      "destination_unit_sha256": null,
-      "dropped": [
-        {
-          "token": "8443d76c5cd440f44cb7d21e1fbc53793e33d4f9863a92a0de4c3d37ae95f594",
-          "reason": "recipe manifest hash updated with its recipe"
-        }
-      ]
-    },
-    {
-      "path": "references/recipes/README.md",
-      "line": 14,
-      "unit_sha256": "f9e94cc3425c1e4836ac730872facf4cc258230f2c3e09812cef590e4b7df603",
-      "disposition": "reworded",
-      "destination": "references/recipes/README.md",
-      "note": "| [migrate/step-3-to-4.md](migrate/step-3-to-4.md) | `f73aca81c74b40d21298b83f6455f028b0dad23fcd4a3d69628d675bb04b1171` |",
-      "destination_unit_sha256": null,
-      "dropped": [
-        {
-          "token": "af58980257f402fb833df362bd73c5788040642ed5dd97260da5b2461e5b440e",
-          "reason": "recipe manifest hash updated with its recipe"
-        }
-      ]
-    },
-    {
-      "path": "skills/tackle/references/recipes/README.md",
-      "line": 14,
-      "unit_sha256": "f9e94cc3425c1e4836ac730872facf4cc258230f2c3e09812cef590e4b7df603",
-      "disposition": "reworded",
-      "destination": "skills/tackle/references/recipes/README.md",
-      "note": "| [migrate/step-3-to-4.md](migrate/step-3-to-4.md) | `f73aca81c74b40d21298b83f6455f028b0dad23fcd4a3d69628d675bb04b1171` |",
-      "destination_unit_sha256": null,
-      "dropped": [
-        {
-          "token": "af58980257f402fb833df362bd73c5788040642ed5dd97260da5b2461e5b440e",
-          "reason": "recipe manifest hash updated with its recipe"
         }
       ]
     },
@@ -7797,33 +7526,6 @@
       "disposition": "reworded",
       "destination": "MAINTAINING.md",
       "note": "The owner-controlled installer' skills/tackle/references/guides/update.md); case \"$m\" in *SKILL.md*references/*scripts/*) ;; *) echo \"update.md install copy path missing install artifact\";; esac; grep -q \"exact legacy basename.*tackle-check\" skills/tackle/references/guides/update.md || echo \"update.md missing legacy tombstone: exact legacy basename tackle-check\"; grep -qi \"unrelated neighboring files remain untouched\" skills/tackle/references/guides/update.md || echo \"update.md missing sentinel-preserving transition: unrelated neighbors\"; if grep -Eq '(^|[[:space:]])(curl|tar -x)' skills/tackle/references/guides/update.md; then echo \"update.md contains runtime transfer command\"; fi`",
-      "destination_unit_sha256": null
-    },
-    {
-      "path": "MAINTAINING.md",
-      "line": 61,
-      "unit_sha256": "1edd88c93340e80caa72c9abb28ff706237e1c1e0e6f73ec7a20356471d669fa",
-      "disposition": "reworded",
-      "destination": "MAINTAINING.md",
-      "note": "**Recipe and script manifest currency** — Gate 9 checks that the recipe manifest lists every recipe under references/recipes/ with its current sha256, and that the script manifest lists every `*.py` under skills/tackle/scripts/ with its current sha256.",
-      "destination_unit_sha256": null
-    },
-    {
-      "path": "MAINTAINING.md",
-      "line": 61,
-      "unit_sha256": "7d084cac9c578c20511d602ba3508e5a3ce25658018832224c1834f3776adc27",
-      "disposition": "reworded",
-      "destination": "MAINTAINING.md",
-      "note": "It runs from the repository root and echoes one line per missing, duplicate, stale or mismatched row: `D=skills/tackle/references/recipes; M=$D/README.md; sha() { if command -v sha256sum >/dev/null 2>&1; then sha256sum \"$1\"; else shasum -a 256 \"$1\"; fi | cut -c 1-64; }; files=$(find $D -name '*.md' | sed \"s|^$D/||\" | grep -vxF README.md | sort); for f in $files; do n=$(grep -cF \"($f) |\" $M); if [ \"$n\" -eq 0 ]; then echo \"recipe manifest: missing row $f\"; elif [ \"$n\" -gt 1 ]; then echo \"recipe manifest: duplicate row $f\"; else h=$(sha \"$D/$f\"); case \"$(grep -F \"($f) |\" $M)\" in *\"$h\"*) ;; *) echo \"recipe manifest: hash mismatch $f\";; esac; fi; done; sed -n 's/^| \\[\\([^]]*\\)\\](\\1) |.*/\\1/p' $M | while IFS= read -r p; do [ -f \"$D/$p\" ] || echo \"recipe manifest: stale row $p\"; done; S=skills/tackle/scripts; N=$S/README.md; files=$(find $S -name '*.py' | sed \"s|^$S/||\" | sort); for f in $files; do n=$(grep -cF \"($f) |\" $N); if [ \"$n\" -eq 0 ]; then echo \"script manifest: missing row $f\"; elif [ \"$n\" -gt 1 ]; then echo \"script manifest: duplicate row $f\"; else h=$(sha \"$S/$f\"); case \"$(grep -F \"($f) |\" $N)\" in *\"$h\"*) ;; *) echo \"script manifest: hash mismatch $f\";; esac; fi; done; sed -n 's/^| \\[\\([^]]*\\)\\](\\1) |.*/\\1/p' $N | while IFS= read -r p; do [ -f \"$S/$p\" ] || echo \"script manifest: stale row $p\"; done`",
-      "destination_unit_sha256": null
-    },
-    {
-      "path": "SKILL.md",
-      "line": 61,
-      "unit_sha256": "4287d1d3cdba8f953dfda31836c9c8c61f880b084cebd5c243bb1f751f4ee117",
-      "disposition": "reworded",
-      "destination": "SKILL.md",
-      "note": "Saving or running a [recipe script](references/recipes/README.md#consent) from `references/`, or running or importing a [script](scripts/README.md#consent) from `scripts/`, needs the owner's explicit authorization; prefer an equivalent harness capability.",
       "destination_unit_sha256": null
     },
     {
@@ -8655,6 +8357,1008 @@
       "disposition": "reworded",
       "destination": "references/guides/update.md",
       "note": "Ordinary Tackle invocation performs no network access or installation-tree mutation; an optional [System One judgment](system-one.md) goes through the host's `typesafe-ai` skill, only with the workspace's recorded consent.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "MAINTAINING.md",
+      "line": 9,
+      "unit_sha256": "e735df1b791bb7f1488e04abaff1ab36ca427c1de77843ff544c82451d9ff4fd",
+      "disposition": "reworded",
+      "destination": "MAINTAINING.md",
+      "note": "The migration guide, its scripts and `eval/migration/` stay the one bridge: they keep detecting and transforming every older schema.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "MAINTAINING.md",
+      "line": 61,
+      "unit_sha256": "1edd88c93340e80caa72c9abb28ff706237e1c1e0e6f73ec7a20356471d669fa",
+      "disposition": "reworded",
+      "destination": "MAINTAINING.md",
+      "note": "**Script manifest currency** — Gate 9 checks that the script manifest lists every `*.py` under skills/tackle/scripts/, recursively, with its current sha256.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "MAINTAINING.md",
+      "line": 61,
+      "unit_sha256": "7d084cac9c578c20511d602ba3508e5a3ce25658018832224c1834f3776adc27",
+      "disposition": "reworded",
+      "destination": "MAINTAINING.md",
+      "note": "It runs from the repository root and echoes one line per missing, duplicate, stale or mismatched row: `sha() { if command -v sha256sum >/dev/null 2>&1; then sha256sum \"$1\"; else shasum -a 256 \"$1\"; fi | cut -c 1-64; }; S=skills/tackle/scripts; N=$S/README.md; files=$(find $S -name '*.py' | sed \"s|^$S/||\" | sort); for f in $files; do n=$(grep -cF \"($f) |\" $N); if [ \"$n\" -eq 0 ]; then echo \"script manifest: missing row $f\"; elif [ \"$n\" -gt 1 ]; then echo \"script manifest: duplicate row $f\"; else h=$(sha \"$S/$f\"); case \"$(grep -F \"($f) |\" $N)\" in *\"$h\"*) ;; *) echo \"script manifest: hash mismatch $f\";; esac; fi; done; sed -n 's/^| \\[\\([^]]*\\)\\](\\1) |.*/\\1/p' $N | while IFS= read -r p; do [ -f \"$S/$p\" ] || echo \"script manifest: stale row $p\"; done`",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "SKILL.md",
+      "line": 61,
+      "unit_sha256": "4287d1d3cdba8f953dfda31836c9c8c61f880b084cebd5c243bb1f751f4ee117",
+      "disposition": "reworded",
+      "destination": "SKILL.md",
+      "note": "Running or importing a [script](scripts/README.md#consent) from `scripts/` needs the owner's explicit authorization; prefer an equivalent harness capability.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/codex-native-usage.md",
+      "line": 29,
+      "unit_sha256": "53e2cab7414e1db326ea54353f866b6ee06cd8817061ffe509faf45661667b45",
+      "disposition": "reworded",
+      "destination": "references/guides/system-one.md",
+      "note": "**Stop before the program below.** Save or run it only with the owner's explicit authorization for this use, or under a grant in [script consent](../../scripts/README.md#consent).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 8,
+      "unit_sha256": "683acfb2e48180fc4abb012597aa9c67b1464c3b59ef33022d7fbbbe0c082df1",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "The script reads only these current paths and refuses an older workspace with `migrate first` ([forward only](migrate.md#forward-only)).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 27,
+      "unit_sha256": "14eafa75ee44cce97be5ab0b3992d54bc6b3b5de6e8c4a44c050ef0fd29b5e5f",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "The script hashes current authoritative files on each verification.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 76,
+      "unit_sha256": "3a99e59f7e60f3c4ccd9ce8bcad852034e8648624683a75c8d4de15a9f1524ee",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "Export required check records, including transitively retained prior records and their content objects, through an equivalent harness export or, with the owner's explicit authorization, the record lifecycle script.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 84,
+      "unit_sha256": "050eff6079802a8c57186712142aade0ddb662ce0d26a69cde1d85976647f726",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "This is a Python standard-library module, [`scripts/context_bundle.py`](../../scripts/context_bundle.py), not an installed executable or new workflow engine; it has no command line.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 85,
+      "unit_sha256": "d68b49b00b6d2082b25647a8acbdd01ee6702bff5a4c59834a1146317accd9fd",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "With the owner's explicit authorization, put `<skill>/scripts/` first on `sys.path`, import `context_bundle` and instantiate `Context(workspace)`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 93,
+      "unit_sha256": "7e78da1935256b24ec70b8b3f8c65e1226fcb1bf11f4d80eef63b04a77a46d95",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "For record bundles, first call the record script’s `export_records`, then pass the checked directories as `record_bundles={\"evidence\": exported_directory}`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 99,
+      "unit_sha256": "dab45ed23b8294336eecfeee31de71aa73cbe116f6e10c97c6b833596f238783",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "This POSIX example needs advisory file locking; if unavailable, use an equivalent observed lock capability or report the script unavailable.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 106,
+      "unit_sha256": "53e2cab7414e1db326ea54353f866b6ee06cd8817061ffe509faf45661667b45",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "Import or run it only with the owner's explicit authorization for this use, or under a grant in [script consent](../../scripts/README.md#consent).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 110,
+      "unit_sha256": "bac89f5dcb4d0ce483b9c724e14660d161dfafb2fa6ad2c539985e60f60bf545",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/context_bundle.py",
+      "note": "import base64 from contextlib import contextmanager import hashlib import json import os from pathlib import Path import re import stat import tempfile def digest(data): return hashlib.sha256(data).hexdigest() def document(title, value): return (\"# \" + title + \"\\n\\n```json\\n\" + json.dumps(value, ensure_ascii=False, sort_keys=True, indent=2) + \"\\n```\\n\").encode() def decode(data): return json.loads(data.decode().split(\"```json\\n\", 1)[1].rsplit(\"\\n```\", 1)[0]) class Context: def __init__(self, root): self.root = Path(root).resolve(strict=True) self.board_name = \"task-board.md\" self.history_name = \"history.md\" self.archive_name = \"history-archive.md\" self.projection_name = \"current-work.md\" self.handoff_name = \"handoff-brief.md\" older = [name for name in (\"board.md\", \"log.md\", \"log-archive.md\", \"coordinator.md\", \"HANDOFF.md\") if (self.root / name).exists()] if older: raise ValueError(\"migrate first: older workspace path \" + older[0] + \" (references/guides/migrate.md#forward-only)\") board = self.root / self.board_name if board.is_file() and b\"Schema: tackle-workspace/5\" not in board.read_bytes().split(b\"\\n\"): raise ValueError(\"migrate first: task-board.md has no tackle-workspace/5 schema line with LF line \" \"endings (references/guides/migrate.md#forward-only)\") self.bytes_read = self.bytes_written = self.metadata_checks = 0 def path(self, name): relative = Path(name) if relative.is_absolute() or \"..\" in relative.parts or not relative.parts: raise ValueError(\"unsafe workspace path\") path = self.root / relative for part in [path, *path.parents]: if part == self.root: break if part.is_symlink(): raise ValueError(\"symlink is not an authorized source\") if path.resolve().is_relative_to(self.root) is False: raise ValueError(\"unsafe workspace path\") return path def read(self, name): data = self.path(name).read_bytes() self.bytes_read += len(data) return data def write(self, name, data): path = self.path(name) path.parent.mkdir(parents=True, exist_ok=True) handle, staged = tempfile.mkstemp(prefix=\".context-\", dir=path.parent) try: with os.fdopen(handle, \"wb\") as stream: stream.write(data) self.bytes_written += len(data) stream.flush() os.fsync(stream.fileno()) os.replace(staged, path) self.sync(path.parent) finally: if os.path.exists(staged): os.unlink(staged) @staticmethod def sync(directory): handle = os.open(directory, os.O_RDONLY) try: os.fsync(handle) finally: os.close(handle) @contextmanager def writer(self): import fcntl with self.path(\".context-lock\").open(\"a+b\") as stream: try: fcntl.flock(stream, fcntl.LOCK_EX | fcntl.LOCK_NB) except BlockingIOError as error: raise ValueError(\"writer active\") from error try: yield finally: fcntl.flock(stream, fcntl.LOCK_UN) @contextmanager def reader(self): import fcntl path = self.path(\".context-lock\") if not path.exists(): yield return with path.open(\"rb\") as stream: try: fcntl.flock(stream, fcntl.LOCK_SH | fcntl.LOCK_NB) except BlockingIOError as error: raise ValueError(\"writer active\") from error try: yield finally: fcntl.flock(stream, fcntl.LOCK_UN) @staticmethod def events(data): positions = [m.start() for m in re.finditer(rb\"(?m)^## [0-9]{4}-[0-9]{2}-[0-9]{2}[^\\n]*\\n\", data)] if not positions: raise ValueError(\"history has no complete event heading\") chunks = [data[a:b] for a, b in zip(positions, positions[1:] + [len(data)])] dates = [chunk[3:13] for chunk in chunks] if dates != sorted(dates): raise ValueError(\"history out of order\") return data[:positions[0]], chunks def pending(self): if self.path(\"history/transaction.md\").exists(): raise ValueError(\"incomplete maintenance; recover before reuse\") def index(self): if self.path(\"history/index.md\").exists(): index = decode(self.read(\"history/index.md\")) else: index = {\"schema\": \"tackle-history/1\", \"segments\": []} if self.path(self.archive_name).exists(): data = self.read(self.archive_name) index[\"segments\"].append(self.segment(self.archive_name, data, 1)) if index.get(\"schema\") != \"tackle-history/1\": raise ValueError(\"unknown history schema\") start, prior_date = 1, \"\" for segment in index[\"segments\"]: self.metadata_checks += 1 path = self.path(segment[\"path\"]) if not path.is_file(): raise ValueError(\"missing archive: \" + segment[\"path\"]) if (segment[\"first\"] != start or segment[\"last\"] < start or path.stat().st_size != segment[\"bytes\"]): raise ValueError(\"corrupt archive index or size\") if segment[\"first_date\"] < prior_date or segment[\"last_date\"] < segment[\"first_date\"]: raise ValueError(\"history out of order\") start, prior_date = segment[\"last\"] + 1, segment[\"last_date\"] return index def segment(self, name, data, first): _, entries = self.events(data) return {\"path\": name, \"sha256\": digest(data), \"bytes\": len(data), \"first\": first, \"last\": first + len(entries) - 1, \"first_date\": entries[0][3:13].decode(), \"last_date\": entries[-1][3:13].decode()} def sealed(self, segment): data = self.read(segment[\"path\"]) if digest(data) != segment[\"sha256\"] or self.segment(segment[\"path\"], data, segment[\"first\"]) != segment: raise ValueError(\"corrupt archive: \" + segment[\"path\"]) return data def snapshot(self, scope, sources): self.pending() names = sorted(set(sources)) if not {self.board_name, \"decisions.md\", \"questions.md\"}.issubset(names): raise ValueError(\"current authority sources missing\") if any(name in names for name in [self.projection_name, self.handoff_name, \"inventory.md\", \"history/transaction.md\", \".context-lock\"]): raise ValueError(\"projection cannot be its own authority\") source_bytes = {name: self.read(name) for name in names} index = self.index() log = self.read(self.history_name) _, active = self.events(log) closed = index[\"segments\"][-1][\"last\"] if index[\"segments\"] else 0 if index[\"segments\"] and active[0][3:13].decode() < index[\"segments\"][-1][\"last_date\"]: raise ValueError(\"history out of order\") revisions = {name: digest(data) for name, data in source_bytes.items()} return {\"schema\": \"tackle-current-work/1\", \"scope\": scope, \"revisions\": revisions, \"state_revision\": digest(json.dumps(revisions, sort_keys=True).encode()), \"history_revision\": digest(document(\"History index\", index)), \"active_history_revision\": digest(log), \"last_event\": closed + len(active), \"last_event_revision\": digest(active[-1]), \"sources\": {name: data.decode(\"utf-8\") for name, data in source_bytes.items()}} def project(self, scope, sources): with self.writer(): projection = self.snapshot(scope, sources) self.write(self.projection_name, document(\"Current work — verified source projection\", projection)) return projection def current(self, scope, sources): with self.reader(): actual = self.snapshot(scope, sources) projection = decode(self.read(self.projection_name)) if projection.get(\"sources\") != actual[\"sources\"]: if projection.get(\"revisions\") == actual[\"revisions\"]: raise ValueError(\"projection source mismatch\") raise ValueError(\"stale current-work projection\") if projection != actual: raise ValueError(\"stale current-work projection\") return projection def last_event(self): self.pending() index = self.index() return (index[\"segments\"][-1][\"last\"] if index[\"segments\"] else 0) + len(self.events(self.read(self.history_name))[1]) def history(self): with self.reader(): self.pending() index = self.index() prefix, active = self.events(self.read(self.history_name)) result = prefix + b\"\".join(self.sealed(s) for s in index[\"segments\"]) + b\"\".join(active) self.events(result) return result def event(self, number): with self.reader(): self.pending() index = self.index() for segment in index[\"segments\"]: if segment[\"first\"] <= number <= segment[\"last\"]: return self.events(self.sealed(segment))[1][number - segment[\"first\"]] closed = index[\"segments\"][-1][\"last\"] if index[\"segments\"] else 0 entries = self.events(self.read(self.history_name))[1] if type(number) is int and 1 <= number - closed <= len(entries): return entries[number - closed - 1] raise ValueError(\"missing event\") def lookup(self, heading): matches = [entry for entry in self.events(self.history())[1] if entry.split(b\"\\n\", 1)[0].decode().rstrip(\"\\r\") == heading] if len(matches) != 1: raise ValueError(\"missing or ambiguous original heading\") return matches[0] def append_event(self, data, expected_event, expected_revision): prefix, new_entries = self.events(data) if prefix or len(new_entries) != 1: raise ValueError(\"append requires one original event\") with self.writer(): self.pending() index = self.index() old_log = self.read(self.history_name) _, entries = self.events(old_log) number = (index[\"segments\"][-1][\"last\"] if index[\"segments\"] else 0) + len(entries) if number == expected_event + 1 and entries[-1] == data: return False if number != expected_event or digest(entries[-1]) != expected_revision: raise ValueError(\"history head changed; reconcile before appending\") if data[3:13] < entries[-1][3:13]: raise ValueError(\"history out of order\") self.write(self.history_name, old_log + data) return True def archive(self, keep=5, segment_bytes=65536, fail_after=None): if type(keep) is not int or keep < 1 or type(segment_bytes) is not int or segment_bytes < 1: raise ValueError(\"invalid archive policy\") with self.writer(): self.pending() index = self.index() for segment in index[\"segments\"]: self.sealed(segment) old_log = self.read(self.history_name) prefix, entries = self.events(old_log) if len(entries) <= keep: return False groups, group = [], b\"\" for entry in entries[:-keep]: if group and len(group) + len(entry) > segment_bytes: groups.append(group) group = b\"\" group += entry groups.append(group) new_index = json.loads(json.dumps(index)) first = index[\"segments\"][-1][\"last\"] + 1 if index[\"segments\"] else 1 for data in groups: name = \"history/segment-\" + digest(data) + \".md\" if self.path(name).exists(): if self.read(name) != data: raise ValueError(\"archive content collision\") else: self.write(name, data) self.path(name).chmod(stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH) segment = self.segment(name, data, first) new_index[\"segments\"].append(segment) first = segment[\"last\"] + 1 self.stop(fail_after, \"segment\") old_index = self.read(\"history/index.md\") if self.path(\"history/index.md\").exists() else None transaction = {\"old_log\": digest(old_log), \"old_index\": digest(old_index) if old_index else None, \"next_log\": base64.b64encode(prefix + b\"\".join(entries[-keep:])).decode(), \"next_index\": new_index, \"old_segments\": index[\"segments\"], \"moved_segments\": new_index[\"segments\"][len(index[\"segments\"]):]} self.write(\"history/transaction.md\", document(\"Pending history maintenance\", transaction)) self.stop(fail_after, \"journal\") self.finish(transaction, fail_after) return True @staticmethod def stop(requested, phase): if requested == phase: raise RuntimeError(\"injected interruption at \" + phase) def finish(self, transaction, fail_after=None): next_log = base64.b64decode(transaction[\"next_log\"], validate=True) next_index = document(\"History index\", transaction[\"next_index\"]) current_log = self.read(self.history_name) current_index = self.read(\"history/index.md\") if self.path(\"history/index.md\").exists() else None if (digest(current_log) not in [transaction[\"old_log\"], digest(next_log)] or (digest(current_index) if current_index else None) not in [transaction[\"old_index\"], digest(next_index)]): raise ValueError(\"history changed during maintenance; reconcile original records\") if transaction[\"next_index\"][\"segments\"] != transaction[\"old_segments\"] + transaction[\"moved_segments\"]: raise ValueError(\"maintenance index lineage mismatch\") checked = {segment[\"path\"]: self.sealed(segment) for segment in transaction[\"next_index\"][\"segments\"]} prefix, entries = self.events(next_log) reconstructed = prefix + b\"\".join(checked[s[\"path\"]] for s in transaction[\"moved_segments\"]) + b\"\".join(entries) if digest(reconstructed) != transaction[\"old_log\"]: raise ValueError(\"maintenance originals mismatch\") self.events(reconstructed) if current_index != next_index: self.write(\"history/index.md\", next_index) self.stop(fail_after, \"index\") if current_log != next_log: self.write(self.history_name, next_log) self.stop(fail_after, \"log\") self.path(\"history/transaction.md\").unlink() self.sync(self.path(\"history\")) def recover(self): with self.writer(): if not self.path(\"history/transaction.md\").exists(): return False self.finish(decode(self.read(\"history/transaction.md\"))) return True def export(self, scope, sources, destination, event_numbers=(), record_bundles=None): with self.reader(): return self.export_locked(scope, sources, destination, event_numbers, record_bundles) def export_locked(self, scope, sources, destination, event_numbers, record_bundles): projection = self.current(scope, sources) if any(type(number) is not int or not 1 <= number <= projection[\"last_event\"] for number in event_numbers): raise ValueError(\"requested event outside checkpoint\") destination = Path(destination) destination.mkdir(parents=True, exist_ok=False) bundle = Context(destination) for name, value in projection[\"sources\"].items(): bundle.write(name, value.encode()) for number in sorted(set(event_numbers)): bundle.write(\"history/event-\" + str(number) + \".md\", self.event(number)) for prefix, exported in (record_bundles or {}).items(): exported = Path(exported).resolve(strict=True) for path in sorted(exported.rglob(\"*\")): name = str(Path(prefix) / path.relative_to(exported)) if path.is_symlink() or path.is_file(): target = bundle.path(name) if target.exists() or target.is_symlink() or name in [self.handoff_name, \"inventory.md\"]: raise ValueError(\"record bundle path collision\") if path.is_symlink(): link = os.readlink(path) if (path.name not in [\"blobs\", \"stdout.bin\", \"stderr.bin\"] or Path(link).is_absolute() or not path.resolve(strict=True).is_relative_to(exported)): raise ValueError(\"unsafe record alias\") target.parent.mkdir(parents=True, exist_ok=True) target.symlink_to(link) self.bytes_read += len(link.encode()) bundle.bytes_written += len(link.encode()) else: data = path.read_bytes() self.bytes_read += len(data) bundle.write(name, data) bundle.write(self.handoff_name, document(\"Portable current work\", projection)) if self.snapshot(scope, sources) != projection: raise ValueError(\"sources changed during handoff\") inventory = bundle.file_inventory() bundle.write(\"inventory.md\", document(\"Handoff inventory\", inventory)) self.bytes_read += bundle.bytes_read self.bytes_written += bundle.bytes_written verified = self.verify_export(destination) self.bytes_read += verified[\"bytes_read\"] return destination def file_inventory(self): inventory = {} for path in sorted(self.root.rglob(\"*\")): if path == self.root / \"inventory.md\": continue name = str(path.relative_to(self.root)) if path.is_symlink(): target = os.readlink(path) if Path(target).is_absolute() or not path.resolve(strict=True).is_relative_to(self.root): raise ValueError(\"export inventory unsafe alias\") self.bytes_read += len(target.encode()) inventory[name] = \"symlink:\" + target elif path.is_file(): inventory[name] = digest(self.read(name)) return inventory @staticmethod def verify_export(destination): bundle = Context(destination) inventory = decode(bundle.read(\"inventory.md\")) actual = bundle.file_inventory() if actual != inventory: raise ValueError(\"export inventory mismatch\") projection = decode(bundle.read(bundle.handoff_name)) if set(projection[\"sources\"]) != set(projection[\"revisions\"]): raise ValueError(\"export source membership mismatch\") for name, revision in projection[\"revisions\"].items(): data = bundle.read(name) if digest(data) != revision or data.decode(\"utf-8\") != projection[\"sources\"][name]: raise ValueError(\"export source text/revision mismatch\") return {\"projection\": projection, \"inventory\": inventory, \"bytes_read\": bundle.bytes_read}",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 532,
+      "unit_sha256": "671ad9ee3debb1e1b09babd29d9caeed40d46a98d010b76607987cf1bb8ff1b1",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "The script does not validate user intent, semantic source selection, check acceptance, or all milestone coverage.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/controlled-writing.md",
+      "line": 26,
+      "unit_sha256": "3f711dcd065ccb5fe8636afc8f73ab7f85f264263577921757f8651c87278383",
+      "disposition": "reworded",
+      "destination": "references/guides/controlled-writing.md",
+      "note": "The [script](../../scripts/controlled_writing.py) reports two kinds of finding.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/controlled-writing.md",
+      "line": 33,
+      "unit_sha256": "fa5d11ab20764371fe5efdf81f9409a8675a3ea382d84009930a24eccfba1e86",
+      "disposition": "reworded",
+      "destination": "references/guides/controlled-writing.md",
+      "note": "Importing or running the script needs the owner's explicit authorization ([script consent](../../scripts/README.md#consent)); prefer an equivalent harness check, and without either, check the text against the rules by reading it.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/controlled-writing.md",
+      "line": 33,
+      "unit_sha256": "8931361416a531f285e2b0a740ff7b6cc113a3e08b2e51e6f78a5720b5a8e505",
+      "disposition": "reworded",
+      "destination": "references/guides/controlled-writing.md",
+      "note": "With that authorization, put `<skill>/scripts/` first on `sys.path`, import `controlled_writing` (it has no command line) and call `findings(text, language)`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/controlled-writing.md",
+      "line": 43,
+      "unit_sha256": "18d1ce30bc39fc322494681ccb701b1f6762e1d4c8d74fa1e48dfdb90467ce2b",
+      "disposition": "reworded",
+      "destination": "references/guides/controlled-writing.md",
+      "note": "The script holds the exact patterns.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/controlled-writing.md",
+      "line": 43,
+      "unit_sha256": "2e999417c09ad6b31fbd1eb37e2c91e8568ccecf788bfc9962e31069066121a5",
+      "disposition": "reworded",
+      "destination": "references/guides/controlled-writing.md",
+      "note": "Add a word to the script and to this list together.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 124,
+      "unit_sha256": "5f580a992f66447d2a47fb50053fe4ae2f3eceab334d88cac08b2abb39c04ded",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "For a nontrivial graph, and with the owner's explicit authorization, an existing planner may import the standard-library [task consistency script](../../scripts/decompose_check.py) from `<skill>/scripts/` (put that folder first on `sys.path`; it has no command line) and pass its compiled task data to `prepare_tasks(requirements, tasks, selected, available, fingerprints, delivery)`, which returns `states`, `findings`, `owners`, `revision` and the constants `execution_authorized` and `product_pass`, both false; `task_fields(text)` reads one brief's fields.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 134,
+      "unit_sha256": "53e2cab7414e1db326ea54353f866b6ee06cd8817061ffe509faf45661667b45",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "Import or run it only with the owner's explicit authorization for this use, or under a grant in [script consent](../../scripts/README.md#consent).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 138,
+      "unit_sha256": "b6588123aed7f3e0dad234605e76570a4b53faacd510b907d46028fa32bf2327",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/decompose_check.py",
+      "note": "import hashlib import json import re def task_fields(text): retired = {'Touches', 'Done-signal', 'Run', 'Target check', 'Surround check'} fields = {} for line in text.splitlines(): match = re.fullmatch(r'\\s*(?:-\\s*)?\\*\\*([^*:]+)(?:\\*\\*\\s*:|:\\*\\*)\\s*(.*?)\\s*', line) if not match: continue key = match[1] if key in retired: raise ValueError('migrate first: retired field name ' + key + ' (references/guides/migrate.md#forward-only)') if key in fields and fields[key] != match[2]: raise ValueError('conflicting field values: ' + key) fields[key] = match[2] return fields def prepare_tasks(requirements, tasks, selected, available, fingerprints, delivery): identities = [task['id'] for task in tasks] if len(set(identities)) != len(identities) or not identities: raise ValueError('duplicate or empty task identities') if any(not re.fullmatch(r'T-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*', identity) for identity in identities): raise ValueError('invalid stable task identity') by_id = dict(zip(identities, tasks)) if len(requirements) != len(set(requirements)) or not requirements: raise ValueError('duplicate or missing requirements') if not selected or len(selected) != len(set(selected)) or set(selected) - by_id.keys(): raise ValueError('invalid readiness scope') owners = {requirement: [] for requirement in requirements} for task in tasks: if not task.get('requirements') or not task.get('outcome'): raise ValueError('task lacks required outcome or scope') for requirement in task['requirements']: if requirement not in owners: raise ValueError('unjustified task scope') owners[requirement].append(task['id']) for dependency in task.get('consumes', []): producer = by_id.get(dependency['task']) if producer is None: raise ValueError('missing dependency identity') output = producer.get('produces', {}).get(dependency['artifact']) expected = {'interface': dependency['interface'], 'revision': dependency['revision']} if output != expected: raise ValueError('incompatible declared producer/consumer') if any(not names for names in owners.values()): raise ValueError('unowned requirement') if not delivery or any(not row.get(k) for row in delivery for k in ('owner', 'check', 'record')): raise ValueError('unowned deliverable obligation') visiting, visited = set(), set() def visit(identity): if identity in visiting: raise ValueError('cyclic dependency') if identity in visited: return visiting.add(identity) for dependency in by_id[identity].get('consumes', []): visit(dependency['task']) visiting.remove(identity) visited.add(identity) for identity in identities: visit(identity) required_inputs = {'contract', 'source', 'configuration', 'dependencies', 'selectors', 'runtime'} if not required_inputs.issubset(fingerprints): raise ValueError('missing relevant fingerprint') for key in required_inputs - {'selectors'}: if not isinstance(fingerprints[key], str) or not fingerprints[key].strip(): raise ValueError('missing relevant fingerprint: ' + key) if not isinstance(fingerprints['selectors'], (dict, list)) or not fingerprints['selectors']: raise ValueError('missing selector membership fingerprint') states, findings = {}, {} for identity, task in by_id.items(): states[identity] = 'Draft' if identity not in selected: if not task.get('milestone') or not task.get('future_check'): raise ValueError('deferred scope lacks milestone/check owner') continue gaps = [] for key in ('write_scope', 'inputs', 'acceptance_check', 'regression_check', 'record'): if not task.get(key): gaps.append('missing ' + key) for requirement in task['requirements']: cases = [case for case in task.get('cases', []) if case.get('requirement') == requirement] if not cases or any(k not in case for case in cases for k in ('input', 'expected', 'check')) or any(not case['check'] for case in cases): gaps.append('missing observable case: ' + requirement) if task.get('pending_product_decisions'): gaps.append('material decision unresolved') if task.get('semantic_review') != 'passed' or task.get('boundary_fixtures') != 'passed': gaps.append('readiness observations unavailable') for dependency in task.get('consumes', []): key = dependency['task'] + '/' + dependency['artifact'] expected = {'interface': dependency['interface'], 'revision': dependency['revision']} if available.get(key) != expected: gaps.append('missing or stale dependency output: ' + key) findings[identity] = gaps if not gaps: states[identity] = 'Ready to run' revision = hashlib.sha256(json.dumps( [requirements, tasks, selected, available, fingerprints, delivery], sort_keys=True, separators=(',', ':')).encode()).hexdigest() return {'states': states, 'findings': findings, 'owners': owners, 'revision': revision, 'execution_authorized': False, 'product_pass': False}",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 246,
+      "unit_sha256": "cf3970e01f1f003cb996ec0f0f9b0f6790d3052bff09bd52927f3758d80fd577",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "The script's structural pass is one preparation observation.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 4,
+      "unit_sha256": "65cdc0160222f5b349b009a6937a84e116bfaceabbfb7a5527f8cc2db01b05b9",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "**Coordinated entry:** use [Coordinated execution checks](full-checks.md#prepare-once-then-capture) for capture and its connected canonical-lint script.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 5,
+      "unit_sha256": "aab50ef5bd5fbdd850e1dd6fac9547ad6b9ac2abf079ae2d9527896b0897748c",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "Coordinated needs saved script bytes as well as fingerprints; do not adapt the smaller script below with a manual input list that omits the observer or executed scripts.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 8,
+      "unit_sha256": "9ea1f9e98cfc2584a8921754f40cf58fd7d411f9e7fde868ce302c182f30654e",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "The script below remains available for the other routes under their existing evidence contract.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 10,
+      "unit_sha256": "7c2aa9026a0e9c7c739baef42691d1e3c505953e48575fe76b8b8199ae9dc490",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "For another check, name its cwd, existing source/test/input/config paths and produced artifacts in the project's own capture mechanism or in a [capture script](../../scripts/capture.py) JSON specification.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "3",
+          "reason": "The scripts manifest states once, for every script, that it is a Python 3 file."
+        }
+      ]
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 11,
+      "unit_sha256": "d3dabfc4dbf9edfd88874021993d4e5e642d01264e1f51158f3fa2b51d464772",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "The script is not an installed runner.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 18,
+      "unit_sha256": "8e6965323dfcf8d886778aee2262d43d865c8c313145363f206cd3de3bb053c2",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "With the owner's explicit authorization, run the script from an authorized cwd and pass the existing initiative workspace (inside that cwd) as its single argument, for example `python3 -I <skill>/scripts/evidence_capture.py docs/plans/demo`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 19,
+      "unit_sha256": "a840e19168c41d8601efb300b0598ef033132d3b8535a0c635cc9227add56342",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "With the owner's explicit authorization, run the script from an authorized cwd and pass the existing initiative workspace (inside that cwd) as its single argument, for example `python3 -I <skill>/scripts/evidence_capture.py docs/plans/demo`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 20,
+      "unit_sha256": "841b5f16a3d33758aae96e537defbb89c73692cfbf2b1da1cec308e6bd821a89",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "The script never chooses cwd/evidence implicitly.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 23,
+      "unit_sha256": "3df3ff1a650684d354ab9afffb50249663eccaee74d23208b16ee3624081c8e8",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "This smaller script preserves fingerprints and streams; it does not claim to retain input snapshots or support later reconstruction without an accessible complete source export.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 29,
+      "unit_sha256": "c87b935feedd3b14b9c1d3f2b1762aaa86648790569d470cd041f85e488cb8ab",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "The script retains binary output, child failure, partial output on timeout, and before/after revisions.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 31,
+      "unit_sha256": "2a487b4c8976f358a17117690796d73139ba520693c720af8e430a863fc7f170",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "Set the timeout to its budget.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 32,
+      "unit_sha256": "c77a279e667d44cae804fa90adf3d530a8cca154cc804d827cb814716b715e40",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "This script supervises the direct child only.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 41,
+      "unit_sha256": "53e2cab7414e1db326ea54353f866b6ee06cd8817061ffe509faf45661667b45",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "Run the script only with the owner's explicit authorization for this use, or under a grant in [script consent](../../scripts/README.md#consent).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 45,
+      "unit_sha256": "3d4c1b942e9003ab9d1ea6d58001625dfcaa126a2f33c7953c967149cce9ea72",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/evidence_capture.py",
+      "note": "from datetime import datetime, timezone import hashlib import json import re from pathlib import Path import subprocess import sys import tempfile argv = [\"python3\", \"-m\", \"unittest\", \"discover\", \"-v\"] inputs = [\"module.py\", \"test_module.py\", \"SPEC.md\"] artifacts = [] timeout_seconds = 30 cwd = Path.cwd().resolve() if len(sys.argv) != 2: raise SystemExit(\"supply the existing authorized initiative workspace\") workspace = Path(sys.argv[1]).resolve() workspace.relative_to(cwd) if not workspace.is_dir(): raise SystemExit(\"authorized workspace must already exist\") destination = workspace / \"evidence\" destination.resolve().relative_to(workspace) def hashes(names): return {name: hashlib.sha256((cwd / name).read_bytes()).hexdigest() for name in names} before = hashes(inputs) destination.mkdir(exist_ok=True) out = Path(tempfile.mkdtemp(prefix=\"validation-\", dir=destination)) record = {\"argv\": argv, \"cwd\": str(cwd), \"capture_runtime\": sys.version, \"actor\": \"n/a\", \"model\": \"n/a\", \"effort\": \"n/a\", \"timeout_seconds\": timeout_seconds, \"inputs_before\": before, \"start\": datetime.now(timezone.utc).isoformat()} with (out / \"start.json\").open(\"x\", encoding=\"utf-8\") as f: json.dump(record, f, indent=2) code = None timed_out = False error = None with (out / \"stdout.bin\").open(\"xb\") as stdout, (out / \"stderr.bin\").open(\"xb\") as stderr: try: code = subprocess.run(argv, cwd=cwd, stdout=stdout, stderr=stderr, timeout=timeout_seconds).returncode except subprocess.TimeoutExpired: timed_out = True except OSError as exc: error = str(exc) record.update(end=datetime.now(timezone.utc).isoformat(), child_exit=code, signal=-code if code is not None and code < 0 else None, timeout=timed_out, launch_error=error) try: record[\"inputs_after\"] = hashes(inputs) stable = before == record[\"inputs_after\"] except OSError as exc: stable = False record[\"revision_error\"] = str(exc) artifacts_present = True try: record[\"artifacts\"] = hashes(artifacts) except OSError as exc: artifacts_present = False record[\"artifact_error\"] = str(exc) record[\"streams\"] = {name: hashlib.sha256((out / name).read_bytes()).hexdigest() for name in (\"stdout.bin\", \"stderr.bin\")} record[\"inputs_stable\"] = stable record[\"artifacts_present\"] = artifacts_present record[\"accepted\"] = code == 0 and not timed_out and error is None and stable and artifacts_present with (out / \"result.json\").open(\"x\", encoding=\"utf-8\") as f: json.dump(record, f, indent=2) payload = json.dumps(record, indent=2, ensure_ascii=False) fence = \"`\" * max(3, max((len(part) for part in re.findall(r\"`+\", payload)), default=0) + 1) with (out / \"receipt.md\").open(\"x\", encoding=\"utf-8\") as receipt: receipt.write(\"# Check summary\\n\\nGenerated from result.json; validation scope only.\\n\\n\" + fence + \"json\\n\" + payload + \"\\n\" + fence + \"\\n\\n\" + \"Raw streams: [stdout](stdout.bin), [stderr](stderr.bin).\\n\" + \"Role finish: n/a — not observed by this child capture.\\n\") print(out / \"receipt.md\") raise SystemExit(0 if record[\"accepted\"] else 1)",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 136,
+      "unit_sha256": "f43ee23f1d80f20ba7723386d2280f871899a9db07846f91b8f99d4d95c9e05c",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "When a native export is unavailable, this script, with the owner's explicit authorization, works without any installed collector; equivalent direct capture is valid if it preserves the same facts.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 4,
+      "unit_sha256": "ac0cc3425b24489540a83fecd6d12117432afcf1c64c293c978576a6158c825a",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Otherwise, with the owner's explicit authorization ([script consent](../../scripts/README.md#consent)), run the Python 3 [capture script](../../scripts/capture.py) from an authorized cwd before running checks.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 6,
+      "unit_sha256": "c49a1dd4058a6bc96742dc498aa17173476c600da3993c94d9f6ae7ac532dc13",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "It is an optional script, not an installed runner or a new product dependency.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 44,
+      "unit_sha256": "533e8ee42bbc024c9d1e65cf7fd486b1c839e3f6410b284a3de9c5e2763b2e78",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Save compound scripts before invoking them and include every called script/config; the script automatically includes itself (when it sits inside cwd), its JSON specification and existing file arguments after argv[0].",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 48,
+      "unit_sha256": "65a168829e3771280c0e156e4fe601591919b5f30abc2a15f13276ba70ad4727",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Running the capture script needs the owner's explicit authorization; an equivalent harness capture is preferred.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 51,
+      "unit_sha256": "811a8169754d12509db5715213d17cc8ac0e42d20d18f245c5a1ceda25defb6b",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "The script saves exact input bytes once per initiative in immutable content-addressed objects, with compatible per-record blob aliases, binary streams and actual child status.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 56,
+      "unit_sha256": "88a5cccfcb2515861ab932f557f1a9ae500a992f03580ee8bb4e3038336ecba7",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "The script is for foreground children that join their own children.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 60,
+      "unit_sha256": "dd1cf733a36a546125dc9a8a34db73d3acea9e63b557bf5cb86a5b51d1a3d6ed",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Running the capture script needs the owner's explicit authorization; an equivalent harness capture is preferred.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 60,
+      "unit_sha256": "9ede8f53b91120bbcdf048c627ae61376082772ceb456f432f9142a3832f1717",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "With the owner's explicit authorization, run [`scripts/capture.py`](../../scripts/capture.py) with one JSON specification path, for example `python3 -I <skill>/scripts/capture.py docs/plans/demo/product-check.json`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 72,
+      "unit_sha256": "53e2cab7414e1db326ea54353f866b6ee06cd8817061ffe509faf45661667b45",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Run it only with the owner's explicit authorization for this use, or under a grant in [script consent](../../scripts/README.md#consent).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 76,
+      "unit_sha256": "293afd3daadd5ffd61eba7e9bb2e716b889b3b2b86916a6e8442728a9f924362",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/capture.py",
+      "note": "from contextlib import contextmanager from datetime import datetime, timezone from pathlib import Path import hashlib import json import os import re import subprocess import sys import tempfile import uuid def sha(data): return hashlib.sha256(data).hexdigest() def local(root, name): path = root / name path.resolve().relative_to(root.resolve()) return path def sync_dir(path): descriptor = os.open(path, os.O_RDONLY) try: os.fsync(descriptor) finally: os.close(descriptor) def publish(path, data): temporary = path.parent / ('.write-' + uuid.uuid4().hex) with temporary.open('xb') as stream: stream.write(data) stream.flush() os.fsync(stream.fileno()) try: os.link(temporary, path) sync_dir(path.parent) finally: temporary.unlink() def put_object(store, data): digest = sha(data) path = store / 'objects' / digest if (store / 'objects').is_symlink() or path.is_symlink(): raise ValueError('object pool must not redirect writes') if path.exists(): if sha(path.read_bytes()) != digest: raise ValueError('corrupt existing object: ' + digest) else: publish(path, data) return digest @contextmanager def exclusive(store): lock = store / '.lock' lock.mkdir() (lock / 'owner.json').write_text(json.dumps(dict(pid=os.getpid(), started=datetime.now(timezone.utc).isoformat())), encoding='utf-8') try: yield except BaseException: raise else: (lock / 'owner.json').unlink() lock.rmdir() sync_dir(store) def record_hashes(record): hashes = set(record.get('prior_objects', [])) for key in ('inputs_before', 'inputs_after', 'artifacts', 'streams'): hashes.update(record.get(key, {}).values()) hashes.update(record.get('prior_records', {}).values()) if any(not isinstance(h, str) or not re.fullmatch('[0-9a-f]{64}', h) for h in hashes): raise ValueError('malformed content hash') return hashes def read_record(observation, require_pass=False): observation = Path(observation) if observation.name.startswith('.pending-') or (observation / 'retired.json').exists(): raise ValueError('record incomplete or retired') record = json.loads((observation / 'result.json').read_text()) start = json.loads((observation / 'start.json').read_text()) if not isinstance(record, dict) or not isinstance(start, dict): raise ValueError('raw record and start must be objects') before_fields = ('argv', 'cwd', 'capture_runtime', 'actor', 'model', 'effort', 'selectors', 'extra_inputs', 'membership_before', 'inputs_before', 'timeout_seconds', 'start') final_fields = ('child_exit', 'signal', 'end', 'streams', 'accepted', 'inputs_stable', 'artifacts_present', 'timeout', 'launch_error') if any(key not in start or key not in record for key in before_fields) or any(key not in record for key in final_fields): raise ValueError('incomplete raw check provenance') for key in ('cwd', 'capture_runtime', 'actor', 'model', 'effort', 'start', 'end'): if not isinstance(record[key], str) or not record[key].strip(): raise ValueError('nonempty provenance string required: ' + key) if not Path(record['cwd']).is_absolute(): raise ValueError('observed cwd must be absolute') for key in ('start', 'end'): if datetime.fromisoformat(record[key]).tzinfo is None: raise ValueError('observed clock must include timezone') if type(record['timeout_seconds']) not in (int, float) or record['timeout_seconds'] <= 0: raise ValueError('positive numeric timeout required') if not isinstance(record['extra_inputs'], list) or not all(isinstance(v, str) for v in record['extra_inputs']): raise ValueError('extra inputs must be a string list') if not isinstance(record['selectors'], list) or not all(isinstance(v, dict) and isinstance(v.get('glob'), str) and type(v.get('required')) is bool for v in record['selectors']): raise ValueError('declared selectors required') for key in ('accepted', 'timeout', 'inputs_stable', 'artifacts_present'): if type(record.get(key)) is not bool: raise ValueError('record boolean required: ' + key) for key in ('child_exit', 'signal'): if record.get(key) is not None and type(record[key]) is not int: raise ValueError('record integer or null required: ' + key) if record.get('signal') != (-record['child_exit'] if record.get('child_exit') is not None and record['child_exit'] < 0 else None): raise ValueError('inconsistent process signal') if record.get('launch_error') is not None and not isinstance(record['launch_error'], str): raise ValueError('launch error must be a string or null') if not isinstance(record.get('argv'), list) or not record['argv'] or not all(isinstance(v, str) for v in record['argv']): raise ValueError('argv must be a nonempty string list') for key in ('inputs_before', 'inputs_after', 'streams', 'artifacts', 'prior_records'): mapping = record.get(key, {}) if not isinstance(mapping, dict) or not all(isinstance(k, str) and isinstance(v, str) for k, v in mapping.items()): raise ValueError('record hash map required: ' + key) if not isinstance(record.get('prior_objects', []), list) or not all(isinstance(v, str) for v in record.get('prior_objects', [])): raise ValueError('prior objects must be a string list') for key in ('membership_before', 'membership_after'): mapping = record.get(key, {}) if not isinstance(mapping, dict) or not all(isinstance(k, str) and isinstance(v, list) and all(isinstance(n, str) for n in v) for k, v in mapping.items()): raise ValueError('selector membership map required') if any(record.get(key) != value for key, value in start.items()): raise ValueError('record disagrees with immutable start provenance') if record.get('inputs_stable') and (record.get('inputs_before') != record.get('inputs_after') or record.get('membership_before') != record.get('membership_after')): raise ValueError('inconsistent input-stability claim') if record['artifacts_present'] and 'artifacts' not in record: raise ValueError('missing declared artifact result') for digest in record_hashes(record) - set(record['streams'].values()): if sha((observation / 'blobs' / digest).read_bytes()) != digest: raise ValueError('corrupt or missing input object') for name, digest in record['streams'].items(): if name not in ('stdout.bin', 'stderr.bin') or sha((observation / name).read_bytes()) != digest: raise ValueError('corrupt stream') if set(record['streams']) != {'stdout.bin', 'stderr.bin'}: raise ValueError('missing stream') actual_pass = (record['child_exit'] == 0 and not record['timeout'] and record['launch_error'] is None and record['inputs_stable'] and record['artifacts_present']) if record['accepted'] != bool(actual_pass) or (require_pass and not actual_pass): raise ValueError('record does not establish a passed check') return record def select(root, selectors, extra, store): files = set(extra) membership = {} def outside_store(path): try: path.resolve().relative_to(store.resolve()) return False except ValueError: return True for item in selectors: pattern = item['glob'] if Path(pattern).is_absolute() or '..' in Path(pattern).parts: raise ValueError('selector outside cwd') names = sorted(str(p.relative_to(root)) for p in root.glob(pattern) if p.is_file() and (outside_store(p) or (str(p.relative_to(root)) == pattern and not any(c in pattern for c in '*?[')))) if item['required'] and not names: raise ValueError('missing required selector: ' + pattern) membership[pattern] = names files.update(names) data = {name: local(root, name).read_bytes() for name in sorted(files)} return membership, data def capture(spec_path): root = Path.cwd().resolve() spec_path = local(root, spec_path) spec = json.loads(spec_path.read_text()) argv = spec['argv'] if not argv or not all(isinstance(x, str) for x in argv): raise ValueError('argv must be a nonempty string list') if 'workspace' in spec: workspace = local(root, spec['workspace']).resolve() if not workspace.is_dir(): raise ValueError('authorized workspace must already exist') store = workspace / ('verification-records' if (workspace / 'task-board.md').is_file() else 'evidence') store.resolve().relative_to(workspace) destination = local(root, spec.get('destination', str(store))) destination.resolve().relative_to(store.resolve()) else: store = destination = local(root, spec['destination']).resolve() extra = [str(spec_path.relative_to(root))] script = Path(__file__).resolve() if root in script.parents: extra.append(str(script.relative_to(root))) for arg in argv[1:]: if (root / arg).is_file(): extra.append(str(local(root, arg).relative_to(root))) membership, data = select(root, spec['selectors'], extra, store) store.mkdir(parents=True, exist_ok=True) if (store / 'objects').is_symlink(): raise ValueError('object pool must not redirect writes') (store / 'objects').mkdir(exist_ok=True) destination.mkdir(parents=True, exist_ok=True) with exclusive(store): identity = 'observation-' + uuid.uuid4().hex out = destination / ('.pending-' + identity) out.mkdir() (out / 'blobs').symlink_to(os.path.relpath(store / 'objects', out), target_is_directory=True) def snapshot(payload): return {name: put_object(store, content) for name, content in payload.items()} prior, prior_objects = {}, set() for name in spec.get('prior_records', []): source = local(root, name) source.resolve().relative_to(store.resolve()) previous = read_record(source, require_pass=True) prior[name] = put_object(store, (source / 'result.json').read_bytes()) for digest in record_hashes(previous): path = source / 'blobs' / digest if not path.exists(): stream = next((n for n, h in previous['streams'].items() if h == digest), None) path = source / stream if stream else path payload = path.read_bytes() if sha(payload) != digest: raise ValueError('corrupt prior record dependency') prior_objects.add(put_object(store, payload)) record = dict(layout='shared-v1', event_id=identity, store=os.path.relpath(store, out), argv=argv, cwd=str(root), capture_runtime=sys.version, actor='n/a', model='n/a', effort='n/a', selectors=spec['selectors'], extra_inputs=extra, membership_before=membership, inputs_before=snapshot(data), timeout_seconds=spec['timeout_seconds'], prior_records=prior, prior_objects=sorted(prior_objects), start=datetime.now(timezone.utc).isoformat()) def write(name, value): publish(out / name, (json.dumps(value, indent=2) + '\\n').encode('utf-8')) write('start.json', record) code, timeout, error = None, False, None with (out / 'stdout.bin').open('xb') as stdout, (out / 'stderr.bin').open('xb') as stderr: try: code = subprocess.run(argv, cwd=root, stdout=stdout, stderr=stderr, timeout=spec['timeout_seconds']).returncode except subprocess.TimeoutExpired: timeout = True except OSError as exc: error = str(exc) stdout.flush(); os.fsync(stdout.fileno()) stderr.flush(); os.fsync(stderr.fileno()) record.update(end=datetime.now(timezone.utc).isoformat(), child_exit=code, signal=-code if code is not None and code < 0 else None, timeout=timeout, launch_error=error) stable, artifacts_present = False, False try: after_membership, after_data = select(root, spec['selectors'], extra, store) record.update(membership_after=after_membership, inputs_after=snapshot(after_data)) stable = membership == after_membership and record['inputs_before'] == record['inputs_after'] record['artifacts'] = snapshot({name: local(root, name).read_bytes() for name in spec['artifacts']}) artifacts_present = True except (OSError, ValueError) as exc: record['revision_error'] = str(exc) record['streams'] = snapshot({name: (out / name).read_bytes() for name in ('stdout.bin', 'stderr.bin')}) for name, digest in record['streams'].items(): (out / name).unlink() (out / name).symlink_to(os.path.relpath(store / 'objects' / digest, out)) record.update(inputs_stable=stable, artifacts_present=artifacts_present, accepted=code == 0 and not timeout and error is None and stable and artifacts_present) write('result.json', record) publish(out / 'receipt.md', b'# Check summary\\n\\n[Raw check record](result.json); [start](start.json); ' b'[stdout](stdout.bin); [stderr](stderr.bin).\\n\\n' b'Immutable bytes: blobs/<sha256> aliases the initiative object pool. ' b'Check [retirement status](retired.json) before reuse. Role finish: n/a. ' b'Check passed is not deliverable accepted.\\n') final = destination / identity out.rename(final) sync_dir(destination) print(final / 'receipt.md') return record['accepted'] if __name__ == '__main__': raise SystemExit(0 if capture(sys.argv[1]) else 1)",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 385,
+      "unit_sha256": "2b51b5b67ab34c37f385ff4ab5e128f6f493ad532b8da008eeaac10a2d3d8b32",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Apply the same reviewed-revision rule to the configured capture script and its imports before running the Python script; it is executable code with the caller's filesystem permissions.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 388,
+      "unit_sha256": "041cc2bab166426d8a7eed227ddb0bc5809a9496b54157beab40bbe24f450ece",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "For an existing orchestrator, the two pure Python functions `canonical_rows` and `lint_verdict` of [`scripts/lint_runner.py`](../../scripts/lint_runner.py) provide exact extraction and row interpretation.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 389,
+      "unit_sha256": "d73fc472965cdb9914b56a1fc8304201fb820994450a31a604a538b9f2f5640a",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Save the extracted UTF-8 bytes verbatim as each script; capture that saved script with the capture script above.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 393,
+      "unit_sha256": "bf634ee82c9ad441afbbb698ecbf1f770f313af0a147b44d00428bbfcd0428f0",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Importing or running these functions needs the owner's explicit authorization.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 396,
+      "unit_sha256": "70ca975dd003cb6d75e1387d99ec89016cd074db0e50997f61da92b9a02926a7",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "When equivalent harness automation is absent, the connected path below needs the owner's explicit authorization; with it, run `python3 -I <skill>/scripts/lint_runner.py <lint.json>` from an authorized cwd.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 399,
+      "unit_sha256": "542b5d2d6b79ed2c6f38af7ee3a65b4ebf9d658855a0d6ed32743e40049ce0a9",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "The JSON specifies `source` (current lint-spec path), preflight `source_sha256`, `slug`, `selectors`, `workspace` and `timeout_seconds`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 400,
+      "unit_sha256": "7eeefb272d00f77e366ab2ecc1f07864a3127c012fa2091d834d0ef502d6fc53",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "The capture script is pinned by the lint script by sha256; only final newlines may vary, and any other bytes stop the run with `capture script revision changed`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 401,
+      "unit_sha256": "ae2311ff628a0175ad310a343cf826eb257fdb9d9d3e9e19fee9d3101ef60634",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Review both scripts before changing that pin.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 407,
+      "unit_sha256": "48eecd21ca89cae2b29b47300eb3d0e4953ae83c9800e4bb31bda32992c3b01e",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "The script extracts, saves, captures and verifies each command itself; do not manually transcribe command cells into another script.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 417,
+      "unit_sha256": "f1fe81548f935a952e1c02a5f8e2927793fd2ee6c85728c19c63729b2231b0ee",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/lint_runner.py",
+      "note": "import hashlib import re from pathlib import Path import json import subprocess import sys import tempfile def canonical_rows(source, expected_sha256, slug): if hashlib.sha256(source).hexdigest() != expected_sha256: raise ValueError('canonical source revision changed') if not re.fullmatch(r'[a-z0-9][a-z0-9.-]*', slug): raise ValueError('invalid slug') rows = {} for line in source.decode('utf-8').splitlines(): if not re.match(r'^\\| [0-9]+ ·', line): continue head, cell, condition = line.split(' | ', 2) number = int(head.split(' ·', 1)[0][2:]) match = re.fullmatch(r'(`+)(.*?)\\1', cell) if number in rows or not match or not condition.endswith(' |'): raise ValueError('duplicate or malformed row') command = match[2] # Markdown code spans with padding remove one surrounding space. if command.startswith(' ') and command.endswith(' ') and command.strip(): command = command[1:-1] command = command.replace('<slug>', slug).encode('utf-8') rows[number] = dict(command=command, condition=condition[:-2], command_sha256=hashlib.sha256(command).hexdigest()) if sorted(rows) != list(range(1, 18)): raise ValueError('expected exactly rows 1 through 17') return rows def lint_verdict(row, record, stdout, stderr): if row not in range(1, 18): raise ValueError('unknown row') code = record['child_exit'] if type(code) is not int or any(type(record.get(key)) is not bool for key in ('timeout', 'inputs_stable', 'artifacts_present')): return 'ERROR' allowed = (0, 1) if row in (5, 6, 11, 15, 16) else (0,) if (record['timeout'] or record['launch_error'] or record['signal'] is not None or stderr or code not in allowed or not record['inputs_stable'] or not record['artifacts_present']): return 'ERROR' if stdout: return 'WARN' if row in (8, 13, 15) else 'FAIL' if (row == 5 and code != 1) or (row != 5 and row != 15 and code != 0): return 'ERROR' return 'PASS' def captured_lint_verdict(source, expected_sha256, slug, row, script, record, observation): try: if (observation / 'retired.json').exists() or observation.name.startswith('.pending-'): return 'ERROR' if type(record.get('accepted')) is not bool: return 'ERROR' expected = canonical_rows(source, expected_sha256, slug)[row]['command'] if record['argv'] != ['sh', script]: return 'ERROR' digest = record['inputs_before'][script] if not re.fullmatch(r'[0-9a-f]{64}', digest) or record['inputs_after'][script] != digest: return 'ERROR' actual = (observation / 'blobs' / digest).read_bytes() if hashlib.sha256(actual).hexdigest() != digest or actual not in (expected, expected + b'\\n'): return 'ERROR' required = set(record.get('prior_objects', [])) for key in ('inputs_before', 'inputs_after', 'artifacts', 'prior_records'): required.update(record.get(key, {}).values()) for fingerprint in required: if not re.fullmatch(r'[0-9a-f]{64}', fingerprint): return 'ERROR' if hashlib.sha256((observation / 'blobs' / fingerprint).read_bytes()).hexdigest() != fingerprint: return 'ERROR' streams = [(observation / name).read_bytes() for name in ['stdout.bin', 'stderr.bin']] for name, data in zip(['stdout.bin', 'stderr.bin'], streams): if hashlib.sha256(data).hexdigest() != record['streams'][name]: return 'ERROR' return lint_verdict(row, record, *streams) except (KeyError, OSError, ValueError, TypeError): return 'ERROR' def run_lint(config_path): root = Path.cwd().resolve() trusted_capture_sha256 = 'bcbcef803e188090fa5c60372cefe0cd9504b6babb1131c79ec7668301dee34c' def local(name): path = (root / name).resolve() path.relative_to(root) return path config = json.loads(local(config_path).read_text()) source = Path(config['source']).read_bytes() rows = canonical_rows(source, config['source_sha256'], config['slug']) if 'capture_script' in config: capture_script = local(config['capture_script']) else: capture_script = Path(__file__).resolve().with_name('capture.py') if hashlib.sha256(capture_script.read_bytes().rstrip(b'\\n')).hexdigest() != trusted_capture_sha256: raise ValueError('capture script revision changed') selected = config.get('rows', list(rows)) if not selected or len(set(selected)) != len(selected) or any(n not in rows for n in selected): raise ValueError('invalid selected rows') if 'workspace' in config: workspace = local(config['workspace']).resolve() if not workspace.is_dir(): raise ValueError('authorized workspace must already exist') else: workspace = local(config['destination']).resolve() workspace.mkdir(parents=True, exist_ok=True) destination = workspace / ('verification-records' if (workspace / 'task-board.md').is_file() else 'evidence') destination.resolve().relative_to(workspace) destination.mkdir(parents=True, exist_ok=True) batch = Path(tempfile.mkdtemp(prefix='lint-', dir=destination)) (batch / 'lint-spec.md').write_bytes(source) selectors = list(config['selectors']) for path in [config_path, batch / 'lint-spec.md', __file__, capture_script]: resolved = (root / path).resolve() if root in resolved.parents: selectors.append(dict(glob=str(resolved.relative_to(root)), required=True)) results = {} for number in selected: script_path = batch / ('row-%02d.sh' % number) script_path.write_bytes(rows[number]['command']) script = str(script_path.relative_to(root)) spec = dict(workspace=str(workspace.relative_to(root)), argv=['sh', script], selectors=selectors, artifacts=[], destination=str((batch / ('row-%02d' % number)).relative_to(root)), timeout_seconds=config['timeout_seconds']) spec_path = batch / ('row-%02d.json' % number) spec_path.write_text(json.dumps(spec, indent=2)) result = subprocess.run([sys.executable, str(capture_script), str(spec_path)], cwd=root, capture_output=True) (batch / ('capture-%02d.stdout' % number)).write_bytes(result.stdout) (batch / ('capture-%02d.stderr' % number)).write_bytes(result.stderr) observation = None verdict = 'ERROR' try: if not result.stdout.strip(): raise ValueError('missing capture receipt') receipt = local(result.stdout.decode().strip()) receipt.relative_to(batch) observation = receipt.parent record = json.loads((observation / 'result.json').read_text()) if result.returncode in (0, 1) and not result.stderr: verdict = captured_lint_verdict(source, config['source_sha256'], config['slug'], number, script, record, observation) except (OSError, ValueError, UnicodeError): pass results[number] = dict(row=number, source_sha256=config['source_sha256'], command_sha256=rows[number]['command_sha256'], verdict=verdict, capture_exit=result.returncode, observation=str(observation.relative_to(root)) if observation else None) summary = dict(rows=results, total=len(results), passed=sum(r['verdict'] == 'PASS' for r in results.values()), complete=len(results) == 17 and all(r['verdict'] in ('PASS', 'WARN') for r in results.values())) summary_path = batch / 'summary.json' summary_path.write_text(json.dumps(summary, indent=2)) print(summary_path) return all(r['verdict'] in ('PASS', 'WARN') for r in results.values()) if __name__ == '__main__': raise SystemExit(0 if run_lint(sys.argv[1]) else 1)",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 594,
+      "unit_sha256": "8c69eea8cdfee7cfd499266db403d6c42e51c5b47af85bfa51cfe479db4671b8",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "The capture script's `accepted` means a captured zero exit with stable inputs and present required artifacts; lint's row-specific verdict uses its captured fields, not that generic boolean.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 5,
+      "unit_sha256": "9ef9bb956a2e1d45e9bb6e6f8ad7751afc639e5de067ca04811213649c8b185f",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "For Full without equivalent harness automation, use the connected extraction/capture script in [full-checks.md](full-checks.md#execute-canonical-lint-faithfully).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 273,
+      "unit_sha256": "3ef831ae71b7e19ed72b7bee36583aa55101451fd068f076ebb33e77e76ff16b",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "Migration keys on the board's `Schema:` line, or on structure when the line is absent — never on the free-text `Methodology:` stamp, which is display-only. [`schema.py`](../../scripts/migrate/schema.py)'s `schema_of(files)` reads only the workspace root (top-level files; nested paths are ignored for detection) and ignores any `legacy-*/` directory, so a stray legacy snapshot next to a current board never changes the bucket.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 282,
+      "unit_sha256": "4aa73b28c65af8a9e2fad265b6a30fe02ce439f526e51cceac8d71291a43761b",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "| `pre-3` | a `board.md` with no `Schema:` line, and a header row with `Point` or `Task` and a `Status` column | [`step_pre3_to_3.py`](../../scripts/migrate/step_pre3_to_3.py) |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 283,
+      "unit_sha256": "239fe664a81965f9800aaaba163c436b0e53ea114f25b8b63462b64817fd214e",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "| `3` | a `board.md` whose line is `Schema: tackle-workspace/3` | [`step_3_to_4.py`](../../scripts/migrate/step_3_to_4.py) |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 284,
+      "unit_sha256": "34a669fe5345c498d361073f3fdd2fb298dbaea1ae80685b7425aa9851ce5817",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "| `4` | a `task-board.md` whose line is `Schema: tackle-workspace/4` | [`step_4_to_5.py`](../../scripts/migrate/step_4_to_5.py) |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 292,
+      "unit_sha256": "01d0574e01f6c8aea6d1dbcce8f1da9f4e4751369561ca92f783510498c73fe4",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "Each step is one idempotent detect → transform → verify script; a second run of any step on its own output is a byte-identical no-op.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 293,
+      "unit_sha256": "5b0262efb5bbf3a647574f2c0f22c1adccb99379567ac03f7691211437a9c7d7",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "Importing these scripts needs the owner's explicit authorization; an explicit migration request grants it for that migration (the [script consent](../../scripts/README.md#consent)).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 295,
+      "unit_sha256": "ee83c2d7144b5fbe6b0866c328e7b28d3bcb05a16d8b0db51f1286f4c8a3f45e",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "Each step imports [`schema.py`](../../scripts/migrate/schema.py) from its own folder, so each step's `detect`, `transform` and `verify` call `schema_of`, `parse_board` and the other shared helpers from that one module, not a copy.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 299,
+      "unit_sha256": "b49644d772ee9e6cf15994df9e191a9b5f20d260b044f5dcbfba34fabad85a76",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "Advance a real workspace with `schema.adopt(files, context, step.transform)`, never by calling a step's `transform` directly on a workspace's full file mapping: `transform`'s `files` argument must already exclude any `legacy-*/` directory, and only `adopt` supplies that, then reassembles the result with every pre-existing `legacy-*/` directory preserved and the step's own new snapshot added.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 309,
+      "unit_sha256": "c89674f817923a7392466645f110eaac4177dcd2246996b2e59c917efd361bc8",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "[`step_pre3_to_3.py`](../../scripts/migrate/step_pre3_to_3.py) — generalizes `candidate_board()` (`maintaining/migrations.md`) three ways: it accepts P- and T-ids, it maps the legacy states exactly as [terminology.md](../terminology.md)'s States table does, and it never infers `Ready to run`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 313,
+      "unit_sha256": "f69f8f91e88bb899fbb663354c77b204430a3d03da4a628627c20604c83316c0",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "[`step_3_to_4.py`](../../scripts/migrate/step_3_to_4.py) — the v8.3 → v8.4 layout, done mechanically: renames the artifacts that exist (see the checklist above), maps every P-id to one T-id and rewrites the ids in the contents — not only the file names — of `plan.md`, every brief, the board and its dependencies, every report, and the usage ledger's rows (its column format, 8-column legacy or v2 lifecycle, is preserved; only the ids inside it are mapped).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 326,
+      "unit_sha256": "2e06e6861a3f9a54d18a4db070238c475f6cb2a45657929abb6db389c9a1cee0",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "[`step_4_to_5.py`](../../scripts/migrate/step_4_to_5.py) — sets `Schema: tackle-workspace/5` and gives every `Ready to run` row without a citation the Verification text `ready: legacy /4 readiness`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 331,
+      "unit_sha256": "dda75f279b27d8605a9a9f6dd217d898353e648d8bb346f6071278d94d9828ab",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "Each step's `verify(before, after)` takes the same `legacy-*/`-excluding `files` shape as `transform` (`schema.py`'s `workspace_files(files)` of the pre- and post-adoption mappings, not the adopted result itself, which still carries the legacy snapshots) and is self-contained Python, checked against this guide's own reading of each schema: state vocabulary, `Verification` references and, for `step_4_to_5.py`, the `ready:` rule.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 353,
+      "unit_sha256": "6b5d0963766fe36552e770adc329e37af1ad5b7c3411c7a8693673e50241be70",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "A board saved with CRLF line endings reads as older: convert it to LF first, because the rows, the scripts and this migration read LF only.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 354,
+      "unit_sha256": "be0125a741d570245a037aa7943564e671c4453ea34e0a3378c76a11052c8fca",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "This guide, its scripts and their fixtures are the one bridge: they keep detecting and transforming every bucket above.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-card.md",
+      "line": 72,
+      "unit_sha256": "cbece56fbcf16af56b4d2ef61a7903f3c605d7614c43ff36e7ad8eaa0d5db181",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-card.md",
+      "note": "For a nontrivial task graph, the [optional task consistency script](decompose-and-lint.md#optional-task-consistency-script) checks task identities, scope ownership and producer/consumer compatibility mechanically.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-card.md",
+      "line": 117,
+      "unit_sha256": "b62b4c6c4e6ca4b6ed1abc1760cf63b57b78592f1122511e494f7054f02e41ae",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-card.md",
+      "note": "[Update boundary](intake-and-gate.md#update-boundary-explicit-user-control), [learning-loop read](intake-and-gate.md#learning-loop-read-if-enabled) and [reference plans](intake-and-gate.md#archetypes), [decision ownership](intake-and-gate.md#decision-ownership), [optional intake artifacts](intake-and-gate.md#optional-intake-artifacts), [request boundaries](intake-and-gate.md#requests-share-the-same-boundaries), [scaffold depth artifacts](scaffold.md#depth-artifacts), [acceptance and test strategy](design-and-contract.md#acceptance-and-test-strategy), [architecture recommendation](design-and-contract.md#step-55--architecture-recommendation), [stabilizing the design contract](design-and-contract.md#step-575--stabilize-the-design-contract-full-only), [code style](design-and-contract.md#code-style), [loop reference plans](decompose-and-lint.md#loop-reference-plans-type-discovery--type-experiment), [the task consistency script](decompose-and-lint.md#optional-task-consistency-script), [the shared validation contract](verify.md#shared-validation-contract), [the two halves of product verification](verify.md#product-verification-has-two-halves), [the coverage matrix](verify.md#coverage-matrix-criterion--evidence), [the cold-resolvability probe](verify.md#cold-resolvability-probe-risk-triggered), [selective revalidation after drift](verify.md#selective-revalidation-after-drift), [preparation horizon](decompose-and-lint.md#preparation-horizon), [milestone readiness](verify.md#milestone-readiness), [PLAN-only intent and handoff](verify.md#plan-only-intent-and-handoff).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 3,
+      "unit_sha256": "b415efd55436727b1f7b20fe5e1d6750b8c63ab4fe0bf32b69a9f2f6c6e4d99a",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "Direct may use sufficient actual tool records, and Focused may use its small explicit-workspace script.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 26,
+      "unit_sha256": "fb9cf73564066d3f6e6a267e5f5e974e0c6331aa24c8d8c24e2d136ddb7a7c77",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "The scripts use ordinary filesystem symlinks, same-filesystem atomic publication and directory sync.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 67,
+      "unit_sha256": "ad5f58e0d00cf45f706699c6e3649831bf7d5abcb5cd50b6a384bff4c27b8268",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "With the owner's explicit authorization, the optional standard-library [record script](../../scripts/record_store.py) is imported from `<skill>/scripts/` (put that folder first on `sys.path`; it imports the Coordinated [`capture.py`](../../scripts/capture.py) beside it).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 68,
+      "unit_sha256": "60b2e11b9af94f127ca9f3f4c2541521cca4b8486277431be64c92321c3d481f",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "It is a module with no command line, not an installed CLI.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 84,
+      "unit_sha256": "53e2cab7414e1db326ea54353f866b6ee06cd8817061ffe509faf45661667b45",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "Import or run it only with the owner's explicit authorization for this use, or under a grant in [script consent](../../scripts/README.md#consent).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 88,
+      "unit_sha256": "7b8c6598a468d575a17eb8281471606a36e7b47c607f390668d1f949838da972",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/record_store.py",
+      "note": "from pathlib import Path import json import os import re import shutil import sys import tempfile sys.path.insert(0, str(Path(__file__).resolve().parent)) from capture import exclusive, local, publish, put_object, read_record, record_hashes, sha, sync_dir def inventory(store): store = Path(store).resolve() return {str(p.relative_to(store)): sha(p.read_bytes()) for p in sorted(store.rglob('*')) if p.is_file() and not p.is_symlink() and '.lock' not in p.relative_to(store).parts} def record_paths(store): return sorted(p for p in store.rglob('observation-*') if p.is_dir() and not p.is_symlink()) def reference_versions(store, policy): names = policy.get('reference_sources') if not isinstance(names, list) or not names or len(names) != len(set(names)): raise ValueError('explicit authoritative reference sources required') result = {} for name in names: if not isinstance(name, str) or Path(name).is_absolute() or '..' in Path(name).parts: raise ValueError('reference source must be workspace-relative') result[name] = sha(local(store.parent, name).read_bytes()) return result def retirement_marker(observation, record, reason, preview_hash): provenance = {key: record[key] for key in ('argv', 'cwd', 'capture_runtime', 'actor', 'model', 'effort', 'start', 'end')} outcome = {key: record[key] for key in ('child_exit', 'signal', 'timeout', 'launch_error', 'accepted', 'inputs_stable', 'artifacts_present')} return dict(state='data retired; not reusable', event_id=record.get('event_id', observation.name), reason=reason, preview_sha256=preview_hash, provenance=provenance, historical_outcome=outcome, streams=record['streams'], record_sha256=sha((observation / 'result.json').read_bytes()), start_sha256=sha((observation / 'start.json').read_bytes()), input_count=len(record['inputs_before']), retained_object_count=0, unavailable=['raw metadata', 'input/script/artifact bytes', 'original streams']) def encoded(value): return (json.dumps(value, indent=2) + '\\n').encode() def preview(store, policy): store = Path(store).resolve() if (store / 'objects').is_symlink(): raise ValueError('object pool redirects outside the selected representation') fields = ('current', 'pinned', 'active', 'resolved_failures', 'retire') if any(not isinstance(policy.get(k), list) for k in fields) or not policy.get('reason'): raise ValueError('complete retention policy and reason required') references = reference_versions(store, policy) selected = {k: {str(local(store, n).relative_to(store)) for n in policy[k]} for k in fields} records, protected, retired = {}, {}, set() metadata = [] for path in record_paths(store): name = str(path.relative_to(store)) if (path / 'retired.json').exists(): tombstone = json.loads((path / 'retired.json').read_text()) for filename, field in (('result.json', 'record_sha256'), ('start.json', 'start_sha256')): if (path / filename).exists(): if tombstone[field] != sha((path / filename).read_bytes()): raise ValueError('retired history altered') metadata.append(str((path / filename).relative_to(store))) retired.add(name) continue record = read_record(path) if record.get('layout') != 'shared-v1': raise ValueError('legacy record: export first, no in-place retirement') records[name] = record reasons = [k for k in ('current', 'pinned', 'active') if name in selected[k]] if not record['accepted'] and name not in selected['resolved_failures']: reasons.append('unresolved failure') if reasons: protected[name] = reasons known = set(records) | retired if (selected['current'] | selected['pinned'] | selected['active']) & retired: raise ValueError('live reference names retired data') pending = sorted(str(p.relative_to(store)) for p in store.rglob('.pending-*') if p.is_dir()) for name in pending: protected[name] = ['interrupted capture: preserve recovery bytes'] if pending: for name in records: protected.setdefault(name, []).append('interrupted capture dependencies not yet resolved') metadata = [] for key in fields: if selected[key] - known - set(pending): raise ValueError('policy names missing record: ' + key) candidates = sorted(selected['retire'] & set(records) - set(protected)) required = set() marker_bytes = 0 for name, record in records.items(): if name not in candidates: required.update(record_hashes(record)) else: observation = local(store, name) metadata.extend(str((observation / f).relative_to(store)) for f in ('start.json', 'result.json')) marker_bytes += len(encoded(retirement_marker(observation, record, policy['reason'], '0' * 64))) objects = {p.name: p.stat().st_size for p in (store / 'objects').glob('*') if p.is_file() and not p.is_symlink() and re.fullmatch('[0-9a-f]{64}', p.name)} eligible = [] if pending else sorted(set(objects) - required) object_bytes = sum(objects[h] for h in eligible) metadata_bytes = sum(local(store, name).stat().st_size for name in metadata) - marker_bytes result = dict(scope=str(store), protected=protected, candidates=candidates, reference_revisions=references, objects=eligible, metadata=sorted(metadata), object_recoverable_bytes=object_bytes, metadata_recoverable_bytes=metadata_bytes, recoverable_bytes=object_bytes + metadata_bytes, reason=policy['reason'], total_object_bytes=sum(objects.values()), object_files=len(objects)) identity = dict(policy=policy, inventory=inventory(store), result=result) result['fingerprint'] = sha(json.dumps(identity, sort_keys=True).encode()) return result def remove_object(path): path.unlink() def remove_metadata(path): path.unlink() def maintain(store, policy, expected_fingerprint, authorized=False): if not authorized: raise PermissionError('historical-data maintenance is not authorized') if policy.get('reference_writes_coordinated') is not True: raise PermissionError('reference writers must share the maintenance lease; preview only') store = Path(store).resolve() with exclusive(store): proposal = preview(store, policy) if proposal['fingerprint'] != expected_fingerprint: raise ValueError('store, policy or authoritative references changed: prepare a fresh preview') for name in proposal['candidates']: observation = local(store, name) marker = retirement_marker(observation, read_record(observation), policy['reason'], expected_fingerprint) publish(observation / 'retired.json', encoded(marker)) for name in proposal['metadata']: path = local(store, name) remove_metadata(path) sync_dir(path.parent) for digest in proposal['objects']: remove_object(store / 'objects' / digest) sync_dir(store / 'objects') return proposal def recover_lock(store, writers_stopped=False, authorized=False): if not writers_stopped or not authorized: raise PermissionError('confirm writer shutdown and scoped recovery authorization') lock = Path(store) / '.lock' if lock.exists(): (lock / 'owner.json').unlink(missing_ok=True) lock.rmdir() sync_dir(Path(store)) def link_record(observation, store, record): (observation / 'blobs').symlink_to(os.path.relpath(store / 'objects', observation), target_is_directory=True) for name, digest in record['streams'].items(): (observation / name).symlink_to(os.path.relpath(store / 'objects' / digest, observation)) def bundle_inventory(directory): directory = Path(directory).resolve() for p in directory.rglob('*'): if p.is_symlink(): p.resolve(strict=True).relative_to(directory) if p.name not in ('blobs', 'stdout.bin', 'stderr.bin'): raise ValueError('unexpected export alias') return {str(p.relative_to(directory)): sha(p.read_bytes()) for p in sorted(directory.rglob('*')) if p.is_file() and not p.is_symlink() and p.name != 'export.json'} def verify_bundle(directory): directory = Path(directory) manifest = json.loads((directory / 'export.json').read_text()) if bundle_inventory(directory) != manifest['files']: raise ValueError('incomplete or altered export') if not manifest['records']: raise ValueError('empty export') for name in manifest['records']: read_record(local(directory.resolve(), name)) return manifest def export_records(store, records, destination): store, destination = Path(store).resolve(), Path(destination).resolve() if destination.exists() or not records or len(set(records)) != len(records): raise ValueError('fresh destination and explicit unique records required') try: destination.relative_to(store) except ValueError: pass else: raise ValueError('export destination must be outside the source store') for name in records: if Path(name).is_absolute() or '..' in Path(name).parts: raise ValueError('export record names must be relative, without traversal') read_record(local(store, name)) destination.parent.mkdir(parents=True, exist_ok=True) stage = Path(tempfile.mkdtemp(prefix='.export-', dir=destination.parent)) (stage / 'objects').mkdir() with exclusive(store): for name in records: source = local(store, name) record = read_record(source) target = local(stage, name) target.mkdir(parents=True) for filename in ('result.json', 'start.json', 'receipt.md'): publish(target / filename, (source / filename).read_bytes()) for digest in record_hashes(record): blob = source / 'blobs' / digest if not blob.exists(): stream = next((n for n, h in record['streams'].items() if h == digest), None) blob = source / stream if stream else blob payload = blob.read_bytes() if sha(payload) != digest: raise ValueError('corrupt export object') put_object(stage, payload) link_record(target, stage, record) manifest = dict(format='verification-export-v1', records=records, files=bundle_inventory(stage)) publish(stage / 'export.json', (json.dumps(manifest, indent=2) + '\\n').encode()) verify_bundle(stage) stage.rename(destination) sync_dir(destination.parent) return destination def restore_records(bundle, destination): bundle, destination = Path(bundle).resolve(), Path(destination).resolve() manifest = verify_bundle(bundle) if destination.exists(): raise ValueError('restore destination must be new; never overwrite history') destination.parent.mkdir(parents=True, exist_ok=True) stage = Path(tempfile.mkdtemp(prefix='.restore-', dir=destination.parent)) for name in manifest['files']: target = local(stage, name) target.parent.mkdir(parents=True, exist_ok=True) publish(target, local(bundle, name).read_bytes()) for name in manifest['records']: observation = local(stage, name) record = json.loads((observation / 'result.json').read_text()) link_record(observation, stage, record) publish(stage / 'export.json', (bundle / 'export.json').read_bytes()) verify_bundle(stage) stage.rename(destination) sync_dir(destination.parent) return destination",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/requirements-base.md",
+      "line": 14,
+      "unit_sha256": "90d8f1d4d22f2822f1714da3de039e91eb527a5e2f82d2befe9d24e7d926064f",
+      "disposition": "reworded",
+      "destination": "references/guides/requirements-base.md",
+      "note": "Importing or running the [script](../../scripts/requirements_base.py) needs the owner's explicit request ([script consent](../../scripts/README.md#consent)); without it, check each entry by reading.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/requirements-base.md",
+      "line": 71,
+      "unit_sha256": "b062c60e718f0a2509dc301d54229ecab40d6aee6b0e548d5367a75d4b90cb61",
+      "disposition": "reworded",
+      "destination": "references/guides/requirements-base.md",
+      "note": "Importing or running the script needs the owner's explicit authorization under the script consent rule: an explicit requirements-delta or validation request grants it for that validation.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/requirements-base.md",
+      "line": 73,
+      "unit_sha256": "76cc33deb6742f892f9abe731e2b54238c15e372a9066b5a732adb2c4d8ce04c",
+      "disposition": "reworded",
+      "destination": "references/guides/requirements-base.md",
+      "note": "Without it, PLAN checks each entry against the rules above by reading the base and the delta, and reports every problem it finds; the fold's yes (see Closure fold) runs the script.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/retro.md",
+      "line": 115,
+      "unit_sha256": "e94c00ab68bea1497c5c643031afd9206b03c177916e10c48650394551a9a9d8",
+      "disposition": "reworded",
+      "destination": "references/guides/retro.md",
+      "note": "The shipped [script](../../scripts/retro_confidence.py) performs this computation, the retirement check two paragraphs down, and reads all three legacy shapes a profile may still carry; nothing here reimplements it independently.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/retro.md",
+      "line": 119,
+      "unit_sha256": "fe3505c32347339bd39e5d68eff7787080ff2d574fc66ed00089340dfda670fa",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/retro_confidence.py",
+      "note": "\"\"\"Wilson score interval, lower bound (z=1.96): for each Hypotheses/Directives bullet (never a Rules or other section bullet), derive N (checked-true) and M (checked-false) by counting the entry own observations, then compute the lower bound over n=N+M. Two bullets that repeat one hypothesis or directive text merge by the union of the observations initiatives (never by summing two entries N/M, which would double-count a shared initiative); an assumed token is never counted and never occupies the union (it cannot block a later real check or cross for the same initiative). Read over a profile file named on the command line, such as `.tackle/profile.md` or `~/.tackle/user-profile.md`: python3 -I <skill>/scripts/retro_confidence.py <profile-path> Prints `<id> N M n confidence status` for every entry, one line each, in file order. \"\"\" import re import sys from math import sqrt NUMBER = re.compile(r'[ \\t\\n\\r\\f\\v]*([+-]?(?:[0-9]+\\.?[0-9]*|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?)') def trim(text): return text.strip(' \\t') def index(text, needle): \"\"\"1-based position of needle in text, 0 when absent (the position convention of the original awk).\"\"\" return text.find(needle) + 1 if needle else 0 def substr(text, start, length=None): \"\"\"The awk substr(): 1-based start, a length that may run past either end.\"\"\" first = start last = len(text) + 1 if length is None else start + length first = max(first, 1) last = min(last, len(text) + 1) return text[first - 1:last - 1] if last > first else '' def number(text): \"\"\"awk's `text + 0`: the leading decimal number of the string, 0 when there is none.\"\"\" found = NUMBER.match(text) return float(found.group(1)) if found else 0 def between(line, left, right): a = index(line, left) if a == 0: return '' a += len(left) b = index(substr(line, a), right) if b == 0: return trim(substr(line, a)) return trim(substr(line, a, b - 1)) def after(line, left): a = index(line, left) return '' if a == 0 else trim(substr(line, a + len(left))) def wilson_lower(k, n): p = k / n denom = 1 + 3.8416 / n centre = (p + 3.8416 / (2 * n)) / denom half = 1.96 * sqrt(p * (1 - p) / n + 3.8416 / (4 * n * n)) / denom lower = centre - half if lower < 0: lower = 0 if lower > 1: lower = 1 return lower def status_of(m, lower): return 'retired' if m >= 3 and lower < 0.3 else 'active' def emit(out, ident, n, m, has_evidence): total = n + m if not has_evidence or total == 0: out.append('%s n/a n/a n/a n/a unranked\\n' % ident) return lower = wilson_lower(n, total) out.append('%s %d %d %d %.4f %s\\n' % (ident, int(n), int(m), int(total), lower, status_of(m, lower))) def rows(text): records = text.split('\\n') if records and records[-1] == '': records.pop() out = [] section = False seen = set() total_n = {} total_m = {} for number_of_line, line in enumerate(records, 1): if line.startswith('## Hypotheses') or line.startswith('## Directives'): section = True continue if line.startswith('## '): section = False if not section: continue if substr(trim(line), 1, 2) != '- ': continue if index(line, 'observations:') > 0: ident = between(line, 'id:', '·') entry = between(line, ident + ' · ', ' · confidence:') obslist = between(line, 'observations:', '· status:') if obslist == '': obslist = after(line, 'observations:') n = m = 0 for token in obslist.split(';'): token = trim(token) if token == '': continue is_check = index(token, '✓') > 0 is_cross = index(token, '✗') > 0 if not is_check and not is_cross: continue key = (entry, substr(token, 1, index(token, ':') - 1)) if key in seen: continue seen.add(key) if is_check: n += 1 else: m += 1 total_n[entry] = total_n.get(entry, 0) + n total_m[entry] = total_m.get(entry, 0) + m emit(out, ident, total_n[entry], total_m[entry], True) continue if index(line, 'evidence:') > 0: evidence = between(line, 'evidence:', '· status:') if evidence == '': evidence = between(line, 'evidence:', '·') if evidence == '': evidence = after(line, 'evidence:') check = index(evidence, '✓') n = number(trim(substr(evidence, 1, check - 1))) rest = substr(evidence, check + len('✓')) if rest.startswith('/'): rest = rest[1:] if index(rest, 'null') > 0: m = 0 else: cross = index(rest, '✗') m = number(trim(substr(rest, 1, cross - 1))) emit(out, 'line:%d' % number_of_line, n, m, True) continue emit(out, 'line:%d' % number_of_line, 0, 0, False) return ''.join(out) def main(argv): if len(argv) != 2: sys.stderr.write('usage: retro_confidence.py <profile-path>\\n') return 2 with open(argv[1], encoding='utf-8', errors='surrogateescape', newline='') as stream: text = stream.read() sys.stdout.buffer.write(rows(text).encode('utf-8', 'surrogateescape')) return 0 if __name__ == '__main__': raise SystemExit(main(sys.argv))",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/retro.md",
+      "line": 204,
+      "unit_sha256": "c3939cfeac42438cd551f260542443b228d991bba2f9b5b03703168bf9cb2286",
+      "disposition": "reworded",
+      "destination": "references/guides/retro.md",
+      "note": "Run it as `python3 -I <skill>/scripts/retro_confidence.py <profile-path>`, with the owner's explicit authorization or under a grant in [script consent](../../scripts/README.md#consent), to print `<id> N M n confidence status` for every Hypotheses/Directives entry, one line each, old and new format alike, and exit 0.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/scaffold.md",
+      "line": 58,
+      "unit_sha256": "11e08fd0e60ecd49b01d1ed04368a523af439be8e576b971f120963f623c2fda",
+      "disposition": "reworded",
+      "destination": "references/guides/scaffold.md",
+      "note": "```sh ws=docs/plans/<initiative> for name in README.md AGENTS.md plan.md task-board.md history.md resource-usage.md questions.md decisions.md reference.md; do test -f \"$ws/$name\" || { echo \"missing core: $name\";exit 1;} done test -d \"$ws/tasks\" || { echo \"missing core: tasks/\";exit 1;} for name in board.md log.md usage.md points; do test ! -e \"$ws/$name\" -a ! -L \"$ws/$name\" || { echo \"old-name artifact: $name\";exit 1;} done ```",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/system-one.md",
+      "line": 78,
+      "unit_sha256": "53e2cab7414e1db326ea54353f866b6ee06cd8817061ffe509faf45661667b45",
+      "disposition": "reworded",
+      "destination": "references/guides/system-one.md",
+      "note": "**Stop before the program below.** Save or run it only with the owner's explicit authorization for this use, or under a grant in [script consent](../../scripts/README.md#consent).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 3,
+      "unit_sha256": "41bbbf71fe298b69024c1fe3757435b7027d434af029df13ad438639b5ce8473",
+      "disposition": "ruled",
+      "destination": null,
+      "note": "A script is a Python file under `scripts/`, not a Markdown file holding one fenced block, and the scripts manifest states what a script is.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 3,
+      "unit_sha256": "089cf08fd417c14d3576b064dd9fbeee2b1cb5ab361a5c3ca895c06e04509d87",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "This manifest lists every script under `scripts/`, recursively, with the sha256 of its file.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 4,
+      "unit_sha256": "6eec168f58d716b11fad0833345fab25aec4b2c9136098c3c2f14089cf4867ca",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "A task that adds or changes a script adds or updates its row.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 7,
+      "unit_sha256": "df95b63e58b77ede6d55dab61340c353c0e07e39e75dcf947c63c4625a7129d6",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "| Script | sha256 |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 11,
+      "unit_sha256": "471d8d843e91f5069c727f7f96487b7a91afc7b3468d995d4779cdfa0ed135d8",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "| [controlled_writing.py](controlled_writing.py) | `79e7fc56982c60db602c4216d1eb831b57b7aeefb545a26f8aed127378b8e74a` |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 12,
+      "unit_sha256": "6ad75e81be53ba688918096d1fe74929f4303c54be8bc4e141e5b1395841de90",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "| [migrate/schema.py](migrate/schema.py) | `6e7c3d3de8ca67089f0a5f395ebb14bb00e581fadaf4d1e9272707666a0d4809` |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 13,
+      "unit_sha256": "50fbea4b816d6a6d6ee6fdd89892c2e4a4534562df665caae6f25abd8cbcf97e",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "| [migrate/step_pre3_to_3.py](migrate/step_pre3_to_3.py) | `b08e63d7182d5a51d30a1973ba3f098448a174e208e9739783688d7ca82ab4b3` |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 14,
+      "unit_sha256": "f196b724ad19dec0e376ef80a52e6ab94d96fe73af3e46e9f7c94330a2187ebc",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "| [migrate/step_3_to_4.py](migrate/step_3_to_4.py) | `effc084a74cb31c1aea0983e89bc94e0a08a3bd26137ec87ae9fc94b9c2846f5` |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 15,
+      "unit_sha256": "1d8d5022f14f9306d4af19285aa583f9f089d71f9bedf061945c8432c645abab",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "| [migrate/step_4_to_5.py](migrate/step_4_to_5.py) | `ae4dcf1ee639aa556fccf4ddbc1b70229b942d84e6a365c12009023af717501b` |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 19,
+      "unit_sha256": "1b462932efba8667c84d391aa101e5f708c98c5460d9773900203aee41f748dd",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "| [requirements_base.py](requirements_base.py) | `d6c34cf9ca5f4cbb82ecb98c56d412a97344264da5734d839b6bb153ee10f8d0` |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 24,
+      "unit_sha256": "e14f3c037dc36641e289d6946c1f5f58aeb1476e4fe225a98b19ee2f322edb37",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "A script is a Python 3 file under `scripts/` that a guide tells the agent to run or import.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 25,
+      "unit_sha256": "a4bbea8e1fd0d48bbf893563ee6955f3b70787fd386c37be930e777c98355fc8",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "A documented one-line check command, such as a lint row or a retro metric command, is not a script.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 28,
+      "unit_sha256": "974c47278d91ab718a06232a90c23e1ecbc581a982f372bef4c608a53e4c6854",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "Running or importing a script needs the owner's explicit authorization, under the shared [decision and communication policy](../references/guides/communication.md).",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "each",
+          "reason": "'each' counted the two actions on a recipe, saving it and running it; a script has one action, running or importing it."
+        }
+      ]
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 29,
+      "unit_sha256": "228d578dc9c27b2a65fd15630cfd7e9f047dd8d68ac2fb0940b3143226899f7f",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "A prior general request to plan or run does not count unless it names the script use.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 30,
+      "unit_sha256": "1a3a2fe40bd2b13ac646286141a96c27ee0b7c5d7dc9681ab0ab868281644f7d",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "Prefer an equivalent harness capability when one exists.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 32,
+      "unit_sha256": "158460d1b2a5cf21692a025d0766d5f6d78ac309d1ef2a17471d27a2dc5a7773",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "An explicit owner request for a feature whose documented procedure is a script authorizes that script for that request, such as the plan view, a migration, or a System One use that the workspace recorded `yes` for.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 34,
+      "unit_sha256": "8001b3be986871ba7b32763738e32747f0f6c68224d3645d083bb0fa65e96181",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "A general request to plan or run does not.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 36,
+      "unit_sha256": "b0ae7e5b4d8216b50463d0cab87932305c0c9c9917e45eb19acb49c7b8b8b6a4",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "Declining is a normal outcome.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 36,
+      "unit_sha256": "7b57b5cd6a01766adab29d1cdec89bc5fc0be93e41b22931eb080c549f4abbcc",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "The affected record is reported unavailable or produced by another permitted route; it is never faked.",
       "destination_unit_sha256": null
     }
   ]
