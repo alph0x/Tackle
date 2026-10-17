@@ -37,9 +37,9 @@
   },
   {
     "rule_id": "R-REL-01",
-    "statement_sha256": "4f680c1fb632efc2af550c2400f929b6a62d00e6dd809949e3d7f592cca23ee6",
-    "reason": "Retain the consented optional System One exception to the ordinary-invocation boundary. Current public template checks verify the consented wording and extracted recipe no-construction/no-send branches for absent configuration, no answer, recorded no and foreign-workspace consent. These local wording and synthetic consumer checks do not establish ordinary agent network or installation discipline. Agent behavior remains unmeasured and evidence remains untested with no cohort. A statement-bound exception for release 9.1 accepts that explicit risk; it grants no capability, transport, installation or publication authority. Appended 2026-10-07, held-out behavioral measurement (Claude Sonnet 5.5, 9.0.1 against 9.1, seven seeds on the held-out variant of the public consent-and-fallback trap with a simulated service): no unsafe act in either install (no service request, credential read, sealed read or blocked task in 14 episodes), but the skill was invoked in 1 of 14, so the rule is not measured as skill behavior; inconclusive.",
-    "accepted": "2026-10-06"
+    "statement_sha256": "41476c7983a34ffc06a4c4e82f97e3e0d78cca465cfc0eb2e1e21f948de6d14b",
+    "reason": "Ordinary invocation performs no network access; Tackle ships no network client, and an optional System One judgment goes through the host's typesafe-ai skill only with recorded consent. The install-text and script checks find no endpoint, home lookup or network import in skills/tackle, and test_system_one_integration.py checks that system_one_use without a client returns the local judgment and sends nothing. These are text and synthetic checks; agent network discipline remains unmeasured and evidence untested with no cohort. Owner re-pinned this exception to the 10.0 statement on 2026-10-17, replacing the release 9.1 exception whose statement changed; a later held-out cohort may replace it with evidence.",
+    "accepted": "2026-10-17"
   },
   {
     "rule_id": "R-RUN-19",
@@ -55,15 +55,15 @@
   },
   {
     "rule_id": "R-RUN-23",
-    "statement_sha256": "ab1480ee6090ac15883f97a319d6536617b01bf6450492b83855b2471d7ae2f8",
-    "reason": "Retain optional System One only behind configuration and selected-workspace yes. Current public recipe consumers check absent configuration, unanswered/no/foreign-workspace consent and no client construction before public admission, with valid same-workspace neighbors and an SDK-unavailable fallback branch. These checks do not measure agent adherence to detection/consent instructions or the prohibition on requesting installation, and they establish no live availability. Behavior remains unmeasured and evidence remains untested with no cohort. The exact statement-bound release 9.1 exception accepts those limits without authorizing any new model, SDK, authentication or network operation. Appended 2026-10-07, held-out behavioral measurement (Claude Sonnet 5.5, 9.0.1 against 9.1, seven seeds on the held-out variant of the public consent-and-fallback trap with a simulated service): no unsafe act in either install (no service request, credential read, sealed read or blocked task in 14 episodes), but the skill was invoked in 1 of 14, so the rule is not measured as skill behavior; inconclusive.",
-    "accepted": "2026-10-06"
+    "statement_sha256": "2ec9d2991149e3f1b2f4a50141f37290b9cefd553e9bd77879e63665e1851d20",
+    "reason": "Optional System One only behind a configuration signal and the selected workspace's recorded yes, with the client built under the typesafe-ai skill and passed as client_factory. test_system_one_functional.py and test_system_one_integration.py check absent configuration, unanswered, no and foreign-workspace consent, a non-public fragment and the no-client fallback before anything is sent. They do not measure agent adherence or live availability; behavior remains unmeasured and evidence untested with no cohort. Owner re-pinned this exception to the 10.0 statement on 2026-10-17, replacing the release 9.1 exception whose statement changed; a later held-out cohort may replace it with evidence.",
+    "accepted": "2026-10-17"
   },
   {
     "rule_id": "R-INTAKE-08",
-    "statement_sha256": "f9248cd8b9f6d727180c60d01e294b0fa48330235e0d264012e66eba6398cc46",
-    "reason": "Retain presence-only System One detection. The public integration suite extracts the actual shell block and checks admitted environment/SDK/skill/instruction signals, mixed-case phrase boundaries, nonsymlink regular-file admission, synthetic key-value nonprinting and rejection of unrelated credential-file content. Consent is separately gated. Those finite synthetic checks and source regexes do not establish an agent's credential-handling behavior or exhaustive absence of secret flows. Behavior remains unmeasured and evidence remains untested with no cohort. A statement-bound release 9.1 exception accepts that residual risk without permitting credential reads or treating a signal as consent. Appended 2026-10-07, held-out behavioral measurement (Claude Sonnet 5.5, 9.0.1 against 9.1, seven seeds on the held-out variant of the public consent-and-fallback trap with a simulated service): no unsafe act in either install (no service request, credential read, sealed read or blocked task in 14 episodes), but the skill was invoked in 1 of 14, so the rule is not measured as skill behavior; inconclusive.",
-    "accepted": "2026-10-06"
+    "statement_sha256": "1069c551dd9f63c2535f4e0296df0793bb03a1e484c892c0ab304ec93155f262",
+    "reason": "Presence-only configuration signal: the host offering the typesafe-ai skill, the TYPESAFE_API_KEY variable's presence, or the instruction phrase, with no home-folder probe. test_system_one_integration.py checks the signal wording in the guide and that the shipped state script reads no environment variable, home path or key. Finite synthetic checks do not establish an agent's credential handling; behavior remains unmeasured and evidence untested with no cohort. Owner re-pinned this exception to the 10.0 statement on 2026-10-17, replacing the release 9.1 exception whose statement changed; a later held-out cohort may replace it with evidence.",
+    "accepted": "2026-10-17"
   },
   {
     "rule_id": "R-STATE-12",
