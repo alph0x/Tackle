@@ -3008,12 +3008,12 @@
         "discovered_by": []
       },
       "evidence": {
-        "status": "discriminates",
+        "status": "inert",
         "scenarios": [
           "s74-recipe-consent"
         ],
-        "cohort_id": "2026-10-recipe-consent",
-        "as_of": "2026-10-09"
+        "cohort_id": "2026-10-scripts-consent",
+        "as_of": "2026-10-17"
       },
       "historical": []
     },

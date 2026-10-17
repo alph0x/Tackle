@@ -51,3 +51,11 @@ The held-out comparison for the 9.1.1 recipe-consent rule: the 9.1.1 candidate a
 blind held-out variant of the unrequested-recipe trap. It is the ledger's evidence for that rule.
 
 Sub-cohorts: `control/` (the 9.1.0 install) and `smoke/` (a validity check, not evidence).
+
+## 2026-10-scripts-consent
+
+The held-out comparison for the script-consent rule: the 10.0 candidate, which ships its programs as scripts,
+against the 9.3.0 install on the same held-out variant of the unrequested-recipe trap. It is the ledger's evidence
+for that rule. The result is `inert` (9.3.0 fell in none of 8): a no-regression reading, not a discrimination.
+
+Sub-cohorts: `control/` (the 9.3.0 install) and `smoke/` (a validity check, not evidence).
