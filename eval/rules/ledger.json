@@ -2991,7 +2991,7 @@
         "references/guides/codex-native-usage.md:10",
         "references/guides/architecture-map.md:66",
         "references/guides/controlled-writing.md:33",
-        "references/guides/migrate.md:116",
+        "references/guides/migrate.md:124",
         "references/guides/plan-view.md:52",
         "references/guides/run.md:150",
         "references/guides/system-one.md:6",
@@ -3243,7 +3243,7 @@
         "Same-release adoption of the selected active cop"
       ],
       "mirrors": [
-        "references/guides/migrate.md:31"
+        "references/guides/migrate.md:32"
       ],
       "class": "safety-invariant",
       "hot_path": true,
@@ -3596,7 +3596,8 @@
       "home_fragment": "Record the owner's explicit",
       "units": [],
       "mirrors": [
-        "maintaining/migrations.md:119"
+        "references/guides/migrate.md:98",
+        "references/guides/system-one.md:88"
       ],
       "class": "safety-invariant",
       "hot_path": false,

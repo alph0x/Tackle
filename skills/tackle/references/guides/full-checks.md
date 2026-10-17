@@ -71,7 +71,7 @@ process cwd; paths resolve from it. For example selectors can cover `src/**/*.py
 
 It prints the path of the new `receipt.md` and exits 0 when the check is accepted, 1 when it is not accepted
 or when the specification is refused with a named `ValueError`; run it only with the owner's explicit
-authorization ([script consent](../../scripts/README.md#consent)).
+authorization for this use ([script consent](../../scripts/README.md#consent)).
 
 Before reusing a verification record, reject any retirement tombstone, then open its result and verify stream/blob hashes, relevant final input
 hashes **and selector membership**, produced artifacts and the actual successful child result.
@@ -129,7 +129,7 @@ snapshot is ERROR even if the command exited zero. A subset score is never a ful
 
 The runner (outside cwd, it lists itself and the capture script under `programs` in the summary) prints the path of the batch's `summary.json` and exits 0 when every selected row's verdict is PASS or
 WARN, 1 otherwise; a refused configuration ends with a named `ValueError`, and the runner runs only with the
-owner's explicit authorization ([script consent](../../scripts/README.md#consent)).
+owner's explicit authorization for this use ([script consent](../../scripts/README.md#consent)).
 
 Interpret **stdout, stderr and real exit together** using the canonical condition:
 

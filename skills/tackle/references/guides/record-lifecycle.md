@@ -83,7 +83,7 @@ untouched. Legacy stores can be read and exported; in-place deletion/compaction 
 `shared-v1` records. Prepare, verify and switch a new export representation before separately
 authorizing removal of old duplicates. Event directories, not the presence of bulky result files,
 index retired events. Readers check retirement before attempting to open retired raw metadata; import or run the
-script only with the owner's explicit authorization ([script consent](../../scripts/README.md#consent)).
+script only with the owner's explicit authorization for this use ([script consent](../../scripts/README.md#consent)).
 
 ## Portability, migration and delivery
 

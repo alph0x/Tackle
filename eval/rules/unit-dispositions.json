@@ -8486,7 +8486,7 @@
       "unit_sha256": "53e2cab7414e1db326ea54353f866b6ee06cd8817061ffe509faf45661667b45",
       "disposition": "reworded",
       "destination": "references/guides/context-lifecycle.md",
-      "note": "import or run the script only with the owner's explicit authorization ([script consent](../../scripts/README.md#consent)).",
+      "note": "import or run the script only with the owner's explicit authorization for this use ([script consent](../../scripts/README.md#consent)).",
       "destination_unit_sha256": null
     },
     {
@@ -8567,7 +8567,7 @@
       "unit_sha256": "53e2cab7414e1db326ea54353f866b6ee06cd8817061ffe509faf45661667b45",
       "disposition": "reworded",
       "destination": "references/guides/decompose-and-lint.md",
-      "note": "import or run the script only with the owner's explicit authorization ([script consent](../../scripts/README.md#consent)).",
+      "note": "import or run the script only with the owner's explicit authorization for this use ([script consent](../../scripts/README.md#consent)).",
       "destination_unit_sha256": null
     },
     {
@@ -8708,7 +8708,7 @@
       "unit_sha256": "53e2cab7414e1db326ea54353f866b6ee06cd8817061ffe509faf45661667b45",
       "disposition": "reworded",
       "destination": "references/guides/evidence-capture.md",
-      "note": "the script runs only with the owner's explicit authorization ([script consent](../../scripts/README.md#consent)).",
+      "note": "the script runs only with the owner's explicit authorization for this use ([script consent](../../scripts/README.md#consent)).",
       "destination_unit_sha256": null
     },
     {
@@ -8798,7 +8798,7 @@
       "unit_sha256": "53e2cab7414e1db326ea54353f866b6ee06cd8817061ffe509faf45661667b45",
       "disposition": "reworded",
       "destination": "references/guides/full-checks.md",
-      "note": "run it only with the owner's explicit authorization ([script consent](../../scripts/README.md#consent)).",
+      "note": "run it only with the owner's explicit authorization for this use ([script consent](../../scripts/README.md#consent)).",
       "destination_unit_sha256": null
     },
     {
@@ -9086,7 +9086,7 @@
       "unit_sha256": "53e2cab7414e1db326ea54353f866b6ee06cd8817061ffe509faf45661667b45",
       "disposition": "reworded",
       "destination": "references/guides/record-lifecycle.md",
-      "note": "import or run the script only with the owner's explicit authorization ([script consent](../../scripts/README.md#consent)).",
+      "note": "import or run the script only with the owner's explicit authorization for this use ([script consent](../../scripts/README.md#consent)).",
       "destination_unit_sha256": null
     },
     {
@@ -9341,7 +9341,7 @@
       "unit_sha256": "53e2cab7414e1db326ea54353f866b6ee06cd8817061ffe509faf45661667b45",
       "disposition": "reworded",
       "destination": "references/guides/system-one.md",
-      "note": "**Stop before the example below.** Import or run the scripts it names only with the owner's explicit authorization ([script consent](../../scripts/README.md#consent)).",
+      "note": "**Stop before the example below.** Import or run the scripts it names only with the owner's explicit authorization for this use ([script consent](../../scripts/README.md#consent)).",
       "destination_unit_sha256": null
     },
     {
@@ -9395,7 +9395,7 @@
       "unit_sha256": "53e2cab7414e1db326ea54353f866b6ee06cd8817061ffe509faf45661667b45",
       "disposition": "reworded",
       "destination": "references/guides/system-one.md",
-      "note": "**Stop before the example below.** Import or run the scripts it names only with the owner's explicit authorization ([script consent](../../scripts/README.md#consent)).",
+      "note": "**Stop before the example below.** Import or run the scripts it names only with the owner's explicit authorization for this use ([script consent](../../scripts/README.md#consent)).",
       "destination_unit_sha256": null
     },
     {

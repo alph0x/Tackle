@@ -116,7 +116,7 @@ returns the closed result: with a recorded `yes`, a public fragment and an accep
 named reason. Without a factory the result is the local judgment with reason `client-unavailable`.
 
 **Stop before the example below.** Import or run the scripts it names only with the owner's explicit
-authorization ([script consent](../../scripts/README.md#consent)).
+authorization for this use ([script consent](../../scripts/README.md#consent)).
 
 ```python
 import sys

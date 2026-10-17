@@ -25,12 +25,20 @@ historical text aliases, not separately registered menu commands. See [invocatio
 
 Each checklist below applies only to a selected active workspace, on a disposable copy at a task
 boundary; neighboring workspaces stay untouched. Continue started or interrupted work under its pinned procedure.
-Before the release's own steps, record that procedure, the current lint result under it, and hashes of
-the board, briefs, reports, `AGENTS.md` and history; keep an unchanged checkpoint copy. After them, run
-the lint on the copy. Adopt only the validated copy: record the adoption, its checks and the rollback
+A step that acts on the install, such as the bridge's step 1, comes first. Before any step that changes the
+workspace copy, record that procedure, the current lint result under it, and hashes of
+the board, briefs, reports, `AGENTS.md` and history; keep an unchanged checkpoint copy. After the release's
+steps, run the lint on the copy. Adopt only the validated copy: record the adoption, its checks and the rollback
 result, and bump the `Methodology:` stamp to the adopted release. A failed check holds adoption and
 leaves the original active and unchanged. Adoption rewrites no closed task, no historical record and no
 neighboring workspace. Roll back by restoring the checkpoint copy.
+
+<a id="older-stamps"></a>
+Apply the checklists in release order, from the workspace's `Methodology:` stamp to the current release,
+skipping none. A stamp older than the 8.4 → 9.0 bridge, or from 9.0.0 through 9.2.0, needs intermediate
+checklists that do not ship with the install. The owner reads them in the public repository at
+https://github.com/alph0x/Tackle/blob/v10.0.0/maintaining/migrations.md; Tackle itself opens no network
+connection. Otherwise, start the remaining work in a fresh workspace and leave the old one as it is.
 
 <a id="v84--v90-checklist"></a>
 ## v8.4 → v9.0 checklist
@@ -87,7 +95,7 @@ An active 9.3 workspace adopts 10.0.0 with this checklist. This release ships ev
    directory names that script's sha256, so it is refused once the install updates the script. Rerun those
    checks under the updated install.
 4. [System One](system-one.md) goes through the host's `typesafe-ai` skill. A recorded `System One consent:` line keeps its
-   meaning and needs no change.
+   meaning and needs no change; never copy one from a parent or neighboring workspace.
 
 <a id="schema-keyed-migration"></a>
 ## Schema-keyed migration (9.0.0)

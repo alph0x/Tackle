@@ -134,7 +134,7 @@ The caller records fingerprints of the actual named inputs before using the resu
 `source`, `configuration`, `dependencies` and `runtime` are nonempty textual hashes/revisions or
 explicit not-applicable reasons. `selectors` is a nonempty list/map describing selector membership;
 an explicitly optional selector may have an empty match list. Empty top-level metadata is missing. No installed tool or additional file is required for small work; import or run
-the script only with the owner's explicit authorization ([script consent](../../scripts/README.md#consent)).
+the script only with the owner's explicit authorization for this use ([script consent](../../scripts/README.md#consent)).
 
 The script's structural pass is one preparation observation. `semantic_review` and
 `boundary_fixtures` name results whose actual accessible records the coordinator must inspect;
