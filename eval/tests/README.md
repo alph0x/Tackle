@@ -10,7 +10,7 @@ consumer; dates and experiment identifiers belong to evidence provenance.
 | historical | [historical/verdicts/escalation-and-completeness](historical/verdicts/escalation-and-completeness/) | Minimum sample counts, escalation model routing and report-only split summaries. |
 | historical | [historical/verdicts/no-regression](historical/verdicts/no-regression/) | Non-regression verdicts, current-workspace comparisons and artifact ties. |
 | historical | [historical/verdicts/resume-comparison](historical/verdicts/resume-comparison/) | Resume comparison, ordered records, cost summaries and report-only guarantees. |
-| product | [product/install/inventory](product/install/inventory/) | Installed artifact inventory, links and root resolution. |
+| product | [product/install/inventory](product/install/inventory/) | Installed artifact inventory, links, root resolution and the absence of network clients, endpoints and home lookups. |
 | product | [product/lessons](product/lessons/) | Learning confidence, coverage tables and retrospective identifiers. |
 | product | [product/lint/rows](product/lint/rows/) | Canonical lint rows, formats, severities, AWK variants, lifecycle outcomes, clock coverage and Attempts evidence. |
 | product | [product/lint/task-contracts](product/lint/task-contracts/) | Task contracts, readiness and acceptance fields. |
