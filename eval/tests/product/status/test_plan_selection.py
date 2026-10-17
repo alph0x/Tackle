@@ -173,7 +173,7 @@ fresh.window.fire('resize');
 assert.ok(Math.abs(Number(fresh.one('.flow-svg').getAttribute('width')) / natural - (natural * 0.9 - 2) / natural) < 0.01);
 """)
 
-    def test_the_live_client_reports_freshness_reloads_on_a_new_revision_and_pauses_while_printing(self):
+    def test_the_client_names_the_snapshot_and_opens_no_transport_even_on_a_loopback_address(self):
         self.scenario(r"""
 const file = load({ extra: ['client'] });
 assert.ok(/^Snapshot generated: \d{4}-\d{2}-\d{2}/.test(file.one('#plan-freshness').textContent), 'file mode names the snapshot');
@@ -186,29 +186,16 @@ env.document.documentElement.querySelector('head').appendChild(meta);
 env.location.protocol = 'http:';
 env.location.hostname = '127.0.0.1';
 env.location.href = 'http://127.0.0.1:8787/';
-let revision = 'revision-a', healthy = true, fetches = 0, reloads = 0, poll = null;
+let fetches = 0, reloads = 0, polls = 0;
 env.location.reload = () => { reloads += 1; };
-env.window.fetch = () => { fetches += 1; return Promise.resolve({ ok: healthy, headers: { get: (k) => k === 'X-Tackle-Live' ? (healthy ? '1' : '0') : revision } }); };
-env.window.setInterval = (fn) => { poll = fn; };
+env.window.fetch = () => { fetches += 1; return Promise.resolve({ ok: true, headers: { get: () => '1' } }); };
+env.window.setInterval = () => { polls += 1; };
 vm.runInContext(env.scripts.client, env.context);
 await settle();
-assert.ok(/Live source connected/.test(freshness.textContent));
-assert.strictEqual(reloads, 0);
-env.root.setAttribute('data-print-scope', 'both');
-const before = fetches;
-poll();
-await settle();
-assert.strictEqual(fetches, before, 'no refresh while printing');
-env.root.removeAttribute('data-print-scope');
-healthy = false;
-poll();
-await settle();
-assert.ok(/Connection lost.*snapshot/.test(freshness.textContent));
-healthy = true;
-revision = 'revision-b';
-poll();
-await settle();
-assert.strictEqual(reloads, 1);
+assert.ok(/^Snapshot generated: \d{4}-\d{2}-\d{2}/.test(freshness.textContent), 'a loopback page still names its snapshot');
+assert.strictEqual(fetches, 0, 'the client never fetches');
+assert.strictEqual(polls, 0, 'the client starts no poll');
+assert.strictEqual(reloads, 0, 'the client never reloads');
 """)
 
     def test_a_requirement_selects_and_clears_like_a_task_and_marks_the_tasks_that_cover_it(self):

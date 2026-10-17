@@ -1822,13 +1822,6 @@ details>summary:hover{color:var(--accent-ink)}
   try{data=JSON.parse(doc.getElementById('plan-view-data').textContent);}catch(problem){return;}
   var freshness=doc.getElementById('plan-freshness');
   if(freshness)freshness.textContent=word('Snapshot generated: ','Instantánea generada: ')+data.built;
-  // Live transport is enabled only by the dedicated local producer's response header.
-  if(location.protocol!=='http:'||!/^127\.0\.0\.1$/.test(location.hostname)||typeof window.fetch!=='function')return;
-  var initialRevision=doc.querySelector('meta[name="tackle-live-revision"]');
-  var revision=initialRevision&&initialRevision.getAttribute('content'),polling=false;
-  function check(){if(doc.hidden||polling||root.getAttribute('data-print-scope')!==null)return;polling=true;window.fetch(location.href,{cache:'no-store'}).then(function(response){if(!response.ok||response.headers.get('X-Tackle-Live')!=='1')throw new Error('source unavailable');var value=response.headers.get('X-Tackle-Revision');if(!value)throw new Error('source revision missing');if(revision&&value!==revision){try{sessionStorage.setItem('plan-view-selected',root.getAttribute('data-selected-task')||'');var active=doc.querySelector('[data-filter][aria-pressed="true"]');sessionStorage.setItem('plan-view-filter',active?active.getAttribute('data-filter'):'all');}catch(problem){}location.reload();return;}revision=value;if(freshness)freshness.textContent=word('Live source connected · checked ','Fuente en vivo conectada · comprobada ')+new Date().toLocaleTimeString();}).catch(function(){if(freshness)freshness.textContent=word('Connection lost · showing snapshot ','Sin conexión · mostrando instantánea ')+data.built;}).then(function(){polling=false;});}
-  try{var old=sessionStorage.getItem('plan-view-selected'),filter=sessionStorage.getItem('plan-view-filter');if(old&&doc.getElementById('task-'+old)&&window.TacklePlanView)window.TacklePlanView.select(old,'both');if(filter)Array.prototype.forEach.call(doc.querySelectorAll('[data-filter]'),function(b){if(b.getAttribute('data-filter')===filter)b.click();});}catch(problem){}
-  check();window.setInterval(check,5000);
 })();
 
 </script>
