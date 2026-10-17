@@ -67,10 +67,10 @@ existing matrix when it can observe the new failure; create another method when
 it protects a distinct guarantee. Avoid assertions that merely repeat the
 implementation, and give tests names that match their actual oracle.
 
-Trace the function, extracted recipe or artifact that each assertion actually
+Trace the function, shipped script or artifact that each assertion actually
 observes. A test-local implementation is a simulation, even when its output
 resembles the product. Keep retained legacy simulations under `historical/`;
-current migration tests execute the shipped recipes. A text-presence check
+current migration tests execute the shipped scripts. A text-presence check
 protects wording or structure, not an agent's obedience to it. An in-memory
 checkpoint check does not demonstrate disk rollback.
 
@@ -84,7 +84,7 @@ When consolidating, preserve the input cases, fixtures, failure discrimination,
 positive alternatives and consumers. Identical bodies alone do not establish
 redundancy: historical cohorts exercise different sealed implementations. Their
 tests remain separate; decision code, prices and synthetic fixtures stay intact.
-The shared lint helper extracts the shipped recipe, while independent extractor
+The shared lint helper imports the shipped lint script, while independent extractor
 checks and differences in command delimiters and AWK variants remain covered.
 
 Register every new/moved test file and update native counts. Review cross-family

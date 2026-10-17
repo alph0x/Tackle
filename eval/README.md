@@ -2,7 +2,7 @@
 
 A smoke-test-grade A/B eval for the Tackle skill. The core claim: a mid-tier model following Tackle literally should beat the same model free-styling at **traps**, situations where the plausible action is the wrong one.
 
-This directory holds two kinds of evidence. Deterministic families check the shipped text, its recipes and
+This directory holds two kinds of evidence. Deterministic families check the shipped text, its scripts and
 this directory's own tools; they verify files, not agent behavior. Scenarios trap an agent, and only a
 recorded run is behavioral evidence.
 
@@ -23,9 +23,9 @@ this table or in the two sections after it.
 | **Audit and independence**: audits, evidence grades and independent review | none | `s8`, `s13`, `s15`, `s37`, `s48`, `s61` |
 | **Usage and provider honesty**: usage records, model, effort and telemetry | `run/usage` | `s10`, `s32`, `s33`, `s38`, `s52`, `s53`, `s54` |
 | **STATUS**: read-only status, resume digest, handoff and history archival | `status`, `migration` | `s19`, `s26`, `s30`, `s39` |
-| **Migration**: the schema-keyed recipes, the one bridge from an older workspace | `migration` | `s21` |
+| **Migration**: the schema-keyed migration scripts, the one bridge from an older workspace | `migration` | `s21` |
 | **Lessons**: retro, profiles and directives | `lessons` | `s6`, `s20`, `s34`, `s41`, `s47` |
-| **Install and update**: the Markdown-only install, its reading budget and owner-controlled updates | `install/inventory`, `install/reading-budget`, `migration` | `s16`, `s18`, `s51` |
+| **Install and update**: the install (`SKILL.md`, `references/` and `scripts/`), its reading budget and owner-controlled updates | `install/inventory`, `install/reading-budget`, `migration` | `s16`, `s18`, `s51` |
 | **The whole cycle**, from intake to retro | none | `s25` |
 
 Four families appear in more than one row:

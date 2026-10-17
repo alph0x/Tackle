@@ -35,9 +35,9 @@ SCHEMA = 'tackle-field-report/1'
 
 # ---------------------------------------------------------------------------------------------
 # Markdown/board parsing primitives, grounded in migrate.md's schema-keyed detection table (the same
-# table `references/recipes/migrate/schema.md`'s `schema_of`/`parse_board` helpers implement).
+# table `skills/tackle/scripts/migrate/schema.py`'s `schema_of`/`parse_board` helpers implement).
 # Reimplemented here rather than imported, so this stand-alone tool carries no runtime dependency on
-# that recipe module's own naming and layout.
+# that script module's own naming and layout.
 # ---------------------------------------------------------------------------------------------
 
 _FENCE_RE = re.compile(r'^\s{0,3}(`{3,}|~{3,})(.*)$')

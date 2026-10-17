@@ -97,7 +97,7 @@ def report():
     return {
         "schema": "tackle-context-measurement/1", "kind": "synthetic deterministic logical content I/O",
         "sizes": [sample(n) for n in [10, 100, 1000]],
-        "coverage": "Same active task and dependencies; closed task board rows grow with history. All recipe reads, hashing, staged writes, indexing, verification and export writes counted.",
+        "coverage": "Same active task and dependencies; closed task board rows grow with history. All script reads, hashing, staged writes, indexing, verification and export writes counted.",
         "baseline": "Pinned 8.1.0 full-history handoff and file-wide latest-entry scan; original task-update append. This is an explicit algorithm comparison, not measured baseline agent behavior.",
         "limitations": [
             "Current board/source verification still grows with authoritative scope; no constant total-cost claim.",
