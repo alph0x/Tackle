@@ -61,10 +61,11 @@ class LintScriptTests(unittest.TestCase):
         self.assertEqual(lines, ['row %d' % number for number in range(1, 18)] + ['lint: 17/17 rows silent'])
 
     def test_all_rows_mode_exits_one_on_a_failing_row_and_prints_it_under_its_header(self):
+        finding = next(expected for fixture, _, _, expected, _ in base.FAILS if fixture == 'fail-2')
         ran = script(self.workspace('fail-2', 'pass-full'), base.SLUG)
         self.assertEqual(ran.returncode, 1)
         text = ran.stdout.decode()
-        self.assertIn('row 2\nmissing brief: tasks/T-03.md\n', text)
+        self.assertIn('row 2\n' + finding + '\n', text)
         self.assertTrue(text.endswith('lint: 16/17 rows silent\n'), text)
 
     def test_all_rows_mode_does_not_fail_on_a_warn_finding(self):
