@@ -80,6 +80,8 @@ UI = {
         fit='Fit',
         inspector_empty='Select a task to see what it needs and what it unblocks.',
         stage_list='Tasks by stage',
+        siblings='Sibling plans', sibling_progress='{done} of {total} tasks complete', sibling_no_view='no plan view yet',
+        sibling_open='Open {ref} in its plan',
         tasks_lede='Every task on the board, with what it needs and what it unblocks. Filter by state or open a task for its details.',
         filter='Filter by state',
         filter_empty='No task has this state.',
@@ -173,6 +175,8 @@ UI = {
         fit='Ajustar',
         inspector_empty='Elige una tarea para ver qué necesita y qué habilita.',
         stage_list='Tareas por etapa',
+        siblings='Planes hermanos', sibling_progress='{done} de {total} tareas completas', sibling_no_view='todavía sin vista del plan',
+        sibling_open='Abrir {ref} en su plan',
         tasks_lede='Cada tarea del tablero, con lo que necesita y lo que habilita. Filtra por estado o abre una tarea para ver su detalle.',
         filter='Filtrar por estado',
         filter_empty='Ninguna tarea tiene este estado.',
@@ -367,6 +371,11 @@ def sibling_lines(text):
 
 def read_siblings(ws):
     """The declared sibling workspaces by slug, each as its docs/plans/<name> folder under the repository root."""
+    return {slug: folder for slug, (folder, _) in declared_siblings(ws).items()}
+
+
+def declared_siblings(ws):
+    """The declared sibling workspaces by slug in declaration order, each as (its folder, its Relation cell)."""
     lines = sibling_lines(read(ws, 'AGENTS.md'))
     start = next((i for i, line in enumerate(lines) if line.strip() == '## Sibling workspaces'), None)
     if start is None:
@@ -386,8 +395,35 @@ def read_siblings(ws):
             continue
         slug, path = parts[0], parts[1].strip('`').strip()
         if re.fullmatch(SIBLING_SLUG, slug) and re.fullmatch(r'docs/plans/%s' % SIBLING_SLUG, path) and slug not in found:
-            found[slug] = repo_root(ws) / path
+            found[slug] = (repo_root(ws) / path, parts[2])
     return found if header else {}
+
+
+def sibling_view(folder):
+    """The relative link from a workspace's view to a sibling's plan-view.html, or None when the sibling has no view."""
+    return '../%s/plan-view.html' % folder.name if (folder / 'plan-view.html').is_file() else None
+
+
+def sibling_plans(ws, ui):
+    """The header block that lists each declared sibling with its relation, its progress and a link to its view; empty without siblings."""
+    entries = []
+    for slug, (folder, relation) in declared_siblings(ws).items():
+        rows = sibling_board(folder)
+        progress = ''
+        if rows is not None:
+            progress = ui['sibling_progress'].format(done=sum(1 for r in rows if r['status'] == 'Complete'), total=len(rows))
+        inner = '<span class="sibling-slug">%s</span><span class="sibling-relation">%s</span>%s' % (
+            esc(slug), esc(relation), '<span class="sibling-progress">%s</span>' % esc(progress) if progress else '')
+        href = sibling_view(folder)
+        if href:
+            entries.append('<li><a class="sibling-plan" data-sibling="%s" href="%s">%s</a></li>' % (esc(slug), esc(href), inner))
+        else:
+            entries.append('<li><span class="sibling-plan" data-sibling="%s">%s<span class="sibling-note">%s</span></span></li>' % (
+                esc(slug), inner, esc(ui['sibling_no_view'])))
+    if not entries:
+        return ''
+    return '<nav class="sibling-plans" aria-label="%s"><p class="sibling-plans-label">%s</p><ul>%s</ul></nav>' % (
+        esc(ui['siblings']), esc(ui['siblings']), ''.join(entries))
 
 
 def sibling_board(folder):
@@ -461,8 +497,10 @@ def validate_tasks(ws, tasks, states, problems, siblings=None):
                 problems.append("task %s depends on %s [%s], which is not on the sibling's board" % (t['id'], ref, slug))
                 continue
             if not any(e['id'] == external_id(slug, ref) for e in externals):
+                view = sibling_view(siblings[slug])
                 externals.append(dict(id=external_id(slug, ref), slug=slug, task_id=ref, title=row['title'],
-                                      status=row['status'], deps=[], external=True))
+                                      status=row['status'], deps=[], external=True,
+                                      href='%s#task-%s' % (view, ref) if view else None))
     return externals
 
 
@@ -841,9 +879,9 @@ def input_digests(ws, template_path, map_base, map_scope):
             continue
         path, key, outside = resolve_brief(ws, row['brief'], siblings)
         inputs[key] = 'outside the workspace' if outside else file_digest(path)
-    for slug in dict.fromkeys(slug for row in rows for slug, _ in row['sib_deps']):
-        if slug in siblings:
-            inputs['%s:task-board.md' % slug] = file_digest(siblings[slug] / 'task-board.md')
+    for slug, folder in siblings.items():
+        inputs['%s:task-board.md' % slug] = file_digest(folder / 'task-board.md')
+        inputs['%s:plan-view.html' % slug] = 'present' if sibling_view(folder) else 'absent'
     inputs['template'] = file_digest(template_path)
     inputs['plan-view script'] = file_digest(Path(__file__).resolve())
     inputs['architecture-map script'] = file_digest(Path(__file__).resolve().parent / 'architecture_map.py')
@@ -1575,10 +1613,13 @@ def graph_svg(tasks, layout, live, ui):
         text = ''.join('<tspan x="%.1f" dy="%d">%s</tspan>' % (x + 14, 0 if k == 0 else 17, esc(line)) for k, line in enumerate(lines))
         if t.get('external'):
             label = '%s · %s · %s · %s' % (t['slug'], t['task_id'], t['title'], ui['states'].get(t['status'], t['status']))
-            out.append('<g class="xnode s-%s" role="img" aria-label="%s"><title>%s</title><rect class="node-box" x="%.1f" y="%.1f" width="%d" height="%d"/>'
-                       '<text class="nid" x="%.1f" y="%.1f">%s · %s</text><text class="nt" x="%.1f" y="%.1f">%s</text></g>' % (
-                           klass, esc(label), esc(label), x, y, node_w, node_h, x + 14, y + 24, esc(t['slug']), esc(t['task_id']),
-                           x + 14, y + 45, text))
+            node = ('<g class="xnode s-%s" role="img" aria-label="%s"><title>%s</title><rect class="node-box" x="%.1f" y="%.1f" width="%d" height="%d"/>'
+                    '<text class="nid" x="%.1f" y="%.1f">%s · %s</text><text class="nt" x="%.1f" y="%.1f">%s</text></g>' % (
+                        klass, esc(label), esc(label), x, y, node_w, node_h, x + 14, y + 24, esc(t['slug']), esc(t['task_id']),
+                        x + 14, y + 45, text))
+            if t.get('href'):
+                node = '<a class="xnode-link" href="%s" data-sibling="%s">%s</a>' % (esc(t['href']), esc(t['slug']), node)
+            out.append(node)
             continue
         label = '%s · %s · %s' % (n, t['title'], ui['states'].get(t['status'], t['status']))
         out.append('<g class="node s-%s" data-task="%s" data-status="%s"%s tabindex="0" role="button" aria-label="%s"><title>%s</title>'
@@ -1608,6 +1649,7 @@ def stage_list(tasks, stage, edges, ui, externals=()):
         by_stage.setdefault(stage[t['id']], []).append(t)
     needs = {t['id']: sorted(set(t['deps']), key=lambda i: int(i[2:]))
              + ['%s · %s' % (slug, ref) for slug, ref in t.get('sib_deps', [])] for t in tasks}
+    links = {e['id']: e['href'] for e in externals if e.get('href')}
     groups = []
     for number in sorted(by_stage):
         listed = by_stage[number]
@@ -1621,6 +1663,11 @@ def stage_list(tasks, stage, edges, ui, externals=()):
                         '<span class="stage-task-state">%s</span><span class="stage-task-needs">%s: %s</span></a></li>' % (
                             klass, t['id'], t['id'], klass, t['id'], esc(t['title']), esc(ui['states'].get(t['status'], t['status'])),
                             esc(ui['needs']), need))
+            for slug, ref in t.get('sib_deps', []):
+                href = links.get(external_id(slug, ref))
+                if href:
+                    rows[-1] = rows[-1][:-len('</li>')] + '<a class="stage-sibling" href="%s" data-sibling="%s">%s</a></li>' % (
+                        esc(href), esc(slug), esc(ui['sibling_open'].format(ref='%s · %s' % (slug, ref))))
         groups.append('<li class="stage-group"><p class="stage-head"><span>%s</span><span>%s</span></p><ol>%s</ol></li>' % (
             esc(ui['stage'].format(n=number + 1)), esc(ui['stage_count'].format(done=done, total=len(listed))), ''.join(rows)))
     return '<ol class="stage-list" aria-label="%s">%s</ol>' % (esc(ui['stage_list']), ''.join(groups))
@@ -2846,10 +2893,16 @@ def main():
         ensure_ascii=True).replace('<', '\\u003c').replace('>', '\\u003e').replace('&', '\\u0026')
     print_reports = printable_reports(plan, focused, fields, reqs, requirement_rows, decisions, summary, export_summary, tasks, working, board, snapshot,
                                       stamp, method, title, ui, export_ui, report_stale)
+    siblings_html = sibling_plans(ws, ui)
+    if siblings_html:
+        # Each printed report lists the siblings too, so the PDF carries their link targets as text.
+        print_reports = print_reports.replace('<div class="report-body">', '<div class="report-body"><section class="report-section report-siblings"><h2>%s</h2>%s</section>' % (
+            esc(ui['siblings']), siblings_html))
     values = dict(
         lang=lang, title=esc(presentation_title), brand=esc(presentation_title if len(presentation_title) <= 40 else presentation_title[:39] + '…'),
         kicker=esc(presentation_kicker), title_size='long' if len(presentation_title) > 28 else 'short',
         objective='<p class="objective">%s</p>' % esc(presentation_objective) if presentation_objective else '',
+        sibling_plans=siblings_html,
         titleblock=title_block(tasks, reqs, cover, decisions, working, fields, focused, stamp, method, ui),
         nav=''.join('<a href="#%s">%s</a>' % (anchor, esc(label)) for anchor, label in nav),
         status=status_html, waiting=waiting_html, overview=overview_html, graph=graph_html, tasks=tasks_html, architecture=map_html, technical=technical,

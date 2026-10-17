@@ -174,7 +174,9 @@ Each diagram the page draws, the task graph and each architecture picture, offer
 
 ## Sibling workspaces
 
-A dependency on a sibling workspace's task is drawn as an external node with the sibling's name and that task's state; it has no inspector.
+A dependency on a sibling workspace's task is drawn as an external node with the sibling's name and that task's state; it has no inspector. When the sibling has a `plan-view.html`, the node and the task's line in the stage list link to that task in the sibling's view (`../<name>/plan-view.html#task-<id>`); otherwise they stay plain.
+
+When the plan declares siblings, the page header lists them under "Sibling plans", in declaration order: each with its slug, its Relation cell and its progress as `<done> of <total> tasks complete`, read from the sibling's board. An entry links to the sibling's `plan-view.html` when that file exists; otherwise it says the sibling has no plan view yet, and nothing links. The printed reports list the siblings too, with each link target as text. A plan without siblings shows no block. The sibling boards and whether each sibling's view exists are page inputs, so `--check` reports the view stale when either changes.
 
 A plan declares its sibling workspaces in `AGENTS.md`, under `## Sibling workspaces`, in a table whose header row is `| Sibling | Path | Relation |`. A sibling's path is `docs/plans/<name>`; only declared siblings resolve. A dependency on a sibling's task is written `T-<digits> [<slug>]` in a Depends on cell. The view refuses these cases, in board order:
 

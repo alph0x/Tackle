@@ -738,6 +738,18 @@ details>summary:hover{color:var(--accent-ink)}
 .mermaid-text{position:absolute;top:calc(100% + 44px);right:0;z-index:4;display:block;width:min(36rem,calc(100vw - 2 * var(--gutter)));min-height:8em;margin:0;padding:10px;font:12px/1.5 var(--mono);color:var(--ink);background:var(--surface);border:1px solid var(--line)}
 #clear-trace{position:absolute;top:calc(100% + 4px);left:0;z-index:4}
 @media (min-width:761px){.inspector{height:14rem;overflow-y:auto}}
+/* Sibling plans: the declared sibling workspaces, each with its relation, its progress and a link to its view. */
+.sibling-plans{margin:28px 0 0;max-width:64ch}
+.sibling-plans-label{margin:0 0 10px;font:700 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.sibling-plans ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.sibling-plan{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 14px;align-items:baseline;padding:10px 14px;border:1.5px solid var(--ink);background:var(--surface);color:var(--ink);text-decoration:none}
+span.sibling-plan{border-style:dashed;border-color:var(--line2)}
+a.sibling-plan:hover,a.sibling-plan:focus-visible{border-color:var(--accent)}
+.sibling-slug{font:700 12px var(--mono);letter-spacing:.06em}
+.sibling-relation{font-size:14.5px;line-height:1.45;color:var(--ink2)}
+.sibling-progress,.sibling-note{grid-column:2;font:500 11.5px var(--mono);color:var(--mut)}
+.stage-sibling{display:block;margin:4px 0 0;padding:0 12px;font:500 11.5px var(--mono);color:var(--ink2)}
+.flow-svg .xnode-link:hover .node-box,.flow-svg .xnode-link:focus-visible .node-box{stroke:var(--ink);stroke-width:2}
 @media (max-width:420px){
   .tb-grid{grid-template-columns:1fr}
   .tb-grid>div:nth-child(odd){border-right:0}
@@ -760,6 +772,7 @@ details>summary:hover{color:var(--accent-ink)}
   body>*:not(.print-reports),.lens{display:none!important}
   .static-copy{display:none!important}
   .mermaid-tools,.mermaid-text{display:none!important}
+  .sibling-plans a[href]::after,.stage-sibling[href]::after{content:" (" attr(href) ")";font:500 8pt var(--mono);color:var(--graphite-500)}
   .print-reports{display:block!important}
   .print-report{display:none!important}
   :root:not([data-print-scope]) #print-report-both,:root[data-print-scope="plan"] #print-report-plan,
@@ -805,6 +818,12 @@ details>summary:hover{color:var(--accent-ink)}
 .print-report tr{break-inside:avoid}
 .report-part{display:flex;align-items:center;gap:3mm;margin:9mm 0 5mm;padding:2.6mm 4mm;background:var(--graphite-900);color:var(--white);font:800 10pt/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;break-after:avoid;break-before:auto}
 .report-part::before{content:"";width:3mm;height:3mm;background:var(--orange-600)}
+.report-siblings .sibling-plans{margin:0;max-width:none}
+.report-siblings .sibling-plans-label,.report-siblings li::before{display:none}
+.report-siblings li{padding-left:0}
+.report-siblings .sibling-plan{display:block;padding:0;border:0;background:none;color:var(--graphite-900)}
+.report-siblings .sibling-slug{margin-right:3mm}
+.report-siblings .sibling-progress,.report-siblings .sibling-note{display:block;font-size:8pt;color:var(--graphite-500)}
 }
 </style>
 </head>
@@ -818,7 +837,7 @@ details>summary:hover{color:var(--accent-ink)}
 </div></header>
 <p class="static-copy" id="plan-static-copy" role="status" data-en="This copy does not update itself. Open plan-view.html from its folder in a browser." data-es="Esta copia no se actualiza sola. Abre plan-view.html desde su carpeta en un navegador." hidden></p>
 <main id="main">
-<section class="hero" data-title-size="{{title_size}}"><div class="hero-copy"><p class="kicker">{{kicker}}</p><h1>{{title}}</h1>{{objective}}</div>{{titleblock}}</section>
+<section class="hero" data-title-size="{{title_size}}"><div class="hero-copy"><p class="kicker">{{kicker}}</p><h1>{{title}}</h1>{{objective}}{{sibling_plans}}</div>{{titleblock}}</section>
 {{status}}
 {{waiting}}
 {{overview}}
