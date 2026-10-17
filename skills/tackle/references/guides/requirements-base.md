@@ -11,7 +11,7 @@ Record a yes as the `.gitignore` line and a no as a decision in the workspace, a
 
 A plan that adds, changes or retires required behavior writes `<workspace>/requirements-delta.md` from `../requirements-delta.tmpl.md`.
 Validate the delta before Ready of any task that owns an entry; validation reports every problem, and an invalid delta blocks those tasks.
-Running the [recipe](../recipes/requirements-base.md) needs the owner's explicit request; without it, check each entry by reading.
+Importing or running the [script](../../scripts/requirements_base.py) needs the owner's explicit request ([script consent](../../scripts/README.md#consent)); without it, check each entry by reading. The script has no command line: put `<skill>/scripts/` first on `sys.path`, import `requirements_base` and call `parse_base(files)`, `parse_delta(text)`, `validate(base, delta, repositories=None)`, `reconcile(delta, records, final_revision)` and `fold(files, delta_text, records, final_revision, plan_slug, date)`. It reads and writes no file; `fold` returns the new file text.
 
 ## Closure fold
 
@@ -68,11 +68,11 @@ In a multi-repo workspace each entry also carries `Repository: <id>` (see the mu
 - in a multi-repo workspace, an entry without `Repository:` or naming an undeclared id → `repository`.
 
 An empty problem list is the only valid result. PLAN validates the delta before Ready of any task
-that owns a delta entry; an invalid delta blocks those tasks. Running the recipe needs the owner's
-explicit authorization under the recipe consent rule: an explicit requirements-delta or validation
+that owns a delta entry; an invalid delta blocks those tasks. Importing or running the script needs the owner's
+explicit authorization under the script consent rule: an explicit requirements-delta or validation
 request grants it for that validation. Without it, PLAN checks each entry against the rules above by
 reading the base and the delta, and reports every problem it finds; the fold's yes (see Closure fold) runs the
-recipe.
+script.
 
 ## Scenarios
 

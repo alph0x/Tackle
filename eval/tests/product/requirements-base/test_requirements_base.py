@@ -1,20 +1,21 @@
-"""The shipped requirements-base recipe parses, validates, reconciles and folds a base, and the guide states its rules.
+"""The shipped requirements-base script parses, validates, reconciles and folds a base, and the guide states its rules.
 
-The test extracts the recipe from `references/recipes/requirements-base.md` and calls its functions on fixtures under
-`eval/requirements-base/fixtures/`. Expected values come from the case matrix of the task brief, not from the recipe.
+The test imports the script `scripts/requirements_base.py` by file path and calls its functions on fixtures under
+`eval/requirements-base/fixtures/`. Expected values come from the case matrix of the task brief, not from the script.
 """
 import ast
 import copy
 import hashlib
+import importlib.util
 import re
 import unittest
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[4]
 FIXTURES = REPO / 'eval/requirements-base/fixtures'
-RECIPE = REPO / 'skills/tackle/references/recipes/requirements-base.md'
+RECIPE = REPO / 'skills/tackle/scripts/requirements_base.py'
 GUIDE = REPO / 'skills/tackle/references/guides/requirements-base.md'
-README = REPO / 'skills/tackle/references/recipes/README.md'
+README = REPO / 'skills/tackle/scripts/README.md'
 FORBIDDEN = {'socket', 'ssl', 'urllib', 'http', 'subprocess', 'requests', 'asyncio', 'webbrowser', 'multiprocessing'}
 FINAL = 'a1b2c3d'
 OLD = 'e4f5a6b'
@@ -43,14 +44,12 @@ def record(check, revision, passed=True):
     return {'check': check, 'revision': revision, 'passed': passed}
 
 
-def fenced_source(path):
-    parts = path.read_text(encoding='utf-8').split('```python\n')
-    assert len(parts) == 2, 'the recipe must hold exactly one fenced python block'
-    return parts[1].split('\n```')[0] + '\n'
+def script_source(path):
+    return path.read_text(encoding='utf-8')
 
 
 def load_recipe():
-    source = fenced_source(RECIPE)
+    source = script_source(RECIPE)
     imported = set()
     for node in ast.walk(ast.parse(source)):
         if isinstance(node, ast.Import):
@@ -58,9 +57,10 @@ def load_recipe():
         elif isinstance(node, ast.ImportFrom) and node.module:
             imported.add(node.module.split('.')[0])
     assert not imported & FORBIDDEN, 'the requirements-base recipe imports %s' % sorted(imported & FORBIDDEN)
-    namespace = {'__name__': 'requirements_base_recipe'}
-    exec(compile(source, str(RECIPE), 'exec'), namespace)
-    return namespace
+    spec = importlib.util.spec_from_file_location('requirements_base_script', RECIPE)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return vars(module)
 
 
 def reorder_with_prose(text):
@@ -182,12 +182,11 @@ class RequirementsBase(unittest.TestCase):
         self.assertEqual(len(problem_set(original)), 4)
         self.assertEqual(problem_set(reorder_with_prose(original)), problem_set(original))
 
-    def test_recipe_is_one_stdlib_block(self):
+    def test_script_is_one_stdlib_module(self):
         text = RECIPE.read_text(encoding='utf-8')
-        self.assertEqual(text.count('```'), 2)
-        self.assertTrue(text.startswith('```python\n'))
+        self.assertNotIn('```', text)
         imported = set()
-        for node in ast.walk(ast.parse(fenced_source(RECIPE))):
+        for node in ast.walk(ast.parse(script_source(RECIPE))):
             if isinstance(node, ast.Import):
                 imported |= {a.name.split('.')[0] for a in node.names}
             elif isinstance(node, ast.ImportFrom) and node.module:
@@ -198,11 +197,11 @@ class RequirementsBase(unittest.TestCase):
         guide = GUIDE.read_text(encoding='utf-8')
         for sentence in GUIDE_SENTENCES:
             self.assertIn(sentence, guide)
-        self.assertIn('](../recipes/requirements-base.md)', guide)
+        self.assertIn('](../../scripts/requirements_base.py)', guide)
 
     def test_readme_hash_row_matches(self):
         readme = README.read_text(encoding='utf-8')
-        row = re.search(r'\| \[requirements-base\.md\]\(requirements-base\.md\) \| `([0-9a-f]{64})` \|', readme)
+        row = re.search(r'\| \[requirements_base\.py\]\(requirements_base\.py\) \| `([0-9a-f]{64})` \|', readme)
         self.assertIsNotNone(row)
         self.assertEqual(row.group(1), hashlib.sha256(RECIPE.read_bytes()).hexdigest())
 
@@ -414,8 +413,8 @@ class RequirementsBase(unittest.TestCase):
         self.assertEqual(self.recipe['validate'](base, delta), [])
         self.assertEqual(self.recipe['reconcile'](delta, [], FINAL), (['REQ-AUTH-02'], []))
 
-    def test_recipe_has_no_file_access(self):
-        source = fenced_source(RECIPE)
+    def test_script_has_no_file_access(self):
+        source = script_source(RECIPE)
         for pattern in (r'\bopen\(', r'read_text', r'write_text', r'pathlib', r'\bos\b', r'\bshutil\b', r'\bio\b'):
             self.assertIsNone(re.search(pattern, source), pattern)
 

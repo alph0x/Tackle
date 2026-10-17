@@ -23,14 +23,14 @@ Write about 80% of ASD-STE100, with the no-ai-slop reference that the communicat
 
 ## Check
 
-The recipe in [controlled-writing.md](../recipes/controlled-writing.md) reports two kinds of finding. It gives the line of each one.
+The [script](../../scripts/controlled_writing.py) reports two kinds of finding. It gives the line of each one.
 
 - `long-sentence`: a sentence over the limit of 25 words.
 - `vague`: a word or filler phrase from the lists below.
 
 A sentence ends at a period, an exclamation mark, a question mark, a colon or a semicolon. This holds also before a closing quote, parenthesis or emphasis mark. A list item or a heading starts a new sentence. A wrapped sentence is reported at the line where it starts.
 
-Running the recipe needs the owner's explicit authorization ([recipe consent](../recipes/README.md#consent)); prefer an equivalent harness check, and without either, check the text against the rules by reading it. With that authorization, run it as `findings(text, language)` from the recipe. Pass the language code of the text, such as `en` or `es`.
+Importing or running the script needs the owner's explicit authorization ([script consent](../../scripts/README.md#consent)); prefer an equivalent harness check, and without either, check the text against the rules by reading it. With that authorization, put `<skill>/scripts/` first on `sys.path`, import `controlled_writing` (it has no command line) and call `findings(text, language)`. Pass the language code of the text, such as `en` or `es`.
 
 ## Vague words
 
@@ -40,7 +40,7 @@ English: `leverage`, `utilize`, `various`, `robust`, `synergy`, `seamless`, `hol
 
 Spanish: `varios`, `varias`, `diversos`, `diversas`, `robusto`, `sinergia`, `etc`, `etcétera`, `y así sucesivamente`, `y demás`, `con el fin de`, `un gran número de`, `una amplia gama de`, `cabe destacar`, `vale la pena mencionar`, `ni qué decir tiene`, `al final del día`, `básicamente`, `esencialmente`, `realmente`, `muy`, `cosas`, `de vanguardia`.
 
-The recipe holds the exact patterns. Add a word to the recipe and to this list together.
+The script holds the exact patterns. Add a word to the script and to this list together.
 
 ## Exempt text
 

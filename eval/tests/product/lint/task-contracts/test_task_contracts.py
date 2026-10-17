@@ -34,7 +34,7 @@ def script(name):
     return vars(module)
 
 
-COMPILER = recipe('references/guides/decompose-and-lint.md')
+COMPILER = script('decompose_check.py')
 LINEAGE = script('correction_lineage.py')
 LINT = lint_namespace()
 

@@ -71,7 +71,7 @@ tasks and stops before source execution.`
    deferral and questions, the Q-guard, and depth-artifact coherence. The full judge checklist is in
    decompose-and-lint.md, [Step 6.5](decompose-and-lint.md#step-65--lint-the-wired-plan). For a
    nontrivial task graph, the
-   [optional task consistency recipe](decompose-and-lint.md#optional-task-consistency-recipe) checks
+   [optional task consistency script](decompose-and-lint.md#optional-task-consistency-script) checks
    task identities, scope ownership and producer/consumer compatibility mechanically.
 7. **Readiness validation.** Run the shared validation contract — preparation, product, evidence
    integrity, relevant change — then the coverage matrix (every criterion has a task, check and
@@ -126,7 +126,7 @@ a readiness check behind Depth to shorten this card.
 [stabilizing the design contract](design-and-contract.md#step-575--stabilize-the-design-contract-full-only),
 [code style](design-and-contract.md#code-style),
 [loop reference plans](decompose-and-lint.md#loop-reference-plans-type-discovery--type-experiment),
-[the task consistency recipe](decompose-and-lint.md#optional-task-consistency-recipe),
+[the task consistency script](decompose-and-lint.md#optional-task-consistency-script),
 [the shared validation contract](verify.md#shared-validation-contract),
 [the two halves of product verification](verify.md#product-verification-has-two-halves),
 [the coverage matrix](verify.md#coverage-matrix-criterion--evidence),

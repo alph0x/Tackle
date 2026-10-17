@@ -24,8 +24,10 @@ REF = INSTALL / 'references'
 SLUG = 'demo'
 NAMESPACE = lint_namespace()
 
-RECIPE = {'__name__': 'template_drift_recipe'}
-exec((REF / 'guides/decompose-and-lint.md').read_text().split('```python\n')[1].split('\n```')[0], RECIPE)
+_spec = importlib.util.spec_from_file_location('template_drift_decompose', INSTALL / 'scripts/decompose_check.py')
+_module = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_module)
+RECIPE = vars(_module)
 LEGACY_GLYPHS = ('\U0001F534', '\U0001F7E1', '⏸', '\U0001F7E2', '⚪')
 
 

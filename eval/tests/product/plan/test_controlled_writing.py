@@ -1,5 +1,6 @@
-"""The controlled-writing recipe judges fixture texts, and the shipped guide passes its own check."""
+"""The controlled-writing script judges fixture texts, and the shipped guide passes its own check."""
 import ast
+import importlib.util
 from pathlib import Path
 import sys
 import unittest
@@ -15,10 +16,9 @@ FORBIDDEN = {"socket", "ssl", "urllib", "http", "subprocess", "requests", "async
 
 
 def load_recipe():
-    text = (INSTALL / "references/recipes/controlled-writing.md").read_text(encoding="utf-8")
-    parts = text.split("```python\n")
-    assert len(parts) == 2, "the recipe holds exactly one fenced python block"
-    source = parts[1].split("\n```")[0]
+    path = INSTALL / "scripts/controlled_writing.py"
+    source = path.read_text(encoding="utf-8")
+    assert "```" not in source, "the script is a Python file, not a Markdown fence"
     tree = ast.parse(source)
     imported = set()
     for node in ast.walk(tree):
@@ -26,14 +26,15 @@ def load_recipe():
             imported |= {alias.name.split(".")[0] for alias in node.names}
         elif isinstance(node, ast.ImportFrom) and node.module:
             imported.add(node.module.split(".")[0])
-    assert not imported & FORBIDDEN, "the recipe imports %s" % sorted(imported & FORBIDDEN)
-    namespace = {"__name__": "controlled_writing"}
-    exec(compile(source, "controlled-writing.md", "exec"), namespace)
-    return namespace
+    assert not imported & FORBIDDEN, "the script imports %s" % sorted(imported & FORBIDDEN)
+    spec = importlib.util.spec_from_file_location("controlled_writing", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return vars(module)
 
 
 class ControlledWriting(unittest.TestCase):
-    def test_the_shipped_recipe_judges_fixture_texts(self):
+    def test_the_shipped_script_judges_fixture_texts(self):
         namespace = load_recipe()
         findings = namespace["findings"]
         self.assertTrue({"en", "es"} <= set(namespace["LANGUAGES"]))
@@ -49,7 +50,7 @@ class ControlledWriting(unittest.TestCase):
                     self.assertTrue(set(expected) <= got, (expected, found))
                     self.assertTrue({kind for kind, _ in got} <= {kind for kind, _ in expected}, found)
 
-    def test_the_guide_word_lists_equal_the_recipe_lists(self):
+    def test_the_guide_word_lists_equal_the_script_lists(self):
         import re
         namespace = load_recipe()
         guide = (INSTALL / "references/guides/controlled-writing.md").read_text(encoding="utf-8")
