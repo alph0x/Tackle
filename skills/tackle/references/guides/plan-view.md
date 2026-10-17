@@ -8,14 +8,14 @@ decisions, questions, history and `resource-usage.md`.
 
 A request such as "show the plan view" or "mostrá la vista del plan" asks for it, in any language. It
 is its own request. It is not a STATUS mode, and STATUS never writes the view.
-STATUS runs no recipe for the view and never checks it: STATUS stays read-only and code-free.
+STATUS runs no script for the view and never checks it: STATUS stays read-only and code-free.
 
 An explicit request creates the view and stands for its workspace. The owner can end that standing
 request at any time by saying stop.
 
-At a Coordinated handoff, PLAN offers the view once and names the plan-view recipe in the offer; only the
+At a Coordinated handoff, PLAN offers the view once and names the plan-view script in the offer; only the
 owner's yes builds it. That yes is the plan-view request: it is the owner's explicit authorization for the
-recipe, the feature-request grant of [recipe consent](../recipes/README.md#consent), and it stands as the
+script, the feature-request grant of [script consent](../../scripts/README.md#consent), and it stands as the
 view request above. A yes also writes the curated summaries the page reads, `view/summary.json` (outcomes,
 milestones and task lines) and `view/export-summary.json` (for the PDF), each declaring the board states it
 describes. A no writes nothing. The host shows the page when it can display a local file.
@@ -26,10 +26,10 @@ Under the standing view request, the coordinator rebuilds an existing view after
 and in RUN. Under that request it rebuilds at the end of the step that wrote the input, and after each role start or finish.
 The page inputs are `task-board.md`, `plan.md`, `decisions.md`, `questions.md`, `history.md` and `resource-usage.md`.
 They also include the workspace `AGENTS.md` and `readiness.md`, every declared brief and `map-delta.json`.
-The curated summaries, the map base, the template and the two recipes are page inputs too.
+The curated summaries, the map base, the template and the two scripts, `plan_view.py` and `architecture_map.py`, are page inputs too.
 The coordinator rebuilds only a view that already exists.
 
-Under the standing view request, the coordinator runs the plan-view recipe with `--check` at the end of each step
+Under the standing view request, the coordinator runs the plan-view script with `--check` at the end of each step
 that wrote a page input. That request is the owner's explicit authorization for these checks and rebuilds. Under
 that request, the coordinator rebuilds when the check says stale. The standing request covers these checks and rebuilds until the
 owner says stop. After stop, nobody runs the check.
@@ -39,44 +39,46 @@ change to task rows or states. It updates their time-bound prose, their declared
 It removes prose that it cannot update honestly. A rebuild after a role start or finish needs no summary update. Its export prose follows the reader rule in Shared presentation and PDF.
 
 An open view reloads itself after
-a rebuild, keeping its selection, filter and reading position: the recipe writes a small stamp script beside
+a rebuild, keeping its selection, filter and reading position: the build writes a small stamp script beside
 the page, and the page rereads it every few seconds, with no server and no process to stop. The page reloads
 itself only when opened from its file in a browser; a host view that shows a snapshot cannot update, and the page
-says so with a notice. The coordinator never starts a server or background process to show the view; the
-optional live producer stays owner-requested only. When a rebuild is
+says so with a notice. The coordinator never starts a server or background process to show the view; the stamp reload is
+the way to keep an open view current. When a rebuild is
 refused, the coordinator reports the refusal lines to the owner, and the earlier view keeps its earlier build
 time.
 
 ## Build
 
-Saving and running the recipe needs the owner's explicit authorization; an explicit plan-view request grants it for that request ([recipe consent](../recipes/README.md#consent)). Prefer an equivalent harness capability. With that authorization, save the [recipe](../recipes/plan-view.md) as a file and run it with the [template](../plan-view.template.md):
+Running the script needs the owner's explicit authorization; an explicit plan-view request grants it for that request ([script consent](../../scripts/README.md#consent)). Prefer an equivalent harness capability. With that authorization, run [`<skill>/scripts/plan_view.py`](../../scripts/plan_view.py) with the [template](../plan-view.template.md), where `<skill>` is the installed skill folder:
 
 ```sh
-python3 -I plan-view.py --template plan-view.template.md <workspace> <workspace>/plan-view.html
+python3 -I <skill>/scripts/plan_view.py --template <skill>/references/plan-view.template.md <workspace> <workspace>/plan-view.html
 ```
+
+The script imports `architecture_map.py` from its own folder; nothing is copied or extracted.
 
 When `.tackle/map/architecture.json` exists, pass `--map .tackle/map/architecture.json` before the
 workspace, with `--map-scope all` or, for a [large project](architecture-map.md#large-project), the scope the owner chose
 when asked before the first build.
 Without that file, pass no `--map`.
 
-Exit 0 writes the view. Exit 1 refuses and writes no file. Exit 2 reports a usage error. The recipe uses only
+Exit 0 writes the view. Exit 1 refuses and writes no file. Exit 2 reports a usage error. The script uses only
 the standard library, makes no network access and writes only the output file.
 
 The page records one sha256 for each input and one overall digest. With `--check` and the build's arguments, the
-recipe compares them with the inputs now and writes nothing. It prints `view current` and exits 0. Otherwise it
+script compares them with the inputs now and writes nothing. It prints `view current` and exits 0. Otherwise it
 prints `view stale:` with the changed inputs and exits 1. A page without digests is stale. A usage error exits 2.
 
 ## Pre-flight
 
-The recipe refuses to write when the sources disagree. It prints one `refused:` line for each problem.
+The script refuses to write when the sources disagree. It prints one `refused:` line for each problem.
 The problems are:
 
 - a board with no task rows, or a duplicate task id;
 - a dependency on an unknown task, or a dependency cycle;
 - a missing brief;
 - a status outside the board's vocabulary;
-- with `--map`, a base that cannot be read, or a map delta that the [architecture map](architecture-map.md) recipe
+- with `--map`, a base that cannot be read, or a map delta that the [architecture map](architecture-map.md) script
   rejects.
 
 ## Architecture map
@@ -87,14 +89,14 @@ a Cards tab and a Diagram tab. Without `--map`, the page holds no map and its da
 
 ## Focused plans
 
-A Focused plan has a `Gate: Lite` line and no board. The recipe reads its requirement ids from the
+A Focused plan has a `Gate: Lite` line and no board. The script reads its requirement ids from the
 `Purpose / requirements` line of the Lite plan body, or from a criteria table, and its checks from the
 `Cases → checks` line. The view lists them, says that the plan has no board and draws no graph. When the plan
-names no requirement id, the recipe refuses with the Focused reason. It invents no board.
+names no requirement id, the script refuses with the Focused reason. It invents no board.
 
 ## The page
 
-- The graph is drawn by the page itself, in stage bands. A stage is a column, not an order of work. The recipe
+- The graph is drawn by the page itself, in stage bands. A stage is a column, not an order of work. The script
   orders the cards with a bounded search, so the lines cross few times. A long arrow passes through the bands
   between its ends. It needs no network. A click opens a task, and the trace buttons follow
   what the task needs and what it unblocks.
@@ -109,7 +111,7 @@ names no requirement id, the recipe refuses with the Focused reason. It invents 
   shows its open questions only, and the PDF report keeps its own obligations table.
 - The footer shows the build time and the Methodology version of the workspace.
 - The page escapes every workspace string. No workspace text runs as script.
-- The interface has English and Spanish text. The recipe picks Spanish only on clear Spanish evidence in the
+- The interface has English and Spanish text. The script picks Spanish only on clear Spanish evidence in the
   plan. Any other plan gets English, and `lang` says `en`.
 - A light and dark toggle and the embedded Outfit font with a system fallback keep the page local. Motion stops under
   `prefers-reduced-motion`.
@@ -146,45 +148,25 @@ Both. Native dialog, pagination and PDF destination behavior depend on the owner
 
 The view stays local. Tackle never publishes, uploads or sends it.
 
-## Optional loopback live view
-
-Start the live producer only when the owner asks for it. That request is the owner's explicit authorization for the live recipe; prefer an equivalent harness capability. For a page served by a local producer instead of the file, save the fenced block in
-[`../recipes/plan-view-live.md`](../recipes/plan-view-live.md) as `plan-view-live.py` beside the extracted
-`plan-view.md` recipe; pass that source explicitly with `--recipe` so the producer never discovers a recipe by adjacency. Run it with the same workspace, template and optional map inputs:
-
-```sh
-python3 -I plan-view-live.py --template plan-view.template.md --recipe plan-view.md [--map .tackle/map/architecture.json] <workspace>
-```
-
-The producer binds only to `127.0.0.1`, answers only requests addressed to `127.0.0.1:<port>` (open that address, not `localhost`), and serves only `/` (the generated HTML) and `/health`. It rejects
-query strings and every other path. On each request it hashes the declared public inputs. They are `plan.md`,
-`task-board.md`, `decisions.md`, `questions.md`, `history.md`, `resource-usage.md` and the supported summary files.
-They also include `map-delta.json`, declared task briefs, workspace `AGENTS.md` / `readiness.md` and the template.
-The plan recipe, the architecture-map recipe and the optional explicit map complete the set. The producer
-regenerates the page when those inputs change. A
-failed refresh keeps the last successful page and reports an unhealthy `/health`; it never calls that page
-live. The page remains file mode when the ordinary recipe is used. Theme, filter and task selection state
-belongs to the page's session storage, and the page restores it after a refresh. The producer sends nothing off the machine.
-
 ## Auxiliary pages
 
-When a plan view exists, an authorized auxiliary page for the plan, such as a proposals, comparison or review page, uses the plan view's visual base by default without a question about style, built with the plan-view recipe's page mode.
+When a plan view exists, an authorized auxiliary page for the plan, such as a proposals, comparison or review page, uses the plan view's visual base by default without a question about style, built with the plan-view script's page mode.
 
-The recipe writes the page from the plan view's marked base in the template, with the command below. The fragment is the page's HTML body, written for the page, with no `<html>`, `<head>` or interface stylesheet. The page takes the plan's language, its title (or the fragment's first heading), the plan view's top bar and theme toggle, its typography, colors, spacing and both themes, and it shares the theme choice the plan view stores.
+The script writes the page from the plan view's marked base in the template, with the command below. The fragment is the page's HTML body, written for the page, with no `<html>`, `<head>` or interface stylesheet. The page takes the plan's language, its title (or the fragment's first heading), the plan view's top bar and theme toggle, its typography, colors, spacing and both themes, and it shares the theme choice the plan view stores.
 
 Give the page's heading the plan view's section markup: a `<header class="sec-head">` holding an optional `<p class="kicker">`, an `<h2>` and a `<p class="sec-lede">`, as the plan view's sections do. The base styles these classes, so the heading reads like the view's section headings. The page's `<title>` comes from the fragment's first `<h1>` if it has one, and otherwise from the plan title.
 
 ```sh
-python3 -I plan-view.py --template plan-view.template.md --page <fragment.html> <workspace> <output.html>
+python3 -I <skill>/scripts/plan_view.py --template <skill>/references/plan-view.template.md --page <fragment.html> <workspace> <output.html>
 ```
 
-Add `--check` before the paths to compare the page with the workspace and the fragment without writing anything; the output is `view current` or `view stale: <inputs>`. The page mode needs a built `plan-view.html` in the workspace and refuses, with exit 2, an output path that is the plan view itself. A page records its template, its recipe and its fragment, so a later change to the plan's title or language does not mark the page stale; rebuild the page on request.
+Add `--check` before the paths to compare the page with the workspace and the fragment without writing anything; the output is `view current` or `view stale: <inputs>`. The page mode needs a built `plan-view.html` in the workspace and refuses, with exit 2, an output path that is the plan view itself. A page records its template, its script and its fragment, so a later change to the plan's title or language does not mark the page stale; rebuild the page on request.
 
 Product samples, such as game palettes, sprites, screenshots and design alternatives, go inside an element with the class `tk-sample`. The base never selects that class, so a sample keeps its own appearance in both themes. Inherited text color and font still reach a sample that declares none, so sample content declares its own colors and fonts.
 
-Without recipe authorization the agent writes the page itself: it copies the CSS between the `tackle-base` markers (every range, in order) verbatim from the installed template, and copies the theme script between the `tackle-base-theme` markers verbatim inside `(function () { 'use strict'; … })();`, as the recipe does. The brand and toggle markup come from the template's top bar in its html block, not from memory. It records the template's sha256 in a `tackle-base-digest` meta. The narrow top bar shows the brand and the toggle only; the plan view's stacked bar and its section index are not part of the base. Printing an auxiliary page is not covered.
+Without script authorization the agent writes the page itself: it copies the CSS between the `tackle-base` markers (every range, in order) verbatim from the installed template, and copies the theme script between the `tackle-base-theme` markers verbatim inside `(function () { 'use strict'; … })();`, as the script does. The brand and toggle markup come from the template's top bar in its html block, not from memory. It records the template's sha256 in a `tackle-base-digest` meta. The narrow top bar shows the brand and the toggle only; the plan view's stacked bar and its section index are not part of the base. Printing an auxiliary page is not covered.
 
-An existing auxiliary page moves to the base only when the owner asks for it. An explicit owner preference for a page's style overrides the default and is recorded with the page. The recipe consent rules are unchanged: the owner's explicit request that names the page is the feature request that grants the recipe for that page, while a page the agent proposes and the owner merely accepts is not.
+An existing auxiliary page moves to the base only when the owner asks for it. An explicit owner preference for a page's style overrides the default and is recorded with the page. The script consent rules are unchanged: the owner's explicit request that names the page is the feature request that grants the script for that page, while a page the agent proposes and the owner merely accepts is not.
 
 ## Diagram export
 

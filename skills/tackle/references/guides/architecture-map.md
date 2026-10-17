@@ -57,13 +57,13 @@ Each plan records its delta in `<workspace>/map-delta.json`, schema `tackle-map-
 - `relations` is optional and adds relations.
 
 When a base exists and the plan adds or changes components, PLAN writes this delta with the plan, each
-change `planned`. Validating it with the recipe needs the owner's explicit authorization, which an
+change `planned`. Validating it with the script needs the owner's explicit authorization, which an
 architecture-map or plan-view request grants; without that grant, the next view build checks the delta and
 refuses an invalid one.
 
-## The recipe
+## The script
 
-Saving and importing the recipe needs the owner's explicit authorization; an explicit architecture-map or plan-view request, or the owner's closure-fold confirmation, grants it for that request ([recipe consent](../recipes/README.md#consent)). Prefer an equivalent harness capability. With that authorization, save the [recipe](../recipes/architecture-map.md) as a file and import it. It uses only the standard library
+Importing the script needs the owner's explicit authorization; an explicit architecture-map or plan-view request, or the owner's closure-fold confirmation, grants it for that request ([script consent](../../scripts/README.md#consent)). Prefer an equivalent harness capability. With that authorization, import [`scripts/architecture_map.py`](../../scripts/architecture_map.py) from `<skill>/scripts/`, where `<skill>` is the installed skill folder, by putting that folder first on `sys.path` and importing `architecture_map`. It has no command line, uses only the standard library
 and changes none of its inputs:
 
 - `validate(base, delta)` lists every problem. It names a change of an unknown component, an add of an
@@ -80,8 +80,8 @@ and changes none of its inputs:
 Build the plan view with the base:
 
 ```sh
-python3 -I plan-view.py --template plan-view.template.md --map .tackle/map/architecture.json \
-  --map-scope all <workspace> <workspace>/plan-view.html
+python3 -I <skill>/scripts/plan_view.py --template <skill>/references/plan-view.template.md \
+  --map .tackle/map/architecture.json --map-scope all <workspace> <workspace>/plan-view.html
 ```
 
 The page gains a Before and after section with a Cards tab and a Diagram tab, for Today and for After this
@@ -90,7 +90,7 @@ Without `--map`, or when the `--map` file does not exist, the island's `map` is 
 a delta or a `--map` gets a note that there is no base map yet. An unreadable base or a wrong field type refuses,
 and the refusal names the field.
 
-The recipe reads `<workspace>/map-delta.json` and resolves source paths against the repository root, three
+The view reads `<workspace>/map-delta.json` and resolves source paths against the repository root, three
 levels above the workspace. A component whose source path no longer exists, or whose glob pattern matches nothing, shows as stale. The view
 refuses an invalid delta, names the problem and writes no file.
 
