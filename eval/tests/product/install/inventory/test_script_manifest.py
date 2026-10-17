@@ -75,8 +75,7 @@ class ScriptManifestTests(unittest.TestCase):
         tmp = tempfile.TemporaryDirectory(prefix='tackle-script-manifest-')
         self.addCleanup(tmp.cleanup)
         self.root = Path(tmp.name)
-        for tree in ('skills/tackle/references/recipes', SCRIPTS):
-            shutil.copytree(ROOT / tree, self.root / tree, ignore=shutil.ignore_patterns('__pycache__'))
+        shutil.copytree(ROOT / SCRIPTS, self.root / SCRIPTS, ignore=shutil.ignore_patterns('__pycache__'))
         self.command = [command for command in gates() if SCRIPTS in command]
         self.assertEqual(len(self.command), 1, 'no single gate checks the script manifest')
 
@@ -145,11 +144,13 @@ class ScriptManifestTests(unittest.TestCase):
         self.write_manifest(lines + [row])
         self.assert_one_finding('duplicate row', name)
 
-    def test_the_recipe_half_is_unchanged_by_a_script_defect(self):
-        name = self.listed()[0]
-        path = self.script(name)
+    def test_one_line_per_problem(self):
+        first, last = self.listed()[0], self.listed()[-1]
+        path = self.script(first)
         path.write_bytes(path.read_bytes() + b'\n')
-        self.assertFalse([line for line in self.findings() if line.startswith('recipe manifest:')])
+        self.write_manifest([line for line in self.manifest() if not line.startswith('| [%s](' % last)])
+        self.assertEqual(sorted(self.findings()), sorted(['script manifest: hash mismatch %s' % first,
+                                                          'script manifest: missing row %s' % last]))
 
 
 if __name__ == '__main__':

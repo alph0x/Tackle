@@ -18,7 +18,7 @@
       "tests": 9,
       "source": "eval/plan",
       "category": "product",
-      "purpose": "Plan section order, and the controlled-writing recipe and guide for owner texts and specifications."
+      "purpose": "Plan section order, and the controlled-writing script and guide for owner texts and specifications."
     },
     {
       "path": "eval/tests/product/run/card",
@@ -63,7 +63,7 @@
       "tests": 40,
       "source": "eval/run/execution",
       "category": "product",
-      "purpose": "Literal execution recipes, identity and verdict capture."
+      "purpose": "Literal execution scripts, identity and verdict capture."
     },
     {
       "path": "eval/tests/product/run/focused-closure",
@@ -198,10 +198,10 @@
         "test_history_and_obligation_templates.py",
         "test_system_one_functional.py",
         "test_system_one_integration.py",
-        "test_recipe_consent_points.py",
+        "test_script_consent_points.py",
         "test_multi_repo_templates.py"
       ],
-      "tests": 107,
+      "tests": 108,
       "source": "eval/templates",
       "category": "product",
       "purpose": "Template fields, observed model routing, capability recovery and compiled briefs. The System One decision script's admission, workspace consent, normalized transport, confidence and provenance. The System One state script's consent persistence, caller-supplied client, SDK serialization, fallback and bounded history/intake consumers."
@@ -279,7 +279,7 @@
         "test_script_manifest.py",
         "test_no_network_surface.py"
       ],
-      "tests": 46,
+      "tests": 40,
       "source": "eval/install/inventory",
       "category": "product",
       "purpose": "Installed artifact inventory, links, root resolution and the absence of network clients, endpoints and home lookups."
@@ -413,7 +413,7 @@
       "tests": 59,
       "source": "eval/requirements-base",
       "category": "product",
-      "purpose": "Requirements base parsing, delta validation, reconciliation and fold through the shipped recipe, and the guide's rules."
+      "purpose": "Requirements base parsing, delta validation, reconciliation and fold through the shipped script, and the guide's rules."
     }
   ]
 }

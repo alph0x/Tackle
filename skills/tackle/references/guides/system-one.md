@@ -116,7 +116,7 @@ returns the closed result: with a recorded `yes`, a public fragment and an accep
 named reason. Without a factory the result is the local judgment with reason `client-unavailable`.
 
 **Stop before the program below.** Save or run it only with the owner's explicit authorization for this use,
-or under a grant in [recipe consent](../recipes/README.md#consent). Otherwise use an equivalent harness
+or under a grant in [script consent](../../scripts/README.md#consent). Otherwise use an equivalent harness
 capability or the project's own tools, or report the record unavailable.
 
 ```python

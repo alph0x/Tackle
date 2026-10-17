@@ -16,12 +16,12 @@ consumer; dates and experiment identifiers belong to evidence provenance.
 | product | [product/lint/task-contracts](product/lint/task-contracts/) | Task contracts, readiness and acceptance fields. |
 | product | [product/lint/task-identity](product/lint/task-identity/) | Task identity, scaffold paths and workspace naming. Lint row 2 resolves and refuses sibling workspace references as the plan view does. |
 | product | [product/migration](product/migration/) | Workspace schema migration, scripts and census refusal. Migration keeps historical record paths, makes citations follow their moved files, leaves links into other workspaces unchanged, reports what history still cites, and keeps the text after a legacy status glyph as a board note. |
-| product | [product/plan](product/plan/) | Plan section order, and the controlled-writing recipe and guide for owner texts and specifications. |
-| product | [product/requirements-base](product/requirements-base/) | Requirements base parsing, delta validation, reconciliation and fold through the shipped recipe, and the guide's rules. |
+| product | [product/plan](product/plan/) | Plan section order, and the controlled-writing script and guide for owner texts and specifications. |
+| product | [product/requirements-base](product/requirements-base/) | Requirements base parsing, delta validation, reconciliation and fold through the shipped script, and the guide's rules. |
 | product | [product/resume](product/resume/) | The cold-resume read order, its links from every read list, the spent-count source and the closure listing of open obligations. |
 | product | [product/run/card](product/run/card/) | Execution state transitions, template bindings and adversary-checkpoint records. |
 | product | [product/run/evidence-capture](product/run/evidence-capture/) | Child execution, streams, timeouts and evidence capture. |
-| product | [product/run/execution](product/run/execution/) | Literal execution recipes, identity and verdict capture. |
+| product | [product/run/execution](product/run/execution/) | Literal execution scripts, identity and verdict capture. |
 | product | [product/run/focused-closure](product/run/focused-closure/) | Focused completion receipts and artifact hashing. |
 | product | [product/run/usage](product/run/usage/) | Native usage-event capture and lifecycle accounting. |
 | product | [product/run/verification-records](product/run/verification-records/) | Verification-record integrity, export, concurrency and maintenance. |

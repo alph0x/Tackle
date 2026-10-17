@@ -23,17 +23,24 @@ a script adds or updates its row.
 | [lint_runner.py](lint_runner.py) | `45d632e4c6aac18a9a76b3917250a89e46942118116b60ecfc8106092db8995f` |
 | [context_bundle.py](context_bundle.py) | `5bed1907877c5bb016d8555969eef0c564f70b11aa7bf707849b3cf4b1c0d63f` |
 | [record_store.py](record_store.py) | `8983f36d60a19894cbc215b8d34a3805d82fa50d03195650af9c58d3b8e4d640` |
+| [decompose_check.py](decompose_check.py) | `22a9efddfbcf7ef33dfeac625c3c2fcdd786b99bb3beda6f555b872f2c15a6f5` |
+| [controlled_writing.py](controlled_writing.py) | `79e7fc56982c60db602c4216d1eb831b57b7aeefb545a26f8aed127378b8e74a` |
+| [requirements_base.py](requirements_base.py) | `d6c34cf9ca5f4cbb82ecb98c56d412a97344264da5734d839b6bb153ee10f8d0` |
 
 ## Consent
 
-Running or importing a script from `scripts/` needs the owner's explicit authorization, under the
-shared [decision and communication policy](../references/guides/communication.md). Prefer an
-equivalent harness capability when one exists. A prior general request to plan or run does not count
-unless it names the script use.
+A script is a Python 3 file under `scripts/` that a guide tells the agent to run or import. A
+documented one-line check command, such as a lint row or a retro metric command, is not a script.
+
+Running or importing a script needs the owner's explicit authorization, under the shared
+[decision and communication policy](../references/guides/communication.md). Prefer an equivalent
+harness capability when one exists. A prior general request to plan or run does not count unless it
+names the script use.
 
 An explicit owner request for a feature whose documented procedure is a script authorizes that script
-for that request, as it authorizes a [recipe](../references/recipes/README.md#consent). A script being
-part of the install authorizes nothing.
+for that request, such as the plan view, a migration, or a System One use that the workspace recorded
+`yes` for. A general request to plan or run does not. A script being part of the install authorizes
+nothing.
 
 Declining is a normal outcome. The affected record is reported unavailable or produced by another
 permitted route; it is never faked.
