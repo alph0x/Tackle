@@ -20,7 +20,7 @@ Tackle turns a goal into a plan stored in your repository. Each task carries the
 
 Use it for features, refactors, and investigations that span sessions or involve handoffs between agents or people.
 
-**Tackle 9.3.0** · Model-agnostic · Markdown-only install · MIT
+**Tackle 9.3.0** · Model-agnostic · Markdown and standard-library Python · MIT
 
 ## Why Tackle
 
@@ -68,17 +68,18 @@ A scoped request such as “plan and implement this refactor” authorizes both 
 <details>
 <summary>Manual installation and updates</summary>
 
-From a checkout of this repository, copy `skills/tackle/SKILL.md` and `skills/tackle/references/` into your agent's skill directory. For Claude Code:
+From a checkout of this repository, copy `skills/tackle/SKILL.md`, `skills/tackle/references/` and `skills/tackle/scripts/` into your agent's skill directory. For Claude Code:
 
 ```sh
 mkdir -p ~/.claude/skills/tackle
 cp skills/tackle/SKILL.md ~/.claude/skills/tackle/
 cp -R skills/tackle/references ~/.claude/skills/tackle/
+cp -R skills/tackle/scripts ~/.claude/skills/tackle/
 ```
 
 For Cursor, use `~/.cursor/skills/tackle/`. Other agents use their own skill directory. Tackle follows the [Agent Skills](https://github.com/anthropics/skills) format.
 
-The install contains only `SKILL.md` and `references/`, with 69 installation-relative files. Repository branding, development tools, and evaluation fixtures are not part of the installed skill.
+The install contains only `SKILL.md`, `references/` and `scripts/`, with 78 installation-relative files. Repository branding, development tools, and evaluation fixtures are not part of the installed skill.
 The checkout copy commands above copy those files into the selected directory and leave any other files already there.
 
 For 9.0.1, the update checks used skills@1.7.0 in controlled synthetic Git fixtures; they did not change a real installation or test the public GitHub API route. In a copy-mode reinstall for one agent (`--copy -a <agent> -y -g`), the selected agent directory received the exact 55-file artifact. That route refreshed the selected agent copy and lock while leaving any old canonical `.agents/skills/tackle` directory untouched.
@@ -198,11 +199,11 @@ See the [RUN card](skills/tackle/references/guides/run-card.md) and [failure-mod
 
 ## Security model
 
-This section describes how Tackle is built to behave; it is not a claim about any third-party review or scanner result.
+This section describes how Tackle is built to behave; it is not a claim about any third-party review or scanner result. The [security model guide](skills/tackle/references/guides/security.md) describes what Tackle runs, reads and sends.
 
-The install is Markdown only: `SKILL.md` and `references/` contain no executable runner and install none (see the install contents [above](#get-started)). Ordinary invocation performs no network access and does not change the installation tree. The optional System One capability is the one consented exception to the network rule, and it only runs when the workspace records your agreement ([System One](skills/tackle/references/guides/system-one.md)).
+The install is `SKILL.md`, `references/` and `scripts/`: Markdown guides plus Python scripts that use the standard library only. Installing it runs nothing and installs no program (see the install contents [above](#get-started)). Ordinary invocation performs no network access and does not change the installation tree. Tackle ships no network client: the optional System One judgment goes through your host's `typesafe-ai` skill, and only when the workspace records your agreement ([System One](skills/tackle/references/guides/system-one.md)).
 
-Recipe scripts under `references/` are documentation. An agent saves or runs one only with your explicit authorization, and prefers an equivalent capability of its own harness. Asking for a feature whose documented procedure is a recipe, such as the plan view, counts as that authorization. If you decline, the affected record is reported unavailable or produced another permitted way, never faked.
+An agent runs or imports a script under `scripts/` only with your explicit authorization, and prefers an equivalent capability of its own harness. Asking for a feature whose documented procedure is a script, such as the plan view, counts as that authorization. If you decline, the affected record is reported unavailable or produced another permitted way, never faked.
 
 RUN executes only the exact command line (argv) that each authorized, ready task declares, and captures each command with its exit status and output streams ([RUN card](skills/tackle/references/guides/run-card.md)).
 
@@ -279,7 +280,7 @@ An earlier, retired paired-experiment protocol ran twelve paired episodes agains
 
 The [eval suite](eval/README.md) contains **75 scenarios** (`s1`–`s80`): decision traps, one end-to-end lifecycle smoke test, three end-to-end planning tasks and two mid-task resumes judged by hidden acceptance tests. The manual A/B workflow compares a model following Tackle with the same model working without it. Each scenario's answer sheet stays outside the agent's copy. A smoke run provides evidence for that run, with its limits recorded alongside the result.
 
-Before release, the [release sweep](MAINTAINING.md#release-sweep) runs 9 shipped-skill gates covering the entry-file word budget, 11 core conventions, version and migration consistency, README claims, install contents, update boundaries, and recipe manifest currency. The workspace table covers rows 1–17 (17 lint rows). These are documented, copy-pasteable POSIX checks.
+Before release, the [release sweep](MAINTAINING.md#release-sweep) runs 9 shipped-skill gates covering the entry-file word budget, 11 core conventions, version and migration consistency, README claims, install contents, update boundaries, and script manifest currency. The workspace table covers rows 1–17 (17 lint rows). These are documented, copy-pasteable POSIX checks.
 
 Mechanical gate procedures cover `lint` rows, `catalog` integrity, each `done-signal`, the two-phase `ground` check, `eval` method arms, and `init` artifact completeness. Required independent review also gates completion. Release publication requires a separate owner request.
 

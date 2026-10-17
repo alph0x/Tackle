@@ -9414,6 +9414,21 @@
       "destination": "SKILL.md",
       "note": "Explicit [audit](references/guides/judge.md), [lessons](references/guides/retro.md), [migration](references/guides/migrate.md#schema-keyed-migration), [owner-controlled updates](references/guides/update.md), [security model](references/guides/security.md).",
       "destination_unit_sha256": null
+    },
+    {
+      "path": "SKILL.md",
+      "line": 4,
+      "unit_sha256": "c43052e71d882fd6b07611fdb8bf28aa42f506f96945a7309ccc6b65a2d83d91",
+      "disposition": "reworded",
+      "destination": "SKILL.md",
+      "note": "Install: `SKILL.md`, `references/` and `scripts/` (Markdown plus standard-library Python, no network).",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "only",
+          "reason": "The install now also holds standard-library Python scripts under scripts/, so it is no longer Markdown only; the sentence names all three parts."
+        }
+      ]
     }
   ]
 }
