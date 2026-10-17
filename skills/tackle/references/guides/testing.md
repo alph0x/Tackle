@@ -1,35 +1,34 @@
 # Testing doctrine
 
-Agent speed makes verification valuable: spend the saved time on evidence that exercises the
-Task's observable contract through its real consumer. Choose test depth from behavior and Write
-scope, not from a generic count.
+Agent speed makes verification valuable: spend the saved time on evidence exercising the Task's observable
+contract through its real consumer. Test depth follows behavior and Write scope, not a generic count.
 
 ## PLAN chooses the check before code
 
 For each code Task, PLAN names the behavior, cases, check type, expected result, and evidence
 destination before implementation. Prefer an end-to-end (E2E) check through the public boundary
-as the sole new test mechanism when it can cover the contract. Complex features need an E2E
-check of their integrated flow when that boundary is executable. An E2E check can discharge Task,
-surrounding, and integration obligations together when its actual coverage does. Reuse sufficient
-existing checks; do not create unit tests or duplicate assertions to satisfy a tier quota.
+as the sole new test mechanism when it can cover the contract. Complex features need an E2E check of their
+integrated flow when that boundary is executable. One E2E check can discharge Task, surrounding and
+integration obligations together when its actual coverage does. Reuse sufficient existing checks; never create
+unit tests or duplicate assertions to satisfy a tier quota.
 
-If E2E cannot exercise a required failure reliably or an executable consumer is unavailable,
-PLAN records that limitation and the narrowest honest alternative. Before testing a system in
-isolation, write down every identified applicable way it can fail, with its expected observable
-outcome. Derive isolated cases from that inventory before writing implementation. Do not claim
-exhaustiveness beyond the declared input domain and known interfaces; newly discovered failure
-modes update the inventory before the corresponding implementation change.
+If E2E cannot exercise a required failure reliably or an executable consumer is unavailable, PLAN records that
+limitation and the narrowest honest alternative. Before testing a system in isolation, write down every
+identified applicable way it can fail, with its expected observable outcome, and derive isolated cases from
+that inventory before writing implementation. Claim no exhaustiveness beyond the declared input domain and
+known interfaces; newly discovered failure modes update the inventory before the corresponding implementation
+change.
 
 A validator's readiness fixtures call it with the acceptance script's exact argv: the same revision
 names, such as an annotated tag where the script passes one, the tree under test, and a head that
-changes after validation. A convenient equivalent, such as a commit sha in place of the tag, does
-not exercise the consumer's call.
+changes after validation. A convenient equivalent, such as a commit sha for the tag, does not exercise the
+consumer's call.
 
 ## Test-first execution
 
-For the bounded None route, follow `intake-and-gate.md` without expanding the task into this
-template-driven loop. Existing failing tests already establish red; do not duplicate them or add
-a PASS wrapper just for ceremony. A meaningful gap may receive focused additive coverage.
+The bounded None route follows `intake-and-gate.md` without expanding into this template-driven loop.
+Existing failing tests already establish red; never duplicate them or add a PASS wrapper for ceremony. A
+meaningful gap may receive focused additive coverage.
 
 For new tests, red → green → refactor is the Executor's default shape:
 
@@ -37,8 +36,8 @@ For new tests, red → green → refactor is the Executor's default shape:
 2. Minimal implementation — see it pass.
 3. Refactor with the suite green.
 
-Opting out requires a `D-xx` recorded before implementation. "Seen failing" is the mechanical
-form of the verifier's `repro` question: a test never seen failing proves little about its bite.
+Opting out requires a `D-xx` recorded before implementation. "Seen failing" is the mechanical form of the
+verifier's `repro` question: a test never seen failing proves little about its bite.
 Never write a unit test after implementing the behavior it covers. For a change to existing code,
 write any needed unit regression before changing that behavior; a later discovered isolated gap
 starts with its failure-mode inventory and test before the next implementation change. A general
@@ -47,9 +46,9 @@ The red-phase evidence answers `repro`; the verifier does not re-break code by h
 evidence and diagnose first; [run.md](run.md#failure-classification-and-escalation-packet)
 has the full recheck and diagnostic-inspection rule.
 
-Each required assertion must make its command fail when false. `set -u`, `pipefail` and a final
-PASS do not establish this; use checked subprocesses or explicit failure exits. Preserve exact
-specified bytes when editing and comparing, including the delimiter and final newline.
+Each required assertion must make its command fail when false; `set -u`, `pipefail` and a final PASS do
+not establish this, checked subprocesses or explicit failure exits do. Preserve exact specified bytes when
+editing and comparing, delimiter and final newline included.
 
 ## Check types and depth
 
@@ -66,42 +65,39 @@ links here. Historical T0–T3 labels remain readable in pinned workspaces.
 | **T3 · fuzz / torture** | Adversarial input or hostile scheduling under a time budget. | Untrusted input, concurrency, state machines when a bounded adversarial run addresses a distinct risk. | Prefer the real consumer; record seed, time budget, and native result. |
 | **Mutation** | Validates the selected check: break behavior, watch the check fail. | High-risk invariants (money, security, data integrity). | Mutation score ≥ a declared threshold, or one deliberate break → acceptance check fails. |
 
-Mutation is not a test you write — it audits whether the selected check bites. The observed red
-phase supplies its cheap form without adding a unit-test layer.
+Mutation is not a test you write: it audits whether the selected check bites. The observed red phase is its
+cheap form, with no added unit-test layer.
 
 ## Replayable E2E artifact
 
-At the end of each E2E run, retain one verifiable, repeatable artifact: the exact command or saved
-checked script, accessible fixtures and input revisions, expected outputs from the contract,
-observed stdout/stderr and child exit/timeout/signal, runtime and relevant environment, produced
-outputs, and hashes of inputs and outputs. A complete existing raw capture plus referenced stable
-fixtures can be that artifact; do not duplicate it in prose. Include a short replay instruction
-from the recorded cwd. Replaying must use a disposable copy or a fresh run destination so the
-original raw record, fixtures, and output hashes remain immutable; the replay compares its new
-result to the recorded expected and observed result. A PASS string, screenshot, test count, or
-hash without runnable inputs does not make an E2E run repeatable. The artifact's required
-assertions must propagate failure to the native result, and changed inputs invalidate the
-affected result.
+Each E2E run retains one verifiable, repeatable artifact: the exact command or saved checked script,
+accessible fixtures and input revisions, contract-derived expected outputs, observed stdout/stderr and child
+exit/timeout/signal, runtime and relevant environment, produced outputs, and input and output hashes. A
+complete existing raw capture plus referenced stable fixtures can be that artifact, never duplicated in prose.
+Include a short replay instruction from the recorded cwd. Replay must use a disposable copy or fresh run
+destination so the original raw record, fixtures and output hashes stay immutable, and compares its new
+result to the recorded expected and observed result. A PASS string, screenshot, test count or hash without
+runnable inputs does not make an E2E run repeatable. The artifact's required assertions must propagate
+failure to the native result; changed inputs invalidate the affected result.
 
 ## What this changes in practice
 
 - Serialization checks parse output with the real consumer or assert a round trip over valid
-  delimiter/quote/newline/Unicode inputs. Numeric checks retain signs and precision. Choose cases
-  from the declared domain, keep invalid-input policy separate, and compare with contract-derived
-  expectations; a nominal file snapshot or test count alone cannot discharge this obligation.
+  delimiter/quote/newline/Unicode inputs; numeric checks retain signs and precision. Choose cases from the
+  declared domain, keep invalid-input policy separate, compare with contract-derived expectations; a nominal
+  file snapshot or test count alone cannot discharge this obligation.
 - `plan.md` §6.1: choose the E2E or justified alternative, test-first by default, and never write
   unit tests after their implementation.
-- Task Acceptance names only the selected checks, an isolation failure-mode inventory when needed,
-  and the E2E replay artifact destination. Unselected types need no waiver or test quota.
-- Verifier: `repro` is answered by red-phase evidence in `history.md`, not by hand-breaking the code.
+- Task Acceptance names only the selected checks, an isolation failure-mode inventory when needed, and the
+  E2E replay artifact destination. Unselected types need no waiver or test quota.
+- Verifier: red-phase evidence in `history.md` answers `repro`, not hand-breaking the code.
 
 ## Compatibility before implementation
 
-Record the required supported producer/consumer versions and the environments available for
-validation before editing. Choose targets from the user/spec or repository contract; don't invent
-a wider support promise from the installed runtime. Each claimed target needs its own observed
-check or exact externally supplied evidence. Missing required coverage blocks that obligation;
-optional targets remain unverified without blocking a narrower authorized scope. Preserve both
-results on a discrepancy. Cross-version serializer tests use valid domain strings and the consumer
-parser, not assumptions about a library's quoting defaults. An evaluator's later run is separate
-coverage and cannot retroactively justify the executor's earlier completion claim.
+Before editing, record the required supported producer/consumer versions and the environments available for
+validation. Targets come from the user/spec or repository contract; never invent a wider support promise from
+the installed runtime. Each claimed target needs its own observed check or exact externally supplied
+evidence. Missing required coverage blocks that obligation; optional targets stay unverified without blocking
+a narrower authorized scope. Preserve both results on a discrepancy. Cross-version serializer tests use valid
+domain strings and the consumer parser, not assumptions about a library's quoting defaults. An evaluator's
+later run is separate coverage and cannot retroactively justify the executor's earlier completion claim.

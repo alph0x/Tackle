@@ -1,41 +1,38 @@
 # Verify — depth for the [PLAN card](plan-card.md)
 
 <a id="step-7--shared-validation-plan-readiness-and-explicit-verify"></a>
-The card's step 7 links here for readiness validation, and to two of this guide's sections
-directly, as procedure rather than depth: [step 0](#step-0--mechanical-grounding-two-phase-citation-check)
-and [step 8, seal integrity](#step-8--seal-integrity). PLAN invokes the preparation and
-evidence-integrity operations below before handoff. The explicit `verify` request remains available
-for a later audit or for a plan that predates integrated readiness; it is not a required pre-wave or
-pre-Task gate after a successful PLAN run. RUN uses the single execution protocol in
-`references/guides/run-card.md` for explicit intent, preflight, target and related regression checks,
-persistent correction, integration, and deliverable acceptance.
+The card's step 7 links here for readiness validation, and to two sections directly, as procedure rather
+than depth: [step 0](#step-0--mechanical-grounding-two-phase-citation-check) and
+[step 8, seal integrity](#step-8--seal-integrity). PLAN invokes the preparation and evidence-integrity
+operations below before handoff. The explicit `verify` request stays available for a later audit or a plan
+predating integrated readiness; it is no required pre-wave or pre-Task gate after a successful PLAN run. RUN
+uses the single execution protocol in `references/guides/run-card.md` for explicit intent, preflight, target
+and related regression checks, persistent correction, integration and deliverable acceptance.
 
-**Principle: detection before judgment.** Use cheap mechanical checks (`grep`, `read`, `ast-grep`, `git`) first; use the LLM only for synthesis of the findings. This keeps the pass fast and reduces false positives.
+**Principle: detection before judgment.** Cheap mechanical checks (`grep`, `read`, `ast-grep`, `git`) first; the LLM only synthesizes the findings. This keeps the pass fast and cuts false positives.
 
 ## Shared validation contract
 
-Verification has one internal contract with four named operations. The `verify` request and its
-legacy text alias forward to these operations; they do not maintain a second protocol or a separate set of
-pass conditions.
+Verification has one internal contract with four named operations. The `verify` request and its legacy text
+alias forward to them and keep no second protocol or separate pass conditions.
 
-1. **Preparation** — resolve the Task's declared inputs, Write scope, revisions, dependencies,
-   case matrix, and disposable fixture directory. Confirm protected source and expected outputs
-   before running a validator.
-2. **Product** — run the Task's actual command or test against its declared input and observe
-   output, status, effects, and boundary cases. A future or nonexistent product has no product
-   PASS; use a validator fixture and semantic readiness evidence until implementation exists.
-3. **Evidence integrity** — validate captured status, stdout, stderr, timeout, signal, metadata,
-   and generated artifacts independently. Read-only validators reject missing, tampered, extra,
-   or wrong-typed evidence and preserve a pre-existing sentinel.
-4. **Relevant change** — compare current revisions to the recorded inputs and dependency map.
-   Invalidate only consumers whose declared inputs changed; retain historical grades and explain
-   the affected consumer and regression check.
+1. **Preparation** — resolve the Task's declared inputs, Write scope, revisions, dependencies, case matrix
+   and disposable fixture directory; confirm protected source and expected outputs before running a
+   validator.
+2. **Product** — run the Task's actual command or test against its declared input and observe output,
+   status, effects and boundary cases. A future or nonexistent product has no product PASS; use a validator
+   fixture and semantic readiness evidence until implementation exists.
+3. **Evidence integrity** — validate captured status, stdout, stderr, timeout, signal, metadata and
+   generated artifacts independently. Read-only validators reject missing, tampered, extra or wrong-typed
+   evidence and preserve a pre-existing sentinel.
+4. **Relevant change** — compare current revisions to the recorded inputs and dependency map. Invalidate
+   only consumers whose declared inputs changed; retain historical grades and explain the affected consumer
+   and regression check.
 
-Each operation reports its command, cwd, runtime, input/code/config/contract revisions, output,
-exit or timeout/signal, and artifact path. Mechanical execution, semantic review, and
-adversarial audit remain separate evidence classes. A valid semantic alternative is accepted
-when the contract leaves formatting or implementation shape free; a requirement is not proved
-by a keyword, file existence, or test count alone.
+Each operation reports its command, cwd, runtime, input/code/config/contract revisions, output, exit or
+timeout/signal, and artifact path. Mechanical execution, semantic review and adversarial audit stay separate
+evidence classes. A valid semantic alternative is accepted when the contract leaves formatting or
+implementation shape free; a keyword, file existence or test count alone proves no requirement.
 
 ## Product verification has two halves
 
@@ -44,11 +41,10 @@ Every implemented-product verification must cover:
 1. **Target half** — the task's specific done criterion passes, observed (it ran, rendered, counted, or matched). Do not infer this from reading code.
 2. **Surround half** — the system around the touched area remains healthy (build, tests, lint, or equivalent for the touched area).
 
-A green task check with a broken surrounding system is a failed verification. Preparation
-uses fixture and readiness evidence when no product exists yet; it cannot claim a product PASS.
-When an implemented product or its surrounding system cannot be checked (no runtime, missing
-credentials, human-eyes-only), label the claim **UNVERIFIABLE**, never assume it is true. See
-`references/failure-modes.md` for the symptom-to-rule catalog used by this check.
+A green task check with a broken surrounding system is a failed verification. Preparation uses fixture and
+readiness evidence when no product exists yet and cannot claim a product PASS. When an implemented product or
+its surrounding system cannot be checked (no runtime, missing credentials, human-eyes-only), label the claim
+**UNVERIFIABLE**, never assume it true. `references/failure-modes.md` is this check's symptom-to-rule catalog.
 
 For each prepared task in `plan.md`'s task decomposition / `task-board.md`, and the full requirement coverage map:
 
@@ -100,26 +96,25 @@ Classify every finding with a certainty level:
 - **LOW** — possible, needs human judgment.
   - Examples: a variable name feels inconsistent with project convention; a prose description could be read two ways but the code is probably correct.
 
-Use these examples to calibrate: if you are not sure whether a finding is HIGH, downgrade it. If you cannot reproduce it mechanically, it is not HIGH.
+Calibrate with these examples: unsure whether a finding is HIGH, downgrade it; not mechanically reproducible, it is not HIGH.
 
-Output: during PLAN, append readiness findings to its evidence and handoff; during an explicit audit,
-append findings to `history.md` only when that audit is authorized to write history. Verification does
-not itself update execution status. Any HIGH finding, or an ungrounded task, blocks execution until
-fixed or explicitly waived by the user. MEDIUM findings block unless the user explicitly accepts the
-risk; LOW findings are advisory. RUN records target/surround and integrated observations through
-`references/guides/run-card.md` rather than invoking a universal Verify loop.
+Output: during PLAN, append readiness findings to its evidence and handoff; during an explicit audit, append
+findings to `history.md` only when that audit is authorized to write history. Verification itself never
+updates execution status. Any HIGH finding, or an ungrounded task, blocks execution until fixed or
+explicitly waived by the user. MEDIUM findings block unless the user explicitly accepts the risk; LOW findings
+are advisory. RUN records target/surround and integrated observations through
+`references/guides/run-card.md`, not a universal Verify loop.
 
 ## Step 0 — Mechanical grounding (two-phase citation check)
 
-Triggered by `verify` (step 0). The read-only diagnostic computes proposed citation repairs and freshness results only. Applying a re-anchor or writing a history stamp requires an authorized PLAN/RUN scope or an explicit request permitting that write; a standalone verify/ground/status question supplies no such permission. Run before the red-team pass to remove the mental load of remembering which `file:line` citations have been read.
+Triggered by `verify` (step 0). The read-only diagnostic computes proposed citation repairs and freshness results only. Applying a re-anchor or writing a history stamp requires an authorized PLAN/RUN scope or an explicit request permitting that write; a standalone verify/ground/status question supplies no such permission. Run before the red-team pass, so nobody has to remember which `file:line` citations were read.
 
-**Principle: outsource the memory.** The agent should not rely on its session transcript to know what is grounded; the commands produce an explicit, inspectable record.
+**Principle: outsource the memory.** The agent relies not on its session transcript but on the commands' explicit, inspectable record of what is grounded.
 
-1. **Freshness check** — compare each cited input's recorded content fingerprint and citation
-   fragment with its current bytes. An mtime change is a probe for possible drift, not a blanket
-   invalidation: unchanged bytes remain reusable, while changed bytes invalidate only affected
-   citations and their semantic consumers. If timestamps are unavailable, use content fingerprints
-   and record the missing timestamp as `n/a` rather than inventing one.
+1. **Freshness check** — compare each cited input's recorded content fingerprint and citation fragment with
+   its current bytes. An mtime change probes for possible drift, not a blanket invalidation: unchanged bytes
+   stay reusable; changed bytes invalidate only affected citations and their semantic consumers. If
+   timestamps are unavailable, use content fingerprints and record the missing timestamp as `n/a` rather than inventing one.
 2. **Drift check** — run the following two-phase check with zero model judgment:
    - **Phase 1 — line check**: `sed -n 'NNp' path | grep -Fq "fragment"` → exit 0 = **grounded**.
    - **Phase 2 — whole-file fallback** (only on phase-1 failure): count the lines in `path` containing the fragment. Exactly 1, at line MM ⇒ **drifted → proposed re-anchor** (only when writes are authorized, rewrite `path:NN` → `path:MM` in place, literal replacement, zero model judgment). 0 ⇒ **stale** ⇒ the task is **ungrounded**. More than 1 ⇒ **ambiguous** ⇒ flagged; the task is ungrounded until a more specific fragment is chosen.
@@ -129,10 +124,9 @@ An ungrounded task is blocked per the Output classification above. Run step 0 ri
 
 ## Coverage matrix (criterion → evidence)
 
-Triggered during PLAN readiness (and available to `verify` or a natural phrase like
-"trace coverage"). The check itself is read-only. During an authorized PLAN run, an in-scope
-technical gap may be repaired and rechecked; a new product requirement or material ambiguity is a
-user-owned `Q-xx` and blocks its affected scope.
+Triggered during PLAN readiness (and available to `verify` or a natural phrase like "trace coverage"). The
+check is read-only. During an authorized PLAN run, an in-scope technical gap may be repaired and rechecked; a
+new product requirement or material ambiguity is a user-owned `Q-xx` and blocks its affected scope.
 
 **Principle: count-assert both ways.** Per-task anchoring checks one task at a time; a criterion covered by no task is invisible to it. The matrix closes that direction.
 
@@ -142,19 +136,19 @@ user-owned `Q-xx` and blocks its affected scope.
   criterion has an observable and check, and every task id appears in a row or a closing **Scope
   drift** list. An id with omitted behavior is a gap even when the id is present. An unowned global
   obligation is a gap even when all criteria are covered.
-- **Where results go**: append the matrix, reverse-direction scope-drift list, global-obligation
-  rows, and the observed structural/semantic results to the PLAN evidence block and handoff. A
-  later log projection may summarize it; the matrix is the source of truth for readiness.
+- **Where results go**: append the matrix, reverse-direction scope-drift list, global-obligation rows and
+  the observed structural/semantic results to the PLAN evidence block and handoff. A later log projection may
+  summarize it; the matrix is the readiness source of truth.
 
 ## Cold-resolvability probe (risk-triggered)
 
-Optional and risk-triggered for a concrete ambiguity or elevated failure risk. PLAN may run at most
-one initial probe and, when a correction changes the briefing, one correction recheck; both are
-included in the planning evidence. It is not a universal Ready gate.
+Optional, triggered by a concrete ambiguity or elevated failure risk: PLAN may run at most one initial probe
+and, when a correction changes the briefing, one correction recheck, both in the planning evidence. It is no
+universal Ready gate.
 
-**Principle: the isolation is the protocol.** Use a fresh isolated session or an explicitly
-declared human fallback and give it only the Task brief and named inputs. Record the actual
-executor/profile binding. Require it to restate, numbered exactly:
+**Principle: the isolation is the protocol.** Use a fresh isolated session or an explicitly declared human
+fallback given only the Task brief and named inputs, and record the actual executor/profile binding. Require
+it to restate, numbered exactly:
 
 1. **Goal** — what the task produces, in its own words.
 2. **Approach** — how it would resolve the task.
@@ -164,22 +158,20 @@ executor/profile binding. Require it to restate, numbered exactly:
 5. **Reconstructed cases, outputs, and decisions** — restate the required observations and choices
    from the briefing, then resolve the supplied probe case.
 
-**Verdict**: any missing required item or mismatch ⇒ the Task is not Ready. Optional information
-that the contract deliberately leaves open is recorded as a local freedom and does not block. A
-probe that reports an empty doubts list still fails when its reconstructed output is wrong. Record
-the probe input, output, profile/binding, command/runtime, and verdict; do not treat confidence or
-an empty doubts list as evidence.
+**Verdict**: any missing required item or mismatch ⇒ the Task is not Ready. Optional information the
+contract deliberately leaves open is recorded as a local freedom and does not block. A probe with an empty
+doubts list still fails when its reconstructed output is wrong. Record the probe input, output,
+profile/binding, command/runtime and verdict; confidence or an empty doubts list is no evidence.
 
 ## Selective revalidation after drift
 
-Readiness fingerprints cover the relevant clause, code, configuration, dependency, and input
-revisions. A new session with unchanged fingerprints and selector membership may reuse readiness and does not require a
-complete re-Verify. When a revision changes, invalidate only the consumers that declare that input
-or a crossing artifact; preserve unaffected readiness and historical grades. Configuration changes
-therefore invalidate the named configuration consumers, while an unrelated documentation change
-does not. Regenerate changed compiled clauses, rerun their target/surround fixtures, and update
-the affected evidence slots before handoff. Hash comparison detects drift; dependency reasoning
-decides its blast radius.
+Readiness fingerprints cover the relevant clause, code, configuration, dependency and input revisions. A new
+session with unchanged fingerprints and selector membership may reuse readiness without a complete
+re-Verify. When a revision changes, invalidate only the consumers declaring that input or a crossing
+artifact; preserve unaffected readiness and historical grades. So a configuration change invalidates the
+named configuration consumers, an unrelated documentation change does not. Regenerate changed compiled
+clauses, rerun their target/surround fixtures and update the affected evidence slots before handoff. Hash
+comparison detects drift; dependency reasoning decides its blast radius.
 
 ## Milestone readiness
 
@@ -187,10 +179,9 @@ For long initiatives, validate complete requirement ownership and critical cross
 
 ## PLAN-only intent and handoff
 
-Preparation must record `INTENT: PLAN prepares tasks and stops before source execution.` PLAN may
-write its authorized planning artifacts and evidence, but it cannot start source execution. A
-status, next, or unqualified resume only inspects/selects and cannot mutate source, board, or log;
-explicit handoff generation may write its projection. Handoff includes the matrix, global
-obligations, Ready fingerprints, validator results, optional probe results, unresolved questions,
-and the explicit execution boundary. RUN records a separate execution intent before it may mutate
-source.
+Preparation must record `INTENT: PLAN prepares tasks and stops before source execution.` PLAN may write its
+authorized planning artifacts and evidence but cannot start source execution. A status, next or unqualified
+resume only inspects/selects and cannot mutate source, board or log; explicit handoff generation may write
+its projection. Handoff includes the matrix, global obligations, Ready fingerprints, validator results,
+optional probe results, unresolved questions and the explicit execution boundary. RUN records a separate
+execution intent before it may mutate source.

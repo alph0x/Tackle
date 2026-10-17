@@ -3320,7 +3320,7 @@
       "unit_sha256": "a27fbe0657d5db43170475acb9d632a7d09ba8186a589eae9abc8843e9f773b8",
       "disposition": "reworded",
       "destination": "references/guides/verify.md",
-      "note": "PLAN may run at most one initial probe and, when a correction changes the briefing, one correction recheck; both are included in the planning evidence.",
+      "note": "Optional, triggered by a concrete ambiguity or elevated failure risk: PLAN may run at most one initial probe and, when a correction changes the briefing, one correction recheck, both in the planning evidence.",
       "destination_unit_sha256": null
     },
     {
@@ -3512,7 +3512,7 @@
       "unit_sha256": "a4542fa8372dff4fc5c24edb888923d2423f2aa3e277c39cdfd4212445560c94",
       "disposition": "reworded",
       "destination": "references/guides/decompose-and-lint.md",
-      "note": "After lint, confirm the merge-back pass begun at decomposition: collapse further if the wired plan is still over-decomposed.",
+      "note": "After lint, confirm the merge-back pass begun at decomposition, collapsing further if the wired plan is still over-decomposed.",
       "destination_unit_sha256": null
     },
     {
@@ -3521,7 +3521,7 @@
       "unit_sha256": "74258527608f0f87db44ded66f64dd960e8d80b792f2bab2b0e8e8c60fb8bfbb",
       "disposition": "reworded",
       "destination": "references/guides/intake-and-gate.md",
-      "note": "Updating is never initiated by planning or execution; an owner may use the documented external/manual workflow in [update.md](update.md), which also states the network-access and installation-tree boundary, only after explicitly requesting it.",
+      "note": "Planning or execution never initiates updating; an owner may use the documented external/manual workflow in [update.md](update.md), which also states the network-access and installation-tree boundary, only after explicitly requesting it.",
       "destination_unit_sha256": null
     },
     {
@@ -3530,7 +3530,7 @@
       "unit_sha256": "7ac63733fa460b434047a2980e22815b48649a2e5247df834e8f354664147915",
       "disposition": "reworded",
       "destination": "references/guides/intake-and-gate.md",
-      "note": "The detailed guide sequence below is for Full; the [PLAN card](plan-card.md)'s steps 3–7 are that sequence, in order, with their depth linked from each step.",
+      "note": "The detailed guide sequence below is for Full: the [PLAN card](plan-card.md)'s steps 3–7, in order, with their depth linked from each step.",
       "destination_unit_sha256": null
     },
     {
@@ -3597,7 +3597,7 @@
       "unit_sha256": "a63da83e4696b14ca5b804f961b81e7a270652c9aae152b2d0dd1f7a91db84b4",
       "disposition": "reworded",
       "destination": "references/guides/plan-card.md",
-      "note": "Stabilize `design-contract.md` now, in this PLAN run — do not wait for a second session.",
+      "note": "Stabilize `design-contract.md` now, in this PLAN run, not in a second session.",
       "destination_unit_sha256": null
     },
     {
@@ -3900,7 +3900,7 @@
       "unit_sha256": "cb4ad7d01b922a0fbdac6d1dd73458adc94a408f518d382623ddfc17046344b6",
       "disposition": "reworded",
       "destination": "references/guides/testing.md",
-      "note": "At the end of each E2E run, retain one verifiable, repeatable artifact: the exact command or saved checked script, accessible fixtures and input revisions, expected outputs from the contract, observed stdout/stderr and child exit/timeout/signal, runtime and relevant environment, produced outputs, and hashes of inputs and outputs.",
+      "note": "Each E2E run retains one verifiable, repeatable artifact: the exact command or saved checked script, accessible fixtures and input revisions, contract-derived expected outputs, observed stdout/stderr and child exit/timeout/signal, runtime and relevant environment, produced outputs, and input and output hashes.",
       "destination_unit_sha256": null
     },
     {
@@ -4301,7 +4301,7 @@
       "unit_sha256": "481d3fdf9fa347f7e34cbb125e4949e0378affe53a6087a7be1acb295de4a51b",
       "disposition": "reworded",
       "destination": "references/guides/design-and-contract.md",
-      "note": "For each criterion and Task, name a task check, an affected surrounding check, and an evidence slot.",
+      "note": "For each criterion and Task, name a task check, an affected surrounding check and an evidence slot.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -4316,7 +4316,7 @@
       "unit_sha256": "17736d8177035180aa102e8d2db4cd186062825b971adea7f6a187ec3ffe1269",
       "disposition": "reworded",
       "destination": "references/guides/design-and-contract.md",
-      "note": "Compile interfaces, invariants, dependency crossings, configuration consumers, and recovery behavior before writing Task brief.",
+      "note": "Compile interfaces, invariants, dependency crossings, configuration consumers and recovery behavior before writing the Task brief.",
       "destination_unit_sha256": null
     },
     {
@@ -4325,7 +4325,7 @@
       "unit_sha256": "db75c22e2962d36c1ddcb956c1e2fde32657f233150d975289b803bc20b3478d",
       "disposition": "reworded",
       "destination": "references/guides/design-and-contract.md",
-      "note": "Product decisions remain user-owned. Reversible technical choices may be delegated when the choice and its evidence are recorded.",
+      "note": "Product decisions stay user-owned; reversible technical choices may be delegated when the choice and its evidence are recorded.",
       "destination_unit_sha256": null
     },
     {
@@ -4343,7 +4343,7 @@
       "unit_sha256": "8797825b1f0161a6026396426b71673893a38de8b9381d0492df99310ac24034",
       "disposition": "reworded",
       "destination": "references/guides/design-and-contract.md",
-      "note": "An id copied into a briefing without its behavior is an omission and remains a readiness gap.",
+      "note": "A requirement is covered for execution only when a Task case and a check demonstrate its observable behavior; an id copied into a briefing without its behavior is an omission and stays a readiness gap.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -4367,7 +4367,7 @@
       "unit_sha256": "d3573eed780eb37928e0c86b5371d5c0570836371b927e5abf7fe5534f7a12a1",
       "disposition": "reworded",
       "destination": "references/guides/verify.md",
-      "note": "A new session with unchanged fingerprints and selector membership may reuse readiness and does not require a complete re-Verify.",
+      "note": "A new session with unchanged fingerprints and selector membership may reuse readiness without a complete re-Verify.",
       "destination_unit_sha256": null
     },
     {
@@ -5146,7 +5146,7 @@
       "unit_sha256": "47dddb2217a669c93deeb31fd3b40b1799e642bee8058d5c4443e45ea8a9906b",
       "disposition": "reworded",
       "destination": "references/guides/verify.md",
-      "note": "RUN uses the single execution protocol in `references/guides/run-card.md` for explicit intent, preflight, target and related regression checks, persistent correction, integration, and deliverable acceptance.",
+      "note": "RUN uses the single execution protocol in `references/guides/run-card.md` for explicit intent, preflight, target and related regression checks, persistent correction, integration and deliverable acceptance.",
       "destination_unit_sha256": null
     },
     {
@@ -5155,7 +5155,7 @@
       "unit_sha256": "79cd4ef068f0cf4353495925cc2ebc71bf812329f062a5c329027d2e21e3beee",
       "disposition": "reworded",
       "destination": "references/guides/verify.md",
-      "note": "RUN records target/surround and integrated observations through `references/guides/run-card.md` rather than invoking a universal Verify loop.",
+      "note": "RUN records target/surround and integrated observations through `references/guides/run-card.md`, not a universal Verify loop.",
       "destination_unit_sha256": null
     },
     {
@@ -5345,7 +5345,7 @@
       "unit_sha256": "911b67d982a188486b5f58bc5d029060807bbe7ec64dfe90ef7ee302dce39f0f",
       "disposition": "reworded",
       "destination": "references/guides/decompose-and-lint.md",
-      "note": "Cut for parallelism using crossing artifacts, interfaces, and configuration consumers; disjoint `Write scope` alone do not establish semantic independence.",
+      "note": "Cut for parallelism by crossing artifacts, interfaces and configuration consumers; a disjoint `Write scope` alone never establishes semantic independence.",
       "destination_unit_sha256": null
     },
     {
@@ -5354,7 +5354,7 @@
       "unit_sha256": "f801c773f93cd19071d5b16f949bd808d2e52a1c4ac8eac984dca60406d85806",
       "disposition": "reworded",
       "destination": "references/guides/decompose-and-lint.md",
-      "note": "If a task's `Write scope` are a subset of another task's and their acceptance checks run together, merge them.",
+      "note": "If a task's `Write scope` is a subset of another's and their acceptance checks run together, merge them.",
       "destination_unit_sha256": null
     },
     {
@@ -5854,7 +5854,7 @@
       "unit_sha256": "9e168b80dd98cca7e0fe0df70fedbf11bb14f782ac363e2e9fda1cc1c678a28f",
       "disposition": "reworded",
       "destination": "references/guides/scaffold.md",
-      "note": "Its complete bodies and lifecycle rules are in `../lite-plan.tmpl.md`.",
+      "note": "Lite creates only `plan.md`, `history.md` and `resource-usage.md`, with decisions/questions files when needed, and loads or instantiates no Full templates; its complete bodies and lifecycle rules are in `../lite-plan.tmpl.md`.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -6478,7 +6478,7 @@
       "unit_sha256": "fda3bf7e3c05de617690ec01040810feebfbbb641b4e6bd90e2e33c494272219",
       "disposition": "reworded",
       "destination": "references/guides/decompose-and-lint.md",
-      "note": "At the step above that compiles sufficient task briefs, read the workspace `AGENTS.md` model map once per initiative — confirm it at intake, then reconfirm on a deviation, on any other model change and on an escalation — and observe the host's model names, tier capabilities, model-binding controls, effort-binding controls, telemetry, and the source of those observations before proposing roles.",
+      "note": "At the step above that compiles sufficient task briefs, read the workspace `AGENTS.md` model map once per initiative — confirm it at intake, then reconfirm on a deviation, on any other model change and on an escalation — and observe the host's model names, tier capabilities, model-binding and effort-binding controls, telemetry, and the source of those observations before proposing roles.",
       "destination_unit_sha256": null
     },
     {
@@ -6714,7 +6714,7 @@
       "unit_sha256": "f869ce87836fc3351dc2aca5753581d7d0b724bc914f28488ad74a893dab96a3",
       "disposition": "reworded",
       "destination": "references/guides/scaffold.md",
-      "note": "After completing the brief and core files, run all 17 direct lint rows in `lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py), which the plan request authorizes ([script consent](../../scripts/README.md#consent)), before any PLAN handoff, including when a task remains Draft or a product question is unanswered.",
+      "note": "After completing the brief and core files, run all 17 direct lint rows in `lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py), which the plan request authorizes ([script consent](../../scripts/README.md#consent)), before any PLAN handoff, even when a task stays Draft or a product question is unanswered.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -7035,7 +7035,7 @@
       "unit_sha256": "ae2b4caaf9a8cffe473f253cf9da40c77efed4e43934f16660ca6ef86467a8af",
       "disposition": "reworded",
       "destination": "references/guides/decompose-and-lint.md",
-      "note": "At the step above that compiles sufficient task briefs, read the workspace `AGENTS.md` model map once per initiative — confirm it at intake, then reconfirm on a deviation, on any other model change and on an escalation — and observe the host's model names, tier capabilities, model-binding controls, effort-binding controls, telemetry, and the source of those observations before proposing roles.",
+      "note": "At the step above that compiles sufficient task briefs, read the workspace `AGENTS.md` model map once per initiative — confirm it at intake, then reconfirm on a deviation, on any other model change and on an escalation — and observe the host's model names, tier capabilities, model-binding and effort-binding controls, telemetry, and the source of those observations before proposing roles.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -7050,7 +7050,7 @@
       "unit_sha256": "be9cc41908e2b147e0c7858cde2a0aa1c694bd6917ecd19ddbb19ee06bb3b534",
       "disposition": "reworded",
       "destination": "references/guides/decompose-and-lint.md",
-      "note": "A deviation from the routine default, of Tier or Effort, needs a reason in that task's `**Tier reason**`, confirmed by the owner like any other material decision ([communication.md](communication.md)); the routine default itself needs no confirmation beyond the once-per-initiative role-to-model table.",
+      "note": "A deviation from the routine default, of Tier or Effort, needs a reason in that task's `**Tier reason**`, confirmed by the owner like any other material decision ([communication.md](communication.md)); the routine default needs no confirmation beyond the once-per-initiative role-to-model table.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -10236,7 +10236,7 @@
       "unit_sha256": "bfd0821d0ac3051937c3c005dd6363fad48a47099d1754413e05872f147bea53",
       "disposition": "reworded",
       "destination": "references/guides/scaffold.md",
-      "note": "After completing the brief and core files, run all 17 direct lint rows in `lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py), which the plan request authorizes ([script consent](../../scripts/README.md#consent)), before any PLAN handoff, including when a task remains Draft or a product question is unanswered.",
+      "note": "After completing the brief and core files, run all 17 direct lint rows in `lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py), which the plan request authorizes ([script consent](../../scripts/README.md#consent)), before any PLAN handoff, even when a task stays Draft or a product question is unanswered.",
       "destination_unit_sha256": null
     },
     {
@@ -11993,6 +11993,1686 @@
       "disposition": "reworded",
       "destination": "references/task.tmpl.md",
       "note": "[ ] Protected source, sealed sections and unrelated work are preserved.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 8,
+      "unit_sha256": "0f0d6253ed66ce507dd7952908c998710d1d723c6f63ee31814922241bf845b7",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "Cut for parallelism by crossing artifacts, interfaces and configuration consumers; a disjoint `Write scope` alone never establishes semantic independence.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 13,
+      "unit_sha256": "fb0e77927e1875e25156acfa935511d1e4aeac9da05db8a30bd4081120fd1d94",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "Decompose to the fewest tasks, each with a qualifying reason to stay separate (the [PLAN card](plan-card.md)'s step 5 names the five), named in its briefing.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 15,
+      "unit_sha256": "d1ed0eb7ad7a5153dcee996df3ab52c792de3990c03a861adca3890b73e6aa05",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "One task = smallest coherent vertical slice with ONE runnable acceptance check; keep the slice vertically complete when splitting would hide a shared invariant.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 18,
+      "unit_sha256": "d6e4770f93e4f07cc1f01fddbda6429fbc0962b28b2f968a9a15a30647133a14",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "Decomposition also assigns global delivery obligations no single Task can prove, such as integrated packaging, final source inventory, reproducibility and release-scope checks: keep them in the plan-level acceptance, each one with an owner, check and evidence slot.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 19,
+      "unit_sha256": "dfe3c575a73424aa800500b4596e46e375b92a9d5f23c5ed0042b643a68d3b25",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "Decomposition also assigns global delivery obligations no single Task can prove, such as integrated packaging, final source inventory, reproducibility and release-scope checks: keep them in the plan-level acceptance, each one with an owner, check and evidence slot.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 26,
+      "unit_sha256": "17ea7e5e4ea36827c5aa18d9ebfac7e93737d791aea22a8481700e164797b5f1",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "**Loop-worthiness test first** — a loop task earns its cost only when ALL four hold; otherwise decompose a standard task:",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 34,
+      "unit_sha256": "3ce8767e3ef47323201609d6ac80d7db1b7e90b7ed13d9087fa701657968aa08",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "The task names its metric command, and its Write scope excludes the metric/evaluator files (the evaluator is untouchable).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 39,
+      "unit_sha256": "13de72c01f93a821c5a7ecee1f63ae9ed0ab2217d478f654e22676a192199e01",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "Wiring, grounding, statuses, citations, log order, seals and collisions are all decided there, not re-judged here.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 44,
+      "unit_sha256": "e44ba0b4f5f0db054a7573a1c101d6522930a45ff90dcf88936388cf46ca1005",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "Reversibility gate: a task whose Write scope flags a production path carries a documented rollback or coexistence check; a flag default-off and no-op proof only when the product contract calls for a flag; no flagged path ⇒ section omitted, not left empty.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 45,
+      "unit_sha256": "8a0fef34e9e558f2a16c8333836c7c47202334c419e556e1bfbde66585dc609d",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "Reversibility gate: a task whose Write scope flags a production path carries a documented rollback or coexistence check; a flag default-off and no-op proof only when the product contract calls for a flag; no flagged path ⇒ section omitted, not left empty.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 54,
+      "unit_sha256": "f2e995bc3c31cd7b0788d1956ab52c3f35e3b533ad9b05340b4bfbdd73de02b7",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "After lint, confirm the merge-back pass begun at decomposition, collapsing further if the wired plan is still over-decomposed.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 55,
+      "unit_sha256": "db136542e1bf9a702479948eb4664ce892791440e50211807b2093dfe371e4ab",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "A task with no qualifying reason folds into its parent as a checklist item or acceptance criterion; the template's `Why separate` column names the surviving reason, or `—` for a single-task plan.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 59,
+      "unit_sha256": "e00c69e4cbc6fd72eebcc314b2caf12193fc880d2d5c1cdcb44ac306d89d664b",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "If a task's `Write scope` is a subset of another's and their acceptance checks run together, merge them.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 60,
+      "unit_sha256": "1f2a1c64fb76ff5852b2ac531b594821881e52b823ae1389fc755c39cd94a913",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "Re-apply the **risk precedence** from `intake-and-gate.md` before right-sizing: a public API, multi-module change, multi-session/team work or expected handoff stays **Full** even when Tasks merge into a small count.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 68,
+      "unit_sha256": "676142835f02ef1d78b6b50ea63898382479b7b31894773c8036754bbf1b864c",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "A merge or collapse after any provisional readiness observation invalidates the affected coverage rows, Task cases, dependencies, fixtures and clause/code/config/dependency/input fingerprints: recompile the affected contracts and rerun readiness validation before handoff; a stale pre-merge Ready result cannot authorize RUN.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 70,
+      "unit_sha256": "eb6c1cc878514569c311df344e936ad7564544fa939d326158d64601f2e7da03",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "A merge or collapse after any provisional readiness observation invalidates the affected coverage rows, Task cases, dependencies, fixtures and clause/code/config/dependency/input fingerprints: recompile the affected contracts and rerun readiness validation before handoff; a stale pre-merge Ready result cannot authorize RUN.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 75,
+      "unit_sha256": "9294fbcc673ac3c56b3f28dddcb6eebf80eddea53689e6ea5bf62fe3d9ac576a",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "After right-sizing, PLAN invokes the shared validation contract in `verify.md` in preparation mode: all structural checks, then one bounded semantic counterexample review over the final coverage matrix, Task cases, dependencies and global obligations.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 76,
+      "unit_sha256": "d2d195ef8535d3b8c8612606165bcd7e02bcc8c9d31ea33100bae36de6f61039",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "After right-sizing, PLAN invokes the shared validation contract in `verify.md` in preparation mode: all structural checks, then one bounded semantic counterexample review over the final coverage matrix, Task cases, dependencies and global obligations.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 104,
+      "unit_sha256": "8259ce404b1e67be58e6978fedcdf4ba9a27d850333976fd3a49478667eb6018",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "Handoff carries the final Ready fingerprints and validated Task contracts.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 111,
+      "unit_sha256": "dff9aeaaebb04b7e80f49a8617f72887982ad79224792e284b7c3759b74c0b5a",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "Resolve an uncertain capability or interface with one bounded, authorized probe when its result changes implementation, and compile that fact into the consumer.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 111,
+      "unit_sha256": "2b782aafd1e66bf619e584b713203fa8a3bde06706a3fe13cd564525ecadc990",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "Routine edits need no research task.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 117,
+      "unit_sha256": "4090fc2a57a8a55416802e218a15ed8fa27e5a5b47fec58dd6b87033b8ffec56",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "RUN reuses these prepared artifacts while their dependencies stay valid; this preparation neither claims product validation nor replaces the semantic readiness gate.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 120,
+      "unit_sha256": "2866d29f096e4515f2e448f656642d734b3fa3f9d229a0fa726f58d76319986d",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "Missing or invalidated observations must be obtained before Ready, and the semantic readiness review stays required.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 246,
+      "unit_sha256": "d2b84e561866905fae7a958cc3f17ee447ffc099924163a82b835ec4167a6c4c",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "`semantic_review` and `boundary_fixtures` name results whose actual accessible records the coordinator must inspect; a caller setting those strings establishes neither.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 258,
+      "unit_sha256": "8c4abafd850425c1512f624d412e15b39e01c5310e53497fe30a606e30703de6",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "Mark availability `supported`, `unsupported` or `unknown`; map generic tiers only to actual available models.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 264,
+      "unit_sha256": "882ff6b61cc8821c8db9f40f4df6257813226e09d4e2bcb777c3962c6265d77b",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "If model-binding support is `unknown` or `unsupported`, never claim this default bindable; report the limitation and offer an observed viable alternative with its consequences or an explicit unavailability.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 269,
+      "unit_sha256": "51b1846aa4751afd48d45d6e7b3c29623d4fa75f8ddb4771a0fa908d3e1729c7",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "Keep portable schema Effort tokens apart from actual host controls; unexposed telemetry stays `n/a`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 270,
+      "unit_sha256": "8d313eaf1fb70ce696cfcc66eaf33bfd79ddf436d6294e3262c8949227602c04",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "A deviation from the routine default, of Tier or Effort, needs a reason in that task's `**Tier reason**`, confirmed by the owner like any other material decision ([communication.md](communication.md)); the routine default needs no confirmation beyond the once-per-initiative role-to-model table.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 3,
+      "unit_sha256": "808dcf40d68184037d4394745df02e3720e181b8647bd8f33f0e589b86ab06b6",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "For a Coordinated or Focused request, the card's steps 1 and 2 read Step 1 and Step 2 below in full, with the anchored sections those steps link directly.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 4,
+      "unit_sha256": "dd19ae7ad3377bc0422cbf6a6f724329ccd327044f285dd9050bfb8e2de45f91",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "Update boundary, decision ownership and the other sections are depth, reached from the card's Depth list or a fired trigger (a profile, a reference plan, formal intake material).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 10,
+      "unit_sha256": "8fe1e23a9cc61d02660a1b71bc39a06a4720b3eb1f09b1e41a758a62d9b0c0bd",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "Planning or execution never initiates updating; an owner may use the documented external/manual workflow in [update.md](update.md), which also states the network-access and installation-tree boundary, only after explicitly requesting it.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 12,
+      "unit_sha256": "a45ad459866cb19c045fe5be91904442f33e5314bb57cc57690fbb9bf3889adf",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "Tackle guides that workflow but never performs it.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 17,
+      "unit_sha256": "91217a3e9b91b5c616d3fefd55833c5749b49c8b3a7f060761d8284c40d2dcc0",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "Intake anchors apply to every gate; logging, scaffolding, compiled Tasks and handoff below apply only to durable Lite/Full workspaces.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 20,
+      "unit_sha256": "65cc69573cdc65a49a948eedc96288d01ba6a03ce8dbf0dd87f1b20a30c14d41",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "Do not batch this read with the Full guide map: select the route first, then read only its complete procedure.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 20,
+      "unit_sha256": "648563c9ceb42e2c641ad6c785f4df7dd9095bbec78739ff840ae2ade4cc9681",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "Do not batch this read with the Full guide map: select the route first, then read only its complete procedure.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 56,
+      "unit_sha256": "645346951cf680d63474ef153c890730d110752ccbedc3f847c2768111c070de",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "So an old `tackle-check` distribution hypothesis cannot add an executable to the Markdown install, nor an all-green-board hypothesis waive deliverable acceptance.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 64,
+      "unit_sha256": "5016e09273f07be13194dd191a538534aadccd43dc4bf825d0584c5b0cfb5fe2",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "If the profile is absent or disabled, or no defaults apply, skip this step and log no tally.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 69,
+      "unit_sha256": "75a9e6e8482baddc98c671251f61936ec6f54290bd0027594c0c728fd74a3954",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "Proposals, never silent defaults: the user may accept, adapt or override, and overrides are retro material.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 71,
+      "unit_sha256": "4c40a54bf119841422faf5b599dd87fe5849fbcaf1f2260ea1617c85646e0f1e",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "If no reference plan matches, offer nothing.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 71,
+      "unit_sha256": "a7668a3b80ce1bdd68b008af435fb9a88af5a404470daf6f014c571271b5a598",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "There is no scoring engine: read and judge, exactly as with profiles and seeds.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 86,
+      "unit_sha256": "195a70f39057ddbb0c5a78bb62cff218126b4bced6b90bd7571e568b41313297",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "A reversible delegated technical choice is recorded with its decision and evidence and never blocks unrelated scope.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 102,
+      "unit_sha256": "2befe7a97bdfba3ff1e8573ad4057ac2e0083959d2ecb391e0637dacc0bf3f00",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "A selected Lite route finds these preparation and execution steps in one place, scaffold consent included, in `../lite-plan.tmpl.md`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 102,
+      "unit_sha256": "1305b326fe9163ab07cfa3344367ddd19c736b4628cc8611e407102469455ec8",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "The detailed guide sequence below is for Full: the [PLAN card](plan-card.md)'s steps 3–7, in order, with their depth linked from each step.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 107,
+      "unit_sha256": "3160d6a9e63e8f7c2dbe267c4a3345505d69c449ed4875209ac49d9e6dcdb0c9",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "Persistent route identifiers Full/Lite/None stay readable; the visible names below keep their risk conditions.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 115,
+      "unit_sha256": "c3d70c4e70f034594f5efe67667714eca5f080995d98847800f528bdbaec158c",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "A durable record for one bounded task alone stays Lite only when no Full trigger applies.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 115,
+      "unit_sha256": "02a38c446e6bbeba22606e4758ee583fc59acb8988daaffc09d37e8950dbf949",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "Among the routes still eligible, choose the lowest ceremony satisfying the other conditions.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 120,
+      "unit_sha256": "87a379b0e287529565662af8892096bb06868c69530d784daf1dfe4a91a6bd42",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "Choose None before reading other guides/templates when all conditions hold: one session, one product file, a small localized edit (normally fewer than ten changed lines), a fully specified result, and no new feature, public contract expansion, dependencies, migration, shared-state or security-sensitive change, cross-file integration or handoff requirement.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 123,
+      "unit_sha256": "dc86df4413ffac41ea0ab32b4cf2c8c86c23d7c811db01c6133d6ee1a4231d24",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "Focused inspection of the named source, spec and existing tests is allowed; repository-wide discovery or unresolved product choices are not.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 125,
+      "unit_sha256": "be9a83731c59eb3dafd7da8b2efc0bef86330501cd68b040587c7c4aa8d2fa9c",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "Restoring declared behavior is a correction, not a new feature merely because the broken implementation behaves differently.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 129,
+      "unit_sha256": "88729e34db72f876d0c41b1312b8d3a620ea30dae474c267e94862a018978449",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "An existing failing regression is sufficient red evidence; add a new test only for a meaningful uncovered case, in a new test file when originals are protected.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 136,
+      "unit_sha256": "f3b368a3426e55819e028c105c791df79a1bdd7a150d3d9487cc4ee0ebb72b9f",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "Stop on contradictions, unavailable required checks or repeated no-progress, with the same three failed correction-cycle cap as RUN.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 138,
+      "unit_sha256": "027e2789b0e04c952220a381799ef2ecc08cbdea62f2039f5eeb91817b95ce84",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "Exact-byte edits use a write preserving the specified bytes and final newline.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 138,
+      "unit_sha256": "01301f52537ed5b5177fa9165b5f7e1f371348a0e02a5cfe1a27dcd87de6b38d",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "Every required assertion must make the compound command fail, through explicit failure exits or an equivalent verified mechanism, not `set -u`, `pipefail` or a trailing successful print; for example, `cmp expected actual || exit $?` preserves a comparison failure.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 140,
+      "unit_sha256": "f5a9714cf4f39f2c345824f29190910dc3f7a5723acc2201e3393a6940aa1134",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "Every required assertion must make the compound command fail, through explicit failure exits or an equivalent verified mechanism, not `set -u`, `pipefail` or a trailing successful print; for example, `cmp expected actual || exit $?` preserves a comparison failure.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 143,
+      "unit_sha256": "dc9ee8285714c3f1d5efc9b616301d447579a76ccf737ebe40254c30ef155636",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "A focused diagnostic read is allowed; merely rereading the failure or starting a fresh session does not justify a repeat.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 147,
+      "unit_sha256": "dfe00eed8068ec2cc9d889a968fd1c3beaa1f09bf2c9b805e5f3fd91cec11359",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "Create no plan, log, ledger, board, templates, synthetic PASS wrapper or plan-lint work just to satisfy None.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 150,
+      "unit_sha256": "0ac916eec3b7a4681d68471d6c45f4c3b8b56d8a29172a0822da1f5502309d94",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "An explicit user request for a durable plan is honored even when None is eligible; a generic “Tackle plan and run” permits sizing without by itself requiring a durable workspace.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 151,
+      "unit_sha256": "ac501d83734948ada1c2bd565886b1a165e5687638253aa9cff1b81f896544bc",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "An explicit user request for a durable plan is honored even when None is eligible; a generic “Tackle plan and run” permits sizing without by itself requiring a durable workspace.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 152,
+      "unit_sha256": "79b9084c8fd531e5bd4936ecee0376d1783fbf19195efe360498f448260403eb",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "Lite requires `plan.md`, `history.md` and `resource-usage.md`, with separate decisions/questions files only when entries exist; Coordinated work adds the core coordination artifacts.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 154,
+      "unit_sha256": "4e4d43e578fd4a85317517e1d08c7b299050174170c30cd8418c2525aaa73bb6",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "Lite requires `plan.md`, `history.md` and `resource-usage.md`, with separate decisions/questions files only when entries exist; Coordinated work adds the core coordination artifacts.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 154,
+      "unit_sha256": "077baca0d345895f34e7808f63cd31eaaee82696394eb37a05a451c92c314a7c",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "A None receipt is not a new workspace and has no lifecycle-table requirement; existing workspaces keep their current ledger and history.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 159,
+      "unit_sha256": "01803108680ab91e45840ce001314a9e7d06d1a60bd18ff9b40b0a2f568e2c07",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "`plan` instantiates formal material the user brings at intake — a written product spec or explicit project principles — in the workspace from the intake templates:",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 164,
+      "unit_sha256": "6cb740eaca5e295e0cc368eca642ddb2f8182d92d264e7d4983e12cc6a35f618",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "Both are **optional**, created only when the user supplies the material; a vague ask is explored, not templated.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 164,
+      "unit_sha256": "9d0065d4f097152a5e1063edccb73307d164a47e414cbdad65fc3e64560bfdc7",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "When they exist, Tasks trace to them (`task.tmpl.md` §Traces to) instead of a ticket line.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-card.md",
+      "line": 24,
+      "unit_sha256": "32a4e38dd00fc8fdbc9b15a322c8b6ebeb894e94ac7493247c4679d705ac6f8c",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-card.md",
+      "note": "Among what stays eligible, choose the lowest ceremony.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-card.md",
+      "line": 37,
+      "unit_sha256": "a64602b6ec60921cb81d026f45c1e2c5f946f761facf43a5f1f497ee9a419741",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-card.md",
+      "note": "Then copy the core artifacts from the templates into `docs/plans/<initiative>/` and run the file-map check before handoff.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-card.md",
+      "line": 38,
+      "unit_sha256": "a9642b17c43becc60b595b2b48ecb2eba80dd3700e109c32484f37dcdd33b8d2",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-card.md",
+      "note": "Full procedure, core file map and optional depth artifacts: [scaffold.md](scaffold.md#step-3--scaffold-inside-plan).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-card.md",
+      "line": 40,
+      "unit_sha256": "478b341ba68915ba129865d0ae172ca9782d682681ac7d2c09f3c36a5bc3a94d",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-card.md",
+      "note": "**Compile behavior, acceptance and contracts.** In order, so every later choice has an observable contract: name every requirement's observable behavior and boundary cases; give each one a task check, a related regression check and an evidence slot, with positive and negative fixtures; compile the interfaces, invariants, dependencies and recovery rules the tasks consume; then write each task's brief from these compiled obligations.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-card.md",
+      "line": 47,
+      "unit_sha256": "1d35bfe4e8ccc8421c126cf0f0c6a6fbfafe9e0ab61bef65e7ff1fca2528639b",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-card.md",
+      "note": "Stabilize `design-contract.md` now, in this PLAN run, not in a second session.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-card.md",
+      "line": 55,
+      "unit_sha256": "fbb208b44cad9d0e22dedaa427e0a330c67bef1219ad8d0cef3871591a1093f7",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-card.md",
+      "note": "**Decompose to the fewest tasks.** One task, unless a qualifying reason forces a split: a different owner, parallel self-contained work, a hard dependency, an independent review or approval, or follow-up needing its own tracking.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-card.md",
+      "line": 57,
+      "unit_sha256": "fb1098010eb190d3dc64d549a12702ce3a131b36263340496a30377c88f6cbcc",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-card.md",
+      "note": "Each separate task names its reason in the plan's task table (`Why separate`, or `—` for a single-task plan).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-card.md",
+      "line": 60,
+      "unit_sha256": "ee325e6319e7af55e70c2a34290f69e2954e8bc449d296a1794336d9932d923d",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-card.md",
+      "note": "The rest is cut for parallelism by crossing artifacts and interfaces, not a merely disjoint write scope, each the smallest coherent vertical slice with one runnable acceptance check.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-card.md",
+      "line": 68,
+      "unit_sha256": "55692c4d9dcdcfa1d929965030683c1873e482e954e45cde178886fda1aa48b3",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-card.md",
+      "note": "Structural lint alone does not establish readiness: a passing board can still hold a Draft task or an unanswered product question, reported as a separate blocker, not a lint finding.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-card.md",
+      "line": 70,
+      "unit_sha256": "d8b1864d9c8d21e478e721b72798293509481755fb25b8b47515ddd25c40a8d5",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-card.md",
+      "note": "Then judge what no row can decide: contract churn, quality dimensions, the reversibility gate, deferral and questions, the Q-guard and depth-artifact coherence (full judge checklist: decompose-and-lint.md, [Step 6.5](decompose-and-lint.md#step-65--lint-the-wired-plan)).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-card.md",
+      "line": 71,
+      "unit_sha256": "c3527f648e0b13c045de4620578316ecadf93ea9db02aa83dc3a8ec8ab276474",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-card.md",
+      "note": "Then judge what no row can decide: contract churn, quality dimensions, the reversibility gate, deferral and questions, the Q-guard and depth-artifact coherence (full judge checklist: decompose-and-lint.md, [Step 6.5](decompose-and-lint.md#step-65--lint-the-wired-plan)).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-card.md",
+      "line": 104,
+      "unit_sha256": "b010e1f87d0945ab52811f212ab3a7505bcb3f2736f642fcfc29f31535cba795",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-card.md",
+      "note": "When the next step is small and clear, do it; never re-plan a plan or open a second planning session to restate a decision this one already settled.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/plan-card.md",
+      "line": 108,
+      "unit_sha256": "6f7fd14174fdf24126f92ed1e5e9e0dd0b996432ca71eb3876e057c09abc3ec5",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-card.md",
+      "note": "Each step's deeper mechanics stay in its guide, reached from the Depth list below or from the anchored links inside the steps. Those anchored links are procedure, not depth, though their text lives in a guide: link them, never copy them, since a pasted copy would sit in a fenced block or a paraphrase no duplicate check inspects.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/scaffold.md",
+      "line": 8,
+      "unit_sha256": "bfa8dc8c08e639a49cee893167486a9f6d75869104163dfd3de7deb655fe2d71",
+      "disposition": "reworded",
+      "destination": "references/guides/scaffold.md",
+      "note": "PLAN creates `docs/plans/<initiative>/` at decomposition.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/scaffold.md",
+      "line": 8,
+      "unit_sha256": "4d5dfabc1188bfe385fd5785dc2f20a011ba4d1128f4c82bb9932e10a41f2be6",
+      "disposition": "reworded",
+      "destination": "references/guides/scaffold.md",
+      "note": "With no previously authorized gitignore decision for this initiative, **ask the user explicitly**: \"Should `docs/plans/` be added to `.gitignore`?\" If yes, append `docs/plans/` to `.gitignore`; if no, record the decision in `decisions.md` as:",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/scaffold.md",
+      "line": 21,
+      "unit_sha256": "8d296844e5ddf212089e44703a0100eb577ea3d8568fed43b86b4c8d9a5a8573",
+      "disposition": "reworded",
+      "destination": "references/guides/scaffold.md",
+      "note": "Reuse an existing authorized decision, and apply the same gitignore treatment to `docs/seeds/` when repository convention 9 requires it.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/scaffold.md",
+      "line": 24,
+      "unit_sha256": "a7446c7c5f142c54f19c32fe18d1b6103b844ef4122533f3532e5cdfc0a771dd",
+      "disposition": "reworded",
+      "destination": "references/guides/scaffold.md",
+      "note": "Public documentation and examples must not disclose private initiative state from `docs/plans/` or `docs/seeds/`: keep those artifacts outside the installed Markdown package and use synthetic examples.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/scaffold.md",
+      "line": 25,
+      "unit_sha256": "4b1e7aa1621b15fcc4df135b9eb9b386f12eaec27b8cfe46a0ad7bf1cfca8f8b",
+      "disposition": "reworded",
+      "destination": "references/guides/scaffold.md",
+      "note": "Public documentation and examples must not disclose private initiative state from `docs/plans/` or `docs/seeds/`: keep those artifacts outside the installed Markdown package and use synthetic examples.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/scaffold.md",
+      "line": 27,
+      "unit_sha256": "7d7b3f63f4df988c6a7c925b0d80b74499603c6ad61b0edf6dc8c0578a084d4f",
+      "disposition": "reworded",
+      "destination": "references/guides/scaffold.md",
+      "note": "This is the initiative's one scaffold decision, part of PLAN preparation",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/scaffold.md",
+      "line": 27,
+      "unit_sha256": "6ddd97c587e3b48be9b02a74cd94d4c12ba24184a0a24b6c7f69ff598c7f08e7",
+      "disposition": "reworded",
+      "destination": "references/guides/scaffold.md",
+      "note": "This is the initiative's one scaffold decision, part of PLAN preparation: it starts no second planning session and requires no manual Verify between scaffolding and readiness.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/scaffold.md",
+      "line": 32,
+      "unit_sha256": "855e1acb41834c5c6d680bdf221545aa99defb5a5464c2981ddc5d31db2142f2",
+      "disposition": "reworded",
+      "destination": "references/guides/scaffold.md",
+      "note": "Resolve the method root once from the actual SKILL.md path, and linked paths from their containing Markdown file; on a missing path inspect that directory instead of retrying guessed prefixes.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/scaffold.md",
+      "line": 32,
+      "unit_sha256": "3536e42ec808eab82a19c1b67201453077be9d7e4db2df5eb44ae92502701d33",
+      "disposition": "reworded",
+      "destination": "references/guides/scaffold.md",
+      "note": "Resolve the method root once from the actual SKILL.md path, and linked paths from their containing Markdown file; on a missing path inspect that directory instead of retrying guessed prefixes.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/scaffold.md",
+      "line": 34,
+      "unit_sha256": "5232459fc88a1d3a9714981d1a2c6b764dcddb7f9b1085b4ed4ff91fc7782433",
+      "disposition": "reworded",
+      "destination": "references/guides/scaffold.md",
+      "note": "Read core templates and triggered depth sections once, fill concise task-specific content, and keep required fields without copying unrelated mode instructions into the workspace.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/scaffold.md",
+      "line": 38,
+      "unit_sha256": "56986e52988581391a05df81820e6410e075642e5252423fc0fbca5ee581f0a8",
+      "disposition": "reworded",
+      "destination": "references/guides/scaffold.md",
+      "note": "Lite creates only `plan.md`, `history.md` and `resource-usage.md`, with decisions/questions files when needed, and loads or instantiates no Full templates; its complete bodies and lifecycle rules are in `../lite-plan.tmpl.md`.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/scaffold.md",
+      "line": 40,
+      "unit_sha256": "b238315950f4c637c9cc84d78afac889c1b685f8b529e0dfb046770a7ff7a89e",
+      "disposition": "reworded",
+      "destination": "references/guides/scaffold.md",
+      "note": "Lite creates only `plan.md`, `history.md` and `resource-usage.md`, with decisions/questions files when needed, and loads or instantiates no Full templates; its complete bodies and lifecycle rules are in `../lite-plan.tmpl.md`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/scaffold.md",
+      "line": 40,
+      "unit_sha256": "0d7982bd6795be5e7ac7750916522de11fe3c58e38d9efa00a35bb263154a8a0",
+      "disposition": "reworded",
+      "destination": "references/guides/scaffold.md",
+      "note": "The core copying procedure below is Full only.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/scaffold.md",
+      "line": 49,
+      "unit_sha256": "8e1f6d9bf1465443f6404cad5a99e18bb49bfd6871489f7ef96e71818cba0ea9",
+      "disposition": "reworded",
+      "destination": "references/guides/scaffold.md",
+      "note": "Select `task-board.tmpl.md`, `history.tmpl.md` and `resource-usage.tmpl.md` for their matching core files, `.tmpl` stripped and `{{PLACEHOLDERS}}` intact, and verify the file list against the map before continuing.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/scaffold.md",
+      "line": 51,
+      "unit_sha256": "314318c796bc10b5e5f2f184acdacc971ca2df7ad1fad78b9f4eed7d962d9441",
+      "disposition": "reworded",
+      "destination": "references/guides/scaffold.md",
+      "note": "Select `task-board.tmpl.md`, `history.tmpl.md` and `resource-usage.tmpl.md` for their matching core files, `.tmpl` stripped and `{{PLACEHOLDERS}}` intact, and verify the file list against the map before continuing.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/scaffold.md",
+      "line": 54,
+      "unit_sha256": "28f67b8c667e60f4e41556f714a1bfce7f24db2614cb35f363f908ecfc5d4004",
+      "disposition": "reworded",
+      "destination": "references/guides/scaffold.md",
+      "note": "Before handoff, run this file-map check from the repository root and correct any missing or old-name artifact; a claimed file count never substitutes for it:",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/scaffold.md",
+      "line": 76,
+      "unit_sha256": "bfd0821d0ac3051937c3c005dd6363fad48a47099d1754413e05872f147bea53",
+      "disposition": "reworded",
+      "destination": "references/guides/scaffold.md",
+      "note": "After completing the brief and core files, run all 17 direct lint rows in `lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py), which the plan request authorizes ([script consent](../../scripts/README.md#consent)), before any PLAN handoff, even when a task stays Draft or a product question is unanswered.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/scaffold.md",
+      "line": 84,
+      "unit_sha256": "5418a2ef5756934fb5713f9c9c6eff09f65d83a6dc622ba929b0d5339ccef46a",
+      "disposition": "reworded",
+      "destination": "references/guides/scaffold.md",
+      "note": "Resource usage stays informative and never gates task closure.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/scaffold.md",
+      "line": 96,
+      "unit_sha256": "fe966b819502f1069e806e8ad143b6121790bd4ff69b3be3ecb2439dd9915cbd",
+      "disposition": "reworded",
+      "destination": "references/guides/scaffold.md",
+      "note": "(`task-board.md` is a core artifact, not depth: the scaffold copies it, per the §File map in `AGENTS.tmpl.md`.)",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/scaffold.md",
+      "line": 102,
+      "unit_sha256": "af2cb8ff78329a4cab149321c1ab6e17bd53eeaca7ac126c2027dce324e56c63",
+      "disposition": "reworded",
+      "destination": "references/guides/scaffold.md",
+      "note": "A row of a `## Sibling workspaces` table in AGENTS.md, under the header `| Sibling | Path | Relation |`, declares a sibling; its path must be `docs/plans/` followed by one folder name. Rows, comments and fenced blocks are read as the plan view reads them, and a row failing these checks declares nothing.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/scaffold.md",
+      "line": 102,
+      "unit_sha256": "b1c45f2835dc5f54c172ec5ef2e136937b3cc55a9b472237d71559841282b9ab",
+      "disposition": "reworded",
+      "destination": "references/guides/scaffold.md",
+      "note": "A dependency on a sibling's task is written `T-NN [sibling]` with exactly one space; repeated references in one cell count once.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/scaffold.md",
+      "line": 102,
+      "unit_sha256": "9bbc4d11d7ad7dd698b7a3afd59addcb55b77145f063a5f8a2b694c8b9c190cf",
+      "disposition": "reworded",
+      "destination": "references/guides/scaffold.md",
+      "note": "A brief may be `../<name>/tasks/<file>` when `<name>` is a declared sibling, resolving only under that sibling's tasks/ folder.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/scaffold.md",
+      "line": 102,
+      "unit_sha256": "18643e677e3ab068ab813d72bd79cc9b98bb781ac52ce72d2af20e7a5b0e687d",
+      "disposition": "reworded",
+      "destination": "references/guides/scaffold.md",
+      "note": "Lint row 2 checks each sibling a dependency names, reporting an undeclared sibling, a missing or older sibling task-board.md, and a task id not on that board; a sibling named only by a brief is not checked.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/testing.md",
+      "line": 3,
+      "unit_sha256": "f81a5c1c54c4b988d9e5b26fe635c5825cfcde66e065b15f7c9224e0ba086f9e",
+      "disposition": "reworded",
+      "destination": "references/guides/testing.md",
+      "note": "Agent speed makes verification valuable: spend the saved time on evidence exercising the Task's observable contract through its real consumer.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/testing.md",
+      "line": 4,
+      "unit_sha256": "128f4b72d171aba9b86994f71c99a7932fcdaa035109966347879374ae604abc",
+      "disposition": "reworded",
+      "destination": "references/guides/testing.md",
+      "note": "Test depth follows behavior and Write scope, not a generic count.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/testing.md",
+      "line": 12,
+      "unit_sha256": "b3ea83568742101503115cdaccc6d63fdf896b941ed81ee17a05a3a477df6d38",
+      "disposition": "reworded",
+      "destination": "references/guides/testing.md",
+      "note": "One E2E check can discharge Task, surrounding and integration obligations together when its actual coverage does.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/testing.md",
+      "line": 13,
+      "unit_sha256": "d80232c9c5e83dc47c3e6e50b3bd7f48f668a8aadb5b95554a1a535bd1e1ef75",
+      "disposition": "reworded",
+      "destination": "references/guides/testing.md",
+      "note": "Reuse sufficient existing checks; never create unit tests or duplicate assertions to satisfy a tier quota.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/testing.md",
+      "line": 17,
+      "unit_sha256": "40c434f4f56a359ec04e26e0bcc3e1e64854b091d321a27bf87d563b287eddf4",
+      "disposition": "reworded",
+      "destination": "references/guides/testing.md",
+      "note": "Before testing a system in isolation, write down every identified applicable way it can fail, with its expected observable outcome, and derive isolated cases from that inventory before writing implementation.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/testing.md",
+      "line": 19,
+      "unit_sha256": "385822a7f24bf5f8a00f09c51deee5cf376ee2e137697889d07dbc4d2b60af55",
+      "disposition": "reworded",
+      "destination": "references/guides/testing.md",
+      "note": "Before testing a system in isolation, write down every identified applicable way it can fail, with its expected observable outcome, and derive isolated cases from that inventory before writing implementation.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/testing.md",
+      "line": 19,
+      "unit_sha256": "48e4c84f0fc9f145e187218f45d33fa23a04149976d7d0d2acc3d3a8689d5cec",
+      "disposition": "reworded",
+      "destination": "references/guides/testing.md",
+      "note": "Claim no exhaustiveness beyond the declared input domain and known interfaces; newly discovered failure modes update the inventory before the corresponding implementation change.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/testing.md",
+      "line": 25,
+      "unit_sha256": "797819bbda3f95865199c65a87f02278d03512bb1d6dc6d7e13c97e2b9b354ff",
+      "disposition": "reworded",
+      "destination": "references/guides/testing.md",
+      "note": "A convenient equivalent, such as a commit sha for the tag, does not exercise the consumer's call.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/testing.md",
+      "line": 30,
+      "unit_sha256": "b75b2b605090495a7e9f0f27cd011959f48991d5df8bcd6c1f032968169ec766",
+      "disposition": "reworded",
+      "destination": "references/guides/testing.md",
+      "note": "The bounded None route follows `intake-and-gate.md` without expanding into this template-driven loop.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/testing.md",
+      "line": 31,
+      "unit_sha256": "75c17c922b7564db32995b70f49c68ff7d94ce692361cfdc400c3e5426e0bf39",
+      "disposition": "reworded",
+      "destination": "references/guides/testing.md",
+      "note": "Existing failing tests already establish red; never duplicate them or add a PASS wrapper for ceremony.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/testing.md",
+      "line": 50,
+      "unit_sha256": "320e64edcafb2177713b3b087662c7daf0c71e58a8ffe90cb49b292ac9568aa3",
+      "disposition": "reworded",
+      "destination": "references/guides/testing.md",
+      "note": "Each required assertion must make its command fail when false; `set -u`, `pipefail` and a final PASS do not establish this, checked subprocesses or explicit failure exits do.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/testing.md",
+      "line": 50,
+      "unit_sha256": "62c59a2d11748b724e331d9b94716e4c302dba52f68daf5a1d7cd46c6357a520",
+      "disposition": "reworded",
+      "destination": "references/guides/testing.md",
+      "note": "Each required assertion must make its command fail when false; `set -u`, `pipefail` and a final PASS do not establish this, checked subprocesses or explicit failure exits do.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/testing.md",
+      "line": 51,
+      "unit_sha256": "de38d298a624957980f9799043b9cb6f327241fa56d0a9837a788c9a5ee422c6",
+      "disposition": "reworded",
+      "destination": "references/guides/testing.md",
+      "note": "Preserve exact specified bytes when editing and comparing, delimiter and final newline included.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/testing.md",
+      "line": 69,
+      "unit_sha256": "05f42f0723abb26f953c325f11cb07e59b22238fac4d55336bbba6f91613d20f",
+      "disposition": "reworded",
+      "destination": "references/guides/testing.md",
+      "note": "Mutation is not a test you write: it audits whether the selected check bites.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/testing.md",
+      "line": 69,
+      "unit_sha256": "16320101f87faf2f634136ab62617b6a3667c32bd36758863a2caf30ef010384",
+      "disposition": "reworded",
+      "destination": "references/guides/testing.md",
+      "note": "The observed red phase is its cheap form, with no added unit-test layer.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/testing.md",
+      "line": 74,
+      "unit_sha256": "96ae6596a7e6d27552f82b6cf6cd5aa7edba2747a79c079fc2c9a1422a1f6caf",
+      "disposition": "reworded",
+      "destination": "references/guides/testing.md",
+      "note": "Each E2E run retains one verifiable, repeatable artifact: the exact command or saved checked script, accessible fixtures and input revisions, contract-derived expected outputs, observed stdout/stderr and child exit/timeout/signal, runtime and relevant environment, produced outputs, and input and output hashes.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/testing.md",
+      "line": 77,
+      "unit_sha256": "5674b2bce22c3dc511873ffffb0fb85959394fb04e4adc5a7a0a13f765fbbd9e",
+      "disposition": "reworded",
+      "destination": "references/guides/testing.md",
+      "note": "A complete existing raw capture plus referenced stable fixtures can be that artifact, never duplicated in prose.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/testing.md",
+      "line": 79,
+      "unit_sha256": "0cea85fb6a449bd8b459c8d87fbdd0d02724a3b08437c63b3d7ccdf272525f6e",
+      "disposition": "reworded",
+      "destination": "references/guides/testing.md",
+      "note": "Replay must use a disposable copy or fresh run destination so the original raw record, fixtures and output hashes stay immutable, and compares its new result to the recorded expected and observed result.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/testing.md",
+      "line": 81,
+      "unit_sha256": "62cf282222848fa3680b587917483354ef382f08ed5d0daba1fde65e5ac186b2",
+      "disposition": "reworded",
+      "destination": "references/guides/testing.md",
+      "note": "A PASS string, screenshot, test count or hash without runnable inputs does not make an E2E run repeatable.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/testing.md",
+      "line": 82,
+      "unit_sha256": "ed71bf124dadff45224a070851d9ccc53c9157a836df3219d3c417b224268230",
+      "disposition": "reworded",
+      "destination": "references/guides/testing.md",
+      "note": "The artifact's required assertions must propagate failure to the native result; changed inputs invalidate the affected result.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/testing.md",
+      "line": 88,
+      "unit_sha256": "4527b33ce59b9bc241e939afd2419d279f302335e3a4d473d0099ea98d1d15b8",
+      "disposition": "reworded",
+      "destination": "references/guides/testing.md",
+      "note": "Serialization checks parse output with the real consumer or assert a round trip over valid delimiter/quote/newline/Unicode inputs; numeric checks retain signs and precision.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/testing.md",
+      "line": 89,
+      "unit_sha256": "eeb8df5b216f73c898084a16f53a8bf524651a348bb1b8d91c8c007d94ab7425",
+      "disposition": "reworded",
+      "destination": "references/guides/testing.md",
+      "note": "Serialization checks parse output with the real consumer or assert a round trip over valid delimiter/quote/newline/Unicode inputs; numeric checks retain signs and precision.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/testing.md",
+      "line": 89,
+      "unit_sha256": "c36b7c8093f6de049728d41966af620fbca608721e6dc3f5998a7ac27117db55",
+      "disposition": "reworded",
+      "destination": "references/guides/testing.md",
+      "note": "Choose cases from the declared domain, keep invalid-input policy separate, compare with contract-derived expectations; a nominal file snapshot or test count alone cannot discharge this obligation.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/testing.md",
+      "line": 96,
+      "unit_sha256": "a7ca21b0485733dad72aef26d57190fd997aa65755d8b002ce8993b1c54fa350",
+      "disposition": "reworded",
+      "destination": "references/guides/testing.md",
+      "note": "Verifier: red-phase evidence in `history.md` answers `repro`, not hand-breaking the code.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/testing.md",
+      "line": 100,
+      "unit_sha256": "ebc0a1408eeb6af12cfb290d9c12632a5b7aac36ebc999d0a2a88a998bf2e799",
+      "disposition": "reworded",
+      "destination": "references/guides/testing.md",
+      "note": "Before editing, record the required supported producer/consumer versions and the environments available for validation.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/testing.md",
+      "line": 101,
+      "unit_sha256": "ac4d610a8eb93c6effaccf4770798292f0d6432115d9f95e93f5801f872d47c6",
+      "disposition": "reworded",
+      "destination": "references/guides/testing.md",
+      "note": "Targets come from the user/spec or repository contract; never invent a wider support promise from the installed runtime.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/testing.md",
+      "line": 103,
+      "unit_sha256": "6f836188c3210ce8efacd8ff994ea53a764500c9aebf442b16fd8b64cd6b5a0f",
+      "disposition": "reworded",
+      "destination": "references/guides/testing.md",
+      "note": "Missing required coverage blocks that obligation; optional targets stay unverified without blocking a narrower authorized scope.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 4,
+      "unit_sha256": "0388c00ce942b4c0bdb7fea375ff01264abfd982317cb48da1657e5de29922b9",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "The card's step 7 links here for readiness validation, and to two sections directly, as procedure rather than depth: [step 0](#step-0--mechanical-grounding-two-phase-citation-check) and [step 8, seal integrity](#step-8--seal-integrity).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 7,
+      "unit_sha256": "b9a2d38b3022cef7b5f23b1cb556fb21ad24733e6c1697a13ced339904fa9d48",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "The explicit `verify` request stays available for a later audit or a plan predating integrated readiness; it is no required pre-wave or pre-Task gate after a successful PLAN run.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 9,
+      "unit_sha256": "e58c1b754152d3838a7cc42f8aea93ffc3aab10722bf792949a7ac0a56328032",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "RUN uses the single execution protocol in `references/guides/run-card.md` for explicit intent, preflight, target and related regression checks, persistent correction, integration and deliverable acceptance.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 13,
+      "unit_sha256": "0aa1399725bf18b490476d53e28d973640d9c73da496273d77d67736889da6d3",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "**Principle: detection before judgment.** Cheap mechanical checks (`grep`, `read`, `ast-grep`, `git`) first; the LLM only synthesizes the findings.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 13,
+      "unit_sha256": "73d8cc60cdce78193de7c95260a6ebb70298ecd29fbc3082a70370014ab52bd1",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "This keeps the pass fast and cuts false positives.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 17,
+      "unit_sha256": "a84c2140922b6818fb66b48c22d4ebefa725df436818886c66173ce4a44c2ba8",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "The `verify` request and its legacy text alias forward to them and keep no second protocol or separate pass conditions.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 21,
+      "unit_sha256": "82ccafe538a145a009d71c5a4a78a0c1e65ee2c85b0b14cea41af3a523e21fac",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "**Preparation** — resolve the Task's declared inputs, Write scope, revisions, dependencies, case matrix and disposable fixture directory; confirm protected source and expected outputs before running a validator.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 22,
+      "unit_sha256": "5120c774c5842ca22f31f1d5b4b793e86ee27d6d29cf545c6f2ddd4ac88243ef",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "**Preparation** — resolve the Task's declared inputs, Write scope, revisions, dependencies, case matrix and disposable fixture directory; confirm protected source and expected outputs before running a validator.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 24,
+      "unit_sha256": "233e953a0612903c94a2eeb92f5bc49065e551b55c4460bc7642584fcf35b37c",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "**Product** — run the Task's actual command or test against its declared input and observe output, status, effects and boundary cases.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 27,
+      "unit_sha256": "520e3c6f9f196fc1bb0813b6bac0ebf5f4cfd025e5f157397d3bbc3324745682",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "**Evidence integrity** — validate captured status, stdout, stderr, timeout, signal, metadata and generated artifacts independently.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 28,
+      "unit_sha256": "f8f60d28f9a965e305aaf9cd4ed972b637f212169131ff5663ca3ed744ab1c5e",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "Read-only validators reject missing, tampered, extra or wrong-typed evidence and preserve a pre-existing sentinel.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 35,
+      "unit_sha256": "d0e2815813fa6a81e09065a60fcad88522c60c87ded92d0b24d15dbcfc2fb166",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "Mechanical execution, semantic review and adversarial audit stay separate evidence classes.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 36,
+      "unit_sha256": "9390c914b787015c1437c8c105bc47fe6e1164295b9eb4f06793ec96d748cff6",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "A valid semantic alternative is accepted when the contract leaves formatting or implementation shape free; a keyword, file existence or test count alone proves no requirement.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 47,
+      "unit_sha256": "ba596e0467e2ea3c006e87cf2ec580f0122b9f6e9d6cabdd5b5c8a64254d1b27",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "Preparation uses fixture and readiness evidence when no product exists yet and cannot claim a product PASS.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 49,
+      "unit_sha256": "30539ab8148a7857dde2a11b70369614a2b07aadfa7e9acc1eab92b743e7cd11",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "When an implemented product or its surrounding system cannot be checked (no runtime, missing credentials, human-eyes-only), label the claim **UNVERIFIABLE**, never assume it true.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 50,
+      "unit_sha256": "1c77eb91740a332807e3fad9605f70acc8b0ba80522ac3e731dcfc2594373f02",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "`references/failure-modes.md` is this check's symptom-to-rule catalog.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 103,
+      "unit_sha256": "241a9879b42581aa3f6fe513d70ebdff44c871d48a18340059974c0eb328eb86",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "Calibrate with these examples: unsure whether a finding is HIGH, downgrade it; not mechanically reproducible, it is not HIGH.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 103,
+      "unit_sha256": "ac5c6bec9ce9f1bb0ca831132d68bce310df2cef4dc3f7dc654095053b5b20eb",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "Calibrate with these examples: unsure whether a finding is HIGH, downgrade it; not mechanically reproducible, it is not HIGH.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 106,
+      "unit_sha256": "d8b07aee39186b455638af02ba307c20ee0c7b5135a62eb941e02af3ff8a2868",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "Verification itself never updates execution status.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 109,
+      "unit_sha256": "b1c9897aec1878ea2811ba10b876afe20d5d9a511d97dc199c4bfd266c4c1472",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "RUN records target/surround and integrated observations through `references/guides/run-card.md`, not a universal Verify loop.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 114,
+      "unit_sha256": "c362472c34742b1344a4e91cc9ad29fc7e7223383f3a528ed674e88ae1d7a6d7",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "Run before the red-team pass, so nobody has to remember which `file:line` citations were read.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 116,
+      "unit_sha256": "40e9a44ca79104fb02dcf7874cf7e49d775d77ee0d717d70677919b07864b5cf",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "**Principle: outsource the memory.** The agent relies not on its session transcript but on the commands' explicit, inspectable record of what is grounded.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 119,
+      "unit_sha256": "771d23604fc2e77d07a6efd71a4acc5088017d3f2f28bcaf303633a1a3dfbc2b",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "An mtime change probes for possible drift, not a blanket invalidation: unchanged bytes stay reusable; changed bytes invalidate only affected citations and their semantic consumers.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 133,
+      "unit_sha256": "3e9c33b482ac76d9e627a93d14e80b7bccfe3d0bd35243fc8167f652e28ab7d1",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "The check is read-only.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 145,
+      "unit_sha256": "63f38a5110843c8610ccb5df80db75110fcef44110b2b6197783f182a6f62e20",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "**Where results go**: append the matrix, reverse-direction scope-drift list, global-obligation rows and the observed structural/semantic results to the PLAN evidence block and handoff.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 146,
+      "unit_sha256": "6acad4be4f3ec9b3894f36e86cc406c5ddffb064b0c5013a05e75b657507f70b",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "A later log projection may summarize it; the matrix is the readiness source of truth.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 151,
+      "unit_sha256": "82b22c2c3fb6cd60d847abff6fa3ba7fa71b4a966adc9b9c91985481895b5c4c",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "Optional, triggered by a concrete ambiguity or elevated failure risk: PLAN may run at most one initial probe and, when a correction changes the briefing, one correction recheck, both in the planning evidence.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 151,
+      "unit_sha256": "7d64c4138711c083177cad8d49baad2d2104cbe38c9956d63584c3c46fe6e4c3",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "Optional, triggered by a concrete ambiguity or elevated failure risk: PLAN may run at most one initial probe and, when a correction changes the briefing, one correction recheck, both in the planning evidence.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 153,
+      "unit_sha256": "a7afadbfb178a614f03f606cfb2e24c9f81ce16168e9c5974e8ffdd5e3405332",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "It is no universal Ready gate.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 155,
+      "unit_sha256": "404b633635ad71de804962856f991342f53fd584e39542b79825da298164f532",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "**Principle: the isolation is the protocol.** Use a fresh isolated session or an explicitly declared human fallback given only the Task brief and named inputs, and record the actual executor/profile binding.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 156,
+      "unit_sha256": "fb9544ef2ee765a8c4b9385769d7d4c5070a5be5d483c49491fbed621fffdc3a",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "**Principle: the isolation is the protocol.** Use a fresh isolated session or an explicitly declared human fallback given only the Task brief and named inputs, and record the actual executor/profile binding.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 167,
+      "unit_sha256": "6caaf6145548c7ab7b1c007f806396f15909ab16d8bb6bfd91795d821184768a",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "Optional information the contract deliberately leaves open is recorded as a local freedom and does not block.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 168,
+      "unit_sha256": "8dc46c9a4b5091833849b97bf5959273047378c3d298ef3767816e48c20b60a2",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "A probe with an empty doubts list still fails when its reconstructed output is wrong.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 169,
+      "unit_sha256": "535f1d7ec97c7c8ca816e27fa5b8f23e2b5a7bf5231d1bdc5d49139eeac50e08",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "Record the probe input, output, profile/binding, command/runtime and verdict; confidence or an empty doubts list is no evidence.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 175,
+      "unit_sha256": "b458506763502d1a8b280ace99a31d0fd8fc37da2aaaad05373a5e9ac4791f56",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "Readiness fingerprints cover the relevant clause, code, configuration, dependency and input revisions.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 176,
+      "unit_sha256": "2d24b674ef781257ba07f35649f0f58a0e8953eec01d253177a627377d1134ec",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "A new session with unchanged fingerprints and selector membership may reuse readiness without a complete re-Verify.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 177,
+      "unit_sha256": "febe514d45914f565edc06c676f1d6306eeba0df8e6fb621c1261d46d7222008",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "When a revision changes, invalidate only the consumers declaring that input or a crossing artifact; preserve unaffected readiness and historical grades.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 178,
+      "unit_sha256": "7993b7382ac4be19309dd11e2b1d983022770fc943b134642a5ca639956aa99a",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "So a configuration change invalidates the named configuration consumers, an unrelated documentation change does not.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 180,
+      "unit_sha256": "34fd7dd45667a0411e3873a4b404bfb59eba6998e466bdd42174a01b7437e86b",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "Regenerate changed compiled clauses, rerun their target/surround fixtures and update the affected evidence slots before handoff.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 190,
+      "unit_sha256": "c6212a81b5075853dd53a2d1cd8e73c37586ec51bb804703695bcdad355df70c",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "Preparation must record `INTENT: PLAN prepares tasks and stops before source execution.` PLAN may write its authorized planning artifacts and evidence but cannot start source execution.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 191,
+      "unit_sha256": "a1fb94ef8cc97b8b78120efd013a4538da7d19f47dda4c6a4a14134038ad08a0",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "A status, next or unqualified resume only inspects/selects and cannot mutate source, board or log; explicit handoff generation may write its projection.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/verify.md",
+      "line": 193,
+      "unit_sha256": "fca021486ada5310eb4496ca1f01212343087f9771bcc6ec61c484a3205555cd",
+      "disposition": "reworded",
+      "destination": "references/guides/verify.md",
+      "note": "Handoff includes the matrix, global obligations, Ready fingerprints, validator results, optional probe results, unresolved questions and the explicit execution boundary.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 254,
+      "unit_sha256": "8bda00e883144ae342c96eefca963a53d87ee6b626b476b863febedff516d9cd",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "At the step above that compiles sufficient task briefs, read the workspace `AGENTS.md` model map once per initiative — confirm it at intake, then reconfirm on a deviation, on any other model change and on an escalation — and observe the host's model names, tier capabilities, model-binding and effort-binding controls, telemetry, and the source of those observations before proposing roles.",
       "destination_unit_sha256": null
     }
   ]

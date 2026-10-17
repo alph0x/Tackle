@@ -5,25 +5,25 @@ The card's steps 5 and 6 link here for the decomposition and lint procedure in f
 
 - Skeleton board first: T-0N / What / Depends-on / Write scope / acceptance check. Existing P workspaces keep their IDs.
 - Then compile sufficient task briefs for the selected readiness scope.
-- Cut for parallelism using crossing artifacts, interfaces, and configuration consumers; disjoint
-  `Write scope` alone do not establish semantic independence. Name every produced/consumed artifact
+- Cut for parallelism by crossing artifacts, interfaces and configuration consumers; a disjoint
+  `Write scope` alone never establishes semantic independence. Name every produced/consumed artifact
   and relevant invalidation edge.
 - Scope a change to a count, literal or row set by searching the value and its consumers across the
   repository (tests, guards and phrasing variants that bind it), not chosen phrases in chosen directories.
 - Decompose to the fewest tasks, each with a qualifying reason to stay separate (the [PLAN
-  card](plan-card.md)'s step 5 names the five reasons); each separate task's briefing names its own.
+  card](plan-card.md)'s step 5 names the five), named in its briefing.
 - One task = smallest coherent vertical slice with ONE runnable acceptance check; keep the slice
-  vertically complete when splitting it would hide a shared invariant.
+  vertically complete when splitting would hide a shared invariant.
 
-The decomposition also assigns global delivery obligations that no single Task can prove, such
-as integrated packaging, final source inventory, reproducibility, and release-scope checks. Keep
-these obligations in the plan-level acceptance and give each one an owner, check, and evidence
-slot. An unowned obligation blocks handoff even when every Task id is present.
+Decomposition also assigns global delivery obligations no single Task can prove, such as integrated
+packaging, final source inventory, reproducibility and release-scope checks: keep them in the plan-level
+acceptance, each one with an owner, check and evidence slot. An unowned obligation blocks handoff even when
+every Task id is present.
 
 <a id="loop-archetypes-type-discovery--type-experiment"></a>
 ## Loop reference plans (Type: discovery / Type: experiment)
 
-**Loop-worthiness test first** — a loop task earns its cost only when ALL four questions hold; otherwise decompose as a standard task:
+**Loop-worthiness test first** — a loop task earns its cost only when ALL four hold; otherwise decompose a standard task:
 1. **The task repeats** (or recurs within the initiative) — a one-shot job is one good standard task.
 2. **Verification is automated** — a command fails the work without a human in the room.
 3. **The budget absorbs the waste** — loops retry and re-read; `Rounds:` caps it.
@@ -31,19 +31,19 @@ slot. An unowned obligation blocks handoff even when every Task id is present.
 
 When worthy, pick the reference plan:
 - **Discovery** (`Type: discovery`) — unknown-size search: bug sweeps, audits. Acceptance check = convergence (K consecutive dry rounds, K=2 default; `Rounds:` budget default 5). The task names its dedupe key, and dedupe runs against everything seen, not just confirmed findings.
-- **Experiment** (`Type: experiment`) — metric optimization. Acceptance check = `Metric:` reaching `Threshold:` via keep/rollback rounds (`Rounds:` default 5). The task names its metric command, and its Write scope exclude the metric/evaluator files (the evaluator is untouchable).
+- **Experiment** (`Type: experiment`) — metric optimization. Acceptance check = `Metric:` reaching `Threshold:` via keep/rollback rounds (`Rounds:` default 5). The task names its metric command, and its Write scope excludes the metric/evaluator files (the evaluator is untouchable).
 - **Both**: budget exhaustion ⇒ ⏸ blocked + escalation packet, never a fake pass; findings that outgrow the task become new tasks or seeds.
 
 # Step 6.5 — Lint the wired plan
 
-Mechanical first: the agent runs every row of `guides/lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py) from the repo root, computes the **agent-computed summary** from the observed row results, and reports `lint: N/M checks passed`. Wiring, grounding, statuses, citations, log order, seals, and collisions are all decided there, not re-judged here.
+Mechanical first: the agent runs every row of `guides/lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py) from the repo root, computes the **agent-computed summary** from the observed row results, and reports `lint: N/M checks passed`. Wiring, grounding, statuses, citations, log order, seals and collisions are all decided there, not re-judged here.
 
 Then judge — the checks no command can decide:
 - Contract churn guard (contract sections changed → citing tasks reconciled).
 - Quality dimensions derived into acceptance checks.
-- Reversibility gate: a task whose Write scope flag a production path carries a documented rollback or
-  coexistence check. Require a flag default-off and no-op proof only when the product contract calls
-  for a flag; no flagged path ⇒ section omitted, not left empty.
+- Reversibility gate: a task whose Write scope flags a production path carries a documented rollback or
+  coexistence check; a flag default-off and no-op proof only when the product contract calls for a flag;
+  no flagged path ⇒ section omitted, not left empty.
 - Deferral & questions sound.
 - Q-guard (an active task may not depend on an unresolved material product decision or required
   missing information in `Q-xx`; optional questions and delegated technical choices do not block it).
@@ -51,32 +51,31 @@ Then judge — the checks no command can decide:
 
 # Step 6.6 — Right-size the plan
 
-After lint, confirm the merge-back pass begun at decomposition: collapse further if the wired plan
-is still over-decomposed. A task with no qualifying reason folds into its parent as a checklist
-item or acceptance criterion, and the template's `Why separate` column names the reason that
-survives, or `—` for a single-task plan.
+After lint, confirm the merge-back pass begun at decomposition, collapsing further if the wired plan is
+still over-decomposed. A task with no qualifying reason folds into its parent as a checklist item or
+acceptance criterion; the template's `Why separate` column names the surviving reason, or `—` for a
+single-task plan.
 
-- If a task's `Write scope` are a subset of another task's and their acceptance checks run together, merge them.
+- If a task's `Write scope` is a subset of another's and their acceptance checks run together, merge them.
 - Re-apply the **risk precedence** from `intake-and-gate.md` before right-sizing: a public API,
-  multi-module change, multi-session/team work, or expected handoff stays **Full** even when
-  Tasks are merged into a small count. Only an actually removed trigger permits re-sizing.
+  multi-module change, multi-session/team work or expected handoff stays **Full** even when Tasks merge
+  into a small count. Only an actually removed trigger permits re-sizing.
 - If no Full trigger applies, a one-session, one-product-file correction first checks the bounded
   **None** route; otherwise prefer **Lite** for a small coherent slice and drop Full ceremony.
 - If the initiative has ≤4 Tasks and no multi-track uncertainty, default to Lite only after the
   risk check and unless the user explicitly asked for Full.
 
-Right-size before final readiness. If a merge or collapse is made after any provisional readiness
-observation, invalidate the affected coverage rows, Task cases, dependencies, fixtures, and
-clause/code/config/dependency/input fingerprints. Recompile the affected contracts and run the
-readiness validation again before handoff; a stale pre-merge Ready result cannot authorize RUN.
+Right-size before final readiness. A merge or collapse after any provisional readiness observation
+invalidates the affected coverage rows, Task cases, dependencies, fixtures and
+clause/code/config/dependency/input fingerprints: recompile the affected contracts and rerun readiness
+validation before handoff; a stale pre-merge Ready result cannot authorize RUN.
 
 ## Step 6.75 — Integrated readiness validation
 
-After right-sizing, PLAN invokes the shared validation contract in `verify.md` in preparation mode.
-Run all structural checks, then one bounded semantic counterexample review over the final coverage
-matrix, Task cases, dependencies, and global obligations. The review asks which wrong
-implementation would pass the stated checks and adds a fixture or observation for each gap; a
-keyword or count match is never semantic proof.
+After right-sizing, PLAN invokes the shared validation contract in `verify.md` in preparation mode: all
+structural checks, then one bounded semantic counterexample review over the final coverage matrix, Task
+cases, dependencies and global obligations. The review asks which wrong implementation would pass the stated
+checks and adds a fixture or observation for each gap; a keyword or count match is never semantic proof.
 
 Set a selected prepared task **Ready to run** only when all of these are true:
 
@@ -100,24 +99,24 @@ the project's full regression suite (its test registry where one exists); every 
 an owner task or a recorded expected-red decision. This rehearsal is readiness evidence on a throwaway
 copy, not source execution of the plan.
 
-Preparation records readiness evidence; it does not run source execution or claim product PASS.
-Handoff contains the final Ready fingerprints and validated Task contracts. RUN alone may execute
-source after explicit execution intent.
+Preparation records readiness evidence; it does not run source execution or claim product PASS. Handoff
+carries the final Ready fingerprints and validated Task contracts. RUN alone may execute source after
+explicit execution intent.
 
 ## Preparation horizon
 
 Long initiatives may use optional milestones in the existing plan/team structures. Keep the full objective, requirement map, dependencies, pending decisions and deliverable acceptance visible. Prepare current work and critical upcoming interfaces; leave distant work Draft until its inputs settle. Refinement preserves stable task IDs or explicit split/merge/supersession lineage and spent correction cycles. A milestone is not another universal checkpoint. Small work keeps its existing simple path. Readiness records explicitly name the selected tasks; “ready” never describes deferred work. Prior scoped PLAN+RUN permission continues when the next milestone becomes ready.
 
-Resolve uncertain capabilities or interfaces with one bounded, authorized probe when its result changes implementation; compile that fact into the consumer. Routine edits do not need a research task.
+Resolve an uncertain capability or interface with one bounded, authorized probe when its result changes implementation, and compile that fact into the consumer. Routine edits need no research task.
 
 ## Full execution preparation
 
-Before Ready, choose the bounded capture and closure path in [execution checks](full-checks.md):
-actual write boundary, complete input selectors, saved scripts, canonical lint observations and
-one obligation index. Reuse these prepared artifacts in RUN while their dependencies remain valid;
-this preparation does not claim product validation or replace the semantic readiness gate.
+Before Ready, choose the bounded capture and closure path in [execution checks](full-checks.md): actual
+write boundary, complete input selectors, saved scripts, canonical lint observations and one obligation
+index. RUN reuses these prepared artifacts while their dependencies stay valid; this preparation neither
+claims product validation nor replaces the semantic readiness gate.
 
-Current Step 6.5 structural observations satisfy the same checks in Step 6.75; verify their revisions and membership instead of executing them twice. Missing or invalidated observations must be obtained before Ready, and the semantic readiness review remains required.
+Current Step 6.5 structural observations satisfy the same checks in Step 6.75; verify their revisions and membership instead of executing them twice. Missing or invalidated observations must be obtained before Ready, and the semantic readiness review stays required.
 
 ## Optional task consistency script
 
@@ -136,34 +135,31 @@ explicit not-applicable reasons. `selectors` is a nonempty list/map describing s
 an explicitly optional selector may have an empty match list. Empty top-level metadata is missing. No installed tool or additional file is required for small work; import or run
 the script only with the owner's explicit authorization for this use ([script consent](../../scripts/README.md#consent)).
 
-The script's structural pass is one preparation observation. `semantic_review` and
-`boundary_fixtures` name results whose actual accessible records the coordinator must inspect;
-a caller setting those strings does not establish either result. An omitted behavior hidden
-behind a requirement ID still fails the required semantic counterexample review.
+The script's structural pass is one preparation observation. `semantic_review` and `boundary_fixtures`
+name results whose actual accessible records the coordinator must inspect; a caller setting those strings
+establishes neither. An omitted behavior hidden behind a requirement ID still fails the required semantic
+counterexample review.
 
 <a id="model-and-tier-proposal-compile-time"></a>
 ## Model and tier proposal (compile time)
 
 At the step above that compiles sufficient task briefs, read the workspace `AGENTS.md` model map
-once per initiative — confirm it at intake, then reconfirm on a deviation, on any other model change and
-on an escalation — and observe the
-host's model names, tier capabilities, model-binding controls, effort-binding controls, telemetry,
-and the source of those observations before proposing roles. Mark availability as `supported`,
-`unsupported`, or `unknown`; map generic tiers only to actual available models. An unavailable exact
-request needs a concrete viable alternative with its consequences or an explicit unavailability
-report; never invent a vendor equivalent. Per task, propose a **Tier** (`fast`/`standard`/`frontier`)
-and **Effort** for the Executor. When observed binding supports it, default the Executor to the
-cheapest bindable tier at low effort: the cheapest suitable supported tier mapped to an actually
-available model. If model-binding support is `unknown` or `unsupported`, do not claim this default is
-bindable; report the limitation and offer an observed viable alternative with its consequences or an
-explicit unavailability.
+once per initiative — confirm it at intake, then reconfirm on a deviation, on any other model change and on an
+escalation — and observe the host's model names, tier capabilities, model-binding and effort-binding
+controls, telemetry, and the source of those observations before proposing roles. Mark availability
+`supported`, `unsupported` or `unknown`; map generic tiers only to actual available models. An unavailable
+exact request needs a concrete viable alternative with its consequences or an explicit unavailability
+report; never invent a vendor equivalent. Per task, propose a **Tier** (`fast`/`standard`/`frontier`) and
+**Effort** for the Executor. When observed binding supports it, default the Executor to the cheapest
+bindable tier at low effort: the cheapest suitable supported tier mapped to an actually available model.
+If model-binding support is `unknown` or `unsupported`, never claim this default bindable; report the
+limitation and offer an observed viable alternative with its consequences or an explicit unavailability.
 Planning always runs on a more capable tier than the Executor's whenever more than one suitable tier
-binds; a one-tier harness records its limitation. These are role proposals, not claims that a host
-binding occurred. Keep portable schema Effort tokens separate from actual host controls, and leave
-unexposed telemetry as `n/a`. A deviation from the routine default, of Tier or Effort, needs a
-reason in that task's `**Tier reason**`, confirmed by the owner like any other material decision
-([communication.md](communication.md)); the routine default itself needs no confirmation beyond the
-once-per-initiative role-to-model table.
+binds; a one-tier harness records its limitation. These are role proposals, not claims that a host binding
+occurred. Keep portable schema Effort tokens apart from actual host controls; unexposed telemetry stays
+`n/a`. A deviation from the routine default, of Tier or Effort, needs a reason in that task's `**Tier reason**`,
+confirmed by the owner like any other material decision ([communication.md](communication.md)); the routine
+default needs no confirmation beyond the once-per-initiative role-to-model table.
 
 Each subagent role targets the cheapest available model that fits its tier in the team table.
 Before the first dispatch, show the owner the concrete role-to-model table for every subagent role and get

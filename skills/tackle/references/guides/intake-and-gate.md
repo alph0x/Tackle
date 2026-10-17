@@ -1,24 +1,23 @@
 # Intake and gate — procedure and depth for the [PLAN card](plan-card.md)
 
-The card's steps 1 and 2 read Step 1 and Step 2 below in full, together with the anchored sections
-those steps link directly, for a Coordinated or Focused request. Update boundary, decision
-ownership and the guide's other sections are depth, reached from the card's Depth list or from a
-fired trigger (a profile, a reference plan, formal intake material).
+For a Coordinated or Focused request, the card's steps 1 and 2 read Step 1 and Step 2 below in full, with
+the anchored sections those steps link directly. Update boundary, decision ownership and the other sections
+are depth, reached from the card's Depth list or a fired trigger (a profile, a reference plan, formal intake
+material).
 
 ## Update boundary (explicit user control)
 
-Updating is never initiated by planning or execution; an owner may use the documented
-external/manual workflow in [update.md](update.md), which also states the network-access and
-installation-tree boundary, only after explicitly requesting it. Tackle provides guidance but does
-not perform that workflow.
+Planning or execution never initiates updating; an owner may use the documented external/manual workflow
+in [update.md](update.md), which also states the network-access and installation-tree boundary, only after
+explicitly requesting it. Tackle guides that workflow but never performs it.
 
 # Step 1 — Intake (infer first, then ask)
 
-Read this guide through sizing before creating artifacts or loading further guides. Intake anchors
-apply to every gate, but logging, scaffolding, compiled Tasks and handoff below apply only to
-durable Lite/Full workspaces. None records relevant profile-derived choices in its direct receipt.
-Do not batch this read with the Full guide map. Select the route first, then read only its complete
-procedure. Use focused diagnosis to establish absence or resolve an authorized local path/capability fault.
+Read this guide through sizing before creating artifacts or loading further guides. Intake anchors apply to
+every gate; logging, scaffolding, compiled Tasks and handoff below apply only to durable Lite/Full
+workspaces. None records relevant profile-derived choices in its direct receipt. Do not batch this read with
+the Full guide map: select the route first, then read only its complete procedure. Use focused diagnosis to
+establish absence or resolve an authorized local path/capability fault.
 Check named owner prerequisites in a separate tool call containing only those probes, then wait
 for the result. Do not include inventories, other file reads or guide searches in that call.
 If a prerequisite is missing, the next action for that scope is the blocker report; otherwise
@@ -53,7 +52,7 @@ If a profile exists at the relevant scope with `Evolution: enabled`, read it **b
 
 Select profile entries by applicability, current procedure, supporting evidence and supersession before ranking confidence. Tag a relevant suggestion `(from your profile)`. Existing explicit instructions and delegated choices need no fresh confirmation merely because a compatible preference supports them. A hypothesis is a suggestion, never authority over the current contract.
 
-Apply compatible active directives to their named section or `applies_to:` action. Current user instructions and the authority order come first; project preferences outrank user preferences only where both apply without conflict. A missing section or retired mechanism makes an entry stale; a conflicting hypothesis is inapplicable even when marked active. Explain a conflict when it changes a decision, preserve the original profile, and propose re-confirmation/retirement only through consented retro. Old profiles need no new fields; optional procedure/version, source and supersedes notes can clarify applicability. For example, an old `tackle-check` distribution hypothesis cannot add an executable to the Markdown install, and an all-green-board hypothesis cannot waive deliverable acceptance.
+Apply compatible active directives to their named section or `applies_to:` action. Current user instructions and the authority order come first; project preferences outrank user preferences only where both apply without conflict. A missing section or retired mechanism makes an entry stale; a conflicting hypothesis is inapplicable even when marked active. Explain a conflict when it changes a decision, preserve the original profile, and propose re-confirmation/retirement only through consented retro. Old profiles need no new fields; optional procedure/version, source and supersedes notes can clarify applicability. So an old `tackle-check` distribution hypothesis cannot add an executable to the Markdown install, nor an all-green-board hypothesis waive deliverable acceptance.
 
 Record one tally line in the log's `### Intake (context gathered)` section:
 
@@ -61,14 +60,14 @@ Record one tally line in the log's `### Intake (context gathered)` section:
 profile proposals: <id>✓ accepted [, <id>✓ accepted ...]; <id>✗ overridden [, <id>✗ overridden ...]
 ```
 
-If the profile is absent, disabled, or no defaults apply, skip this step without logging a tally.
+If the profile is absent or disabled, or no defaults apply, skip this step and log no tally.
 
 <a id="archetypes"></a>
 ### Reference plans
 
-Read `.tackle/archetypes/` (project scope) and `~/.tackle/archetypes/` (user scope) alongside the profiles they came from. When a reference plan's summary matches the incoming initiative's shape, offer its skeleton — task list, edge pattern, wave shape — as a proposal explicitly tagged `(from archetype <name>)`, flagging its trap warnings with the offer. These are proposals, never silent defaults: the user may accept, adapt, or override, and overrides are retro material.
+Read `.tackle/archetypes/` (project scope) and `~/.tackle/archetypes/` (user scope) alongside the profiles they came from. When a reference plan's summary matches the incoming initiative's shape, offer its skeleton — task list, edge pattern, wave shape — as a proposal explicitly tagged `(from archetype <name>)`, flagging its trap warnings with the offer. Proposals, never silent defaults: the user may accept, adapt or override, and overrides are retro material.
 
-If no reference plan matches, skip without offering. There is no scoring engine — read and judge, exactly like profiles and seeds.
+If no reference plan matches, offer nothing. There is no scoring engine: read and judge, exactly as with profiles and seeds.
 
 <a id="system-one-check"></a>
 ## System One check (every route)
@@ -78,13 +77,13 @@ Before sizing, check once per workspace for a System One configuration signal, a
 When there is a signal, a selected workspace and no recorded answer, ask the System One question in PLAN
 or RUN, then record it. The record is one line in the workspace's `AGENTS.md`, in the exact form that
 [the state script](../../scripts/system_one_state.py) reads: `System One consent: yes · date=YYYY-MM-DD · actor="name"`,
-with `no` for a refusal. A new initiative has a workspace only after the scaffold, so ask
-right after the scaffold creates it. Without a signal, record nothing and continue.
+with `no` for a refusal. A new initiative has a workspace only after the scaffold, so ask right after the
+scaffold creates it. Without a signal, record nothing and continue.
 
 ## Decision ownership
 
 Use the shared decision policy above. Distinguish an informational question, a pending material product decision, and a blocker. Record a Q-id only when an answer changes the work; identify the affected requirement and continue unaffected work. Reversible technical choices inside authorized scope are local freedom, with a recorded reason when consequential. Diagnose operational failures through permitted tools before asking for user input. Material product ambiguity blocks the affected criterion and its consumers. A reversible delegated
-technical choice is recorded with its decision and evidence and does not block unrelated scope.
+technical choice is recorded with its decision and evidence and never blocks unrelated scope.
 
 <a id="update-or-new"></a>
 ## Update the plan or start a new one
@@ -99,12 +98,12 @@ When the classification is ambiguous, it is the owner's product decision: ask wi
 
 Lock the problem, observable result, top 2 non-goals, and highest-shape decision before choosing a gate.
 
-For a selected Lite route, `../lite-plan.tmpl.md` provides these preparation and execution steps in one place, including scaffold consent. The detailed guide sequence below is for Full; the [PLAN card](plan-card.md)'s steps 3–7 are that sequence, in order, with their depth linked from each step.
+A selected Lite route finds these preparation and execution steps in one place, scaffold consent included, in `../lite-plan.tmpl.md`. The detailed guide sequence below is for Full: the [PLAN card](plan-card.md)'s steps 3–7, in order, with their depth linked from each step.
 
 <a id="step-2--gate-sizing-full--lite--none"></a>
 # Step 2 — Route sizing (Coordinated / Focused / Direct)
 
-Persistent route identifiers Full/Lite/None remain readable; the visible names below preserve their risk conditions. Optional: [consented JEV](system-one.md#integration).
+Persistent route identifiers Full/Lite/None stay readable; the visible names below keep their risk conditions. Optional: [consented JEV](system-one.md#integration).
 
 | Gate | Use for | Example |
 |---|---|---|
@@ -112,56 +111,55 @@ Persistent route identifiers Full/Lite/None remain readable; the visible names b
 | **Focused (Lite)** | Single-session, bounded scope, few unknowns | add one validation to an existing endpoint |
 | **Coordinated (Full)** | Multi-session / multi-track / multi-team / high uncertainty / coordination handoff expected | introduce a new subsystem |
 
-**Risk precedence**: evaluate the tie-breaker before reducing ceremony by Task count. Write scope ≥2 modules OR changes public API OR spans sessions/teams OR coordination handoff expected → **Full**, even when the initiative has only a few Tasks. A durable record for one bounded task alone remains Lite only when no Full trigger applies. Within the routes still eligible after this check, choose the lowest ceremony that satisfies the other conditions.
+**Risk precedence**: evaluate the tie-breaker before reducing ceremony by Task count. Write scope ≥2 modules OR changes public API OR spans sessions/teams OR coordination handoff expected → **Full**, even when the initiative has only a few Tasks. A durable record for one bounded task alone stays Lite only when no Full trigger applies. Among the routes still eligible, choose the lowest ceremony satisfying the other conditions.
 
 <a id="bounded-none-route"></a>
 ## Bounded Direct route
 
-Choose None before reading other guides/templates when all conditions hold: one session, one
-product file, a small localized edit (normally fewer than ten changed lines), a fully specified
-result, no new feature, public contract expansion, dependencies, migration, shared-state or security-sensitive
-change, cross-file integration, or handoff requirement. Focused inspection of the named source,
-spec and existing tests is allowed; repository-wide discovery or unresolved product choices is
-not. Restoring declared behavior counts as a correction, not a new feature merely because the
-broken implementation behaves differently. Scope or risk overrides line count.
+Choose None before reading other guides/templates when all conditions hold: one session, one product file, a
+small localized edit (normally fewer than ten changed lines), a fully specified result, and no new feature,
+public contract expansion, dependencies, migration, shared-state or security-sensitive change, cross-file
+integration or handoff requirement. Focused inspection of the named source, spec and existing tests is
+allowed; repository-wide discovery or unresolved product choices are not. Restoring declared behavior is a
+correction, not a new feature merely because the broken implementation behaves differently. Scope or risk
+overrides line count.
 
-After explicit execution intent, name the scope and expected behavior, inspect the actual files
-and available check, then edit. An existing failing regression is sufficient red evidence; add a
-new test only for a meaningful uncovered case and use a new test file when originals are protected.
+After explicit execution intent, name the scope and expected behavior, inspect the actual files and available
+check, then edit. An existing failing regression is sufficient red evidence; add a new test only for a
+meaningful uncovered case, in a new test file when originals are protected.
 Prefer one E2E check through the real consumer as the sole new test when it covers the behavior.
 Never add a unit test after implementing the behavior it covers; if isolation is necessary, list
 its applicable failure modes and expected outcomes before the test and implementation. Retain the
 replayable artifact from any E2E run as described in `testing.md`.
 Run the target and affected related regression checks; one command may cover both when its coverage is
-explicit. Preserve protected files and unrelated changes. Stop on contradictions, unavailable
-required checks or repeated no-progress; use the same three failed correction-cycle cap as RUN.
-For exact-byte edits, use a write that preserves the specified bytes and final newline. Every
-required assertion must make the compound command fail: use explicit failure exits or an equivalent
-verified mechanism, not `set -u`, `pipefail` or a trailing successful print. For example,
-`cmp expected actual || exit $?` preserves a comparison failure. Consume an existing failed
-observation and diagnose its cause; repeat the acceptance check only after a relevant input/environment
-change or permitted operational recovery. A focused diagnostic read is allowed; merely rereading
-the failure or starting a fresh session does not justify repeating it.
-Record actual command/output/exit and available revisions in the tool transcript or a captured
-receipt; unknown clocks/model/effort stay `n/a`. Never invent a start, a fingerprint or independence.
-Finish with the change, observed result and remaining limit. Do not create a plan, log, ledger,
-board, templates, synthetic PASS wrapper or plan-lint work just to satisfy None.
+explicit. Preserve protected files and unrelated changes. Stop on contradictions, unavailable required checks
+or repeated no-progress, with the same three failed correction-cycle cap as RUN. Exact-byte edits use a write
+preserving the specified bytes and final newline. Every required assertion must make the compound command
+fail, through explicit failure exits or an equivalent verified mechanism, not `set -u`, `pipefail` or a
+trailing successful print; for example, `cmp expected actual || exit $?` preserves a comparison failure.
+Consume an existing failed observation and diagnose its cause; repeat the acceptance check only after a
+relevant input/environment change or permitted operational recovery. A focused diagnostic read is allowed;
+merely rereading the failure or starting a fresh session does not justify a repeat. Record actual
+command/output/exit and available revisions in the tool transcript or a captured receipt; unknown
+clocks/model/effort stay `n/a`. Never invent a start, a fingerprint or independence. Finish with the change,
+observed result and remaining limit. Create no plan, log, ledger, board, templates, synthetic PASS wrapper or
+plan-lint work just to satisfy None.
 
-If a condition fails, announce why and enter Lite or Full before affected work. Explicit user
-requests for a durable plan are honored even when None is eligible. A generic “Tackle plan and
-run” permits sizing; it does not by itself require a durable workspace. Lite requires `plan.md`,
-`history.md`, and `resource-usage.md`; create separate decisions/questions files only when entries exist.
-Coordinated work adds the core coordination artifacts. A None receipt is not a new workspace and has no
-lifecycle-table requirement; existing workspaces retain their current ledger and history.
+If a condition fails, announce why and enter Lite or Full before affected work. An explicit user request for
+a durable plan is honored even when None is eligible; a generic “Tackle plan and run” permits sizing without
+by itself requiring a durable workspace. Lite requires `plan.md`, `history.md` and `resource-usage.md`, with
+separate decisions/questions files only when entries exist; Coordinated work adds the core coordination
+artifacts. A None receipt is not a new workspace and has no lifecycle-table requirement; existing workspaces
+keep their current ledger and history.
 
 ## Optional intake artifacts
 
-When the user brings formal material at intake — a written product spec, or explicit project principles — `plan` instantiates it in the workspace from the intake templates:
+`plan` instantiates formal material the user brings at intake — a written product spec or explicit project principles — in the workspace from the intake templates:
 
 - `specify.tmpl.md` → `spec.md` — the user's spec, captured verbatim plus scope interpretation; never invents acceptance criteria the user didn't state.
 - `constitution.tmpl.md` → `constitution.md` — project principles the user actually holds; never fabricated from a vague ask (explore intent first).
 
-Both are **optional** — only created when the user supplies the material; a vague ask is explored, not templated. Tasks trace to them (`task.tmpl.md` §Traces to) instead of a ticket line when they exist.
+Both are **optional**, created only when the user supplies the material; a vague ask is explored, not templated. When they exist, Tasks trace to them (`task.tmpl.md` §Traces to) instead of a ticket line.
 
 ## Requests share the same boundaries
 
