@@ -1,4 +1,3 @@
-```python
 import argparse
 import datetime
 import hashlib
@@ -7,7 +6,6 @@ import json
 import os
 import re
 import sys
-import urllib.parse
 from pathlib import Path
 
 REPO_URL = 'https://github.com/alph0x/Tackle'
@@ -833,7 +831,7 @@ def external_id(slug, ref):
 
 def input_digests(ws, template_path, map_base, map_scope):
     """One sha256 per page input, as stored, named by workspace-relative path or by role, plus an overall digest.
-    The recipes are read from the template's folder; without --map the default base under the repository root is
+    The scripts are digested from this script's folder; without --map the default base under the repository root is
     recorded present or absent."""
     siblings = read_siblings(ws)
     inputs = {name: file_digest(ws / name) for name in WORKSPACE_INPUTS}
@@ -846,10 +844,9 @@ def input_digests(ws, template_path, map_base, map_scope):
     for slug in dict.fromkeys(slug for row in rows for slug, _ in row['sib_deps']):
         if slug in siblings:
             inputs['%s:task-board.md' % slug] = file_digest(siblings[slug] / 'task-board.md')
-    folder = Path(template_path).parent
     inputs['template'] = file_digest(template_path)
-    inputs['plan-view recipe'] = file_digest(folder / 'recipes' / 'plan-view.md')
-    inputs['architecture-map recipe'] = file_digest(folder / 'recipes' / 'architecture-map.md')
+    inputs['plan-view script'] = file_digest(Path(__file__).resolve())
+    inputs['architecture-map script'] = file_digest(Path(__file__).resolve().parent / 'architecture_map.py')
     if map_base:
         inputs['map base'] = file_digest(map_base)
     else:
@@ -1773,14 +1770,18 @@ def graph_section(tasks, present, stage, live, ui, externals=()):
 
 
 def load_map_recipe(template_path):
-    """Load the architecture-map recipe that sits in recipes/ beside the template's folder."""
-    path = Path(template_path).parent / 'recipes' / 'architecture-map.md'
-    parts = path.read_text(encoding='utf-8').split('```python\n')
-    if len(parts) != 2:
-        raise ValueError('the map recipe must hold exactly one fenced python block')
-    namespace = {'__name__': 'architecture_map'}
-    exec(compile(parts[1].split('\n```')[0] + '\n', str(path), 'exec'), namespace)
-    return namespace
+    """Import the architecture-map script that sits beside this script; return its namespace."""
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import architecture_map
+    return vars(architecture_map)
+
+
+URL_PATH_SAFE = frozenset('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_.-~/')
+
+
+def quote_path(text):
+    """Percent-encode a relative URL path: UTF-8 bytes outside letters, digits, `_.-~` and `/` become %XX."""
+    return ''.join(chr(byte) if chr(byte) in URL_PATH_SAFE else '%%%02X' % byte for byte in text.encode('utf-8'))
 
 
 def read_json(path):
@@ -2602,10 +2603,9 @@ def fill_some(text, values):
 
 
 def page_record(template_path, fragment_path):
-    """The input digest of an auxiliary page: the template, the plan-view recipe and the fragment, in the shape check_view reads."""
-    folder = Path(template_path).parent
+    """The input digest of an auxiliary page: the template, the plan-view script and the fragment, in the shape check_view reads."""
     inputs = dict(template=file_digest(template_path), fragment=file_digest(fragment_path),
-                  **{'plan-view recipe': file_digest(folder / 'recipes' / 'plan-view.md')})
+                  **{'plan-view script': file_digest(Path(__file__).resolve())})
     inputs = dict(sorted(inputs.items()))
     overall = hashlib.sha256()
     for name, value in list(inputs.items()) + [('--map', 'none'), ('--map-scope', 'none')]:
@@ -2648,7 +2648,7 @@ def page_mode(args, block):
     found = re.search(r'<h1\b[^>]*>(.*?)</h1>', fragment, re.S | re.I)
     heading_text = html.unescape(re.sub(r'<[^>]*>', '', found.group(1))).strip() if found else ''
     brand = presentation if len(presentation) <= 40 else presentation[:39] + '\u2026'
-    link = urllib.parse.quote(os.path.relpath(view.resolve(), output.resolve().parent).replace(os.sep, '/'), safe='/')
+    link = quote_path(os.path.relpath(view.resolve(), output.resolve().parent).replace(os.sep, '/'))
     digest_meta = '<meta name="tackle-input-digest" content="%s">' % esc(json.dumps(record, ensure_ascii=True, separators=(',', ':')))
     head = '\n'.join((parts['charset'], parts['viewport'], parts['color'], digest_meta))
     brand_html = fill_some(parts['brand'].replace('href="#main"', 'href="%s"' % esc(link), 1), {'brand': esc(brand)})
@@ -2739,8 +2739,8 @@ def main():
     if args.map_base:
         try:
             mapm = load_map_recipe(args.template)
-        except (OSError, ValueError, SyntaxError) as problem:
-            print('cannot load the architecture map recipe: %s' % problem, file=sys.stderr)
+        except (OSError, ValueError, SyntaxError, ImportError) as problem:
+            print('cannot load the architecture map script: %s' % problem, file=sys.stderr)
             return 2
         base, trouble = (None, None) if not Path(args.map_base).exists() else read_json(args.map_base)
         if not Path(args.map_base).exists():
@@ -2885,4 +2885,3 @@ def main():
 
 if __name__ == '__main__':
     sys.exit(main())
-```

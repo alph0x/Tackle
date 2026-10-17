@@ -1,7 +1,7 @@
 """The plan view records what it was built from, a read-only check names the inputs that changed since, and the page
 lists what waits on the owner.
 
-Guarantee: the shipped recipe writes one sha256 per page input into a JSON meta element, and `--check` with the
+Guarantee: the shipped script writes one sha256 per page input into a JSON meta element, and `--check` with the
 build's arguments prints `view current` (exit 0) or `view stale: <inputs>` (exit 1) without writing anything; bad
 arguments exit 2. The page's Waiting on you section lists open questions from `questions.md`, tasks Waiting on owner
 or Blocked with their Verification cell, and Open board obligations with owner and trigger.
@@ -23,11 +23,10 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import test_plan_view as base  # noqa: E402
 
-REFERENCES = base.TEMPLATE.parent
 WORKSPACE_INPUTS = ('task-board.md', 'plan.md', 'decisions.md', 'questions.md', 'history.md', 'resource-usage.md',
                     'AGENTS.md', 'readiness.md', 'map-delta.json', 'view/summary.json', 'summary.json',
                     'view/export-summary.json', 'export-summary.json')
-ROLES = ('template', 'plan-view recipe', 'architecture-map recipe', 'map base')
+ROLES = ('template', 'plan-view script', 'architecture-map script', 'map base')
 T, R, D = base.task_id, base.req_id, base.decision_id
 
 
@@ -43,9 +42,10 @@ def write_files(workspace, files):
 
 
 def script_in(root):
-    script = Path(root) / 'plan-view-recipe.py'
+    """The plan-view script copied into root, with the map script beside it, so a test can edit or remove each one."""
+    script = Path(root) / base.SCRIPT.name
     if not script.exists():
-        script.write_text(base.recipe_source(), encoding='utf-8')
+        base.write_script(script)
     return script
 
 
@@ -69,7 +69,7 @@ def stale_names(stdout):
 
 
 class Fixture:
-    """One workspace three levels below a fake repository root, with its own copy of the template and recipes."""
+    """One workspace three levels below a fake repository root, with its own copy of the template and scripts."""
 
     def __init__(self, tmp, files=None, template=None):
         self.root = Path(tmp)
@@ -95,13 +95,11 @@ class Fixture:
         return result
 
 
-def copied_references(tmp):
-    """The template beside a recipes/ folder holding both recipes, so a test can edit each one."""
+def copied_template(tmp):
+    """A copy of the template, so a test can edit it."""
     folder = Path(tmp) / 'skill'
-    (folder / 'recipes').mkdir(parents=True)
+    folder.mkdir(parents=True)
     shutil.copy(base.TEMPLATE, folder / base.TEMPLATE.name)
-    for name in ('plan-view.md', 'architecture-map.md'):
-        shutil.copy(REFERENCES / 'recipes' / name, folder / 'recipes' / name)
     return folder / base.TEMPLATE.name
 
 
@@ -160,33 +158,35 @@ class InputDigestTests(unittest.TestCase):
             result = fixture.check()
             self.assertEqual((result.returncode, stale_names(result.stdout)), (1, ['plan.md']))
 
-    def test_the_template_and_each_recipe_beside_it_are_inputs(self):
+    def test_the_template_and_each_script_are_inputs(self):
         with tempfile.TemporaryDirectory() as tmp:
-            template = copied_references(tmp)
+            template = copied_template(tmp)
             fixture = Fixture(tmp, template=template)
             fixture.build()
             self.assertEqual(fixture.check().returncode, 0)
-            for role, path in (('template', template), ('plan-view recipe', template.parent / 'recipes' / 'plan-view.md'),
-                               ('architecture-map recipe', template.parent / 'recipes' / 'architecture-map.md')):
+            script = script_in(fixture.root)
+            for role, path in (('template', template), ('plan-view script', script),
+                               ('architecture-map script', script.parent / base.MAP_SCRIPT.name)):
                 old = path.read_bytes()
                 path.write_bytes(old + b'\n')
                 result = fixture.check()
                 self.assertEqual((result.returncode, stale_names(result.stdout)), (1, [role]), role)
-                path.unlink()
-                result = fixture.check()
-                # A missing template is a usage error, as in the build; a missing recipe is recorded absent.
-                expected = (2, None) if role == 'template' else (1, [role])
-                self.assertEqual((result.returncode, stale_names(result.stdout)), expected, role + ' removed')
+                if role != 'plan-view script':
+                    # The running script cannot be removed; a missing template is a usage error, as in the build,
+                    # and a missing map script is recorded absent.
+                    path.unlink()
+                    result = fixture.check()
+                    expected = (2, None) if role == 'template' else (1, [role])
+                    self.assertEqual((result.returncode, stale_names(result.stdout)), expected, role + ' removed')
                 path.write_bytes(old)
                 self.assertEqual(fixture.check().returncode, 0, role)
 
-    def test_a_missing_recipe_beside_the_template_is_recorded_absent(self):
+    def test_a_missing_map_script_beside_the_view_script_is_recorded_absent(self):
         with tempfile.TemporaryDirectory() as tmp:
-            template = copied_references(tmp)
-            (template.parent / 'recipes' / 'architecture-map.md').unlink()
-            fixture = Fixture(tmp, template=template)
+            fixture = Fixture(tmp)
+            (script_in(fixture.root).parent / base.MAP_SCRIPT.name).unlink()
             meta = digest_meta(fixture.build())
-            self.assertEqual(meta['inputs']['architecture-map recipe'], 'absent')
+            self.assertEqual(meta['inputs']['architecture-map script'], 'absent')
             self.assertEqual(fixture.check().returncode, 0)
 
     def test_the_default_map_base_appearing_after_a_build_without_map_is_stale(self):

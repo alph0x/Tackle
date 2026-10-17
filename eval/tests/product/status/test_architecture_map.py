@@ -1,23 +1,25 @@
-"""The shipped architecture-map recipe validates, applies, scopes and folds a map, and the plan view draws it.
+"""The shipped architecture-map script validates, applies, scopes and folds a map, and the plan view draws it.
 
-The test extracts the recipe from `references/recipes/architecture-map.md`, calls its functions on fixture
-maps, then runs the shipped plan-view recipe as a child process with `--map` over a throwaway repository
+The test imports `scripts/architecture_map.py` from its file, calls its functions on fixture
+maps, then runs the shipped plan-view script as a child process with `--map` over a throwaway repository
 laid out as `<root>/docs/plans/<name>`. Ids are built at run time. The interactive behavior (tabs, picture
 toggle, selection) is outside this oracle; the markup and data it needs are inside it.
 """
 import ast
 import copy
+import importlib.util
 import json
 import re
 import subprocess
 import sys
+import shutil
 import tempfile
 import unittest
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[4]
-MAP_RECIPE = REPO / 'skills/tackle/references/recipes/architecture-map.md'
-VIEW_RECIPE = REPO / 'skills/tackle/references/recipes/plan-view.md'
+MAP_SCRIPT = REPO / 'skills/tackle/scripts/architecture_map.py'
+VIEW_SCRIPT = REPO / 'skills/tackle/scripts/plan_view.py'
 TEMPLATE = REPO / 'skills/tackle/references/plan-view.template.md'
 STATES = ('Draft, Ready to run, In progress, Checking, Complete, Blocked, Interrupted, Skipped, '
           'Unverifiable, Waiting on owner')
@@ -34,24 +36,24 @@ def req_id(n):
     return 'R%02d' % n
 
 
-def fenced_source(path):
-    parts = path.read_text(encoding='utf-8').split('```python\n')
-    assert len(parts) == 2, 'the recipe must hold exactly one fenced python block'
-    return parts[1].split('\n```')[0] + '\n'
+def load_module(path, name):
+    """A shipped script's namespace, imported from its file without running its entry point."""
+    spec = importlib.util.spec_from_file_location(name, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return vars(module)
 
 
 def load_map_recipe():
-    source = fenced_source(MAP_RECIPE)
+    source = MAP_SCRIPT.read_text(encoding='utf-8')
     imported = set()
     for node in ast.walk(ast.parse(source)):
         if isinstance(node, ast.Import):
             imported |= {a.name.split('.')[0] for a in node.names}
         elif isinstance(node, ast.ImportFrom) and node.module:
             imported.add(node.module.split('.')[0])
-    assert not imported & FORBIDDEN, 'the map recipe imports %s' % sorted(imported & FORBIDDEN)
-    namespace = {'__name__': 'map_recipe'}
-    exec(compile(source, str(MAP_RECIPE), 'exec'), namespace)
-    return namespace
+    assert not imported & FORBIDDEN, 'the map script imports %s' % sorted(imported & FORBIDDEN)
+    return load_module(MAP_SCRIPT, 'architecture_map_under_test')
 
 
 def base_map():
@@ -138,8 +140,9 @@ def run_view(tmp, case, delta, base=None, extra=(), plan_text=None, running=Fals
     root.mkdir()
     lay_out_sources(root)
     ws = workspace(root, delta, plan_text, running)
-    script = root / 'view-recipe.py'
-    script.write_text(fenced_source(VIEW_RECIPE), encoding='utf-8')
+    script = root / 'plan_view.py'
+    shutil.copy(VIEW_SCRIPT, script)
+    shutil.copy(MAP_SCRIPT, root / MAP_SCRIPT.name)
     arguments = []
     if base is not None:
         (root / 'base.json').write_text(json.dumps(base), encoding='utf-8')

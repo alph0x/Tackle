@@ -1,11 +1,13 @@
-"""The shipped plan-view recipe writes a faithful, escaped, offline view of a workspace, or refuses.
+"""The shipped plan-view script writes a faithful, escaped, offline view of a workspace, or refuses.
 
-The test extracts the recipe from `references/recipes/plan-view.md`, runs it as a child process with the
+The test runs a copy of `scripts/plan_view.py` (with `architecture_map.py` beside it) as a child process with the
 shipped template, and checks the page and its data island against the workspace it built. Ids are built
 at run time. The interactive behavior (click, trace, filter) is outside this oracle.
 """
+import importlib.util
 import json
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -14,7 +16,9 @@ import unittest
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[4]
-RECIPE = REPO / 'skills/tackle/references/recipes/plan-view.md'
+SCRIPTS = REPO / 'skills/tackle/scripts'
+SCRIPT = SCRIPTS / 'plan_view.py'
+MAP_SCRIPT = SCRIPTS / 'architecture_map.py'
 TEMPLATE = REPO / 'skills/tackle/references/plan-view.template.md'
 STATES = ('Draft, Ready to run, In progress, Checking, Complete, Blocked, Interrupted, Skipped, '
           'Unverifiable, Waiting on owner')
@@ -35,10 +39,24 @@ def decision_id(n):
     return 'D-%02d' % n
 
 
-def recipe_source():
-    parts = RECIPE.read_text(encoding='utf-8').split('```python\n')
-    assert len(parts) == 2, 'the recipe must hold exactly one fenced python block'
-    return parts[1].split('\n```')[0] + '\n'
+def script_source():
+    return SCRIPT.read_text(encoding='utf-8')
+
+
+def write_script(path, source=None):
+    """Write the plan-view script, or a variant of its source, to path, with the map script it imports beside it."""
+    path = Path(path)
+    path.write_text(script_source() if source is None else source, encoding='utf-8')
+    shutil.copy(MAP_SCRIPT, path.parent / MAP_SCRIPT.name)
+    return path
+
+
+def load_script(name='plan_view_under_test'):
+    """The shipped plan-view script's namespace, imported from its file without running its entry point."""
+    spec = importlib.util.spec_from_file_location(name, SCRIPT)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return vars(module)
 
 
 def usage_row(run, event, scope, role):
@@ -81,8 +99,7 @@ def run_recipe(tmp, files, case):
         path = workspace / name
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(text, encoding='utf-8')
-    script = Path(tmp) / (case + '-recipe.py')
-    script.write_text(recipe_source(), encoding='utf-8')
+    script = write_script(Path(tmp) / (case + '-view.py'))
     out = workspace / 'plan-view.html'
     result = subprocess.run([sys.executable, '-I', str(script), '--template', str(TEMPLATE), str(workspace), str(out)],
                             capture_output=True, text=True, timeout=60)

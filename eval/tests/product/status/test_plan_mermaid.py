@@ -11,10 +11,9 @@ import unittest
 from pathlib import Path
 
 from plan_view_dom import run_scenario
-from test_architecture_map import base_map, delta_of, fenced_source, lay_out_sources, run_view
+from test_architecture_map import VIEW_SCRIPT, base_map, delta_of, lay_out_sources, load_module, run_view
 from test_plan_view import BOARD_HEAD, REPO, TEMPLATE, lite_plan, req_id, run_recipe
 
-VIEW_RECIPE = REPO / 'skills/tackle/references/recipes/plan-view.md'
 ENGLISH_PLAN = '# Plan — Mermaid\n\nThe plan has three tasks.\n\n| Criterion | Required behavior |\n|---|---|\n| `%s` | one |\n' % req_id(1)
 SPANISH_PLAN = ('# Plan — Migración\n\nEl plan describe los pasos de la migración. Cada tarea tiene una verificación. '
                 'La configuración queda lista después de la revisión.\n\n| Criterion | Required behavior |\n|---|---|\n| `%s` | uno |\n' % req_id(1))
@@ -74,10 +73,8 @@ NO_CHANGES = {'schema': 'tackle-map-delta/1', 'plan': 'Small', 'base_revision': 
 
 
 def view_namespace():
-    """The shipped plan-view recipe's functions, loaded without running its entry point."""
-    namespace = {'__name__': 'plan_view_recipe'}
-    exec(compile(fenced_source(VIEW_RECIPE), str(VIEW_RECIPE), 'exec'), namespace)
-    return namespace
+    """The shipped plan-view script's functions, imported without running its entry point."""
+    return load_module(VIEW_SCRIPT, 'plan_view_mermaid')
 
 
 def board_files(rows=ROWS, plan_text=None):

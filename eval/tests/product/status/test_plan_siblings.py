@@ -14,7 +14,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from test_plan_view import REPO, TEMPLATE, recipe_source
+from test_plan_view import REPO, TEMPLATE, load_script, write_script
 
 HEAD = ('# Task board\n\nSchema: tackle-workspace/5\n\nStates: Draft, Ready to run, In progress, Checking, Complete, '
         'Blocked, Interrupted, Skipped, Unverifiable, Waiting on owner.\n\n'
@@ -35,10 +35,8 @@ NO_BOARD = 'sibling api has no tackle-workspace/5 task-board.md at docs/plans/be
 
 
 def stage_labels():
-    """The English stage-count and state labels, read from the shipped recipe's own table."""
-    namespace = {'__name__': 'recipe_under_test'}
-    exec(compile(recipe_source(), 'plan-view.md', 'exec'), namespace)
-    return namespace['UI']['en']
+    """The English stage-count and state labels, read from the shipped script's own table."""
+    return load_script('plan_view_siblings')['UI']['en']
 
 
 def write_files(root, files):
@@ -64,9 +62,8 @@ def build(tmp, second_deps='T-0001, T-0007 [api]', agents=AGENTS_HEAD + DECLARED
 
 
 def run(tmp, ws, options=(), output=None):
-    """Run the shipped recipe on the workspace; the page goes to the given output or to a fresh file."""
-    script = Path(tmp) / 'recipe-under-test.py'
-    script.write_text(recipe_source(), encoding='utf-8')
+    """Run the shipped script on the workspace; the page goes to the given output or to a fresh file."""
+    script = write_script(Path(tmp) / 'view-under-test.py')
     out = Path(output) if output else Path(tmp) / 'plan-view.html'
     result = subprocess.run([sys.executable, '-I', str(script), '--template', str(TEMPLATE), *options, str(ws), str(out)],
                             capture_output=True, text=True, timeout=60)

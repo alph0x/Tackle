@@ -183,7 +183,7 @@ class ExecutivePayloadTests(unittest.TestCase):
             result, out = build(tmp, 'checked', summary(kicker='Run `make test` now'))
             self.assertBuilt(result)
             self.assertEqual(len(prose_lines(result)), 1)
-            check = subprocess.run([sys.executable, '-I', str(Path(tmp) / 'checked-recipe.py'), '--template', str(TEMPLATE),
+            check = subprocess.run([sys.executable, '-I', str(Path(tmp) / 'checked-view.py'), '--template', str(TEMPLATE),
                                     '--check', str(Path(tmp) / 'checked'), str(out)],
                                    capture_output=True, text=True, timeout=60)
             self.assertEqual(check.returncode, 0, check.stdout + check.stderr)

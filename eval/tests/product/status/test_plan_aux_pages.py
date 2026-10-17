@@ -1,8 +1,8 @@
-"""An authorized auxiliary page built with the plan-view recipe's page mode inherits the plan view's visual base.
+"""An authorized auxiliary page built with the plan-view script's page mode inherits the plan view's visual base.
 
 The base is the marked part of the shipped template: the CSS between the base markers and the theme script between
 the theme markers. The page is one self-contained file that carries the template's tokens, top bar, toggle and theme
-script; product samples keep their own markup and declare their own colors. The tests run the recipe's page mode as
+script; product samples keep their own markup and declare their own colors. The tests run the script's page mode as
 a child process, check the page's bytes and its read-only check, and run the page's theme script under Node with a
 small DOM stub. Visual review of the rendered page is outside these oracles. Fixture ids are built at run time.
 """
@@ -17,7 +17,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from eval.tests.product.status.test_plan_view import RECIPE, TEMPLATE, recipe_source, run_recipe, workspace_files
+from eval.tests.product.status.test_plan_view import TEMPLATE, run_recipe, script_source, workspace_files, write_script
 
 RECIPE_OVERRIDE = None
 MARKER = re.compile(r'/\* tackle-base(?:-theme)?:(?:start|end) \*/\n')
@@ -79,7 +79,7 @@ process.stdout.write(JSON.stringify(result));
 
 
 def current_recipe():
-    return RECIPE_OVERRIDE if RECIPE_OVERRIDE is not None else recipe_source()
+    return RECIPE_OVERRIDE if RECIPE_OVERRIDE is not None else script_source()
 
 
 def strip_markers(text):
@@ -159,8 +159,7 @@ def workspace_with_view(tmp, case, plan=None, template=None):
         for name, text in files.items():
             (workspace / name).parent.mkdir(parents=True, exist_ok=True)
             (workspace / name).write_text(text, encoding='utf-8')
-        script = Path(tmp) / (case + '-view-recipe.py')
-        script.write_text(current_recipe(), encoding='utf-8')
+        script = write_script(Path(tmp) / (case + '-view-script.py'), current_recipe())
         view = workspace / 'plan-view.html'
         result = subprocess.run([sys.executable, '-I', str(script), '--template', str(template), str(workspace), str(view)],
                                 capture_output=True, text=True, timeout=60)
@@ -169,8 +168,7 @@ def workspace_with_view(tmp, case, plan=None, template=None):
 
 
 def page_command(tmp, case, workspace, fragment, output, template=None, check=False):
-    script = Path(tmp) / (case + '-recipe.py')
-    script.write_text(current_recipe(), encoding='utf-8')
+    script = write_script(Path(tmp) / (case + '-page-script.py'), current_recipe())
     args = [sys.executable, '-I', str(script), '--template', str(template or TEMPLATE)]
     if check:
         args.append('--check')

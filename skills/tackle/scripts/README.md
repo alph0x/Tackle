@@ -9,6 +9,8 @@ a script adds or updates its row.
 |---|---|
 | [correction_lineage.py](correction_lineage.py) | `64123960c4488e81203fc3f7627c5dc350748e1d803a7a301d9f002468f5b181` |
 | [adversary_checkpoints.py](adversary_checkpoints.py) | `8be44a5b646ad3aabf179bbf899f4e80c3d34382ce5b636c9eadb26e5d0a92dd` |
+| [plan_view.py](plan_view.py) | `4d67a8305b97a40364a5b047f778a0e72d4ffc215fcf6b728a5b50e5027807ac` |
+| [architecture_map.py](architecture_map.py) | `e3a82e160b486413e366c7d4eaee8561144555947b40a6ef329bfa44d03f532c` |
 
 ## Consent
 

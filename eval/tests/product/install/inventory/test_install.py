@@ -314,16 +314,16 @@ class RecipeManifestTests(unittest.TestCase):
         self.assert_one_finding('migrate/schema.md')
 
     def test_missing_row_is_named(self):
-        self.drop_row('plan-view.md')
-        self.assert_one_finding('plan-view.md')
+        self.drop_row('system-one.md')
+        self.assert_one_finding('system-one.md')
 
     def test_nested_missing_row_is_named(self):
         self.drop_row('migrate/step-4-to-5.md')
         self.assert_one_finding('migrate/step-4-to-5.md')
 
     def test_stale_row_is_named(self):
-        self.recipe('architecture-map.md').unlink()
-        self.assert_one_finding('architecture-map.md')
+        self.recipe('requirements-base.md').unlink()
+        self.assert_one_finding('requirements-base.md')
 
     def test_duplicate_row_is_named(self):
         lines = self.manifest_lines()
@@ -334,7 +334,7 @@ class RecipeManifestTests(unittest.TestCase):
     def test_one_line_per_problem(self):
         path = self.recipe('controlled-writing.md')
         path.write_bytes(path.read_bytes() + b'\n')
-        self.drop_row('plan-view.md')
+        self.drop_row('system-one.md')
         lines = self.run_gate()
         self.assertEqual(len(lines), 2, lines)
 

@@ -12,7 +12,7 @@ import tempfile
 import unittest
 
 from plan_view_dom import run_scenario
-from test_architecture_map import base_map, delta_of, fenced_source, run_view, VIEW_RECIPE
+from test_architecture_map import base_map, delta_of, load_module, run_view, VIEW_SCRIPT
 
 
 def guide_rows(page):
@@ -88,8 +88,7 @@ class ArchitectureReadingTests(unittest.TestCase):
         self.assertIn(long_label, [row[2]['label'] for row in guide_rows(page)[0]])
 
     def test_localized_empty_and_hostile_relation_guides_keep_exact_readable_text(self):
-        scope = {'__name__': 'architecture_reading_recipe'}
-        exec(compile(fenced_source(VIEW_RECIPE), str(VIEW_RECIPE), 'exec'), scope)
+        scope = load_module(VIEW_SCRIPT, 'architecture_reading_view')
         hostile = '<img src=x onerror=alert(1)>'
         components = {'a': {'title': hostile}, 'b': {'title': 'A full destination title'}}
         for lang, heading, empty in (('en', 'Connections in this map', 'No connections'), ('es', 'Conexiones de este mapa', 'No hay conexiones')):

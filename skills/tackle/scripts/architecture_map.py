@@ -1,4 +1,3 @@
-```python
 """Pure functions over a project map (schema tackle-map/1) and a plan's map delta (schema tackle-map-delta/1).
 
 Nothing here reads or writes a file except `stale`, which only tests that source paths exist.
@@ -214,4 +213,3 @@ def fold(base, delta, revision, commit=None, date=None):
         stamp['date'] = date
     out['verified_at'] = stamp
     return out
-```
