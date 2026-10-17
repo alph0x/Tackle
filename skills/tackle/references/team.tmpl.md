@@ -1,23 +1,21 @@
 # Team capabilities — {{TITLE}}
 
-This template binds role capabilities and state ownership. The sole execution lifecycle, correction
-budget, evidence contract, integration checks, and closure rules live in the [RUN
-card](guides/run-card.md), with depth in `references/guides/run.md`; do not copy an execution
-protocol into this file. The workspace
-(`task-board.md`, `history.md`, the Task file, and touched files) is the source of truth; messaging is only
-coordination.
+This template binds role capabilities and state ownership. The sole execution lifecycle, correction budget,
+evidence contract, integration checks and closure rules live in the [RUN card](guides/run-card.md), with depth
+in `references/guides/run.md`; copy no execution protocol here. The workspace (`task-board.md`, `history.md`,
+the Task file, touched files) is the source of truth; messaging is only coordination.
 
 ## Model binding
 
-Teams bind roles to abstract, harness-agnostic tiers, never vendor models. The defaults below are
-proposals until the observed model map is read; use only supported tiers and concrete models
-listed there. A static role table never supplies a host binding:
+Teams bind roles to abstract, harness-agnostic tiers, never vendor models. The defaults below are proposals
+until the observed model map is read; use only supported tiers and concrete models listed there. A static role
+table never supplies a host binding:
 
 - **`fast`** — task execution from a sufficient brief, grounding reads, searches, lint and drift checks.
 - **`standard`** — coordination, review of `fast` work, and implementation that a stronger brief cannot
   bring to `fast`.
-- **`frontier`** — review of `standard` work, and adversarial verification or architecture judgment when
-  the risk requires it.
+- **`frontier`** — review of `standard` work; adversarial verification or architecture judgment when the risk
+  requires it.
 
 | Role | Tier | Effort |
 |---|---|---|
@@ -28,23 +26,21 @@ listed there. A static role table never supplies a host binding:
 | Auditor (explicit risk-triggered audit) | frontier | high |
 | Specialists | standard | medium |
 
-The Task brief may override a default: a compiled `**Tier**` and `**Effort**` (with a deviation's
-reason in `**Tier reason**`) is that per-task override of the Executor row above, confirmed once per
-initiative at intake and again on a Tier or Effort deviation from the compiled default, on any other model
-change and on an escalation. The
-workspace `AGENTS.md` model map binds tiers to the concrete models available in that harness. Effort
-is `low / medium / high / max`; when effort or
-model binding is unsupported, record the actual binding and `n/a` values honestly. Never silently
-upgrade a role to resolve a Run failure. An independent session or human fallback is selected only
-when the Run risk requires semantic independence; a renamed role or tier does not itself establish
-independence.
+A compiled `**Tier**` and `**Effort**` in the Task brief (a deviation's reason in `**Tier reason**`) is the
+per-task override of the Executor row above, confirmed once per initiative at intake and again on a Tier or
+Effort deviation from the compiled default, on any other model change and on an escalation. The workspace
+`AGENTS.md` model map binds tiers to the concrete models available in that harness. Effort is
+`low / medium / high / max`; when effort or model binding is unsupported, record the actual binding and `n/a`
+values honestly. Never silently upgrade a role to resolve a Run failure. An independent session or human
+fallback is selected only when the Run risk requires semantic independence; a renamed role or tier does not
+itself establish independence.
 
 When more than one suitable tier binds, propose a planner on a stronger tier than the Executor.
 Propose each reviewer one tier above the Executor whose task it reviews. The Verifier runs checks and is
 not a review role. Show the owner the concrete role-to-model table, and get an explicit confirmation
-before the first dispatch. If only one suitable tier binds, state the one-tier limitation. An unavailable exact model requires an
-observed supported alternative with its consequences or an explicit unavailability report; never
-invent an equivalent.
+before the first dispatch. If
+only one suitable tier binds, state the one-tier limitation. An unavailable exact model requires an observed
+supported alternative with its consequences or an explicit unavailability report; never invent an equivalent.
 
 ## Team sizing
 
@@ -55,45 +51,45 @@ invent an equivalent.
 | **Pod** | Executor + Verifier + Reviewer + Coordinator | Complex or high-risk contract work. |
 | **Squad** | Pod + risk-specific Specialist | Security, performance, or other demonstrated specialist risk. |
 
-Default to Solo unless the Task brief requests a larger team. Add only the capability needed:
-Simplicity, Architecture, Security, Performance & Concurrency, or Regression. Specialists review the
-relevant risk; they do not create a second lifecycle or budget.
+Default to Solo unless the Task brief requests a larger team. Add only the capability needed: Simplicity,
+Architecture, Security, Performance & Concurrency, or Regression. Specialists review the relevant risk and
+create no second lifecycle or budget.
 
 ## Wave gates
 
-When a plan has waves, this heading is the compatibility pointer for generated workspaces. The Run
-guide owns the actual gates: before a wave, check authorization, Ready fingerprints, dependencies,
-and environment; after a merge, run affected integration checks on the merged tree. There is no
-separate pre-wave Verify loop or inter-wave closure protocol.
+For a plan with waves, this heading is the compatibility pointer for generated workspaces. The Run guide owns
+the gates: before a wave, check authorization, Ready fingerprints, dependencies and environment; after a merge,
+run affected integration checks on the merged tree. There is no separate pre-wave Verify loop or inter-wave
+closure protocol.
 
 ### Risk capability checks
 
-Select only checks justified by the Task's risk; these checks supplement the Run protocol and never
-create an independent closure loop.
+Select only checks the Task's risk justifies; they supplement the Run protocol and never create an
+independent closure loop.
 
-- **Simplicity** — understand the real flow first, fix the root cause and inspect callers; reuse an
-  existing function or standard-library facility before adding an abstraction or dependency.
-- **Security** — validate inputs at command/query/path boundaries, keep secrets out of logs/errors/
-  diffs, check authorization on every path including cross-tenant paths, and justify dependencies.
-  Do not simplify away validation, data-loss protection, security, accessibility, or an explicit
-  requirement. Non-trivial logic has a runnable check.
-- **Correctness / repro** — check boundary behavior and ensure valid and invalid evidence can be
-  distinguished; a keyword or test count is not semantic proof.
-- **Performance** — inspect complexity, allocations, and concurrency only when the changed path or
-  data volume makes that risk relevant.
-- **Polish / regression** — inspect stale documentation, dead leftovers, and affected existing
-  callers when the Task changes a user-facing or shared surface.
+- **Simplicity** — understand the real flow first, fix the root cause, inspect callers; reuse an existing
+  function or standard-library facility before adding an abstraction or dependency.
+- **Security** — validate inputs at command/query/path boundaries, keep secrets out of logs/errors/diffs,
+  check authorization on every path including cross-tenant paths, justify dependencies. Never simplify away
+  validation, data-loss protection, security, accessibility or an explicit requirement. Non-trivial logic has
+  a runnable check.
+- **Correctness / repro** — check boundary behavior and that valid and invalid evidence can be distinguished;
+  a keyword or test count is not semantic proof.
+- **Performance** — inspect complexity, allocations and concurrency only when the changed path or data volume
+  makes that risk relevant.
+- **Polish / regression** — inspect stale documentation, dead leftovers and affected existing callers when the
+  Task changes a user-facing or shared surface.
 
 ## State ownership
 
-- `task-board.md` records the current task state and verification references.
-- `history.md` records append-only history and bounded state snapshots.
-- `resource-usage.md` records observed lifecycle events and exposed telemetry; unknowns are `n/a`.
-- `current-work.md` is a generated re-contextualization projection, never canonical.
+- `task-board.md`: current task state and verification references.
+- `history.md`: append-only history and bounded state snapshots.
+- `resource-usage.md`: observed lifecycle events and exposed telemetry; unknowns are `n/a`.
+- `current-work.md`: a generated re-contextualization projection, never canonical.
 
-Ownership of the board, history and source changes is as `AGENTS.md` item 9 states; the Coordinator also
-records role boundaries. Reviewers verify against the Task and current contract. The Run guide
-defines when any of these observations permit completion; no role may flip a status by assertion.
+Ownership of the board, history and source changes is as the **Ownership** rule of `AGENTS.md` states; the
+Coordinator also records role boundaries. Reviewers verify against the Task and current contract. The Run guide
+defines when these observations permit completion; no role may flip a status by assertion.
 
 ## Capability map
 
@@ -106,6 +102,5 @@ defines when any of these observations permit completion; no role may flip a sta
 | Integration / acceptance | Test the merged tree, semantic consumers and global obligations. | `run-card.md` step 6, `run.md` §Integration and deliverable acceptance |
 | Recovery | Preserve counters/history; classify failures and emit packets. | `run-card.md` step 7, `run.md` §Failure classification and escalation packet |
 
-For grounding, quality, and migration concerns, use the linked shared guides. Those guides may
-describe their own PLAN, audit, or historical procedures, but they do not authorize source
-execution; the RUN card does.
+For grounding, quality and migration, use the linked shared guides; they may describe their own PLAN, audit
+or historical procedures, but only the RUN card authorizes source execution.

@@ -1,10 +1,9 @@
 # Current work — {{TITLE}}
 
 **Generated projection, never canonical.** Refresh only within authorized RUN or explicit handoff.
-The task board `task-board.md` owns current state; `history.md` and original archives own history; task
-briefs/contracts, decisions, questions, and verification records keep their own authority.
-Follow `references/guides/run-card.md`; use `guides/context-lifecycle.md` only when its size/risk trigger
-applies. Do not put secrets or unobserved outcomes here.
+`task-board.md` owns current state; `history.md` and original archives own history; task briefs/contracts,
+decisions, questions and verification records keep their own authority. Follow `references/guides/run-card.md`;
+use `guides/context-lifecycle.md` only when its size/risk trigger applies. No secrets or unobserved outcomes here.
 
 <a id="current-point--wave"></a>
 ## Checkpoint and scope
@@ -18,10 +17,10 @@ applies. Do not put secrets or unobserved outcomes here.
 - Last fully recorded event: {{stable event reference and hash; archive index revision if segmented}}
 - Verification status: {{current after source comparison | stale | incomplete}}
 
-A copied revision label is not a validity check. Before reuse, compare authoritative source
-membership/content and history head with this checkpoint. Changed contracts, reopened tasks, new
-blockers, changed input selection, and interrupted updates invalidate affected content. Rebuild
-from original sources; read additional partitions when required context is uncertain.
+A copied revision label is no validity check: before reuse, compare authoritative source membership/content
+and history head with this checkpoint. Changed contracts, reopened tasks, new blockers, changed input selection
+and interrupted updates invalidate affected content; rebuild it from original sources, reading more partitions
+when required context is uncertain.
 
 ## Active capabilities
 
@@ -49,5 +48,5 @@ from original sources; read additional partitions when required context is uncer
 - {{next action within recorded authorization; Draft milestone work remains unready}}
 - Requirement/owner map: {{plan.md section; retain complete discoverable scope}}
 
-The projection cannot authorize a retry, state change, replan, model upgrade, or initiative close.
-Keep raw records and necessary original source context portable when producing a handoff.
+The projection cannot authorize a retry, state change, replan, model upgrade or initiative close. A handoff
+keeps raw records and necessary original source context portable.

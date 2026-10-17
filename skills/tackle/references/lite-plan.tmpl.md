@@ -1,46 +1,44 @@
 <a id="lite--complete-plan--run-path"></a>
 # Focused (Lite) — complete PLAN → RUN path
 
-After intake selects Focused (persistent route Lite), use this page as the procedure and briefing template. It contains the
-required PLAN, RUN and closure steps; do not traverse the Full guide map or copy Full templates.
-Read another guide only for an actual missing capability, such as capturing unavailable tool exports.
-The core conventions in SKILL.md still apply. A durable receipt for this bounded task is Lite;
-multi-team/session coordination, uncertain integration or a shared public contract upgrades to Full.
+After intake selects Focused (persistent route Lite), this page is the procedure and briefing template, with
+the required PLAN, RUN and closure steps; do not traverse the Full guide map or copy Full templates. Read
+another guide only for an actual missing capability, such as capturing unavailable tool exports. The core
+conventions in SKILL.md still apply. A durable receipt for this bounded task is Lite; multi-team/session
+coordination, uncertain integration or a shared public contract upgrades to Full.
 
 ## Procedure
 
 1. **Prepare.** Read the named spec, source and tests, relevant repository instructions and the existing
    Lite plan, history, resource usage and decisions. Before any write, stop with `migrate first`
    ([forward only](guides/migrate.md#forward-only)) if the workspace still holds `log.md`, `log-archive.md` or
-   `usage.md`. Honor user > contract > protected tests > implementation. Confirm
-   purpose, non-goals and scope; resolve user-owned ambiguity before the affected work. Reuse an
-   authorized gitignore decision; otherwise ask once about docs/plans/ and apply it to docs/seeds/.
-   Observe the repository root and create plan.md, history.md and resource-usage.md under
-   `docs/plans/<initiative>/`, plus decisions/questions files when entries exist. Start plan.md
-   with the exact first line `Gate: Lite`; missing Full artifacts alone never identify this route.
-   Resolve every write destination from that root, including patch tools and additive tests;
-   confirm it stays inside the authorized Write scope or workspace before writing.
-   Use the minimal bodies below directly; history.tmpl.md and resource-usage.tmpl.md are not prerequisites.
+   `usage.md`. Honor user > contract > protected tests > implementation. Confirm purpose, non-goals and
+   scope; resolve user-owned ambiguity before the affected work. Reuse an authorized gitignore decision;
+   otherwise ask once about docs/plans/ and apply it to docs/seeds/. Observe the repository root and
+   create plan.md, history.md and resource-usage.md under `docs/plans/<initiative>/`, plus
+   decisions/questions files when entries exist. Start plan.md with the exact first line `Gate: Lite`;
+   missing Full artifacts alone never identify this route. Resolve every write destination, patch tools
+   and additive tests included, from that root and confirm it stays inside the authorized Write scope or
+   workspace before writing. Use the minimal bodies below directly; history.tmpl.md and
+   resource-usage.tmpl.md are not prerequisites.
 2. **Make ready.** Fill the plan body with verified file:line grounding, allowed writes, stable
-   requirements, cases and runnable checks (or a named review rubric). Specify inputs, outputs,
-   errors and invariants; exact bytes/order/paths/exits only when required. Map each requirement to
-   a case/check. Derive valid adversarial cases from the domain, separately from invalid inputs:
-   serializers round-trip delimiters, quotes, CR/LF and Unicode through the consumer. Expected
-   results come from the contract, never from the implementation. Record intended supported
-   producer/consumer runtimes and available validation environments before editing; no declared
-   range means observed coverage only. Unavailable required coverage stays unverified/blocked.
-   Select the test type and evidence destination now: prefer E2E through the real consumer as the
-   sole new test, require it for a feasible complex flow, and name the replay artifact. If a
-   required failure needs isolation, record why E2E cannot cover it and all identified applicable
-   failure modes with expected outcomes before implementing.
+   requirements, cases and runnable checks (or a named review rubric). Specify inputs, outputs, errors and
+   invariants; exact bytes/order/paths/exits only when required. Map each requirement to a case/check.
+   Derive valid adversarial cases from the domain, separately from invalid inputs: serializers round-trip
+   delimiters, quotes, CR/LF and Unicode through the consumer. Expected results come from the contract,
+   never the implementation. Before editing, record intended supported producer/consumer runtimes and
+   available validation environments; no declared range means observed coverage only. Unavailable required
+   coverage stays unverified/blocked. Select the test type and evidence destination now: prefer E2E through
+   the real consumer as the sole new test, require it for a feasible complex flow, and name the replay
+   artifact. If a required failure needs isolation, record why E2E cannot cover it and all identified
+   applicable failure modes with expected outcomes before implementing.
 3. **Run when authorized.** Explicit PLAN+RUN consent suffices and persists across status questions; a PLAN-only request stops Ready. Record sufficient supplied anchors without reconfirming them. Ask only for a material product choice; delegated technical choices proceed.
-   Verify current inputs/dependencies/environment and protected fingerprints before editing.
-   Change only declared source and authorized artifacts. Test-first is the default for non-trivial
-   executable work; existing red tests suffice. Never add a unit test after implementing the
+   Verify current inputs/dependencies/environment and protected fingerprints before editing. Change only
+   declared source and authorized artifacts. Test-first is the default for non-trivial executable work;
+   existing red tests suffice. Never add a unit test after implementing the
    behavior it covers; a necessary isolated test follows its recorded failure-mode inventory and
-   precedes implementation. Add coverage
-   in new files when original tests are byte-protected. Preserve unrelated edits and exact specified
-   bytes, including delimiters and the final newline.
+   precedes implementation. Add coverage in new files when original tests are byte-protected. Preserve
+   unrelated edits and exact specified bytes, delimiters and final newline included.
    Apply self-documenting code: Clean Code + SOLID; no explanatory inline comments. Doc-comments
    belong on public surfaces only; put the why in commits/docs. Review smells, redundancy, SOLID
    and naming; an internal explanatory comment is a finding to fix by clarifying the code. A changed
@@ -48,19 +46,19 @@ multi-team/session coordination, uncertain integration or a shared public contra
 4. **Validate once per revision.** Use direct test commands or a checked script containing the
    complete compound validation. Every required assertion must propagate failure through a checked
    subprocess or explicit failure exit; `set -u`, `pipefail` or a final PASS alone is insufficient.
-   Capture exact argv/script, cwd, observed runtime, input hashes
-   before/after, output, child exit/timeout/signal and produced hashes. Before running the check,
-   choose an accessible durable export destination or use the [capture script](guides/evidence-capture.md).
-   Choose either capture mechanism; delivering raw evidence is required. Generated
-   receipts are evidence indexes: link them instead of retyping commands, output, clocks or hashes.
+   Capture exact argv/script, cwd, observed runtime, input hashes before/after, output, child
+   exit/timeout/signal and produced hashes. Before running the check, choose an accessible durable export
+   destination or the [capture script](guides/evidence-capture.md); either works, but raw evidence must be
+   delivered. Generated receipts are evidence indexes: link them instead of retyping commands, output,
+   clocks or hashes.
    Every E2E run produces a replayable artifact with its exact command or saved script, accessible
    fixtures, expected and observed results, runtime/environment, raw child result and hashes;
    a complete existing capture plus stable inputs may serve without duplication. Replay on a
    disposable copy or fresh destination, preserving the original raw record and fixtures.
-   One check may cover target, surrounding, affected integration and final deliverable obligations
-   if its actual coverage does. Reuse a sufficient successful check; do not add equivalent auxiliary
-   assertions or rerun it at closure without changed inputs or coverage. Deliverable acceptance still checks applicable packaging/rebuild and
-   consumers. Validators use disposable copies and never repair real outputs. Required review
+   One check may cover target, surrounding, affected integration and final deliverable obligations if its
+   actual coverage does. Reuse a sufficient successful check; add no equivalent auxiliary assertions and no
+   closure rerun without changed inputs or coverage. Deliverable acceptance still checks applicable
+   packaging/rebuild and consumers. Validators use disposable copies and never repair real outputs. Required review
    stays required; self-observation is not independent review. Unavailable isolation is unavailable
    evidence. An output PASS cannot override failure, and counts need no extra regex wrapper.
 5. **Recover or close.** Consume retained failed observations on resume; diagnose from their command,
@@ -86,8 +84,8 @@ multi-team/session coordination, uncertain integration or a shared public contra
    passes; otherwise this evaluated closure is blocked, with completed portions and the missing check
    named. An interrupted run remains observe-incomplete until its outcome is observed. Record the role
    outcome separately in resource usage; do not describe a blocked implementation as successful completion.
-   Make one closure write and respond. After closure,
-   don't start template lint, receipt recopying or housekeeping without a new change or failure.
+   Make one closure write and respond. After closure, start no template lint, receipt recopying or
+   housekeeping without a new change or failure.
 
 ## plan.md body
 
@@ -107,20 +105,20 @@ Gate: Lite
 - Reversal: {{documented revert; rollback/parity only for an applicable shipped path}}
 - State: {{Ready / running / blocked / complete and next action}}
 
-For discovery include Rounds and stop after the declared consecutive rounds converge against all
-prior findings. For experiments include Metric, Threshold and Rounds, plus an attempt journal of
-proposal/result/keep-or-rollback. Exhaustion blocks, not automatic acceptance. Omit inapplicable
-fields rather than creating empty sections. Questions and decisions use their own files when needed.
+Discovery includes Rounds and stops after the declared consecutive rounds converge against all prior
+findings. An experiment includes Metric, Threshold and Rounds, plus an attempt journal of
+proposal/result/keep-or-rollback; exhaustion blocks, never auto-accepts. Omit inapplicable fields rather than
+creating empty sections. Questions and decisions use their own files when needed.
 
 ## history.md body
 
 <a id="log"></a>
 # History
 
-Append one short kickoff entry with observed date/session, scope, decisions and next action.
-Append one closure entry with outcome, changed surfaces, requirement-to-receipt links, unresolved
-coverage and next action. This is a summary index, never reconstructed raw evidence. Historical
-entries remain byte-preserved; corrections are append-only. No Full report/board/Task files.
+Append one short kickoff entry (observed date/session, scope, decisions, next action) and one closure entry
+(outcome, changed surfaces, requirement-to-receipt links, unresolved coverage, next action): a summary index,
+never reconstructed raw evidence. Historical entries stay byte-preserved; corrections are append-only. No Full
+report/board/Task files.
 
 ## resource-usage.md body
 
@@ -135,8 +133,7 @@ Schema: tackle-observability/2
 Append start before substantive role work and one finish at role close, or observe-incomplete
 when an interruption is observed. Exactly one start and at most one terminal event are valid:
 start(running) → finish(success|failed|blocked|aborted) or observe-incomplete(incomplete).
-Use a stable unique Run ID and the same Task/Role. New ledgers
-contain this v2 table only. Unknown fields
+Use a stable unique Run ID and the same Task/Role. New ledgers contain this v2 table only. Unknown fields
 are n/a, never guessed. Tier is the observed model binding (fast/standard/frontier), not Lite/Full;
 an unavailable binding is n/a. Attempts counts failed implementation correction-validation cycles
 shared across actors/resumptions: initial validation, dispatches and repeated tests do not count.
@@ -150,8 +147,8 @@ Verification/Source link the existing receipt and outcome; don't transcribe its 
 **A validation end is not a role end.** An executor cannot observe its own future process termination:
 use At=n/a for that unobserved finish and name this limitation in Source. Only an external observer
 with the actual terminal event may supply its timestamp; never borrow the latest test clock.
-No exact telemetry, collector or model metadata is required to close a product task. Ledger
-recording remains informative. A successful test does not by itself establish product completion.
+No exact telemetry, collector or model metadata is required to close a product task; ledger recording stays
+informative. A successful test alone does not establish product completion.
 Where the harness exposes native usage telemetry, attempt the optional literal
 [`codex-native-usage.md`](guides/codex-native-usage.md) script (one example) at start and after an externally
 observed close. Link its receipt in Source, use only its directly observed configured binding

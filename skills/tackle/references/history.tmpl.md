@@ -1,27 +1,27 @@
 # History — {{TITLE}}
 
-**Append-only** history, ascending chronological order (newest at the bottom). One entry per
-session: `## YYYY-MM-DD · session N · <title>` with **Did / Decisions / Blockers / Next** and,
-at the end of the **newest** entry, a **State snapshot** sufficient to resume without
-re-reading history. Keep entries terse (append-only ≠ verbose). Never rewrite old entries. Each entry carries what a later session needs to resume, preserving material constraints and record references, and leads with the compact block — tasks touched, decisions by D-id, status deltas, verification commands + pass/fail. Reasoning and narrative route to `decisions.md` / `reference-docs/`; the history indexes them, it never re-narrates.
+**Append-only** history, oldest first (newest at the bottom). One terse entry per session:
+`## YYYY-MM-DD · session N · <title>` with **Did / Decisions / Blockers / Next** and, at the end of the
+**newest** entry, a **State snapshot** sufficient to resume without re-reading history. Never rewrite old
+entries. Each entry carries what a later session needs to resume, preserving material constraints and record references, and leads with the compact block — tasks touched, decisions by D-id, status deltas, verification commands + pass/fail. Reasoning and narrative route to `decisions.md` / `reference-docs/`; the history indexes them, it never re-narrates.
 Never log secrets. **The task board `task-board.md` is canonical current state; this file preserves original history.**
 
 **Archive policy** — the legacy ~400-line warning is workspace-overridable in `AGENTS.md`
-(`Log archive threshold: N`, lint row 13). An explicit archive request or a recorded policy within
-authorized RUN may move entries older than the last five sessions **verbatim** to `history-archive.md`,
-or indexed immutable segments when growth warrants them. STATUS never archives. Preserve original
-order, headings, event references, failed attempts and budgets; never edit moved entries. Retain
-the newest State snapshot and record before/after sizes once. Follow
-[recoverable maintenance](guides/context-lifecycle.md#maintenance-and-interruption); archival is
-not permission to retire verification data. Measure read, rewrite, and retained bytes separately.
+(`Log archive threshold: N`, lint row 13). An explicit archive request or a recorded policy within authorized
+RUN may move entries older than the last five sessions **verbatim** to `history-archive.md`, or to indexed
+immutable segments when growth warrants. STATUS never archives. Preserve original order, headings, event
+references, failed attempts and budgets; never edit moved entries. Retain the newest State snapshot and record
+before/after sizes once. Follow [recoverable maintenance](guides/context-lifecycle.md#maintenance-and-interruption);
+archival never permits retiring verification data. Measure read, rewrite and retained bytes separately.
 A session entry longer than the entry budget (120 lines, or `History entry budget: N` in `AGENTS.md`) is a lint row 13 warning: keep the entry to its compact block and route narrative to `decisions.md`.
 
 **Verification entries** — every "acceptance check passed/failed" claim carries:
 
-This block is a summary/index, never raw capture. Link the exact captured command and complete
-stdout/stderr/process result; do not reconstruct them from prose. Reuse one observation for all
-covered checks. Timestamps and model/effort come from actual observations or are `n/a`. Coordinated work uses this template. Focused work uses its self-contained plan/history/resource-usage
-procedure; Direct work keeps a check summary without instantiating this template.
+This block is a summary/index, never raw capture: link the exact captured command and complete
+stdout/stderr/process result, never reconstructed from prose. One observation serves all covered checks.
+Timestamps and model/effort come from actual observations or are `n/a`. Coordinated work uses this template;
+Focused work uses its self-contained plan/history/resource-usage procedure; Direct work keeps a check summary
+without instantiating it.
 
 ````
 **Verification record** — `the literal command`
@@ -35,9 +35,9 @@ revisions: input/code/config/dependency/contract `{{fingerprints or n/a}}`
 raw: `{{immutable raw check record path}}`
 ````
 
-No verification block ⇒ the claim is an assertion, and the task may not become Complete. Keep one immutable raw check
-record per validation; unknown telemetry stays `n/a`. See `references/guides/run.md` for
-correction counters, interrupted runs, integration evidence, and deliverable acceptance.
+No verification block ⇒ the claim is an assertion, and the task may not become Complete. Keep one immutable
+raw check record per validation; unknown telemetry stays `n/a`. `references/guides/run.md` covers correction
+counters, interrupted runs, integration evidence and deliverable acceptance.
 
 ---
 
@@ -82,6 +82,6 @@ output), the task becomes Blocked and the entry carries the escalation packet:
 - Checkpoint: {{authoritative state revision; last fully recorded event and hash; source membership}}
 - Active obligations: {{every `Open` `O-NN` id of the board's obligations table, comma-separated on this one line (`none` when there is none), then applicable old decisions, blockers, failure lineage and spent cycles}}
 
-Append a uniquely labelled continuation when a session resumes; do not duplicate session headings.
-Write changed events once, with stable references. Do not append the full plan, task board, repeated
-reasoning or duplicate command transcripts. Current-work projections are rebuilt separately.
+A resumed session appends a uniquely labelled continuation, never a duplicate session heading. Write changed
+events once, with stable references; never append the full plan, task board, repeated reasoning or duplicate
+command transcripts. Current-work projections are rebuilt separately.

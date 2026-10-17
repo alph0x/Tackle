@@ -4,7 +4,7 @@
 
 **Evolution:** {{enabled (YYYY-MM-DD) / disabled (YYYY-MM-DD)}}
 
-A profile stores hypotheses and directives distilled from retros. It is read during intake and updated only during the `retro` workflow. Nothing here is ever written silently.
+A profile stores hypotheses and directives distilled from retros, read during intake and updated only during the `retro` workflow; nothing here is ever written silently.
 
 ## Rules
 
@@ -17,17 +17,17 @@ A profile stores hypotheses and directives distilled from retros. It is read dur
 
 ## Hypotheses
 
-`-` entries describe what the profile has learned about decisions, defaults, or failure patterns.
-`confidence` is computed by `guides/retro.md`'s confidence script (Wilson lower bound over the
-entry's own `observations`), never typed by hand at write time. `id` never takes a task, decision or
-question shape (`[PTDQRCM]-?[0-9]{2}`) or the workspace slug — `H01` and similar are enough. A
-legacy entry with no `id` (prose `evidence: N✓/M✗`, or no confidence/evidence field at all) stays
-readable; it gains a permanent `id` only the next retro that touches it assigns one.
+`-` entries record what the profile learned about decisions, defaults or failure patterns. `confidence` is
+computed by `guides/retro.md`'s confidence script (Wilson lower bound over the entry's own `observations`),
+never typed by hand. `id` never takes a task, decision or question shape (`[PTDQRCM]-?[0-9]{2}`) or the
+workspace slug — `H01` and similar are enough. A legacy entry with no `id` (prose `evidence: N✓/M✗`, or no
+confidence/evidence field) stays readable and gains a permanent `id` only when the next retro touching it
+assigns one.
 
 - id: {{H-id}} · {{hypothesis text}} · confidence: {{computed}} (Wilson lower bound, z=1.96, n={{✓+✗}}) · observations: {{initiative}}:{{✓|✗|assumed}}@{{YYYY-MM-DD}}[; {{initiative}}:{{✓|✗|assumed}}@{{YYYY-MM-DD}} ...] · status: {{active|retired}}
 
 ## Directives
 
-`directive:` entries amend a named template or guide section. Apply them to the named current section only when compatible with user instructions and the current contract. Select by applicability, version, evidence and supersession before confidence; a historical active hypothesis cannot override current rules. Incompatible entries stay preserved and unused until a confirmed retro disposition. A directive tagged `applies_to:` scopes to an action moment (e.g. `commit-message`, `pre-push`, `release`) instead of a template section; it binds when that action is about to happen, not at instantiation. `id`, `confidence` and `observations` follow the same computed, mechanically parseable format as Hypotheses above.
+`directive:` entries amend a named template or guide section and apply to the named current section only when compatible with user instructions and the current contract. Select by applicability, version, evidence and supersession before confidence; a historical active hypothesis cannot override current rules. Incompatible entries stay preserved and unused until a confirmed retro disposition. A directive tagged `applies_to:` scopes to an action moment (e.g. `commit-message`, `pre-push`, `release`) instead of a template section and binds when that action is about to happen, not at instantiation. `id`, `confidence` and `observations` use the computed, mechanically parseable Hypotheses format.
 
 - id: {{A-id}} · directive: {{concise instruction}} · target: {{template/guide §section}} · applies_to: {{action moment — optional}} · confidence: {{computed}} (Wilson lower bound, z=1.96, n={{✓+✗}}) · observations: {{initiative}}:{{✓|✗|assumed}}@{{YYYY-MM-DD}}[; {{initiative}}:{{✓|✗|assumed}}@{{YYYY-MM-DD}} ...] · status: {{active|retired}}

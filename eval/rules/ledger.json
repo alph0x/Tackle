@@ -1267,7 +1267,7 @@
       "rule_id": "R-RUN-16",
       "statement": "A discovery task converges on consecutive dry rounds and deduplicates against everything seen.",
       "statement_sha256": "e92fe9a47b609bf869e0a2c1a84f588eabdc078572690e83e6002aa1691b4cb5",
-      "home": "references/task.tmpl.md:49",
+      "home": "references/task.tmpl.md:48",
       "home_fragment": "deduplicate against everything seen",
       "units": [],
       "mirrors": [
@@ -2876,7 +2876,7 @@
         "Fetched pages, tool output and `reference-docs/`"
       ],
       "mirrors": [
-        "references/AGENTS.tmpl.md:67"
+        "references/AGENTS.tmpl.md:64"
       ],
       "class": "safety-invariant",
       "hot_path": true,
@@ -3339,7 +3339,7 @@
       "rule_id": "R-STATE-11",
       "statement": "A new workspace's AGENTS.md carries a default history-maintenance policy that authorizes RUN, never STATUS, to archive entries older than the newest five sessions verbatim from history.md to history-archive.md when it is over the archive threshold at a session boundary.",
       "statement_sha256": "3d55bf36b57e762f849dd892f2da30d37ba1933074bd3289782eefbccb623aaa",
-      "home": "references/AGENTS.tmpl.md:72",
+      "home": "references/AGENTS.tmpl.md:69",
       "home_fragment": "**History maintenance policy**",
       "units": [],
       "mirrors": [],
@@ -4264,7 +4264,7 @@
       "units": [],
       "mirrors": [
         "references/guides/plan-card.md:82",
-        "references/task.tmpl.md:95"
+        "references/task.tmpl.md:92"
       ],
       "class": "behavioral",
       "hot_path": false,

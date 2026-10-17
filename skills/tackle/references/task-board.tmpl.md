@@ -2,23 +2,21 @@
 
 Schema: tackle-workspace/5
 
-**Canonical current task state.** `task-board.md` owns task status; the plan owns requirements and
-coverage; history records original events. The authorized coordinator updates this board. STATUS,
-Next and plain Resume inspect only. An older board is migrated before it runs
-([forward only](guides/migrate.md#forward-only)).
+**Canonical current task state.** `task-board.md` owns task status, the plan requirements and coverage,
+history the original events. The authorized coordinator updates this board; STATUS, Next and plain Resume
+inspect only. An older board is migrated before it runs ([forward only](guides/migrate.md#forward-only)).
 
 States: Draft, Ready to run, In progress, Checking, Complete, Blocked, Interrupted, Skipped,
-Unverifiable, Waiting on owner. The Status cell contains exactly one state token, without a reason suffix;
-put blocker detail in Verification and `questions.md`. Only current readiness supports Ready to run,
-cited in Verification as `ready: <reference>`. Complete requires task, related
-regression, affected integration and mandatory review results. Initiative completion additionally
-requires deliverable acceptance. Skipped needs an authorized reason; unavailable required checks
-stay Unverifiable. Interrupted work must be reconciled before repeating an effect. Waiting on owner
-names the awaited action in Verification as `waiting: <reference>` and differs from Blocked.
+Unverifiable, Waiting on owner. The Status cell holds exactly one state token, without a reason suffix;
+blocker detail goes in Verification and `questions.md`. Only current readiness supports Ready to run, cited
+in Verification as `ready: <reference>`. Complete requires task, related regression, affected integration
+and mandatory review results; initiative completion also requires deliverable acceptance. Skipped needs an
+authorized reason; unavailable required checks stay Unverifiable. Interrupted work must be reconciled before
+repeating an effect. Waiting on owner names the awaited action in Verification as `waiting: <reference>` and
+differs from Blocked.
 
-Verification references the task report, which records method, result, actual actor/independence,
-input revisions and accessible raw records. A label is not a passing record; never infer an
-independent reviewer from it.
+Verification references the task report (method, result, actual actor/independence, input revisions,
+accessible raw records). A label is not a passing record; never infer an independent reviewer from it.
 
 | Task | What | Brief | Depends on | Status | Verification |
 |---|---|---|---|---|---|

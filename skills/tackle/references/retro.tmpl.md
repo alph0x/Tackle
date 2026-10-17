@@ -1,10 +1,9 @@
 # Lessons review — {{TITLE}}
 
-Optional PLAN learning review. This artifact records
-observed causes and lessons without changing the execution procedure. Profile and reference-plan writes
-remain separately confirmed and owned by the `retro` workflow.
+Optional PLAN learning review: it records observed causes and lessons without changing the execution
+procedure. Profile and reference-plan writes stay separately confirmed and owned by the `retro` workflow.
 
-Written at initiative close (or mid-flight as a partial retro — say so here) by mining `task-board.md` + `history.md`. Every metric is mechanical: run the recipe from the workspace root, paste the value. In a Focused (Lite) plan (no `task-board.md`), task-board metrics report `n/a`; history-derived ones stand. Note: comprehension debt counts tasks that reached Complete with no human review recorded in the history.
+Written at initiative close (or mid-flight as a partial retro — say so here) by mining `task-board.md` + `history.md`. Every metric is mechanical: run the recipe from the workspace root, paste the value. In a Focused (Lite) plan (no `task-board.md`), task-board metrics report `n/a`; history-derived ones stand. Comprehension debt counts tasks that reached Complete with no human review recorded in the history.
 
 ## Metrics
 
@@ -22,9 +21,9 @@ Written at initiative close (or mid-flight as a partial retro — say so here) b
 | **Totals and recommendations** | Gate totals/rankings at 100% comparable coverage; gate tier/effort recommendations at 100% plus at least three like-for-like completed runs | {{...}} |
 
 
-These history searches identify candidates, not automatic event counts: exclude examples, checkpoints and duplicate summaries; pair original task events and dates. Use the validated chronological history index when archives exist. Missing, ambiguous or unsupported history makes the affected metric `n/a`, never an inferred zero.
+History searches find candidates, not automatic event counts: exclude examples, checkpoints and duplicate summaries; pair original task events and dates; use the validated chronological history index when archives exist. Missing, ambiguous or unsupported history makes the affected metric `n/a`, never an inferred zero.
 
-Resource usage metrics report `n/a` when the workspace has no `resource-usage.md` (same convention as Focused task-board metrics). Missing values remain `n/a`; no recipe prints an invalid zero-over-zero denominator.
+Resource usage metrics report `n/a` without a `resource-usage.md`, as Focused task-board metrics do. Missing values stay `n/a`; no recipe prints an invalid zero-over-zero denominator.
 
 ## What worked
 
@@ -41,14 +40,14 @@ Resource usage metrics report `n/a` when the workspace has no `resource-usage.md
 <a id="profile-candidates"></a>
 ## Preferences and lessons candidates
 
-Filled only when evolution is enabled — see the learning-loop section of `guides/retro.md`. Every candidate requires explicit, batched user confirmation before being recorded anywhere, with a stable `id` and a computed confidence (never proposed or hand-set).
+Filled only when evolution is enabled (learning-loop section of `guides/retro.md`). Every candidate requires explicit, batched user confirmation before being recorded anywhere, with a stable `id` and a computed confidence (never proposed or hand-set).
 
 - {{none}}
 
 <a id="plan-archetype-candidate"></a>
 ## Reference plan candidate
 
-Filled only when the decomposition held — see the archetype section of `guides/retro.md`; format fixed by `references/archetypes/README.md`. Like profile candidates: explicit, batched user confirmation before writing; only the `retro` workflow writes archetypes.
+Filled only when the decomposition held (archetype section of `guides/retro.md`; format fixed by `references/archetypes/README.md`). Like profile candidates: explicit, batched user confirmation before writing; only the `retro` workflow writes archetypes.
 
 - **Name**: {{kebab-case name}}
 - **Summary**: {{one line}}
