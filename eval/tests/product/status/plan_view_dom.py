@@ -57,7 +57,7 @@ def page_tree(page):
 
 def page_scripts(page):
     found = {}
-    for name, ident in (('controller', 'plan-view-controller'), ('client', 'plan-view-live-client')):
+    for name, ident in (('controller', 'plan-view-controller'), ('client', 'plan-view-freshness')):
         match = re.search(r'<script id="%s">(.*?)</script>' % ident, page, re.S)
         assert match, 'the generated page has no %s script' % ident
         found[name] = match.group(1)

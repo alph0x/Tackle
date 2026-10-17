@@ -226,7 +226,7 @@ h3,h4,h5{text-wrap:balance}
 .tb-figure>span:last-child{flex-basis:100%;margin-top:10px;font:600 11.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}
 .tb-strip{display:grid;grid-template-columns:repeat(var(--cells,20),minmax(0,24px));justify-content:start;gap:4px;padding:14px 16px 12px}
 .tb-cell{display:block;aspect-ratio:1;border:1.5px solid var(--ink);transition:transform .12s}
-.tb-cell:hover,.tb-cell.on{transform:translateY(-3px)}
+.tb-cell:hover{transform:translateY(-3px)}
 .tb-cell.on{outline:2px solid var(--accent);outline-offset:1px}
 .tb-states{list-style:none;margin:0;padding:2px 16px 16px;display:flex;flex-wrap:wrap;gap:6px 18px;font:600 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
 .tb-states li{display:flex;align-items:center;gap:7px}
@@ -730,9 +730,14 @@ details>summary:hover{color:var(--accent-ink)}
   .lens-in .lens-verb::after{content:" ↓"}
   .lens-out .lens-verb::before{content:"↓ "}
 }
-.mermaid-tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 0 12px}
-.mermaid-status{margin:0;min-height:1em;font:500 11.5px/1.4 var(--mono);color:var(--ink2)}
-.mermaid-text{display:block;flex-basis:100%;width:100%;min-height:8em;margin:8px 0 0;padding:10px;font:12px/1.5 var(--mono);color:var(--ink);background:var(--surface);border:1px solid var(--line)}
+/* Action messages and the copy fallback sit outside the control row, so no action moves the controls. */
+.canvas-tools{position:relative}
+.mermaid-tools{position:relative;display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 0 12px}
+.mermaid-status{position:absolute;top:calc(100% + 4px);right:0;z-index:4;margin:0;padding:0 4px;white-space:nowrap;pointer-events:none;background:var(--bg);font:500 11.5px/1.4 var(--mono);color:var(--ink2)}
+.mermaid-status:empty{display:none}
+.mermaid-text{position:absolute;top:calc(100% + 44px);right:0;z-index:4;display:block;width:min(36rem,calc(100vw - 2 * var(--gutter)));min-height:8em;margin:0;padding:10px;font:12px/1.5 var(--mono);color:var(--ink);background:var(--surface);border:1px solid var(--line)}
+#clear-trace{position:absolute;top:calc(100% + 4px);left:0;z-index:4}
+@media (min-width:761px){.inspector{height:14rem;overflow-y:auto}}
 @media (max-width:420px){
   .tb-grid{grid-template-columns:1fr}
   .tb-grid>div:nth-child(odd){border-right:0}
@@ -946,7 +951,14 @@ details>summary:hover{color:var(--accent-ink)}
         if (state.chosen || !canvas.clientWidth) { return; }
         apply(Math.max(0.72, fitScale()));
       }
+      function hold() {
+        if (!canvas.style.height && canvas.getBoundingClientRect) {
+          var height = canvas.getBoundingClientRect().height;
+          if (height) { canvas.style.height = height + 'px'; }
+        }
+      }
       function zoomAt(scale, clientX, clientY) {
+        hold();
         var rect = canvas.getBoundingClientRect ? canvas.getBoundingClientRect() : { left: 0, top: 0, width: canvas.clientWidth, height: canvas.clientHeight };
         var px = clientX === undefined ? rect.width / 2 : clientX - rect.left;
         var py = clientY === undefined ? rect.height / 2 : clientY - rect.top;
@@ -962,7 +974,7 @@ details>summary:hover{color:var(--accent-ink)}
             var kind = button.getAttribute('data-zoom');
             if (kind === 'in') { zoomAt(state.scale * 1.2); }
             else if (kind === 'out') { zoomAt(state.scale / 1.2); }
-            else { state.chosen = true; apply(fitScale()); canvas.scrollLeft = 0; canvas.scrollTop = 0; }
+            else { hold(); state.chosen = true; apply(fitScale()); canvas.scrollLeft = 0; canvas.scrollTop = 0; }
           });
         });
       }
@@ -983,7 +995,7 @@ details>summary:hover{color:var(--accent-ink)}
         if (event.target !== canvas) { return; }
         if (event.key === '+' || event.key === '=') { event.preventDefault(); zoomAt(state.scale * 1.2); }
         else if (event.key === '-' || event.key === '_') { event.preventDefault(); zoomAt(state.scale / 1.2); }
-        else if (event.key === '0') { event.preventDefault(); state.chosen = true; apply(fitScale()); }
+        else if (event.key === '0') { event.preventDefault(); hold(); state.chosen = true; apply(fitScale()); }
       });
       var drag = null, touches = {}, pinch = null;
       function distance() {
@@ -1305,6 +1317,14 @@ details>summary:hover{color:var(--accent-ink)}
       chip.addEventListener('click', function () {
         var value = chip.getAttribute('data-filter');
         chips.forEach(function (other) { other.setAttribute('aria-pressed', other === chip ? 'true' : 'false'); });
+        var list = one('.tasks');
+        if (list && list.style) {
+          if (value === 'all') { list.style.minHeight = ''; }
+          else if (!list.style.minHeight && list.getBoundingClientRect) {
+            var height = list.getBoundingClientRect().height;
+            if (height) { list.style.minHeight = height + 'px'; }
+          }
+        }
         var shown = 0;
         all('.task').forEach(function (card) {
           var keep = value === 'all' || card.getAttribute('data-status') === value;
@@ -1656,6 +1676,7 @@ details>summary:hover{color:var(--accent-ink)}
         link.setAttribute('download', file);
         group.appendChild(link);
         if (typeof link.click === 'function') { link.click(); }
+        if (link.parentNode) { link.parentNode.removeChild(link); }
         if (window.URL.revokeObjectURL) { window.URL.revokeObjectURL(url); }
         announce(group, group.getAttribute('data-downloaded').replace('{file}', file));
       });
@@ -1665,7 +1686,7 @@ details>summary:hover{color:var(--accent-ink)}
   function fileView(view) {
     var doc = view.doc, root = view.root, all = view.all, one = view.one;
     var fileRevision = one('meta[name="tackle-file-revision"]');
-    if (fileRevision && !one('meta[name="tackle-live-revision"]')) {
+    if (fileRevision) {
       var revision = fileRevision.getAttribute('content');
       var stampName = fileRevision.getAttribute('data-stamp');
       var pageName = fileRevision.getAttribute('data-page');
@@ -1814,7 +1835,7 @@ details>summary:hover{color:var(--accent-ink)}
   });
 })();
 </script>
-<script id="plan-view-live-client">
+<script id="plan-view-freshness">
 (function(){
   'use strict';
   var doc=document,root=doc.documentElement,es=/^es/.test(root.lang||''),data;

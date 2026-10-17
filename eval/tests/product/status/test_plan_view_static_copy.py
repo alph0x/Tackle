@@ -4,7 +4,7 @@ The shipped recipe writes a page for a small fixture; the page's own controller 
 minimal DOM (plan_view_dom.js) with a scripted protocol and scripted stamp loads. The oracles cover the notice
 element (hidden by default, its own element outside the freshness line and the print reports), its display
 rule (protocol check once at start, two consecutive failed stamp loads, a later success), its texts (page
-language, no server suggestion), the live-producer page and a mutation that never toggles the notice. Real
+language, no server suggestion) and a mutation that never toggles the notice. Real
 browser rendering, the host's snapshot view and real stamp loading are not observed.
 """
 import re
@@ -60,15 +60,13 @@ assert.ok(!notice(env).hidden);
 """
 
 
-def render(lang=None, live=False):
+def render(lang=None):
     with tempfile.TemporaryDirectory() as tmp:
         result, out = run_recipe(tmp, fixture(), 'static-copy')
         assert result.returncode == 0, result.stdout + result.stderr
         page = out.read_text(encoding='utf-8')
     if lang:
         page = re.sub(r'<html lang="[^"]*"', '<html lang="%s"' % lang, page, count=1)
-    if live:
-        page = page.replace('<meta name="tackle-file-revision"', '<meta name="tackle-live-revision" content="live-revision-a"><meta name="tackle-file-revision"', 1)
     return page
 
 
@@ -132,13 +130,6 @@ env.document.hidden = false;
 env.tick(); env.fail();
 assert.ok(!notice(env).hidden, 'the second real failure shows it');
 """)
-
-    def test_the_live_producer_page_never_shows_the_notice(self):
-        self.run_js(r"""
-const env = start({ protocol: 'data:' });
-assert.ok(notice(env).hidden);
-assert.strictEqual(env.intervals.length, 0, 'the file view does not run on the live page');
-""", page=render(live=True))
 
     def test_the_text_follows_the_page_language_and_suggests_no_server(self):
         self.run_js(r"""

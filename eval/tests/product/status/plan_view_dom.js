@@ -89,6 +89,13 @@ class Element {
     this.childNodes.push(node);
     return node;
   }
+  removeChild(node) {
+    const index = this.childNodes.indexOf(node);
+    if (index < 0) { throw new Error('removeChild: not a child'); }
+    this.childNodes.splice(index, 1);
+    node.parentNode = null;
+    return node;
+  }
   contains(node) { for (let n = node; n; n = n.parentNode) { if (n === this) { return true; } } return false; }
   compoundMatches(c) {
     if (c.tag && c.tag !== this.tagName) { return false; }
