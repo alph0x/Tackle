@@ -1,6 +1,6 @@
 """Install inventory: the shipped install stays thin after relocating maintainer-only content.
 
-Permanent checks read the working tree. The shipped install (``SKILL.md`` plus ``references/``)
+Permanent checks read the working tree. The shipped install (``SKILL.md``, ``references/`` and ``scripts/``)
 carries none of: the changelog, the historical migration checklists, Tackle's own release and
 self-lint gates, or the unreferenced vendor collectors and validator example. Every relative link
 in the listed files resolves, and the self-lint gates are silent.
@@ -208,7 +208,7 @@ class InstallInventoryTests(unittest.TestCase):
         self.assertTrue((ROOT / 'MAINTAINING.md').is_file())
         self.assertTrue((ROOT / 'maintaining/migrations.md').is_file())
         # Confirms the install artifact boundary is unaffected: update.md's own gate 6 scope is
-        # exactly SKILL.md + references/, never repo-root MAINTAINING.md or maintaining/.
+        # exactly SKILL.md, references/ and scripts/, never repo-root MAINTAINING.md or maintaining/.
         manifest = (INSTALL / 'references/guides/update.md').read_text(encoding='utf-8')
         self.assertNotIn('MAINTAINING.md', manifest)
         self.assertNotIn('maintaining/', manifest)
@@ -270,6 +270,8 @@ class RecipeManifestTests(unittest.TestCase):
         self.root = Path(tmp.name)
         shutil.copytree(ROOT / 'skills/tackle/references/recipes',
                         self.root / 'skills/tackle/references/recipes')
+        shutil.copytree(ROOT / 'skills/tackle/scripts', self.root / 'skills/tackle/scripts',
+                        ignore=shutil.ignore_patterns('__pycache__'))
 
     def run_gate(self, root=None):
         command = recipe_manifest_gate(self)
@@ -302,9 +304,9 @@ class RecipeManifestTests(unittest.TestCase):
         self.assertEqual(self.run_gate(root=ROOT), [])
 
     def test_drifted_hash_is_named(self):
-        path = self.recipe('correction-lineage.md')
+        path = self.recipe('controlled-writing.md')
         path.write_bytes(path.read_bytes() + b'\n')
-        self.assert_one_finding('correction-lineage.md')
+        self.assert_one_finding('controlled-writing.md')
 
     def test_nested_hash_drift_is_named(self):
         path = self.recipe('migrate/schema.md')
@@ -330,7 +332,7 @@ class RecipeManifestTests(unittest.TestCase):
         self.assert_one_finding('requirements-base.md')
 
     def test_one_line_per_problem(self):
-        path = self.recipe('correction-lineage.md')
+        path = self.recipe('controlled-writing.md')
         path.write_bytes(path.read_bytes() + b'\n')
         self.drop_row('plan-view.md')
         lines = self.run_gate()

@@ -62,15 +62,18 @@ class MigrationContract(unittest.TestCase):
         self.assertNotIn("-execute-canonical-lint-faithfully", headings)
         self.assertNotIn("missing-heading", headings)
 
-    def test_install_is_markdown_only_and_links_resolve(self):
+    def test_install_is_markdown_and_scripts_and_links_resolve(self):
         with tempfile.TemporaryDirectory() as temp:
             install = Path(temp) / "skill"
             install.mkdir()
             shutil.copy2(INSTALL / "SKILL.md", install / "SKILL.md")
             shutil.copytree(INSTALL / "references", install / "references")
+            shutil.copytree(INSTALL / "scripts", install / "scripts",
+                            ignore=shutil.ignore_patterns("__pycache__"))
             files = list(install.rglob("*"))
             self.assertTrue(files)
-            self.assertTrue(all(p.is_dir() or p.suffix == ".md" for p in files))
+            self.assertTrue(all(p.is_dir() or p.suffix == ".md" for p in (install / "references").rglob("*")))
+            self.assertTrue(all(p.is_dir() or p.suffix in (".md", ".py") for p in (install / "scripts").rglob("*")))
             text = "\n".join(p.read_text() for p in install.rglob("*.md"))
             self.assertNotIn("docs/plans/tackle-plan-run", text)
             for source in install.rglob("*.md"):

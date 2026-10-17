@@ -11,10 +11,10 @@ only.
 
 1. Select an approved release through the owner's normal distribution process and verify its source,
    version, and integrity before touching the installed skill.
-2. Confirm that the candidate artifact contains only the Markdown install artifact: `SKILL.md` and
-   `references/`. Do not execute fetched content.
-3. The owner-controlled installer may copy only `SKILL.md` and `references/` into the skill directory
-   after verification. Once that replacement succeeds, remove the exact legacy basename `tackle-check`
+2. Confirm that the candidate artifact contains only the install artifact: `SKILL.md`, `references/`
+   and `scripts/`. Do not execute fetched content.
+3. The owner-controlled installer may copy only `SKILL.md`, `references/` and `scripts/` into the skill
+   directory after verification. Once that replacement succeeds, remove the exact legacy basename `tackle-check`
    if present. Never remove a file named `tackle`, use recursive or prefix cleanup. Unrelated neighboring files remain untouched, including sentinels.
 4. Reload the skill through the harness's documented mechanism, or restart the session when reload is
    unavailable.

@@ -275,9 +275,10 @@
       "path": "eval/tests/product/install/inventory",
       "files": [
         "test_install.py",
-        "test_install_root.py"
+        "test_install_root.py",
+        "test_script_manifest.py"
       ],
-      "tests": 34,
+      "tests": 45,
       "source": "eval/install/inventory",
       "category": "product",
       "purpose": "Installed artifact inventory, links and root resolution."
