@@ -45,6 +45,8 @@ reads it only when the card sends it there, so none of it counts.
   its mandatory linked section. The section remains counted; the counting algorithm is unchanged.
   10.0 raises the chain limit to the measured 4696 for the scripts consent wording: `SKILL.md`'s consent
   sentence and `run.md`'s adversary-check line now name the scripts under `scripts/`.
+  It then raises the chain limit to the measured 4703 because `SKILL.md` now states that a System One
+  judgment goes through the host's `typesafe-ai` skill and that importing a script needs consent.
 - `--card <path>` measures another file as the card. It showed the old route: with `run.md` as the card,
   the chain was 13,722 words.
 

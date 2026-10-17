@@ -90,7 +90,7 @@
       "files": [
         "test_capture.py"
       ],
-      "tests": 9,
+      "tests": 10,
       "source": "eval/run/usage",
       "category": "product",
       "purpose": "Native usage-event capture and lifecycle accounting."
@@ -173,6 +173,7 @@
         "test_awk_coverage.py",
         "test_row8_wrap.py",
         "test_row8_repositories.py",
+        "test_row8_symlinks.py",
         "test_tier_escalation.py",
         "test_effort_only_deviation.py",
         "test_forward_only.py",
@@ -181,7 +182,7 @@
         "test_lifecycle_semantics.py",
         "test_obligations_and_entry_budget.py"
       ],
-      "tests": 115,
+      "tests": 118,
       "source": "eval/lint/rows",
       "category": "product",
       "purpose": "Canonical lint rows, formats, severities, AWK variants, lifecycle outcomes, clock coverage and Attempts evidence."
@@ -203,7 +204,7 @@
       "tests": 107,
       "source": "eval/templates",
       "category": "product",
-      "purpose": "Template fields, observed model routing, capability recovery and compiled briefs. Public System One reference recipe admission, workspace consent, normalized transport, confidence and provenance. Optional System One shell detection, real consent persistence, SDK serialization, fallback and bounded history/intake consumers."
+      "purpose": "Template fields, observed model routing, capability recovery and compiled briefs. The System One decision script's admission, workspace consent, normalized transport, confidence and provenance. The System One state script's consent persistence, caller-supplied client, SDK serialization, fallback and bounded history/intake consumers."
     },
     {
       "path": "eval/tests/tooling/protocol-v2",

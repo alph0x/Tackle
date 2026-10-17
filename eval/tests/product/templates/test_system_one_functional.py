@@ -1,28 +1,25 @@
-"""Functional consumer of the public Markdown System One reference recipe."""
+"""Functional consumer of the shipped System One decision script, scripts/system_one_decide.py."""
 import ast
+import importlib.util
 from pathlib import Path
 import unittest
 
 ROOT = Path(__file__).resolve().parents[4]
-GUIDE = ROOT / "skills/tackle/references/guides/system-one.md"
-ANCHOR = '<a id="system-one-functional-recipe"></a>\n```python\n'
+SCRIPT = ROOT / "skills/tackle/scripts/system_one_decide.py"
 RESULT_KEYS = {"judgment", "source", "reason", "state", "question", "model", "confidence"}
 THRESHOLDS = {"resume-selection": 0.6, "failure-class": 0.8,
               "no-progress": 0.8, "intake-size": 0.8}
 
 
 def recipe_source():
-    text = GUIDE.read_text(encoding="utf-8")
-    assert text.count('id="system-one-functional-recipe"') == 1
-    assert text.count("```python\n") == 1
-    assert text.count(ANCHOR) == 1, "anchor immediately precedes the sole Python block"
-    tail = text.split(ANCHOR)[1]
-    assert tail.count("\n```") == 1
-    return tail.split("\n```")[0]
+    text = SCRIPT.read_text(encoding="utf-8")
+    assert "```" not in text, "the script is plain Python"
+    return text
 
 
 def load_recipe(source=None):
-    source = recipe_source() if source is None else source
+    shipped = source is None
+    source = recipe_source() if shipped else source
     tree = ast.parse(source)
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
@@ -32,8 +29,14 @@ def load_recipe(source=None):
             assert [(alias.name, alias.asname) for alias in node.names] == [("isfinite", None)]
         if isinstance(node, ast.Name):
             assert node.id not in {"open", "eval", "exec", "__import__", "input"}
+    if shipped:
+        spec = importlib.util.spec_from_file_location("system_one_decide", SCRIPT)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        assert callable(module.system_one_decide)
+        return module.system_one_decide
     namespace = {"__name__": "system_one_reference"}
-    exec(compile(source, str(GUIDE), "exec"), namespace)
+    exec(compile(source, str(SCRIPT), "exec"), namespace)
     assert callable(namespace["system_one_decide"])
     return namespace["system_one_decide"]
 

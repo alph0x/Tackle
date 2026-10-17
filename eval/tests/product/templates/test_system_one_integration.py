@@ -1,9 +1,10 @@
-"""I1-I8: extracted integration consumers, concrete faults and valid neighbors.
+"""I1-I8: the shipped state script, scripts/system_one_state.py, its concrete faults and valid neighbors.
 
-Detection/consent fixtures exercise real shell/files; SDK present uses the official
-serializer with fictitious auth/MockTransport. Absent SDK exercises the local
-fallback. The scoped recorded acceptance requires SDK present; this is not live evidence.
-History/route faults target actual consumers, never a copied decision algorithm.
+Consent fixtures exercise real files; SDK present uses the official serializer with fictitious
+auth/MockTransport through a caller-built client factory. Absent SDK or absent factory exercises the
+local fallback. The scoped recorded acceptance requires SDK present; this is not live evidence.
+History/route faults target actual consumers, never a copied decision algorithm. The configuration
+signal is a presence check the agent performs under the guide; no detection program ships.
 """
 import ast
 import hashlib
@@ -12,8 +13,6 @@ import json
 import os
 from pathlib import Path
 import re
-import ssl
-import subprocess
 import sys
 import tempfile
 from types import SimpleNamespace
@@ -22,23 +21,25 @@ from unittest.mock import patch
 from test_system_one_functional import load_recipe
 
 ROOT = Path(__file__).resolve().parents[4]
-RECIPE = ROOT / 'skills/tackle/references/recipes/system-one.md'
+SCRIPT = ROOT / 'skills/tackle/scripts/system_one_state.py'
+GUIDE = ROOT / 'skills/tackle/references/guides/system-one.md'
 CLASSES = {'implementation', 'missing or ambiguous requirement', 'incomplete output',
            'required edge case', 'dependency or integration', 'contradictory spec',
            'validator', 'environment', 'capability', 'undetermined'}
 
 
-def block(anchor, language):
-    text = RECIPE.read_text()
-    marker = f'<a id="{anchor}"></a>\n```{language}\n'
-    assert text.count(marker) == 1
-    return text.split(marker)[1].split('\n```')[0]
+def script_source():
+    return SCRIPT.read_text()
 
 
 def load_integration(source=None):
-    text = block('system-one-integration', 'py') if source is None else source
+    if source is None:
+        spec = importlib.util.spec_from_file_location('system_one_state', SCRIPT)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return vars(module)
     ns = {'__name__': 'system_one_integration'}
-    exec(compile(text, str(RECIPE), 'exec'), ns)
+    exec(compile(source, str(SCRIPT), 'exec'), ns)
     return ns
 
 
@@ -75,64 +76,13 @@ class SystemOneIntegration(unittest.TestCase):
             return SimpleNamespace(system_one=send, close=lambda: None)
         return factory
 
-    def detect(self, setup=None):
-        project = self.root / 'project'
-        project.mkdir(exist_ok=True)
-        home = self.root / 'home'
-        home.mkdir(exist_ok=True)
-        bindir = self.root / 'bin'
-        bindir.mkdir(exist_ok=True)
-        python = bindir / 'python3'
-        python.write_text('#!/bin/sh\nexec '+str(Path(sys.executable))+' -S "$@"\n')
-        python.chmod(0o755)
-        env = {'PATH': str(bindir)+':/usr/bin:/bin', 'HOME': str(home), 'PYTHONPATH': ''}
-        if setup:
-            setup(project, home, env)
-        p = subprocess.run(['/bin/sh', '-c', block('system-one-detection', 'sh'),
-                            'system-one', str(self.workspace)], cwd=project,
-                           env=env, capture_output=True, timeout=5)
-        self.assertEqual(p.returncode, 0, p.stderr)
-        self.assertEqual(p.stderr, b'')
-        self.assertRegex(p.stdout.decode(), r'^system-one: (?:none|detected [a-z,]+)\n$')
-        return p.stdout.decode()
-
-    def test_detection_presence_and_all_four_signals(self):
-        self.assertEqual(self.detect(), 'system-one: none\n')
-        for value in ['', 'fictitious-credential-never-print']:
-            with self.subTest(environment=value):
-                out = self.detect(lambda p,h,e: e.update({'TYPESAFE_API_KEY':value}))
-                self.assertIn('environment', out)
-                self.assertNotIn('fictitious-credential', out)
-        with self.subTest(skill=True):
-            self.assertIn('skill', self.detect(lambda p,h,e: (h/'.agents/skills/typesafe-ai').mkdir(parents=True)))
-        with self.subTest(SDK=True):
-            sdk = self.root/'fake-sdk/typesafe_sdk'
-            sdk.mkdir(parents=True)
-            (sdk/'__init__.py').write_text('raise RuntimeError("must not import SDK")')
-            self.assertIn('sdk', self.detect(lambda p,h,e: e.update(PYTHONPATH=str(sdk.parent))))
-        for name in ['AGENTS.md', 'CLAUDE.md']:
-            for phrase in ['TypeSafe System One', 'tYpEsAfE sYsTeM oNe']:
-                with self.subTest(file=name, phrase=phrase):
-                    self.assertIn('instructions', self.detect(lambda p,h,e: (p/name).write_text(phrase)))
-                    (self.root/'project'/name).unlink()
-        (self.workspace/'AGENTS.md').write_text('TypeSafe System One')
-        self.assertIn('instructions', self.detect())
-
-    def test_detection_refuses_nonregular_partial_and_other_inputs(self):
-        for phrase in ['TypeSafe', 'System One', 'TypeSafe System Ones', 'OtherSystem One']:
-            with self.subTest(phrase=phrase):
-                self.assertEqual(self.detect(lambda p,h,e: (p/'AGENTS.md').write_text(phrase)), 'system-one: none\n')
-        (self.root/'project/AGENTS.md').unlink()
-        self.assertEqual(self.detect(lambda p,h,e: (p/'.env').write_text('TYPESAFE_API_KEY' + '=' + 'fictitious')), 'system-one: none\n')
-        outside = self.root/'outside'
-        outside.write_text('TypeSafe System One')
-        (self.root/'project/AGENTS.md').symlink_to(outside)
-        self.assertEqual(self.detect(), 'system-one: none\n')
-        (self.root/'project/AGENTS.md').unlink()
-        os.mkfifo(self.root/'project/CLAUDE.md')
-        self.assertEqual(self.detect(), 'system-one: none\n')
-        source = block('system-one-detection','sh')
-        self.assertNotRegex(source, r'(?i)curl|wget|requests|\.env|printenv|echo.*TYPESAFE_API_KEY')
+    def test_configuration_signal_is_presence_only_without_a_home_probe(self):
+        guide=' '.join(GUIDE.read_text().split())
+        self.assertIn('A configuration signal is the host offering the `typesafe-ai` skill, the presence of the '
+                      '`TYPESAFE_API_KEY` environment variable, or the case-insensitive phrase `TypeSafe System One` '
+                      'in project-root AGENTS/CLAUDE or selected-workspace AGENTS. Check presence only and probe no home folder.',guide)
+        self.assertIn('A configuration signal cannot grant consent.',guide)
+        self.assertNotRegex(script_source(),r'(?:os\.environ|getenv|Path\.home|expanduser|HOME|TYPESAFE_API_KEY)')
 
     def test_consent_real_readback_metadata_and_idempotence(self):
         original = '# workspace\nOwner content\n'
@@ -225,11 +175,25 @@ class SystemOneIntegration(unittest.TestCase):
             self.assertEqual(self.call(client_factory=factory)['source'], 'jev')
             self.assertEqual(len(self.constructed),1);self.assertEqual(len(self.sent),1)
 
+    def test_no_client_factory_stays_local_without_import_or_send(self):
+        self.answer()
+        with patch.dict(sys.modules, {'typesafe_sdk': None}):
+            out = self.call()
+        self.assertEqual(out['source'], 'local')
+        self.assertEqual(out['judgment'], 'implementation')
+        self.assertEqual(out['reason'], 'client-unavailable', 'an import attempt would report sdk-unavailable')
+        self.assertIsNone(out['model'])
+        factory = self.factory()
+        with patch.dict(sys.modules, {'typesafe_sdk': None}):
+            self.assertEqual(self.call(client_factory=factory)['reason'], 'sdk-unavailable')
+        self.assertEqual(self.constructed, [])
+        self.assertNotIn('make_client', self.ns)
+
     def test_official_sdk_wire_for_all_four_uses(self):
         if importlib.util.find_spec('typesafe_sdk') is None:
             self.assertNotEqual(os.environ.get('TACKLE_TYPESAFE_SDK_REQUIRED'), '1', 'Scoped acceptance requires official SDK')
             self.answer()
-            self.assertEqual(self.call()['reason'],'sdk-unavailable')
+            self.assertEqual(self.call(client_factory=self.factory())['reason'],'sdk-unavailable')
             return
         import httpx2
         from typesafe_sdk import TypeSafeClient
@@ -267,7 +231,7 @@ class SystemOneIntegration(unittest.TestCase):
                 if use=='failure-class': self.assertEqual(set(wire['questions']['judgment']['criteria']),CLASSES)
                 self.assertEqual(options[0]['retry'].max_retries,0)
                 self.assertEqual(options[0]['timeout'],10.0)
-                self.assertEqual(options[0]['base_url'],'https://api.typesafe.ai')
+                self.assertEqual(set(options[0]),{'model','timeout','retry'})
                 print('SYSTEM_ONE_MOCK_CAPTURE='+json.dumps({'use':use,'method':request.method,
                     'url':str(request.url),'body':wire,'response':{'model':out['model'],
                     'judgment':out['judgment'],'confidence':out['confidence']},
@@ -299,7 +263,7 @@ class SystemOneIntegration(unittest.TestCase):
             out=self.call(use=use,local=local,client_factory=self.factory(judgment=judgment,answer_type=kind,confidence=conf))
             self.assertEqual(out['source'],'jev',out)
 
-    def test_real_sdk_error_one_attempt_and_default_certificate_verification(self):
+    def test_real_sdk_error_one_attempt(self):
         if importlib.util.find_spec('typesafe_sdk') is None:return
         import httpx2
         from typesafe_sdk import TypeSafeClient
@@ -308,13 +272,6 @@ class SystemOneIntegration(unittest.TestCase):
         def factory(**kwargs):return TypeSafeClient(api_key='fictitious-test-key',transport=httpx2.MockTransport(handle),**kwargs)
         self.assertEqual(self.call(client_factory=factory)['source'],'local')
         self.assertEqual(len(seen),1)
-        with patch.dict(os.environ, {'TYPESAFE_API_KEY':'fictitious-test-key'},clear=True):
-            client=self.ns['make_client']()
-            try:
-                context=client._http_client._transport._pool._ssl_context
-                self.assertEqual(context.verify_mode,ssl.CERT_REQUIRED)
-                self.assertTrue(context.check_hostname)
-            finally:client.close()
 
     def test_history_retains_protected_entries_and_rejects_outside_bound(self):
         entries=[{'id':'spent','fragment':'public count','sensitivity':'public','spent_count':1,'open_obligations':[]},
@@ -334,7 +291,7 @@ class SystemOneIntegration(unittest.TestCase):
         self.assertEqual(select(entries,{'spent','open','irrelevant'},lambda e:dict(judgment=0.5,source='jev',model='jev-1.13.0',confidence=0.6)),entries)
 
     def test_history_fault_oracle_and_valid_alternative(self):
-        source=block('system-one-integration','py')
+        source=script_source()
         self.assertIn('entry["spent_count"] > 0 or entry["open_obligations"]',source)
         mutant=source.replace('entry["spent_count"] > 0 or entry["open_obligations"]','False',1)
         entry={'id':'spent','fragment':'public count','sensitivity':'public','spent_count':1,'open_obligations':[]}
@@ -372,7 +329,7 @@ class SystemOneIntegration(unittest.TestCase):
                        'check presence only',
                        'When there is a signal, a selected workspace and no recorded answer, ask the System One question in PLAN or RUN, then record it.',
                        'ask right after the scaffold creates it.',
-                       'in the exact form that [the recipe](../recipes/system-one.md) reads:',
+                       'in the exact form that [the state script](../../scripts/system_one_state.py) reads:',
                        '`System One consent: yes · date=YYYY-MM-DD · actor="name"`, with `no` for a refusal.',
                        'Without a signal, record nothing and continue.']:
             with self.subTest(phrase=phrase):
@@ -401,7 +358,7 @@ class SystemOneIntegration(unittest.TestCase):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase,guide)
 
-    def test_actual_source_hooks_network_exception_and_artifact(self):
+    def test_actual_source_hooks_no_network_rule_and_artifact(self):
         entry=(ROOT/'skills/tackle/SKILL.md').read_text()
         self.assertLessEqual(len(entry.split()),1100)
         self.assertEqual(len(re.findall(r'^\d+\. \*\*',entry,re.M)),11)
@@ -409,14 +366,18 @@ class SystemOneIntegration(unittest.TestCase):
             self.assertIn('system-one.md',(ROOT/f'skills/tackle/references/guides/{file}.md').read_text())
         ledger=json.loads((ROOT/'eval/rules/ledger.json').read_text())
         rel=next(r for r in ledger['rules'] if r['rule_id']=='R-REL-01')
-        def consent_exception(statement):
-            return statement.startswith('Ordinary invocation performs no network access or') and 'consented System One call' in statement and 'installation mutation' in statement
-        self.assertTrue(consent_exception(rel['statement']))
-        self.assertFalse(consent_exception(rel['statement'].replace('consented System One call','configured System One call')))
-        self.assertIn('consented System One call',entry)
+        def no_network_rule(statement):
+            return (statement.startswith('Ordinary invocation performs no network access or') and 'installation mutation' in statement
+                    and "goes through the host's `typesafe-ai` skill" in statement and "only with the workspace's recorded consent" in statement
+                    and 'exception' not in statement)
+        self.assertTrue(no_network_rule(rel['statement']))
+        self.assertFalse(no_network_rule(rel['statement'].replace("only with the workspace's recorded consent",'when configured')))
+        self.assertFalse(no_network_rule(rel['statement'] + ' The only exception is network access by Tackle.'))
+        self.assertIn(rel['statement'],' '.join(entry.split()))
+        self.assertNotIn('only exception is network access',entry)
         self.assertEqual(rel['class'],'safety-invariant');self.assertTrue(rel['hot_path'])
-        self.assertIn('SDK handles authentication',RECIPE.read_text())
-        self.assertNotRegex(block('system-one-integration','py'),r'(?:verify\s*=\s*False|os\.environ|\.env|print\(|logging\.)')
+        self.assertIn('SDK handles authentication',GUIDE.read_text())
+        self.assertNotRegex(script_source(),r'(?:verify\s*=\s*False|os\.environ|\.env|print\(|logging\.|base_url|api\.typesafe)')
 
 
 if __name__=='__main__':unittest.main()

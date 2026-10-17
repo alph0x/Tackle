@@ -246,9 +246,14 @@ class UsageObservabilityTests(unittest.TestCase):
                        "Write one `scope: role` record with that role's Run ID as `run_id`",
                        'gives one `scope: session` record with the subagent id as `scope_id` and `run_id: n/a`.',
                        'captured once at close',
+                       "The subagent's transcript is a JSONL file whose path the owner supplies",
+                       "The coordinator's own transcript, at a path the owner supplies in the same way",
                        'stays `n/a`'):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, section)
+        for home_path in ('~/', '$HOME', 'Path.home'):
+            with self.subTest(home_path=home_path):
+                self.assertNotIn(home_path, section)
 
     def test_claude_code_native_sources_count_each_request_once(self):
         # Several events can carry one request; summing every event overcounts.

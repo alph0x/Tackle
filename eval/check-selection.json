@@ -135,7 +135,8 @@
     {
       "patterns": [
         "eval/run/usage/**",
-        "skills/tackle/references/guides/codex-native-usage.md"
+        "skills/tackle/references/guides/codex-native-usage.md",
+        "skills/tackle/scripts/codex_usage.py"
       ],
       "families": [
         "eval/tests/product/run/usage"
@@ -261,7 +262,8 @@
         "skills/tackle/references/guides/intake-and-gate.md",
         "skills/tackle/references/guides/communication.md",
         "skills/tackle/references/guides/system-one.md",
-        "skills/tackle/references/recipes/system-one.md"
+        "skills/tackle/scripts/system_one_decide.py",
+        "skills/tackle/scripts/system_one_state.py"
       ],
       "families": [
         "eval/tests/product/templates"

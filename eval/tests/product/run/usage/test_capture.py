@@ -1,6 +1,5 @@
 import json
 import os
-import re
 import subprocess
 import sys
 import tempfile
@@ -13,15 +12,7 @@ sys.path.insert(0, str(ROOT))
 from maintaining.install_root import current_root  # noqa: E402
 INSTALL = current_root(ROOT)
 
-GUIDE = INSTALL / "references/guides/codex-native-usage.md"
-
-
-def recipe():
-    source = GUIDE.read_text()
-    match = re.search(r"<!-- codex-usage-recipe:start -->\n```python\n(.*?)\n```\n<!-- codex-usage-recipe:end -->", source, re.S)
-    if not match:
-        raise AssertionError("literal Codex usage recipe missing")
-    return match.group(1)
+SCRIPT = INSTALL / "scripts/codex_usage.py"
 
 
 class CaptureTests(unittest.TestCase):
@@ -38,7 +29,7 @@ class CaptureTests(unittest.TestCase):
         self.trace.write_text("".join(json.dumps(event) + "\n" for event in events))
 
     def run_recipe(self, trace=True, env=None):
-        argv = [sys.executable, "-c", recipe(), str(self.workspace)]
+        argv = [sys.executable, "-I", str(SCRIPT), str(self.workspace)]
         if trace:
             argv.append(str(self.trace))
         runtime = os.environ.copy()
@@ -165,6 +156,18 @@ class CaptureTests(unittest.TestCase):
         self.assertFalse((self.workspace / "resource-usage.telemetry.jsonl").exists())
         self.trace.unlink()
         self.assertNotEqual(self.run_recipe().returncode, 0)
+        self.assertFalse((self.workspace / "resource-usage.telemetry.jsonl").exists())
+
+    def test_workspace_only_is_refused_even_with_a_matching_rollout_under_home(self):
+        thread = "11111111-1111-4111-8111-111111111111"
+        home = self.root / "home"
+        rollout = home / ".codex/sessions/2026/01/01" / ("rollout-x-%s.jsonl" % thread)
+        rollout.parent.mkdir(parents=True)
+        rollout.write_text(json.dumps({"type": "thread.started", "thread_id": "planted"}) + "\n"
+                           + json.dumps({"type": "turn.completed", "usage": {"input_tokens": 1}}) + "\n")
+        result = self.run_recipe(trace=False, env={"HOME": str(home), "CODEX_THREAD_ID": thread})
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("native JSONL path required", result.stderr)
         self.assertFalse((self.workspace / "resource-usage.telemetry.jsonl").exists())
 
     def test_existing_malformed_sidecar_and_symlink_are_rejected(self):
