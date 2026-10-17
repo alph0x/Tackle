@@ -279,7 +279,7 @@
         "test_script_manifest.py",
         "test_no_network_surface.py"
       ],
-      "tests": 48,
+      "tests": 46,
       "source": "eval/install/inventory",
       "category": "product",
       "purpose": "Installed artifact inventory, links, root resolution and the absence of network clients, endpoints and home lookups."
@@ -316,7 +316,7 @@
       "tests": 150,
       "source": "eval/migration",
       "category": "product",
-      "purpose": "Workspace schema migration, recipes and census refusal. Migration keeps historical record paths, makes citations follow their moved files, leaves links into other workspaces unchanged, reports what history still cites, and keeps the text after a legacy status glyph as a board note."
+      "purpose": "Workspace schema migration, scripts and census refusal. Migration keeps historical record paths, makes citations follow their moved files, leaves links into other workspaces unchanged, reports what history still cites, and keeps the text after a legacy status glyph as a board note."
     },
     {
       "path": "eval/tests/tooling/maintaining/field-report",
@@ -403,7 +403,7 @@
       "tests": 2,
       "source": "eval/migration",
       "category": "historical",
-      "purpose": "Historical local simulation of copy-first migration, checkpoint copies and selective adoption; not current migration recipes."
+      "purpose": "Historical local simulation of copy-first migration, checkpoint copies and selective adoption; not current migration scripts."
     },
     {
       "path": "eval/tests/product/requirements-base",

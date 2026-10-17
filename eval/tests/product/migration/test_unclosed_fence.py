@@ -2,15 +2,15 @@
 
 Historically the plain-Python board reader raised a plain `ValueError('unclosed fenced example')`
 when a fence opened by a board's illustrative code block was still open at the end of the text. This
-suite locks the same refusal into the schema-keyed recipes: the strict board-shaped reads (locating a
+suite locks the same refusal into the schema-keyed scripts: the strict board-shaped reads (locating a
 workspace's own table, right before that table's rows are trusted) refuse instead of quietly returning
 a table that stops wherever the broken fence happens to swallow the rest of the file. The lenient
 reads used only to notice a `Schema:` stamp, or to recognize an already-written history heading, are
 untouched -- an unrelated file may quote sample text whose fence is never meant to close.
 
-Loaded exactly the way the sibling migration-steps suite loads the recipe files: read, take the one
-fenced Python block, `exec` it into a namespace, `schema.md`'s names shared into every step so each
-step calls the very same `schema_of`/`parse_board`/... this suite exercises directly.
+Loaded the way the sibling migration-steps suite loads the scripts: imported by file path, with
+`schema.py` imported once by every step so each step calls the very same
+`schema_of`/`parse_board`/... this suite exercises directly.
 """
 import importlib.util
 import re
@@ -24,24 +24,28 @@ sys.path.insert(0, str(ROOT))
 from maintaining.install_root import current_root  # noqa: E402
 INSTALL = current_root(ROOT)
 
-RECIPES = INSTALL / 'references/recipes/migrate'
+SCRIPTS = INSTALL / 'scripts/migrate'
 
 OPEN_FENCE = '```\nan example that opens a fence and never closes it\n'
 
 
-def load_block(path, namespace=None):
-    text = path.read_text(encoding='utf-8')
-    block = text.split('```python\n', 1)[1].split('\n```', 1)[0]
-    ns = dict(namespace or {})
-    ns['__name__'] = 'fence_fixture_' + path.stem.replace('-', '_')
-    exec(compile(block, str(path), 'exec'), ns)
-    return ns
+def load_script(path):
+    """Import a migration script by file path and return its names. `schema` is the one module every
+    step imports; each step is loaded fresh under its own name."""
+    if path.stem == 'schema':
+        sys.path.insert(0, str(path.parent))
+        import schema
+        return vars(schema)
+    spec = importlib.util.spec_from_file_location('fence_fixture_' + path.stem, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return vars(module)
 
 
-SCHEMA = load_block(RECIPES / 'schema.md')
-STEP_PRE3_TO_3 = load_block(RECIPES / 'step-pre3-to-3.md', SCHEMA)
-STEP_3_TO_4 = load_block(RECIPES / 'step-3-to-4.md', SCHEMA)
-STEP_4_TO_5 = load_block(RECIPES / 'step-4-to-5.md', SCHEMA)
+SCHEMA = load_script(SCRIPTS / 'schema.py')
+STEP_PRE3_TO_3 = load_script(SCRIPTS / 'step_pre3_to_3.py')
+STEP_3_TO_4 = load_script(SCRIPTS / 'step_3_to_4.py')
+STEP_4_TO_5 = load_script(SCRIPTS / 'step_4_to_5.py')
 
 CONTEXT_84 = {'date': '2026-09-25', 'run_id': 'fence-fixture-1', 'methodology': 'Tackle 8.4.0'}
 CONTEXT_90 = {'date': '2026-09-25', 'run_id': 'fence-fixture-1', 'methodology': 'Tackle 9.0.0'}

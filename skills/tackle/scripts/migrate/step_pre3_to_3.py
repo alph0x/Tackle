@@ -1,4 +1,10 @@
-```python
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from schema import *
+
+
 REQUIRED_PRE3_COLUMNS = (
     ('Task or Point', ('Task', 'Point')),
     ('What', ('What',)),
@@ -183,4 +189,3 @@ def verify(before, after):
         if second != after or renames_again != {}:
             errors.append('second transform is not a byte-identical no-op')
     return {'errors': errors, 'residue': residue}
-```

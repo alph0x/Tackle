@@ -1,4 +1,3 @@
-```python
 import re
 
 
@@ -288,4 +287,3 @@ def adopt(files, context, transform):
     for path, data in scoped.items():
         result[prefix + path] = data
     return result, renames
-```

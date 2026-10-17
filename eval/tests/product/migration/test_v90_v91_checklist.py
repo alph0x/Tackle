@@ -5,6 +5,7 @@ The steps are applied mechanically from the shipped templates (the obligations s
 policy line of the AGENTS template) and judged by the canonical rows, never by a copy of their logic.
 """
 import hashlib
+import importlib.util
 import re
 import runpy
 import shutil
@@ -38,7 +39,7 @@ def lint_recipe():
 
 RECIPE = lint_recipe()
 ROWS = RECIPE['canonical_rows'](SPEC, hashlib.sha256(SPEC).hexdigest(), SLUG)
-RECIPES = REFERENCES / 'recipes/migrate'
+SCRIPTS = REFERENCES.parent / 'scripts/migrate'
 MIGRATION_FIXTURES = ROOT / 'eval/migration/fixtures'
 MIGRATION_README = ROOT / 'eval/migration/README.md'
 TITLE = '## v9.0 → v9.1 checklist'
@@ -53,12 +54,17 @@ def one_line(value):
     return ' '.join(value.split())
 
 
-def load_block(path, namespace=None):
-    block = path.read_text(encoding='utf-8').split('```python\n', 1)[1].split('\n```', 1)[0]
-    scope = dict(namespace or {})
-    scope['__name__'] = 'migration_readme_' + path.stem.replace('-', '_')
-    exec(compile(block, str(path), 'exec'), scope)
-    return scope
+def load_script(path):
+    """Import a migration script by file path and return its names. `schema` is the one module every
+    step imports; each step is loaded fresh under its own name."""
+    if path.stem == 'schema':
+        sys.path.insert(0, str(path.parent))
+        import schema
+        return vars(schema)
+    spec = importlib.util.spec_from_file_location('migration_readme_' + path.stem, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return vars(module)
 
 
 def load_files(directory):
@@ -242,8 +248,8 @@ class AdoptionTests(unittest.TestCase):
 
 class MigrationFixtureTargetTests(unittest.TestCase):
     def test_the_readme_states_what_the_two_named_lint_integration_targets_pass(self):
-        schema = load_block(RECIPES / 'schema.md')
-        steps = [load_block(RECIPES / name, schema) for name in ('step-pre3-to-3.md', 'step-3-to-4.md', 'step-4-to-5.md')]
+        schema = load_script(SCRIPTS / 'schema.py')
+        steps = [load_script(SCRIPTS / name) for name in ('step_pre3_to_3.py', 'step_3_to_4.py', 'step_4_to_5.py')]
         context = {'date': '2026-09-25', 'run_id': 'migration-readme-check', 'methodology': 'Tackle 9.0.0'}
         chained = load_files(MIGRATION_FIXTURES / 'pre3-to-3/before')
         for step in steps:

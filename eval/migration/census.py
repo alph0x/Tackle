@@ -16,6 +16,7 @@ loudly if a copy step or a bug ever touched the source.
 """
 import argparse
 import hashlib
+import importlib.util
 import json
 import re
 import shutil
@@ -29,22 +30,25 @@ sys.path.insert(0, str(REPO))
 from maintaining.install_root import current_root  # noqa: E402
 
 INSTALL = current_root(REPO)
-RECIPES = INSTALL / 'references/recipes/migrate'
+SCRIPTS = INSTALL / 'scripts/migrate'
 
 
-def load_block(path, namespace=None):
-    text = path.read_text(encoding='utf-8')
-    block = text.split('```python\n', 1)[1].split('\n```', 1)[0]
-    ns = dict(namespace or {})
-    ns['__name__'] = 'tackle_census_' + path.stem.replace('-', '_')
-    exec(compile(block, str(path), 'exec'), ns)
-    return ns
+def load_script(path):
+    """Import a migration script by file path and return its names; every step imports `schema`."""
+    if path.stem == 'schema':
+        sys.path.insert(0, str(path.parent))
+        import schema
+        return vars(schema)
+    spec = importlib.util.spec_from_file_location('tackle_census_' + path.stem, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return vars(module)
 
 
-SCHEMA = load_block(RECIPES / 'schema.md')
-STEP_PRE3_TO_3 = load_block(RECIPES / 'step-pre3-to-3.md', SCHEMA)
-STEP_3_TO_4 = load_block(RECIPES / 'step-3-to-4.md', SCHEMA)
-STEP_4_TO_5 = load_block(RECIPES / 'step-4-to-5.md', SCHEMA)
+SCHEMA = load_script(SCRIPTS / 'schema.py')
+STEP_PRE3_TO_3 = load_script(SCRIPTS / 'step_pre3_to_3.py')
+STEP_3_TO_4 = load_script(SCRIPTS / 'step_3_to_4.py')
+STEP_4_TO_5 = load_script(SCRIPTS / 'step_4_to_5.py')
 CHAIN = {
     'pre-3': (STEP_PRE3_TO_3, '3'),
     '3': (STEP_3_TO_4, '4'),

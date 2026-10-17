@@ -1,7 +1,7 @@
 """Migration keeps history paths: path spans, text rewriting, other-workspace links, residue and the
 legacy status text after a glyph.
 
-The recipes are loaded through `test_migration_steps.py`'s loader, and every workspace here is an
+The scripts are loaded through `test_migration_steps.py`'s loader, and every workspace here is an
 in-memory mapping of workspace-relative paths to bytes, so no fixture directory is involved.
 """
 import sys

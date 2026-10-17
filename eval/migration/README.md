@@ -1,10 +1,10 @@
-# Migration recipes
+# Migration scripts
 
-E2E tests for the schema-keyed migration recipes shipped at
-[`references/recipes/migrate/`](../../references/recipes/migrate/). Migration keys
+E2E tests for the schema-keyed migration scripts shipped at
+[`scripts/migrate/`](../../scripts/migrate/). Migration keys
 on the workspace board's `Schema:` line, or on structure when the line is absent — never on the
 free-text `Methodology:` stamp — and reaches the current schema through one idempotent
-detect → transform → verify recipe per step. The detection table, the steps and the read-compatibility
+detect → transform → verify script per step. The detection table, the steps and the read-compatibility
 and rollback promises are documented in
 [`references/guides/migrate.md`](../../references/guides/migrate.md#schema-keyed-migration).
 `test_migration.py` holds the migration contract of the two-action protocol, which a migrated workspace
@@ -44,14 +44,14 @@ obligation.
 
 | Path | Content |
 |---|---|
-| `test_migration_steps.py` | Loads the four recipe files exactly as `eval/tests/product/lint/task-contracts/test_task_contracts.py` and `eval/tests/product/templates/test_template_drift.py` already load recipes: one file, one fenced Python block, `exec`'d into a namespace. `schema.md`'s namespace is loaded first and passed into each step, so every step calls the same `schema_of`/`parse_board`/... |
+| `test_migration_steps.py` | Imports the four scripts by file path: `schema.py` once, and each step imports it by name from its own folder, so every step calls the same `schema_of`/`parse_board`/... |
 | `test_migration.py` | The migration contract of the two-action protocol: the public surface a migrated workspace meets (PLAN, RUN and read-only STATUS, and the history of the retired aliases), copy-first migration of a disposable legacy world with byte-preserved history, its adoption and tamper guards, a rollback copy that equals the original, and a Markdown-only install whose relative links and anchors resolve. |
 | `census.py` | The local-workspace census; see above. Never registered, never run in CI. |
 | `fixtures/detect/<bucket>/` | One minimal workspace per bucket (`pre3`, `three`, `four`, `five`, `lite`), plus `four-with-legacy/` (a `/4` board beside an ignored `legacy-3/` snapshot) and three `unknown-*` shapes (both board files, a Lite plan beside a board, nothing recognizable) (C1). |
 | `fixtures/pre3-to-3/before/` | A complete pre-3 workspace (`plan.md`, `log.md`, an 8-column `usage.md`, `reference.md`, `decisions.md`, a `reports/` pair) with all five legacy states, mixed P- and T-ids, a fenced decoy row, and a Complete and a Blocked row each with its historical report and a sealed brief. Chained through all three steps it is one of the two named lint-integration targets; it passes 15 of the 17 rows; rows 12 and 17 report what the 9.0 and 9.1 checklists hand to the adopter (Tier reasons on the open briefs, a receipt on the Complete task's report). |
 | `fixtures/3-to-4/before/` | A `/3` workspace with `points/`, `log.md`, an 8-column `usage.md`, a bare-heading brief, a `# Point`-heading brief, an interrupted and pinned brief, `reference.md`, and a `design-contract.md` that is never rewritten (C3). |
 | `fixtures/3-to-4-already-modern/before/` | A `/3` workspace already on `tasks/` and T-ids, with no `points/` and an empty P→T map. |
-| `fixtures/4-to-5/before/` | A complete `/4` workspace (`plan.md`, `history.md`, `resource-usage.md`, `reference.md`, `tasks/` briefs) with a cited and an uncited `Ready to run` row. Its `step-4-to-5` output is the other named lint-integration target; it passes 15 of the 17 rows; rows 12 and 16 report the fixture's own records (the Tier reasons the 9.0 checklist adds by hand, and a ledger whose start row predates the legal lifecycle Outcome vocabulary). |
+| `fixtures/4-to-5/before/` | A complete `/4` workspace (`plan.md`, `history.md`, `resource-usage.md`, `reference.md`, `tasks/` briefs) with a cited and an uncited `Ready to run` row. Its `step_4_to_5.py` output is the other named lint-integration target; it passes 15 of the 17 rows; rows 12 and 16 report the fixture's own records (the Tier reasons the 9.0 checklist adds by hand, and a ledger whose start row predates the legal lifecycle Outcome vocabulary). |
 | `fixtures/refusals/*` | An unknown workspace (both board files; a Lite plan beside a board), a duplicate id, an unsupported legacy state, and a pre-3 header with a synthetic non-standard column layout (no real workspace content) — each a named `ValueError`, nothing written. Rename-target collisions (old name and new name both present) and the log.md/history.md-both-present case are built inline in `RefusalTests`/`Step3To4Tests` rather than as fixture directories, since they are minimal synthetic boards. |
 | `fixtures/migrate-md-prefix-d024a3f.txt` | The pinned first 90 lines of `references/guides/migrate.md` at this task's preflight revision, so `MigrateGuideTests` can assert the two 8.x checklists stayed byte-identical without shelling out to git. |
 
@@ -63,8 +63,8 @@ separate directory, since they are properties of the same before/after pairs, no
 
 ## Rules
 
-1. Every recipe file is exactly one fenced Python block (`RecipesLoadTests`); the three step files
-   share `schema.md`'s namespace object-for-object, not a copy.
+1. Every script is a Python file with no Markdown fence (`ScriptsLoadTests`); the three step scripts
+   import `schema.py`'s names object-for-object, not a copy.
 2. `transform(files, context)` is pure and never mutates its `files` argument
    (`OriginalsPreservedTests.test_input_mapping_is_unchanged_by_transform`); `verify`'s idempotence
    check re-runs `transform` with a `PoisonContext` that raises on any read, so a no-op path that

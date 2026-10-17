@@ -4,6 +4,7 @@ Every case derives its input from the shipped documents (templates, scaffold.md,
 terminology.md, verify.md) and judges lint rows through full-checks.md's canonical recipes.
 """
 import hashlib
+import importlib.util
 import re
 import shutil
 import subprocess
@@ -235,8 +236,8 @@ class TemplateDriftTests(unittest.TestCase):
         board.write_text(re.sub(r'\n\n\|', '\n\nSchema: tackle-workspace/4\n\n|', text, count=1))
         # 9.0 runs only bucket 5: the shipped schema-keyed step takes the /4 board there, then the 9.0
         # checklist gives each open brief whose Effort departs from the default its Tier reason.
-        schema = recipe_block('recipes/migrate/schema.md')
-        step = recipe_block('recipes/migrate/step-4-to-5.md', schema)
+        schema = load_script('scripts/migrate/schema.py')
+        step = load_script('scripts/migrate/step_4_to_5.py')
         files = {p.relative_to(self.ws).as_posix(): p.read_bytes() for p in self.ws.rglob('*') if p.is_file()}
         context = {'date': '2026-09-27', 'run_id': 'template-drift', 'methodology': 'Tackle ' + skill_stamp()}
         adopted, _ = schema['adopt'](files, context, step['transform'])
@@ -339,11 +340,18 @@ class TemplateDriftTests(unittest.TestCase):
                 self.assertNotIn('T-02', child.stdout) if metric == 'Comprehension debt' else None
 
 
-def recipe_block(name, namespace=None):
-    text = (REF / name).read_text()
-    scope = dict(namespace or {})
-    exec(text.split('```python\n', 1)[1].split('\n```', 1)[0], scope)
-    return scope
+def load_script(name):
+    """Import a script under the install by file path and return its names; `schema` is the one
+    module every migration step imports."""
+    path = INSTALL / name
+    if path.stem == 'schema':
+        sys.path.insert(0, str(path.parent))
+        import schema
+        return vars(schema)
+    spec = importlib.util.spec_from_file_location('template_drift_' + path.stem, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return vars(module)
 
 
 if __name__ == '__main__':

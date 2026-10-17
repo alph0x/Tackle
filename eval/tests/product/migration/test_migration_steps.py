@@ -1,11 +1,8 @@
-"""E2E tests for the schema-keyed migration recipes.
+"""E2E tests for the schema-keyed migration scripts.
 
-Each recipe file (`references/recipes/migrate/*.md`) is one fenced Python block, loaded exactly the
-way this repository already loads recipes elsewhere (`eval/lint/task-contracts/test_task_contracts.py`'s
-`recipe()`, `eval/templates/test_template_drift.py`'s module-level `exec`): read the file, take
-its one fenced block, `exec` it into a namespace. `schema.md`'s block is loaded first and its names are
-passed into each step's namespace, so every step calls the same `schema_of`/`parse_board`/... instead
-of keeping its own copy that could silently diverge from it.
+Each script (`scripts/migrate/*.py`) is imported by file path. `schema.py` is imported once and every
+step imports it by name from its own folder, so every step calls the same
+`schema_of`/`parse_board`/... instead of keeping its own copy that could silently diverge from it.
 
 Fixtures live under `fixtures/` as bare workspace roots (`<case>/before/`, `<case>/after/` where an
 exact after-shape is asserted, or a flat directory for detection/refusal probes) -- never under a
@@ -13,6 +10,7 @@ exact after-shape is asserted, or a flat directory for detection/refusal probes)
 gitignore rules. `census.py` reads real local workspaces separately and is not a `test_*.py`
 file, so it is never discovered by the suite registry.
 """
+import importlib.util
 import re
 import unittest
 from pathlib import Path
@@ -23,17 +21,21 @@ sys.path.insert(0, str(ROOT))
 from maintaining.install_root import current_root  # noqa: E402
 INSTALL = current_root(ROOT)
 
-RECIPES = INSTALL / 'references/recipes/migrate'
+SCRIPTS = INSTALL / 'scripts/migrate'
 FIXTURES = (Path(__file__).resolve().parents[4] / 'eval/migration') / 'fixtures'
 
 
-def load_block(path, namespace=None):
-    text = path.read_text(encoding='utf-8')
-    block = text.split('```python\n', 1)[1].split('\n```', 1)[0]
-    ns = dict(namespace or {})
-    ns['__name__'] = 'tackle_migration_' + path.stem.replace('-', '_')
-    exec(compile(block, str(path), 'exec'), ns)
-    return ns
+def load_script(path):
+    """Import a migration script by file path and return its names. `schema` is the one module every
+    step imports; each step is loaded fresh under its own name."""
+    if path.stem == 'schema':
+        sys.path.insert(0, str(path.parent))
+        import schema
+        return vars(schema)
+    spec = importlib.util.spec_from_file_location('tackle_migration_' + path.stem, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return vars(module)
 
 
 def load_files(directory):
@@ -41,31 +43,29 @@ def load_files(directory):
             for p in directory.rglob('*') if p.is_file()}
 
 
-SCHEMA = load_block(RECIPES / 'schema.md')
-STEP_PRE3_TO_3 = load_block(RECIPES / 'step-pre3-to-3.md', SCHEMA)
-STEP_3_TO_4 = load_block(RECIPES / 'step-3-to-4.md', SCHEMA)
-STEP_4_TO_5 = load_block(RECIPES / 'step-4-to-5.md', SCHEMA)
+SCHEMA = load_script(SCRIPTS / 'schema.py')
+STEP_PRE3_TO_3 = load_script(SCRIPTS / 'step_pre3_to_3.py')
+STEP_3_TO_4 = load_script(SCRIPTS / 'step_3_to_4.py')
+STEP_4_TO_5 = load_script(SCRIPTS / 'step_4_to_5.py')
 STEPS = (STEP_PRE3_TO_3, STEP_3_TO_4, STEP_4_TO_5)
 
 CONTEXT_84 = {'date': '2026-09-25', 'run_id': 'migration-fixture-1', 'methodology': 'Tackle 8.4.0'}
 CONTEXT_90 = {'date': '2026-09-25', 'run_id': 'migration-fixture-1', 'methodology': 'Tackle 9.0.0'}
 
 
-class RecipesLoadTests(unittest.TestCase):
-    """The four recipe files exist, each is exactly one fenced Python block, and schema.md's shared
-    names actually reach every step."""
+class ScriptsLoadTests(unittest.TestCase):
+    """The four migration scripts exist as Python files, and schema.py's shared names actually
+    reach every step."""
 
-    def test_four_recipe_files_exist_with_one_python_block_and_nothing_else(self):
-        # references/recipes/README.md: "Each recipe is a Markdown file that holds one fenced code
-        # block and nothing else" -- each file is exactly `` ```python\n...\n``` `` with no heading or
-        # prose outside the fence.
-        for name in ('schema.md', 'step-pre3-to-3.md', 'step-3-to-4.md', 'step-4-to-5.md'):
-            path = RECIPES / name
-            text = path.read_text()
+    def test_four_script_files_exist_and_each_step_imports_schema_by_name(self):
+        for name in ('schema.py', 'step_pre3_to_3.py', 'step_3_to_4.py', 'step_4_to_5.py'):
+            path = SCRIPTS / name
             self.assertTrue(path.is_file(), name)
-            self.assertEqual(text.count('```'), 2, name)
-            self.assertTrue(text.startswith('```python\n'), name)
-            self.assertTrue(text.endswith('\n```\n'), name)
+            text = path.read_text(encoding='utf-8')
+            self.assertNotIn('```', text, name)
+            if name != 'schema.py':
+                self.assertIn('sys.path.insert(0, str(Path(__file__).resolve().parent))', text, name)
+                self.assertIn('from schema import *', text, name)
 
     def test_every_step_shares_schema_ofs_namespace(self):
         for step in STEPS:
@@ -833,15 +833,15 @@ class MutationTests(unittest.TestCase):
                 new_files['task-board.md'] += b'\n<!-- appended on every call -->\n'
             return new_files, id_map
 
-        # verify()'s body resolves `transform` from its own module namespace at call time (it is
-        # `exec`'d code, so that namespace is its __globals__): reload the same source into a fresh
-        # namespace with the mutant transform substituted, so verify() calls the mutant, not the real
-        # recipe, for its internal idempotence re-run.
-        source = (RECIPES / 'step-3-to-4.md').read_text().split('```python\n', 1)[1].split('\n```', 1)[0]
-        mutant_ns = dict(SCHEMA)
-        exec(compile(source, 'step-3-to-4-mutant', 'exec'), mutant_ns)
-        mutant_ns['transform'] = non_idempotent_transform
-        result = mutant_ns['verify'](before, after)
+        # verify()'s body resolves `transform` from its own module namespace at call time (that
+        # namespace is its __globals__): load the same script into a fresh module with the mutant
+        # transform substituted, so verify() calls the mutant, not the real step, for its internal
+        # idempotence re-run.
+        spec = importlib.util.spec_from_file_location('tackle_migration_mutant', SCRIPTS / 'step_3_to_4.py')
+        mutant = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mutant)
+        mutant.transform = non_idempotent_transform
+        result = mutant.verify(before, after)
         self.assertIn('second transform is not a byte-identical no-op', result['errors'])
 
     def test_inferring_ready_from_not_started_is_caught_by_verify(self):
@@ -938,7 +938,7 @@ class CensusHygieneTests(unittest.TestCase):
 
 
 class MigrateGuideTests(unittest.TestCase):
-    """The five sections are appended after the existing content; each recipe link resolves;
+    """The five sections are appended after the existing content; each script link resolves;
     the 8.x checklists are byte-identical to d024a3f; every migrate.md:N citation elsewhere in the
     repository and in this workspace still resolves (lint row 4); install-inventory and the self-lint
     gates stay green."""
@@ -965,10 +965,10 @@ class MigrateGuideTests(unittest.TestCase):
         pinned = (FIXTURES / 'migrate-md-prefix-d024a3f.txt').read_text(encoding='utf-8')
         self.assertEqual('\n'.join(self.lines[:90]) + '\n', pinned)
 
-    def test_recipe_links_resolve(self):
+    def test_guide_links_resolve(self):
         for match in re.findall(r'\]\(([^)]+)\)', self.text):
             if match.startswith('../'):
-                target = (INSTALL / 'references/guides' / match).resolve()
+                target = (INSTALL / 'references/guides' / match.split('#')[0]).resolve()
                 self.assertTrue(target.is_file(), match)
 
     def test_two_checklists_still_present_and_not_touched(self):
@@ -981,14 +981,14 @@ class MigrateGuideTests(unittest.TestCase):
         self.assertIn('Select the 8.3 → 8.4 checklist', self.lines[5])
 
     def test_no_longer_claims_a_changed_contract_surfaces_as_residue(self):
-        # Only the Interrupted-task check exists in step-3-to-4's verify(); the guide must not
+        # Only the Interrupted-task check exists in step_3_to_4's verify(); the guide must not
         # overclaim residue for a changed design-contract.md too (whitespace-normalized, since the
         # prose wraps across lines).
         normalized = ' '.join(self.text.split())
         self.assertNotIn('changed contract', normalized)
 
     def test_rename_target_collision_is_a_transform_refusal_not_a_verify_error(self):
-        # A recheck finding: step-3-to-4.md's verify() body never mentions
+        # A recheck finding: step_3_to_4.py's verify() body never mentions
         # 'collision' -- the check is a ValueError raised inside transform() itself, before anything
         # is written, so a colliding workspace's adoption never reaches verify() at all. The guide
         # must not group the collision with the four properties verify()'s own `errors` list reports.

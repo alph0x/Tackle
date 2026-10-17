@@ -271,7 +271,7 @@ the styling of auxiliary pages, and it changes no file format.
 ## Schema-keyed migration (9.0.0)
 
 Migration keys on the board's `Schema:` line, or on structure when the line is absent — never on the
-free-text `Methodology:` stamp, which is display-only. [`recipes/migrate/schema.md`](../recipes/migrate/schema.md)'s
+free-text `Methodology:` stamp, which is display-only. [`schema.py`](../../scripts/migrate/schema.py)'s
 `schema_of(files)` reads only the workspace root (top-level files; nested paths are ignored for
 detection) and ignores any `legacy-*/` directory, so a stray legacy snapshot next to a current board
 never changes the bucket. A workspace matching more than one row below is `unknown`; its scan for the
@@ -279,9 +279,9 @@ never changes the bucket. A workspace matching more than one row below is `unkno
 
 | Bucket | Detected by | Next step |
 |---|---|---|
-| `pre-3` | a `board.md` with no `Schema:` line, and a header row with `Point` or `Task` and a `Status` column | [`step-pre3-to-3`](../recipes/migrate/step-pre3-to-3.md) |
-| `3` | a `board.md` whose line is `Schema: tackle-workspace/3` | [`step-3-to-4`](../recipes/migrate/step-3-to-4.md) |
-| `4` | a `task-board.md` whose line is `Schema: tackle-workspace/4` | [`step-4-to-5`](../recipes/migrate/step-4-to-5.md) |
+| `pre-3` | a `board.md` with no `Schema:` line, and a header row with `Point` or `Task` and a `Status` column | [`step_pre3_to_3.py`](../../scripts/migrate/step_pre3_to_3.py) |
+| `3` | a `board.md` whose line is `Schema: tackle-workspace/3` | [`step_3_to_4.py`](../../scripts/migrate/step_3_to_4.py) |
+| `4` | a `task-board.md` whose line is `Schema: tackle-workspace/4` | [`step_4_to_5.py`](../../scripts/migrate/step_4_to_5.py) |
 | `5` | a `task-board.md` whose line is `Schema: tackle-workspace/5` | none (current in 9.0.0) |
 | `lite` | a `plan.md` whose first line is `Gate: Lite` | none (no board schema) |
 | `unknown` | anything else | none; report and stop |
@@ -289,15 +289,15 @@ never changes the bucket. A workspace matching more than one row below is `unkno
 <a id="migration-steps"></a>
 ## Migration steps
 
-Each step is one idempotent detect → transform → verify recipe; a second run of any step on its own
-output is a byte-identical no-op. Standard library only. Running these recipes needs the owner's explicit
-authorization; an explicit migration request grants it for that migration (the Consent section of the [recipe manifest](../recipes/README.md)).
-Prefer an equivalent harness capability. To run a step: execute
-[`schema.md`](../recipes/migrate/schema.md)'s fenced block first into a namespace, then execute the
-chosen step's fenced block into a namespace seeded with `schema.md`'s names (each step's `detect`,
-`transform` and `verify` call `schema_of`, `parse_board` and the other shared helpers by name, and
-resolve them from that shared namespace, not a copy). Advance a real workspace with
-`schema.md`'s `adopt(files, context, transform)`, never by calling a step's `transform` directly on a
+Each step is one idempotent detect → transform → verify script; a second run of any step on its own
+output is a byte-identical no-op. Standard library only. Importing these scripts needs the owner's explicit
+authorization; an explicit migration request grants it for that migration (the [script consent](../../scripts/README.md#consent)).
+Prefer an equivalent harness capability. The scripts have no command line: to run a step, put
+`<skill>/scripts/migrate/` first on `sys.path` and import the step by name (`step_pre3_to_3`,
+`step_3_to_4` or `step_4_to_5`). Each step imports [`schema.py`](../../scripts/migrate/schema.py) from its
+own folder, so each step's `detect`, `transform` and `verify` call `schema_of`, `parse_board` and the
+other shared helpers from that one module, not a copy. Advance a real workspace with
+`schema.adopt(files, context, step.transform)`, never by calling a step's `transform` directly on a
 workspace's full file mapping: `transform`'s `files` argument must already exclude any `legacy-*/`
 directory, and only `adopt` supplies that, then reassembles the result with every pre-existing
 `legacy-*/` directory preserved and the step's own new snapshot added. Passing a mapping that still
@@ -306,11 +306,11 @@ the legacy snapshot and rewriting it.
 
 The context passed to adopt holds date, run_id and methodology, and may hold workspace, the migrated workspace's directory name, so that the 8.3 to 8.4 step can tell its own links from links into other workspaces.
 
-- [`step-pre3-to-3`](../recipes/migrate/step-pre3-to-3.md) — generalizes `candidate_board()`
+- [`step_pre3_to_3.py`](../../scripts/migrate/step_pre3_to_3.py) — generalizes `candidate_board()`
   (`maintaining/migrations.md`) three ways: it accepts P- and T-ids, it maps the legacy states exactly
   as [terminology.md](../terminology.md)'s States table does, and it never infers `Ready to run`. A
   `/3` board (or later) returns unchanged.
-- [`step-3-to-4`](../recipes/migrate/step-3-to-4.md) — the v8.3 → v8.4 layout, done mechanically: renames
+- [`step_3_to_4.py`](../../scripts/migrate/step_3_to_4.py) — the v8.3 → v8.4 layout, done mechanically: renames
   the artifacts that exist (see the checklist above), maps every P-id to one T-id and rewrites the ids
   in the contents — not only the file names — of `plan.md`, every brief, the board and its dependencies,
   every report, and the usage ledger's rows (its column format, 8-column legacy or v2 lifecycle, is
@@ -323,15 +323,15 @@ The context passed to adopt holds date, run_id and methodology, and may hold wor
   map and an absent `points/`
   are valid inputs — a `/3` workspace already on `tasks/` and T-ids only gets its board renamed and
   restamped. A `/4` board (or later) returns unchanged.
-- [`step-4-to-5`](../recipes/migrate/step-4-to-5.md) — sets `Schema: tackle-workspace/5` and gives every
+- [`step_4_to_5.py`](../../scripts/migrate/step_4_to_5.py) — sets `Schema: tackle-workspace/5` and gives every
   `Ready to run` row without a citation the Verification text `ready: legacy /4 readiness`. It changes
   nothing else: a row that already carries some other, non-placeholder Verification text is left alone
   and reported for review rather than overwritten. A `/5` board returns unchanged.
 
 Each step's `verify(before, after)` takes the same `legacy-*/`-excluding `files` shape as `transform`
-(`schema.md`'s `workspace_files(files)` of the pre- and post-adoption mappings, not the adopted result
+(`schema.py`'s `workspace_files(files)` of the pre- and post-adoption mappings, not the adopted result
 itself, which still carries the legacy snapshots) and is self-contained Python, checked against this
-guide's own reading of each schema: state vocabulary, `Verification` references and, for `step-4-to-5`,
+guide's own reading of each schema: state vocabulary, `Verification` references and, for `step_4_to_5.py`,
 the `ready:` rule.
 It does not shell out to the lint rows; the [9.0 checklist](#v84--v90-checklist) runs them on the
 migrated copy. `errors` gate adoption: the wrong bucket after the step, a second `transform` that is not
@@ -351,7 +351,7 @@ The install runs only a workspace in bucket `5`, or a Focused `plan.md` whose hi
 are `history.md` and `resource-usage.md`. PLAN, RUN and STATUS refuse any other workspace with
 `migrate first` and point here, and lint rows 1, 2, 3, 5, 10, 11, 12, 14 and 17 print that refusal.
 A board saved with CRLF line endings reads as older: convert it to LF first, because the rows, the
-recipes and this migration read LF only. This guide, its recipes and their fixtures are the one
+scripts and this migration read LF only. This guide, its scripts and their fixtures are the one
 bridge: they keep detecting and transforming every bucket above. The readability statements in the 8.x checklists above describe 8.x installs.
 Below the `pre-3` bucket nothing is promised, and this
 repository's historical checklists above and in `maintaining/migrations.md` apply.

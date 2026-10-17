@@ -1,4 +1,10 @@
-```python
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from schema import *
+
+
 PLACEHOLDER_VERIFICATION = ('pending', '', '—', '-')
 DEFAULT_READY_TEXT = 'ready: legacy /4 readiness'
 
@@ -76,4 +82,3 @@ def verify(before, after):
         if second != after or changed_again != {}:
             errors.append('second transform is not a byte-identical no-op')
     return {'errors': errors, 'residue': residue}
-```

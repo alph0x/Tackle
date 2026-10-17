@@ -308,18 +308,9 @@ class RecipeManifestTests(unittest.TestCase):
         path.write_bytes(path.read_bytes() + b'\n')
         self.assert_one_finding('controlled-writing.md')
 
-    def test_nested_hash_drift_is_named(self):
-        path = self.recipe('migrate/schema.md')
-        path.write_bytes(path.read_bytes() + b'\n')
-        self.assert_one_finding('migrate/schema.md')
-
     def test_missing_row_is_named(self):
         self.drop_row('requirements-base.md')
         self.assert_one_finding('requirements-base.md')
-
-    def test_nested_missing_row_is_named(self):
-        self.drop_row('migrate/step-4-to-5.md')
-        self.assert_one_finding('migrate/step-4-to-5.md')
 
     def test_stale_row_is_named(self):
         self.recipe('requirements-base.md').unlink()

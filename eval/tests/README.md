@@ -5,7 +5,7 @@ consumer; dates and experiment identifiers belong to evidence provenance.
 
 | Category | Suite | Guarantees |
 |---|---|---|
-| historical | [historical/migration/copy-and-adoption](historical/migration/copy-and-adoption/) | Legacy copy-first/adoption examples implemented locally; not current migration recipes. |
+| historical | [historical/migration/copy-and-adoption](historical/migration/copy-and-adoption/) | Legacy copy-first/adoption examples implemented locally; not current migration scripts. |
 | historical | [historical/verdicts/cost-and-fall-rate](historical/verdicts/cost-and-fall-rate/) | Cost medians, fall-rate bounds, tripwires and routed-planning recommendations. |
 | historical | [historical/verdicts/escalation-and-completeness](historical/verdicts/escalation-and-completeness/) | Minimum sample counts, escalation model routing and report-only split summaries. |
 | historical | [historical/verdicts/no-regression](historical/verdicts/no-regression/) | Non-regression verdicts, current-workspace comparisons and artifact ties. |
@@ -15,7 +15,7 @@ consumer; dates and experiment identifiers belong to evidence provenance.
 | product | [product/lint/rows](product/lint/rows/) | Canonical lint rows, formats, severities, AWK variants, lifecycle outcomes, clock coverage and Attempts evidence. |
 | product | [product/lint/task-contracts](product/lint/task-contracts/) | Task contracts, readiness and acceptance fields. |
 | product | [product/lint/task-identity](product/lint/task-identity/) | Task identity, scaffold paths and workspace naming. Lint row 2 resolves and refuses sibling workspace references as the plan view does. |
-| product | [product/migration](product/migration/) | Workspace schema migration, recipes and census refusal. Migration keeps historical record paths, makes citations follow their moved files, leaves links into other workspaces unchanged, reports what history still cites, and keeps the text after a legacy status glyph as a board note. |
+| product | [product/migration](product/migration/) | Workspace schema migration, scripts and census refusal. Migration keeps historical record paths, makes citations follow their moved files, leaves links into other workspaces unchanged, reports what history still cites, and keeps the text after a legacy status glyph as a board note. |
 | product | [product/plan](product/plan/) | Plan section order, and the controlled-writing recipe and guide for owner texts and specifications. |
 | product | [product/requirements-base](product/requirements-base/) | Requirements base parsing, delta validation, reconciliation and fold through the shipped recipe, and the guide's rules. |
 | product | [product/resume](product/resume/) | The cold-resume read order, its links from every read list, the spent-count source and the closure listing of open obligations. |
@@ -43,7 +43,7 @@ Historical verdict suites exercise distinct sealed implementations. Their source
 directories retain archival identifiers for seal and evidence integrity; those
 identifiers are not suite names. Synthetic cases and oracles remain independent.
 The historical migration examples execute local simulation helpers. Product
-migration tests separately execute the current shipped schema and step recipes.
+migration tests separately execute the current shipped schema and step scripts.
 
 See [TESTING.md](../TESTING.md) for selection, native results and consolidation.
 [suite-manifest.json](../suite-manifest.json) maps every functional suite to its

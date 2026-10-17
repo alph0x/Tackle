@@ -7,10 +7,6 @@ or changes a recipe adds or updates its row.
 | Recipe | sha256 |
 |---|---|
 | [controlled-writing.md](controlled-writing.md) | `fd9329811aa210991fef5ebdbd224b41ad0108c534f0ac6014632ab3813caed9` |
-| [migrate/schema.md](migrate/schema.md) | `cdca8720634be9fbda16e3e6bc28062986980f6b4af8cbce99cd4ff87930dce6` |
-| [migrate/step-pre3-to-3.md](migrate/step-pre3-to-3.md) | `6070ad996bed708322de1a35588bf33c2bfb3cf9f3ebd96dee9bc4fe59fd8fdb` |
-| [migrate/step-3-to-4.md](migrate/step-3-to-4.md) | `f73aca81c74b40d21298b83f6455f028b0dad23fcd4a3d69628d675bb04b1171` |
-| [migrate/step-4-to-5.md](migrate/step-4-to-5.md) | `62cc9a0ed90b5389f4c4b45d827119d1621edc99992a6da773877d5f0455b182` |
 | [requirements-base.md](requirements-base.md) | `4b31065e084c08123fc13c5bb1f2318f206aafe3c618eebd374896d06f74aa6b` |
 
 ## Consent

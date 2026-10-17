@@ -37,8 +37,8 @@ its current replacement, per `references/guides/usage-observability.md`'s legacy
 
 - **`bucket`** — the board schema: `pre-3`, `3`, `4`, `5`, `lite` or `unknown`. Detection mirrors
   `references/guides/migrate.md#schema-keyed-migration`'s table (reimplemented directly from that
-  guide, rather than imported from `references/recipes/migrate/schema.md`'s own `schema_of` helper, so
-  this stand-alone tool carries no runtime dependency on that recipe module):
+  guide, rather than imported from `scripts/migrate/schema.py`'s own `schema_of` helper, so
+  this stand-alone tool carries no runtime dependency on that script):
   - `lite` — a `plan.md` whose first line is exactly `Gate: Lite`;
   - `3` — a `board.md` whose `Schema:` line is `tackle-workspace/3`;
   - `pre-3` — a `board.md` with no `Schema:` line, and a header row naming `Point` or `Task` plus a

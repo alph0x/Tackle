@@ -14,6 +14,10 @@ a script adds or updates its row.
 | [system_one_decide.py](system_one_decide.py) | `a9c535bdd2e7fff2137b36c032c22ca55fd97886beb0bc883e8ba3dd2ffd3ffb` |
 | [system_one_state.py](system_one_state.py) | `2369d7ddad068ef7247b732ecc7f1fdeef921b1dbed3b6304844f43eef273c2a` |
 | [codex_usage.py](codex_usage.py) | `2fca95fcb854a8157a1b12770ff590bf776fce2f1e4307de12161ad5f83255aa` |
+| [migrate/schema.py](migrate/schema.py) | `6e7c3d3de8ca67089f0a5f395ebb14bb00e581fadaf4d1e9272707666a0d4809` |
+| [migrate/step_3_to_4.py](migrate/step_3_to_4.py) | `effc084a74cb31c1aea0983e89bc94e0a08a3bd26137ec87ae9fc94b9c2846f5` |
+| [migrate/step_4_to_5.py](migrate/step_4_to_5.py) | `ae4dcf1ee639aa556fccf4ddbc1b70229b942d84e6a365c12009023af717501b` |
+| [migrate/step_pre3_to_3.py](migrate/step_pre3_to_3.py) | `b08e63d7182d5a51d30a1973ba3f098448a174e208e9739783688d7ca82ab4b3` |
 
 ## Consent
 
