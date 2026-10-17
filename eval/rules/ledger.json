@@ -945,7 +945,7 @@
       "rule_id": "R-RUN-05",
       "statement": "Reuse verified current state and sufficient existing checks; do not append equivalent assertions or unchanged closure reruns.",
       "statement_sha256": "d9beacfc73bfe0717bd839e70c569c8c6a2133391f0bbffcb8e6877522d2ff55",
-      "home": "references/guides/run.md:274",
+      "home": "references/guides/run.md:278",
       "home_fragment": "Reuse unchanged PLAN readiness checks",
       "units": [],
       "mirrors": [],
@@ -968,7 +968,7 @@
       "rule_id": "R-RUN-06",
       "statement": "Changed content, selector membership, configuration, interfaces, runtime or freshness invalidate affected consumers, and unknown dependencies require conservative checks.",
       "statement_sha256": "1c1280f74aeef7eb7f7257c0cd7e6857d1cdb14607295e70d0e2dac102a2fd0e",
-      "home": "references/guides/run.md:207",
+      "home": "references/guides/run.md:211",
       "home_fragment": "only the dependent checks; re-ground and revalidate",
       "units": [],
       "mirrors": [],
@@ -1309,7 +1309,7 @@
       "home_fragment": "Closure reports for done tasks",
       "units": [],
       "mirrors": [
-        "references/guides/run.md:260"
+        "references/guides/run.md:264"
       ],
       "class": "safety-invariant",
       "hot_path": false,
@@ -1911,7 +1911,7 @@
       "home_fragment": "Historical E0–E3 codes",
       "units": [],
       "mirrors": [
-        "references/guides/run.md:175"
+        "references/guides/run.md:178"
       ],
       "class": "format",
       "hot_path": false,
@@ -2969,15 +2969,15 @@
     },
     {
       "rule_id": "R-REL-05",
-      "statement": "Saving or running a [recipe script](references/recipes/README.md#consent) from `references/` needs the owner's explicit authorization; prefer an equivalent harness capability.",
-      "statement_sha256": "4287d1d3cdba8f953dfda31836c9c8c61f880b084cebd5c243bb1f751f4ee117",
+      "statement": "Saving or running a [recipe script](references/recipes/README.md#consent) from `references/`, or running a [script](scripts/README.md#consent) from `scripts/`, needs the owner's explicit authorization; prefer an equivalent harness capability.",
+      "statement_sha256": "ea52c1b5d74d787b7beca45a113061b8fc1c1171a4850e18218e614aa9b98115",
       "home": "SKILL.md:65",
       "home_fragment": "Saving or running a [recipe script](references/recipes/",
       "units": [
         "Saving or running a [recipe script](references/r"
       ],
       "mirrors": [
-        "references/recipes/README.md:26",
+        "references/recipes/README.md:24",
         "references/guides/full-checks.md:4",
         "references/guides/full-checks.md:48",
         "references/guides/full-checks.md:60",
@@ -3264,7 +3264,7 @@
       "rule_id": "R-RUN-19",
       "statement": "An obligation that outlives its task is recorded when it is created as an O-NN row of the board's obligations table and prevents initiative completion while it is Open, unless the owner withdrew it.",
       "statement_sha256": "6d1baf55e5ae97b57a522eb306cc74f95574013a45a9a47e4800fd2267c2978a",
-      "home": "references/guides/run.md:220",
+      "home": "references/guides/run.md:224",
       "home_fragment": "An obligation that outlives its task is recorded when it is",
       "units": [],
       "mirrors": [
@@ -3291,7 +3291,7 @@
       "rule_id": "R-RUN-20",
       "statement": "RUN calls a fresh, independent adversarial review at three moments only (lock, repeat-failure and complete), the reviewer records its actual independence, and a moment with no independent reviewer stops the task Waiting on owner unless a recorded owner decision waives it.",
       "statement_sha256": "6a7f89f981c2bda43e934d6c4f5fd7152fb97189fb55cc785b7e81e2ec579da8",
-      "home": "references/guides/run.md:181",
+      "home": "references/guides/run.md:184",
       "home_fragment": "Run calls an independent adversarial review at three moments",
       "units": [],
       "mirrors": [],
@@ -3495,7 +3495,7 @@
       "rule_id": "R-RUN-22",
       "statement": "Before an initiative is declared closed, and at every cold resume, every Open obligation in the table and every id on a Complete task's Remains receipt is listed. Before an initiative is declared closed, every Complete task's brief and report and every record a report cites, verification records included, are opened and read, with the history (history-archive.md included), decisions and questions, as prose for owner requests or follow-ups not yet done, each is recorded as an Open obligation and raised with the owner before closing, and a missing table or Remains line never shows that nothing remains.",
       "statement_sha256": "15bea7ad5cefc858c1db1e962ae9d3839bb2f5dc687a619fe2af58c7576691b6",
-      "home": "references/guides/run.md:222",
+      "home": "references/guides/run.md:226",
       "home_fragment": "Before an initiative is declared closed, and at every cold",
       "units": [],
       "mirrors": [
@@ -4526,10 +4526,10 @@
       },
       "historical": []
     },
-{
+    {
       "rule_id": "R-REL-07",
-      "statement": "Gate 9 checks that the recipe manifest lists every recipe under references/recipes/ with its current sha256.",
-      "statement_sha256": "ffb99ce000a1aa9926c87c5243bf3b20d2dd9a25ff291f135dd6220de1b4b9d3",
+      "statement": "Gate 9 checks that the recipe manifest lists every recipe under references/recipes/ with its current sha256, and that the script manifest lists every `*.py` under skills/tackle/scripts/ with its current sha256.",
+      "statement_sha256": "f46c97d122793846a609dea3745a6a3d996ae50b511ff99667faa0693390e047",
       "home": "MAINTAINING.md:61",
       "home_fragment": "Gate 9 checks that the recipe manifest lists",
       "units": [],

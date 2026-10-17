@@ -225,7 +225,7 @@
       "disposition": "merged",
       "destination": "MAINTAINING.md",
       "note": null,
-      "destination_unit_sha256": "9cb4efaa1400361a8c62ceeb01a6aae0832122922bdc8f928a5c74c9befd05e5"
+      "destination_unit_sha256": "0e50a15e4d1c5f769724052cf3f13b69adb1ee23fea9bb4058202d579cdda00f"
     },
     {
       "path": "references/guides/lint-spec.md",
@@ -234,7 +234,7 @@
       "disposition": "merged",
       "destination": "MAINTAINING.md",
       "note": null,
-      "destination_unit_sha256": "fa994878fa552f6eaa97da7759610d58f5c598dbd8b27b6312442a3d743e5510"
+      "destination_unit_sha256": "837fd2cb3b09c921967515deaf9216a1cfb40adba771ed3dac30157185118a21"
     },
     {
       "path": "references/guides/lint-spec.md",
@@ -243,7 +243,7 @@
       "disposition": "merged",
       "destination": "MAINTAINING.md",
       "note": null,
-      "destination_unit_sha256": "88deef0408492769fdfe8cacf006e18407c909cbc0b1edb3fb422dbc1e7c20f3"
+      "destination_unit_sha256": "e15387f8a9b6f58d54ecf876f19d6c349fb79942e6715cb2c09608b3d5612e2d"
     },
     {
       "path": "references/guides/lint-spec.md",
@@ -4175,7 +4175,7 @@
       "unit_sha256": "9f105232cacf6598e3bd762567c43989660844da7cfc169fbf7907eb4e8d274e",
       "disposition": "reworded",
       "destination": "references/guides/run.md",
-      "note": "Use the optional pure check in [correction-lineage.md](../recipes/correction-lineage.md) when composing a split/merge; its pool limits are parameters, 3 for a task pool and 2 for the unowned integration pool.",
+      "note": "Use the optional pure check in [correction_lineage.py](../../scripts/correction_lineage.py) when composing a split/merge; its pool limits are parameters, 3 for a task pool and 2 for the unowned integration pool.",
       "destination_unit_sha256": null
     },
     {
@@ -5223,8 +5223,8 @@
       "line": 270,
       "unit_sha256": "429081b8703e5f5ede89257b9fb57982ae3c2d7670c54fbe61463160bce86349",
       "disposition": "reworded",
-      "destination": "references/recipes/correction-lineage.md",
-      "note": "```python\nTASK_POOL_LIMIT = 3\nUNOWNED_INTEGRATION_POOL_LIMIT = 2\n\n\ndef correction_usage(events, pool_ids, limits=None):\n    unique = {}\n    for event in events:\n        identity = event['cycle_id']\n        if not identity or event.get('kind') != 'failed-correction':\n            raise ValueError('invalid correction event')\n        if identity in unique and unique[identity] != event:\n            raise ValueError('conflicting correction history')\n        unique[identity] = event\n    selected = set(pool_ids)\n    limits = dict(limits or {})\n    if not set(limits) <= selected or any(\n            limit not in (TASK_POOL_LIMIT, UNOWNED_INTEGRATION_POOL_LIMIT) for limit in limits.values()):\n        raise ValueError('invalid pool limit')\n    caps = {pool: limits.get(pool, TASK_POOL_LIMIT) for pool in selected}\n    pools = {pool: 0 for pool in selected}\n    counted = set()\n    for identity, event in unique.items():\n        affected = event.get('pool_ids', [event.get('pool_id')])\n        if not isinstance(affected, list) or not affected or any(not isinstance(p, str) or not p for p in affected):\n            raise ValueError('invalid correction pool')\n        for pool in selected & set(affected):\n            pools[pool] += 1\n            counted.add(identity)\n    return {'spent': len(counted), 'pools': pools,\n            'remaining': min((max(0, caps[pool] - n) for pool, n in pools.items()), default=TASK_POOL_LIMIT),\n            'exhausted': any(n >= caps[pool] for pool, n in pools.items())}\n\n\ndef transfer_lineage(previous, descendants, unresolved, failure_pools):\n    required = set(previous) & set(unresolved)\n    inherited = set().union(*(set(failures) for failures in descendants.values())) if descendants else set()\n    if required != inherited or not required.issubset(failure_pools):\n        raise ValueError('lost, invented or unrelated failure lineage')\n    return {identity: sorted({failure_pools[failure] for failure in failures})\n            for identity, failures in descendants.items()}\n```",
+      "destination": "skills/tackle/scripts/correction_lineage.py",
+      "note": "TASK_POOL_LIMIT = 3\nUNOWNED_INTEGRATION_POOL_LIMIT = 2\n\n\ndef correction_usage(events, pool_ids, limits=None):\n    unique = {}\n    for event in events:\n        identity = event['cycle_id']\n        if not identity or event.get('kind') != 'failed-correction':\n            raise ValueError('invalid correction event')\n        if identity in unique and unique[identity] != event:\n            raise ValueError('conflicting correction history')\n        unique[identity] = event\n    selected = set(pool_ids)\n    limits = dict(limits or {})\n    if not set(limits) <= selected or any(\n            limit not in (TASK_POOL_LIMIT, UNOWNED_INTEGRATION_POOL_LIMIT) for limit in limits.values()):\n        raise ValueError('invalid pool limit')\n    caps = {pool: limits.get(pool, TASK_POOL_LIMIT) for pool in selected}\n    pools = {pool: 0 for pool in selected}\n    counted = set()\n    for identity, event in unique.items():\n        affected = event.get('pool_ids', [event.get('pool_id')])\n        if not isinstance(affected, list) or not affected or any(not isinstance(p, str) or not p for p in affected):\n            raise ValueError('invalid correction pool')\n        for pool in selected & set(affected):\n            pools[pool] += 1\n            counted.add(identity)\n    return {'spent': len(counted), 'pools': pools,\n            'remaining': min((max(0, caps[pool] - n) for pool, n in pools.items()), default=TASK_POOL_LIMIT),\n            'exhausted': any(n >= caps[pool] for pool, n in pools.items())}\n\n\ndef transfer_lineage(previous, descendants, unresolved, failure_pools):\n    required = set(previous) & set(unresolved)\n    inherited = set().union(*(set(failures) for failures in descendants.values())) if descendants else set()\n    if required != inherited or not required.issubset(failure_pools):\n        raise ValueError('lost, invented or unrelated failure lineage')\n    return {identity: sorted({failure_pools[failure] for failure in failures})\n            for identity, failures in descendants.items()}",
       "destination_unit_sha256": null
     },
     {
@@ -6500,7 +6500,7 @@
       "unit_sha256": "1c9735a41424d9e24021332876a9fd10301080a131a3c754b3651bfea14102f0",
       "disposition": "reworded",
       "destination": "MAINTAINING.md",
-      "note": "The owner-controlled transition must name the exact legacy tombstone (`tackle-check`) and preserve an unrelated sentinel after verified replacement; it never deletes `tackle` or uses recursive/prefix cleanup: `for f in SKILL.md references; do grep -q \"$f\" skills/tackle/references/guides/update.md || echo \"update.md missing artifact: $f\"; done; m=$(grep -E '^[[:space:]]*3\\.",
+      "note": "The owner-controlled transition must name the exact legacy tombstone (`tackle-check`) and preserve an unrelated sentinel after verified replacement; it never deletes `tackle` or uses recursive/prefix cleanup: `for f in SKILL.md references scripts; do grep -q \"$f\" skills/tackle/references/guides/update.md || echo \"update.md missing artifact: $f\"; done; m=$(grep -E '^[[:space:]]*3\\.",
       "destination_unit_sha256": null
     },
     {
@@ -6509,7 +6509,7 @@
       "unit_sha256": "7dca467d42d581f731dccbdb89caddde0bc2aa1fdeaea2382c7eb2a884fe20e9",
       "disposition": "reworded",
       "destination": "MAINTAINING.md",
-      "note": "The owner-controlled installer' skills/tackle/references/guides/update.md); case \"$m\" in *SKILL.md*references/*) ;; *) echo \"update.md install copy path missing Markdown artifact\";; esac; grep -q \"exact legacy basename.*tackle-check\" skills/tackle/references/guides/update.md || echo \"update.md missing legacy tombstone: exact legacy basename tackle-check\"; grep -qi \"unrelated neighboring files remain untouched\" skills/tackle/references/guides/update.md || echo \"update.md missing sentinel-preserving transition: unrelated neighbors\"; if grep -Eq '(^|[[:space:]])(curl|tar -x)' skills/tackle/references/guides/update.md; then echo \"update.md contains runtime transfer command\"; fi`",
+      "note": "The owner-controlled installer' skills/tackle/references/guides/update.md); case \"$m\" in *SKILL.md*references/*scripts/*) ;; *) echo \"update.md install copy path missing install artifact\";; esac; grep -q \"exact legacy basename.*tackle-check\" skills/tackle/references/guides/update.md || echo \"update.md missing legacy tombstone: exact legacy basename tackle-check\"; grep -qi \"unrelated neighboring files remain untouched\" skills/tackle/references/guides/update.md || echo \"update.md missing sentinel-preserving transition: unrelated neighbors\"; if grep -Eq '(^|[[:space:]])(curl|tar -x)' skills/tackle/references/guides/update.md; then echo \"update.md contains runtime transfer command\"; fi`",
       "destination_unit_sha256": null
     },
     {
@@ -7783,6 +7783,138 @@
           "reason": "release version stamp bumped to 9.3.0"
         }
       ]
+    },
+    {
+      "path": "MAINTAINING.md",
+      "line": 53,
+      "unit_sha256": "9cb4efaa1400361a8c62ceeb01a6aae0832122922bdc8f928a5c74c9befd05e5",
+      "disposition": "reworded",
+      "destination": "MAINTAINING.md",
+      "note": "**Artifact-manifest and legacy-transition currency** — the delivery channel lists exactly the install artifact that ships (`SKILL.md`, `references/` and `scripts/`), and the install/update copy path names all three.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "no",
+          "reason": "the install now ships scripts/, so gate 6 no longer claims that no executable is part of the copy path"
+        }
+      ]
+    },
+    {
+      "path": "MAINTAINING.md",
+      "line": 53,
+      "unit_sha256": "fa994878fa552f6eaa97da7759610d58f5c598dbd8b27b6312442a3d743e5510",
+      "disposition": "reworded",
+      "destination": "MAINTAINING.md",
+      "note": "The owner-controlled transition must name the exact legacy tombstone (`tackle-check`) and preserve an unrelated sentinel after verified replacement; it never deletes `tackle` or uses recursive/prefix cleanup: `for f in SKILL.md references scripts; do grep -q \"$f\" skills/tackle/references/guides/update.md || echo \"update.md missing artifact: $f\"; done; m=$(grep -E '^[[:space:]]*3\\.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "MAINTAINING.md",
+      "line": 54,
+      "unit_sha256": "88deef0408492769fdfe8cacf006e18407c909cbc0b1edb3fb422dbc1e7c20f3",
+      "disposition": "reworded",
+      "destination": "MAINTAINING.md",
+      "note": "The owner-controlled installer' skills/tackle/references/guides/update.md); case \"$m\" in *SKILL.md*references/*scripts/*) ;; *) echo \"update.md install copy path missing install artifact\";; esac; grep -q \"exact legacy basename.*tackle-check\" skills/tackle/references/guides/update.md || echo \"update.md missing legacy tombstone: exact legacy basename tackle-check\"; grep -qi \"unrelated neighboring files remain untouched\" skills/tackle/references/guides/update.md || echo \"update.md missing sentinel-preserving transition: unrelated neighbors\"; if grep -Eq '(^|[[:space:]])(curl|tar -x)' skills/tackle/references/guides/update.md; then echo \"update.md contains runtime transfer command\"; fi`",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "MAINTAINING.md",
+      "line": 61,
+      "unit_sha256": "1edd88c93340e80caa72c9abb28ff706237e1c1e0e6f73ec7a20356471d669fa",
+      "disposition": "reworded",
+      "destination": "MAINTAINING.md",
+      "note": "**Recipe and script manifest currency** — Gate 9 checks that the recipe manifest lists every recipe under references/recipes/ with its current sha256, and that the script manifest lists every `*.py` under skills/tackle/scripts/ with its current sha256.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "MAINTAINING.md",
+      "line": 61,
+      "unit_sha256": "7d084cac9c578c20511d602ba3508e5a3ce25658018832224c1834f3776adc27",
+      "disposition": "reworded",
+      "destination": "MAINTAINING.md",
+      "note": "It runs from the repository root and echoes one line per missing, duplicate, stale or mismatched row: `D=skills/tackle/references/recipes; M=$D/README.md; sha() { if command -v sha256sum >/dev/null 2>&1; then sha256sum \"$1\"; else shasum -a 256 \"$1\"; fi | cut -c 1-64; }; files=$(find $D -name '*.md' | sed \"s|^$D/||\" | grep -vxF README.md | sort); for f in $files; do n=$(grep -cF \"($f) |\" $M); if [ \"$n\" -eq 0 ]; then echo \"recipe manifest: missing row $f\"; elif [ \"$n\" -gt 1 ]; then echo \"recipe manifest: duplicate row $f\"; else h=$(sha \"$D/$f\"); case \"$(grep -F \"($f) |\" $M)\" in *\"$h\"*) ;; *) echo \"recipe manifest: hash mismatch $f\";; esac; fi; done; sed -n 's/^| \\[\\([^]]*\\)\\](\\1) |.*/\\1/p' $M | while IFS= read -r p; do [ -f \"$D/$p\" ] || echo \"recipe manifest: stale row $p\"; done; S=skills/tackle/scripts; N=$S/README.md; files=$(find $S -name '*.py' | sed \"s|^$S/||\" | sort); for f in $files; do n=$(grep -cF \"($f) |\" $N); if [ \"$n\" -eq 0 ]; then echo \"script manifest: missing row $f\"; elif [ \"$n\" -gt 1 ]; then echo \"script manifest: duplicate row $f\"; else h=$(sha \"$S/$f\"); case \"$(grep -F \"($f) |\" $N)\" in *\"$h\"*) ;; *) echo \"script manifest: hash mismatch $f\";; esac; fi; done; sed -n 's/^| \\[\\([^]]*\\)\\](\\1) |.*/\\1/p' $N | while IFS= read -r p; do [ -f \"$S/$p\" ] || echo \"script manifest: stale row $p\"; done`",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "SKILL.md",
+      "line": 61,
+      "unit_sha256": "4287d1d3cdba8f953dfda31836c9c8c61f880b084cebd5c243bb1f751f4ee117",
+      "disposition": "reworded",
+      "destination": "SKILL.md",
+      "note": "Saving or running a [recipe script](references/recipes/README.md#consent) from `references/`, or running a [script](scripts/README.md#consent) from `scripts/`, needs the owner's explicit authorization; prefer an equivalent harness capability.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run-card.md",
+      "line": 84,
+      "unit_sha256": "4e42a512e365d8ed9ca1e8fb6c946fff14d1087cab190ce49e78bd7385d94f9f",
+      "disposition": "reworded",
+      "destination": "references/guides/run-card.md",
+      "note": "[Record fields](run.md#verification-record-fields), [capture](run.md#capture), [failure packet](run.md#failure-classification-and-escalation-packet), [recovery](run.md#operational-recovery), [lineage](run.md#correction-lineage) and its [script](../../scripts/correction_lineage.py), [independence](run.md#independence-and-historical-grades), [acceptance](run.md#integration-and-deliverable-acceptance), [release gating](run.md#release-gating), [run record](run.md#run-record), [testing](testing.md), [limits](run.md#tier-dispatch-and-escalation-limits), [waiting-on-owner citation](status.md#queries), [resume](status.md#cold-resume-read-order).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 148,
+      "unit_sha256": "27a5c01073e9a5caa53b8aed8ec002dfeea84bfa651e71c0508973c65261a836",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Use the optional pure check in [correction_lineage.py](../../scripts/correction_lineage.py) when composing a split/merge; its pool limits are parameters, 3 for a task pool and 2 for the unowned integration pool.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 150,
+      "unit_sha256": "78fe67de448a63669ba2984b7e9f9e5ffd72a5efc2e20828ec569a779edb69f2",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Running that check needs the owner's explicit authorization ([script consent](../../scripts/README.md#consent)); prefer an equivalent harness capability.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 197,
+      "unit_sha256": "5a9444bc1f1c77d76bd59c883fbb1566c95afae0844212d0e4fe8a1e92ff0073",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Tasks completed before adopting 9.1 are outside the [check](../../scripts/adversary_checkpoints.py), an import with no command line: `adversary_findings(tasks, paths)` returns one finding per problem, naming its task.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/update.md",
+      "line": 14,
+      "unit_sha256": "c0d23ec071ccdecf8f9f982e14d57e401a31de93e1ea56aa0642232e0a02b983",
+      "disposition": "reworded",
+      "destination": "references/guides/update.md",
+      "note": "Confirm that the candidate artifact contains only the install artifact: `SKILL.md`, `references/` and `scripts/`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/update.md",
+      "line": 16,
+      "unit_sha256": "fdeeaa5ad9744bf9adc310fbabd0e6faf11f953bd00a4826b20a75f13493b309",
+      "disposition": "reworded",
+      "destination": "references/guides/update.md",
+      "note": "The owner-controlled installer may copy only `SKILL.md`, `references/` and `scripts/` into the skill directory after verification.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 9,
+      "unit_sha256": "35a03399625bcbea77eb51f70365e60fcc99fa13a77a74dbae8997628c0b67a7",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "| [correction_lineage.py](correction_lineage.py) | `64123960c4488e81203fc3f7627c5dc350748e1d803a7a301d9f002468f5b181` |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 10,
+      "unit_sha256": "0cc5c825224984ecf48de07118f3a1c725651cc39848d957fa23fd38d3a5046c",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "| [adversary_checkpoints.py](adversary_checkpoints.py) | `8be44a5b646ad3aabf179bbf899f4e80c3d34382ce5b636c9eadb26e5d0a92dd` |",
+      "destination_unit_sha256": null
     }
   ]
 }
