@@ -1,8 +1,8 @@
-"""Extraction-and-cross-check tests for the one shipped, calibrated confidence recipe.
+"""Cross-check tests for the one shipped, calibrated confidence script.
 
-`references/guides/retro.md` carries a single, self-contained ```awk fenced recipe implementing the
+`scripts/retro_confidence.py` is a single, self-contained Python script implementing the
 Wilson score interval's lower bound (z=1.96) over each Hypotheses/Directives bullet's own
-`observations` list. This suite extracts that exact recipe text (never reimplementing the formula,
+`observations` list. This suite runs that exact script (never reimplementing the formula,
 the parsing, or the retirement threshold comparison independently) and:
 
 - runs it over synthetic fixture profiles under `fixtures/` (never the real `.tackle/profile.md` or
@@ -15,6 +15,7 @@ Standard library only; no network, container or model call.
 import importlib.util
 import re
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -26,7 +27,7 @@ from maintaining.install_root import current_root  # noqa: E402
 INSTALL = current_root(ROOT)
 
 HERE = (Path(__file__).resolve().parents[4] / 'eval/lessons')
-RETRO = INSTALL / 'references/guides/retro.md'
+SCRIPT = INSTALL / 'scripts/retro_confidence.py'
 
 
 def load_verdict():
@@ -40,14 +41,10 @@ VERDICT = load_verdict()
 
 
 def extract_confidence_recipe(text=None):
-    """The exact ```awk fenced recipe retro.md ships (extracted, never re-typed)."""
-    text = text if text is not None else RETRO.read_text(encoding='utf-8')
-    match = re.search(r'```awk\n(.*?)\n```', text, re.S)
-    if not match:
-        raise AssertionError('no ```awk fenced confidence recipe found')
-    program = match.group(1)
+    """The exact Python script retro ships (read, never re-typed)."""
+    program = text if text is not None else SCRIPT.read_text(encoding='utf-8')
     for forbidden in ('eval/',):
-        assert forbidden not in program, 'recipe (or a comment inside it) cites a repository path: %r' % forbidden
+        assert forbidden not in program, 'script (or a comment inside it) cites a repository path: %r' % forbidden
     return program
 
 
@@ -68,12 +65,15 @@ class Row:
 
 
 def run_recipe(profile_text, program=None):
-    """Run the (extracted or given) recipe over profile_text; return {id: Row}."""
+    """Run the (shipped or given) script over profile_text; return {id: Row}."""
     program = program if program is not None else extract_confidence_recipe()
     with tempfile.TemporaryDirectory(prefix='tackle-learning-loop-') as scratch:
         profile_path = Path(scratch) / 'profile.md'
         profile_path.write_text(profile_text, encoding='utf-8')
-        child = subprocess.run(['awk', program, str(profile_path)], capture_output=True, text=True, timeout=30)
+        script_path = Path(scratch) / 'retro_confidence.py'
+        script_path.write_text(program, encoding='utf-8')
+        child = subprocess.run([sys.executable, '-I', str(script_path), str(profile_path)],
+                               capture_output=True, text=True, timeout=30)
     assert child.returncode == 0, (child.returncode, child.stdout, child.stderr)
     assert child.stderr == ''
     rows = {}

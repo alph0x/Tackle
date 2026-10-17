@@ -26,6 +26,7 @@ a script adds or updates its row.
 | [decompose_check.py](decompose_check.py) | `22a9efddfbcf7ef33dfeac625c3c2fcdd786b99bb3beda6f555b872f2c15a6f5` |
 | [controlled_writing.py](controlled_writing.py) | `79e7fc56982c60db602c4216d1eb831b57b7aeefb545a26f8aed127378b8e74a` |
 | [requirements_base.py](requirements_base.py) | `d6c34cf9ca5f4cbb82ecb98c56d412a97344264da5734d839b6bb153ee10f8d0` |
+| [retro_confidence.py](retro_confidence.py) | `1a4897ea49b09984708071f288ba3c3b10c5eeb5fc912236f6c48466894a5ce9` |
 
 ## Consent
 

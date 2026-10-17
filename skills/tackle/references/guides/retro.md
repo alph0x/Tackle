@@ -113,96 +113,13 @@ No step in this workflow asks a human or agent to pick or type a numeric confide
 `confidence` is the Wilson score interval's lower bound (z=1.96), derived only by counting that
 entry's own `observations` list: `k` is its ✓ count, `n` is `k` plus its ✗ count (a legacy `null`
 observation, and an `assumed` acceptance with no mined support, are excluded from both). The shipped
-recipe below performs this computation, the retirement check two paragraphs down, and reads all
+[script](../../scripts/retro_confidence.py) performs this computation, the retirement check two paragraphs down, and reads all
 three legacy shapes a profile may still carry; nothing here reimplements it independently.
 
-```awk
-# Wilson score interval, lower bound (z=1.96): for each Hypotheses/Directives bullet (never a
-# Rules or other section bullet), derive N (checked-true) and M (checked-false) by counting the
-# entry own observations, then compute the lower bound over n=N+M. Two bullets that repeat one
-# hypothesis or directive text merge by the union of the observations initiatives (never by
-# summing two entries N/M, which would double-count a shared initiative); an assumed token is
-# never counted and never occupies the union (it cannot block a later real check or cross for the
-# same initiative). Read over a profile file: `.tackle/profile.md` or `~/.tackle/user-profile.md`.
-function trim(s) { gsub(/^[ \t]+/, "", s); gsub(/[ \t]+$/, "", s); return s }
-function between(line, left, right,   a, b) {
-    a = index(line, left)
-    if (a == 0) return ""
-    a += length(left)
-    b = index(substr(line, a), right)
-    if (b == 0) return trim(substr(line, a))
-    return trim(substr(line, a, b - 1))
-}
-function after(line, left,   a) {
-    a = index(line, left)
-    return a == 0 ? "" : trim(substr(line, a + length(left)))
-}
-function wilson_lower(k, n,   p, denom, centre, half, lower) {
-    p = k / n
-    denom = 1 + 3.8416 / n
-    centre = (p + 3.8416 / (2 * n)) / denom
-    half = 1.96 * sqrt(p * (1 - p) / n + 3.8416 / (4 * n * n)) / denom
-    lower = centre - half
-    if (lower < 0) lower = 0
-    if (lower > 1) lower = 1
-    return lower
-}
-function status_of(m, lower_num) { return (m >= 3 && lower_num < 0.3) ? "retired" : "active" }
-function emit(id, n, m, has_evidence,   total, lower) {
-    total = n + m
-    if (!has_evidence || total == 0) { printf "%s n/a n/a n/a n/a unranked\n", id; return }
-    lower = wilson_lower(n, total)
-    printf "%s %d %d %d %.4f %s\n", id, n, m, total, lower, status_of(m, lower)
-}
-/^## Hypotheses/ { section = 1; next }
-/^## Directives/ { section = 1; next }
-/^## / { section = 0 }
-{
-    if (!section) next
-    line = $0; stripped = trim(line)
-    if (substr(stripped, 1, 2) != "- ") next
-    if (index(line, "observations:") > 0) {
-        id = between(line, "id:", "·")
-        text = between(line, id " · ", " · confidence:")
-        obslist = between(line, "observations:", "· status:")
-        if (obslist == "") obslist = after(line, "observations:")
-        n = 0; m = 0
-        count = split(obslist, tokens, ";")
-        for (i = 1; i <= count; i++) {
-            tok = trim(tokens[i])
-            if (tok == "") continue
-            is_check = index(tok, "✓") > 0
-            is_cross = index(tok, "✗") > 0
-            if (!is_check && !is_cross) continue
-            key = text SUBSEP substr(tok, 1, index(tok, ":") - 1)
-            if (key in seen) continue
-            seen[key] = 1
-            if (is_check) n++; else m++
-        }
-        total_n[text] += n; total_m[text] += m
-        emit(id, total_n[text], total_m[text], 1)
-        next
-    }
-    if (index(line, "evidence:") > 0) {
-        ev = between(line, "evidence:", "· status:")
-        if (ev == "") ev = between(line, "evidence:", "·")
-        if (ev == "") ev = after(line, "evidence:")
-        ck = index(ev, "✓")
-        n = trim(substr(ev, 1, ck - 1)) + 0
-        rest = substr(ev, ck + length("✓")); sub(/^\//, "", rest)
-        if (index(rest, "null") > 0) { m = 0 } else {
-            cx = index(rest, "✗")
-            m = trim(substr(rest, 1, cx - 1)) + 0
-        }
-        emit("line:" NR, n, m, 1)
-        next
-    }
-    emit("line:" NR, 0, 0, 0)
-}
-```
-
-Run it as `awk '<the script above>' <profile-path>` to print `<id> N M n confidence status` for every
-Hypotheses/Directives entry, one line each, old and new format alike. An entry with only `assumed`
+Run it as `python3 -I <skill>/scripts/retro_confidence.py <profile-path>`, with the owner's explicit authorization or
+under a grant in [script consent](../../scripts/README.md#consent), to print `<id> N M n confidence status` for every
+Hypotheses/Directives entry, one line each, old and new format alike, and exit 0. Without exactly one argument it exits 2 with a
+usage line, and an unreadable path ends with the error. An entry with only `assumed`
 acceptances and no checked observation prints `confidence: n/a`, excluded from Top-K/ranking until
 `n ≥ 1`. The comparison against `0.3` always uses this raw, unrounded value; a rounded display never
 feeds back into it.

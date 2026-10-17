@@ -58,11 +58,11 @@ this observed check:
 ```sh
 ws=docs/plans/<initiative>
 for name in README.md AGENTS.md plan.md task-board.md history.md resource-usage.md questions.md decisions.md reference.md; do
-  [ -f "$ws/$name" ] || { echo "missing core: $name"; exit 1; }
+  test -f "$ws/$name" || { echo "missing core: $name";exit 1;}
 done
-[ -d "$ws/tasks" ] || { echo "missing core: tasks/"; exit 1; }
+test -d "$ws/tasks" || { echo "missing core: tasks/";exit 1;}
 for name in board.md log.md usage.md points; do
-  [ ! -e "$ws/$name" ] && [ ! -L "$ws/$name" ] || { echo "old-name artifact: $name"; exit 1; }
+  test ! -e "$ws/$name" -a ! -L "$ws/$name" || { echo "old-name artifact: $name";exit 1;}
 done
 ```
 

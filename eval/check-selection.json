@@ -529,7 +529,8 @@
         "skills/tackle/references/guides/retro.md",
         "skills/tackle/references/profile.tmpl.md",
         "skills/tackle/references/retro.tmpl.md",
-        "skills/tackle/references/terminology.md"
+        "skills/tackle/references/terminology.md",
+        "skills/tackle/scripts/retro_confidence.py"
       ],
       "families": [
         "eval/tests/product/lessons"
