@@ -2493,8 +2493,8 @@
     },
     {
       "rule_id": "R-REL-01",
-      "statement": "Ordinary invocation performs no network access or installation mutation; the only exception is network access by a [consented System One call](references/guides/system-one.md).",
-      "statement_sha256": "4f680c1fb632efc2af550c2400f929b6a62d00e6dd809949e3d7f592cca23ee6",
+      "statement": "Ordinary invocation performs no network access or installation mutation; an optional [System One judgment](references/guides/system-one.md) goes through the host's `typesafe-ai` skill, only with the workspace's recorded consent.",
+      "statement_sha256": "41476c7983a34ffc06a4c4e82f97e3e0d78cca465cfc0eb2e1e21f948de6d14b",
       "home": "SKILL.md:64",
       "home_fragment": "Ordinary invocation performs no network access or",
       "units": [
@@ -2969,8 +2969,8 @@
     },
     {
       "rule_id": "R-REL-05",
-      "statement": "Saving or running a [recipe script](references/recipes/README.md#consent) from `references/`, or running a [script](scripts/README.md#consent) from `scripts/`, needs the owner's explicit authorization; prefer an equivalent harness capability.",
-      "statement_sha256": "ea52c1b5d74d787b7beca45a113061b8fc1c1171a4850e18218e614aa9b98115",
+      "statement": "Saving or running a [recipe script](references/recipes/README.md#consent) from `references/`, or running or importing a [script](scripts/README.md#consent) from `scripts/`, needs the owner's explicit authorization; prefer an equivalent harness capability.",
+      "statement_sha256": "b3ef3effbb73da222f96d30cd72cba808330737741d5d70079c31394288f0367",
       "home": "SKILL.md:65",
       "home_fragment": "Saving or running a [recipe script](references/recipes/",
       "units": [
@@ -3543,8 +3543,8 @@
     },
     {
       "rule_id": "R-RUN-23",
-      "statement": "Use optional System One only when a configuration signal exists and the selected workspace has recorded `yes`. Never ask the user to install TypeSafe/JEV. The [integration recipe](../recipes/system-one.md) provides actual shell detection, selected-workspace storage and the SDK adapter.",
-      "statement_sha256": "ab1480ee6090ac15883f97a319d6536617b01bf6450492b83855b2471d7ae2f8",
+      "statement": "Use optional System One only when a configuration signal exists and the selected workspace has recorded `yes`. Never ask the user to install TypeSafe/JEV. Tackle itself opens no network connection: a judgment goes through the host's `typesafe-ai` skill. Build the client under that skill and pass its constructor as `client_factory` to [system_one_state.py](../../scripts/system_one_state.py), which provides selected-workspace storage, the local consent logic and the SDK adapter.",
+      "statement_sha256": "2ec9d2991149e3f1b2f4a50141f37290b9cefd553e9bd77879e63665e1851d20",
       "home": "references/guides/system-one.md:6",
       "home_fragment": "Use optional System One only when",
       "units": [],
@@ -3566,10 +3566,10 @@
     },
     {
       "rule_id": "R-INTAKE-08",
-      "statement": "Detect only environment-key presence, installed SDK/skill, or the case-insensitive phrase `TypeSafe System One` in project-root AGENTS/CLAUDE or selected-workspace AGENTS. Never read, print or send credential values or open credential files. A configuration signal cannot grant consent.",
-      "statement_sha256": "f9248cd8b9f6d727180c60d01e294b0fa48330235e0d264012e66eba6398cc46",
+      "statement": "A configuration signal is the host offering the `typesafe-ai` skill, the presence of the `TYPESAFE_API_KEY` environment variable, or the case-insensitive phrase `TypeSafe System One` in project-root AGENTS/CLAUDE or selected-workspace AGENTS. Check presence only and probe no home folder. Never read, print or send credential values or open credential files. A configuration signal cannot grant consent.",
+      "statement_sha256": "1069c551dd9f63c2535f4e0296df0793bb03a1e484c892c0ab304ec93155f262",
       "home": "references/guides/system-one.md:8",
-      "home_fragment": "Detect only environment-key presence",
+      "home_fragment": "A configuration signal is the host offering",
       "units": [],
       "mirrors": [],
       "class": "safety-invariant",
@@ -4354,7 +4354,7 @@
       "rule_id": "R-EVID-17",
       "statement": "On a host that keeps local session transcripts, the coordinator records each subagent's usage from its local transcript as one role-scoped sidecar record joined by the Run ID it assigned, counting each request once by its last event per message id; a subagent that served several Run IDs and the coordinator's own session go to session scope, never divided into roles; only numbers, ids, model names and times are copied.",
       "statement_sha256": "bafc66de2e4ab5c0eff13d6664bca66f20481bbeb36b3c618c98e3ee953e3aba",
-      "home": "references/guides/usage-observability.md:119",
+      "home": "references/guides/usage-observability.md:120",
       "home_fragment": "Keep only the last",
       "units": [],
       "mirrors": [],
@@ -4375,8 +4375,8 @@
     },
     {
       "rule_id": "R-INTAKE-09",
-      "statement": "Before sizing, check once per workspace for a System One configuration signal, as [system-one.md](system-one.md#integration) defines it. Use the host's own tools and check presence only. When there is a signal, a selected workspace and no recorded answer, ask the System One question in PLAN or RUN, then record it. The record is one line in the workspace's `AGENTS.md`, in the exact form that [the recipe](../recipes/system-one.md) reads: `System One consent: yes · date=YYYY-MM-DD · actor=\"name\"`, with `no` for a refusal. A new initiative has a workspace only after the scaffold, so ask right after the scaffold creates it. Without a signal, record nothing and continue.",
-      "statement_sha256": "aff6532c26f85a150bee0271aada5a941ec6fd39fe22aa45a9f5d07b4523eba1",
+      "statement": "Before sizing, check once per workspace for a System One configuration signal, as [system-one.md](system-one.md#integration) defines it. Use the host's own tools and check presence only. When there is a signal, a selected workspace and no recorded answer, ask the System One question in PLAN or RUN, then record it. The record is one line in the workspace's `AGENTS.md`, in the exact form that [the state script](../../scripts/system_one_state.py) reads: `System One consent: yes · date=YYYY-MM-DD · actor=\"name\"`, with `no` for a refusal. A new initiative has a workspace only after the scaffold, so ask right after the scaffold creates it. Without a signal, record nothing and continue.",
+      "statement_sha256": "e24104e78e69ca35780fed9c975e23c2f790c76ac43a8c2aef284609d1cd4b2f",
       "home": "references/guides/intake-and-gate.md:76",
       "home_fragment": "Before sizing, check once per workspace",
       "units": [],
@@ -4507,9 +4507,7 @@
         "references/guides/full-checks.md:413",
         "references/guides/evidence-capture.md:41",
         "references/guides/context-lifecycle.md:106",
-        "references/guides/decompose-and-lint.md:133",
-        "references/guides/system-one.md:78",
-        "references/guides/codex-native-usage.md:29"
+        "references/guides/decompose-and-lint.md:133"
       ],
       "class": "behavioral",
       "hot_path": false,

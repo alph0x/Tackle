@@ -5622,7 +5622,7 @@
       "unit_sha256": "e886314752e0779d42b9d9e607d0373d8db12f4a90d65ff429693f52ddfaf0f4",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 8 · Cross-initiative collision — two active initiatives (a `task-board.md` with ≥ 1 active **data row**; the legend line does not count) declare intersecting Write scope; lexical equality, normalized equality, or directory/descendant containment is a collision, while unsupported scope forms are reported as unresolved | `` set --; for f in docs/plans/*/task-board.md docs/plans/*/tasks/*.md; do if ! { [ ! -e \"$f\" ] && [ ! -L \"$f\" ]; }; then set -- \"$@\" \"$f\"; fi; done; if [ \"$#\" -gt 0 ]; then awk 'BEGIN{FS=sprintf(\"%c\",124)} function cell(i,c){c=$i; sub(/^[[:space:]]+/,\"\",c); sub(/[[:space:]]+$/,\"\",c); return c} function colof(name,i){for(i=2;i<=NF;i++) if(cell(i)==name) return i; return 0} FNR==1{col=0; pend=0} pend && $2 ~ /^[[:space:]]*:?-+:?[[:space:]]*$/ {col=pend} {pend=0} $2 !~ /[PT]-[A-Za-z0-9]/ && colof(\"Status\"){pend=colof(\"Status\")} function trim(s){sub(/^[[:space:]]+/,\"\",s); sub(/[[:space:]]+$/,\"\",s); return s} function finish(){if(cont){flush()}else if(touches && !count) print \"unresolved scope: \" location \" (empty Write scope)\"; touches=0; count=0} function flush(){if(wrapped) sub(/[[:space:]]*[.,][[:space:]]*$/,\"\",buf); if(buf!=\"\") parse(buf); touches=0; count=0; buf=\"\"; cont=0; wrapped=0} function scope(raw,a,n,i,path,k,prefix){raw=trim(raw); count++; if((raw !~ /^[[:alnum:]_.\\/-]+$/) + (raw ~ /^\\//) + ((\"/\" raw \"/\") ~ /\\/[.][.]\\//)){print \"unresolved scope: \" raw; return} n=split(raw,a,\"/\"); for(i=1;i<=n;i++){if((a[i]==\"\") + (a[i]==\".\")) continue; if(path!=\"\") path=path \"/\"; path=path a[i]; prefix=\"./\" path; if(system(\"test -L \\\"\" prefix \"\\\"\")==0){print \"unresolved scope: \" raw \" (symlink component)\"; return}} if(path==\"\"){print \"unresolved scope: \" raw; return} for(k in paths) if(owners[k]!=ws && ((path==paths[k]) + (index(path,paths[k] \"/\")==1) + (index(paths[k],path \"/\")==1))) print \"collision: \" raw \" (\" owners[k] \" + \" ws \")\"; k=ws SUBSEP path; paths[k]=path; owners[k]=ws} function annotations(s,i,c,quoted,depth,out){for(i=1;i<=length(s);i++){c=substr(s,i,1); if(c==\"`\" && !depth){quoted=!quoted; out=out c} else if(!quoted && c==\"(\" && (depth + (i==1) + (substr(s,i-1,1) ~ /[[:space:]]/))) depth++; else if(depth){if(c==\")\") depth--} else out=out c} if(depth){print \"unresolved scope: \" s; return \"\"} return out} function parse(s,a,n,i,part,quoted){s=annotations(s); n=split(s,a,\",\"); for(i=1;i<=n;i++){part=trim(a[i]); quoted=0; while(match(part,/^`[^`]+`/)){quoted=1; scope(substr(part,RSTART+1,RLENGTH-2)); part=trim(substr(part,RSTART+RLENGTH))} if(!quoted){sub(/[[:space:]]+[(].*$/,\"\",part); scope(part)} else if(part!=\"\" && part !~ /^[(].*[)]$/) print \"unresolved scope: \" part}} FNR==1 {finish(); split(FILENAME,w,\"/\"); ws=w[3]} FILENAME ~ /\\/task-board[.]md$/ {id=trim($2); status=cell(col ? col : 6); if(id ~ /^[PT]-[A-Za-z0-9]+(-[A-Za-z0-9]+)*$/ && ((status==\"In progress\") + (status==\"Checking\") + (status==\"Interrupted\") + (status==\"Waiting on owner\"))) active[ws]=1; next} !active[ws] {next} (($0 \" \") ~ /^[[:space:]]*([-*+][[:space:]]*)?([*][*])?Write scope([*][*])?[[:space:]:]/) {finish(); touches=1; location=FILENAME \":\" FNR; s=$0; sub(/^[[:space:]]*([-*+][[:space:]]*)?([*][*])?Write scope([*][*])?/,\"\",s); s=trim(s); sub(/^[(][^)]*[)][[:space:]]*:/,\":\",s); if(substr(s,1,1)==\":\"){s=trim(substr(s,2)); if(s!=\"\"){buf=s; cont=1; wrapped=0}} next} touches && cont && /^[[:space:]]*$/ {flush(); next} touches && cont && /^[[:space:]]*[-*+][[:space:]]+[*][*]/ {flush(); next} touches && cont {buf=buf \" \" trim($0); wrapped=1; next} touches && /^[[:space:]]*$/ {next} touches && /^[[:space:]]*[-*+][[:space:]]+/ && $0 !~ /^[[:space:]]*[-*+][[:space:]]+[*][*]/ {s=$0; sub(/^[[:space:]]*[-*+][[:space:]]+/,\"\",s); parse(s); next} touches {finish()} END{finish()}' \"$@\"; fi `` | 0 lines of output — any line is a **warn** |",
+      "note": "| 8 · Cross-initiative collision — two active initiatives (a `task-board.md` with ≥ 1 active **data row**; the legend line does not count) declare intersecting Write scope; lexical equality, normalized equality, or directory/descendant containment is a collision, while unsupported scope forms are reported as unresolved | `` set --; for f in docs/plans/*/task-board.md docs/plans/*/tasks/*.md; do if ! { [ ! -e \"$f\" ] && [ ! -L \"$f\" ]; }; then set -- \"$@\" \"$f\"; fi; done; if [ \"$#\" -gt 0 ] && l=$(mktemp); then find . -type l > \"$l\" 2>/dev/null; awk -v links=\"$l\" 'BEGIN{FS=sprintf(\"%c\",124); while((getline line < links) > 0) link[line]=1; close(links)} function cell(i,c){c=$i; sub(/^[[:space:]]+/,\"\",c); sub(/[[:space:]]+$/,\"\",c); return c} function colof(name,i){for(i=2;i<=NF;i++) if(cell(i)==name) return i; return 0} FNR==1{col=0; pend=0} pend && $2 ~ /^[[:space:]]*:?-+:?[[:space:]]*$/ {col=pend} {pend=0} $2 !~ /[PT]-[A-Za-z0-9]/ && colof(\"Status\"){pend=colof(\"Status\")} function trim(s){sub(/^[[:space:]]+/,\"\",s); sub(/[[:space:]]+$/,\"\",s); return s} function finish(){if(cont){flush()}else if(touches && !count) print \"unresolved scope: \" location \" (empty Write scope)\"; touches=0; count=0} function flush(){if(wrapped) sub(/[[:space:]]*[.,][[:space:]]*$/,\"\",buf); if(buf!=\"\") parse(buf); touches=0; count=0; buf=\"\"; cont=0; wrapped=0} function scope(raw,a,n,i,path,k,prefix){raw=trim(raw); count++; if((raw !~ /^[[:alnum:]_.\\/-]+$/) + (raw ~ /^\\//) + ((\"/\" raw \"/\") ~ /\\/[.][.]\\//)){print \"unresolved scope: \" raw; return} n=split(raw,a,\"/\"); for(i=1;i<=n;i++){if((a[i]==\"\") + (a[i]==\".\")) continue; if(path!=\"\") path=path \"/\"; path=path a[i]; prefix=\"./\" path; if(prefix in link){print \"unresolved scope: \" raw \" (symlink component)\"; return}} if(path==\"\"){print \"unresolved scope: \" raw; return} for(k in paths) if(owners[k]!=ws && ((path==paths[k]) + (index(path,paths[k] \"/\")==1) + (index(paths[k],path \"/\")==1))) print \"collision: \" raw \" (\" owners[k] \" + \" ws \")\"; k=ws SUBSEP path; paths[k]=path; owners[k]=ws} function annotations(s,i,c,quoted,depth,out){for(i=1;i<=length(s);i++){c=substr(s,i,1); if(c==\"`\" && !depth){quoted=!quoted; out=out c} else if(!quoted && c==\"(\" && (depth + (i==1) + (substr(s,i-1,1) ~ /[[:space:]]/))) depth++; else if(depth){if(c==\")\") depth--} else out=out c} if(depth){print \"unresolved scope: \" s; return \"\"} return out} function parse(s,a,n,i,part,quoted){s=annotations(s); n=split(s,a,\",\"); for(i=1;i<=n;i++){part=trim(a[i]); quoted=0; while(match(part,/^`[^`]+`/)){quoted=1; scope(substr(part,RSTART+1,RLENGTH-2)); part=trim(substr(part,RSTART+RLENGTH))} if(!quoted){sub(/[[:space:]]+[(].*$/,\"\",part); scope(part)} else if(part!=\"\" && part !~ /^[(].*[)]$/) print \"unresolved scope: \" part}} FNR==1 {finish(); split(FILENAME,w,\"/\"); ws=w[3]} FILENAME ~ /\\/task-board[.]md$/ {id=trim($2); status=cell(col ? col : 6); if(id ~ /^[PT]-[A-Za-z0-9]+(-[A-Za-z0-9]+)*$/ && ((status==\"In progress\") + (status==\"Checking\") + (status==\"Interrupted\") + (status==\"Waiting on owner\"))) active[ws]=1; next} !active[ws] {next} (($0 \" \") ~ /^[[:space:]]*([-*+][[:space:]]*)?([*][*])?Write scope([*][*])?[[:space:]:]/) {finish(); touches=1; location=FILENAME \":\" FNR; s=$0; sub(/^[[:space:]]*([-*+][[:space:]]*)?([*][*])?Write scope([*][*])?/,\"\",s); s=trim(s); sub(/^[(][^)]*[)][[:space:]]*:/,\":\",s); if(substr(s,1,1)==\":\"){s=trim(substr(s,2)); if(s!=\"\"){buf=s; cont=1; wrapped=0}} next} touches && cont && /^[[:space:]]*$/ {flush(); next} touches && cont && /^[[:space:]]*[-*+][[:space:]]+[*][*]/ {flush(); next} touches && cont {buf=buf \" \" trim($0); wrapped=1; next} touches && /^[[:space:]]*$/ {next} touches && /^[[:space:]]*[-*+][[:space:]]+/ && $0 !~ /^[[:space:]]*[-*+][[:space:]]+[*][*]/ {s=$0; sub(/^[[:space:]]*[-*+][[:space:]]+/,\"\",s); parse(s); next} touches {finish()} END{finish()}' \"$@\"; rm -f \"$l\"; fi `` | 0 lines of output — any line is a **warn** |",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -6877,7 +6877,7 @@
       "unit_sha256": "b10dbf2279fbd472780f8c8622b9abdb6f18dc6f9ec8d4ec38da87030f570fc1",
       "disposition": "reworded",
       "destination": "SKILL.md",
-      "note": "Ordinary invocation performs no network access or installation mutation; the only exception is network access by a [consented System One call](references/guides/system-one.md).",
+      "note": "Ordinary invocation performs no network access or installation mutation; an optional [System One judgment](references/guides/system-one.md) goes through the host's `typesafe-ai` skill, only with the workspace's recorded consent.",
       "destination_unit_sha256": null
     },
     {
@@ -6997,7 +6997,7 @@
       "unit_sha256": "e441cad181616b1918f765915e1780f3996d39257589f90e8d4a39dad60e9e00",
       "disposition": "reworded",
       "destination": "references/guides/codex-native-usage.md",
-      "note": "With the owner's explicit authorization, at a role's start and again after its externally observed end, run the fenced Python body with `python3 - \"$workspace\" [\"$native_jsonl\"] <<'PY'` and a closing `PY`, or extract the fence verbatim into an ephemeral script and give it the same arguments.",
+      "note": "With the owner's explicit authorization ([script consent](../../scripts/README.md#consent)), at a role's start and again after its externally observed end, run `python3 -I <skill>/scripts/codex_usage.py <workspace> <native-jsonl>`.",
       "destination_unit_sha256": null
     },
     {
@@ -7823,7 +7823,7 @@
       "unit_sha256": "4287d1d3cdba8f953dfda31836c9c8c61f880b084cebd5c243bb1f751f4ee117",
       "disposition": "reworded",
       "destination": "SKILL.md",
-      "note": "Saving or running a [recipe script](references/recipes/README.md#consent) from `references/`, or running a [script](scripts/README.md#consent) from `scripts/`, needs the owner's explicit authorization; prefer an equivalent harness capability.",
+      "note": "Saving or running a [recipe script](references/recipes/README.md#consent) from `references/`, or running or importing a [script](scripts/README.md#consent) from `scripts/`, needs the owner's explicit authorization; prefer an equivalent harness capability.",
       "destination_unit_sha256": null
     },
     {
@@ -7850,7 +7850,7 @@
       "unit_sha256": "78fe67de448a63669ba2984b7e9f9e5ffd72a5efc2e20828ec569a779edb69f2",
       "disposition": "reworded",
       "destination": "references/guides/run.md",
-      "note": "Running that check needs the owner's explicit authorization ([script consent](../../scripts/README.md#consent)); prefer an equivalent harness capability.",
+      "note": "Running or importing that check needs the owner's explicit authorization ([script consent](../../scripts/README.md#consent)); prefer an equivalent harness capability.",
       "destination_unit_sha256": null
     },
     {
@@ -8357,6 +8357,296 @@
       "destination": "skills/tackle/scripts/README.md",
       "note": "| [architecture_map.py](architecture_map.py) | `e3a82e160b486413e366c7d4eaee8561144555947b40a6ef329bfa44d03f532c` |",
       "destination_unit_sha256": null
+    },
+    {
+      "path": "SKILL.md",
+      "line": 60,
+      "unit_sha256": "4f680c1fb632efc2af550c2400f929b6a62d00e6dd809949e3d7f592cca23ee6",
+      "disposition": "reworded",
+      "destination": "SKILL.md",
+      "note": "Ordinary invocation performs no network access or installation mutation; an optional [System One judgment](references/guides/system-one.md) goes through the host's `typesafe-ai` skill, only with the workspace's recorded consent.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/codex-native-usage.md",
+      "line": 3,
+      "unit_sha256": "c87b29a0e2679d52fb0b9484f7fc4c40e84b06cb6b80c49df76d2913b716a941",
+      "disposition": "reworded",
+      "destination": "references/guides/codex-native-usage.md",
+      "note": "This [script](../../scripts/codex_usage.py) reads native Codex Desktop or `codex exec --json` records and appends exact session-scoped observations to `resource-usage.telemetry.jsonl`; it refuses a workspace that still holds an older `usage.md` ledger or a `usage.telemetry.jsonl` sidecar.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/codex-native-usage.md",
+      "line": 10,
+      "unit_sha256": "1402f6e692477bb4e70a33412bcd66add5aa6ca550eaeafc38315a4b0e3ad9b8",
+      "disposition": "reworded",
+      "destination": "references/guides/codex-native-usage.md",
+      "note": "With the owner's explicit authorization ([script consent](../../scripts/README.md#consent)), at a role's start and again after its externally observed end, run `python3 -I <skill>/scripts/codex_usage.py <workspace> <native-jsonl>`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/codex-native-usage.md",
+      "line": 13,
+      "unit_sha256": "18bf3b9e71de021c561eaade85ce2130bd03b2b06d2f207132b2e0aa9e9214bf",
+      "disposition": "reworded",
+      "destination": "references/guides/codex-native-usage.md",
+      "note": "When set, `CODEX_THREAD_ID` selects the actor: the Desktop thread inside the given file must match it.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "no",
+          "reason": "The script no longer searches without a trace path; the path is a required argument."
+        },
+        {
+          "token": "sessions",
+          "reason": "The home-folder rollout location is removed; the owner supplies the trace path."
+        }
+      ]
+    },
+    {
+      "path": "references/guides/codex-native-usage.md",
+      "line": 14,
+      "unit_sha256": "806bd78452a4ff48817dd87f0f559c13b841ae0eb25de1c4690ae7ff2310489e",
+      "disposition": "reworded",
+      "destination": "references/guides/codex-native-usage.md",
+      "note": "Both arguments are required: the workspace that holds the resource usage ledger, and the native JSONL trace that the owner supplies, a Desktop rollout file or a saved CLI stream.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/codex-native-usage.md",
+      "line": 16,
+      "unit_sha256": "7a36d0415beb4c85a7ea3cec33d6dd9172268a18ff953a5acd76939008f432e5",
+      "disposition": "reworded",
+      "destination": "references/guides/codex-native-usage.md",
+      "note": "The script writes only the optional sidecar, never the resource usage ledger; record configured model/effort or an exactly mapped terminal clock in the lifecycle row separately.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/codex-native-usage.md",
+      "line": 216,
+      "unit_sha256": "03c858aa394f14cf03a1cdf56b14e5772d314eb7ba1b0a39f137675126a90fae",
+      "disposition": "reworded",
+      "destination": "references/guides/codex-native-usage.md",
+      "note": "This optional script does not replace native raw evidence or the ordinary lifecycle start/finish rows.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/codex-native-usage.md",
+      "line": 34,
+      "unit_sha256": "7b0c711a9672b91f6be7883ab088c1083eb99be4018c150d0bfd898854c15c03",
+      "disposition": "ruled",
+      "destination": null,
+      "note": "The program ships as scripts/codex_usage.py with its home-folder rollout lookup and home expansion removed; the trace path is a required argument, and the guide states its arguments, receipt and exit codes.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/intake-and-gate.md",
+      "line": 79,
+      "unit_sha256": "d16619ff07b43f0477e4e63f10dee88f71207d6c4c677868bebbd22b68412646",
+      "disposition": "reworded",
+      "destination": "references/guides/intake-and-gate.md",
+      "note": "The record is one line in the workspace's `AGENTS.md`, in the exact form that [the state script](../../scripts/system_one_state.py) reads: `System One consent: yes · date=YYYY-MM-DD · actor=\"name\"`, with `no` for a refusal.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 14,
+      "unit_sha256": "8010b1d8ab3f36bb083ab597751a7522a2b20ef7676aa7f082e5633b23e8d93d",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "Empty or unsupported declarations, globs, parent traversal and any existing symlink component (including dangling links, read from one `find . -type l` listing) report unresolved scope, never a clean comparison.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 36,
+      "unit_sha256": "7f37a8dd3c9ec92dbf2a6d3bdecd4dd9e2ab4c5faed4c96c173e4c04451f2e6b",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "| 8 · Cross-initiative collision — two active initiatives (a `task-board.md` with ≥ 1 active **data row**; the legend line does not count) declare intersecting Write scope; lexical equality, normalized equality, or directory/descendant containment is a collision, while unsupported scope forms are reported as unresolved | `` set --; for f in docs/plans/*/task-board.md docs/plans/*/tasks/*.md; do if ! { [ ! -e \"$f\" ] && [ ! -L \"$f\" ]; }; then set -- \"$@\" \"$f\"; fi; done; if [ \"$#\" -gt 0 ] && l=$(mktemp); then find . -type l > \"$l\" 2>/dev/null; awk -v links=\"$l\" 'BEGIN{FS=sprintf(\"%c\",124); while((getline line < links) > 0) link[line]=1; close(links)} function cell(i,c){c=$i; sub(/^[[:space:]]+/,\"\",c); sub(/[[:space:]]+$/,\"\",c); return c} function colof(name,i){for(i=2;i<=NF;i++) if(cell(i)==name) return i; return 0} FNR==1{col=0; pend=0} pend && $2 ~ /^[[:space:]]*:?-+:?[[:space:]]*$/ {col=pend} {pend=0} $2 !~ /[PT]-[A-Za-z0-9]/ && colof(\"Status\"){pend=colof(\"Status\")} function trim(s){sub(/^[[:space:]]+/,\"\",s); sub(/[[:space:]]+$/,\"\",s); return s} function finish(){if(cont){flush()}else if(touches && !count) print \"unresolved scope: \" location \" (empty Write scope)\"; touches=0; count=0} function flush(){if(wrapped) sub(/[[:space:]]*[.,][[:space:]]*$/,\"\",buf); if(buf!=\"\") parse(buf); touches=0; count=0; buf=\"\"; cont=0; wrapped=0} function scope(raw,a,n,i,path,k,prefix){raw=trim(raw); count++; if((raw !~ /^[[:alnum:]_.\\/-]+$/) + (raw ~ /^\\//) + ((\"/\" raw \"/\") ~ /\\/[.][.]\\//)){print \"unresolved scope: \" raw; return} n=split(raw,a,\"/\"); for(i=1;i<=n;i++){if((a[i]==\"\") + (a[i]==\".\")) continue; if(path!=\"\") path=path \"/\"; path=path a[i]; prefix=\"./\" path; if(prefix in link){print \"unresolved scope: \" raw \" (symlink component)\"; return}} if(path==\"\"){print \"unresolved scope: \" raw; return} for(k in paths) if(owners[k]!=ws && ((path==paths[k]) + (index(path,paths[k] \"/\")==1) + (index(paths[k],path \"/\")==1))) print \"collision: \" raw \" (\" owners[k] \" + \" ws \")\"; k=ws SUBSEP path; paths[k]=path; owners[k]=ws} function annotations(s,i,c,quoted,depth,out){for(i=1;i<=length(s);i++){c=substr(s,i,1); if(c==\"`\" && !depth){quoted=!quoted; out=out c} else if(!quoted && c==\"(\" && (depth + (i==1) + (substr(s,i-1,1) ~ /[[:space:]]/))) depth++; else if(depth){if(c==\")\") depth--} else out=out c} if(depth){print \"unresolved scope: \" s; return \"\"} return out} function parse(s,a,n,i,part,quoted){s=annotations(s); n=split(s,a,\",\"); for(i=1;i<=n;i++){part=trim(a[i]); quoted=0; while(match(part,/^`[^`]+`/)){quoted=1; scope(substr(part,RSTART+1,RLENGTH-2)); part=trim(substr(part,RSTART+RLENGTH))} if(!quoted){sub(/[[:space:]]+[(].*$/,\"\",part); scope(part)} else if(part!=\"\" && part !~ /^[(].*[)]$/) print \"unresolved scope: \" part}} FNR==1 {finish(); split(FILENAME,w,\"/\"); ws=w[3]} FILENAME ~ /\\/task-board[.]md$/ {id=trim($2); status=cell(col ? col : 6); if(id ~ /^[PT]-[A-Za-z0-9]+(-[A-Za-z0-9]+)*$/ && ((status==\"In progress\") + (status==\"Checking\") + (status==\"Interrupted\") + (status==\"Waiting on owner\"))) active[ws]=1; next} !active[ws] {next} (($0 \" \") ~ /^[[:space:]]*([-*+][[:space:]]*)?([*][*])?Write scope([*][*])?[[:space:]:]/) {finish(); touches=1; location=FILENAME \":\" FNR; s=$0; sub(/^[[:space:]]*([-*+][[:space:]]*)?([*][*])?Write scope([*][*])?/,\"\",s); s=trim(s); sub(/^[(][^)]*[)][[:space:]]*:/,\":\",s); if(substr(s,1,1)==\":\"){s=trim(substr(s,2)); if(s!=\"\"){buf=s; cont=1; wrapped=0}} next} touches && cont && /^[[:space:]]*$/ {flush(); next} touches && cont && /^[[:space:]]*[-*+][[:space:]]+[*][*]/ {flush(); next} touches && cont {buf=buf \" \" trim($0); wrapped=1; next} touches && /^[[:space:]]*$/ {next} touches && /^[[:space:]]*[-*+][[:space:]]+/ && $0 !~ /^[[:space:]]*[-*+][[:space:]]+[*][*]/ {s=$0; sub(/^[[:space:]]*[-*+][[:space:]]+/,\"\",s); parse(s); next} touches {finish()} END{finish()}' \"$@\"; rm -f \"$l\"; fi `` | 0 lines of output — any line is a **warn** |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/system-one.md",
+      "line": 6,
+      "unit_sha256": "b4267ce6eccf9bfc3da02107990f7be93bd1f7b842f3b398106e2c9470aa151d",
+      "disposition": "reworded",
+      "destination": "references/guides/system-one.md",
+      "note": "Build the client under that skill and pass its constructor as `client_factory` to [system_one_state.py](../../scripts/system_one_state.py), which provides selected-workspace storage, the local consent logic and the SDK adapter.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/system-one.md",
+      "line": 6,
+      "unit_sha256": "28db2b5dd350ce0fb40554b409238d9fce6462b6777c06435c81ebcfc523a29b",
+      "disposition": "reworded",
+      "destination": "references/guides/system-one.md",
+      "note": "Running or importing these scripts needs the owner's explicit authorization under the [script consent rule](../../scripts/README.md#consent); the recorded `yes` grants it for that use only.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/system-one.md",
+      "line": 8,
+      "unit_sha256": "04c43a22b258f32830654ca6f27dbb46fb0b5fb08b80de2ac9bb98e9f590f429",
+      "disposition": "reworded",
+      "destination": "references/guides/system-one.md",
+      "note": "A configuration signal is the host offering the `typesafe-ai` skill, the presence of the `TYPESAFE_API_KEY` environment variable, or the case-insensitive phrase `TypeSafe System One` in project-root AGENTS/CLAUDE or selected-workspace AGENTS. Check presence only and probe no home folder.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/system-one.md",
+      "line": 18,
+      "unit_sha256": "7c828e1d476c4f670e227174ac93ea0c0091480deafe72279ef08ede7fa360e6",
+      "disposition": "reworded",
+      "destination": "references/guides/system-one.md",
+      "note": "The install carries no network client: the two scripts hold the local logic and the caller supplies the client.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "only",
+          "reason": "The install now ships scripts beside the Markdown, so it is no longer Markdown-only."
+        }
+      ]
+    },
+    {
+      "path": "references/guides/system-one.md",
+      "line": 18,
+      "unit_sha256": "368c9e8da4889e9cfd20e5dded402d9315908a7c189042daaae7849721eee79e",
+      "disposition": "reworded",
+      "destination": "references/guides/system-one.md",
+      "note": "Native file/SDK-mock checks prove their encoded integration cases; agent behavior, live service availability and held-out safety/release evidence remain separate obligations.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/system-one.md",
+      "line": 30,
+      "unit_sha256": "19572689645dabd6abb53f2c4737c86acb04025999e7d84502cf7cd7ce70770c",
+      "disposition": "reworded",
+      "destination": "references/guides/system-one.md",
+      "note": "Missing or foreign-workspace consent is unanswered: the function returns one fixed question per workspace and keeps the local judgment.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/system-one.md",
+      "line": 33,
+      "unit_sha256": "dd15614bf117d86f43e939c7bf2a218f4fc744e9b92062ada0ccd3c15e3f07b7",
+      "disposition": "reworded",
+      "destination": "references/guides/system-one.md",
+      "note": "With no configuration, the function returns locally without a question or call.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/system-one.md",
+      "line": 43,
+      "unit_sha256": "4d6d765d1ad2819304901a07c0839f5bc9dbc3d40d08367031ac1a5bf2650f90",
+      "disposition": "reworded",
+      "destination": "references/guides/system-one.md",
+      "note": "The separate state script supplies the actual adapter; this pure function performs no environment, filesystem or network operation.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/system-one.md",
+      "line": 45,
+      "unit_sha256": "ee191bddcf1daefbd2e2fe1c7440de57d28e96b76ec4e2c1245dbd8b5c87ead5",
+      "disposition": "reworded",
+      "destination": "references/guides/system-one.md",
+      "note": "Behavior of a third-party callable is outside this pure function's proof.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/system-one.md",
+      "line": 50,
+      "unit_sha256": "8b4e0ce42c16b313695f9d444002b61d28892618d39c47377b701b173a8b5330",
+      "disposition": "reworded",
+      "destination": "references/guides/system-one.md",
+      "note": "The function validates nested judgments iteratively and changes neither inputs nor transport responses.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/system-one.md",
+      "line": 54,
+      "unit_sha256": "0ebbf469892ff0a2b1cde9649784fd180b7184cf6d12ae8b67db2e2e1273674c",
+      "disposition": "reworded",
+      "destination": "references/guides/system-one.md",
+      "note": "These are conservative reference defaults, not provider calibration.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/system-one.md",
+      "line": 75,
+      "unit_sha256": "80a563a47afd6b5db95ef477a3725e074e85627243fc51e894027786e5c76d3a",
+      "disposition": "reworded",
+      "destination": "references/guides/system-one.md",
+      "note": "[system_one_decide.py](../../scripts/system_one_decide.py) holds the pure decision consumer",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/system-one.md",
+      "line": 75,
+      "unit_sha256": "ae4d66787c34c999bcbcc4806de49045a490fba700e2ba235c182542820619fc",
+      "disposition": "ruled",
+      "destination": null,
+      "note": "Test-loading detail of the removed fence; functional tests now import the shipped script and still exercise the actual consumer rather than a copied algorithm.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/system-one.md",
+      "line": 83,
+      "unit_sha256": "c7a07e3a2ca7b33788b65af99a81b1e938600f1a1276f852b87fad7bc861f50b",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/system_one_decide.py",
+      "note": "from math import isfinite def _system_one_json(value): # Iterative DFS distinguishes sharing from an ancestor cycle. active = set() completed = set() pending = [(False, value)] while pending: leaving, current = pending.pop() kind = type(current) if kind is list or kind is dict: identity = id(current) if leaving: active.remove(identity) completed.add(identity) continue if identity in active: return False if identity in completed: continue if kind is dict and any(type(key) is not str for key in current): return False active.add(identity) pending.append((True, current)) values = current.values() if kind is dict else current pending.extend((False, item) for item in values) elif current is None or kind is str or kind is bool or kind is int: continue elif kind is float and isfinite(current): continue else: return False return True def _system_one_state_valid(state): if type(state) is not dict: return False if any(type(key) is not str for key in state): return False if set(state) != {\"workspace\", \"configured\", \"consent\", \"asked\"}: return False if type(state[\"workspace\"]) is not str or not state[\"workspace\"]: return False if type(state[\"configured\"]) is not bool: return False asked = state[\"asked\"] if type(asked) is not list: return False if any(type(item) is not str or not item for item in asked): return False if len(asked) != len(set(asked)): return False consent = state[\"consent\"] if consent is None: return True if type(consent) is not dict: return False if any(type(key) is not str for key in consent): return False if set(consent) != {\"workspace\", \"answer\"}: return False return (type(consent[\"workspace\"]) is str and bool(consent[\"workspace\"]) and type(consent[\"answer\"]) is str and consent[\"answer\"] in {\"yes\", \"no\"}) def system_one_decide(state, use, fragment, local_judgment, transport=None): uses = {\"resume-selection\", \"failure-class\", \"no-progress\", \"intake-size\"} if (not _system_one_state_valid(state) or type(use) is not str or use not in uses or type(fragment) is not str or not fragment or not _system_one_json(local_judgment) or (transport is not None and not callable(transport))): raise ValueError(\"system_one_input\") workspace = state[\"workspace\"] consent = state[\"consent\"] next_state = { \"workspace\": workspace, \"configured\": state[\"configured\"], \"consent\": None if consent is None else dict(consent), \"asked\": list(state[\"asked\"]), } def local(reason, question=None): return {\"judgment\": local_judgment, \"source\": \"local\", \"reason\": reason, \"state\": next_state, \"question\": question, \"model\": None, \"confidence\": None} if not state[\"configured\"]: return local(\"not-configured\") answered = consent is not None and consent[\"workspace\"] == workspace if not answered: question = None if workspace not in next_state[\"asked\"]: next_state[\"asked\"].append(workspace) question = \"Use optional System One for workspace \" + workspace + \"? (yes/no)\" return local(\"consent-unanswered\", question) if consent[\"answer\"] == \"no\": return local(\"consent-no\") if transport is None: return local(\"transport-unavailable\") request = {\"model\": \"jev-1.13.0\", \"use\": use, \"fragment\": fragment} try: response = transport(request) except Exception: return local(\"transport-failure\") if type(response) is not dict: return local(\"malformed-response\") if any(type(key) is not str for key in response): return local(\"malformed-response\") if set(response) != {\"model\", \"confidence\", \"judgment\"}: return local(\"malformed-response\") confidence = response[\"confidence\"] if (type(response[\"model\"]) is not str or not _system_one_json(response[\"judgment\"]) or type(confidence) not in {int, float} or not 0 <= confidence <= 1 or (type(confidence) is float and not isfinite(confidence))): return local(\"malformed-response\") if response[\"model\"] != \"jev-1.13.0\": return local(\"wrong-model\") minimum = 0.6 if use == \"resume-selection\" else 0.8 if confidence < minimum: return local(\"low-confidence\") return {\"judgment\": response[\"judgment\"], \"source\": \"jev\", \"reason\": \"accepted\", \"state\": next_state, \"question\": None, \"model\": response[\"model\"], \"confidence\": confidence}",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 116,
+      "unit_sha256": "74813acb540d1b6295d65b08f3668f09c9032e4faaee61cb4b84436f98700bbe",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "The subagent's transcript is a JSONL file whose path the owner supplies, for example as the host exports it.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "agent",
+          "reason": "The host-specific file name is removed; the owner supplies the transcript path."
+        },
+        {
+          "token": "sessions",
+          "reason": "The home-folder location is removed; the owner supplies the transcript path."
+        }
+      ]
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 131,
+      "unit_sha256": "b77ed012ce30ae80af9ea28a5132e587cf8d766be04b651aa5d46808752b1820",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "The coordinator's own transcript, at a path the owner supplies in the same way, gives one `scope: session` record, captured once at close, with its last event time in `provenance`.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "sessions",
+          "reason": "The home-folder location is removed; the owner supplies the transcript path."
+        }
+      ]
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 20,
+      "unit_sha256": "3eebbb99f13912ff64f25a9c1dd0bdf84704397027fb833f97500a185c64d803",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "|",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "1",
+          "reason": "The recipe's hash is replaced by the state script's hash in the scripts manifest."
+        }
+      ]
     }
   ]
 }
