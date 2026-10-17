@@ -122,7 +122,10 @@ capability or the project's own tools, or report the record unavailable.
 ```python
 import sys
 sys.path.insert(0, "<skill>/scripts")
-from typesafe_sdk import TypeSafeClient
+try:
+    from typesafe_sdk import TypeSafeClient
+except ImportError:  # no SDK: the judgment stays local
+    TypeSafeClient = None
 from system_one_decide import system_one_decide
 from system_one_state import system_one_use
 
