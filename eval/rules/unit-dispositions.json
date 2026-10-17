@@ -6988,7 +6988,7 @@
       "unit_sha256": "c6129a5904d2b15af7b90a5b3f35aa529e3dcad166da35e33bd9fae448214050",
       "disposition": "reworded",
       "destination": "references/guides/architecture-map.md",
-      "note": "With that authorization, save the [recipe](../recipes/architecture-map.md) as a file and import it.",
+      "note": "With that authorization, import [`scripts/architecture_map.py`](../../scripts/architecture_map.py) from `<skill>/scripts/`, where `<skill>` is the installed skill folder, by putting that folder first on `sys.path` and importing `architecture_map`.",
       "destination_unit_sha256": null
     },
     {
@@ -7069,7 +7069,7 @@
       "unit_sha256": "4d48d28c108da8993e2e17810b35d7dcc2cc8413bb93f418b04bb8f8839f97f2",
       "disposition": "reworded",
       "destination": "references/guides/plan-view.md",
-      "note": "With that authorization, save the [recipe](../recipes/plan-view.md) as a file and run it with the [template](../plan-view.template.md):",
+      "note": "With that authorization, run [`<skill>/scripts/plan_view.py`](../../scripts/plan_view.py) with the [template](../plan-view.template.md), where `<skill>` is the installed skill folder:",
       "destination_unit_sha256": null
     },
     {
@@ -7141,7 +7141,7 @@
       "unit_sha256": "839640f58ef8cf823c1026838fce9f86a9df3d7dc7a8f92d46fe2c02c3ca128a",
       "disposition": "reworded",
       "destination": "references/guides/plan-view.md",
-      "note": "Under the standing view request, the coordinator rebuilds an existing view after every write to a page input, in PLAN and in RUN. Under that request it rebuilds at the end of the step that wrote the input, and after each role start or finish. The page inputs are `task-board.md`, `plan.md`, `decisions.md`, `questions.md`, `history.md` and `resource-usage.md`. They also include the workspace `AGENTS.md` and `readiness.md`, every declared brief and `map-delta.json`. The curated summaries, the map base, the template and the two recipes are page inputs too. The coordinator rebuilds only a view that already exists. Under the standing view request, the coordinator runs the plan-view recipe with `--check` at the end of each step that wrote a page input. That request is the owner's explicit authorization for these checks and rebuilds. Under that request, the coordinator rebuilds when the check says stale. The standing request covers these checks and rebuilds until the owner says stop.",
+      "note": "Under the standing view request, the coordinator rebuilds an existing view after every write to a page input, in PLAN and in RUN. Under that request it rebuilds at the end of the step that wrote the input, and after each role start or finish. The page inputs are `task-board.md`, `plan.md`, `decisions.md`, `questions.md`, `history.md` and `resource-usage.md`. They also include the workspace `AGENTS.md` and `readiness.md`, every declared brief and `map-delta.json`. The curated summaries, the map base, the template and the two scripts, `plan_view.py` and `architecture_map.py`, are page inputs too. The coordinator rebuilds only a view that already exists. Under the standing view request, the coordinator runs the plan-view script with `--check` at the end of each step that wrote a page input. That request is the owner's explicit authorization for these checks and rebuilds. Under that request, the coordinator rebuilds when the check says stale. The standing request covers these checks and rebuilds until the owner says stop.",
       "destination_unit_sha256": null
     },
     {
@@ -7166,16 +7166,10 @@
       "path": "references/guides/plan-view.md",
       "line": 122,
       "unit_sha256": "082aeaf0c3bdcafaa7ba3fbfe83c4e068799a1b3c6cab1deedf6e94b4891aef3",
-      "disposition": "reworded",
-      "destination": "references/guides/plan-view.md",
-      "note": "On each request it hashes the declared public inputs.",
-      "destination_unit_sha256": null,
-      "dropped": [
-        {
-          "token": "agent",
-          "reason": "The token comes from the AGENTS.md file name, which moved to the next sentence of the same input list."
-        }
-      ]
+      "disposition": "ruled",
+      "destination": null,
+      "note": "The loopback live producer is retired; the plan view stays a local file kept current by its stamp reload, and no server is started.",
+      "destination_unit_sha256": null
     },
     {
       "path": "references/AGENTS.tmpl.md",
@@ -7712,30 +7706,18 @@
       "line": 16,
       "unit_sha256": "9e613e19bd277ed06fb0a059d8de02ec311f0224352a897c71d1067a4b923fdd",
       "disposition": "reworded",
-      "destination": "references/recipes/README.md",
-      "note": "| [plan-view.md](plan-view.md) | `54cbb12699c3b82141b490e49fdde49ebe00db411dad6c9859b4ef6671edcbb0` |",
-      "destination_unit_sha256": null,
-      "dropped": [
-        {
-          "token": "97fc032536ce185da4d95bc1d07ec7ce1ccb97d3b6811a03f54f1b268a48e674",
-          "reason": "recipe manifest hash updated with its recipe"
-        }
-      ]
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "| [plan_view.py](plan_view.py) | `4d67a8305b97a40364a5b047f778a0e72d4ffc215fcf6b728a5b50e5027807ac` |",
+      "destination_unit_sha256": null
     },
     {
       "path": "skills/tackle/references/recipes/README.md",
       "line": 16,
       "unit_sha256": "9e613e19bd277ed06fb0a059d8de02ec311f0224352a897c71d1067a4b923fdd",
       "disposition": "reworded",
-      "destination": "skills/tackle/references/recipes/README.md",
-      "note": "| [plan-view.md](plan-view.md) | `54cbb12699c3b82141b490e49fdde49ebe00db411dad6c9859b4ef6671edcbb0` |",
-      "destination_unit_sha256": null,
-      "dropped": [
-        {
-          "token": "97fc032536ce185da4d95bc1d07ec7ce1ccb97d3b6811a03f54f1b268a48e674",
-          "reason": "recipe manifest hash updated with its recipe"
-        }
-      ]
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "| [plan_view.py](plan_view.py) | `4d67a8305b97a40364a5b047f778a0e72d4ffc215fcf6b728a5b50e5027807ac` |",
+      "destination_unit_sha256": null
     },
     {
       "path": "references/guides/lint-spec.md",
@@ -7914,6 +7896,466 @@
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
       "note": "| [adversary_checkpoints.py](adversary_checkpoints.py) | `8be44a5b646ad3aabf179bbf899f4e80c3d34382ce5b636c9eadb26e5d0a92dd` |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/architecture-map.md",
+      "line": 60,
+      "unit_sha256": "923f0fb5d3d4de7e9a2a665dbabe13e8d111bf6b416c042a0ec01e0f874b2280",
+      "disposition": "reworded",
+      "destination": "references/guides/architecture-map.md",
+      "note": "Validating it with the script needs the owner's explicit authorization, which an architecture-map or plan-view request grants; without that grant, the next view build checks the delta and refuses an invalid one.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/architecture-map.md",
+      "line": 66,
+      "unit_sha256": "382707b0f65092d3143fa8aecfa260eb99142cc8af8077024ee30912480e18fe",
+      "disposition": "reworded",
+      "destination": "references/guides/architecture-map.md",
+      "note": "Importing the script needs the owner's explicit authorization; an explicit architecture-map or plan-view request, or the owner's closure-fold confirmation, grants it for that request ([script consent](../../scripts/README.md#consent)).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/architecture-map.md",
+      "line": 66,
+      "unit_sha256": "2406dc8528d1610cccec0227bf68660e8557f555420b572425534a317c3880f6",
+      "disposition": "reworded",
+      "destination": "references/guides/architecture-map.md",
+      "note": "With that authorization, import [`scripts/architecture_map.py`](../../scripts/architecture_map.py) from `<skill>/scripts/`, where `<skill>` is the installed skill folder, by putting that folder first on `sys.path` and importing `architecture_map`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/architecture-map.md",
+      "line": 66,
+      "unit_sha256": "fb32ddb1026f1f13b3cc8cdbf6cdf185b26bec184d1a9945a12e0775b023ee0a",
+      "disposition": "reworded",
+      "destination": "references/guides/architecture-map.md",
+      "note": "It has no command line, uses only the standard library and changes none of its inputs:",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/architecture-map.md",
+      "line": 82,
+      "unit_sha256": "ab07d32e548dc9b1af404392eb18f3f9696121438221f33d1fe047db0b5f76de",
+      "disposition": "reworded",
+      "destination": "references/guides/architecture-map.md",
+      "note": "```sh python3 -I <skill>/scripts/plan_view.py --template <skill>/references/plan-view.template.md \\ --map .tackle/map/architecture.json --map-scope all <workspace> <workspace>/plan-view.html ```",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/architecture-map.md",
+      "line": 93,
+      "unit_sha256": "da9db78100dbbe11194c0e3caa7ecbba08818e9097e978a6504d97e1e77fbaeb",
+      "disposition": "reworded",
+      "destination": "references/guides/architecture-map.md",
+      "note": "The view reads `<workspace>/map-delta.json` and resolves source paths against the repository root, three levels above the workspace.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-card.md",
+      "line": 98,
+      "unit_sha256": "52e4e25ae76466576683da18f3ef409658851492f73569a717c9f557c1655815",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-card.md",
+      "note": "A Coordinated handoff offers the [plan view](plan-view.md#request) once and names its script; only the owner's yes builds it, and that yes is the owner's explicit authorization for the plan-view script.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 11,
+      "unit_sha256": "13e88d0e50ef87628171e9fe7d992f4db1c8ef6088f86ea875f94e49f7931aac",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "STATUS runs no script for the view and never checks it: STATUS stays read-only and code-free.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 16,
+      "unit_sha256": "50832955b89037a8a15923dac35338233995157c1eecdf6d9aab2d9dad93df3d",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "At a Coordinated handoff, PLAN offers the view once and names the plan-view script in the offer; only the owner's yes builds it.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 17,
+      "unit_sha256": "9636f4491f7fbe12e54617a56ca50d9e2328cefc0db6033a31d3648e99090e69",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "That yes is the plan-view request: it is the owner's explicit authorization for the script, the feature-request grant of [script consent](../../scripts/README.md#consent), and it stands as the view request above.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 29,
+      "unit_sha256": "8599cf8630bb8a4f854dc022ad17f14388c2128b8bd55a799b3cdefe39745675",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "The curated summaries, the map base, the template and the two scripts, `plan_view.py` and `architecture_map.py`, are page inputs too.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 32,
+      "unit_sha256": "5412506d335fde4ba6c7da4f171bcc1a9a9e935b5d3901a272a0a9581e1c901d",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "Under the standing view request, the coordinator runs the plan-view script with `--check` at the end of each step that wrote a page input.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 41,
+      "unit_sha256": "862b04be56a425af2baa72a72296f192cc240715ff5ad9c860bfcddc909b9242",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "An open view reloads itself after a rebuild, keeping its selection, filter and reading position: the build writes a small stamp script beside the page, and the page rereads it every few seconds, with no server and no process to stop.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 45,
+      "unit_sha256": "884bc15d41d42d74a07c5e82bcd53588151f368b3d47717f9784843f14ccaa1a",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "The coordinator never starts a server or background process to show the view; the stamp reload is the way to keep an open view current.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "only",
+          "reason": "The owner-requested live producer is retired, so the clause that restricted its start has nothing left to restrict."
+        },
+        {
+          "token": "owner",
+          "reason": "The owner-requested live producer is retired, so the clause that restricted its start has nothing left to restrict."
+        }
+      ]
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 52,
+      "unit_sha256": "012c037f5f010720a22eaf5b09f9cc55347e2bfe650eac258839dd7edd0ed64f",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "Running the script needs the owner's explicit authorization; an explicit plan-view request grants it for that request ([script consent](../../scripts/README.md#consent)).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 52,
+      "unit_sha256": "1cf4ec5c10311605aaa6fd65eebc7b3eec9d29851553ac4703755990d306ff3a",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "With that authorization, run [`<skill>/scripts/plan_view.py`](../../scripts/plan_view.py) with the [template](../plan-view.template.md), where `<skill>` is the installed skill folder:",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 54,
+      "unit_sha256": "7f2faa1588a91fc883dbb9a0d9bedaba48b879bd01524776738ed93b8571c667",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "```sh python3 -I <skill>/scripts/plan_view.py --template <skill>/references/plan-view.template.md <workspace> <workspace>/plan-view.html ```",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 63,
+      "unit_sha256": "0484c9b7076bef87934a7911730ba7697ef5bc46b169e1ea6aca726a9cac61c8",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "The script uses only the standard library, makes no network access and writes only the output file.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 66,
+      "unit_sha256": "55c611616156ec4eae5c4df41942b31c7c3d6fb1dac9f751b7f270d85357b337",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "With `--check` and the build's arguments, the script compares them with the inputs now and writes nothing.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 72,
+      "unit_sha256": "10a2c5a32dec9ff7c3f47e262d44f5c376436798980ae9e1c0f7e87eba0ca351",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "The script refuses to write when the sources disagree.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 79,
+      "unit_sha256": "25510f6831ced88d4806df6d66e2b795e321e09a46fd7612510837460974b7ca",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "with `--map`, a base that cannot be read, or a map delta that the [architecture map](architecture-map.md) script rejects.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 90,
+      "unit_sha256": "5cea49b35f974ddee49963d8707d7d05579ff97cdaddd63dc035d3b86b30d08b",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "The script reads its requirement ids from the `Purpose / requirements` line of the Lite plan body, or from a criteria table, and its checks from the `Cases → checks` line.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 92,
+      "unit_sha256": "de5bbbf0be7e357bc88ad9a37a36b06987b46a6502b67e94971d6101a92929a3",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "When the plan names no requirement id, the script refuses with the Focused reason.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 97,
+      "unit_sha256": "18d291023f4293036522f6e4c61a0a9a702be750eb3dc4a6728ee1da4266824e",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "The script orders the cards with a bounded search, so the lines cross few times.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 112,
+      "unit_sha256": "eb1cca7ff0bdcf6d91775a9a0580f632bd8d89c8ba8e27e4fafc35fc7093b0ae",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "The script picks Spanish only on clear Spanish evidence in the plan.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 151,
+      "unit_sha256": "0e699248f1d6eda2d67c8a9b1085d32ed6a74979f36baef07acb83d3500f6eee",
+      "disposition": "ruled",
+      "destination": null,
+      "note": "The loopback live producer is retired; the plan view stays a local file kept current by its stamp reload, and no server is started.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 151,
+      "unit_sha256": "77eb414622783d11f72a8cd8814948731951c5d6c81e700e7a4df5e615bb14e2",
+      "disposition": "ruled",
+      "destination": null,
+      "note": "The loopback live producer is retired; the plan view stays a local file kept current by its stamp reload, and no server is started.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 151,
+      "unit_sha256": "f665e79330c1c6f3cf6ba589e30dabbc84ce2fe58c78b8d0330b76720a967e3b",
+      "disposition": "ruled",
+      "destination": null,
+      "note": "The loopback live producer is retired; the plan view stays a local file kept current by its stamp reload, and no server is started.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 153,
+      "unit_sha256": "cad468b75e9f1e010bec3e02dff2745b237f0b4dab443bc30ede8755ce4ad6a3",
+      "disposition": "ruled",
+      "destination": null,
+      "note": "The loopback live producer is retired; the plan view stays a local file kept current by its stamp reload, and no server is started.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 155,
+      "unit_sha256": "eb015c8046c15c718077611c0876979cb362ed1134376c4946704606bd55406b",
+      "disposition": "ruled",
+      "destination": null,
+      "note": "The loopback live producer is retired; the plan view stays a local file kept current by its stamp reload, and no server is started.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 159,
+      "unit_sha256": "5f0a99d5d924acf5da425c4641ef3c3951850b97c5e73c34531404efe1dd14a3",
+      "disposition": "ruled",
+      "destination": null,
+      "note": "The loopback live producer is retired; the plan view stays a local file kept current by its stamp reload, and no server is started.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 159,
+      "unit_sha256": "c065a926cad0f8c0f2e61ba6edb50b942596646fb7fc650f9bdac396993d0b03",
+      "disposition": "ruled",
+      "destination": null,
+      "note": "The loopback live producer is retired; the plan view stays a local file kept current by its stamp reload, and no server is started.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 160,
+      "unit_sha256": "84c10d0c5861a7cd6ba1f38feee7f00be569e8faf4a63dd71340a0756bb36cbd",
+      "disposition": "ruled",
+      "destination": null,
+      "note": "The loopback live producer is retired; the plan view stays a local file kept current by its stamp reload, and no server is started.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 160,
+      "unit_sha256": "70af68b7c59c3834a3d2a84a2c70c3eb0040dee1f5aea6a4326db8dbcce1f3a7",
+      "disposition": "ruled",
+      "destination": null,
+      "note": "The loopback live producer is retired; the plan view stays a local file kept current by its stamp reload, and no server is started.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 162,
+      "unit_sha256": "187415a94d2bf13fa120ab09f41338cc2d6c55e9e4dfd918a6b973e88f106468",
+      "disposition": "ruled",
+      "destination": null,
+      "note": "The loopback live producer is retired; the plan view stays a local file kept current by its stamp reload, and no server is started.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 163,
+      "unit_sha256": "f1337f1c754011b8d5fd4f97845b49cfa383eb3148a1fde4030fc38bebe893d0",
+      "disposition": "ruled",
+      "destination": null,
+      "note": "The loopback live producer is retired; the plan view stays a local file kept current by its stamp reload, and no server is started.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 163,
+      "unit_sha256": "b9448afad03b878421a68d004be7fc434ac811ef3c21b14c266430d2278a8163",
+      "disposition": "ruled",
+      "destination": null,
+      "note": "The loopback live producer is retired; the plan view stays a local file kept current by its stamp reload, and no server is started.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 164,
+      "unit_sha256": "1b274116c4fe8d0c3215d5a5b560cc71163cb0c8690daa04c74e5b7062a4f0ca",
+      "disposition": "ruled",
+      "destination": null,
+      "note": "The loopback live producer is retired; the plan view stays a local file kept current by its stamp reload, and no server is started.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 166,
+      "unit_sha256": "627f34a2d7585d66b4dfb61e22e460e54684212caae3081a1c7d2d49b9d20376",
+      "disposition": "ruled",
+      "destination": null,
+      "note": "The loopback live producer is retired; the plan view stays a local file kept current by its stamp reload, and no server is started.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 166,
+      "unit_sha256": "1baefa392be2e705eff80294f813c1a525bbfa42336a87879e59e77057dc35c2",
+      "disposition": "ruled",
+      "destination": null,
+      "note": "The loopback live producer is retired; the plan view stays a local file kept current by its stamp reload, and no server is started.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 167,
+      "unit_sha256": "4a3c37d06975e607481c80b0472f2b8b24d71443ab1f92ed05b8446a80554e04",
+      "disposition": "ruled",
+      "destination": null,
+      "note": "The loopback live producer is retired; the plan view stays a local file kept current by its stamp reload, and no server is started.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 171,
+      "unit_sha256": "6d9aae937cffab5ddb9c49d27e9d2d133c3789d01990dcdd6918aa2dfe218437",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "When a plan view exists, an authorized auxiliary page for the plan, such as a proposals, comparison or review page, uses the plan view's visual base by default without a question about style, built with the plan-view script's page mode.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 173,
+      "unit_sha256": "3a4a493496db6d42d5df76505f9a70889b6ed50c96cd7afa07f6b1f5ca0c3d54",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "The script writes the page from the plan view's marked base in the template, with the command below.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 177,
+      "unit_sha256": "4890e1964e2a55c9d78afcc6e23b9a82e0ff160ae8227c3aa1794005df144baf",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "```sh python3 -I <skill>/scripts/plan_view.py --template <skill>/references/plan-view.template.md --page <fragment.html> <workspace> <output.html> ```",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 181,
+      "unit_sha256": "97a5385c773e2a4d66307f4c949b104084205221b4a2899a81d24469bf6000bb",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "A page records its template, its script and its fragment, so a later change to the plan's title or language does not mark the page stale; rebuild the page on request.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 185,
+      "unit_sha256": "2c93634cf0f6c349b96fb0c2a62a0e3f5f38404ee0788845e59d0729b76514d8",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "Without script authorization the agent writes the page itself: it copies the CSS between the `tackle-base` markers (every range, in order) verbatim from the installed template, and copies the theme script between the `tackle-base-theme` markers verbatim inside `(function () { 'use strict'; … })();`, as the script does.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 187,
+      "unit_sha256": "525e1feab8809c4613d445ad9ae34206dcdc7b0b54b3698f9915971c335b4fc5",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "The script consent rules are unchanged: the owner's explicit request that names the page is the feature request that grants the script for that page, while a page the agent proposes and the owner merely accepts is not.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 16,
+      "unit_sha256": "bd7f82ae26ce4e28dede9619e771b7223aee8dcda797d8d0724083b9669e0eb9",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "| [plan_view.py](plan_view.py) | `4d67a8305b97a40364a5b047f778a0e72d4ffc215fcf6b728a5b50e5027807ac` |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 17,
+      "unit_sha256": "933bf23124c9bc8d98c148c1056754a3399c7031e802fb80bc7d7959296b7a4a",
+      "disposition": "ruled",
+      "destination": null,
+      "note": "The live producer recipe is retired with its manifest row.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/recipes/README.md",
+      "line": 18,
+      "unit_sha256": "11dd7d57cc2d204b412a89110acb389fb8a94ce26610a7fb4f4d411e6a3e7c53",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "| [architecture_map.py](architecture_map.py) | `e3a82e160b486413e366c7d4eaee8561144555947b40a6ef329bfa44d03f532c` |",
       "destination_unit_sha256": null
     }
   ]
