@@ -5233,7 +5233,7 @@
       "unit_sha256": "7992f98d515a73d36b8e26bf49515867b3cbf5caadf45a9f4030b86fea2aed6e",
       "disposition": "reworded",
       "destination": "references/guides/migrate.md",
-      "note": "Below the `pre-3` bucket nothing is promised, and this repository's historical checklists above and in `maintaining/migrations.md` apply.",
+      "note": "Below the `pre-3` bucket nothing is promised, and this repository's historical checklists in `maintaining/migrations.md` apply.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -6532,8 +6532,8 @@
       "line": 40,
       "unit_sha256": "3ab208b17f8848be799d03ee8079e9c04ef77f1398d7ae0f872b5588c5ead382",
       "disposition": "reworded",
-      "destination": "references/guides/retro.md",
-      "note": "Run `s=resource-usage.telemetry.jsonl; [ -f \"$s\" ] || s=/dev/null; awk 'BEGIN{FS=sprintf(\"%c\",124)} function clock(v,alt){alt=sprintf(\"%c\",124);return v~(\"^[0-9][0-9][0-9][0-9]-(0[1-9]\" alt \"1[0-2])-(0[1-9]\" alt \"[12][0-9]\" alt \"3[01])T([01][0-9]\" alt \"2[0-3]):[0-5][0-9]:[0-5][0-9]\" \"([.][0-9]+)?(Z\" alt \"[+-]\" \"([01][0-9]\" alt \"2[0-3]):[0-5][0-9])$\")} FNR==NR{ev=$3;sub(/^[[:space:]]+/,\"\",ev);sub(/[[:space:]]+$/,\"\",ev);rid=$2;sub(/^[[:space:]]+/,\"\",rid);sub(/[[:space:]]+$/,\"\",rid);if(rid==\"\")next;if(rid==\"Run ID\")next;if(rid==\"---\")next;if(ev!=\"start\"&&ev!=\"finish\"&&ev!=\"observe-incomplete\"){if(NF==16)bad[rid]=1;next};at=$10;sub(/^[[:space:]]+/,\"\",at);sub(/[[:space:]]+$/,\"\",at);oc=$11;sub(/^[[:space:]]+/,\"\",oc);sub(/[[:space:]]+$/,\"\",oc);task=$4;role=$5;sub(/^[[:space:]]+/,\"\",task);sub(/[[:space:]]+$/,\"\",task);sub(/^[[:space:]]+/,\"\",role);sub(/[[:space:]]+$/,\"\",role);if(!(rid in firsttask)){firsttask[rid]=task;firstrole[rid]=role}else if(firsttask[rid]!=task)bad[rid]=1;else if(firstrole[rid]!=role)bad[rid]=1;if(ev==\"start\"){scount[rid]++;if(oc!=\"running\")bad[rid]=1;if(clock(at))sok[rid]=1}else{term[rid]=1;tcount[rid]++;if(scount[rid]==0)bad[rid]=1;if(ev==\"finish\"){if(oc!=\"success\"&&oc!=\"failed\"&&oc!=\"blocked\"&&oc!=\"aborted\")bad[rid]=1;if(oc==\"success\"){fsc[rid]=1;if(clock(at))fok[rid]=1}}else if(oc!=\"incomplete\")bad[rid]=1};next} {if($0~/\"scope\"[[:space:]]*:[[:space:]]*\"role\"/){if(match($0,/\"run_id\"[[:space:]]*:[[:space:]]*\"[^\"]*\"/)){seg=substr($0,RSTART,RLENGTH);n=split(seg,pp,\"\\\"\");side[pp[4]]=1}}} END{de=0;dm=0;te=0;tm=0;for(r in term){te++;if(r in side)tm++;de++;if(fsc[r]&&sok[r]&&fok[r]&&!bad[r]&&scount[r]==1&&tcount[r]==1)dm++};if(tm==0)printf \"tokens 0/N (0%%)\\n\";else printf \"tokens %d/%d (%d%%)\\n\",tm,te,int(100*tm/te+0.5);if(dm==0)printf \"duration 0/N (0%%)\\n\";else printf \"duration %d/%d (%d%%)\\n\",dm,de,int(100*dm/de+0.5)}' resource-usage.md \"$s\"` from a fixture workspace.",
+      "destination": "references/retro.tmpl.md",
+      "note": "u=resource-usage.md; if [ -f resource-usage.telemetry.jsonl ]; then s=resource-usage.telemetry.jsonl; elif [ -f usage.telemetry.jsonl ]; then s=usage.telemetry.jsonl; else s=/dev/null; fi; awk 'BEGIN{FS=sprintf(\"%c\",124)} function clock(v,alt){alt=sprintf(\"%c\",124);return v~(\"^[0-9][0-9][0-9][0-9]-(0[1-9]\" alt \"1[0-2])-(0[1-9]\" alt \"[12][0-9]\" alt \"3[01])T([01][0-9]\" alt \"2[0-3]):[0-5][0-9]:[0-5][0-9]\" \"([.][0-9]+)?(Z\" alt \"[+-]\" \"([01][0-9]\" alt \"2[0-3]):[0-5][0-9])$\")} FNR==NR{ev=$3;sub(/^[[:space:]]+/,\"\",ev);sub(/[[:space:]]+$/,\"\",ev);rid=$2;sub(/^[[:space:]]+/,\"\",rid);sub(/[[:space:]]+$/,\"\",rid);if(rid==\"\")next;if(rid==\"Run ID\")next;if(rid==\"---\")next;if(ev!=\"start\"&&ev!=\"finish\"&&ev!=\"observe-incomplete\"){if(NF==16)bad[rid]=1;next};at=$10;sub(/^[[:space:]]+/,\"\",at);sub(/[[:space:]]+$/,\"\",at);oc=$11;sub(/^[[:space:]]+/,\"\",oc);sub(/[[:space:]]+$/,\"\",oc);task=$4;role=$5;sub(/^[[:space:]]+/,\"\",task);sub(/[[:space:]]+$/,\"\",task);sub(/^[[:space:]]+/,\"\",role);sub(/[[:space:]]+$/,\"\",role);if(!(rid in firsttask)){firsttask[rid]=task;firstrole[rid]=role}else if(firsttask[rid]!=task)bad[rid]=1;else if(firstrole[rid]!=role)bad[rid]=1;if(ev==\"start\"){scount[rid]++;if(oc!=\"running\")bad[rid]=1;if(clock(at))sok[rid]=1}else{term[rid]=1;tcount[rid]++;if(scount[rid]==0)bad[rid]=1;if(ev==\"finish\"){if(oc!=\"success\"&&oc!=\"failed\"&&oc!=\"blocked\"&&oc!=\"aborted\")bad[rid]=1;if(oc==\"success\"){fsc[rid]=1;if(clock(at))fok[rid]=1}}else if(oc!=\"incomplete\")bad[rid]=1};next} {if($0~/\"scope\"[[:space:]]*:[[:space:]]*\"role\"/){if(match($0,/\"run_id\"[[:space:]]*:[[:space:]]*\"[^\"]*\"/)){seg=substr($0,RSTART,RLENGTH);n=split(seg,pp,\"\\\"\");side[pp[4]]=1}}} END{de=0;dm=0;te=0;tm=0;for(r in term){te++;if(r in side)tm++;de++;if(fsc[r]&&sok[r]&&fok[r]&&!bad[r]&&scount[r]==1&&tcount[r]==1)dm++};if(tm==0)printf \"tokens 0/N (0%%)\\n\";else printf \"tokens %d/%d (%d%%)\\n\",tm,te,int(100*tm/te+0.5);if(dm==0)printf \"duration 0/N (0%%)\\n\";else printf \"duration %d/%d (%d%%)\\n\",dm,de,int(100*dm/de+0.5)}' \"$u\" \"$s\"",
       "destination_unit_sha256": null
     },
     {
@@ -6947,7 +6947,7 @@
       "line": 153,
       "unit_sha256": "3437af585325d2b59c829200db96388b4c44b4896380f1d77fd2f58cb12e7446",
       "disposition": "reworded",
-      "destination": "references/guides/migrate.md",
+      "destination": "maintaining/migrations.md",
       "note": "Run row 16 and the retro lifecycle check command from `retro.md`; retain their exact result and any Run ID diagnosis.",
       "destination_unit_sha256": null
     },
@@ -8486,7 +8486,7 @@
       "unit_sha256": "53e2cab7414e1db326ea54353f866b6ee06cd8817061ffe509faf45661667b45",
       "disposition": "reworded",
       "destination": "references/guides/context-lifecycle.md",
-      "note": "Import or run it only with the owner's explicit authorization for this use, or under a grant in [script consent](../../scripts/README.md#consent).",
+      "note": "import or run the script only with the owner's explicit authorization ([script consent](../../scripts/README.md#consent)).",
       "destination_unit_sha256": null
     },
     {
@@ -8567,7 +8567,7 @@
       "unit_sha256": "53e2cab7414e1db326ea54353f866b6ee06cd8817061ffe509faf45661667b45",
       "disposition": "reworded",
       "destination": "references/guides/decompose-and-lint.md",
-      "note": "Import or run it only with the owner's explicit authorization for this use, or under a grant in [script consent](../../scripts/README.md#consent).",
+      "note": "import or run the script only with the owner's explicit authorization ([script consent](../../scripts/README.md#consent)).",
       "destination_unit_sha256": null
     },
     {
@@ -8708,7 +8708,7 @@
       "unit_sha256": "53e2cab7414e1db326ea54353f866b6ee06cd8817061ffe509faf45661667b45",
       "disposition": "reworded",
       "destination": "references/guides/evidence-capture.md",
-      "note": "Run the script only with the owner's explicit authorization for this use, or under a grant in [script consent](../../scripts/README.md#consent).",
+      "note": "the script runs only with the owner's explicit authorization ([script consent](../../scripts/README.md#consent)).",
       "destination_unit_sha256": null
     },
     {
@@ -8798,7 +8798,7 @@
       "unit_sha256": "53e2cab7414e1db326ea54353f866b6ee06cd8817061ffe509faf45661667b45",
       "disposition": "reworded",
       "destination": "references/guides/full-checks.md",
-      "note": "Run it only with the owner's explicit authorization for this use, or under a grant in [script consent](../../scripts/README.md#consent).",
+      "note": "run it only with the owner's explicit authorization ([script consent](../../scripts/README.md#consent)).",
       "destination_unit_sha256": null
     },
     {
@@ -8987,7 +8987,7 @@
       "unit_sha256": "f69f8f91e88bb899fbb663354c77b204430a3d03da4a628627c20604c83316c0",
       "disposition": "reworded",
       "destination": "references/guides/migrate.md",
-      "note": "[`step_3_to_4.py`](../../scripts/migrate/step_3_to_4.py) — the v8.3 → v8.4 layout, done mechanically: renames the artifacts that exist (see the checklist above), maps every P-id to one T-id and rewrites the ids in the contents — not only the file names — of `plan.md`, every brief, the board and its dependencies, every report, and the usage ledger's rows (its column format, 8-column legacy or v2 lifecycle, is preserved; only the ids inside it are mapped).",
+      "note": "[`step_3_to_4.py`](../../scripts/migrate/step_3_to_4.py) — the v8.3 → v8.4 layout, done mechanically: renames the artifacts that exist (see the 8.3 → 8.4 checklist in `maintaining/migrations.md`), maps every P-id to one T-id and rewrites the ids in the contents — not only the file names — of `plan.md`, every brief, the board and its dependencies, every report, and the usage ledger's rows (its column format, 8-column legacy or v2 lifecycle, is preserved; only the ids inside it are mapped). `history.md` keeps whichever of `log.md`'s or its own original bytes was already there, plus one appended adoption entry, written exactly once even when the workspace already carries it; `log.md` and `history.md` both present at once is a rename-target collision (see below), refused by name rather than silently picked between. `decisions.md` and `design-contract.md` are never rewritten; an interrupted, pinned task surfaces as residue for review at that task's own boundary (R-MIGRATE-02), never a silent rewrite or a silent restart. An empty P→T map and an absent `points/` are valid inputs — a `/3` workspace already on `tasks/` and T-ids only gets its board renamed and restamped.",
       "destination_unit_sha256": null
     },
     {
@@ -9086,7 +9086,7 @@
       "unit_sha256": "53e2cab7414e1db326ea54353f866b6ee06cd8817061ffe509faf45661667b45",
       "disposition": "reworded",
       "destination": "references/guides/record-lifecycle.md",
-      "note": "Import or run it only with the owner's explicit authorization for this use, or under a grant in [script consent](../../scripts/README.md#consent).",
+      "note": "import or run the script only with the owner's explicit authorization ([script consent](../../scripts/README.md#consent)).",
       "destination_unit_sha256": null
     },
     {
@@ -9332,7 +9332,7 @@
       "unit_sha256": "7b57b5cd6a01766adab29d1cdec89bc5fc0be93e41b22931eb080c549f4abbcc",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
-      "note": "The affected record is reported unavailable or produced by another permitted route; it is never faked.",
+      "note": "The affected record is reported unavailable or produced by another permitted route, such as an equivalent harness capability or the project's own tools; it is never faked.",
       "destination_unit_sha256": null
     },
     {
@@ -9341,7 +9341,7 @@
       "unit_sha256": "53e2cab7414e1db326ea54353f866b6ee06cd8817061ffe509faf45661667b45",
       "disposition": "reworded",
       "destination": "references/guides/system-one.md",
-      "note": "**Stop before the example below.** Import or run the scripts it names only with the owner's explicit authorization for this use, or under a grant in [script consent](../../scripts/README.md#consent).",
+      "note": "**Stop before the example below.** Import or run the scripts it names only with the owner's explicit authorization ([script consent](../../scripts/README.md#consent)).",
       "destination_unit_sha256": null
     },
     {
@@ -9395,7 +9395,7 @@
       "unit_sha256": "53e2cab7414e1db326ea54353f866b6ee06cd8817061ffe509faf45661667b45",
       "disposition": "reworded",
       "destination": "references/guides/system-one.md",
-      "note": "**Stop before the example below.** Import or run the scripts it names only with the owner's explicit authorization for this use, or under a grant in [script consent](../../scripts/README.md#consent).",
+      "note": "**Stop before the example below.** Import or run the scripts it names only with the owner's explicit authorization ([script consent](../../scripts/README.md#consent)).",
       "destination_unit_sha256": null
     },
     {
@@ -10237,6 +10237,1282 @@
       "disposition": "reworded",
       "destination": "references/guides/scaffold.md",
       "note": "After completing the brief and core files, run all 17 direct lint rows in `lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py), which the plan request authorizes ([script consent](../../scripts/README.md#consent)), before any PLAN handoff, including when a task remains Draft or a product question is unanswered.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 26,
+      "unit_sha256": "8af20f02b293f1a16a652b0e74d47857fa416dfd628a144492656f120dfc7eaf",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "8af20f02b293f1a16a652b0e74d47857fa416dfd628a144492656f120dfc7eaf"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 26,
+      "unit_sha256": "616f3541a89df037b41a8e4bb42a21a4bb62f32a96a93a72a39dc0d9faa0cfed",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "616f3541a89df037b41a8e4bb42a21a4bb62f32a96a93a72a39dc0d9faa0cfed"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 29,
+      "unit_sha256": "4ff00bbf1c4f9a3d064ea260cee3f9ce889e57f37e8bd305fd44f733262d1d21",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "4ff00bbf1c4f9a3d064ea260cee3f9ce889e57f37e8bd305fd44f733262d1d21"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 30,
+      "unit_sha256": "8c0d39bd06cbd1132cd3219b2de512cb510feab5d4eab5e8316bb7839d6d7d6c",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "8c0d39bd06cbd1132cd3219b2de512cb510feab5d4eab5e8316bb7839d6d7d6c"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 31,
+      "unit_sha256": "745169578a88e953e678581975daa1bc9057afe3cda0612bfabff688e15c6dbe",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "745169578a88e953e678581975daa1bc9057afe3cda0612bfabff688e15c6dbe"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 31,
+      "unit_sha256": "8912172624612eda21fbf6dc4a8303a5dd4a1069e2b4a573d36ad16ad8607c0b",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "8912172624612eda21fbf6dc4a8303a5dd4a1069e2b4a573d36ad16ad8607c0b"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 32,
+      "unit_sha256": "ca3d9569ee0edaacdf951301a8a1bc5b2c64a9fa5be18914fbd627d429cded25",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "ca3d9569ee0edaacdf951301a8a1bc5b2c64a9fa5be18914fbd627d429cded25"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 33,
+      "unit_sha256": "1931b235d23ac8019bc8b493907172cbf802de568e6d417efadff985ba62f022",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "1931b235d23ac8019bc8b493907172cbf802de568e6d417efadff985ba62f022"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 34,
+      "unit_sha256": "da6c3d9ff418c1cbb5a7d60939363847aa851370adfa347720e0c2f4202ab145",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "da6c3d9ff418c1cbb5a7d60939363847aa851370adfa347720e0c2f4202ab145"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 35,
+      "unit_sha256": "c6fba2098851ecea99cf8a6a29c110f523adc794404e7b4f4247a2d09269cffc",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "c6fba2098851ecea99cf8a6a29c110f523adc794404e7b4f4247a2d09269cffc"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 36,
+      "unit_sha256": "4ffe22bf34853a268c86f803d3c7638ad638d29a3883f5d8642dc3c2d260586f",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "4ffe22bf34853a268c86f803d3c7638ad638d29a3883f5d8642dc3c2d260586f"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 38,
+      "unit_sha256": "5239d3867d0475b271a707a3d9e756ccf6149fec89369beb8436cd86a9acc232",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "5239d3867d0475b271a707a3d9e756ccf6149fec89369beb8436cd86a9acc232"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 38,
+      "unit_sha256": "af79bd3eb7be99bef7eec80a5018a585fe58da273b39b8e5bf58492eaf7218b4",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "af79bd3eb7be99bef7eec80a5018a585fe58da273b39b8e5bf58492eaf7218b4"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 40,
+      "unit_sha256": "9a2ac6844141b8982693de7fd5c95429ae41e68fc38abf8b3ab20c3d4bb7d195",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "9a2ac6844141b8982693de7fd5c95429ae41e68fc38abf8b3ab20c3d4bb7d195"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 40,
+      "unit_sha256": "a4da02d1d3fda4736cb77341452bd341ee8d7c61605c9094ce85fc09445fac40",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "a4da02d1d3fda4736cb77341452bd341ee8d7c61605c9094ce85fc09445fac40"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 41,
+      "unit_sha256": "3a82db8c3a043461769d36f31ff1f66d8e62b7bf13d7567f3e0b3cf3ffd4f148",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "3a82db8c3a043461769d36f31ff1f66d8e62b7bf13d7567f3e0b3cf3ffd4f148"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 43,
+      "unit_sha256": "5ed3d29b7405a7b264cf6bafada5728bd44131f3f7f5377247ec66fe1bf94efd",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "5ed3d29b7405a7b264cf6bafada5728bd44131f3f7f5377247ec66fe1bf94efd"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 44,
+      "unit_sha256": "4cecd7b5f84952c986ab590fbac6acc8e4f0c143674ebdd14205f4dee7095015",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "4cecd7b5f84952c986ab590fbac6acc8e4f0c143674ebdd14205f4dee7095015"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 46,
+      "unit_sha256": "05f8c98a790d40f0d85d8011c6f7872a5106b3d6d87b2cf1c39c40b670309f40",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "05f8c98a790d40f0d85d8011c6f7872a5106b3d6d87b2cf1c39c40b670309f40"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 47,
+      "unit_sha256": "a474e047a2c6cebbe2bbdd59c984fdafd58752c7ee087dd8c2c3b3de4bc352d2",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "a474e047a2c6cebbe2bbdd59c984fdafd58752c7ee087dd8c2c3b3de4bc352d2"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 52,
+      "unit_sha256": "2f4708cb624ddc291e8c8946cd2f63cad01132417a82d0151d6f126f535dd4e7",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "2f4708cb624ddc291e8c8946cd2f63cad01132417a82d0151d6f126f535dd4e7"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 53,
+      "unit_sha256": "07e064851b53e6d4cb1493b04bebc83ab1edaa63e10d4bf28e56a8a911e10883",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "07e064851b53e6d4cb1493b04bebc83ab1edaa63e10d4bf28e56a8a911e10883"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 54,
+      "unit_sha256": "2fed588d6f64619664c8bff38df3a403a7758973bdd0bb6a20396696b78dc48c",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "2fed588d6f64619664c8bff38df3a403a7758973bdd0bb6a20396696b78dc48c"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 56,
+      "unit_sha256": "e1e6a9bd957816ac57e8e0143de5c4ed1e647564cb5a3205c0b64fb629713a85",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "e1e6a9bd957816ac57e8e0143de5c4ed1e647564cb5a3205c0b64fb629713a85"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 56,
+      "unit_sha256": "c886acae089b12c6103429000a98ccdf1d677980ba0876059915136c18359fb4",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "c886acae089b12c6103429000a98ccdf1d677980ba0876059915136c18359fb4"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 57,
+      "unit_sha256": "825427c87f1b7c5d9bb71a8e3436a737db232a270234e57e7b50fc29737ba91b",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "825427c87f1b7c5d9bb71a8e3436a737db232a270234e57e7b50fc29737ba91b"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 60,
+      "unit_sha256": "2e62a62aac83217fe0abc7e383e2a592ea1b0b4eaf48c8088e0c5696a451dfda",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "2e62a62aac83217fe0abc7e383e2a592ea1b0b4eaf48c8088e0c5696a451dfda"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 61,
+      "unit_sha256": "4608517c08ecafb1e06a805464cc3562139aaf751f0389497e4e1b494ba25571",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "4608517c08ecafb1e06a805464cc3562139aaf751f0389497e4e1b494ba25571"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 62,
+      "unit_sha256": "4c50f47bd1b706ca45f988d9c6e969f02cc0be5cbabe60db592840977600d54f",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "4c50f47bd1b706ca45f988d9c6e969f02cc0be5cbabe60db592840977600d54f"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 63,
+      "unit_sha256": "6bb3102a9934e4d219ac1e77141ec8b3f8c351acab6c4ebcc2589affccd16339",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "6bb3102a9934e4d219ac1e77141ec8b3f8c351acab6c4ebcc2589affccd16339"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 65,
+      "unit_sha256": "0c2c1283b09fd2e38b9ec51ded5e1d97f37c19bfc095aec4d78cf666f3a53eb7",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "0c2c1283b09fd2e38b9ec51ded5e1d97f37c19bfc095aec4d78cf666f3a53eb7"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 67,
+      "unit_sha256": "737a7be23b27b1b4c0699709961ce2f6a229baf17dd6de9cee690cb2879456cc",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "737a7be23b27b1b4c0699709961ce2f6a229baf17dd6de9cee690cb2879456cc"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 68,
+      "unit_sha256": "b09e0b268f8e87cd4f0d5429885c55db6e3a50fcc208f99c6068386ab3e805d0",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "b09e0b268f8e87cd4f0d5429885c55db6e3a50fcc208f99c6068386ab3e805d0"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 69,
+      "unit_sha256": "21a513098182e2ca00b5966a62b0dc760d6edba3e93da3979597f60a9408293a",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "21a513098182e2ca00b5966a62b0dc760d6edba3e93da3979597f60a9408293a"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 70,
+      "unit_sha256": "9840a3093116a5f265185ee199574dc9b517220632f69bc3541048b64e552b1a",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "9840a3093116a5f265185ee199574dc9b517220632f69bc3541048b64e552b1a"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 72,
+      "unit_sha256": "73526f5e2b9f234e9a284c209af6f4dd27f6a5fd1c44e9f5615cbc442656b092",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "73526f5e2b9f234e9a284c209af6f4dd27f6a5fd1c44e9f5615cbc442656b092"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 77,
+      "unit_sha256": "87ed8a29e681b2edbdf5eb4e71f1e4fdf659e0bce7330ef0a06d4e630f000c86",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "87ed8a29e681b2edbdf5eb4e71f1e4fdf659e0bce7330ef0a06d4e630f000c86"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 78,
+      "unit_sha256": "709e2fc8ba8052309f1c85256e605b34e4e4f041b2ff5a558e757dcf4815770e",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "709e2fc8ba8052309f1c85256e605b34e4e4f041b2ff5a558e757dcf4815770e"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 79,
+      "unit_sha256": "32382bd530ea1145b14106a4979f20231c5f6b78486c584c495884ebe7e35006",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "32382bd530ea1145b14106a4979f20231c5f6b78486c584c495884ebe7e35006"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 82,
+      "unit_sha256": "294c5b10eff1e9b18fdaa162cb380b68bc327a9a44100e3574d0201b5f10133a",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "294c5b10eff1e9b18fdaa162cb380b68bc327a9a44100e3574d0201b5f10133a"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 84,
+      "unit_sha256": "aef695dfb706c5a2614a3007b3544a33154c1d978f04e848dddcdf45a6a9ff89",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "aef695dfb706c5a2614a3007b3544a33154c1d978f04e848dddcdf45a6a9ff89"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 84,
+      "unit_sha256": "cf7a9ef4cf0dc19c45c91957981d2be7dc3bf1236e4cbeb39bf865289151541f",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "cf7a9ef4cf0dc19c45c91957981d2be7dc3bf1236e4cbeb39bf865289151541f"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 86,
+      "unit_sha256": "7e72ab267db3432d3cf312acc844eb12db79ec2dc0a61401bc6d120355da43f7",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "7e72ab267db3432d3cf312acc844eb12db79ec2dc0a61401bc6d120355da43f7"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 86,
+      "unit_sha256": "91532e6e5cf492a28a6337795fe756c759cf590981652e1b51da79b6b68f8a3d",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "91532e6e5cf492a28a6337795fe756c759cf590981652e1b51da79b6b68f8a3d"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 88,
+      "unit_sha256": "1877af33d9df0d20b790b3937ec3bbf82119edfcfec552e22cb2cf0ecc6fdf40",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "1877af33d9df0d20b790b3937ec3bbf82119edfcfec552e22cb2cf0ecc6fdf40"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 88,
+      "unit_sha256": "d08ba3acd6852884e95652c4d6d473fd4b45248edcc6e0778dc16b1a469b4085",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "d08ba3acd6852884e95652c4d6d473fd4b45248edcc6e0778dc16b1a469b4085"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 90,
+      "unit_sha256": "6ee969a48bd82af2dbdee7c522fab805c1cf3f9623faa06756fddbb3e8506bbf",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "6ee969a48bd82af2dbdee7c522fab805c1cf3f9623faa06756fddbb3e8506bbf"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 130,
+      "unit_sha256": "957eaba30beb29b265453599a6c731d6d2294da4f147407b57a763e8b2ae953a",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "957eaba30beb29b265453599a6c731d6d2294da4f147407b57a763e8b2ae953a"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 132,
+      "unit_sha256": "f74a0944121a0bd6bd4921b47d119c98cb3fab4a3f3065680d953c0222d2c9a5",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "f74a0944121a0bd6bd4921b47d119c98cb3fab4a3f3065680d953c0222d2c9a5"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 136,
+      "unit_sha256": "70c673b9674ab99ec2acf5af89acfe37f84ca23b7c7f25e9c270021e0daf2912",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "70c673b9674ab99ec2acf5af89acfe37f84ca23b7c7f25e9c270021e0daf2912"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 138,
+      "unit_sha256": "26947064ff9c4317ff79d99b6e1d3396f148ffe4668c7c8618ce52d02b32ac03",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "26947064ff9c4317ff79d99b6e1d3396f148ffe4668c7c8618ce52d02b32ac03"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 139,
+      "unit_sha256": "88fdff4c9f8c4c3f90a18bbc17a5707a6117892fae5124e488a3c3a8aa6e2034",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "88fdff4c9f8c4c3f90a18bbc17a5707a6117892fae5124e488a3c3a8aa6e2034"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 140,
+      "unit_sha256": "aa598bd63d6cd0f9af7eae98dae67e787df4b1f9c9b345c73c23e26dbb437331",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "aa598bd63d6cd0f9af7eae98dae67e787df4b1f9c9b345c73c23e26dbb437331"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 142,
+      "unit_sha256": "23f6961bd0b808239023d52a36d8c6570cac0160bc6620ee42b39a8c026768f1",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "23f6961bd0b808239023d52a36d8c6570cac0160bc6620ee42b39a8c026768f1"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 142,
+      "unit_sha256": "943e05a47ca37bc4cb052abd7663b8d3dd7d2da21cc12fe1186e69c583036def",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "943e05a47ca37bc4cb052abd7663b8d3dd7d2da21cc12fe1186e69c583036def"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 144,
+      "unit_sha256": "db912e8d8f3e127a6d178d347570681f378f3afc409abe0d16679025202b2fd5",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "db912e8d8f3e127a6d178d347570681f378f3afc409abe0d16679025202b2fd5"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 145,
+      "unit_sha256": "edc820faf853d90cc877a05dceaaaea1ae3a767608dd3e680d8e34f47a1d6ae7",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "edc820faf853d90cc877a05dceaaaea1ae3a767608dd3e680d8e34f47a1d6ae7"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 146,
+      "unit_sha256": "37b89530252bf3d2bd4dcaaf15eda14299a5c0af12e66a0cdef245046215c6d5",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "37b89530252bf3d2bd4dcaaf15eda14299a5c0af12e66a0cdef245046215c6d5"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 147,
+      "unit_sha256": "3f0adf2eaebd58ff6f11e35dec569d0bdc83fff1c2a360781d05880d69472034",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "3f0adf2eaebd58ff6f11e35dec569d0bdc83fff1c2a360781d05880d69472034"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 149,
+      "unit_sha256": "0e5b4d46c11571f78b802bb31f60b1b25fb2c23a2704ee1af1b1300fec3d1afb",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "0e5b4d46c11571f78b802bb31f60b1b25fb2c23a2704ee1af1b1300fec3d1afb"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 149,
+      "unit_sha256": "945e6fd887472c47e645238ab503c37b83a66f977fcef2100104088dadcec882",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "945e6fd887472c47e645238ab503c37b83a66f977fcef2100104088dadcec882"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 151,
+      "unit_sha256": "05b4e0d27220b41e42c2e085baa87450ecb1433a7d1a54d4f58e61266f8fa73c",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "05b4e0d27220b41e42c2e085baa87450ecb1433a7d1a54d4f58e61266f8fa73c"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 153,
+      "unit_sha256": "df04583c4fa297bb769b05245731b0bb96ba3d1f6a75d3e77fc62f76c5a1d94a",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "df04583c4fa297bb769b05245731b0bb96ba3d1f6a75d3e77fc62f76c5a1d94a"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 154,
+      "unit_sha256": "d8e30302a2295a58f89f5169dd4d2d1a0544cf50c37514dc591e71ed1fe9f36c",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "d8e30302a2295a58f89f5169dd4d2d1a0544cf50c37514dc591e71ed1fe9f36c"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 155,
+      "unit_sha256": "6b271a9bf3f943d49c55e8880d19312b8bb4e01b4f09a807a1f066be32dd7b81",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "6b271a9bf3f943d49c55e8880d19312b8bb4e01b4f09a807a1f066be32dd7b81"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 161,
+      "unit_sha256": "1c804cce2a0bcb714c18cd9f3ed0cbe8f6288bddf886f9521883acfc98c4ae4e",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "1c804cce2a0bcb714c18cd9f3ed0cbe8f6288bddf886f9521883acfc98c4ae4e"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 162,
+      "unit_sha256": "ebe6e325763599a94fd57594bc7e46f22a994fc075d9965ab94accf7f5cedb52",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "ebe6e325763599a94fd57594bc7e46f22a994fc075d9965ab94accf7f5cedb52"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 166,
+      "unit_sha256": "65c9cb1633eed0624d07b9234a0e566444e1de5d556bac7db5a10dff79d6e42b",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "65c9cb1633eed0624d07b9234a0e566444e1de5d556bac7db5a10dff79d6e42b"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 168,
+      "unit_sha256": "53f14b71139b0fc1a1cf4939576f90b92ab1ad466a694a6007c91cf655e7e77e",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "53f14b71139b0fc1a1cf4939576f90b92ab1ad466a694a6007c91cf655e7e77e"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 168,
+      "unit_sha256": "ba775092c39b69331297643dc6dd53311d27ec2000e8a23d99fd04c36eef7249",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "ba775092c39b69331297643dc6dd53311d27ec2000e8a23d99fd04c36eef7249"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 170,
+      "unit_sha256": "11edfd32cf64e539dd81c8058aa855c29b8e8374df4e3aeb7c9a52b57de28266",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "11edfd32cf64e539dd81c8058aa855c29b8e8374df4e3aeb7c9a52b57de28266"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 172,
+      "unit_sha256": "3fe119d664c40a99f2e1665057121743e0972a25784603079dd9026dce66c54e",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "3fe119d664c40a99f2e1665057121743e0972a25784603079dd9026dce66c54e"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 172,
+      "unit_sha256": "12777d9643029463ba13948f2c9a4d62299c9c38935af8511009a7ead73bfb20",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "12777d9643029463ba13948f2c9a4d62299c9c38935af8511009a7ead73bfb20"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 176,
+      "unit_sha256": "45c0069964cc10cc181739527eabd9bee04b341adb9fa1134cc077a55f3bc5a6",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "45c0069964cc10cc181739527eabd9bee04b341adb9fa1134cc077a55f3bc5a6"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 177,
+      "unit_sha256": "3d5bb70a03a996e45fa7f917dfb0e4fd0b418bd5d80f109a11129746ec8a67dc",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "3d5bb70a03a996e45fa7f917dfb0e4fd0b418bd5d80f109a11129746ec8a67dc"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 178,
+      "unit_sha256": "a7bf9000c46462fa08beaa5ec79cf5e1457b8e4521f0d7993c60ae85842d482c",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "a7bf9000c46462fa08beaa5ec79cf5e1457b8e4521f0d7993c60ae85842d482c"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 179,
+      "unit_sha256": "b36546a7c7fcafb8fc5734a704ac7246e8ce2125da5532186b614f62d7a2f560",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "b36546a7c7fcafb8fc5734a704ac7246e8ce2125da5532186b614f62d7a2f560"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 182,
+      "unit_sha256": "1f3c29b9a3fc35c5d197020a79a7191b0ff3e8b6d0a5bb813df2a173a0e0dfd2",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "1f3c29b9a3fc35c5d197020a79a7191b0ff3e8b6d0a5bb813df2a173a0e0dfd2"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 182,
+      "unit_sha256": "0222f277c4575b264049a4f7251d3f454ae31882fdc4126b9ca4f89a204c4b10",
+      "disposition": "reworded",
+      "destination": "maintaining/migrations.md",
+      "note": "It is outside the [adversary-checkpoint check](../skills/tackle/references/guides/run.md#adversary-checkpoints); only later tasks owe one.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 184,
+      "unit_sha256": "b07d3912217a38e907bd23aa39e1e36261789cedf994c08e572e49424a5c1a2c",
+      "disposition": "reworded",
+      "destination": "maintaining/migrations.md",
+      "note": "Point the workspace's own read lists at the [cold resume read order](../skills/tackle/references/guides/status.md#cold-resume-read-order): in its `AGENTS.md` and `README.md`, use the code span from the 9.1 templates, and keep no read order of its own.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 186,
+      "unit_sha256": "1438e046edfb8d7fc03bef58744d8e9be2a05f6feb5468dddced94a668202010",
+      "disposition": "reworded",
+      "destination": "maintaining/migrations.md",
+      "note": "For optional [JEV](../skills/tackle/references/guides/system-one.md#integration), preserve the selected workspace's recorded answer; never fabricate one or copy consent from a parent or neighboring workspace.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 189,
+      "unit_sha256": "4d60023f0cc51b46dbaef79b78bb7f6191f8190a1ecd2c8a2601743938627e98",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "4d60023f0cc51b46dbaef79b78bb7f6191f8190a1ecd2c8a2601743938627e98"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 189,
+      "unit_sha256": "f8630e17a76a8cef11a8ce3565f05e0511e8ae015e48e140fdfd2bc8ba21dfac",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "f8630e17a76a8cef11a8ce3565f05e0511e8ae015e48e140fdfd2bc8ba21dfac"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 195,
+      "unit_sha256": "962c42a28b45bffd6df78fe64f2b9eb3f801d1c279a3fa6f4f85eb41e73f23c4",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "962c42a28b45bffd6df78fe64f2b9eb3f801d1c279a3fa6f4f85eb41e73f23c4"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 196,
+      "unit_sha256": "89dd77a7e3827d0c7e8f2d15147e2d359a84f0aaad9b85ebdcb8da2a69a00a60",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "89dd77a7e3827d0c7e8f2d15147e2d359a84f0aaad9b85ebdcb8da2a69a00a60"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 197,
+      "unit_sha256": "a7a8a0e5e484d62213f1c9e3f0c5a392f0f81b0c88f5d017780ecf23c13bebd3",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "a7a8a0e5e484d62213f1c9e3f0c5a392f0f81b0c88f5d017780ecf23c13bebd3"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 198,
+      "unit_sha256": "9ea4f3ed132ff264484de813d385c50da44c895f29281f3b497e6f6835c9f754",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "9ea4f3ed132ff264484de813d385c50da44c895f29281f3b497e6f6835c9f754"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 203,
+      "unit_sha256": "b65f6a91cf7be448c0bbc1fe274f6e494f95722bfdc67751566a61a290579088",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "b65f6a91cf7be448c0bbc1fe274f6e494f95722bfdc67751566a61a290579088"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 204,
+      "unit_sha256": "d1a6a236366a3e041fe9f14f463bede2b9027ef4d261a5e5bd9baa63e5388fa1",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "d1a6a236366a3e041fe9f14f463bede2b9027ef4d261a5e5bd9baa63e5388fa1"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 205,
+      "unit_sha256": "4affa1bf1b35b5269f5ca40b2025bbf301a475561934512f42dac1e3c49233df",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "4affa1bf1b35b5269f5ca40b2025bbf301a475561934512f42dac1e3c49233df"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 205,
+      "unit_sha256": "787af24bbb6730f51524386471fb29250facad1490fe8840bc7720df855b1273",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "787af24bbb6730f51524386471fb29250facad1490fe8840bc7720df855b1273"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 206,
+      "unit_sha256": "ff8c45464a4e534aab4f2b2678f41706e86d718af4ea44943feed4a705d2a496",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "ff8c45464a4e534aab4f2b2678f41706e86d718af4ea44943feed4a705d2a496"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 207,
+      "unit_sha256": "ec716ac3e0435d75872b3db4e29c803084950711aa383dfb66c5228729cba148",
+      "disposition": "reworded",
+      "destination": "maintaining/migrations.md",
+      "note": "Run the [System One check](../skills/tackle/references/guides/intake-and-gate.md#system-one-check).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 207,
+      "unit_sha256": "d27cc18be22bb6328ece028c025d7f69628bbba7916b8db29ad252b6c62da322",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "d27cc18be22bb6328ece028c025d7f69628bbba7916b8db29ad252b6c62da322"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 209,
+      "unit_sha256": "2ea40250495836df266ac444134c1e012d7895f9f3700355d6412d0ae6b6ecf2",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "2ea40250495836df266ac444134c1e012d7895f9f3700355d6412d0ae6b6ecf2"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 209,
+      "unit_sha256": "a45432ce9487ea070ced04c4399867745c6d85653523b75e4bbbcbe89bfc5427",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "a45432ce9487ea070ced04c4399867745c6d85653523b75e4bbbcbe89bfc5427"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 211,
+      "unit_sha256": "0a1a6e418bb8201961dc80e813756455f82b046f9df5297001d04c7086e64ca0",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "0a1a6e418bb8201961dc80e813756455f82b046f9df5297001d04c7086e64ca0"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 217,
+      "unit_sha256": "1a3676c6e9e5cfd4085a1e30b18d08692bd336a3ac691ac74721efc83fec96b3",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "1a3676c6e9e5cfd4085a1e30b18d08692bd336a3ac691ac74721efc83fec96b3"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 218,
+      "unit_sha256": "a3c96616c89132ebc85fae5362faebd8bf87a504be8f7518bba0764fd926bc5a",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "a3c96616c89132ebc85fae5362faebd8bf87a504be8f7518bba0764fd926bc5a"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 220,
+      "unit_sha256": "c9f062a885d1e77bb6eabaf1d56cfd4ec5d6f23e73dedbd4e333aef1621adc9f",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "c9f062a885d1e77bb6eabaf1d56cfd4ec5d6f23e73dedbd4e333aef1621adc9f"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 225,
+      "unit_sha256": "87a7fc8f29f8afec1d825f6c3cb63285f774d4e68d4306cb8b6af6a0a22c767e",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "87a7fc8f29f8afec1d825f6c3cb63285f774d4e68d4306cb8b6af6a0a22c767e"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 226,
+      "unit_sha256": "8fdd17b763da12c303cf89ce62473853db0608586637103639dff81ee7b712f7",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "8fdd17b763da12c303cf89ce62473853db0608586637103639dff81ee7b712f7"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 228,
+      "unit_sha256": "7ab927ea905bcbb049f8c89f31b476a9a891b6dc23628c38ba0a825a7862ca33",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "7ab927ea905bcbb049f8c89f31b476a9a891b6dc23628c38ba0a825a7862ca33"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 230,
+      "unit_sha256": "c95130b498a17f9014623ee8f886e7818d2e2ed31aade7b6fe7079bac928b64d",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "c95130b498a17f9014623ee8f886e7818d2e2ed31aade7b6fe7079bac928b64d"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 231,
+      "unit_sha256": "87731a0d72cb1cc6a2ad1b63ac97a16476ad8c58438854ba69a1d165c587ee08",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "87731a0d72cb1cc6a2ad1b63ac97a16476ad8c58438854ba69a1d165c587ee08"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 231,
+      "unit_sha256": "55ddc0e7fe3b74ec7cefe7ca3a8c5d04a3a1e3738fd90db9daaef6c79a1870bd",
+      "disposition": "reworded",
+      "destination": "maintaining/migrations.md",
+      "note": "The next plan change that adds, changes or retires required behavior writes one, as the [requirements base](../skills/tackle/references/guides/requirements-base.md) states.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 234,
+      "unit_sha256": "b8568c38f006842c166db53fa57eda7ef77456a303295cff9376551aedef0302",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "b8568c38f006842c166db53fa57eda7ef77456a303295cff9376551aedef0302"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 240,
+      "unit_sha256": "b582d85fb9ae3a6f82d0b6fc41e8e987d0909487573bae57cd8271cb5c83cff0",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "b582d85fb9ae3a6f82d0b6fc41e8e987d0909487573bae57cd8271cb5c83cff0"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 241,
+      "unit_sha256": "2a654ac6acec52cfd7b767b4bf0582d580b827d4518ae409cb5d8f17b3ce6b3f",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "2a654ac6acec52cfd7b767b4bf0582d580b827d4518ae409cb5d8f17b3ce6b3f"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 242,
+      "unit_sha256": "63968dbaefbe2a8b8041c8a1551d7717998dd8556811794049589734e6bb5333",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "63968dbaefbe2a8b8041c8a1551d7717998dd8556811794049589734e6bb5333"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 247,
+      "unit_sha256": "90cff1bf04f1119b6fbe9b8d7ac4db8b7d48d52c2f3cb7d680837824f2178400",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "90cff1bf04f1119b6fbe9b8d7ac4db8b7d48d52c2f3cb7d680837824f2178400"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 248,
+      "unit_sha256": "ad243ced599cee59485612783871877a0ce4ebdd41e141271def872ed0cd40cd",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "ad243ced599cee59485612783871877a0ce4ebdd41e141271def872ed0cd40cd"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 249,
+      "unit_sha256": "d9e524ede849a65dcb37322a93cca91e52b2c5b92a52c6cb65d1bc9ecdda59e9",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "d9e524ede849a65dcb37322a93cca91e52b2c5b92a52c6cb65d1bc9ecdda59e9"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 250,
+      "unit_sha256": "fc708628f6014f6984f99995ecb17443dec7b31fb2d267337e4c794f55372b76",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "fc708628f6014f6984f99995ecb17443dec7b31fb2d267337e4c794f55372b76"
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 251,
+      "unit_sha256": "01693d6d2840b52a85cbfaa03724cf6cfaa09b8dab125b67f4eca663709a358f",
+      "disposition": "merged",
+      "destination": "maintaining/migrations.md",
+      "note": null,
+      "destination_unit_sha256": "01693d6d2840b52a85cbfaa03724cf6cfaa09b8dab125b67f4eca663709a358f"
+    },
+    {
+      "path": "references/archetypes/README.md",
+      "line": 24,
+      "unit_sha256": "7d810d65f79ec3b10a4298ceafca11c3a18b461599c5b94740885fee4b88ecd7",
+      "disposition": "reworded",
+      "destination": "references/archetypes/README.md",
+      "note": "The retro writes one only after the user's batch confirmation (see `guides/retro.md` §Reference plan candidates).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/codex-native-usage.md",
+      "line": 30,
+      "unit_sha256": "7e477cd08764ccc5a5dbb07fcd9bc697c424962b658470cb707d16da7826e2c4",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "The affected record is reported unavailable or produced by another permitted route, such as an equivalent harness capability or the project's own tools; it is never faked.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 104,
+      "unit_sha256": "463bb385e9d80a14baaa03e736ac07a90f05bda1f93006867f1f783e34778cf5",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "A single large original event remains intact;",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 107,
+      "unit_sha256": "7e477cd08764ccc5a5dbb07fcd9bc697c424962b658470cb707d16da7826e2c4",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "The affected record is reported unavailable or produced by another permitted route, such as an equivalent harness capability or the project's own tools; it is never faked.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 132,
+      "unit_sha256": "48a97ac05129448303106a993c7ec9eddc8900ae2b0d1cb9bef0a66a63fe48f0",
+      "disposition": "reworded",
+      "destination": "references/guides/decompose-and-lint.md",
+      "note": "No installed tool or additional file is required for small work;",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/decompose-and-lint.md",
+      "line": 135,
+      "unit_sha256": "7e477cd08764ccc5a5dbb07fcd9bc697c424962b658470cb707d16da7826e2c4",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "The affected record is reported unavailable or produced by another permitted route, such as an equivalent harness capability or the project's own tools; it is never faked.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 39,
+      "unit_sha256": "bc44837ec4074dd1076123b9181728fcf61e15fecce769e1869c0d01f4158b8d",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "Raw wrapper capture does not prove its logic,",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 42,
+      "unit_sha256": "7e477cd08764ccc5a5dbb07fcd9bc697c424962b658470cb707d16da7826e2c4",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "The affected record is reported unavailable or produced by another permitted route, such as an equivalent harness capability or the project's own tools; it is never faked.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 73,
+      "unit_sha256": "7e477cd08764ccc5a5dbb07fcd9bc697c424962b658470cb707d16da7826e2c4",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "The affected record is reported unavailable or produced by another permitted route, such as an equivalent harness capability or the project's own tools; it is never faked.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 6,
+      "unit_sha256": "9ff3f42e38f4ac923ae326532b767ac7aedb8db2eaadfc5f363ee61c61dc5e1a",
+      "disposition": "reworded",
+      "destination": "maintaining/migrations.md",
+      "note": "The superseded checklists from 8.3 → 8.4 through 9.2.0 → 9.2.1, including the 8.4.0 → 8.4.1 patch, moved here from `migrate.md` in 10.0;",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 6,
+      "unit_sha256": "c67967d4b5b844f0bbe70cb29c1a314bc5d1ad0f01ae7517e1d21d426a8af11c",
+      "disposition": "reworded",
+      "destination": "maintaining/migrations.md",
+      "note": "The superseded checklists from 8.3 → 8.4 through 9.2.0 → 9.2.1, including the 8.4.0 → 8.4.1 patch, moved here from `migrate.md` in 10.0;",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 20,
+      "unit_sha256": "41aa0bdc1da1734c07d6a1358c5157323e4872584e06cef8f2042365c92cf36b",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "Old slash spellings in historical checklists are historical text aliases, not separately registered menu commands.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 96,
+      "unit_sha256": "57aa929734b07d77efb85056641a68ecef37da7f2e7fba350235008674098fc0",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "Each checklist below applies only to a selected active workspace, on a disposable copy at a task boundary;",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "9.0",
+          "reason": "the bridge checklist keeps its own sentence: Installing 9.0 migrates nothing by itself."
+        }
+      ]
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 124,
+      "unit_sha256": "f857e7a32c0dc8713826f78ae226dced9b771261171a087d19e0130a1fd69876",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "Adopt only the validated copy:",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 124,
+      "unit_sha256": "8e9076cfe2957b1aff11a74a39fbdd0cc19332f68669c5686951d7250abafb3f",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "A failed check holds adoption and leaves the original active and unchanged.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 257,
+      "unit_sha256": "56f31b0fbfb061931dd80d2e5f5567af51d1f19d093fd083d2244c4e64eae91e",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "An active 9.2 workspace adopts 9.3.0 with this checklist.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 257,
+      "unit_sha256": "608d1172a63cba6be729a89aa7131ef70847bfa01d32a823c93aed45851befe5",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "Each checklist below applies only to a selected active workspace, on a disposable copy at a task boundary;",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 267,
+      "unit_sha256": "9bdd8e41175fdd74ba4359ba1fac951a7afa0b32889e938c3a9e7532eb84aae1",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "run the lint on the copy.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 267,
+      "unit_sha256": "69b2523a9f8145aca6217126e8a9cca73f50cccdfff0234cf9aadbacd384a129",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "Adopt only the validated copy: record the adoption, its checks and the rollback result, and bump the `Methodology:` stamp to the adopted release.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "9.3",
+          "reason": "the adopted release is named by the checklist heading and intro, An active 9.2 workspace adopts 9.3.0 with this checklist."
+        },
+        {
+          "token": "0",
+          "reason": "the adopted release is named by the checklist heading and intro, An active 9.2 workspace adopts 9.3.0 with this checklist."
+        }
+      ]
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 355,
+      "unit_sha256": "35e3b0d1ad011cb31936700bb39627bd7a852bd11a6e48a0111b1c2a98e1d486",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "The readability statements in the 8.x checklists describe 8.x installs.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 82,
+      "unit_sha256": "4a5aa85b87b68979ee87170dec1f4da892d8e6a2774c068c731b1a14e1ed03c3",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "Readers check retirement before attempting to open retired raw metadata;",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 85,
+      "unit_sha256": "7e477cd08764ccc5a5dbb07fcd9bc697c424962b658470cb707d16da7826e2c4",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "The affected record is reported unavailable or produced by another permitted route, such as an equivalent harness capability or the project's own tools; it is never faked.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/system-one.md",
+      "line": 79,
+      "unit_sha256": "7e477cd08764ccc5a5dbb07fcd9bc697c424962b658470cb707d16da7826e2c4",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "The affected record is reported unavailable or produced by another permitted route, such as an equivalent harness capability or the project's own tools; it is never faked.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 356,
+      "unit_sha256": "f0dec6ec05ec5971775db61670f3af57eaf5b2cf9fb7d2e23a08056d661382ad",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "Below the `pre-3` bucket nothing is promised, and this repository's historical checklists in `maintaining/migrations.md` apply.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/retro.md",
+      "line": 40,
+      "unit_sha256": "323069b2d36f8b9ab3d3e60a00cb647d1b4feba4fd574c56c8888849b9c4d406",
+      "disposition": "reworded",
+      "destination": "references/retro.tmpl.md",
+      "note": "u=resource-usage.md; if [ -f resource-usage.telemetry.jsonl ]; then s=resource-usage.telemetry.jsonl; elif [ -f usage.telemetry.jsonl ]; then s=usage.telemetry.jsonl; else s=/dev/null; fi; awk 'BEGIN{FS=sprintf(\"%c\",124)} function clock(v,alt){alt=sprintf(\"%c\",124);return v~(\"^[0-9][0-9][0-9][0-9]-(0[1-9]\" alt \"1[0-2])-(0[1-9]\" alt \"[12][0-9]\" alt \"3[01])T([01][0-9]\" alt \"2[0-3]):[0-5][0-9]:[0-5][0-9]\" \"([.][0-9]+)?(Z\" alt \"[+-]\" \"([01][0-9]\" alt \"2[0-3]):[0-5][0-9])$\")} FNR==NR{ev=$3;sub(/^[[:space:]]+/,\"\",ev);sub(/[[:space:]]+$/,\"\",ev);rid=$2;sub(/^[[:space:]]+/,\"\",rid);sub(/[[:space:]]+$/,\"\",rid);if(rid==\"\")next;if(rid==\"Run ID\")next;if(rid==\"---\")next;if(ev!=\"start\"&&ev!=\"finish\"&&ev!=\"observe-incomplete\"){if(NF==16)bad[rid]=1;next};at=$10;sub(/^[[:space:]]+/,\"\",at);sub(/[[:space:]]+$/,\"\",at);oc=$11;sub(/^[[:space:]]+/,\"\",oc);sub(/[[:space:]]+$/,\"\",oc);task=$4;role=$5;sub(/^[[:space:]]+/,\"\",task);sub(/[[:space:]]+$/,\"\",task);sub(/^[[:space:]]+/,\"\",role);sub(/[[:space:]]+$/,\"\",role);if(!(rid in firsttask)){firsttask[rid]=task;firstrole[rid]=role}else if(firsttask[rid]!=task)bad[rid]=1;else if(firstrole[rid]!=role)bad[rid]=1;if(ev==\"start\"){scount[rid]++;if(oc!=\"running\")bad[rid]=1;if(clock(at))sok[rid]=1}else{term[rid]=1;tcount[rid]++;if(scount[rid]==0)bad[rid]=1;if(ev==\"finish\"){if(oc!=\"success\"&&oc!=\"failed\"&&oc!=\"blocked\"&&oc!=\"aborted\")bad[rid]=1;if(oc==\"success\"){fsc[rid]=1;if(clock(at))fok[rid]=1}}else if(oc!=\"incomplete\")bad[rid]=1};next} {if($0~/\"scope\"[[:space:]]*:[[:space:]]*\"role\"/){if(match($0,/\"run_id\"[[:space:]]*:[[:space:]]*\"[^\"]*\"/)){seg=substr($0,RSTART,RLENGTH);n=split(seg,pp,\"\\\"\");side[pp[4]]=1}}} END{de=0;dm=0;te=0;tm=0;for(r in term){te++;if(r in side)tm++;de++;if(fsc[r]&&sok[r]&&fok[r]&&!bad[r]&&scount[r]==1&&tcount[r]==1)dm++};if(tm==0)printf \"tokens 0/N (0%%)\\n\";else printf \"tokens %d/%d (%d%%)\\n\",tm,te,int(100*tm/te+0.5);if(dm==0)printf \"duration 0/N (0%%)\\n\";else printf \"duration %d/%d (%d%%)\\n\",dm,de,int(100*dm/de+0.5)}' \"$u\" \"$s\"",
       "destination_unit_sha256": null
     }
   ]
