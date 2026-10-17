@@ -3494,7 +3494,7 @@
       "unit_sha256": "aba3bcc7ea6b91595acd8a79bd712ac2f2040fcebb686951e959444a62c59cb9",
       "disposition": "reworded",
       "destination": "SKILL.md",
-      "note": "Explicit [audit](references/guides/judge.md), [lessons](references/guides/retro.md), [migration](references/guides/migrate.md#schema-keyed-migration), [owner-controlled updates](references/guides/update.md).",
+      "note": "Explicit [audit](references/guides/judge.md), [lessons](references/guides/retro.md), [migration](references/guides/migrate.md#schema-keyed-migration), [owner-controlled updates](references/guides/update.md), [security model](references/guides/security.md).",
       "destination_unit_sha256": null
     },
     {
@@ -9404,6 +9404,15 @@
       "disposition": "reworded",
       "destination": "MAINTAINING.md",
       "note": "Reproduce every documented install channel in a sandbox and count the installed files against the install artifact (`SKILL.md`, `references/` and `scripts/`); a channel that needs the tag is reproduced against a local clone of the candidate commit.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "SKILL.md",
+      "line": 85,
+      "unit_sha256": "c9247b56fafed9f557c7751a55892b8bd73f41f1bb37b5f3ef99ba5895c34828",
+      "disposition": "reworded",
+      "destination": "SKILL.md",
+      "note": "Explicit [audit](references/guides/judge.md), [lessons](references/guides/retro.md), [migration](references/guides/migrate.md#schema-keyed-migration), [owner-controlled updates](references/guides/update.md), [security model](references/guides/security.md).",
       "destination_unit_sha256": null
     }
   ]
