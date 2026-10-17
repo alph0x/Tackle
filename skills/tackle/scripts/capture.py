@@ -132,6 +132,14 @@ def read_record(observation, require_pass=False):
         mapping = record.get(key, {})
         if not isinstance(mapping, dict) or not all(isinstance(k, str) and isinstance(v, list) and all(isinstance(n, str) for n in v) for k, v in mapping.items()):
             raise ValueError('selector membership map required')
+    if 'program' in record:
+        program = record['program']
+        if (not isinstance(program, dict) or set(program) != {'path', 'sha256'}
+                or not isinstance(program['path'], str) or not Path(program['path']).is_absolute()
+                or not isinstance(program['sha256'], str) or not re.fullmatch('[0-9a-f]{64}', program['sha256'])):
+            raise ValueError('program identity malformed')
+        if Path(program['path']).is_file() and sha(Path(program['path']).read_bytes()) != program['sha256']:
+            raise ValueError('program bytes changed since the record')
     if any(record.get(key) != value for key, value in start.items()):
         raise ValueError('record disagrees with immutable start provenance')
     if record.get('inputs_stable') and (record.get('inputs_before') != record.get('inputs_after')
@@ -198,8 +206,11 @@ def capture(spec_path):
         store = destination = local(root, spec['destination']).resolve()
     extra = [str(spec_path.relative_to(root))]
     script = Path(__file__).resolve()
+    program = None
     if root in script.parents:
         extra.append(str(script.relative_to(root)))
+    else:
+        program = dict(path=str(script), sha256=sha(script.read_bytes()))
     for arg in argv[1:]:
         if (root / arg).is_file():
             extra.append(str(local(root, arg).relative_to(root)))
@@ -238,6 +249,8 @@ def capture(spec_path):
                       inputs_before=snapshot(data), timeout_seconds=spec['timeout_seconds'],
                       prior_records=prior, prior_objects=sorted(prior_objects),
                       start=datetime.now(timezone.utc).isoformat())
+        if program is not None:
+            record['program'] = program
         def write(name, value):
             publish(out / name, (json.dumps(value, indent=2) + '\n').encode('utf-8'))
         write('start.json', record)

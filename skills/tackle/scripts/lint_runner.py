@@ -52,8 +52,10 @@ def lint_verdict(row, record, stdout, stderr):
     return 'PASS'
 
 
-def captured_lint_verdict(source, expected_sha256, slug, row, script, record, observation):
+def captured_lint_verdict(source, expected_sha256, slug, row, script, record, observation, capture_program=None):
     try:
+        if capture_program is not None and record.get('program') != capture_program:
+            return 'ERROR'
         if (observation / 'retired.json').exists() or observation.name.startswith('.pending-'):
             return 'ERROR'
         if type(record.get('accepted')) is not bool:
@@ -86,7 +88,7 @@ def captured_lint_verdict(source, expected_sha256, slug, row, script, record, ob
 
 def run_lint(config_path):
     root = Path.cwd().resolve()
-    trusted_capture_sha256 = 'bcbcef803e188090fa5c60372cefe0cd9504b6babb1131c79ec7668301dee34c'
+    trusted_capture_sha256 = '3b0aaef26047e779c96735aa612858903db922c9e6921ed5a4d408aeaa304aea'
     def local(name):
         path = (root / name).resolve()
         path.relative_to(root)
@@ -120,6 +122,11 @@ def run_lint(config_path):
         resolved = (root / path).resolve()
         if root in resolved.parents:
             selectors.append(dict(glob=str(resolved.relative_to(root)), required=True))
+    programs = {}
+    for label, path in (('lint_runner', Path(__file__)), ('capture', capture_script)):
+        resolved = (root / path).resolve()
+        if root not in resolved.parents:
+            programs[label] = dict(path=str(resolved), sha256=hashlib.sha256(resolved.read_bytes()).hexdigest())
     results = {}
     for number in selected:
         script_path = batch / ('row-%02d.sh' % number)
@@ -145,7 +152,8 @@ def run_lint(config_path):
             record = json.loads((observation / 'result.json').read_text())
             if result.returncode in (0, 1) and not result.stderr:
                 verdict = captured_lint_verdict(source, config['source_sha256'], config['slug'],
-                                               number, script, record, observation)
+                                               number, script, record, observation,
+                                               programs.get('capture'))
         except (OSError, ValueError, UnicodeError):
             pass
         results[number] = dict(row=number, source_sha256=config['source_sha256'],
@@ -155,6 +163,8 @@ def run_lint(config_path):
     summary = dict(rows=results, total=len(results),
                    passed=sum(r['verdict'] == 'PASS' for r in results.values()),
                    complete=len(results) == 17 and all(r['verdict'] in ('PASS', 'WARN') for r in results.values()))
+    if programs:
+        summary['programs'] = programs
     summary_path = batch / 'summary.json'
     summary_path.write_text(json.dumps(summary, indent=2))
     print(summary_path)

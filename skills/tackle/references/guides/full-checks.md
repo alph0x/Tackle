@@ -42,7 +42,7 @@ task Write scope. Review completeness before execution; no generic helper can in
 input. A glob records its membership, including an intentionally optional empty match; a required
 selector matching nothing is an error. Do not select credentials, home directories or generated
 evidence. Save compound scripts before invoking them and include every called script/config;
-the script automatically includes itself (when it sits inside cwd), its JSON specification and existing file arguments after argv[0]. The executable/runtime is
+the script automatically includes itself (when it sits outside cwd the record names it in a `program` field with its absolute path and sha256 instead), its JSON specification and existing file arguments after argv[0]. The executable/runtime is
 observed separately; absolute interpreter paths are valid. External read-only scripts need an
 authorized local snapshot or equivalent harness capture; do not widen write permissions to copy them.
 A copied module loaded by an inline interpreter still needs its selector. Running the capture script
@@ -125,7 +125,7 @@ composition remains possible, but compare its actual captured script bytes with 
 canonical bytes before claiming canonical coverage. A source/command mismatch or absent script
 snapshot is ERROR even if the command exited zero. A subset score is never a full-plan approval.
 
-The runner prints the path of the batch's `summary.json` and exits 0 when every selected row's verdict is PASS or
+The runner (outside cwd, it lists itself and the capture script under `programs` in the summary) prints the path of the batch's `summary.json` and exits 0 when every selected row's verdict is PASS or
 WARN, 1 otherwise; a refused configuration ends with a named `ValueError`. Run it only with the owner's explicit
 authorization for this use, or under a grant in [script consent](../../scripts/README.md#consent).
 Otherwise use an equivalent harness capability or the project's own tools, or report the record unavailable.
