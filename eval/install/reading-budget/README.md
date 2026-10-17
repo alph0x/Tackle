@@ -43,6 +43,8 @@ reads it only when the card sends it there, so none of it counts.
   record needs the owner's explicit authorization first, and without it the honest alternatives apply.
   9.1.2 raises both limits to the measured 4537 and 961 for the Full RUN boundary-check trigger and
   its mandatory linked section. The section remains counted; the counting algorithm is unchanged.
+  10.0 raises the chain limit to the measured 4696 for the scripts consent wording: `SKILL.md`'s consent
+  sentence and `run.md`'s adversary-check line now name the scripts under `scripts/`.
 - `--card <path>` measures another file as the card. It showed the old route: with `run.md` as the card,
   the chain was 13,722 words.
 
