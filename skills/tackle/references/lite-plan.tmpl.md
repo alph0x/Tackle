@@ -153,7 +153,7 @@ with the actual terminal event may supply its timestamp; never borrow the latest
 No exact telemetry, collector or model metadata is required to close a product task. Ledger
 recording remains informative. A successful test does not by itself establish product completion.
 Where the harness exposes native usage telemetry, attempt the optional literal
-[`codex-native-usage.md`](guides/codex-native-usage.md) recipe (one example) at start and after an externally
+[`codex-native-usage.md`](guides/codex-native-usage.md) script (one example) at start and after an externally
 observed close. Link its receipt in Source, use only its directly observed configured binding
 and exactly mapped terminal event, and keep thread/turn tokens at session scope. A missing or
 failed capture leaves `n/a` and does not block closure.

@@ -18,15 +18,15 @@ a script adds or updates its row.
 | [migrate/step_3_to_4.py](migrate/step_3_to_4.py) | `effc084a74cb31c1aea0983e89bc94e0a08a3bd26137ec87ae9fc94b9c2846f5` |
 | [migrate/step_4_to_5.py](migrate/step_4_to_5.py) | `ae4dcf1ee639aa556fccf4ddbc1b70229b942d84e6a365c12009023af717501b` |
 | [migrate/step_pre3_to_3.py](migrate/step_pre3_to_3.py) | `b08e63d7182d5a51d30a1973ba3f098448a174e208e9739783688d7ca82ab4b3` |
-| [capture.py](capture.py) | `073081171f32a244aca2cf0b5b77b9275b863b3841ad91ea37a898e2f8846419` |
+| [capture.py](capture.py) | `5fd79dbbd5edd2efb308e22d9bb71e5007a80f425fde41aa5b297adc02cb755d` |
 | [evidence_capture.py](evidence_capture.py) | `f542532dc57a0e1dc7b101da8371822f66959683b2852e29b816000fef6e1ce0` |
-| [lint_runner.py](lint_runner.py) | `45d632e4c6aac18a9a76b3917250a89e46942118116b60ecfc8106092db8995f` |
+| [lint_runner.py](lint_runner.py) | `26331f5dc33bd0fe7b1535ebeb839a8008b43aa0de3244e05e58b2b9997180f5` |
 | [context_bundle.py](context_bundle.py) | `5bed1907877c5bb016d8555969eef0c564f70b11aa7bf707849b3cf4b1c0d63f` |
 | [record_store.py](record_store.py) | `8983f36d60a19894cbc215b8d34a3805d82fa50d03195650af9c58d3b8e4d640` |
 | [decompose_check.py](decompose_check.py) | `22a9efddfbcf7ef33dfeac625c3c2fcdd786b99bb3beda6f555b872f2c15a6f5` |
 | [controlled_writing.py](controlled_writing.py) | `79e7fc56982c60db602c4216d1eb831b57b7aeefb545a26f8aed127378b8e74a` |
 | [requirements_base.py](requirements_base.py) | `d6c34cf9ca5f4cbb82ecb98c56d412a97344264da5734d839b6bb153ee10f8d0` |
-| [retro_confidence.py](retro_confidence.py) | `1a4897ea49b09984708071f288ba3c3b10c5eeb5fc912236f6c48466894a5ce9` |
+| [retro_confidence.py](retro_confidence.py) | `9d61b1747858e9f6d707275324d04ab08e998a6aa5a4f9435e60a4c83070fc6c` |
 
 ## Consent
 

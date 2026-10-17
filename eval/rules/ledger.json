@@ -4496,10 +4496,10 @@
     },
     {
       "rule_id": "R-REL-06",
-      "statement": "Before saving or running a guide's program to make a record, get the owner's explicit authorization. Without it, use a harness capability or the project's tools, or report the record unavailable.",
-      "statement_sha256": "45b120f5e4037507533b3688b9d02c2818f87c20580a2da7e3451363bc349e00",
+      "statement": "Before running or importing a script to make a record, get the owner's explicit authorization. Without it, use a harness capability or the project's tools, or report the record unavailable.",
+      "statement_sha256": "a99850aa1a6e566a14a3a9d4c917d354ba6f031b2039b4ca6740d576f9ec0b38",
       "home": "references/guides/run-card.md:25",
-      "home_fragment": "Before saving or running a guide's program",
+      "home_fragment": "Before running or importing a script",
       "units": [],
       "mirrors": [
         "references/guides/record-lifecycle.md:87",

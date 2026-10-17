@@ -122,9 +122,10 @@
     {
       "path": "eval/tests/product/run/verification-records",
       "files": [
-        "test_records.py"
+        "test_records.py",
+        "test_outside_cwd_programs.py"
       ],
-      "tests": 26,
+      "tests": 32,
       "source": "eval/run/verification-records",
       "category": "product",
       "purpose": "Verification-record integrity, export, concurrency and maintenance."
@@ -333,10 +334,11 @@
       "path": "eval/tests/product/lessons",
       "files": [
         "test_confidence.py",
+        "test_confidence_malformed.py",
         "test_coverage_table.py",
         "test_text_and_ids.py"
       ],
-      "tests": 43,
+      "tests": 44,
       "source": "eval/lessons",
       "category": "product",
       "purpose": "Learning confidence, coverage tables and retrospective identifiers."

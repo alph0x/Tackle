@@ -18,7 +18,7 @@ A profile stores hypotheses and directives distilled from retros. It is read dur
 ## Hypotheses
 
 `-` entries describe what the profile has learned about decisions, defaults, or failure patterns.
-`confidence` is computed by `guides/retro.md`'s confidence recipe (Wilson lower bound over the
+`confidence` is computed by `guides/retro.md`'s confidence script (Wilson lower bound over the
 entry's own `observations`), never typed by hand at write time. `id` never takes a task, decision or
 question shape (`[PTDQRCM]-?[0-9]{2}`) or the workspace slug — `H01` and similar are enough. A
 legacy entry with no `id` (prose `evidence: N✓/M✗`, or no confidence/evidence field at all) stays

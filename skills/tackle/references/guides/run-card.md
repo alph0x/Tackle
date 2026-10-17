@@ -22,7 +22,7 @@ RUN starts only after explicit execution intent, including a scoped PLAN+RUN req
    stay byte-identical, so add coverage in a new file.
 6. **Check.** Run the checks PLAN selected (`testing.md`): the task check and related regression
    checks, then, after merge, the affected integration checks on the merged tree, with raw records.
-   Before saving or running a guide's program to make a record, get the owner's explicit authorization.
+   Before running or importing a script to make a record, get the owner's explicit authorization.
    Without it, use a harness capability or the project's tools, or report the record unavailable.
    A task is Complete only after they pass.
    Every required assertion propagates failure. Validators take expected values and

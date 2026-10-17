@@ -13,7 +13,7 @@ Prints `<id> N M n confidence status` for every entry, one line each, in file or
 """
 import re
 import sys
-from math import sqrt
+from math import isinf, isnan, sqrt
 
 NUMBER = re.compile(r'[ \t\n\r\f\v]*([+-]?(?:[0-9]+\.?[0-9]*|\.[0-9]+)(?:[eE][+-]?[0-9]+)?)')
 
@@ -62,7 +62,8 @@ def wilson_lower(k, n):
     p = k / n
     denom = 1 + 3.8416 / n
     centre = (p + 3.8416 / (2 * n)) / denom
-    half = 1.96 * sqrt(p * (1 - p) / n + 3.8416 / (4 * n * n)) / denom
+    spread = p * (1 - p) / n + 3.8416 / (4 * n * n)
+    half = 1.96 * (sqrt(spread) if spread >= 0 or isnan(spread) else float('nan')) / denom
     lower = centre - half
     if lower < 0:
         lower = 0
@@ -75,13 +76,22 @@ def status_of(m, lower):
     return 'retired' if m >= 3 and lower < 0.3 else 'active'
 
 
+def as_int(value):
+    """The awk %d conversion: truncation, saturating at the 64-bit limits."""
+    if isnan(value):
+        return -9223372036854775808
+    if isinf(value) or abs(value) >= 9223372036854775807:
+        return 9223372036854775807 if value > 0 else -9223372036854775808
+    return int(value)
+
+
 def emit(out, ident, n, m, has_evidence):
     total = n + m
     if not has_evidence or total == 0:
         out.append('%s n/a n/a n/a n/a unranked\n' % ident)
         return
     lower = wilson_lower(n, total)
-    out.append('%s %d %d %d %.4f %s\n' % (ident, int(n), int(m), int(total), lower, status_of(m, lower)))
+    out.append('%s %d %d %d %.4f %s\n' % (ident, as_int(n), as_int(m), as_int(total), lower, status_of(m, lower)))
 
 
 def rows(text):

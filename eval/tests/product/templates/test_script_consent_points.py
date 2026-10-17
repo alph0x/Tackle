@@ -50,7 +50,7 @@ class ScriptConsentPoints(unittest.TestCase):
     def test_the_run_card_check_step_carries_the_rule(self):
         card = ' '.join((GUIDES / 'run-card.md').read_text(encoding='utf-8').split())
         step = card.split('6. **Check.**', 1)[1].split('7. **', 1)[0]
-        self.assertIn("Before saving or running a guide's program to make a record, get the owner's explicit authorization.", step)
+        self.assertIn("Before running or importing a script to make a record, get the owner's explicit authorization.", step)
         self.assertIn("Without it, use a harness capability or the project's tools, or report the record unavailable.", step)
 
 

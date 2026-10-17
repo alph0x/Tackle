@@ -115,7 +115,7 @@ returns the closed result: with a recorded `yes`, a public fragment and an accep
 `jev` and `reason` `accepted`, with the model and confidence; otherwise it is the local judgment with a
 named reason. Without a factory the result is the local judgment with reason `client-unavailable`.
 
-**Stop before the program below.** Save or run it only with the owner's explicit authorization for this use,
+**Stop before the example below.** Import or run the scripts it names only with the owner's explicit authorization for this use,
 or under a grant in [script consent](../../scripts/README.md#consent). Otherwise use an equivalent harness
 capability or the project's own tools, or report the record unavailable.
 
