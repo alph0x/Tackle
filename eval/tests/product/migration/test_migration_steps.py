@@ -57,8 +57,8 @@ class RecipesLoadTests(unittest.TestCase):
 
     def test_four_recipe_files_exist_with_one_python_block_and_nothing_else(self):
         # references/recipes/README.md: "Each recipe is a Markdown file that holds one fenced code
-        # block and nothing else" -- matching the existing precedent, correction-lineage.md, which is
-        # exactly `` ```python\n...\n``` `` with no heading or prose outside the fence.
+        # block and nothing else" -- each file is exactly `` ```python\n...\n``` `` with no heading or
+        # prose outside the fence.
         for name in ('schema.md', 'step-pre3-to-3.md', 'step-3-to-4.md', 'step-4-to-5.md'):
             path = RECIPES / name
             text = path.read_text()

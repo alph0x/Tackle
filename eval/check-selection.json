@@ -59,8 +59,8 @@
         "skills/tackle/references/guides/run.md",
         "skills/tackle/references/guides/status.md",
         "skills/tackle/references/lite-plan.tmpl.md",
-        "skills/tackle/references/recipes/adversary-checkpoints.md",
-        "skills/tackle/references/team.tmpl.md"
+        "skills/tackle/references/team.tmpl.md",
+        "skills/tackle/scripts/adversary_checkpoints.py"
       ],
       "families": [
         "eval/tests/product/run/card"
@@ -161,8 +161,8 @@
         "skills/tackle/references/guides/decompose-and-lint.md",
         "skills/tackle/references/guides/lint-spec.md",
         "skills/tackle/references/recipes/**",
-        "skills/tackle/references/recipes/correction-lineage.md",
-        "skills/tackle/references/retro.tmpl.md"
+        "skills/tackle/references/retro.tmpl.md",
+        "skills/tackle/scripts/correction_lineage.py"
       ],
       "families": [
         "eval/tests/product/lint/task-contracts"

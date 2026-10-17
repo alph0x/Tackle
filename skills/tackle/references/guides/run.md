@@ -146,10 +146,13 @@ pool follows unresolved work; several descendant tasks can reference the same po
 pools retains each allowance separately; their sum is informative and does not exhaust an unrelated
 pool. A combined failed correction has one event ID and names each affected pool once in `pool_ids`.
 Stop corrections involving an exhausted pool; separate unrelated work may continue. Use the optional
-pure check in [correction-lineage.md](../recipes/correction-lineage.md) when composing a split/merge;
+pure check in [correction_lineage.py](../../scripts/correction_lineage.py) when composing a split/merge;
 its pool limits are parameters, 3 for a task pool and 2 for the unowned integration pool. Running that
-check needs the owner's explicit authorization ([recipe consent](../recipes/README.md#consent)); prefer an
-equivalent harness capability. Callers
+check needs the owner's explicit authorization ([script consent](../../scripts/README.md#consent)); prefer an
+equivalent harness capability. Import it from `<skill>/scripts/correction_lineage.py`; it has no command line.
+`correction_usage(events, pool_ids, limits=None)` returns `spent`, per-pool counts, `remaining` and `exhausted`;
+`transfer_lineage(previous, descendants, unresolved, failure_pools)` returns each descendant's pools; both
+raise `ValueError` on an invalid, conflicting, lost or invented history. Callers
 validate failure attribution against the original records; arbitrary IDs cannot manufacture a fresh
 budget. Successful corrections, observations and dispatches are not failed-cycle events.
 
@@ -194,7 +197,8 @@ non-independent one is reported and never counts. With no independent reviewer, 
 Each review leaves one report line:
 `**Adversary**: <moment> · <verdict path> · <reviewer model and session> · <independence>`.
 Paths are workspace-relative; a waiver cites `decisions.md#D-<n>` and reads `waived`. A review spends no
-correction cycle. Tasks completed before adopting 9.1 are outside the [check](../recipes/adversary-checkpoints.md).
+correction cycle. Tasks completed before adopting 9.1 are outside the [check](../../scripts/adversary_checkpoints.py), an
+import with no command line: `adversary_findings(tasks, paths)` returns one finding per problem, naming its task.
 
 <a id="integration-global-acceptance-and-close"></a>
 <a id="integration-deliverable-acceptance-and-close"></a>

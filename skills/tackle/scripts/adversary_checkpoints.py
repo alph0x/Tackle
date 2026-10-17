@@ -1,4 +1,3 @@
-```python
 MOMENTS = ('lock', 'repeat-failure', 'complete')
 PREFIX = '**Adversary**:'
 NOT_INDEPENDENT = ('not independent', 'non-independent', 'self-review')
@@ -56,4 +55,3 @@ def adversary_findings(tasks, paths):
         if pending and task.get('status') == 'Complete':
             findings.append('%s: Complete after an unreviewed repeated failure' % task_id)
     return findings
-```

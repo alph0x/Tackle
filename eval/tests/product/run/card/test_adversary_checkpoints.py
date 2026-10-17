@@ -1,5 +1,6 @@
-"""The adversary-checkpoint recipe judges fixture workspaces as the RUN guide says, and the card, the
+"""The adversary-checkpoint script judges fixture workspaces as the RUN guide says, and the card, the
 PLAN card and the guide's subsection point at each other."""
+import importlib.util
 from pathlib import Path
 import re
 import sys
@@ -10,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[5]
 sys.path.insert(0, str(ROOT))
 from maintaining.install_root import current_root  # noqa: E402
 INSTALL = current_root(ROOT)
-RECIPE = INSTALL / 'references/recipes/adversary-checkpoints.md'
+SCRIPT = INSTALL / 'scripts/adversary_checkpoints.py'
 GUIDES = INSTALL / 'references/guides'
 
 ONE, TWO = 'T-%02d' % 1, 'T-%02d' % 2
@@ -66,18 +67,17 @@ CASES = [
 ]
 
 
-def load_recipe():
-    text = RECIPE.read_text(encoding='utf-8')
-    parts = text.split('```python\n')
-    assert len(parts) == 2, 'the recipe must hold exactly one fenced python block'
-    namespace = {'__name__': 'tested_recipe'}
-    exec(compile(parts[1].split('\n```')[0], str(RECIPE), 'exec'), namespace)
-    return namespace
+def load_script():
+    sys.dont_write_bytecode = True
+    spec = importlib.util.spec_from_file_location('tested_script', SCRIPT)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return vars(module)
 
 
 class AdversaryCheckpoints(unittest.TestCase):
-    def test_fixture_workspaces_are_judged_by_the_shipped_recipe(self):
-        findings_of = load_recipe()['adversary_findings']
+    def test_fixture_workspaces_are_judged_by_the_shipped_script(self):
+        findings_of = load_script()['adversary_findings']
         self.assertEqual(len(CASES), 29)
         for case, tasks, expected in CASES:
             with self.subTest(case=case):
@@ -93,11 +93,11 @@ class AdversaryCheckpoints(unittest.TestCase):
                     for other in set(tasks) - {expected}:
                         self.assertNotIn(other, item)
 
-    def test_the_recipe_file_holds_one_python_block_and_nothing_else(self):
-        text = RECIPE.read_text(encoding='utf-8')
-        self.assertTrue(text.startswith('```python\n'))
-        self.assertTrue(text.rstrip().endswith('```'))
-        self.assertEqual(text.count('```'), 2)
+    def test_the_script_is_plain_python_listed_in_the_script_manifest(self):
+        text = SCRIPT.read_text(encoding='utf-8')
+        self.assertNotIn('```', text)
+        manifest = (INSTALL / 'scripts/README.md').read_text(encoding='utf-8')
+        self.assertIn('| [adversary_checkpoints.py](adversary_checkpoints.py) |', manifest)
 
     def test_the_cards_point_at_the_subsection_that_exists(self):
         run = (GUIDES / 'run.md').read_text(encoding='utf-8')

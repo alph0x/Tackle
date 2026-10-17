@@ -1,5 +1,6 @@
 import copy
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 import subprocess
@@ -25,8 +26,16 @@ def recipe(name, ordinal=0):
     return namespace
 
 
+def script(name):
+    sys.dont_write_bytecode = True
+    spec = importlib.util.spec_from_file_location('tested_script', INSTALL / 'scripts' / name)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return vars(module)
+
+
 COMPILER = recipe('references/guides/decompose-and-lint.md')
-LINEAGE = recipe('references/recipes/correction-lineage.md')
+LINEAGE = script('correction_lineage.py')
 LINT = lint_namespace()
 
 

@@ -12,7 +12,7 @@ python3 -m unittest discover -s eval/tests/product/run/card -p 'test_*.py' -v
   that the team, agents and current-work templates bind to RUN without competing loops; and that the card
   and the Focused plan stop an older workspace with `migrate first` before their first write, while a
   STATUS handoff on such a workspace writes nothing.
-- `test_adversary_checkpoints.py` runs the shipped `references/recipes/adversary-checkpoints.md` over fixture
+- `test_adversary_checkpoints.py` imports the shipped `scripts/adversary_checkpoints.py`, runs it over fixture
   workspaces, one case per checkpoint rule, and checks that the RUN card and the PLAN card point to the
   `run.md` subsection that exists.
 

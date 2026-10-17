@@ -1,4 +1,3 @@
-```python
 TASK_POOL_LIMIT = 3
 UNOWNED_INTEGRATION_POOL_LIMIT = 2
 
@@ -39,4 +38,3 @@ def transfer_lineage(previous, descendants, unresolved, failure_pools):
         raise ValueError('lost, invented or unrelated failure lineage')
     return {identity: sorted({failure_pools[failure] for failure in failures})
             for identity, failures in descendants.items()}
-```

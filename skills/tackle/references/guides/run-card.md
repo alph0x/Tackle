@@ -83,7 +83,7 @@ cycles.
 
 [Record fields](run.md#verification-record-fields), [capture](run.md#capture),
 [failure packet](run.md#failure-classification-and-escalation-packet), [recovery](run.md#operational-recovery),
-[lineage](run.md#correction-lineage) and its [recipe](../recipes/correction-lineage.md),
+[lineage](run.md#correction-lineage) and its [script](../../scripts/correction_lineage.py),
 [independence](run.md#independence-and-historical-grades),
 [acceptance](run.md#integration-and-deliverable-acceptance), [release gating](run.md#release-gating),
 [run record](run.md#run-record), [testing](testing.md), [limits](run.md#tier-dispatch-and-escalation-limits),
