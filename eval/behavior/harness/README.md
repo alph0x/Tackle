@@ -53,8 +53,8 @@ network or model: fake `codex`, `claude` and `docker` executables on PATH record
 The episode directory holds:
 
 - `work/`: the fixture, which becomes the participant's working directory;
-- `home/`: an empty HOME. For a treated arm it gets `SKILL.md` plus `references/` in the host's skill
-  directory: `.agents/skills/tackle/`, `.claude/skills/tackle/` or `.fake/skills/tackle/`;
+- `home/`: an empty HOME. For a treated arm it gets `SKILL.md`, `references/` and, when the install ships it, `scripts/` in the host's
+  skill directory: `.agents/skills/tackle/`, `.claude/skills/tackle/` or `.fake/skills/tackle/`;
 - `prompts/`: the prompts, byte-for-byte;
 - `baseline/`: a pristine copy of the fixture, used for diffs;
 - `stage.json`: the tree digests of the input, the install, the staged skill and the work tree.
@@ -315,7 +315,7 @@ sandbox or model.
 - **Staging.** `run` takes the cohort manifest's `order`, appends to its `episodes.jsonl`, and resumes after the
   records already there. Each episode gets a fresh private root under `run_root` with `home/`, `work/` and
   `tmp/`. The variant's `input/fixture/` becomes `work/`. `control` stages no skill. `method` stages the exact
-  `SKILL.md` and `references/` of `--install` into the HOME's user skill root, checked against the manifest's
+  `SKILL.md`, `references/` and `scripts/` (when present) of `--install` into the HOME's user skill root, checked against the manifest's
   candidate digest before and after the copy. The input tree must match its sealed digest and hold only
   prompts (`task.md`, or `sessions/NN.md` run in order) and `fixture/`. A fixture cannot plant `.claude`,
   `.git`, `.codex`, `.agents`, `CLAUDE.md`, `SKILL.md` or an answer sheet, and the route never reads or copies

@@ -65,9 +65,10 @@ def dir_files(root):
 
 def install_files():
     files = {'SKILL.md': (INSTALL / 'SKILL.md').read_bytes()}
-    for path in sorted((INSTALL / 'references').rglob('*')):
-        if path.is_file():
-            files[path.relative_to(INSTALL).as_posix()] = path.read_bytes()
+    for folder in ('references', 'scripts'):
+        for path in sorted((INSTALL / folder).rglob('*')):
+            if path.is_file():
+                files[path.relative_to(INSTALL).as_posix()] = path.read_bytes()
     return files
 
 

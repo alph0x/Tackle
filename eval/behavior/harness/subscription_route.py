@@ -2131,7 +2131,7 @@ def parser():
     run.add_argument('--config', required=True)
     run.add_argument('--cohort', required=True, help='directory holding manifest.json; episodes.jsonl is appended')
     run.add_argument('--repo', required=True, help='repository holding eval/scenarios')
-    run.add_argument('--install', help='the skill tree (SKILL.md and references/) of the method arm')
+    run.add_argument('--install', help='the skill tree (SKILL.md, references/ and scripts/ when present) of the method arm')
     run.add_argument('--out', required=True, help='directory for each episode\'s retained evidence')
     run.add_argument('--stage', required=True, help='the configured stage whose cap bounds this run')
     listener = commands.add_parser('probe-listener', help='run one probe of the loopback listener and the recording proxy')

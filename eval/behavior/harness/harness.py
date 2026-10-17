@@ -136,18 +136,19 @@ def safe_out(out):
 
 
 def read_install(root):
-    """The install tree: exactly SKILL.md and references/ of --install; a symlink refuses."""
+    """The install tree: SKILL.md, references/ and, when present, scripts/ of --install; a symlink refuses."""
     root = Path(root)
     skill = root / 'SKILL.md'
     if skill.is_symlink() or not skill.is_file():
         raise Refusal('--install holds no SKILL.md')
     files = {'SKILL.md': skill.read_bytes()}
-    references = root / 'references'
-    if references.is_symlink():
-        raise Refusal('symlink in the install: references')
-    if references.is_dir():
-        for name, data in read_tree(references).items():
-            files['references/' + name] = data
+    for folder in ('references', 'scripts'):
+        directory = root / folder
+        if directory.is_symlink():
+            raise Refusal('symlink in the install: %s' % folder)
+        if directory.is_dir():
+            for name, data in read_tree(directory).items():
+                files[folder + '/' + name] = data
     return files
 
 
