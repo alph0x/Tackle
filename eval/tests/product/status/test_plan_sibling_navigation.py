@@ -3,7 +3,7 @@
 The shipped script builds a local workspace beside a declared sibling under one temporary repository root. The
 oracles read the page it writes: the header block (slug, Relation cell, progress from the sibling's board, a link
 to the sibling's plan-view.html or a missing-view note), the external graph node and stage-list links to the
-sibling's task, the printed reports, the print rule that shows link targets as text, Spanish labels, the input
+sibling's task, the escaping of a hostile Relation cell, the printed reports, the print rule that shows link targets as text, Spanish labels, the input
 digests, and a workspace without siblings. Whether a browser follows the links, and how the PDF looks, is not
 observed here.
 """
@@ -66,6 +66,18 @@ class SiblingBlockTests(unittest.TestCase):
             page = built(tmp, agents=AGENTS_HEAD + declared)
         nav = block(page)
         self.assertLess(nav.index('data-sibling="web"'), nav.index('data-sibling="api"'))
+
+    def test_a_hostile_relation_cell_is_escaped(self):
+        declared = ('## Sibling workspaces\n\n| Sibling | Path | Relation |\n|---|---|---|\n'
+                    '| api | docs/plans/beta | <script>alert("x")</script> & \'q\' <img src=x onerror=y> |\n')
+        with tempfile.TemporaryDirectory() as tmp:
+            page = built(tmp, agents=AGENTS_HEAD + declared)
+        nav = block(page)
+        self.assertIsNotNone(nav)
+        self.assertNotIn('<script>alert', page)
+        self.assertNotIn('<img src=x', page)
+        self.assertIn('<span class="sibling-relation">&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt; &amp; &#x27;q&#x27; '
+                      '&lt;img src=x onerror=y&gt;</span>', nav)
 
     def test_a_sibling_without_a_view_gets_a_note_and_no_link(self):
         with tempfile.TemporaryDirectory() as tmp:

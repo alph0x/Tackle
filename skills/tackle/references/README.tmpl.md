@@ -5,9 +5,11 @@
 {{2-3 line description: what this initiative solves.}}
 
 ## Sibling plans
-<!-- One line per sibling declared in AGENTS.md under `## Sibling workspaces`, in the same order, with the sibling's slug as a markdown link to its plan.md; reuse a sibling's shared docs instead of duplicating them. Delete this section when there are none. -->
-
-- {{sibling slug}}, linked to `../{{sibling folder}}/plan.md` — {{relation, as in AGENTS.md}}
+<!-- One line per sibling declared in AGENTS.md under `## Sibling workspaces`, in the same order: copy the line below out of the fence, once per sibling, and fill it in. Reuse a sibling's shared docs instead of duplicating them. Delete this section when there are none.
+```markdown
+- [{{sibling slug}}](../{{sibling folder}}/plan.md) — {{relation, as in AGENTS.md}}
+```
+-->
 
 ## Related tickets
 <!-- Delete this section if not applicable. -->
