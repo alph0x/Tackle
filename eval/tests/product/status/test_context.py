@@ -1,4 +1,5 @@
-"""Execute the installed Markdown recipe; fixtures contain original history bytes."""
+"""Execute the installed context script; fixtures contain original history bytes."""
+import importlib.util
 import json
 from pathlib import Path
 import shutil
@@ -13,14 +14,15 @@ sys.path.insert(0, str(ROOT))
 from maintaining.install_root import current_root  # noqa: E402
 INSTALL = current_root(ROOT)
 
-GUIDE = INSTALL / "references/guides/context-lifecycle.md"
+SCRIPT = INSTALL / "scripts/context_bundle.py"
 
 
 def recipe():
-    namespace = {}
-    code = GUIDE.read_text().split("```python\n", 1)[1].split("\n```", 1)[0]
-    exec(compile(code, str(GUIDE), "exec"), namespace)
-    return namespace
+    """The names of the shipped context script, imported by file path."""
+    spec = importlib.util.spec_from_file_location("context_bundle_under_test", SCRIPT)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return vars(module)
 
 
 def fixture(root, count=10):
@@ -270,7 +272,7 @@ class ContextTests(unittest.TestCase):
             self.projection()
 
     def test_abrupt_process_exit_releases_lock_and_recovers_originals(self):
-        source = GUIDE.read_text().split("```python\n", 1)[1].split("\n```", 1)[0]
+        source = SCRIPT.read_text()
         child = source + "\nContext.stop = staticmethod(lambda requested, phase: os._exit(73) if phase == 'index' else None)\nContext(Path(sys.argv[1])).archive()\n"
         child = "import sys\n" + child
         result = subprocess.run([sys.executable, "-c", child, str(self.root)], capture_output=True)
@@ -292,8 +294,7 @@ class ContextTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             runtime = Path(temp)
             (runtime / "capture.py").write_text((INSTALL / "scripts/capture.py").read_text())
-            code = (INSTALL / "references/guides/record-lifecycle.md").read_text().split("```python\n", 1)[1].split("\n```", 1)[0]
-            (runtime / "lifecycle.py").write_text(code)
+            (runtime / "lifecycle.py").write_text((INSTALL / "scripts/record_store.py").read_text())
             (runtime / "initiative").mkdir()
             (runtime / "child.py").write_text("print('observed pass')\n")
             (runtime / "input.txt").write_text("required bytes\n")

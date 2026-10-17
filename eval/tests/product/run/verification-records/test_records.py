@@ -23,11 +23,8 @@ INSTALL = current_root(ROOT)
 
 
 def recipe(name):
-    """The text of a shipped script (by file name) or of a guide's one remaining program."""
-    if name.endswith('.py'):
-        return (INSTALL / 'scripts' / name).read_text()
-    return re.findall(r'```python\n(.*?)\n```',
-                      (INSTALL / 'references/guides' / name).read_text(), re.S)[0]
+    """The text of a shipped script, by file name."""
+    return (INSTALL / 'scripts' / name).read_text()
 
 
 class Records(unittest.TestCase):
@@ -39,7 +36,7 @@ class Records(unittest.TestCase):
         self.workspace.mkdir()
         self.store = self.workspace / 'evidence'
         (self.root / 'capture.py').write_text(recipe('capture.py'))
-        (self.root / 'lifecycle.py').write_text(recipe('record-lifecycle.md'))
+        (self.root / 'lifecycle.py').write_text(recipe('record_store.py'))
         (self.root / 'input.bin').write_bytes(b'x' * 1048576)
         (self.root / 'child.py').write_text("print('checked')\n")
         self.spec = dict(workspace='initiative', argv=[sys.executable, 'child.py'],

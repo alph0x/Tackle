@@ -21,6 +21,8 @@ a script adds or updates its row.
 | [capture.py](capture.py) | `073081171f32a244aca2cf0b5b77b9275b863b3841ad91ea37a898e2f8846419` |
 | [evidence_capture.py](evidence_capture.py) | `f542532dc57a0e1dc7b101da8371822f66959683b2852e29b816000fef6e1ce0` |
 | [lint_runner.py](lint_runner.py) | `45d632e4c6aac18a9a76b3917250a89e46942118116b60ecfc8106092db8995f` |
+| [context_bundle.py](context_bundle.py) | `5bed1907877c5bb016d8555969eef0c564f70b11aa7bf707849b3cf4b1c0d63f` |
+| [record_store.py](record_store.py) | `8983f36d60a19894cbc215b8d34a3805d82fa50d03195650af9c58d3b8e4d640` |
 
 ## Consent
 
