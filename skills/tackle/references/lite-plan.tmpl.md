@@ -50,7 +50,7 @@ multi-team/session coordination, uncertain integration or a shared public contra
    subprocess or explicit failure exit; `set -u`, `pipefail` or a final PASS alone is insufficient.
    Capture exact argv/script, cwd, observed runtime, input hashes
    before/after, output, child exit/timeout/signal and produced hashes. Before running the check,
-   choose an accessible durable export destination or adapt the [capture recipe](guides/evidence-capture.md).
+   choose an accessible durable export destination or use the [capture script](guides/evidence-capture.md).
    Choose either capture mechanism; delivering raw evidence is required. Generated
    receipts are evidence indexes: link them instead of retyping commands, output, clocks or hashes.
    Every E2E run produces a replayable artifact with its exact command or saved script, accessible

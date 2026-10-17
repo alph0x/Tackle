@@ -124,7 +124,7 @@
       "files": [
         "test_records.py"
       ],
-      "tests": 25,
+      "tests": 26,
       "source": "eval/run/verification-records",
       "category": "product",
       "purpose": "Verification-record integrity, export, concurrency and maintenance."

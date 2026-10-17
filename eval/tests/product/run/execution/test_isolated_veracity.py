@@ -1,5 +1,6 @@
 """Small execution-level regressions for canonical identity and saved scripts."""
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 import re
@@ -13,11 +14,14 @@ sys.path.insert(0, str(ROOT))
 from maintaining.install_root import current_root  # noqa: E402
 INSTALL = current_root(ROOT)
 
-CAPTURE, LINT = re.findall(r'```python\n(.*?)\n```', (INSTALL/'references/guides/full-checks.md').read_text(), re.S)
+CAPTURE = (INSTALL/'scripts/capture.py').read_text()
+LINT = (INSTALL/'scripts/lint_runner.py').read_text()
 SOURCE = (INSTALL/'references/guides/lint-spec.md').read_bytes()
 SHA = hashlib.sha256(SOURCE).hexdigest()
-NS = {'__name__': 'documented_lint'}
-exec(LINT, NS)
+_spec = importlib.util.spec_from_file_location('documented_lint', INSTALL/'scripts/lint_runner.py')
+_module = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_module)
+NS = vars(_module)
 
 
 class IsolatedVeracity(unittest.TestCase):

@@ -1,4 +1,4 @@
-"""Execute the literal shipped Markdown recipe with controlled child processes."""
+"""Execute the shipped evidence script with controlled child processes."""
 import hashlib
 import json
 from pathlib import Path
@@ -13,7 +13,7 @@ sys.path.insert(0, str(REPO))
 from maintaining.install_root import current_root  # noqa: E402
 INSTALL = current_root(REPO)
 
-RECIPE = (INSTALL / 'references/guides/evidence-capture.md').read_text().split('```python\n', 1)[1].split('\n```', 1)[0]
+RECIPE = (INSTALL / 'scripts/evidence_capture.py').read_text()
 
 
 class CaptureTests(unittest.TestCase):

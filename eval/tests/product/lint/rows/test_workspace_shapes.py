@@ -2,7 +2,7 @@
 with `history.md` and `resource-usage.md`) and a Coordinated one on a `/5` board, including slugs with dots,
 and the slugs the extractor refuses before any row runs.
 
-Each test extracts the rows with the shipped extractor in `references/guides/full-checks.md`, runs them from a
+Each test extracts the rows with the shipped extractor in `scripts/lint_runner.py`, runs them from a
 disposable root, and reads the verdict with the shipped `lint_verdict`.
 """
 from pathlib import Path

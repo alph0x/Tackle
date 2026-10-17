@@ -1,6 +1,7 @@
-"""Execute the exact documented recipes; no installed runtime helper."""
+"""Execute the shipped capture and lint scripts; no installed runtime helper."""
 from pathlib import Path
 import hashlib
+import importlib.util
 import json
 import re
 import subprocess
@@ -13,11 +14,14 @@ sys.path.insert(0, str(ROOT))
 from maintaining.install_root import current_root  # noqa: E402
 INSTALL = current_root(ROOT)
 
-GUIDE = INSTALL / 'references/guides/full-checks.md'
-CAPTURE, LINT = re.findall(r'```python\n(.*?)\n```', GUIDE.read_text(), re.S)
+CAPTURE = (INSTALL / 'scripts/capture.py').read_text()
+LINT_PATH = INSTALL / 'scripts/lint_runner.py'
 CANONICAL = (INSTALL / 'references/guides/lint-spec.md').read_bytes()
 DIGEST = hashlib.sha256(CANONICAL).hexdigest()
-NS = {}; exec(LINT, NS)
+_spec = importlib.util.spec_from_file_location('controls_lint_runner', LINT_PATH)
+_module = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_module)
+NS = vars(_module)
 
 class CaptureTests(unittest.TestCase):
     def setUp(self):

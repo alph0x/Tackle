@@ -29,12 +29,11 @@ WS = 'docs/plans/' + SLUG
 
 
 def lint_recipe():
-    """The shipped canonical_rows and lint_verdict, executed from the block in full-checks.md."""
-    guide = (REFERENCES / 'guides/full-checks.md').read_text(encoding='utf-8')
-    block = next(b for b in re.findall(r'```python\n(.*?)\n```', guide, re.S) if 'def canonical_rows' in b)
-    namespace = {'__name__': 'migration_lint_recipe'}
-    exec(compile(block, 'full-checks.md', 'exec'), namespace)
-    return namespace
+    """The shipped canonical_rows and lint_verdict, imported from scripts/lint_runner.py."""
+    spec = importlib.util.spec_from_file_location('migration_lint_recipe', REFERENCES.parent / 'scripts/lint_runner.py')
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return vars(module)
 
 
 RECIPE = lint_recipe()

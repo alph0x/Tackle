@@ -1,7 +1,7 @@
 """Every workspace lint row passes clean fixtures and fails on a planted defect.
 
-Rows are extracted by ``canonical_rows`` and judged by ``lint_verdict`` from full-checks.md, the
-same recipes a Full run uses, and executed with ``sh`` against disposable copies of the fixtures.
+Rows are extracted by ``canonical_rows`` and judged by ``lint_verdict`` from scripts/lint_runner.py, the
+same functions a Full run uses, and executed with ``sh`` against disposable copies of the fixtures.
 """
 import hashlib
 import os

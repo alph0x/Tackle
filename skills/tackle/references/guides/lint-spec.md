@@ -2,7 +2,7 @@
 
 Every check is a literal copy-paste command: run from the **repo root**, in any POSIX shell, plain `sh`/`grep`/`sed`/`awk` only. Replace `<slug>` with the initiative directory name (workspace = `docs/plans/<slug>/`). The rows are the Markdown contract and remain copy-pasteable as the canonical direct checks. Every row reads only the current workspace layout; an older one is refused with `migrate first` ([forward only](migrate.md#forward-only)).
 
-For Full without equivalent harness automation, use the connected extraction/capture recipe in
+For Full without equivalent harness automation, use the connected extraction/capture script in
 [full-checks.md](full-checks.md#execute-canonical-lint-faithfully). It compares actual saved script
 bytes before interpreting a row; a successful altered command cannot count as canonical PASS.
 

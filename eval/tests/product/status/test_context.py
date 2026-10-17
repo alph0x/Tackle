@@ -291,9 +291,9 @@ class ContextTests(unittest.TestCase):
     def test_handoff_carries_checked_record_bundle_without_original_store(self):
         with tempfile.TemporaryDirectory() as temp:
             runtime = Path(temp)
-            for name, guide in [("capture", "full-checks.md"), ("lifecycle", "record-lifecycle.md")]:
-                code = (INSTALL / "references/guides" / guide).read_text().split("```python\n", 1)[1].split("\n```", 1)[0]
-                (runtime / (name + ".py")).write_text(code)
+            (runtime / "capture.py").write_text((INSTALL / "scripts/capture.py").read_text())
+            code = (INSTALL / "references/guides/record-lifecycle.md").read_text().split("```python\n", 1)[1].split("\n```", 1)[0]
+            (runtime / "lifecycle.py").write_text(code)
             (runtime / "initiative").mkdir()
             (runtime / "child.py").write_text("print('observed pass')\n")
             (runtime / "input.txt").write_text("required bytes\n")

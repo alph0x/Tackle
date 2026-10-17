@@ -1,4 +1,4 @@
-"""Execute the shipped Markdown recipes against disposable storage only."""
+"""Execute the shipped scripts and guide programs against disposable storage only."""
 from contextlib import redirect_stdout
 import errno
 import hashlib
@@ -23,6 +23,9 @@ INSTALL = current_root(ROOT)
 
 
 def recipe(name):
+    """The text of a shipped script (by file name) or of a guide's one remaining program."""
+    if name.endswith('.py'):
+        return (INSTALL / 'scripts' / name).read_text()
     return re.findall(r'```python\n(.*?)\n```',
                       (INSTALL / 'references/guides' / name).read_text(), re.S)[0]
 
@@ -35,7 +38,7 @@ class Records(unittest.TestCase):
         self.workspace = self.root / 'initiative'
         self.workspace.mkdir()
         self.store = self.workspace / 'evidence'
-        (self.root / 'capture.py').write_text(recipe('full-checks.md'))
+        (self.root / 'capture.py').write_text(recipe('capture.py'))
         (self.root / 'lifecycle.py').write_text(recipe('record-lifecycle.md'))
         (self.root / 'input.bin').write_bytes(b'x' * 1048576)
         (self.root / 'child.py').write_text("print('checked')\n")
@@ -145,11 +148,10 @@ class Records(unittest.TestCase):
                 (out / 'result.json').write_text(json.dumps(dict(record, **{key: value})))
                 with self.assertRaises(ValueError):
                     self.capture.read_record(out, require_pass=True)
-        lint = re.findall(r'```python\n(.*?)\n```',
-                          (INSTALL / 'references/guides/full-checks.md').read_text(), re.S)[1]
-        namespace = {}
-        exec(lint, namespace)
-        self.assertEqual(namespace['lint_verdict'](1, dict(record, child_exit=False), b'', b''), 'ERROR')
+        spec = importlib.util.spec_from_file_location('records_lint_runner', INSTALL / 'scripts/lint_runner.py')
+        namespace = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(namespace)
+        self.assertEqual(namespace.lint_verdict(1, dict(record, child_exit=False), b'', b''), 'ERROR')
 
     def test_missing_provenance_cannot_be_reused_and_failed_missing_after_is_inspectable(self):
         out, record = self.run_capture()
@@ -180,9 +182,7 @@ class Records(unittest.TestCase):
         self.assertFalse((self.root / 'outside').exists())
 
     def test_new_lint_specs_use_explicit_shared_workspace(self):
-        lint = re.findall(r'```python\n(.*?)\n```',
-                          (INSTALL / 'references/guides/full-checks.md').read_text(), re.S)[1]
-        (self.root / 'lint.py').write_text(lint)
+        (self.root / 'lint.py').write_text(recipe('lint_runner.py'))
         source = INSTALL / 'references/guides/lint-spec.md'
         config = dict(source=str(source), source_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
                       workspace='initiative', slug='demo', rows=[12], capture_script='capture.py',
@@ -198,6 +198,24 @@ class Records(unittest.TestCase):
         self.assertEqual(record['layout'], 'shared-v1')
         self.assertTrue(observation.is_relative_to(self.store))
         self.assertFalse((self.root / 'evidence').exists())
+
+    def test_the_shipped_lint_script_runs_from_the_install_folder_with_its_own_capture(self):
+        # cwd is the disposable root, outside the install: the capture script beside the lint script
+        # is used, pinned by its bytes, and neither script needs to sit inside cwd.
+        source = INSTALL / 'references/guides/lint-spec.md'
+        config = dict(source=str(source), source_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
+                      workspace='initiative', slug='demo', rows=[12],
+                      selectors=[dict(glob='input.bin', required=True)], timeout_seconds=2)
+        (self.root / 'lint.json').write_text(json.dumps(config))
+        run = subprocess.run([sys.executable, '-I', str(INSTALL / 'scripts/lint_runner.py'), 'lint.json'],
+                             cwd=self.root, capture_output=True, timeout=20)
+        self.assertTrue(run.stdout, run.stderr)
+        summary = json.loads(Path(run.stdout.decode().strip()).read_text())
+        self.assertEqual(summary['total'], 1)
+        observation = self.root / summary['rows']['12']['observation']
+        record = self.capture.read_record(observation)
+        self.assertEqual(record['layout'], 'shared-v1')
+        self.assertNotIn(str(INSTALL), ' '.join(record['extra_inputs']))
 
     def test_store_and_pool_symlinks_cannot_redirect_authorized_writes(self):
         sibling = self.root / 'outside'
@@ -383,17 +401,17 @@ class Records(unittest.TestCase):
             self.lifecycle.restore_records(bundle, self.root / 'restored')
         self.assertFalse((self.root / 'restored').exists())
 
-    def test_small_recipe_requires_existing_workspace_without_root_side_effect(self):
-        script = recipe('evidence-capture.md')
+    def test_small_script_requires_existing_workspace_without_root_side_effect(self):
+        script = recipe('evidence_capture.py')
         run = subprocess.run([sys.executable, '-c', script], cwd=self.root, capture_output=True)
         self.assertNotEqual(run.returncode, 0)
         self.assertFalse((self.root / 'evidence').exists())
 
-    def test_small_recipe_rejects_store_symlink_escape_before_writes(self):
+    def test_small_script_rejects_store_symlink_escape_before_writes(self):
         sibling = self.root / 'outside'
         sibling.mkdir()
         self.store.symlink_to(sibling, target_is_directory=True)
-        script = recipe('evidence-capture.md')
+        script = recipe('evidence_capture.py')
         run = subprocess.run([sys.executable, '-c', script, str(self.workspace)],
                              cwd=self.root, capture_output=True)
         self.assertNotEqual(run.returncode, 0)

@@ -1,9 +1,10 @@
 """Shared mechanics for lint tests; cases and expected outcomes stay with each suite.
 
-Load the shipped extractor and verdict rather than mirroring their implementation.
+Import the shipped extractor and verdict rather than mirroring their implementation.
 The independent extractor contract tests remain in eval/run/execution.
 """
 import hashlib
+import importlib.util
 import re
 import subprocess
 from pathlib import Path
@@ -15,14 +16,13 @@ INSTALL = current_root(ROOT)
 
 
 def lint_namespace():
-    guide = (INSTALL / 'references/guides/full-checks.md').read_text()
-    blocks = [block for block in re.findall(r'```python\n(.*?)\n```', guide, re.S)
-              if 'def canonical_rows' in block]
-    if len(blocks) != 1:
-        raise ValueError('expected one shipped canonical_rows recipe')
-    namespace = {'__name__': 'lint_test_support'}
-    exec(compile(blocks[0], 'references/guides/full-checks.md', 'exec'), namespace)
-    return namespace
+    path = INSTALL / 'scripts/lint_runner.py'
+    spec = importlib.util.spec_from_file_location('lint_test_support', path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    if 'canonical_rows' not in vars(module):
+        raise ValueError('expected the shipped lint script to define canonical_rows')
+    return vars(module)
 
 
 def lint_rows(slug, source=None):
