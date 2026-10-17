@@ -1,41 +1,3 @@
-# Optional System One integration recipe
-
-This Markdown recipe complements the [pure decision consumer](../guides/system-one.md#system-one-functional-recipe). Extract the two anchored blocks below only when the optional capability is relevant; nothing is executed or installed at skill installation. The Python block receives that consumer as `decide`, rather than copying its algorithm.
-
-Detection runs from the selected project root, with the selected workspace as its first argument. It checks presence only and prints signal names. It reads only regular, nonsymlink instruction files in the three admitted locations; it never opens credential files. A signal is configuration evidence, not permission to send.
-
-<a id="system-one-detection"></a>
-```sh
-signals=
-add_signal() { signals=${signals:+$signals,}$1; }
-if [ "${TYPESAFE_API_KEY+x}" = x ]; then add_signal environment; fi
-if python3 -c 'import importlib.util; raise SystemExit(0 if importlib.util.find_spec("typesafe_sdk") else 1)' >/dev/null 2>&1; then
-    add_signal sdk
-fi
-for directory in "$HOME/.agents/skills/typesafe-ai" "$HOME/.codex/skills/typesafe-ai" "$HOME/.claude/skills/typesafe-ai" \
-    .agents/skills/typesafe-ai .codex/skills/typesafe-ai .claude/skills/typesafe-ai; do
-    if [ -d "$directory" ]; then add_signal skill; break; fi
-done
-for file in AGENTS.md CLAUDE.md "${1:-.}/AGENTS.md"; do
-    if [ -f "$file" ] && [ ! -L "$file" ] && grep -iqE '(^|[^[:alnum:]_])TypeSafe System One([^[:alnum:]_]|$)' "$file"; then
-        add_signal instructions; break
-    fi
-done
-printf 'system-one: %s\n' "${signals:+detected }${signals:-none}"
-```
-
-`load_state` reads only the selected workspace's `AGENTS.md` and `questions.md`; no parent or project consent is inherited. `record_consent` requires the owner's explicit answer, date and actor, refuses conflicts/malformed records, and preserves unrelated text. `prepare_consent` writes one pending question only in PLAN/RUN. STATUS only reads and suppresses the prompt. The caller carries the returned `asked` list through the session; a persisted pending question also prevents a duplicate across resumes.
-
-Before `system_one_use`, the caller must classify the minimal fragment's sensitivity. Only a fragment admitted as public may be sent. Unknown, private, credential, secret, sealed-case and answer-sheet material is forbidden; the label is an explicit caller obligation, not an automatic secret detector. SDK handles authentication. Missing SDK/configuration/consent, malformed storage or unavailable transport produce a local result with a named reason. No optional failure stops the user's task. Never retry an optional request or disable certificate verification.
-
-The documented SDK constructs typed Score/Choice questions and sends only the fragment, pinned model and one narrow question. Confidence defaults are inclusive: 0.6 for history, 0.8 otherwise. `make_client` pins the trusted endpoint, ten-second timeout and zero retries. Do not override its URL, authentication, headers, transport or HTTP client in ordinary use. The optional SDK remains owner-installed; Tackle never requests installation. Official SDK 0.7.2 is the pinned local serializer check, using in-process MockTransport and fictitious authentication. That check is not live/provider or held-out evidence.
-
-`select_history` receives only entries already admitted/opened under the [cold-resume bound](../guides/status.md#cold-resume-read-order), plus their admitted ids. It makes no file reads. Pass a `score_entry` closure calling `system_one_use` with use `resume-selection`, the entry fragment/sensitivity and the agent's local score. Counts and open obligations bypass scoring and remain visible. Report every returned signal's use, actual model/confidence, adopted decision or local reason; optional classifications do not create evidence, consent or authority.
-
-`intake_route` receives `local_route` as the deterministic minimum from the complete [installed gate](../guides/intake-and-gate.md#step-2--gate-sizing-full--lite--none), including every Coordinated trigger and Direct eligibility condition. An optional answer can keep or raise this floor; it cannot lower it. The four explicit Full triggers still force Coordinated. `no_progress_same` preserves an already matching deterministic signature; optional advice cannot erase the stop or change/reset any counter. Failure-class choices are exactly the RUN card's classes and never assign blame.
-
-<a id="system-one-integration"></a>
-```py
 import json
 import os
 from pathlib import Path
@@ -181,13 +143,6 @@ def prepare_consent(workspace, configured, asked, mode, decide):
                             "Public consent preparation", "undetermined", decide, "malformed-consent")
 
 
-def make_client(factory=None):
-    from typesafe_sdk import TypeSafeClient, RetryPolicy
-    construct = TypeSafeClient if factory is None else factory
-    return construct(model=MODEL, base_url="https://api.typesafe.ai", timeout=10.0,
-                     retry=RetryPolicy(max_retries=0))
-
-
 def _question(use):
     from typesafe_sdk import Choice, Score
     if use == "resume-selection":
@@ -237,10 +192,14 @@ def system_one_use(workspace, configured, asked, use, fragment, local_judgment,
     if type(sensitivity) is not str or sensitivity != "public":
         result["reason"] = "fragment-not-public"
         return result
+    if client_factory is None:
+        result["reason"] = "client-unavailable"
+        return result
     issue = []
     def transport(request):
         try:
-            client = make_client(client_factory)
+            from typesafe_sdk import RetryPolicy
+            client = client_factory(model=MODEL, timeout=10.0, retry=RetryPolicy(max_retries=0))
         except ModuleNotFoundError:
             issue.append("sdk-unavailable")
             raise
@@ -308,4 +267,3 @@ def intake_route(local_route, signal, modules, public_api, spans_sessions, hando
 
 def no_progress_same(deterministic_same, signal):
     return deterministic_same or (_usable_signal(signal) and signal.get("judgment") is True)
-```

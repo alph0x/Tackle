@@ -11,6 +11,9 @@ a script adds or updates its row.
 | [adversary_checkpoints.py](adversary_checkpoints.py) | `8be44a5b646ad3aabf179bbf899f4e80c3d34382ce5b636c9eadb26e5d0a92dd` |
 | [plan_view.py](plan_view.py) | `4d67a8305b97a40364a5b047f778a0e72d4ffc215fcf6b728a5b50e5027807ac` |
 | [architecture_map.py](architecture_map.py) | `e3a82e160b486413e366c7d4eaee8561144555947b40a6ef329bfa44d03f532c` |
+| [system_one_decide.py](system_one_decide.py) | `a9c535bdd2e7fff2137b36c032c22ca55fd97886beb0bc883e8ba3dd2ffd3ffb` |
+| [system_one_state.py](system_one_state.py) | `2369d7ddad068ef7247b732ecc7f1fdeef921b1dbed3b6304844f43eef273c2a` |
+| [codex_usage.py](codex_usage.py) | `2fca95fcb854a8157a1b12770ff590bf776fce2f1e4307de12161ad5f83255aa` |
 
 ## Consent
 
