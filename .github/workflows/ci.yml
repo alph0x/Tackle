@@ -53,3 +53,32 @@ jobs:
           name: deterministic-suite-results
           path: ${{ runner.temp }}/tackle-suite-results
           if-no-files-found: warn
+  registry-floor:
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Use the minimum Python that scripts/README.md declares
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.10'
+      - name: Install every awk the lint-row suite exercises
+        run: |
+          set -eu
+          sudo apt-get update
+          sudo apt-get install -y gawk mawk original-awk busybox
+          for a in gawk mawk original-awk busybox; do command -v "$a" >/dev/null || { echo "missing awk: $a"; exit 1; }; done
+          busybox awk 'BEGIN { exit 0 }' || { echo "busybox has no awk applet"; exit 1; }
+      - name: Run every registered deterministic suite on the minimum Python (verifies fixtures and harnesses, not agent behavior)
+        run: |
+          set -eu
+          python3 -c 'import sys; assert sys.version_info[:2] == (3, 10), sys.version'
+          python3 eval/run_suites.py --output "$RUNNER_TEMP/tackle-suite-results-floor"
+      - name: Preserve deterministic outcomes and raw command streams
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: deterministic-suite-results-floor
+          path: ${{ runner.temp }}/tackle-suite-results-floor
+          if-no-files-found: warn

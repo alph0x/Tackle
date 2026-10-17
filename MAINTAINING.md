@@ -2,7 +2,7 @@
 
 This file documents Tackle's own release process: the release sweep, the nine self-lint
 gates, the deletion gate, and the one migration bridge.
-It does not ship with the installed skill (`SKILL.md` plus `references/`).
+It does not ship with the installed skill (`SKILL.md`, `references/` and `scripts/`).
 
 ## Migration bridge
 
@@ -27,9 +27,9 @@ Migrate-chain currency: if the release changes any workspace-level contract (`AG
 
 Before tagging, complete these four steps in this order; each follows the sweep above and none is optional:
 
-1. Run the full registry under CI's interpreter before pushing the release branch: the `python3` of the `ubuntu-26.04` runner image. The workflow (`.github/workflows/ci.yml`) pins no version, so take the version from the latest CI log, or use a matching local interpreter. A green run under a different interpreter does not count.
+1. Run the full registry under CI's interpreters before pushing the release branch: the `python3` of the `ubuntu-26.04` runner image, and the minimum Python that `skills/tackle/scripts/README.md` declares. The workflow (`.github/workflows/ci.yml`) pins no version for the first, so take it from the latest CI log, or use a matching local interpreter; its second job pins the minimum with `actions/setup-python`. A green run under a different interpreter does not count.
 2. Run the committed-text guard over everything a commit adds, untracked files included: build a temporary index, mark the new files with `git add -N`, and point the guard at that index by running it with `GIT_INDEX_FILE` set to the temporary index, so a file that is not yet tracked is checked like a committed one.
-3. Reproduce every documented install channel in a sandbox and count the installed files against the install artifact (`SKILL.md` plus `references/`); a channel that needs the tag is reproduced against a local clone of the candidate commit. Any extra or missing file blocks the tag.
+3. Reproduce every documented install channel in a sandbox and count the installed files against the install artifact (`SKILL.md`, `references/` and `scripts/`); a channel that needs the tag is reproduced against a local clone of the candidate commit. Any extra or missing file blocks the tag.
 4. On the owner's order, push the release branch without a tag and observe CI; create the tag only after CI is green, never before. A local run hides host-dependent variants (gawk, mawk, original-awk and busybox; Linux interpreters), so only the CI observation clears this step.
 
 ### Skill self-lint gates

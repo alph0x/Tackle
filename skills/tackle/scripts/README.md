@@ -45,3 +45,14 @@ nothing.
 
 Declining is a normal outcome. The affected record is reported unavailable or produced by another
 permitted route; it is never faked.
+
+## Python version
+
+The scripts need Python 3.10 or later and the standard library only. The repository's full test
+registry runs on Python 3.10 and on the current Python; 3.10 is the oldest version it is checked on.
+
+## Windows
+
+On Windows, run a script with `py -3` (or `python`) in place of `python3`, for example
+`py -3 -I <skill>/scripts/plan_view.py ...`. The lint rows and the release self-lint gates are POSIX
+shell commands: run them in a POSIX shell such as Git Bash or WSL.

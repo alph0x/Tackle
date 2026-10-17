@@ -9369,6 +9369,42 @@
       "destination": "references/guides/system-one.md",
       "note": "**Stop before the example below.** Import or run the scripts it names only with the owner's explicit authorization for this use, or under a grant in [script consent](../../scripts/README.md#consent).",
       "destination_unit_sha256": null
+    },
+    {
+      "path": "MAINTAINING.md",
+      "line": 5,
+      "unit_sha256": "6d1e16bfb69c3be8cb93883d37b579931f409969ff823d94afd3dc7bb1c0ddde",
+      "disposition": "reworded",
+      "destination": "MAINTAINING.md",
+      "note": "It does not ship with the installed skill (`SKILL.md`, `references/` and `scripts/`).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "MAINTAINING.md",
+      "line": 30,
+      "unit_sha256": "2191a827990223599bcfd96a449c214338bcf860d44a5105e34c1bd1ec15130c",
+      "disposition": "reworded",
+      "destination": "MAINTAINING.md",
+      "note": "Run the full registry under CI's interpreters before pushing the release branch: the `python3` of the `ubuntu-26.04` runner image, and the minimum Python that `skills/tackle/scripts/README.md` declares.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "MAINTAINING.md",
+      "line": 30,
+      "unit_sha256": "1a7364f2eccdeffa9d2c9288f37b02f6ec1c6863d5ac905e5a66db2a15229a3e",
+      "disposition": "reworded",
+      "destination": "MAINTAINING.md",
+      "note": "The workflow (`.github/workflows/ci.yml`) pins no version for the first, so take it from the latest CI log, or use a matching local interpreter; its second job pins the minimum with `actions/setup-python`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "MAINTAINING.md",
+      "line": 32,
+      "unit_sha256": "d536774d2d8b59ddf044cbdbcb45f79eee55fb248350a7a90cc593be2ce5297c",
+      "disposition": "reworded",
+      "destination": "MAINTAINING.md",
+      "note": "Reproduce every documented install channel in a sandbox and count the installed files against the install artifact (`SKILL.md`, `references/` and `scripts/`); a channel that needs the tag is reproduced against a local clone of the candidate commit.",
+      "destination_unit_sha256": null
     }
   ]
 }
