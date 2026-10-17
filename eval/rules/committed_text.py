@@ -37,6 +37,12 @@ _STATIC_LINE_HASHES = {
         'f5531aadf038a4afef8a55bc084ae397ed484b99c26cd8acf97e1341ca493e08'},
     'eval/cohorts/2026-10-openspec-takeaways-calibration/control/manifest.json': {
         'f5531aadf038a4afef8a55bc084ae397ed484b99c26cd8acf97e1341ca493e08'},
+    # Superseded migrate.md checklist lines moved verbatim to the archive; each was already in
+    # references/guides/migrate.md at the scan base.
+    'maintaining/migrations.md': {
+        '50b538c8b750adae5431290db203d3f4b6cad4c8441d109937963d3c17fa4867',
+        '27896853853d542ecd18d5ce8358d2c9ad69075b15689a860d604551328363e5',
+        '180f5c30220847b68d24ae3f8ef40b220367e02f0de4f93841a2c6eb9dacbc76'},
 }
 _SEALED_LINE_HASH = 'e49ff8f5adecd24af51e5ce4ea91c045726b19f7cd141d57773ea9cf09f5cf7b'
 

@@ -19,7 +19,8 @@ TEAM = (INSTALL / 'references/team.tmpl.md').read_text(encoding='utf-8')
 DECOMPOSE = (INSTALL / 'references/guides/decompose-and-lint.md').read_text(encoding='utf-8')
 INTAKE = (INSTALL / 'references/guides/intake-and-gate.md').read_text(encoding='utf-8')
 COMMUNICATION = (INSTALL / 'references/guides/communication.md').read_text(encoding='utf-8')
-MIGRATE = (INSTALL / 'references/guides/migrate.md').read_text(encoding='utf-8')
+# The same-release 9.0.1 checklist is archived with the other superseded checklists.
+MIGRATE = (ROOT / 'maintaining/migrations.md').read_text(encoding='utf-8')
 
 
 def section(text, heading, next_heading=None):

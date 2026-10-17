@@ -46,7 +46,7 @@ System One use that the workspace recorded `yes` for. Otherwise a general reques
 authorizes no script. A script being part of the install authorizes nothing.
 
 Declining is a normal outcome. The affected record is reported unavailable or produced by another
-permitted route; it is never faked.
+permitted route, such as an equivalent harness capability or the project's own tools; it is never faked.
 
 ## Python version
 

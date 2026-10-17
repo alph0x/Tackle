@@ -270,10 +270,13 @@ class CountAgreementTests(unittest.TestCase):
         for path in current:
             with self.subTest(path=path.name):
                 self.assertEqual(stale.findall(text(path)), [])
-        # The historical checklists keep their own counts; the new checklist counts none of the old.
-        before, after = text(GUIDES / 'migrate.md').split('## v9.0 → v9.1 checklist', 1)
+        # The historical checklists keep their own counts; the checklists from 9.1 on count none of the old.
+        guide = text(GUIDES / 'migrate.md')
+        before, after = guide.split('<a id="v92--v93-checklist"></a>', 1)
         self.assertEqual(stale.findall(after.split('<a id="schema-keyed-migration"></a>', 1)[0]), [])
-        self.assertTrue(stale.findall(before))
+        self.assertTrue(stale.findall(before.split('## v8.4 → v9.0 checklist', 1)[1]))
+        archived = text(ROOT / 'maintaining/migrations.md').split('## v9.0 → v9.1 checklist', 1)[1].split('\n## ', 1)[0]
+        self.assertEqual(stale.findall(archived), [])
 
 
 if __name__ == '__main__':

@@ -91,8 +91,8 @@ create an independent closure loop.
 - `resource-usage.md` records observed lifecycle events and exposed telemetry; unknowns are `n/a`.
 - `current-work.md` is a generated re-contextualization projection, never canonical.
 
-The Coordinator owns task board/history hygiene and records role boundaries. The Executor owns scoped source
-changes and observations. Reviewers verify against the Task and current contract. The Run guide
+Ownership of the board, history and source changes is as `AGENTS.md` item 9 states; the Coordinator also
+records role boundaries. Reviewers verify against the Task and current contract. The Run guide
 defines when any of these observations permit completion; no role may flip a status by assertion.
 
 ## Capability map

@@ -4,8 +4,7 @@ These development-only checks stay outside the installed Markdown artifact
 (`SKILL.md` plus `references/`). They provide different kinds of evidence:
 
 - `test_fields.py`, `test_paths.py` and `test_dependency_and_scope_parsing.py` execute the
-  canonical shell cells extracted from `references/guides/lint-spec.md` (lint rows) and
-  `MAINTAINING.md` (release gates).
+  canonical lint row programs held in `scripts/lint.py` and the release gates in `MAINTAINING.md`.
 
 Run the focused suites from the repository root:
 

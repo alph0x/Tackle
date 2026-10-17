@@ -937,33 +937,40 @@ class CensusHygieneTests(unittest.TestCase):
             self.assertIn('board.md', files)
 
 
+MOVED_CHECKLISTS = ('## v8.3 → v8.4 checklist', '## v8.4.0 → v8.4.1 checklist', '## v9.0.0 → v9.0.1 checklist',
+                    '## v9.0 → v9.1 checklist', '## v9.1.0 → v9.1.1 checklist', '## v9.1 → v9.2 checklist',
+                    '## v9.2.0 → v9.2.1 checklist')
+
+
 class MigrateGuideTests(unittest.TestCase):
-    """The five sections are appended after the existing content; each script link resolves;
-    the 8.x checklists are byte-identical to d024a3f; every migrate.md:N citation elsewhere in the
-    repository and in this workspace still resolves (lint row 4); install-inventory and the self-lint
+    """The five sections follow the checklists; each script link resolves; the two 8.x checklists
+    moved to maintaining/migrations.md byte-identical to d024a3f; install-inventory and the self-lint
     gates stay green."""
 
     def setUp(self):
         self.text = (INSTALL / 'references/guides/migrate.md').read_text(encoding='utf-8')
         self.lines = self.text.split('\n')
+        self.archive = (ROOT / 'maintaining/migrations.md').read_text(encoding='utf-8')
 
-    def test_five_new_sections_appended_after_existing_content(self):
+    def test_five_sections_follow_the_checklists(self):
         for anchor in ('schema-keyed-migration', 'migration-steps', 'read-compatibility-promise',
                        'pre-migration-originals', 'migration-rollback'):
             self.assertIn('<a id="%s"></a>' % anchor, self.text)
-        # every new anchor appears after the line that used to be the file's last line
-        last_original_line = 'A failed check leaves it active and unchanged.'
-        self.assertIn(last_original_line, self.text)
-        boundary = self.text.index(last_original_line)
+        # every section anchor appears after the last checklist the guide keeps
+        last_checklist = '## v9.3 → v10.0 checklist'
+        self.assertIn(last_checklist, self.text)
+        boundary = self.text.index(last_checklist)
         for anchor in ('schema-keyed-migration', 'migration-steps', 'read-compatibility-promise',
                        'pre-migration-originals', 'migration-rollback'):
             self.assertGreater(self.text.index('<a id="%s"></a>' % anchor), boundary)
 
-    def test_first_90_lines_are_byte_identical_to_d024a3f(self):
-        # The pinned fixture is this task's own preflight capture of migrate.md's first 90 lines at
-        # d024a3f (the two 8.x checklists plus their preamble), taken before any edit in this task.
-        pinned = (FIXTURES / 'migrate-md-prefix-d024a3f.txt').read_text(encoding='utf-8')
-        self.assertEqual('\n'.join(self.lines[:90]) + '\n', pinned)
+    def test_the_two_8x_checklists_moved_byte_identical_to_d024a3f(self):
+        # The pinned fixture is a preflight capture of migrate.md's first 90 lines at d024a3f: the
+        # preamble, then the two 8.x checklists (lines 23-90), which now live in the archive unchanged.
+        pinned = (FIXTURES / 'migrate-md-prefix-d024a3f.txt').read_text(encoding='utf-8').split('\n')
+        self.assertEqual(pinned[22], '<a id="v840--v841-checklist"></a>')
+        self.assertIn('\n'.join(pinned[22:90]) + '\n', self.archive)
+        self.assertNotIn('\n'.join(pinned[22:90]), self.text)
 
     def test_guide_links_resolve(self):
         for match in re.findall(r'\]\(([^)]+)\)', self.text):
@@ -971,14 +978,23 @@ class MigrateGuideTests(unittest.TestCase):
                 target = (INSTALL / 'references/guides' / match.split('#')[0]).resolve()
                 self.assertTrue(target.is_file(), match)
 
-    def test_two_checklists_still_present_and_not_touched(self):
-        self.assertIn('## v8.4.0 → v8.4.1 checklist', self.text)
-        self.assertIn('## v8.3 → v8.4 checklist', self.text)
-        self.assertIn('<a id="candidate-workspace-format"></a>', self.text)
+    def test_superseded_checklists_live_in_the_archive_with_their_anchors(self):
+        for heading in MOVED_CHECKLISTS:
+            self.assertNotIn(heading, self.text)
+            self.assertEqual(self.archive.count(heading + '\n'), 1, heading)
+        self.assertIn('<a id="candidate-workspace-format"></a>', self.archive)
+        self.assertNotIn('<a id="candidate-workspace-format"></a>', self.text)
 
-    def test_the_pinned_citation_still_resolves(self):
-        # references/guides/migrate.md:6 -- "Select the 8.3 → 8.4 checklist" (pinned by a prior release task's own citation)
-        self.assertIn('Select the 8.3 → 8.4 checklist', self.lines[5])
+    def test_the_guide_keeps_the_bridge_and_the_adoption_procedure(self):
+        intro = self.text.split('<a id="adopting-a-release"></a>', 1)[0]
+        self.assertIn('8.4 → 9.0 checklist below', ' '.join(intro.split()))
+        self.assertIn('`maintaining/migrations.md`', intro)
+        adoption = ' '.join(self.text.split('## Adopting a release', 1)[1].split('\n## ', 1)[0].split())
+        for phrase in ('selected active workspace', 'disposable copy at a task boundary',
+                       'Continue started or interrupted work under its pinned procedure.',
+                       'Adopt only the validated copy', 'A failed check holds adoption',
+                       'Roll back by restoring the checkpoint copy.'):
+            self.assertIn(phrase, adoption)
 
     def test_no_longer_claims_a_changed_contract_surfaces_as_residue(self):
         # Only the Interrupted-task check exists in step_3_to_4's verify(); the guide must not
@@ -1007,6 +1023,8 @@ class MigrateGuideTests(unittest.TestCase):
     def test_historical_content_strings_stay_out_of_the_install(self):
         for stale in ('## v8.2 → v8.3 checklist', '## v7.3 → v8.0 checklist',
                       '## v2.0 → v2.1.0 checklist', 'F-1 · Agent contract'):
+            self.assertNotIn(stale, self.text)
+        for stale in MOVED_CHECKLISTS:
             self.assertNotIn(stale, self.text)
 
 

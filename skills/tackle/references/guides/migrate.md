@@ -3,8 +3,8 @@
 Migration is a **copy-first, selected-active-work** operation. It never structurally rewrites a live
 workspace or its history during the migration trial,
 automatically migrates unrelated or closed work, upgrades historical evidence, or turns a query into
-execution. Select the 8.3 → 8.4 checklist for a workspace that will adopt T identifiers. An active
-8.4.0 workspace adopts 8.4.1 at a task boundary with the 8.4.0 → 8.4.1 patch checklist below.
+execution. A workspace below bucket `5` reaches it with the 8.4 → 9.0 checklist below; a later
+release is adopted with its own checklist, under [Adopting a release](#adopting-a-release).
 Historical checklists for older workspaces are in the repository's
 `maintaining/migrations.md`; they remain readable historical context and cannot bypass the
 current selection, pinning, history or rollback guards.
@@ -17,275 +17,77 @@ source is ingested fresh through PLAN.
 
 Current interaction uses one skill entry: select Tackle, then state a request such as `plan`,
 `run`, `status` or `verify`. Update forward-looking prompts to that form when migrating selected
-work; preserve historical records verbatim. Old slash spellings in the checklists below are
+work; preserve historical records verbatim. Old slash spellings in historical checklists are
 historical text aliases, not separately registered menu commands. See [invocation.md](invocation.md).
 
-<a id="v840--v841-checklist"></a>
-## v8.4.0 → v8.4.1 checklist
+<a id="adopting-a-release"></a>
+## Adopting a release
 
-This patch makes the lint rows stricter and restores template clauses; it renames nothing. Adopt
-only for a selected active workspace, on a disposable copy at a task boundary.
-
-1. Record the pinned procedure and the current lint result (`lint: N/16`), with hashes of the
-   board, briefs and history. Preserve neighboring workspaces.
-2. Run rows 1–16 of 8.4.1 on the copy. New findings are expected and name real defects:
-   - a stale second citation on a line (row 4);
-   - a seal whose decision is superseded (row 7);
-   - a loop budget written only in prose (row 9);
-   - `inherit`, or a non-dash bullet, on an Effort line in `tasks/` (row 12);
-   - Write scope lines that row 8 cannot parse (warn).
-
-   Fix each in the workspace's own records and re-anchor citations with `verify.md` step 0. A
-   citation of a line the task itself changed may be pinned as `path@<rev>:NN`.
-3. Remove `**tackle-gate: on**` from `AGENTS.md` when present; no current guide reads it. Existing
-   briefs keep their pinned text. Briefs compiled after adoption use the new template, with the
-   E2E-first and replay clauses and the loop-budget fields.
-4. When `design-contract.md` has compiled clauses, add each clause id to its heading
-   (`## C01 · …`). Do it only through a superseding decision with regenerated clause hashes, then
-   run the seal command in `verify.md` step 8.
-5. Record a `D-xx`, append the adoption to `history.md`, and bump the `Methodology:` stamp to
-   8.4.1. Roll back by restoring the checkpoint copy.
-
-<a id="candidate-workspace-format"></a>
-## v8.3 → v8.4 checklist
-
-New Coordinated workspaces use `T-01`, `tasks/`, `task-board.md`, `history.md`,
-`resource-usage.md`, `task.tmpl.md` and the corresponding new templates. New Focused workspaces
-use `plan.md`, `history.md` and `resource-usage.md`. Triggered artifacts use
-`history-archive.md`, `current-work.md`, `handoff-brief.md` and `verification-records/`.
-The board declares `Schema: tackle-workspace/4`. Existing P workspaces and v3 T candidates
-remain readable with their original paths, links and recorded history. Installing 8.4 does not
-rename any workspace or relax the 8.3 test-selection and E2E replay-evidence rules.
-
-1. Select an active workspace and record its pinned procedure, task boundary, exact file/brief
-   links, history and raw-record hashes. Keep an unchanged checkpoint and neighbor sentinel.
-   A read-only request cannot select a migration.
-2. Continue started or interrupted work under its pinned procedure. At a deliberate boundary,
-   prepare a separate candidate on a disposable copy with an explicit old→new path and P→T
-   obligation map. Preserve completed task identities and original history as external sources;
-   never rewrite original bytes or reset attempt counts.
-3. In the new candidate, instantiate `task-board.tmpl.md`, `history.tmpl.md`,
-   `resource-usage.tmpl.md` and `task.tmpl.md`. Make plan §5, task board, every brief,
-   dependency, ledger and report agree on T IDs and the v4 paths. Do not keep old-name
-   duplicates or mix `points/` into the new workspace. Link verified old outputs with source
-   revision and recheck inherited readiness against the new contract.
-   - Rename every legacy artifact and update each link to it:
-     `board.md` → `task-board.md`, `log.md` → `history.md`,
-     `log-archive.md` → `history-archive.md`, `usage.md` → `resource-usage.md`,
-     `coordinator.md` → `current-work.md`, `HANDOFF.md` → `handoff-brief.md`,
-     `evidence/` → `verification-records/`, `points/` → `tasks/`.
-   - Map each P id to one T id (`P-01` → `T-01`) in file names, dependencies, the ledger and
-     reports, and record the mapping. Brief headings name the Task: `# Point` → `# Task`.
-   - Declare `Schema: tackle-workspace/4` on the board, convert every Status cell with the
-     mapping in `terminology.md`, name the last column `Verification`, and point each Complete,
-     Blocked or Unverifiable row at `reports/T-NN-report.md`.
-   - A legacy `usage.md` table stays readable as `resource-usage.md`; append new rows in the v2
-     lifecycle table of `resource-usage.tmpl.md`.
-4. Run canonical lint on both unchanged source and candidate. Exercise missing briefs, dangling
-   dependencies, mixed old/new paths, malformed state, history/archive order and resource usage.
-   Preserve the 8.3 E2E replay artifacts. Compare original history and neighbor hashes byte for
-   byte, then restore a separate checkpoint copy to prove rollback.
-5. Adopt only the validated continuation at the boundary. Append the path/identity mapping,
-   input revisions, observed checks and rollback result; keep the original workspace readable.
-   A failed check leaves it active and unchanged.
+Each checklist below applies only to a selected active workspace, on a disposable copy at a task
+boundary; neighboring workspaces stay untouched. Continue started or interrupted work under its pinned procedure.
+Before the release's own steps, record that procedure, the current lint result under it, and hashes of
+the board, briefs, reports, `AGENTS.md` and history; keep an unchanged checkpoint copy. After them, run
+the lint on the copy. Adopt only the validated copy: record the adoption, its checks and the rollback
+result, and bump the `Methodology:` stamp to the adopted release. A failed check holds adoption and
+leaves the original active and unchanged. Adoption rewrites no closed task, no historical record and no
+neighboring workspace. Roll back by restoring the checkpoint copy.
 
 <a id="v84--v90-checklist"></a>
 ## v8.4 → v9.0 checklist
 
 This major release replaces the RUN and PLAN guides with cards, keys migration on the board
-schema and retires the 8.x action-name aliases. Adopt it only for a selected active workspace, on
-a disposable copy at a task boundary; installing 9.0 migrates nothing by itself. 9.0 runs only
+schema and retires the 8.x action-name aliases. Installing 9.0 migrates nothing by itself. 9.0 runs only
 the current layout and refuses a workspace that has not been migrated
 ([forward only](#forward-only)).
 
 1. Before updating the install, move any file you added under `references/archetypes/` to
    `.tackle/archetypes/` or `~/.tackle/archetypes/`. The install no longer carries
    self-development archetypes, and an update drops files left there.
-2. Record the pinned procedure and the current lint result (`lint: N/16`), with hashes of the
-   board, briefs and history. Preserve neighboring workspaces.
-3. Migrate the board through the [schema-keyed migration](#schema-keyed-migration) and its
+2. Migrate the board through the [schema-keyed migration](#schema-keyed-migration) and its
    [steps](#migration-steps) to bucket `5`. A board whose fenced example never closes is refused;
    close the fence and run the step again. A Focused workspace has no board: rename `log.md`,
    `log-archive.md` and `usage.md` to `history.md`, `history-archive.md` and `resource-usage.md`.
-4. Run rows 1–16 on the migrated copy. Row 12 checks only the briefs of tasks that are not
+3. Run rows 1–16 on the migrated copy. Row 12 checks only the briefs of tasks that are not
    closed (Complete, Skipped or Unverifiable), and reports `Effort without Tier reason` for such
    a brief whose Effort is not `low` and that has no Tier and no Tier reason.
    This is expected: add a `**Tier reason**` line to that brief saying why its Effort departs
    from the default, as the [task template](../task.tmpl.md) shows. In the same open briefs, rename `**Touches**` to
    `**Write scope**` and `Done-signal` to `Acceptance check`, and replace an `inherit` Effort with
    a level.
-5. Replace retired 8.x action names in forward-looking prompts with the current request words;
+4. Replace retired 8.x action names in forward-looking prompts with the current request words;
    [terminology.md](../terminology.md) maps each old name. Preserve historical records verbatim.
-6. Profiles need no action: an entry without an id stays readable, and the next retro that
+5. Profiles need no action: an entry without an id stays readable, and the next retro that
    touches it assigns an id and computes its confidence.
-7. The routing fields (`Tier`, `Tier reason`, `Escalation`) are optional; a brief without them
+6. The routing fields (`Tier`, `Tier reason`, `Escalation`) are optional; a brief without them
    keeps the default. Planning runs on a more capable tier than the Executor's whenever the
    model map binds more than one tier.
-8. Adopt only the validated copy at the boundary. Record the path mapping, the checks and the
-   rollback result; a failed check leaves the original active and unchanged.
-
-<a id="v900-v901-checklist"></a>
-## v9.0.0 → v9.0.1 checklist
-
-An active 9.0.0 workspace adopts 9.0.1 at a task boundary with the same-release checklist below.
-
-Adopt only for a selected active workspace, on a disposable copy at a task boundary. This patch
-updates the role-routing inputs and blocker recovery guidance; it does not rewrite closed tasks or
-historical records.
-
-1. Record the pinned procedure, current lint result (`lint: N/16`), and hashes of the board, briefs,
-   `AGENTS.md` model map, and history. Preserve neighboring workspaces.
-2. Refresh the model map from the host's exposed model names, tier capabilities, binding and effort
-   controls, telemetry, and observed sources. Mark each capability `supported`, `unsupported`, or
-   `unknown`; use `n/a` for telemetry the host does not expose. Keep portable Effort tokens separate
-   from actual host controls.
-3. Recompile open task roles from suitable supported tiers and observed model names. Use a stronger
-   planner only when more than one suitable tier binds; record the limitation when only one tier is
-   suitable. For an unavailable exact model, offer an observed alternative with its consequences or
-   report it unavailable. Never invent a binding.
-4. Update only active blocker reports with expected and observed behavior, evidence, the affected
-   work, viable options, a recommendation, consequences, and an affected-only wait. Continue
-   independent authorized work; preserve closed task records.
-5. Run rows 1–16 and the installed capability/recovery consumer on the copy. Record the adoption
-   decision and bump the `Methodology:` stamp to 9.0.1. Roll back by restoring the checkpoint copy.
-6. On the selected active copy, review new lifecycle writes against the legal role Outcome states,
-   trace-backed positive Attempts, truthful `n/a`/observed-zero counts and externally observed role
-   terminal clocks. Run row 16 and the retro lifecycle check command from `retro.md`; retain their exact result
-   and any Run ID diagnosis. An unsupported known old row is a record defect: hold adoption and keep
-   the original workspace active, without rewriting closed rows or neighboring workspaces. Adopt the
-   copy only after its required checks pass and record the rollback path at this task boundary.
-
-<a id="v90--v91-checklist"></a>
-## v9.0 → v9.1 checklist
-
-An active 9.0.x workspace adopts 9.1 at a task boundary with this checklist. Adopt only for a selected
-active workspace, on a disposable copy at a task boundary. This release bounds history growth and keeps
-every post-task obligation visible until it closes; it rewrites no closed task, no historical record and
-no neighboring workspace.
-
-1. Record the pinned procedure, the current lint result under it, and hashes of the board, briefs,
-   reports, `AGENTS.md` and history. Preserve neighboring workspaces.
-2. Run rows 1–17 on the copy. Two kinds of finding are expected: row 17 names each Complete task whose
-   report has no `**Remains**:` line, and row 13 warns on each session entry over the entry budget.
-3. End each Complete task's report with its receipt line: `**Remains**: none`, or `**Remains**:`
-   followed by the `O-NN` ids of the obligations the task left behind.
-4. Copy the obligations section of `task-board.tmpl.md` below the task table of the board. Record each
-   obligation that outlived its task as an `O-NN` row (owner, trigger, state `Open`, discharge check),
-   and append a history entry whose State snapshot names every `Open` id in its `Active obligations`
-   line; never edit an older snapshot.
-5. Copy the default policy line from `AGENTS.tmpl.md` into the workspace `AGENTS.md`, unless the
-   workspace already records its own maintenance policy. History is append-only, so an entry already over
-   the budget stays as written. The policy archives it only when `history.md` is over the archive
-   threshold and the entry is older than the newest five sessions. When that does not apply (a recent
-   entry in a short history is the usual case), set `History entry budget: N` in `AGENTS.md` to fit it,
-   or adopt with the row 13 warning, which blocks nothing by itself.
-6. Add no `**Adversary**:` line to a task completed before this adoption. It is outside the
-   [adversary-checkpoint check](run.md#adversary-checkpoints); only later tasks owe one.
-7. Point the workspace's own read lists at the [cold resume read order](status.md#cold-resume-read-order):
-   in its `AGENTS.md` and `README.md`, use the code span from the 9.1 templates, and keep no read order of
-   its own. For optional [JEV](system-one.md#integration), preserve the selected workspace's recorded answer;
-   never fabricate one or copy consent from a parent or neighboring workspace.
-
-8. Run rows 1–17 again. Adopt only the validated copy: record the adoption and the rollback result, bump
-   the `Methodology:` stamp to 9.1.0, and roll back by restoring the checkpoint copy.
-
-<a id="v910--v911-checklist"></a>
-## v9.1.0 → v9.1.1 checklist
-
-An active 9.1.0 workspace adopts 9.1.1 at a task boundary with this checklist. Adopt only for a selected
-active workspace, on a disposable copy at a task boundary. This patch changes when a task becomes
-Complete, how subagent models are confirmed, and when System One is offered. It rewrites no closed task,
-no historical record and no neighboring workspace. A 9.1.0 workspace has no map delta, and adoption
-creates none.
-
-1. Record the pinned procedure, the current lint result under it, and hashes of the board, briefs,
-   reports, `AGENTS.md` and history. Preserve neighboring workspaces.
-2. Apply the new closure rule to each open task: the task becomes Complete only after its affected
-   integration checks pass on the merged tree. Tasks completed before this adoption stay as written.
-3. Show the owner the role-to-model table for the roles that remain. Record the confirmation in the
-   `**Confirmed for this initiative**` line of `AGENTS.md`. Until the owner confirms, dispatch no subagent.
-4. Run the [System One check](intake-and-gate.md#system-one-check). With a signal and no recorded answer,
-   ask once and record the exact consent line.
-5. If the workspace has a plan view, rebuild it under its standing view request. Without that request,
-   build no view.
-6. Run rows 1–17 on the copy. Adopt only the validated copy: record the adoption and the rollback result,
-   bump the `Methodology:` stamp to 9.1.1, and roll back by restoring the checkpoint copy.
-
-<a id="v91--v92-checklist"></a>
-## v9.1 → v9.2 checklist
-
-An active 9.1.x workspace adopts 9.2 at a task boundary with this checklist. Adopt only for a selected
-active workspace, on a disposable copy at a task boundary. This release adds an optional requirements
-base with per-plan deltas, WHEN/THEN scenarios as a case form, an explore request, the update-or-new
-classification and multi-repository workspaces. Each is additive: adoption rewrites no closed task, no
-historical record and no neighboring workspace, and creates no requirements base.
-
-1. Record the pinned procedure, the current lint result under it, and hashes of the board, briefs,
-   reports, `AGENTS.md` and history. Preserve neighboring workspaces.
-2. For each open task with a WHEN/THEN case, confirm its Check names a command with its pass condition
-   or `review: <rubric> by <reviewer role>`. A Check that is `TBD`, a cross-reference or prose keeps
-   that task from Ready to run. Tasks completed before this adoption stay as written.
-3. If the workspace plans work in more than one repository, copy the Repositories section of
-   `AGENTS.tmpl.md` into its `AGENTS.md` with each repository's path and revision, and add
-   `**Repository**: <id>` to each open brief. A single-repository workspace adds neither.
-4. Write no requirements delta for tasks planned before this adoption. The next plan change that adds,
-   changes or retires required behavior writes one, as the [requirements base](requirements-base.md)
-   states.
-5. Run rows 1–17 on the copy. Adopt only the validated copy: record the adoption and the rollback result,
-   bump the `Methodology:` stamp to 9.2.0, and roll back by restoring the checkpoint copy.
-
-<a id="v920--v921-checklist"></a>
-## v9.2.0 → v9.2.1 checklist
-
-An active 9.2.0 workspace adopts 9.2.1 at a task boundary with this checklist. Adopt only for a selected
-active workspace, on a disposable copy at a task boundary. This patch changes what the plan view reports
-about stale curated prose and leaked identifiers, and how auxiliary plan pages are styled. It rewrites no
-closed task, no historical record and no neighboring workspace, and it changes no file format.
-
-1. Record the pinned procedure, the current lint result under it, and hashes of the board, briefs,
-   reports, `AGENTS.md` and history. Preserve neighboring workspaces.
-2. If the workspace has a plan view, rebuild it under its standing view request and act on the new
-   stderr notes. A note that a curated summary no longer matches the board means updating or removing
-   its stale prose. A note about leaked identifiers means rewriting that prose in
-   `view/export-summary.json` without plan-internal identifiers. Without that request, build no view. Existing auxiliary pages need nothing; move one to the plan view's base only when the owner asks.
-3. Run rows 1–17 on the copy. Adopt only the validated copy: record the adoption and the rollback result,
-   bump the `Methodology:` stamp to 9.2.1, and roll back by restoring the checkpoint copy.
+7. Record the path mapping with the adoption.
 
 <a id="v92--v93-checklist"></a>
 ## v9.2 → v9.3 checklist
 
-An active 9.2 workspace adopts 9.3.0 at a task boundary with this checklist. Adopt only on a disposable copy
-at a task boundary, and preserve neighboring workspaces. This release changes the plan view's template and
+An active 9.2 workspace adopts 9.3.0 with this checklist. This release changes the plan view's template and
 the styling of auxiliary pages, and it changes no file format.
 
-1. Record the pinned procedure, the current lint result under it, and hashes of the board, briefs,
-   reports, `AGENTS.md` and history.
-2. If the workspace has a plan view, rebuild it under its standing view request, since the template changed.
+1. If the workspace has a plan view, rebuild it under its standing view request, since the template changed.
    Without that request, build no view. Existing auxiliary pages change only on request; move one to the
    plan view's base only when the owner asks.
-3. Sibling workspaces are optional. A workspace that declares none needs no change.
-4. Run the lint on the copy. Adopt only the validated copy: record the adoption and the rollback result,
-   bump the `Methodology:` stamp to 9.3.0, and roll back by restoring the checkpoint copy.
+2. Sibling workspaces are optional. A workspace that declares none needs no change.
 
 <a id="v93--v100-checklist"></a>
 ## v9.3 → v10.0 checklist
 
-An active 9.3 workspace adopts 10.0.0 at a task boundary with this checklist. Adopt only on a disposable copy
-at a task boundary, and preserve neighboring workspaces. This release ships every program as a script under
+An active 9.3 workspace adopts 10.0.0 with this checklist. This release ships every program as a script under
 `scripts/` (Python 3.10 or later), and it changes no file format.
 
-1. Record the pinned procedure, the current lint result under it, and hashes of the board, briefs,
-   reports, `AGENTS.md` and history.
-2. If the workspace has a plan view, rebuild it with `scripts/plan_view.py` under its standing view request,
+1. If the workspace has a plan view, rebuild it with `scripts/plan_view.py` under its standing view request,
    as the [plan view guide](plan-view.md) states. Without that request, build no view.
-3. Saved copies of 9.x recipe programs are obsolete; use the scripts under `scripts/` in their place.
-4. A verification record that an installed `capture.py` made while running from outside the working
+2. Saved copies of 9.x recipe programs are obsolete; use the scripts under `scripts/` in their place.
+3. A verification record that an installed `capture.py` made while running from outside the working
    directory names that script's sha256, so it is refused once the install updates the script. Rerun those
    checks under the updated install.
-5. System One goes through the host's `typesafe-ai` skill. A recorded `System One consent:` line keeps its
+4. [System One](system-one.md) goes through the host's `typesafe-ai` skill. A recorded `System One consent:` line keeps its
    meaning and needs no change.
-6. Run the lint on the copy. Adopt only the validated copy: record the adoption and the rollback result,
-   bump the `Methodology:` stamp to 10.0.0, and roll back by restoring the checkpoint copy.
 
 <a id="schema-keyed-migration"></a>
 ## Schema-keyed migration (9.0.0)
@@ -331,7 +133,7 @@ The context passed to adopt holds date, run_id and methodology, and may hold wor
   as [terminology.md](../terminology.md)'s States table does, and it never infers `Ready to run`. A
   `/3` board (or later) returns unchanged.
 - [`step_3_to_4.py`](../../scripts/migrate/step_3_to_4.py) — the v8.3 → v8.4 layout, done mechanically: renames
-  the artifacts that exist (see the checklist above), maps every P-id to one T-id and rewrites the ids
+  the artifacts that exist (see the 8.3 → 8.4 checklist in `maintaining/migrations.md`), maps every P-id to one T-id and rewrites the ids
   in the contents — not only the file names — of `plan.md`, every brief, the board and its dependencies,
   every report, and the usage ledger's rows (its column format, 8-column legacy or v2 lifecycle, is
   preserved; only the ids inside it are mapped). `history.md` keeps whichever of `log.md`'s or its own
@@ -372,9 +174,9 @@ are `history.md` and `resource-usage.md`. PLAN, RUN and STATUS refuse any other 
 `migrate first` and point here, and lint rows 1, 2, 3, 5, 10, 11, 12, 14 and 17 print that refusal.
 A board saved with CRLF line endings reads as older: convert it to LF first, because the rows, the
 scripts and this migration read LF only. This guide, its scripts and their fixtures are the one
-bridge: they keep detecting and transforming every bucket above. The readability statements in the 8.x checklists above describe 8.x installs.
+bridge: they keep detecting and transforming every bucket above. The readability statements in the 8.x checklists describe 8.x installs.
 Below the `pre-3` bucket nothing is promised, and this
-repository's historical checklists above and in `maintaining/migrations.md` apply.
+repository's historical checklists in `maintaining/migrations.md` apply.
 
 <a id="pre-migration-originals"></a>
 ## The pre-migration original's home

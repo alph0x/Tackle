@@ -1,5 +1,6 @@
-"""The 9.0 to 9.1 adoption path: the checklist heading satisfies the migrate-chain gate for stamp 9.1.0, and a
-workspace shaped like 9.0.1 fails row 17 until the checklist's steps are applied, then passes rows 1 through 17.
+"""The 9.0 to 9.1 adoption path, now archived in maintaining/migrations.md: the checklist heading satisfies the
+migrate-chain gate for stamp 9.1.0, and a workspace shaped like 9.0.1 fails row 17 until the checklist's steps are
+applied, then passes rows 1 through 17.
 
 The steps are applied mechanically from the shipped templates (the obligations section of the board template, the
 policy line of the AGENTS template) and judged by the canonical rows, never by a copy of their logic.
@@ -22,6 +23,7 @@ from maintaining.install_root import current_root  # noqa: E402
 INSTALL = current_root(ROOT)
 REFERENCES = INSTALL / 'references'
 MIGRATE = REFERENCES / 'guides/migrate.md'
+ARCHIVE = ROOT / 'maintaining/migrations.md'
 SPEC = (REFERENCES.parent / 'scripts/lint.py').read_bytes()
 FIXTURE = ROOT / 'eval/lint/rows/fixtures/pass-obligations'
 SLUG = 'demo'
@@ -94,21 +96,24 @@ def gate_four():
 
 class ChecklistTests(unittest.TestCase):
     def setUp(self):
-        self.text = MIGRATE.read_text(encoding='utf-8')
+        self.text = ARCHIVE.read_text(encoding='utf-8')
 
-    def test_the_heading_is_exact_unique_and_anchored_between_the_previous_checklist_and_the_schema_section(self):
+    def test_the_heading_is_exact_unique_and_anchored_between_its_neighbors_in_the_archive(self):
         lines = self.text.splitlines()
         self.assertEqual(lines.count(TITLE), 1)
         at = lines.index(TITLE)
         self.assertEqual(lines[at - 1], ANCHOR)
-        self.assertLess(self.text.index('## v9.0.0 → v9.0.1 checklist'), self.text.index(TITLE))
-        self.assertLess(self.text.index(TITLE), self.text.index('<a id="schema-keyed-migration"></a>'))
+        self.assertLess(self.text.index('## v9.1.0 → v9.1.1 checklist'), self.text.index(TITLE))
+        self.assertLess(self.text.index(TITLE), self.text.index('## v9.0.0 → v9.0.1 checklist'))
+        self.assertNotIn(TITLE, MIGRATE.read_text(encoding='utf-8'))
 
     def test_the_migrate_chain_gate_accepts_a_9_1_0_stamp_only_with_this_exact_heading(self):
         command = gate_four()
         migrations = ROOT / 'maintaining/migrations.md'
-        for guide, wanted in ((self.text, True), (self.text.replace(TITLE, '## v9.0.1 → v9.1 checklist'), False),
-                              (self.text.replace(TITLE, '## v9.0 → v9.1  checklist'), False)):
+        # A 9.1.0 install shipped this checklist in its guide; rebuild that guide from the archived text.
+        shipped = ANCHOR + '\n' + TITLE + checklist(self.text)
+        for guide, wanted in ((shipped, True), (shipped.replace(TITLE, '## v9.0.1 → v9.1 checklist'), False),
+                              (shipped.replace(TITLE, '## v9.0 → v9.1  checklist'), False)):
             with tempfile.TemporaryDirectory(prefix='tackle-gate-four-') as temporary:
                 root = Path(temporary)
                 (root / 'skills/tackle/references/guides').mkdir(parents=True)
@@ -143,7 +148,8 @@ class ChecklistTests(unittest.TestCase):
         self.assertLess(step.index('does not apply'), step.index('`History entry budget: N`'))
 
     def test_earlier_checklists_keep_their_sixteen_row_counts(self):
-        earlier = self.text.split(TITLE, 1)[0]
+        # The archive lists the newest checklist first, so the earlier ones follow this one.
+        earlier = self.text.split(TITLE, 1)[1].split('\n## ', 1)[1]
         self.assertIn('Run rows 1–16 and the installed capability/recovery consumer', earlier)
         self.assertIn('(`lint: N/16`)', earlier)
         self.assertNotIn('rows 1–17', earlier)
@@ -185,7 +191,7 @@ class AdoptionTests(unittest.TestCase):
         self.assertEqual({number for number, (verdict, _) in before.items() if verdict != 'PASS'}, {17}, before)
         self.assertEqual(len(before[17][1]), 1, before[17])
         self.assertIn('T-A', before[17][1][0])
-        steps = checklist(MIGRATE.read_text(encoding='utf-8'))
+        steps = checklist(ARCHIVE.read_text(encoding='utf-8'))
 
         # Step: add the receipt to each Complete task's report.
         self.assertIn('**Remains**: none', steps)

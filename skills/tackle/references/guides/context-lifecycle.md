@@ -102,11 +102,8 @@ unavailable, use an equivalent observed lock capability or report the script una
 
 `segment_bytes` is a tuning parameter, not a context limit. The synthetic benchmark uses 64 KiB
 segments and five active sessions, measures its setup/rebuild/export costs, and makes no claim
-that this target suits every initiative. A single large original event remains intact.
-
-Import or run it only with the owner's explicit authorization for this use, or under a grant in
-[script consent](../../scripts/README.md#consent). Otherwise use an equivalent harness
-capability or the project's own tools, or report the record unavailable.
+that this target suits every initiative. A single large original event remains intact; import or run
+the script only with the owner's explicit authorization ([script consent](../../scripts/README.md#consent)).
 
 The script does not validate user intent, semantic source selection, check acceptance, or all
 milestone coverage. Those remain the existing PLAN/RUN obligations. Missing/corrupt selected

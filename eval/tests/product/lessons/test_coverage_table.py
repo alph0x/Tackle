@@ -1,7 +1,7 @@
 """Extraction test for the corrected coverage-table recipe.
 
-`references/guides/retro.md`'s Fixture recipe section carries the single-line shell/awk command
-that computes the `| Metric | Scope | Measured | Eligible | Result |` table directly from a v2
+`references/retro.tmpl.md`'s Lifecycle coverage row carries the single-line shell/awk command, and
+`references/guides/retro.md`'s Fixture recipe section runs that row's command; the command computes the `| Metric | Scope | Measured | Eligible | Result |` table directly from a v2
 lifecycle table (plus its optional telemetry sidecar) — replacing the old awk one-liner that
 (before this task) read the already-computed coverage table's own columns back, unread, whenever
 one happened to be present in the same file. This suite extracts that exact command (never
@@ -28,12 +28,15 @@ RETRO = INSTALL / 'references/guides/retro.md'
 RETRO_TMPL = INSTALL / 'references/retro.tmpl.md'
 
 
+FIXTURE_RECIPE = "Run the **Lifecycle coverage** row's command of the [retro template](../retro.tmpl.md) from a fixture workspace."
+
+
 def extract_fixture_recipe_command(text=None):
+    """The command retro.md's Fixture recipe runs: the template's Lifecycle coverage row."""
     text = text if text is not None else RETRO.read_text(encoding='utf-8')
-    match = re.search(r'Run `(.*?)` from a fixture workspace', text)
-    if not match:
-        raise AssertionError('no "Run `<command>` from a fixture workspace" sentence found')
-    command = match.group(1)
+    if FIXTURE_RECIPE not in text:
+        raise AssertionError('the Fixture recipe does not run the Lifecycle coverage row')
+    command = extract_template_row_command('**Lifecycle coverage**')
     assert 'eval/' not in command, 'the recipe cites a repository path: ' + command
     return command
 
@@ -140,16 +143,15 @@ class CoverageTableGoldenTests(unittest.TestCase):
 
 
 class SharedRecipeTests(unittest.TestCase):
-    """C7: retro.tmpl.md's Lifecycle coverage row embeds the exact same corrected recipe retro.md
-    ships, not merely a paraphrase of it; the Exact-token coverage row independently prints
-    only the tokens line."""
+    """retro.md's Fixture recipe runs retro.tmpl.md's Lifecycle coverage row and keeps no copy of
+    its program; the Exact-token coverage row independently prints only the tokens line."""
 
-    def test_retro_md_and_the_lifecycle_coverage_row_share_the_same_awk_program(self):
-        guide_command = extract_fixture_recipe_command()
-        template_command = extract_template_row_command('**Lifecycle coverage**')
-        guide_awk = guide_command.split("awk '", 1)[1].rsplit("'", 1)[0]
-        template_awk = template_command.split("awk '", 1)[1].rsplit("'", 1)[0]
-        self.assertEqual(guide_awk, template_awk)
+    def test_retro_md_runs_the_lifecycle_coverage_row_and_keeps_no_copy(self):
+        retro = RETRO.read_text(encoding='utf-8')
+        section = retro.split('### Fixture recipe', 1)[1].split('\n### ', 1)[0]
+        self.assertIn(FIXTURE_RECIPE, section)
+        self.assertNotIn("awk '", section)
+        self.assertIn("awk '", extract_fixture_recipe_command())
 
     def test_exact_token_coverage_row_prints_only_the_tokens_line(self):
         command = extract_template_row_command('**Exact-token coverage**')

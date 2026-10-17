@@ -53,8 +53,8 @@ A role outcome describes that role: a reviewer may finish successfully while rep
 product. Verification/Source identifies that scope; it cannot imply initiative completion. Outcome
 contains only `running` on start, `success`/`failed`/`blocked`/`aborted` on finish, or `incomplete`
 on observe-incomplete; product verdict prose belongs in Verification/Source.
-Lifecycle recording is informative and never
-gates task closure. The execution sequence and correction limits are owned by the [RUN
+Lifecycle recording never gates closure ([template](../resource-usage.tmpl.md)).
+The execution sequence and correction limits are owned by the [RUN
 card](run-card.md), with depth in `references/guides/run.md`.
 
 Validation clocks describe the validation child, not the enclosing role. An executor cannot observe

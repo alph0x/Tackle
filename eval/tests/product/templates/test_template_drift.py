@@ -1,7 +1,7 @@
 """A workspace scaffolded, compiled and migrated from the shipped templates and guides is current and lint-clean.
 
 Every case derives its input from the shipped documents (templates, scaffold.md, migrate.md,
-terminology.md, verify.md) and judges lint rows through the lint script's canonical extractor.
+terminology.md, verify.md) and the archived 8.3 → 8.4 checklist in maintaining/migrations.md, and judges lint rows through the lint script's canonical extractor.
 """
 import hashlib
 import importlib.util
@@ -105,7 +105,8 @@ def seal_command():
 
 
 def checklist():
-    text = (REF / 'guides/migrate.md').read_text()
+    """The 8.3 → 8.4 artifact map, archived with the superseded checklists in maintaining/migrations.md."""
+    text = (ROOT / 'maintaining/migrations.md').read_text()
     return text.split('## v8.3 → v8.4 checklist', 1)[1].split('\n## ', 1)[0]
 
 
@@ -311,10 +312,12 @@ class TemplateDriftTests(unittest.TestCase):
         # echoed its own hand-authored answer key, never a value the old recipe actually derived.
         golden = {'coverage-zero.md': ['tokens 0/N (0%)', 'duration 1/2 (50%)'],
                   'coverage-partial.md': ['tokens 0/N (0%)', 'duration 2/2 (100%)']}
-        guide_recipe = re.search(r'Run `(.*?)` from a fixture workspace', (REF / 'guides/retro.md').read_text())[1]
+        # retro.md's Fixture recipe runs the template's Lifecycle coverage row rather than a copy of it.
+        self.assertIn("Run the **Lifecycle coverage** row's command of the [retro template](../retro.tmpl.md)",
+                      (REF / 'guides/retro.md').read_text())
         for name, expected in golden.items():
             shutil.copyfile(fixtures / name, self.root / 'resource-usage.md')
-            for label, cmd in (('template', command('**Lifecycle coverage**')), ('guide', guide_recipe)):
+            for label, cmd in (('template', command('**Lifecycle coverage**')),):
                 with self.subTest(fixture=name, recipe=label):
                     child = subprocess.run(['sh', '-c', cmd], cwd=self.root, capture_output=True, text=True, timeout=30)
                     self.assertEqual((child.returncode, child.stderr), (0, ''))

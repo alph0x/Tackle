@@ -42,11 +42,8 @@ all writers stopped before closing evidence. Otherwise mark completion unavailab
 Prefer direct test-runner argv. Do not wrap an ordinary successful suite in a new human-summary
 regex/count/PASS gate. Where the contract truly requires a count, obtain it from the framework API
 and propagate that assertion's own failure. `pipefail` alone does not stop later commands; every
-required child/condition needs a checked result. Raw wrapper capture does not prove its logic.
-
-Run the script only with the owner's explicit authorization for this use, or under a grant in
-[script consent](../../scripts/README.md#consent). Otherwise use an equivalent harness
-capability or the project's own tools, or report the record unavailable.
+required child/condition needs a checked result. Raw wrapper capture does not prove its logic, and the
+script runs only with the owner's explicit authorization ([script consent](../../scripts/README.md#consent)).
 
 The capture runtime identifies this observer, not an inferred child runtime or model. Add child
 runtime/actor facts only when observed. An interrupted capture with only `start.json` is incomplete,

@@ -70,9 +70,8 @@ process cwd; paths resolve from it. For example selectors can cover `src/**/*.py
 `SPEC.md`, and the exact validation/config files. Adapt to the real repository, not this example.
 
 It prints the path of the new `receipt.md` and exits 0 when the check is accepted, 1 when it is not accepted
-or when the specification is refused with a named `ValueError`. Run it only with the owner's explicit
-authorization for this use, or under a grant in [script consent](../../scripts/README.md#consent).
-Otherwise use an equivalent harness capability or the project's own tools, or report the record unavailable.
+or when the specification is refused with a named `ValueError`; run it only with the owner's explicit
+authorization ([script consent](../../scripts/README.md#consent)).
 
 Before reusing a verification record, reject any retirement tombstone, then open its result and verify stream/blob hashes, relevant final input
 hashes **and selector membership**, produced artifacts and the actual successful child result.
@@ -129,9 +128,8 @@ canonical bytes before claiming canonical coverage. A source/command mismatch or
 snapshot is ERROR even if the command exited zero. A subset score is never a full-plan approval.
 
 The runner (outside cwd, it lists itself and the capture script under `programs` in the summary) prints the path of the batch's `summary.json` and exits 0 when every selected row's verdict is PASS or
-WARN, 1 otherwise; a refused configuration ends with a named `ValueError`. Run it only with the owner's explicit
-authorization for this use, or under a grant in [script consent](../../scripts/README.md#consent).
-Otherwise use an equivalent harness capability or the project's own tools, or report the record unavailable.
+WARN, 1 otherwise; a refused configuration ends with a named `ValueError`, and the runner runs only with the
+owner's explicit authorization ([script consent](../../scripts/README.md#consent)).
 
 Interpret **stdout, stderr and real exit together** using the canonical condition:
 

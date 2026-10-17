@@ -289,7 +289,8 @@
         "skills/tackle/scripts/system_one_state.py",
         "skills/tackle/scripts/lint_runner.py",
         "skills/tackle/scripts/decompose_check.py",
-        "skills/tackle/scripts/lint.py"
+        "skills/tackle/scripts/lint.py",
+        "maintaining/migrations.md"
       ],
       "families": [
         "eval/tests/product/templates"
@@ -434,7 +435,8 @@
         "skills/tackle/references/guides/lint-spec.md",
         "skills/tackle/references/guides/migrate.md",
         "skills/tackle/references/guides/update.md",
-        "skills/tackle/scripts/lint.py"
+        "skills/tackle/scripts/lint.py",
+        "maintaining/migrations.md"
       ],
       "families": [
         "eval/tests/product/install/inventory"
@@ -511,7 +513,8 @@
         "README.md",
         "skills/tackle/references/guides/full-checks.md",
         "skills/tackle/references/guides/plan-card.md",
-        "skills/tackle/references/guides/status.md"
+        "skills/tackle/references/guides/status.md",
+        "maintaining/migrations.md"
       ],
       "families": [
         "eval/tests/product/templates"

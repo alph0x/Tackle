@@ -1,6 +1,6 @@
 # Plan lint spec — mechanical checks
 
-This table specifies the 17 mechanical checks; [`scripts/lint.py`](../../scripts/lint.py) holds each row's program and runs it with `sh -c` from the **repo root**: `python3 -I <skill>/scripts/lint.py [--row N] <slug>`, where `<slug>` is the initiative directory name (workspace = `docs/plans/<slug>/`). Running it falls under [script consent](../../scripts/README.md#consent). Every row reads only the current workspace layout; an older one is refused with `migrate first` ([forward only](migrate.md#forward-only)).
+This table specifies the 17 mechanical checks; [`scripts/lint.py`](../../scripts/lint.py) holds each row's program and runs it with `sh -c` from the **repo root**: `python3 -I <skill>/scripts/lint.py [--row N] <slug>`, where `<slug>` is the initiative directory name (workspace = `docs/plans/<slug>/`). Each program uses plain sh, grep, sed and awk only. Running it falls under [script consent](../../scripts/README.md#consent). Every row reads only the current workspace layout; an older one is refused with `migrate first` ([forward only](migrate.md#forward-only)).
 
 For Full without equivalent harness automation, use the connected extraction/capture script in
 [full-checks.md](full-checks.md#execute-canonical-lint-faithfully). It compares actual saved script

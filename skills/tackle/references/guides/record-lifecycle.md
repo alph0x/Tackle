@@ -82,11 +82,8 @@ new preview can safely repeat maintenance. Unknown files and all paths outside t
 untouched. Legacy stores can be read and exported; in-place deletion/compaction is restricted to
 `shared-v1` records. Prepare, verify and switch a new export representation before separately
 authorizing removal of old duplicates. Event directories, not the presence of bulky result files,
-index retired events. Readers check retirement before attempting to open retired raw metadata.
-
-Import or run it only with the owner's explicit authorization for this use, or under a grant in
-[script consent](../../scripts/README.md#consent). Otherwise use an equivalent harness
-capability or the project's own tools, or report the record unavailable.
+index retired events. Readers check retirement before attempting to open retired raw metadata; import or run the
+script only with the owner's explicit authorization ([script consent](../../scripts/README.md#consent)).
 
 ## Portability, migration and delivery
 
