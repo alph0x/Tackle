@@ -147,8 +147,8 @@ pools retains each allowance separately; their sum is informative and does not e
 pool. A combined failed correction has one event ID and names each affected pool once in `pool_ids`.
 Stop corrections involving an exhausted pool; separate unrelated work may continue. Use the optional
 pure check in [correction_lineage.py](../../scripts/correction_lineage.py) when composing a split/merge;
-its pool limits are parameters, 3 for a task pool and 2 for the unowned integration pool. Running that
-check needs the owner's explicit authorization ([script consent](../../scripts/README.md#consent)); prefer an
+its pool limits are parameters, 3 for a task pool and 2 for the unowned integration pool. Running or
+importing that check needs the owner's explicit authorization ([script consent](../../scripts/README.md#consent)); prefer an
 equivalent harness capability. Import it from `<skill>/scripts/correction_lineage.py`; it has no command line.
 `correction_usage(events, pool_ids, limits=None)` returns `spent`, per-pool counts, `remaining` and `exhausted`;
 `transfer_lineage(previous, descendants, unresolved, failure_pools)` returns each descendant's pools; both

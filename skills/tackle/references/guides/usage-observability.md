@@ -113,7 +113,8 @@ because these paths and fields can change. Copy only numbers, ids, model names a
 prompt, response or tool content.
 
 - Each subagent dispatch returns a subagent id. Write that id in the Source of the role's finish row.
-- The subagent's transcript is `~/.claude/projects/<project>/<session>/subagents/agent-<id>.jsonl`.
+- The subagent's transcript is a JSONL file whose path the owner supplies, for example as the host
+  exports it.
   Its `.meta.json` names the dispatch description and a model alias. Take the model from the assistant
   events, which name it in full.
 - One request can appear as several assistant events with the same `message.id`. Keep only the last
@@ -128,7 +129,7 @@ prompt, response or tool content.
   `scope_id` and `run_id: n/a`. Never divide it into roles.
 - The first assistant event time is a host-observed start clock and can fill the start `At`. Record the
   last assistant event time in `provenance` as the last observed request; it is not a finish clock.
-- The coordinator's own transcript, `~/.claude/projects/<project>/<session>.jsonl`, gives one
+- The coordinator's own transcript, at a path the owner supplies in the same way, gives one
   `scope: session` record, captured once at close, with its last event time in `provenance`. Never
   divide it into roles.
 - Plan-limit percentages and the context-window count describe the account and the current context.

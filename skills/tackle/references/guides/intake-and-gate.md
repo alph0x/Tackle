@@ -77,7 +77,7 @@ Before sizing, check once per workspace for a System One configuration signal, a
 [system-one.md](system-one.md#integration) defines it. Use the host's own tools and check presence only.
 When there is a signal, a selected workspace and no recorded answer, ask the System One question in PLAN
 or RUN, then record it. The record is one line in the workspace's `AGENTS.md`, in the exact form that
-[the recipe](../recipes/system-one.md) reads: `System One consent: yes · date=YYYY-MM-DD · actor="name"`,
+[the state script](../../scripts/system_one_state.py) reads: `System One consent: yes · date=YYYY-MM-DD · actor="name"`,
 with `no` for a refusal. A new initiative has a workspace only after the scaffold, so ask
 right after the scaffold creates it. Without a signal, record nothing and continue.
 
