@@ -267,6 +267,26 @@ the styling of auxiliary pages, and it changes no file format.
 4. Run the lint on the copy. Adopt only the validated copy: record the adoption and the rollback result,
    bump the `Methodology:` stamp to 9.3.0, and roll back by restoring the checkpoint copy.
 
+<a id="v93--v100-checklist"></a>
+## v9.3 → v10.0 checklist
+
+An active 9.3 workspace adopts 10.0.0 at a task boundary with this checklist. Adopt only on a disposable copy
+at a task boundary, and preserve neighboring workspaces. This release ships every program as a script under
+`scripts/` (Python 3.10 or later), and it changes no file format.
+
+1. Record the pinned procedure, the current lint result under it, and hashes of the board, briefs,
+   reports, `AGENTS.md` and history.
+2. If the workspace has a plan view, rebuild it with `scripts/plan_view.py` under its standing view request,
+   as the [plan view guide](plan-view.md) states. Without that request, build no view.
+3. Saved copies of 9.x recipe programs are obsolete; use the scripts under `scripts/` in their place.
+4. A verification record that an installed `capture.py` made while running from outside the working
+   directory names that script's sha256, so it is refused once the install updates the script. Rerun those
+   checks under the updated install.
+5. System One goes through the host's `typesafe-ai` skill. A recorded `System One consent:` line keeps its
+   meaning and needs no change.
+6. Run the lint on the copy. Adopt only the validated copy: record the adoption and the rollback result,
+   bump the `Methodology:` stamp to 10.0.0, and roll back by restoring the checkpoint copy.
+
 <a id="schema-keyed-migration"></a>
 ## Schema-keyed migration (9.0.0)
 
