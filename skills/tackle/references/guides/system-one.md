@@ -3,11 +3,11 @@
 <a id="integration"></a>
 ## Integration contract
 
-Use optional System One only when a configuration signal exists and the selected workspace has recorded `yes`. Never ask the user to install TypeSafe/JEV. Tackle itself opens no network connection: a judgment goes through the host's `typesafe-ai` skill. Build the client under that skill and pass its constructor as `client_factory` to [system_one_state.py](../../scripts/system_one_state.py), which provides selected-workspace storage, the local consent logic and the SDK adapter. Running or importing these scripts needs the owner's explicit authorization under the [script consent rule](../../scripts/README.md#consent); the recorded `yes` grants it for that use only.
+Use optional System One only when a configuration signal exists and the selected workspace has recorded `yes`. Never ask the user to install TypeSafe/JEV. Tackle itself opens no network connection: a judgment goes through the host's `typesafe-ai` skill. Build the client under that skill and pass its constructor as `client_factory` to [system_one_state.py](../../scripts/system_one_state.py), which provides selected-workspace storage, the local consent logic and the SDK adapter. Running or importing these scripts needs the owner's explicit authorization under the [script consent rule](../../scripts/README.md#consent); the recorded `yes` grants it for that use only. Before the workspace's recorded `yes`, fetch no TypeSafe documentation or SDK material; the installed SDK's own types are enough.
 
 A configuration signal is the host offering the `typesafe-ai` skill, the presence of the `TYPESAFE_API_KEY` environment variable, or the case-insensitive phrase `TypeSafe System One` in project-root AGENTS/CLAUDE or selected-workspace AGENTS. Check presence only and probe no home folder. Never read, print or send credential values or open credential files. A configuration signal cannot grant consent.
 
-Record the owner's explicit `yes` or `no`, date and actor in that workspace's AGENTS. Do not inherit an answer from another workspace. In PLAN/RUN ask once, retain an unanswered question in questions.md and never repeat it during the session or after an answer; read-only STATUS only detects/reads and never starts or mutates this workflow. Malformed/conflicting records cannot authorize a send.
+Record the owner's explicit `yes` or `no`, date and actor in that workspace's AGENTS. Do not inherit an answer from another workspace. In PLAN/RUN ask once, retain an unanswered question in questions.md and never repeat it during the session or after an answer; read-only STATUS only detects/reads and never starts or mutates this workflow. Malformed/conflicting records cannot authorize a send. The consent functions `load_state`, `prepare_consent` and `record_consent` run before any recorded `yes`: they only read the workspace's record, write the pending question or record the owner's answer, and send nothing. The owner's answer to the System One question authorizes recording it; the recorded `yes` authorizes only `system_one_use`.
 
 Send only admitted public fragments needed by one of four uses: older-history score, RUN failure-class choice, no-progress signature comparison, or Direct/Focused/Coordinated intake. Never send credentials, secrets, unknown/private fragments, sealed material or answer sheets. The agent must classify sensitivity before calling the adapter; this is no general secret detector.
 
@@ -103,6 +103,32 @@ SDK/configuration/consent, malformed storage or unavailable transport produce a 
 named reason (`sdk-unavailable`, `malformed-consent`, `fragment-not-public` or a reason above). No
 optional failure stops the user's task. Never retry an optional request or disable certificate
 verification.
+
+<a id="building-the-client"></a>
+The client is `typesafe_sdk.TypeSafeClient`, from the SDK that the host's `typesafe-ai` skill documents.
+Pass the class itself, uncalled, as `client_factory`. A factory must accept the keywords `model=`,
+`timeout=` and `retry=`, because `system_one_state.py` calls it with exactly those; `TypeSafeClient`
+accepts them as is. The SDK reads its own key from the environment; Tackle never reads, prints or passes
+it. `workspace` is the selected workspace path, `asked` the session's list of workspaces already asked,
+`sensitivity` exactly `"public"` for an admitted fragment, and `decide` is `system_one_decide`. The call
+returns the closed result: with a recorded `yes`, a public fragment and an accepted answer, `source` is
+`jev` and `reason` `accepted`, with the model and confidence; otherwise it is the local judgment with a
+named reason. Without a factory the result is the local judgment with reason `client-unavailable`.
+
+**Stop before the program below.** Save or run it only with the owner's explicit authorization for this use,
+or under a grant in [recipe consent](../recipes/README.md#consent). Otherwise use an equivalent harness
+capability or the project's own tools, or report the record unavailable.
+
+```python
+import sys
+sys.path.insert(0, "<skill>/scripts")
+from typesafe_sdk import TypeSafeClient
+from system_one_decide import system_one_decide
+from system_one_state import system_one_use
+
+result = system_one_use(workspace, True, asked, "failure-class", fragment, "implementation",
+                        "public", system_one_decide, client_factory=TypeSafeClient)
+```
 
 The adapter constructs typed Score/Choice questions and sends only the fragment, pinned model and one
 narrow question. Confidence defaults are inclusive: 0.6 for history, 0.8 otherwise. The optional SDK
