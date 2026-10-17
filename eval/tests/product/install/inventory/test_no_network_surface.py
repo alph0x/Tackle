@@ -3,7 +3,8 @@
 Guarantee: every `.md` and `.py` file under the installed skill is free of a third-party API endpoint
 (`api.typesafe.ai`, or any `http(s)://host` URL inside a `.py` file other than the allowlisted entries
 below), a home lookup (`Path.home(`, `expanduser(`, `~/.codex`, `~/.claude/projects`, `$HOME/`) and, in a
-`.py` file, any import of socket, http, urllib, requests, ftplib or smtplib. A negative fixture plants
+`.py` file, any import of socket, http, urllib, urllib3, requests, ftplib or smtplib, including one named
+after other modules in a single `import` statement. A negative fixture plants
 each pattern in a scratch tree and proves the scan reports it, so a scan that silently matches nothing
 fails here too.
 """
@@ -29,7 +30,8 @@ ANY_FILE = {
 }
 PY_ONLY = {
     'URL in a script': re.compile(r'https?://[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+'),
-    'network import': re.compile(r'^\s*(?:import|from)\s+(?:socket|http|urllib|requests|ftplib|smtplib)\b', re.M),
+    'network import': re.compile(r'^\s*(?:from\s+|import\s+(?:[\w.]+(?:\s+as\s+\w+)?\s*,\s*)*)'
+                                 r'(?:socket|http|urllib3?|requests|ftplib|smtplib)\b', re.M),
 }
 # Each entry: (path relative to the install root, exact line text, reason). Nothing else is excused.
 ALLOWED = {
@@ -72,7 +74,8 @@ class NoNetworkSurface(unittest.TestCase):
             'scripts/probe.py': ['base = Path.home() / "x"', 'p = Path(a).expanduser()', 'import socket',
                                  'from urllib import request', 'import http.client', 'import requests',
                                  'import ftplib', 'from smtplib import SMTP', 'URL = "https://example.org/api"',
-                                 "REPO_URL = 'https://github.com/alph0x/Tackle'"],
+                                 "REPO_URL = 'https://github.com/alph0x/Tackle'", 'import urllib3',
+                                 'import os, socket', 'import json as j, pathlib'],
         }
         expected = {'third-party endpoint', 'codex home', 'claude projects home', 'HOME variable path',
                     'Path.home', 'expanduser', 'network import', 'URL in a script'}
@@ -83,7 +86,12 @@ class NoNetworkSurface(unittest.TestCase):
                 (root / relative).write_text('\n'.join(lines) + '\n', encoding='utf-8')
             found = scan(root)
         self.assertEqual({label for _, _, label in found}, expected)
-        self.assertEqual(len([f for f in found if f[2] == 'network import']), 6)
+        self.assertEqual(len([f for f in found if f[2] == 'network import']), 8)
+        # A third-party HTTP client and a network module named after another module are both reported.
+        self.assertIn(('scripts/probe.py', 11, 'network import'), found)
+        self.assertIn(('scripts/probe.py', 12, 'network import'), found)
+        # A multi-module import of local-only modules is not.
+        self.assertNotIn(('scripts/probe.py', 13, 'network import'), found)
         # The allowlist names a path inside the install, so a planted copy elsewhere is still reported.
         self.assertIn(('scripts/probe.py', 10, 'URL in a script'), found)
         # A Markdown link to a web page is documentation, not a script endpoint.
