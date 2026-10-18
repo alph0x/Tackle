@@ -11,11 +11,11 @@ neither replaces RUN closure nor creates an autonomy loop.
 Every metric carries a copy-paste recipe; the recipes live in the template's Metrics table. What each one measures:
 
 - **Tasks by status** — count exact task rows and their Status field in `task-board.md`, using its declared schema.
-- **Attempts over budget** — count `attempt N:` journal lines per task in `history.md` against the RUN card's fixed cap of three failed correction-validation cycles per task.
-- **Blocked durations** — dates between the log entry that marks a task Blocked (legacy ⏸) and the entry that unblocks it.
+- **Attempts over budget** — count `attempt N:` journal lines per task in `history.md` against the RUN card's fixed cap of three failed correction-validation cycles per task. Also counts `correction cycle N` and `correction N of M` lines (N ≥ 1) over `history-archive.md` (when present) and then `history.md`, skipping `### State snapshot` blocks; a count above three is flagged as over cap.
+- **Blocked durations** — dates between the log entry that marks a task Blocked (legacy ⏸) and the entry that unblocks it. `Blocked on:` lines in State snapshots are excluded, so only real Blocked events count.
 - **Reopened tasks** — `Complete → In progress` or legacy `🟢 → 🟡` transitions in `history.md` (regression-sweep reopenings included).
 - **Comprehension debt** — tasks recorded Complete with no human review recorded in the log: mechanically done, humanly unread. High comprehension debt is a warning even when the board is all green.
-- **Gate accuracy** — the gate recorded at intake vs actual effort (tasks executed, sessions spent): Full-gate initiatives closed in ≤ 2 sessions are over-planning candidates; Lite-gate ones spanning 3+ sessions are under-planning candidates.
+- **Gate accuracy** — the gate recorded at intake (the first `Gate:` line of `plan.md`) vs actual effort (tasks completed, distinct sessions over the archive and history): Full-gate initiatives closed in ≤ 2 sessions are over-planning candidates; Lite-gate ones spanning 3+ sessions are under-planning candidates. Tasks completed reads `n/a` in Lite; undated `## ` headings are listed for review.
 - **Exact-token coverage** — measured/eligible by metric and comparable scope, with `n/a` rows visible before any arithmetic.
 - **Coverage-gated totals** — cohort totals and rankings only after 100% comparable coverage; otherwise report labeled observations and suppress the aggregate.
 - **Coverage-gated recommendations** — tier/effort recommendations only after 100% coverage plus at least three like-for-like completed runs.
@@ -47,7 +47,7 @@ exact `run_id` (absent sidecar ⇒ `0` measured for every instance). `Result` is
 of `E`. The legacy `Point` column name (in place of `Task`) does not change any column's position.
 The successful role finish must be externally observed; the recipe checks the recorded timestamp
 shape, while its provenance remains the recorder's responsibility. `n/a`, `unknown` and malformed
-clock text never make a duration measured. A validation-child end is not a role-terminal clock.
+clock text never make a duration measured. A validation-child end is not a role-terminal clock. Recorded clocks take the form `YYYY-MM-DDTHH:MM:SS[.fff](Z|±HH:MM)`; minute-only and space-separated clocks are unmeasured.
 
 **Lite plans** (no `task-board.md`): the retro still runs — board-derived metrics report `n/a`; log-derived ones stand.
 
