@@ -68,6 +68,8 @@ links here. Historical T0–T3 labels remain readable in pinned workspaces.
 Mutation is not a test you write: it audits whether the selected check bites. The observed red phase is its
 cheap form, with no added unit-test layer.
 
+A task that edits or removes an existing test adds a mutation audit to its acceptance: break the behavior the changed test guards, and observe each retained check fail. New tests stay covered by their red phase, with no audit added.
+
 ## Replayable E2E artifact
 
 Each E2E run retains one verifiable, repeatable artifact: the exact command or saved checked script,

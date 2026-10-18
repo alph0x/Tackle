@@ -4307,6 +4307,29 @@
       "historical": []
     },
     {
+      "rule_id": "R-PLAN-22",
+      "statement": "A task that edits or removes an existing test adds a mutation audit to its acceptance: break the behavior the changed test guards, and observe each retained check fail. New tests stay covered by their red phase, with no audit added.",
+      "statement_sha256": "6f1e321f917c764253e9a92fde24516029dc76fd849ec0762b8e4dd4871ac21c",
+      "home": "references/guides/testing.md:71",
+      "home_fragment": "A task that edits or removes an existing test",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "Brief and readiness guidance: an edited or removed test needs a mutation audit, while new tests keep the red phase.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-18"
+      },
+      "historical": []
+    },
+    {
       "rule_id": "R-RUN-26",
       "statement": "Dispatch only a role-to-model binding that the owner confirmed. A review role dispatches at the tier the team table gives it, never by default at the coordinator's model. An unconfirmed binding leaves the task `Waiting on owner`.",
       "statement_sha256": "f380e511807f71fbae0bc76bacadb1b69b856cf449c37ce91073a90418723327",
