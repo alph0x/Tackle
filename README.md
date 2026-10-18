@@ -257,7 +257,7 @@ A retro reads the task board and history (`task-board.md` and `history.md`) to p
 
 The `resource-usage.md` ledger records observed role events even without token or cost data. Unknown values stay `n/a`. Optional `resource-usage.telemetry.jsonl` observations are never required to close a task.
 
-Totals and rankings require complete, comparable coverage; model-tier or effort recommendations also require three completed, comparable runs. See [usage observability](skills/tackle/references/guides/usage-observability.md) and the optional [Codex native capture recipe](skills/tackle/references/guides/codex-native-usage.md).
+Totals and rankings require complete, comparable coverage; model-tier or effort recommendations also require three completed, comparable runs. See [usage observability](skills/tackle/references/guides/usage-observability.md) and the optional [Codex native capture script (`scripts/codex_usage.py`)](skills/tackle/references/guides/codex-native-usage.md).
 
 Optional capability profiles cover [Claude Code](extras/collectors/claude-code.md), [Oh My Pi](extras/collectors/oh-my-pi.md), [OpenAI Responses](extras/collectors/openai-responses.md), [Antigravity CLI](extras/collectors/antigravity-cli.md), [OpenCode](extras/collectors/opencode.md), [Kimi Code](extras/collectors/kimi-code.md), and [Cursor](extras/collectors/cursor.md). Profiles describe available data and its limits; they neither install integrations nor collect data automatically.
 
@@ -280,7 +280,7 @@ An earlier, retired paired-experiment protocol ran twelve paired episodes agains
 
 The [eval suite](eval/README.md) contains **75 scenarios** (`s1`–`s80`): decision traps, one end-to-end lifecycle smoke test, three end-to-end planning tasks and two mid-task resumes judged by hidden acceptance tests. The manual A/B workflow compares a model following Tackle with the same model working without it. Each scenario's answer sheet stays outside the agent's copy. A smoke run provides evidence for that run, with its limits recorded alongside the result.
 
-Before release, the [release sweep](MAINTAINING.md#release-sweep) runs 9 shipped-skill gates covering the entry-file word budget, 11 core conventions, version and migration consistency, README claims, install contents, update boundaries, and script manifest currency. The workspace table covers rows 1–17 (17 lint rows). These are documented, copy-pasteable POSIX checks.
+Before release, the [release sweep](MAINTAINING.md#release-sweep) runs 9 shipped-skill gates covering the entry-file word budget, 11 core conventions, version and migration consistency, README claims, install contents, update boundaries, and script manifest currency. These are documented, copy-pasteable POSIX checks. The workspace table covers rows 1–17 (17 lint rows), which run only through `scripts/lint.py`.
 
 Mechanical gate procedures cover `lint` rows, `catalog` integrity, each `done-signal`, the two-phase `ground` check, `eval` method arms, and `init` artifact completeness. Required independent review also gates completion. Release publication requires a separate owner request.
 

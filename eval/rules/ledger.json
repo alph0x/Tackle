@@ -2991,7 +2991,7 @@
         "references/guides/codex-native-usage.md:10",
         "references/guides/architecture-map.md:66",
         "references/guides/controlled-writing.md:33",
-        "references/guides/migrate.md:124",
+        "references/guides/migrate.md:126",
         "references/guides/plan-view.md:52",
         "references/guides/run.md:150",
         "references/guides/system-one.md:6",
@@ -3596,7 +3596,7 @@
       "home_fragment": "Record the owner's explicit",
       "units": [],
       "mirrors": [
-        "references/guides/migrate.md:98",
+        "references/guides/migrate.md:100",
         "references/guides/system-one.md:88"
       ],
       "class": "safety-invariant",
