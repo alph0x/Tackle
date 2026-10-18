@@ -16956,6 +16956,24 @@
       "destination": "references/guides/lint-spec.md",
       "note": "| 13 · History over archive threshold or entry budget — `history.md` exceeds the archive threshold (default 400 lines; workspace-overridable via `Log archive threshold: N` in the workspace `AGENTS.md`), or a session entry (from its `## YYYY-MM-DD` heading through the line before the next `## ` heading, trailing blank lines excluded, `###` lines inside) runs past the entry budget (default 120 lines; workspace-overridable via `History entry budget: N`); after the newest `### State snapshot`, a dated `## ` heading or column-1 dated `- ` bullet prints `snapshot drift: <line>` and an undated `## ` heading prints `undated heading: <line>` (fenced code and HTML comments are skipped; with no snapshot there is no drift line); a missing `history.md` is an error; fix path: RUN archives or shortens under the workspace's maintenance policy (default in `AGENTS.md`, recoverable maintenance in `context-lifecycle.md`), never STATUS | 0 lines of output — any line is a **warn** |",
       "destination_unit_sha256": null
+    },
+    {
+      "path": "skills/tackle/scripts/README.md",
+      "line": 23,
+      "unit_sha256": "66a059ebec272ce1ff0ed3e3fb5dd3120f1a48742d272341e7b3f3f824e56899",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "| [lint_runner.py](lint_runner.py) | `4f8b4c1d272e7a9905d8c3999d873b44d8182e82b96ff00bf7fd564a7bb6ffed` |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "skills/tackle/scripts/README.md",
+      "line": 24,
+      "unit_sha256": "c0097f1f2c85ab155e5d7cc35f7ec81d20c82a7ce4dfb3e17b3d85d728d66d82",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "| [lint.py](lint.py) | `9737e1872d2d43c0f9a6dde2ff401d67b142579770d98eadbedca1e2db546eb9` |",
+      "destination_unit_sha256": null
     }
   ]
 }
