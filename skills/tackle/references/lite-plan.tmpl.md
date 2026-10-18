@@ -143,7 +143,7 @@ escalation by a relative evidence path/anchor or stable event ID; a count label 
 does not establish the event. Preserve distinct cycles across roles and do not count a duplicated ID.
 Rework uses a separately defined observed rework counter, otherwise n/a; neither counter resets
 on resume. Zero requires observed absence, not missing history.
-Verification/Source link the existing receipt and outcome; don't transcribe its metadata here.
+Verification/Source link the existing receipt and outcome; don't transcribe its metadata here. At is a clock in the form `YYYY-MM-DDTHH:MM:SS[.fff](Z|±HH:MM)`; minute-only and space-separated clocks are unmeasured, so record them as At=n/a.
 **A validation end is not a role end.** An executor cannot observe its own future process termination:
 use At=n/a for that unobserved finish and name this limitation in Source. Only an external observer
 with the actual terminal event may supply its timestamp; never borrow the latest test clock.
