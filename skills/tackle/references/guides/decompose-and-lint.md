@@ -87,6 +87,7 @@ Set a selected prepared task **Ready to run** only when all of these are true:
   and exits, plus exact counts only where the contract requires them, and call each validator with
   the acceptance script's exact argv (revision names such as an annotated tag, the tree under test, a
   head changed after validation), never a convenient equivalent;
+- every brief command, extracted by its label and not by position, and every worked example has run as written against the brief's own rule, with a record; a command that needs state only available after RUN is recorded as a fixture observation;
 - the relevant clause, code, configuration, dependency, and input fingerprints are recorded;
 - no material contradiction or unowned global obligation remains.
 

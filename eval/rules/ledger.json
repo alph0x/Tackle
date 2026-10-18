@@ -721,7 +721,7 @@
       "rule_id": "R-PLAN-09",
       "statement": "Long initiatives may prepare milestones; every requirement keeps an owner, and deferred tasks stay Draft until verified Ready.",
       "statement_sha256": "69a94acb2074238280e8a2ac7a65098bcad79386d4384fc83f55ce0c84a13d05",
-      "home": "references/guides/decompose-and-lint.md:108",
+      "home": "references/guides/decompose-and-lint.md:109",
       "home_fragment": "Long initiatives may use optional milestones",
       "units": [],
       "mirrors": [],
@@ -820,7 +820,7 @@
       "rule_id": "R-PLAN-12",
       "statement": "Planning always runs on a more capable tier than the Executor's whenever more than one suitable tier binds; a one-tier harness records its limitation. These are role proposals, not claims that a host binding occurred.",
       "statement_sha256": "f2516914cd7def40bbf47bf3973d6b24cd128e5ac88a7d378b148c84cc53d2ff",
-      "home": "references/guides/decompose-and-lint.md:157",
+      "home": "references/guides/decompose-and-lint.md:158",
       "home_fragment": "Planning always runs on a more capable tier",
       "units": [],
       "mirrors": [],
@@ -2985,7 +2985,7 @@
         "references/guides/full-checks.md:109",
         "references/guides/full-checks.md:111",
         "references/guides/evidence-capture.md:22",
-        "references/guides/decompose-and-lint.md:123",
+        "references/guides/decompose-and-lint.md:124",
         "references/guides/context-lifecycle.md:86",
         "references/guides/record-lifecycle.md:67",
         "references/guides/codex-native-usage.md:10",
@@ -3809,7 +3809,7 @@
       "rule_id": "R-PLAN-15",
       "statement": "Before Ready, when tasks touch shared guards, PLAN applies placeholder or plausible outputs of those tasks to a disposable copy and runs the project's full regression suite, every failing consumer gets an owner task or a recorded expected-red decision, and the rehearsal is readiness evidence, not source execution.",
       "statement_sha256": "970013aa53d9dbaefc0d96c82f11f2e76573aa868a08c3b53f8f326f780d150f",
-      "home": "references/guides/decompose-and-lint.md:96",
+      "home": "references/guides/decompose-and-lint.md:97",
       "home_fragment": "Before Ready, when tasks touch shared guards",
       "units": [],
       "mirrors": [],
@@ -4167,7 +4167,7 @@
       "rule_id": "R-PLAN-16",
       "statement": "Each subagent role targets the cheapest available model that fits its tier in the team table. Before the first dispatch, show the owner the concrete role-to-model table for every subagent role and get an explicit confirmation. A run intent is not a model confirmation. Any later model change for a role, an escalation included, needs a new confirmation before that dispatch. Without that confirmation, the affected task waits on the owner.",
       "statement_sha256": "9e1444771bd9b09f8349106d55d032baef3862449540e6d91dd19af142217542",
-      "home": "references/guides/decompose-and-lint.md:164",
+      "home": "references/guides/decompose-and-lint.md:165",
       "home_fragment": "Each subagent role targets the cheapest",
       "units": [],
       "mirrors": [],
@@ -4190,7 +4190,7 @@
       "rule_id": "R-PLAN-17",
       "statement": "When a task looks too hard for the cheapest bindable tier, strengthen its brief before any Tier deviation. Add the missing context, split the work into smaller steps, and give exact commands with their expected results. The planner, on a more capable tier, writes the brief so that the Executor makes no design decision. A brief that leaves one to the Executor is not ready. When an Executor cannot finish, the planner strengthens the brief first; an escalation is the exception. A Tier deviation is the last resort, and its `**Tier reason**` says why a stronger brief is not enough. A review role (lock or complete) runs one tier above the Executor whose task it reviews. When that tier does not bind, record the limitation. An audit runs at the Auditor's tier in the team table.",
       "statement_sha256": "5ee7a8f573a659ff497f3dca95293acb2c5b4a121321266cc4841a383194cc32",
-      "home": "references/guides/decompose-and-lint.md:170",
+      "home": "references/guides/decompose-and-lint.md:171",
       "home_fragment": "When a task looks too hard for the cheapest",
       "units": [],
       "mirrors": [],
@@ -4319,6 +4319,29 @@
       "origin": {
         "added_in": "10.1.0",
         "trigger": "Brief and readiness guidance: an edited or removed test needs a mutation audit, while new tests keep the red phase.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-18"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-23",
+      "statement": "every brief command, extracted by its label and not by position, and every worked example has run as written against the brief's own rule, with a record; a command that needs state only available after RUN is recorded as a fixture observation;",
+      "statement_sha256": "6a6cebc5ca8454cc869a0945c611416b6888eef53c88ebc2cc80b0139f5913bc",
+      "home": "references/guides/decompose-and-lint.md:90",
+      "home_fragment": "every brief command, extracted by its label and not",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "Brief readiness guidance: brief commands and worked examples need a run-as-written record before Ready.",
         "discovered_by": []
       },
       "evidence": {
@@ -4532,7 +4555,7 @@
         "references/guides/full-checks.md:130",
         "references/guides/evidence-capture.md:46",
         "references/guides/context-lifecycle.md:106",
-        "references/guides/decompose-and-lint.md:136",
+        "references/guides/decompose-and-lint.md:137",
         "references/guides/system-one.md:118"
       ],
       "class": "behavioral",
