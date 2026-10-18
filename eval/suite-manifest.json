@@ -284,7 +284,7 @@
         "test_script_manifest.py",
         "test_no_network_surface.py"
       ],
-      "tests": 40,
+      "tests": 41,
       "source": "eval/install/inventory",
       "category": "product",
       "purpose": "Installed artifact inventory, links, root resolution and the absence of network clients, endpoints and home lookups."

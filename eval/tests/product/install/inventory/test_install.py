@@ -55,6 +55,12 @@ def strip_fences(text):
     return '\n'.join(out)
 
 
+def strip_code_spans(text):
+    """Blank out inline code spans (text between matching backtick runs on one line), keeping
+    their length, so a link-shaped string in code is not read as a link, as in rendered Markdown."""
+    return re.sub(r'(?<!`)(`+)(?!`).+?(?<!`)\1(?!`)', lambda match: ' ' * len(match.group(0)), text)
+
+
 LINK = re.compile(r'\[[^\]]*\]\(([^)]+)\)')
 HEADING = re.compile(r'^(#{1,6})\s+(.*)$')
 EXPLICIT_ANCHOR = re.compile(r'<a\s+id="([^"]+)"')
@@ -105,7 +111,7 @@ def check_links(root):
     install = INSTALL if root.resolve() == ROOT.resolve() else root
     problems = []
     for source in in_scope_files(root):
-        text = strip_fences(source.read_text(encoding='utf-8', errors='replace'))
+        text = strip_code_spans(strip_fences(source.read_text(encoding='utf-8', errors='replace')))
         for match in LINK.finditer(text):
             target = match.group(1).strip()
             if not target or target.startswith(('http://', 'https://', 'mailto:', '#')):
