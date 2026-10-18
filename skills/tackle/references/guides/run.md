@@ -139,7 +139,7 @@ The spent count comes from the task-linked failed correction-validation records,
 Each failed implementation correction appends an attempt-journal entry, naming the observed failure,
 correction, validation command, result and cycle count, before another attempt, and re-reads the earlier
 entries. A correction changing a contract or acceptance requires the authorized superseding decision
-first, then re-grounding and revalidation.
+first, then re-grounding and revalidation. Each attempt-journal line takes the form `correction cycle N of 3: <failure> → <correction>; <validation command>: <result>`.
 
 When tasks are reshaped, use stable failure IDs and cycle-event IDs in the existing journal. A cycle
 pool follows unresolved work; several descendant tasks can reference the same pool. Merging distinct
