@@ -4139,6 +4139,144 @@
       "historical": []
     },
     {
+      "rule_id": "R-STATUS-26",
+      "statement": "`--initiative` writes one page over the workspace and the siblings it declares, one hop; `--template` stays required, and `--initiative` takes no `--page`, `--map` or `--map-scope`.",
+      "statement_sha256": "4db0a958fcdc0b570735e906af6e459a06ec2e7e7fba139545fe875997eaa832",
+      "home": "references/guides/plan-view.md:190",
+      "home_fragment": "`--initiative` writes one page over the workspace and t",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "initiative view across sibling workspaces",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-18"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATUS-27",
+      "statement": "Members are read only; a sibling's own declaration that names a workspace outside the initiative prints `outside the initiative: <slug>` once on stderr and is not followed.",
+      "statement_sha256": "26ae9af961c110babd0a428011f42624bed604e583f2573c45ba3b02763a4c2f",
+      "home": "references/guides/plan-view.md:191",
+      "home_fragment": "Members are read only; a sibling's own declaration that",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "initiative view across sibling workspaces",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-18"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATUS-28",
+      "statement": "Tasks are keyed `<key>:T-NN`: the root's key is its folder name, and a sibling's key is the slug the root declares for it.",
+      "statement_sha256": "0d709027369def9ba36eca40591e1d8c5273654d04e598521d4db4db843eae8e",
+      "home": "references/guides/plan-view.md:192",
+      "home_fragment": "Tasks are keyed `<key>:T-NN`: the root's key is its fol",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "initiative view across sibling workspaces",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-18"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATUS-29",
+      "statement": "A member with no `tackle-workspace/5` board is refused once, the root included, with the line above; a cycle across members is refused as `cycle across workspaces: <a> -> ... -> <a>`.",
+      "statement_sha256": "4882ecea737d640c948650bd441bbc411c3c20ba3eabf911a81eb87bfbe6894d",
+      "home": "references/guides/plan-view.md:193",
+      "home_fragment": "A member with no `tackle-workspace/5` board is refused ",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "initiative view across sibling workspaces",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-18"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATUS-30",
+      "statement": "`--initiative --check` prints `view current` or `view stale: <keys>` with the single-page exit codes; its keys cover each member's `task-board.md`, `plan.md`, `AGENTS.md` and each brief its board names.",
+      "statement_sha256": "62a36f7ff6ab64770304dd8aabba4e8e559ad45da946118faecf6f54900a81ef",
+      "home": "references/guides/plan-view.md:194",
+      "home_fragment": "`--initiative --check` prints `view current` or `view s",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "initiative view across sibling workspaces",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-18"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATUS-31",
+      "statement": "An initiative-view request is its own owner request and the owner's authorization for the script for that request; it does not add or remove scope relative to the single-workspace request.",
+      "statement_sha256": "9ff4e09d1473b9f6defe974ca9301986de5a76257294000f8205aa3b2ba8ce9f",
+      "home": "references/guides/plan-view.md:195",
+      "home_fragment": "An initiative-view request is its own owner request and",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "initiative view across sibling workspaces",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-18"
+      },
+      "historical": []
+    },
+    {
       "rule_id": "R-RUN-25",
       "statement": "Closing a Complete task sets its map delta changes to done before any view rebuild.",
       "statement_sha256": "63123fa9f2c6cd6a7386247812b9f677fa94a2a95b651238865145ad81f2076c",
