@@ -61,7 +61,7 @@ In a later session, select Tackle and ask:
 Show the checkout validation plan's status. What is complete, blocked, and next?
 ```
 
-**Requirements:** the scripts need Python 3.10 or later and the standard library only; on Windows, run them with `py -3`. Installing runs nothing, and a script runs only with your authorization. See the [script manifest and consent rules](skills/tackle/scripts/README.md).
+**Requirements:** the scripts need Python 3.10 or later and the standard library only; on Windows, run them with `py -3`. The lint rows (which `lint.py` runs with `sh`) and the release gates are POSIX shell, so on Windows they need Git Bash or WSL. Installing runs nothing, and a script runs only with your authorization. See the [script manifest and consent rules](skills/tackle/scripts/README.md).
 
 These are example requests to the selected skill, not shell commands or captured results. If your app offers `/tackle`, select that entry and continue typing. The selection syntax depends on the app; Tackle has one entry, with the actions inside it. Requests can be in your preferred language.
 
@@ -84,7 +84,7 @@ For Cursor, use `~/.cursor/skills/tackle/`. Other agents use their own skill dir
 The install contains only `SKILL.md`, `references/` and `scripts/`, with 79 installation-relative files. Repository branding, development tools, and evaluation fixtures are not part of the installed skill.
 The checkout copy commands above copy those files into the selected directory and leave any other files already there.
 
-Before release, a local clone of the release commit installed exactly the 79 expected files through both the manual copy above and `npx skills@1.7.0 add` (offline, with `-a claude-code -y -g`). The public GitHub routes, by tag and by the default source, have not been probed for 10.0.0. To pin a release, install by tag:
+Before release, a local clone of the pre-release candidate, whose installed files are identical to v10.0.0, installed exactly the 79 expected files through both the manual copy above and `npx skills@1.7.0 add --skill tackle` (offline, single-agent, with `-a claude-code -y -g`). The public GitHub routes, by tag and by the default source, have not been probed for 10.0.0. To pin a release, install by tag:
 
 ```sh
 npx --yes skills@1.7.0 add 'https://github.com/alph0x/Tackle.git#v10.0.0' --skill tackle -a claude-code codex -y -g
@@ -144,7 +144,8 @@ The [`scripts/`](skills/tackle/scripts/README.md) folder holds the programs the 
 |---|---|
 | Plan view | `plan_view.py` |
 | Architecture map | `architecture_map.py` |
-| Workspace lint | `lint.py`, `lint_runner.py` |
+| Workspace lint | `lint.py` |
+| Check-line runner (needs its own authorization, not covered by the lint grant) | `lint_runner.py` |
 | Check and evidence capture | `capture.py`, `evidence_capture.py` |
 | Records and context bundle | `record_store.py`, `context_bundle.py` |
 | Task consistency, corrections and adversary checkpoints | `decompose_check.py`, `correction_lineage.py`, `adversary_checkpoints.py` |
@@ -152,10 +153,10 @@ The [`scripts/`](skills/tackle/scripts/README.md) folder holds the programs the 
 | Requirements base | `requirements_base.py` |
 | Controlled writing | `controlled_writing.py` |
 | System One state and decisions | `system_one_state.py`, `system_one_decide.py` |
-| Usage capture | `codex_usage.py` |
+| Usage capture (native Codex Desktop and `codex exec --json` records) | `codex_usage.py` |
 | Retro confidence | `retro_confidence.py` |
 
-The [manifest](skills/tackle/scripts/README.md) lists every script with its sha256. A plan or run request authorizes `scripts/lint.py` for that request; an explicit request for a feature whose procedure is a script authorizes that script; otherwise no script runs ([consent](skills/tackle/scripts/README.md#consent)).
+The [manifest](skills/tackle/scripts/README.md) lists every script with its sha256. An explicit plan or run request authorizes `scripts/lint.py` for that request; an explicit request for a feature whose procedure is a script authorizes that script for that request; you can also authorize a named script directly. A general request to plan or run authorizes no other script ([consent](skills/tackle/scripts/README.md#consent)).
 
 ### What makes a task ready to hand off?
 
@@ -222,7 +223,7 @@ This section describes how Tackle is built to behave; it is not a claim about an
 
 The install is `SKILL.md`, `references/` and `scripts/`: Markdown guides plus Python scripts that use the standard library only. Installing it runs nothing and installs no program (see the install contents [above](#get-started)). Ordinary invocation performs no network access and does not change the installation tree. Tackle ships no network client: the optional System One judgment goes through your host's `typesafe-ai` skill, and only when the workspace records your agreement ([System One](skills/tackle/references/guides/system-one.md)).
 
-An agent runs or imports a script under `scripts/` only with your explicit authorization, and prefers an equivalent capability of its own harness. A plan or run request authorizes `scripts/lint.py` and no other script. Asking for a feature whose documented procedure is a script, such as the plan view, counts as that authorization for that script. If you decline, the affected record is reported unavailable or produced another permitted way, never faked.
+An agent runs or imports a script under `scripts/` only with your explicit authorization, and prefers an equivalent capability of its own harness. An explicit plan or run request authorizes `scripts/lint.py` for that request and, by itself, no other script. Asking for a feature whose documented procedure is a script, such as the plan view, counts as that explicit authorization for that request. If you decline, the affected record is reported unavailable or produced another permitted way, never faked.
 
 RUN executes only the exact command line (argv) that each authorized, ready task declares, and captures each command with its exit status and output streams ([RUN card](skills/tackle/references/guides/run-card.md)).
 
@@ -263,7 +264,7 @@ Visible sizing names map to existing routes: Direct (None), Focused (Lite), and 
 
 Historical records retain their meanings: E1 for independent command verification, E2 for semantic review, E3 for an assertion, and E0 for unverifiable work. They are not an ordinal scale.
 
-Documented slash forms such as `/tackle-run` and `/tackle-verify` stay text aliases: when the host passes them as text they keep their intent boundaries, never grant broader permission, and register no separate picker entries ([invocation](skills/tackle/references/guides/invocation.md#text-aliases)). Retired 8.x action names map to their historical targets in [terminology.md](skills/tackle/references/terminology.md).
+Previously documented slash forms such as `/tackle-run` and `/tackle-verify` stay text aliases: when the host passes them as text they keep their intent boundaries, never grant broader permission, and register no separate picker entries ([invocation](skills/tackle/references/guides/invocation.md#text-aliases)). Retired 8.x action names map to their historical targets in [terminology.md](skills/tackle/references/terminology.md).
 
 The install keeps the head of the checklist chain v2.0 → v10.0: [9.3 → 10.0](skills/tackle/references/guides/migrate.md#v93--v100-checklist), [9.2 → 9.3](skills/tackle/references/guides/migrate.md#v92--v93-checklist) and the [8.4 → 9.0](skills/tackle/references/guides/migrate.md#v84--v90-checklist) bridge, under one [adoption procedure](skills/tackle/references/guides/migrate.md#adopting-a-release). The historical checklists, v2.0 → v9.2.1, live in the repository's [`maintaining/migrations.md`](maintaining/migrations.md), including [9.2.0 → 9.2.1](maintaining/migrations.md#v920--v921-checklist), [9.1 → 9.2](maintaining/migrations.md#v91--v92-checklist), [9.1.0 → 9.1.1](maintaining/migrations.md#v910--v911-checklist), [9.0 → 9.1](maintaining/migrations.md#v90--v91-checklist), [9.0.0 → 9.0.1](maintaining/migrations.md#v900-v901-checklist), [8.4.0 → 8.4.1](maintaining/migrations.md#v840--v841-checklist), [8.3 → 8.4](maintaining/migrations.md#v83--v84-checklist), [8.2 → 8.3](maintaining/migrations.md#v82--v83-checklist), [8.1 → 8.2](maintaining/migrations.md#v81--v82-checklist), [8.0 → 8.1](maintaining/migrations.md#v80--v81-checklist), and the [copy-first 7.3 → 8.0 transition](maintaining/migrations.md#v73--v80-checklist).
 
