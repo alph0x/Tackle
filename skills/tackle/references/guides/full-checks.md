@@ -111,16 +111,15 @@ these functions needs the owner's explicit authorization.
 When equivalent harness automation is absent, the connected path below needs the owner's explicit
 authorization; with it, run `python3 -I <skill>/scripts/lint_runner.py <lint.json>` from an authorized cwd.
 It uses the `capture.py` beside it.
-The JSON specifies `source` (the current `scripts/lint.py` path), preflight `source_sha256`, `slug`,
-`selectors`, `workspace` and `timeout_seconds`. The capture script is pinned by the lint script by
+The runner reads the `lint.py` beside it, pinned by sha256 like `capture.py`. The JSON specifies `slug`,
+`selectors`, `workspace` and `timeout_seconds`; a configuration naming `source` or `source_sha256` is refused. The capture script is pinned by the lint script by
 sha256; only final newlines may vary, and any other bytes stop the run with `capture script revision
 changed`. An optional `capture_script` names a copy of it inside cwd, held to the same pin. Review both
 scripts before changing that pin. The workspace must already exist. Legacy `destination`-only
 configurations are still accepted as an explicit workspace location; newly generated
 configurations name workspace. Optional `rows` selects
 affected checks; omission runs all 17. Initial PLAN still requires all 17. Include citation targets
-and other actual dependencies in selectors. An authorized read-only source outside cwd is read
-and hash-verified, then snapshotted locally; helpers and outputs stay inside cwd. The script extracts, saves, captures and verifies
+and other actual dependencies in selectors. Helpers and outputs stay inside cwd. The script extracts, saves, captures and verifies
 each command itself; never transcribe row programs by hand into another script. A custom
 composition stays possible, but compare its actual captured script bytes with the extracted
 canonical bytes before claiming canonical coverage. A source/command mismatch or absent script
