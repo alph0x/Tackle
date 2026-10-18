@@ -12046,7 +12046,7 @@
       "unit_sha256": "fb0e77927e1875e25156acfa935511d1e4aeac9da05db8a30bd4081120fd1d94",
       "disposition": "reworded",
       "destination": "references/guides/decompose-and-lint.md",
-      "note": "Decompose to the fewest tasks, each with a qualifying reason to stay separate (the [PLAN card](plan-card.md)'s step 5 names the five), named in its briefing.",
+      "note": "Decompose to the fewest tasks, each with a qualifying reason to stay separate (the [PLAN card](plan-card.md)'s step 5 names the five); each separate task's briefing names its own.",
       "destination_unit_sha256": null
     },
     {
@@ -12082,7 +12082,7 @@
       "unit_sha256": "17ea7e5e4ea36827c5aa18d9ebfac7e93737d791aea22a8481700e164797b5f1",
       "disposition": "reworded",
       "destination": "references/guides/decompose-and-lint.md",
-      "note": "**Loop-worthiness test first** — a loop task earns its cost only when ALL four hold; otherwise decompose a standard task:",
+      "note": "**Loop-worthiness test first** — a loop task earns its cost only when ALL four hold; otherwise decompose as a standard task:",
       "destination_unit_sha256": null
     },
     {
@@ -12109,7 +12109,7 @@
       "unit_sha256": "e44ba0b4f5f0db054a7573a1c101d6522930a45ff90dcf88936388cf46ca1005",
       "disposition": "reworded",
       "destination": "references/guides/decompose-and-lint.md",
-      "note": "Reversibility gate: a task whose Write scope flags a production path carries a documented rollback or coexistence check; a flag default-off and no-op proof only when the product contract calls for a flag; no flagged path ⇒ section omitted, not left empty.",
+      "note": "Reversibility gate: a task whose Write scope flags a production path carries a documented rollback or coexistence check; require a flag default-off and no-op proof only when the product contract calls for a flag; no flagged path ⇒ section omitted, not left empty.",
       "destination_unit_sha256": null
     },
     {
@@ -12118,7 +12118,7 @@
       "unit_sha256": "8a0fef34e9e558f2a16c8333836c7c47202334c419e556e1bfbde66585dc609d",
       "disposition": "reworded",
       "destination": "references/guides/decompose-and-lint.md",
-      "note": "Reversibility gate: a task whose Write scope flags a production path carries a documented rollback or coexistence check; a flag default-off and no-op proof only when the product contract calls for a flag; no flagged path ⇒ section omitted, not left empty.",
+      "note": "Reversibility gate: a task whose Write scope flags a production path carries a documented rollback or coexistence check; require a flag default-off and no-op proof only when the product contract calls for a flag; no flagged path ⇒ section omitted, not left empty.",
       "destination_unit_sha256": null
     },
     {

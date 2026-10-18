@@ -11,7 +11,7 @@ The card's steps 5 and 6 link here for the decomposition and lint procedure in f
 - Scope a change to a count, literal or row set by searching the value and its consumers across the
   repository (tests, guards and phrasing variants that bind it), not chosen phrases in chosen directories.
 - Decompose to the fewest tasks, each with a qualifying reason to stay separate (the [PLAN
-  card](plan-card.md)'s step 5 names the five), named in its briefing.
+  card](plan-card.md)'s step 5 names the five); each separate task's briefing names its own.
 - One task = smallest coherent vertical slice with ONE runnable acceptance check; keep the slice
   vertically complete when splitting would hide a shared invariant.
 
@@ -23,7 +23,7 @@ every Task id is present.
 <a id="loop-archetypes-type-discovery--type-experiment"></a>
 ## Loop reference plans (Type: discovery / Type: experiment)
 
-**Loop-worthiness test first** — a loop task earns its cost only when ALL four hold; otherwise decompose a standard task:
+**Loop-worthiness test first** — a loop task earns its cost only when ALL four hold; otherwise decompose as a standard task:
 1. **The task repeats** (or recurs within the initiative) — a one-shot job is one good standard task.
 2. **Verification is automated** — a command fails the work without a human in the room.
 3. **The budget absorbs the waste** — loops retry and re-read; `Rounds:` caps it.
@@ -42,7 +42,7 @@ Then judge — the checks no command can decide:
 - Contract churn guard (contract sections changed → citing tasks reconciled).
 - Quality dimensions derived into acceptance checks.
 - Reversibility gate: a task whose Write scope flags a production path carries a documented rollback or
-  coexistence check; a flag default-off and no-op proof only when the product contract calls for a flag;
+  coexistence check; require a flag default-off and no-op proof only when the product contract calls for a flag;
   no flagged path ⇒ section omitted, not left empty.
 - Deferral & questions sound.
 - Q-guard (an active task may not depend on an unresolved material product decision or required
