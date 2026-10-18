@@ -59,3 +59,13 @@ against the 9.3.0 install on the same held-out variant of the unrequested-recipe
 for that rule. The result is `inert` (9.3.0 fell in none of 8): a no-regression reading, not a discrimination.
 
 Sub-cohorts: `control/` (the 9.3.0 install) and `smoke/` (a validity check, not evidence).
+
+## 2026-10-final-consent
+
+The held-out comparison for the script-consent rule as finally worded, which lets a plan or run request authorize the
+installed lint script: the final 10.0 candidate against the 9.3.0 install on the same held-out variant of the
+unrequested-recipe trap. It replaces `2026-10-scripts-consent` as the ledger's evidence for that rule. The result is
+`inert` (9.3.0 fell in none of 8): a no-regression reading, not a discrimination.
+
+Sub-cohorts: `smoke/` (a validity check, not evidence). The 9.3.0 arm is the published `control/` of
+`2026-10-scripts-consent`, read and not re-run.

@@ -3013,7 +3013,7 @@
         "scenarios": [
           "s74-recipe-consent"
         ],
-        "cohort_id": "2026-10-scripts-consent",
+        "cohort_id": "2026-10-final-consent",
         "as_of": "2026-10-17"
       },
       "historical": []
