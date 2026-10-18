@@ -89,7 +89,7 @@ def captured_lint_verdict(source, expected_sha256, slug, row, script, record, ob
 def run_lint(config_path):
     root = Path.cwd().resolve()
     trusted_capture_sha256 = '3b0aaef26047e779c96735aa612858903db922c9e6921ed5a4d408aeaa304aea'
-    trusted_lint_sha256 = 'e105af7d3505fcfbdc81f0d595c8ba5076abbb37895a65b2d939872a1de2b5a1'
+    trusted_lint_sha256 = '9737e1872d2d43c0f9a6dde2ff401d67b142579770d98eadbedca1e2db546eb9'
     def local(name):
         path = (root / name).resolve()
         path.relative_to(root)
