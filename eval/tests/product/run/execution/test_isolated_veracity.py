@@ -252,6 +252,24 @@ class LintSourcePin(unittest.TestCase):
         self.assertIsNotNone(match)
         self.assertEqual(hashlib.sha256(SOURCE).hexdigest(), match.group(1))
 
+    def test_capture_copy_beside_stdlib_shadow_is_run_isolated(self):
+        shadow = ('import os, sysconfig\n'
+                  "open(os.path.join(os.getcwd(), 'marker.txt'), 'w').write('shadow imported')\n"
+                  "_path = os.path.join(sysconfig.get_paths()['stdlib'], 'tempfile.py')\n"
+                  'exec(compile(open(_path, "rb").read(), _path, "exec"))\n')
+        (self.root/'tools').mkdir()
+        (self.root/'tools/capture.py').write_bytes(CAPTURE.encode())
+        (self.root/'tools/tempfile.py').write_text(shadow)
+        (self.root/'docs/plans/demo/plan.md').write_text('T-A\n')
+        (self.root/'docs/plans/demo/task-board.md').write_text(
+            'Schema: tackle-workspace/5\n\n'
+            '| Task | What | Brief | Depends on | Status | Verification |\n'
+            '|---|---|---|---|---|---|\n'
+            '| T-A | Work | tasks/T-A.md | none | Draft | pending |\n')
+        run = self.run_runner(self.config(capture_script='tools/capture.py'))
+        self.assertFalse((self.root/'marker.txt').exists(), run.stderr)
+        self.assertEqual(run.returncode, 0, run.stderr)
+
 
 if __name__ == '__main__':
     unittest.main()

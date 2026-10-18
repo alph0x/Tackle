@@ -142,7 +142,7 @@ def run_lint(config_path):
                     timeout_seconds=config['timeout_seconds'])
         spec_path = batch / ('row-%02d.json' % number)
         spec_path.write_text(json.dumps(spec, indent=2))
-        result = subprocess.run([sys.executable, str(capture_script), str(spec_path)],
+        result = subprocess.run([sys.executable, '-I', str(capture_script), str(spec_path)],
                                 cwd=root, capture_output=True)
         (batch / ('capture-%02d.stdout' % number)).write_bytes(result.stdout)
         (batch / ('capture-%02d.stderr' % number)).write_bytes(result.stderr)
