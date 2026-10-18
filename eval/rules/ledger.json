@@ -4353,6 +4353,29 @@
       "historical": []
     },
     {
+      "rule_id": "R-PLAN-24",
+      "statement": "Repository conventions the executor cannot infer, such as the commit message format, stated in the brief whether or not the repository has a conventions file; every cwd-dependent command carries its own cd or -C",
+      "statement_sha256": "6f498490a1ce400809a1aeff35d84a2be1ef7cfbccd876efd5b89fdecdd73a75",
+      "home": "references/guides/design-and-contract.md:54",
+      "home_fragment": "Repository conventions the executor cannot infer",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "Brief guidance: a brief states the conventions an executor cannot infer and the working directory of each command.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-18"
+      },
+      "historical": []
+    },
+    {
       "rule_id": "R-RUN-26",
       "statement": "Dispatch only a role-to-model binding that the owner confirmed. A review role dispatches at the tier the team table gives it, never by default at the coordinator's model. An unconfirmed binding leaves the task `Waiting on owner`.",
       "statement_sha256": "f380e511807f71fbae0bc76bacadb1b69b856cf449c37ce91073a90418723327",

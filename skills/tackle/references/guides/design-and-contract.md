@@ -51,6 +51,7 @@ For each prepared task, compile these obligations into the existing fields:
 - Verified reference context, recommended approach and valid alternatives
 - Acceptance criteria (what must hold), task/regression checks (how to observe it), and verification-record destinations (what happened)
 - Recovery, procedure revision, stable identity and inherited failure-cycle references
+- Repository conventions the executor cannot infer, such as the commit message format, stated in the brief whether or not the repository has a conventions file; every cwd-dependent command carries its own `cd` or `-C`
 
 # Step 5.5 — Architecture recommendation
 
