@@ -1,5 +1,13 @@
 # Tackle changelog
 
+## Tackle 10.0.1
+
+- **The lint runner reads its rows from one place.** `scripts/lint_runner.py` now reads the lint rows only from the `lint.py` beside it, and verifies the exact bytes against a sha256 pinned in the runner's code, the way it already pins `capture.py`. A changed `lint.py` is refused before anything is written.
+- **A `lint.json` naming `source` or `source_sha256` is refused.** Those keys existed in the 10.0.0 config shape, one day old; the runner stops with an error that says to remove them. No configuration key selects what the runner executes.
+- **Tests.** New tests cover the refusal of both keys, the currency of the pin against `lint.py`, and the confinement of every path a configuration names to the working directory.
+- **Nothing else changes.** Row results, the summary shape, the records and the exit codes are as in 10.0.0. The motivation is a LOW anomaly Socket reported on this script, which read a configured source file. No scanner result is promised, and that verdict cannot be reproduced locally.
+- **Evidence.** Deterministic tests only; no held-out behavioral cohort was run for this release.
+
 ## Tackle 10.0.0
 
 - **Programs ship as scripts.** Every program the guides used to carry as a fenced recipe is now a Python file under `scripts/`, using the standard library only. A manifest in `scripts/README.md` lists each script with its sha256, and a release gate fails when a row is missing, stale, duplicated or wrong. The plan view, the architecture map, the checks and their capture, the record lifecycle and context bundle, migration, requirements, controlled writing and the retro confidence program all moved. The 17 lint row programs moved too, into `scripts/lint.py`; the lint guide now only specifies the rows. The `references/recipes/` folder is gone. Scripts import their shipped neighbors by name from their own folder, and none evaluates text as code.

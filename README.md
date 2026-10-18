@@ -20,7 +20,7 @@ Tackle turns a goal into a plan stored in your repository. Each task carries the
 
 Use it for features, refactors, and investigations that span sessions or involve handoffs between agents or people.
 
-**Tackle 10.0.0** · Model-agnostic · Markdown and standard-library Python · MIT
+**Tackle 10.0.1** · Model-agnostic · Markdown and standard-library Python · MIT
 
 ## Why Tackle
 
