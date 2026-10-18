@@ -103,4 +103,4 @@ defines when these observations permit completion; no role may flip a status by 
 | Recovery | Preserve counters/history; classify failures and emit packets. | `run-card.md` step 7, `run.md` §Failure classification and escalation packet |
 
 For grounding, quality and migration, use the linked shared guides; they may describe their own PLAN, audit
-or historical procedures, but only the RUN card authorizes source execution.
+or historical procedures, but they do not authorize source execution; the RUN card does.
