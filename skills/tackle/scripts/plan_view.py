@@ -882,6 +882,11 @@ def input_digests(ws, template_path, map_base, map_scope):
     for slug, folder in siblings.items():
         inputs['%s:task-board.md' % slug] = file_digest(folder / 'task-board.md')
         inputs['%s:plan-view.html' % slug] = 'present' if sibling_view(folder) else 'absent'
+    return finish_record(inputs, ws, template_path, map_base, map_scope)
+
+
+def finish_record(inputs, ws, template_path, map_base, map_scope):
+    """The digest record of a page: the template, both scripts and the map base join the page's inputs, then the overall digest."""
     inputs['template'] = file_digest(template_path)
     inputs['plan-view script'] = file_digest(Path(__file__).resolve())
     inputs['architecture-map script'] = file_digest(Path(__file__).resolve().parent / 'architecture_map.py')
@@ -1647,7 +1652,7 @@ def stage_list(tasks, stage, edges, ui, externals=()):
     by_stage = {}
     for t in tasks:
         by_stage.setdefault(stage[t['id']], []).append(t)
-    needs = {t['id']: sorted(set(t['deps']), key=lambda i: int(i[2:]))
+    needs = {t['id']: sorted(set(t['deps']), key=lambda i: int(i.rsplit('-', 1)[1]))
              + ['%s · %s' % (slug, ref) for slug, ref in t.get('sib_deps', [])] for t in tasks}
     links = {e['id']: e['href'] for e in externals if e.get('href')}
     groups = []
@@ -2716,19 +2721,201 @@ def page_mode(args, block):
     return 0
 
 
+def build_stamp():
+    """The build time as the page shows it: the local time with its zone name."""
+    now = datetime.datetime.now().astimezone()
+    return now.strftime('%Y-%m-%d %H:%M ') + (now.tzname() or now.strftime('%z'))
+
+
+def task_order(task):
+    """Board order: the member's declaration order, then the task number."""
+    return task.get('member', 0), int(task['id'].rsplit('-', 1)[1])
+
+
+def find_cycle(ids, deps):
+    """One dependency cycle as a chain of ids that starts and ends at the same id, or [] when there is none."""
+    state, stack = {}, []
+
+    def visit(node):
+        state[node] = 'open'
+        stack.append(node)
+        for dep in deps.get(node, []):
+            if state.get(dep) == 'open':
+                return stack[stack.index(dep):] + [dep]
+            if dep not in state:
+                found = visit(dep)
+                if found:
+                    return found
+        stack.pop()
+        state[node] = 'done'
+        return []
+
+    for ident in ids:
+        if ident not in state:
+            found = visit(ident)
+            if found:
+                return found
+    return []
+
+
+def cycle_problem(ids, deps):
+    """The refusal for a dependency cycle: the single-workspace line when one workspace holds it, else the chain across workspaces."""
+    chain = find_cycle(ids, deps)
+    owners = {ident.rsplit(':', 1)[0] if ':' in ident else '' for ident in chain}
+    if len(owners) > 1:
+        return 'cycle across workspaces: ' + ' -> '.join(chain)
+    return 'the dependencies form a cycle'
+
+
+def initiative_members(ws):
+    """The root, keyed by its folder name, then its declared siblings keyed by the slug the root declares: one hop, in declaration order."""
+    root = Path(os.path.abspath(ws))
+    members = [(root.name, root)]
+    for slug, (folder, _) in declared_siblings(ws).items():
+        if all(folder != seen for _, seen in members):
+            members.append((slug, folder))
+    return members
+
+
+def member_digests(members):
+    """The digests of each member's task-board.md, plan.md and AGENTS.md, of each brief its board names and of each
+    outside board its declarations name, keyed <key>:<name>."""
+    keys = {folder: key for key, folder in members}
+    found = {}
+    for key, folder in members:
+        for name in ('task-board.md', 'plan.md', 'AGENTS.md'):
+            found['%s:%s' % (key, name)] = file_digest(folder / name)
+        declared = declared_siblings(folder)
+        for slug, (target, _) in declared.items():
+            if target not in keys:
+                found['%s:task-board.md' % slug] = file_digest(target / 'task-board.md')
+        siblings = {slug: target for slug, (target, _) in declared.items()}
+        for row in read_board(folder, [], lenient=True)[2]:
+            if not row['brief']:
+                continue
+            path, name, outside = resolve_brief(folder, row['brief'], siblings)
+            found[name if ':' in name else '%s:%s' % (key, name)] = 'outside the workspace' if outside else file_digest(path)
+    return found
+
+
+def initiative_digests(members, template_path, map_base, map_scope):
+    """The digest record of an initiative page: the root's workspace inputs, then every member's inputs."""
+    root_key, root = members[0]
+    inputs = {'%s:%s' % (root_key, name): file_digest(root / name) for name in WORKSPACE_INPUTS}
+    inputs.update(member_digests(members))
+    return finish_record(inputs, root, template_path, map_base, map_scope)
+
+
+def initiative_gather(members, problems):
+    """Each member's board rows keyed <key>:T-NN with the edges that cross members. Returns the root's board text, the
+    root's states, the tasks, the outside external nodes and each member's (key, done, total) for the page."""
+    keys = {folder: key for key, folder in members}
+    boards, refused, outside, externals = {}, set(), {}, []
+    for key, folder in members:
+        declared = declared_siblings(folder)
+        for slug, (target, _) in declared.items():
+            if target not in keys:
+                outside.setdefault(slug, target)
+        if sibling_board(folder) is None:
+            problems.append('sibling %s has no tackle-workspace/5 task-board.md at docs/plans/%s' % (key, folder.name))
+            refused.add(key)
+            continue
+        found = []
+        text, states, rows = read_board(folder, found)
+        problems.extend('%s: %s' % (key, line) for line in found)
+        boards[key] = dict(text=text, states=states, rows=rows, siblings={slug: target for slug, (target, _) in declared.items()})
+    for slug in outside:
+        print('outside the initiative: %s' % slug, file=sys.stderr)
+    tasks, seen = [], set()
+    for index, (key, folder) in enumerate(members):
+        if key in refused:
+            continue
+        info = boards[key]
+        for row in info['rows']:
+            ident = '%s:%s' % (key, row['id'])
+            task = dict(row, id=ident, member=index, deps=['%s:%s' % (key, dep) for dep in row['deps']], sib_deps=[], traces='')
+            if ident in seen:
+                problems.append('duplicate task id %s' % ident)
+            seen.add(ident)
+            if row['status'] not in info['states']:
+                problems.append('task %s has status %s, outside the board states' % (ident, row['status']))
+            if not row['brief']:
+                problems.append('task %s names no brief' % ident)
+            else:
+                path, _, brief_outside = resolve_brief(folder, row['brief'], info['siblings'])
+                if brief_outside:
+                    problems.append('brief %s for task %s is outside the workspace' % (row['brief'], ident))
+                elif not path.is_file():
+                    problems.append('missing brief %s for task %s' % (row['brief'], ident))
+                else:
+                    found = re.search(r'^- \*\*Traces to\*\*: (.+)$', path.read_text(encoding='utf-8'), re.M)
+                    task['traces'] = found.group(1) if found else ''
+            for slug, ref in row['sib_deps']:
+                if slug not in info['siblings']:
+                    problems.append('task %s depends on %s [%s], but no sibling named %s is declared' % (ident, ref, slug, slug))
+                    continue
+                target = info['siblings'][slug]
+                owner = keys.get(target)
+                if owner is not None:
+                    if owner not in refused and ref not in [r['id'] for r in boards[owner]['rows']]:
+                        problems.append("task %s depends on %s [%s], which is not on the sibling's board" % (ident, ref, slug))
+                    elif owner not in refused:
+                        task['deps'].append('%s:%s' % (owner, ref))
+                    continue
+                rows = sibling_board(target)
+                if rows is None:
+                    problems.append('sibling %s has no tackle-workspace/5 task-board.md at docs/plans/%s' % (slug, target.name))
+                    continue
+                match = next((r for r in rows if r['id'] == ref), None)
+                if match is None:
+                    problems.append("task %s depends on %s [%s], which is not on the sibling's board" % (ident, ref, slug))
+                    continue
+                task['sib_deps'].append((slug, ref))
+                if not any(e['id'] == external_id(slug, ref) for e in externals):
+                    view = sibling_view(target)
+                    externals.append(dict(id=external_id(slug, ref), slug=slug, task_id=ref, title=match['title'],
+                                          status=match['status'], deps=[], external=True,
+                                          href='%s#task-%s' % (view, ref) if view else None))
+            tasks.append(task)
+    ids = {t['id'] for t in tasks}
+    for task in tasks:
+        for dep in task['deps']:
+            if dep not in ids:
+                problems.append('task %s depends on unknown task %s' % (task['id'], dep))
+    problems[:] = list(dict.fromkeys(problems))
+    root_key = members[0][0]
+    root = boards.get(root_key, dict(text='', states=DEFAULT_STATES))
+    progress = [(key, sum(1 for r in boards[key]['rows'] if r['status'] == 'Complete'), len(boards[key]['rows']))
+                for key, _ in members if key in boards]
+    return root['text'], root['states'], tasks, externals, progress
+
+
+def initiative_progress(progress, ui):
+    """The member list of an initiative page: each member's key with its completed count, in member order."""
+    entries = ''.join('<li><span class="sibling-slug">%s</span><span class="sibling-progress">%s</span></li>' % (
+        esc(key), esc(ui['sibling_progress'].format(done=done, total=total))) for key, done, total in progress)
+    return '<nav class="sibling-plans" aria-label="%s"><p class="sibling-plans-label">%s</p><ul>%s</ul></nav>' % (
+        esc(ui['siblings']), esc(ui['siblings']), entries)
+
+
 def main():
     parser = argparse.ArgumentParser(description='Write the plan view of a workspace.')
     parser.add_argument('--template', required=True)
     parser.add_argument('--map', dest='map_base', help='the project map (tackle-map/1) to draw before and after the plan')
-    parser.add_argument('--map-scope', choices=('all', 'changed'), default='all',
-                        help='draw the whole map, or only the changed components with their neighbors')
+    parser.add_argument('--map-scope', choices=('all', 'changed'),
+                        help='draw the whole map, or only the changed components with their neighbors (default all)')
     parser.add_argument('--check', action='store_true',
                         help='compare the input digests recorded in the page with the inputs now, and write nothing')
     parser.add_argument('--page', metavar='FRAGMENT',
                         help='write an auxiliary page: the plan view base around this HTML body fragment')
+    parser.add_argument('--initiative', action='store_true',
+                        help='write one page over the workspace and its declared siblings (one hop), or check it with --check')
     parser.add_argument('workspace')
     parser.add_argument('output')
     args = parser.parse_args()
+    if args.initiative and (args.page or args.map_base or args.map_scope):
+        parser.error('--initiative takes no --page, --map or --map-scope')
+    args.map_scope = args.map_scope or 'all'
     ws = Path(args.workspace)
     try:
         template_text = Path(args.template).read_text(encoding='utf-8')
@@ -2742,7 +2929,11 @@ def main():
     template = blocks[0]
     if args.page:
         return page_mode(args, template)
-    record = input_digests(ws, args.template, args.map_base, args.map_scope)
+    members = initiative_members(ws) if args.initiative else []
+    if args.initiative:
+        record = initiative_digests(members, args.template, args.map_base, args.map_scope)
+    else:
+        record = input_digests(ws, args.template, args.map_base, args.map_scope)
     if args.check:
         for line in check_divergence_notes(ws):
             print(line, file=sys.stderr)
@@ -2763,9 +2954,12 @@ def main():
         problems.append('the Focused plan names no requirement id in its Purpose / requirements line or its criteria table')
     tasks, states, board = [], DEFAULT_STATES, ''
     stale_prose, report_stale = '', ''
-    externals = []
+    externals, members_progress = [], []
     if not focused:
-        board, states, tasks = read_board(ws, problems)
+        if args.initiative:
+            board, states, tasks, externals, members_progress = initiative_gather(members, problems)
+        else:
+            board, states, tasks = read_board(ws, problems)
         if not board:
             problems.append('task-board.md is missing or empty')
         if board and not tasks:
@@ -2781,7 +2975,8 @@ def main():
                       % name, file=sys.stderr)
         for line in state_divergence_notes(summary, export_summary, tasks):
             print(line, file=sys.stderr)
-        externals = validate_tasks(ws, tasks, states, problems, read_siblings(ws))
+        if not args.initiative:
+            externals = validate_tasks(ws, tasks, states, problems, read_siblings(ws))
     arch, missing_base = None, False
     if args.map_base:
         try:
@@ -2810,7 +3005,7 @@ def main():
         nodes, deps = graph_nodes(tasks, externals)
         stage = stages_of([n['id'] for n in nodes], deps)
         if stage is None:
-            problems.append('the dependencies form a cycle')
+            problems.append(cycle_problem([n['id'] for n in nodes], deps))
     if export_summary is not None:
         for line in export_prose_notes(ws):
             print(line, file=sys.stderr)
@@ -2818,7 +3013,7 @@ def main():
         for line in problems:
             print('refused: %s' % line)
         return 1
-    tasks.sort(key=lambda t: int(t['id'][2:]))
+    tasks.sort(key=task_order)
     for t in tasks:
         t['deps'] = sorted(set(t['deps']))
     ids = [t['id'] for t in tasks]
@@ -2836,8 +3031,7 @@ def main():
     working = open_runs(read(ws, 'resource-usage.md'))
     live = {w['scope'] for w in working}
     version = re.search(r'Methodology:\s*Tackle\s+(\d+\.\d+\.\d+)', read(ws, 'AGENTS.md'))
-    now = datetime.datetime.now().astimezone()
-    stamp = now.strftime('%Y-%m-%d %H:%M ') + (now.tzname() or now.strftime('%z'))
+    stamp = build_stamp()
     heading = re.search(r'^# (.+)$', plan, re.M)
     title_line = heading.group(1).strip() if heading else ''
     title = title_line.split('—', 1)[-1].strip() if '—' in title_line else title_line
@@ -2893,7 +3087,7 @@ def main():
         ensure_ascii=True).replace('<', '\\u003c').replace('>', '\\u003e').replace('&', '\\u0026')
     print_reports = printable_reports(plan, focused, fields, reqs, requirement_rows, decisions, summary, export_summary, tasks, working, board, snapshot,
                                       stamp, method, title, ui, export_ui, report_stale)
-    siblings_html = sibling_plans(ws, ui)
+    siblings_html = initiative_progress(members_progress, ui) if args.initiative else sibling_plans(ws, ui)
     if siblings_html:
         # Each printed report lists the siblings too, so the PDF carries their link targets as text.
         print_reports = print_reports.replace('<div class="report-body">', '<div class="report-body"><section class="report-section report-siblings"><h2>%s</h2>%s</section>' % (
