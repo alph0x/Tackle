@@ -16947,6 +16947,15 @@
           "reason": "release version stamp bumped to 10.0.1"
         }
       ]
+    },
+    {
+      "path": "skills/tackle/scripts/README.md",
+      "line": 12,
+      "unit_sha256": "95d363aac83458119dcf8eb90ddc50280ec71cf33794259f79822261dd541331",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "| [plan_view.py](plan_view.py) | `e6169fabf74e3e0f1308233dcf625b9af0b2e760312d2d7f28ea719f1283692f` |",
+      "destination_unit_sha256": null
     }
   ]
 }
