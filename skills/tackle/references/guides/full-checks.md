@@ -3,9 +3,9 @@
 
 Use an equivalent complete harness export when available. Otherwise, with the owner's explicit
 authorization ([script consent](../../scripts/README.md#consent)), run the Python 3 [capture script](../../scripts/capture.py)
-from an authorized cwd before running checks. It is an optional script,
-not an installed runner or a new product dependency. This is Coordinated's direct-capture entry from
-`run.md` and `evidence-capture.md`; Direct and Focused keep their own procedures.
+from an authorized cwd before running checks: an optional script, not an installed runner or a new
+product dependency. This is Coordinated's direct-capture entry from `run.md` and `evidence-capture.md`;
+Direct and Focused keep their own procedures.
 
 ## Establish the boundary first
 
@@ -35,27 +35,26 @@ necessary for protected expectations.
 
 ## Prepare once, then capture
 
-During PLAN, select a capture destination, exact command and input selectors for each obligation.
-Include source, **all selected tests including additive files**, contract, input data, config and
+During PLAN, select a capture destination, exact command and input selectors for each obligation:
+source, **all selected tests including additive files**, contract, input data, config and
 dependencies. Selectors come from the acceptance/check's actual dependency surface, not merely
 task Write scope. Review completeness before execution; no generic helper can infer every dynamic
 input. A glob records its membership, including an intentionally optional empty match; a required
-selector matching nothing is an error. Do not select credentials, home directories or generated
+selector matching nothing is an error. Never select credentials, home directories or generated
 evidence. Save compound scripts before invoking them and include every called script/config;
 the script automatically includes itself (when it sits outside cwd the record names it in a `program` field with its absolute path and sha256 instead), its JSON specification and existing file arguments after argv[0]. The executable/runtime is
 observed separately; absolute interpreter paths are valid. External read-only scripts need an
-authorized local snapshot or equivalent harness capture; do not widen write permissions to copy them.
+authorized local snapshot or equivalent harness capture; never widen write permissions to copy them.
 A copied module loaded by an inline interpreter still needs its selector. Running the capture script
 needs the owner's explicit authorization; an equivalent harness capture is preferred.
 
-The script saves exact input bytes once per initiative in immutable content-addressed
-objects, with compatible per-record blob aliases, binary streams and actual
-child status. It does not decide whether a shell wrapper's logic is sound. Prefer direct runner
-argv; check each required child in compound scripts. A printed PASS or a trailing successful
-command must never mask failure. A script correction gets a new verification record; previous snapshots
-are never replaced. The script is for foreground children that join their own children. It cannot
-certify process-tree shutdown: on timeout, interrupt or background work, use the harness to stop
-all writers and record that confirmation before closing evidence.
+The script saves exact input bytes once per initiative in immutable content-addressed objects, with
+compatible per-record blob aliases, binary streams and actual child status; it does not judge whether a
+shell wrapper's logic is sound. Prefer direct runner argv; check each required child in compound scripts.
+A printed PASS or a trailing successful command must never mask failure. A script correction gets a new
+verification record; previous snapshots are never replaced. The script serves foreground children that
+join their own children and cannot certify process-tree shutdown: on timeout, interrupt or background
+work, use the harness to stop all writers and record that confirmation before closing evidence.
 
 With the owner's explicit authorization, run [`scripts/capture.py`](../../scripts/capture.py) with one JSON specification path,
 for example `python3 -I <skill>/scripts/capture.py docs/plans/demo/product-check.json`. The JSON has
@@ -64,10 +63,10 @@ for example `python3 -I <skill>/scripts/capture.py docs/plans/demo/product-check
 `destination` must stay inside that workspace's `verification-records/` store; the default is the store itself.
 Optional `prior_records` names exact prior record directories inside this same store, never a
 glob. New specifications must declare workspace. Legacy specifications with only `destination`
-still use that explicitly selected directory as their storage root; do not generate new implicit
+still use that explicitly selected directory as their storage root; generate no new implicit
 cwd destinations. See [record lifecycle](record-lifecycle.md) for retention/export and compatibility. Use an authorized absolute cwd as the
 process cwd; paths resolve from it. For example selectors can cover `src/**/*.py`, `test*.py`,
-`SPEC.md`, and the exact validation/config files. Adapt to the real repository, not this example.
+`SPEC.md` and the exact validation/config files. Adapt to the real repository, not this example.
 
 It prints the path of the new `receipt.md` and exits 0 when the check is accepted, 1 when it is not accepted
 or when the specification is refused with a named `ValueError`; run it only with the owner's explicit
@@ -76,10 +75,10 @@ authorization for this use ([script consent](../../scripts/README.md#consent)).
 Before reusing a verification record, reject any retirement tombstone, then open its result and verify stream/blob hashes, relevant final input
 hashes **and selector membership**, produced artifacts and the actual successful child result.
 Missing or altered bytes invalidate the record. `read_record` checks retained bytes and actual
-child status for both old per-observation blobs and the shared layout; it does not infer that
+child status for both old per-observation blobs and the shared layout; it never infers that
 current source/configuration/runtime or semantic coverage is unchanged. A start without a complete result is
-incomplete. Retain the old record and run only dependent checks again. Hashes identify bytes;
-review of the declared selectors establishes whether those bytes cover the obligation.
+incomplete. Keep the old record and rerun only dependent checks. Hashes identify bytes; review of the
+declared selectors establishes whether those bytes cover the obligation.
 
 ## Execute canonical lint faithfully
 
@@ -93,7 +92,7 @@ row number, command bytes and pass condition. Reject missing/duplicate rows, mal
 an unexpected source revision. Establish the expected hash from a reviewed, trusted skill revision
 before reading workspace-provided input; a hash copied from the same unreviewed file proves only
 byte consistency, not authority. Review any change to a row program before updating
-that trust anchor. Do not invent an equivalent short validator, replace a row with
+that trust anchor. Never invent an equivalent short validator, replace a row with
 `true`, or paste the programs into an interpolated shell string. Execute each saved command using
 `['sh', saved_script]`; retain a separate raw check record for each row. The snapshot of the saved
 script must match the extracted bytes. A script's trailing `printf` cannot supply the row result.
@@ -121,9 +120,9 @@ configurations are still accepted as an explicit workspace location; newly gener
 configurations name workspace. Optional `rows` selects
 affected checks; omission runs all 17. Initial PLAN still requires all 17. Include citation targets
 and other actual dependencies in selectors. An authorized read-only source outside cwd is read
-and hash-verified, then snapshotted locally; helpers and outputs remain inside cwd. The script extracts, saves, captures and verifies
-each command itself; do not manually transcribe row programs into another script. A custom
-composition remains possible, but compare its actual captured script bytes with the extracted
+and hash-verified, then snapshotted locally; helpers and outputs stay inside cwd. The script extracts, saves, captures and verifies
+each command itself; never transcribe row programs by hand into another script. A custom
+composition stays possible, but compare its actual captured script bytes with the extracted
 canonical bytes before claiming canonical coverage. A source/command mismatch or absent script
 snapshot is ERROR even if the command exited zero. A subset score is never a full-plan approval.
 
@@ -144,8 +143,8 @@ Interpret **stdout, stderr and real exit together** using the canonical conditio
 Row 17 belongs to the last line: its findings print with exit 0 (FAIL), and its structural refusals, `migrate first` and a missing `history.md`, exit 1 (ERROR).
 
 Report every finding verbatim, including findings printed with exit zero. WARN keeps its existing
-nonblocking severity; ERROR means the row was not validly observed, never PASS. Preserve failures
-and do not let wrapper success certify them. The capture script's `accepted` means a captured zero exit with stable inputs and present
+nonblocking severity; ERROR means the row was not validly observed, never PASS. Preserve failures;
+wrapper success never certifies them. The capture script's `accepted` means a captured zero exit with stable inputs and present
 required artifacts; lint's row-specific verdict uses its captured fields, not that generic boolean.
 The score is computed from these records, never a constant or a count of launched commands.
 
@@ -156,7 +155,7 @@ including required reviews, runtimes, integration/global coverage and packaging.
 preparation and canonical lint records after checking their revisions. After product checks,
 write the reports, board/log/usage updates and final output references once, then validate their
 affected rows. Link a captured verification record from the ledger/report instead of transcribing it.
-A verification record may satisfy several obligations when its actual coverage does; do not rerun a
+A verification record may satisfy several obligations when its actual coverage does; never rerun a
 passing product suite merely to fill separate target, integration and global headings.
 
 Use this dependency map conservatively when selecting affected lint rows:
@@ -177,10 +176,10 @@ Use this dependency map conservatively when selecting affected lint rows:
 | Reference-doc membership/content, current time crossing freshness window | 15 |
 | Lint source, command interpreter/tools or policy relevant to its execution | All affected rows; all 17 if impact cannot be established |
 
-Union dependencies; the same edit can match several rows. Track glob membership, citation target
-files and time as well as hashes of known files. Do not reuse row 15 without a verified expiry
-boundary; rerun this inexpensive row when freshness is uncertain. Unknown dependencies invalidate
-the potentially affected records. Product checks have their own input map.
+Union dependencies; one edit can match several rows. Track glob membership, citation target files
+and time as well as hashes of known files. Never reuse row 15 without a verified expiry boundary;
+rerun this inexpensive row when freshness is uncertain. Unknown dependencies invalidate the
+potentially affected records. Product checks have their own input map.
 
 The final index still accounts for all 17 canonical rows, distinguishing fresh executions from
 reused current records; report `lint: N/17 checks passed` from their actual pass conditions
@@ -188,12 +187,12 @@ reused current records; report `lint: N/17 checks passed` from their actual pass
 also report how many rows were executed versus reused. A selection of custom checks is not 17/17.
 The release sweep still executes every prescribed row and gate; this reuse rule does not waive it.
 
-Finish with complete only when all mandatory obligations have current accessible evidence.
-Otherwise finish with the bounded blocker packet from `run.md`, preserving completed unaffected
-work and the unresolved obligation. Budget exhaustion ends with an honest incomplete/blocked
-handoff. It does not justify changing acceptance, omitting global coverage or another unbounded
-bookkeeping loop. Correct an observed failure within the existing recovery budget; do not restart
-unchanged preparation merely because a new heading or session begins.
+Finish with complete only when all mandatory obligations have current accessible evidence;
+otherwise with the bounded blocker packet from `run.md`, preserving completed unaffected work and the
+unresolved obligation. Budget exhaustion ends with an honest incomplete/blocked handoff, never
+justifying changed acceptance, omitted global coverage or another unbounded bookkeeping loop.
+Correct an observed failure within the existing recovery budget; never restart unchanged preparation
+merely because a new heading or session begins.
 
 Explicit Focused applicability uses the first-line marker and shape checks in `lint-spec.md`, not
 absence of Coordinated files. Include plan.md in selectors for every row: route changes invalidate all

@@ -3782,7 +3782,7 @@
       "unit_sha256": "0203c013056de7b2574811acca03e8688e81e24145e192ac5f5c2b2935df2a7b",
       "disposition": "reworded",
       "destination": "references/guides/status.md",
-      "note": "Reuse it with the necessary source records; do not unconditionally read complete closed history.",
+      "note": "Reuse it with the necessary source records; never unconditionally read complete closed history.",
       "destination_unit_sha256": null
     },
     {
@@ -3815,7 +3815,7 @@
       "unit_sha256": "220b13c658c2b55415620f48909561876e3d4924a4e9e2c2f47d38d48a5ea81a",
       "disposition": "reworded",
       "destination": "references/guides/run.md",
-      "note": "Where the harness has native usage capture, use it at role start and again after the role's terminal event is externally observed, keeping its receipt and exact thread ID with the Run ID; [codex-native-usage.md](codex-native-usage.md) is one example.",
+      "note": "Where the harness has native usage capture, use it at role start and again after the role's terminal event is externally observed, keeping its receipt and exact thread ID with the Run ID ([codex-native-usage.md](codex-native-usage.md) is one example).",
       "destination_unit_sha256": null
     },
     {
@@ -3824,7 +3824,7 @@
       "unit_sha256": "aa508c3bd310480c2773b8d4e2d1d5be7c138e6f352006504951846705f9af91",
       "disposition": "reworded",
       "destination": "references/guides/run.md",
-      "note": "Where the harness has native usage capture, use it at role start and again after the role's terminal event is externally observed, keeping its receipt and exact thread ID with the Run ID; [codex-native-usage.md](codex-native-usage.md) is one example.",
+      "note": "Where the harness has native usage capture, use it at role start and again after the role's terminal event is externally observed, keeping its receipt and exact thread ID with the Run ID ([codex-native-usage.md](codex-native-usage.md) is one example).",
       "destination_unit_sha256": null
     },
     {
@@ -4048,7 +4048,7 @@
       "unit_sha256": "f9c25bb1865733f8c7ccf539c025a23d818be1d334ece90cb9a1c6d46edf90a1",
       "disposition": "reworded",
       "destination": "references/guides/run.md",
-      "note": "For Full, use [execution checks](full-checks.md) when the harness lacks complete capture or canonical lint automation.",
+      "note": "For Full, use [execution checks](full-checks.md) when the harness lacks complete capture or canonical lint automation; the smaller `evidence-capture.md` example serves the other routes.",
       "destination_unit_sha256": null
     },
     {
@@ -4111,7 +4111,7 @@
       "unit_sha256": "f31be444d6b0cc231a10b2b0e312ec2f25e7f93206db815ae6889500906ef48f",
       "disposition": "reworded",
       "destination": "references/guides/run.md",
-      "note": "The escalation packet names the exact requirement/clause and revision, expected versus observed result, reproducer and raw-evidence pointer, affected consumers, attempts/cycles already used and remaining, and the smallest unresolved decision.",
+      "note": "The escalation packet names the exact requirement/clause and revision, expected versus observed result, reproducer and raw-evidence pointer, affected consumers, attempts/cycles used and remaining, and the smallest unresolved decision.",
       "destination_unit_sha256": null
     },
     {
@@ -4148,7 +4148,7 @@
       "unit_sha256": "ec64722c8ad6153ed9a824e69e31c232fa495f64194a94fac602fbb5281c3a29",
       "disposition": "reworded",
       "destination": "references/guides/run.md",
-      "note": "Once deliverable acceptance and its review/sign-off obligations pass, write the closure records, check only fields and obligations affected by those writes, and respond.",
+      "note": "Once deliverable acceptance and its review/sign-off obligations pass, write the closure records, check only fields and obligations those writes affect, and respond.",
       "destination_unit_sha256": null
     },
     {
@@ -4157,7 +4157,7 @@
       "unit_sha256": "4b37ea519af8444a1931d10d7221e3d0549f0c0e58ec796f323c088e49844562",
       "disposition": "reworded",
       "destination": "references/guides/run.md",
-      "note": "Once deliverable acceptance and its review/sign-off obligations pass, write the closure records, check only fields and obligations affected by those writes, and respond.",
+      "note": "Once deliverable acceptance and its review/sign-off obligations pass, write the closure records, check only fields and obligations those writes affect, and respond.",
       "destination_unit_sha256": null
     },
     {
@@ -4202,7 +4202,7 @@
       "unit_sha256": "7bead8195562da2bd7138c3a1ec4f39a5f870243b1f4364be1ec1a0d79bf5f50",
       "disposition": "reworded",
       "destination": "references/guides/run.md",
-      "note": "Narrower diagnostic inspection remains allowed; diagnosis alone does not justify repeating acceptance.",
+      "note": "Narrower diagnostic inspection stays allowed; diagnosis alone does not justify repeating acceptance.",
       "destination_unit_sha256": null
     },
     {
@@ -5077,7 +5077,7 @@
       "unit_sha256": "05f1bb2098b7dbae93a73de52c4172f27012cea88abfe01f096916dc6a918f99",
       "disposition": "reworded",
       "destination": "references/guides/run.md",
-      "note": "check only fields and obligations affected by those writes, and respond. Do not restart whole-plan lint, guide traversal or housekeeping after product acceptance without a relevant change, new failure, or explicit release/audit request. Reuse unchanged PLAN readiness",
+      "note": "check only fields and obligations those writes affect, and respond. Never restart whole-plan lint, guide traversal or housekeeping after product acceptance without a relevant change, new failure, or explicit release/audit request.",
       "destination_unit_sha256": null
     },
     {
@@ -8130,8 +8130,14 @@
       "unit_sha256": "03c858aa394f14cf03a1cdf56b14e5772d314eb7ba1b0a39f137675126a90fae",
       "disposition": "reworded",
       "destination": "references/guides/codex-native-usage.md",
-      "note": "This optional script does not replace native raw evidence or the ordinary lifecycle start/finish rows.",
-      "destination_unit_sha256": null
+      "note": "This optional script replaces neither native raw evidence nor the ordinary lifecycle start/finish rows.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
     },
     {
       "path": "references/guides/codex-native-usage.md",
@@ -8266,7 +8272,7 @@
       "unit_sha256": "4d6d765d1ad2819304901a07c0839f5bc9dbc3d40d08367031ac1a5bf2650f90",
       "disposition": "reworded",
       "destination": "references/guides/system-one.md",
-      "note": "The separate state script supplies the actual adapter; this pure function performs no environment, filesystem or network operation.",
+      "note": "The separate state script supplies the actual adapter; this pure function performs no environment, filesystem or network operation, and a third-party callable's behavior is outside its proof.",
       "destination_unit_sha256": null
     },
     {
@@ -8275,7 +8281,7 @@
       "unit_sha256": "ee191bddcf1daefbd2e2fe1c7440de57d28e96b76ec4e2c1245dbd8b5c87ead5",
       "disposition": "reworded",
       "destination": "references/guides/system-one.md",
-      "note": "Behavior of a third-party callable is outside this pure function's proof.",
+      "note": "The separate state script supplies the actual adapter; this pure function performs no environment, filesystem or network operation, and a third-party callable's behavior is outside its proof.",
       "destination_unit_sha256": null
     },
     {
@@ -8293,7 +8299,7 @@
       "unit_sha256": "0ebbf469892ff0a2b1cde9649784fd180b7184cf6d12ae8b67db2e2e1273674c",
       "disposition": "reworded",
       "destination": "references/guides/system-one.md",
-      "note": "These are conservative reference defaults, not provider calibration.",
+      "note": "The reference confidence minimum is `0.6` for `resume-selection` and `0.8` for the other uses, inclusive at the boundary: conservative reference defaults, not provider calibration.",
       "destination_unit_sha256": null
     },
     {
@@ -8432,7 +8438,7 @@
       "unit_sha256": "14eafa75ee44cce97be5ab0b3992d54bc6b3b5de6e8c4a44c050ef0fd29b5e5f",
       "disposition": "reworded",
       "destination": "references/guides/context-lifecycle.md",
-      "note": "The script hashes current authoritative files on each verification.",
+      "note": "The script hashes current authoritative files on each verification, so a large task board or decision file still costs bytes to verify.",
       "destination_unit_sha256": null
     },
     {
@@ -8504,7 +8510,7 @@
       "unit_sha256": "671ad9ee3debb1e1b09babd29d9caeed40d46a98d010b76607987cf1bb8ff1b1",
       "disposition": "reworded",
       "destination": "references/guides/context-lifecycle.md",
-      "note": "The script does not validate user intent, semantic source selection, check acceptance, or all milestone coverage.",
+      "note": "The script does not validate user intent, semantic source selection, check acceptance or all milestone coverage; those stay the existing PLAN/RUN obligations.",
       "destination_unit_sha256": null
     },
     {
@@ -8603,8 +8609,14 @@
       "unit_sha256": "aab50ef5bd5fbdd850e1dd6fac9547ad6b9ac2abf079ae2d9527896b0897748c",
       "disposition": "reworded",
       "destination": "references/guides/evidence-capture.md",
-      "note": "Coordinated needs saved script bytes as well as fingerprints; do not adapt the smaller script below with a manual input list that omits the observer or executed scripts.",
-      "destination_unit_sha256": null
+      "note": "Coordinated needs saved script bytes as well as fingerprints; never adapt the smaller script below with a manual input list that omits the observer or executed scripts.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
     },
     {
       "path": "references/guides/evidence-capture.md",
@@ -8612,7 +8624,7 @@
       "unit_sha256": "9ea1f9e98cfc2584a8921754f40cf58fd7d411f9e7fde868ce302c182f30654e",
       "disposition": "reworded",
       "destination": "references/guides/evidence-capture.md",
-      "note": "The script below remains available for the other routes under their existing evidence contract.",
+      "note": "The script below stays available for the other routes under their existing evidence contract.",
       "destination_unit_sha256": null
     },
     {
@@ -8636,7 +8648,7 @@
       "unit_sha256": "d3dabfc4dbf9edfd88874021993d4e5e642d01264e1f51158f3fa2b51d464772",
       "disposition": "reworded",
       "destination": "references/guides/evidence-capture.md",
-      "note": "The script is not an installed runner.",
+      "note": "The script is not an installed runner; introduce no dependency when the repository already has an equivalent capture mechanism.",
       "destination_unit_sha256": null
     },
     {
@@ -8672,8 +8684,14 @@
       "unit_sha256": "3df3ff1a650684d354ab9afffb50249663eccaee74d23208b16ee3624081c8e8",
       "disposition": "reworded",
       "destination": "references/guides/evidence-capture.md",
-      "note": "This smaller script preserves fingerprints and streams; it does not claim to retain input snapshots or support later reconstruction without an accessible complete source export.",
-      "destination_unit_sha256": null
+      "note": "This smaller script preserves fingerprints and streams; it never claims to retain input snapshots or support later reconstruction without an accessible complete source export.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
     },
     {
       "path": "references/guides/evidence-capture.md",
@@ -8681,7 +8699,7 @@
       "unit_sha256": "c87b935feedd3b14b9c1d3f2b1762aaa86648790569d470cd041f85e488cb8ab",
       "disposition": "reworded",
       "destination": "references/guides/evidence-capture.md",
-      "note": "The script retains binary output, child failure, partial output on timeout, and before/after revisions.",
+      "note": "The script retains binary output, child failure, partial output on timeout and before/after revisions.",
       "destination_unit_sha256": null
     },
     {
@@ -8699,7 +8717,7 @@
       "unit_sha256": "c77a279e667d44cae804fa90adf3d530a8cca154cc804d827cb814716b715e40",
       "disposition": "reworded",
       "destination": "references/guides/evidence-capture.md",
-      "note": "This script supervises the direct child only.",
+      "note": "This script supervises the direct child only: use it for checks that join all their children; background/process-tree work requires the harness's cancellation/isolation and confirmation that all writers stopped before closing evidence, otherwise mark completion unavailable.",
       "destination_unit_sha256": null
     },
     {
@@ -8735,7 +8753,7 @@
       "unit_sha256": "ac0cc3425b24489540a83fecd6d12117432afcf1c64c293c978576a6158c825a",
       "disposition": "reworded",
       "destination": "references/guides/full-checks.md",
-      "note": "Otherwise, with the owner's explicit authorization ([script consent](../../scripts/README.md#consent)), run the Python 3 [capture script](../../scripts/capture.py) from an authorized cwd before running checks.",
+      "note": "Otherwise, with the owner's explicit authorization ([script consent](../../scripts/README.md#consent)), run the Python 3 [capture script](../../scripts/capture.py) from an authorized cwd before running checks: an optional script, not an installed runner or a new product dependency.",
       "destination_unit_sha256": null
     },
     {
@@ -8744,7 +8762,7 @@
       "unit_sha256": "c49a1dd4058a6bc96742dc498aa17173476c600da3993c94d9f6ae7ac532dc13",
       "disposition": "reworded",
       "destination": "references/guides/full-checks.md",
-      "note": "It is an optional script, not an installed runner or a new product dependency.",
+      "note": "Otherwise, with the owner's explicit authorization ([script consent](../../scripts/README.md#consent)), run the Python 3 [capture script](../../scripts/capture.py) from an authorized cwd before running checks: an optional script, not an installed runner or a new product dependency.",
       "destination_unit_sha256": null
     },
     {
@@ -8762,7 +8780,7 @@
       "unit_sha256": "811a8169754d12509db5715213d17cc8ac0e42d20d18f245c5a1ceda25defb6b",
       "disposition": "reworded",
       "destination": "references/guides/full-checks.md",
-      "note": "The script saves exact input bytes once per initiative in immutable content-addressed objects, with compatible per-record blob aliases, binary streams and actual child status.",
+      "note": "The script saves exact input bytes once per initiative in immutable content-addressed objects, with compatible per-record blob aliases, binary streams and actual child status; it does not judge whether a shell wrapper's logic is sound.",
       "destination_unit_sha256": null
     },
     {
@@ -8771,7 +8789,7 @@
       "unit_sha256": "88a5cccfcb2515861ab932f557f1a9ae500a992f03580ee8bb4e3038336ecba7",
       "disposition": "reworded",
       "destination": "references/guides/full-checks.md",
-      "note": "The script is for foreground children that join their own children.",
+      "note": "The script serves foreground children that join their own children and cannot certify process-tree shutdown: on timeout, interrupt or background work, use the harness to stop all writers and record that confirmation before closing evidence.",
       "destination_unit_sha256": null
     },
     {
@@ -8879,8 +8897,14 @@
       "unit_sha256": "48eecd21ca89cae2b29b47300eb3d0e4953ae83c9800e4bb31bda32992c3b01e",
       "disposition": "reworded",
       "destination": "references/guides/full-checks.md",
-      "note": "The script extracts, saves, captures and verifies each command itself; do not manually transcribe row programs into another script.",
-      "destination_unit_sha256": null
+      "note": "The script extracts, saves, captures and verifies each command itself; never transcribe row programs by hand into another script.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
     },
     {
       "path": "references/guides/full-checks.md",
@@ -9050,7 +9074,7 @@
       "unit_sha256": "b415efd55436727b1f7b20fe5e1d6750b8c63ab4fe0bf32b69a9f2f6c6e4d99a",
       "disposition": "reworded",
       "destination": "references/guides/record-lifecycle.md",
-      "note": "Direct may use sufficient actual tool records, and Focused may use its small explicit-workspace script.",
+      "note": "Direct may use sufficient actual tool records, Focused its small explicit-workspace script.",
       "destination_unit_sha256": null
     },
     {
@@ -9558,8 +9582,14 @@
       "unit_sha256": "bd1bc758431064d5cd5e53ac0c677bccf2bfc20685c2bb0ac7641c9c73428d00",
       "disposition": "reworded",
       "destination": "references/guides/full-checks.md",
-      "note": "Do not invent an equivalent short validator, replace a row with `true`, or paste the programs into an interpolated shell string.",
-      "destination_unit_sha256": null
+      "note": "Never invent an equivalent short validator, replace a row with `true`, or paste the programs into an interpolated shell string.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
     },
     {
       "path": "references/guides/lint-spec.md",
@@ -13674,6 +13704,1977 @@
       "destination": "references/guides/decompose-and-lint.md",
       "note": "At the step above that compiles sufficient task briefs, read the workspace `AGENTS.md` model map once per initiative — confirm it at intake, then reconfirm on a deviation, on any other model change and on an escalation — and observe the host's model names, tier capabilities, model-binding and effort-binding controls, telemetry, and the source of those observations before proposing roles.",
       "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 6,
+      "unit_sha256": "db1d457f89411fd6cd82ecc19933803ddbe6175e0a272b62729e70ccf48cd29b",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Each section below is depth on demand, from the card's Depth list.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 13,
+      "unit_sha256": "befa412944fc14d45d7ce1d5b3f45beeee8bfe61657a9533f535bf7ea307ff8b",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Every target, correction, integration or global validation is an observation.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 16,
+      "unit_sha256": "a3b35db94b68c015fe625e20bd6db039421c11fb4eae67166daaf46a5f5854af",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "The preflight records the protocol and contract revisions, relevant fingerprints, declared Write scope, executor binding and the current tree.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 22,
+      "unit_sha256": "ddaf7094d60412bb0a75c5c1e875395d9980a2cde1b814eccebd6da457fa00af",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "A printed PASS is not evidence when a child process, wrapper, generated artifact or package failed.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 23,
+      "unit_sha256": "7e2dd9cd98c97fb0287402101785a548116ada3c7193fc059d8a78b43a5ad179",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Check a real child return code, timeout and signal independently of wrapper output: a validation command's own process result is authoritative, and a helper printing PASS while its child failed is a failed observation.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 23,
+      "unit_sha256": "8921974dd11c53431d21a1f1ef66a9b3cd552e2d0aac910ce00284ec11c56272",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Check a real child return code, timeout and signal independently of wrapper output: a validation command's own process result is authoritative, and a helper printing PASS while its child failed is a failed observation.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 27,
+      "unit_sha256": "7b02c2be6dfce5b320ac35af499c5a03a198b11c97759177ffc34808afd83730",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "A final PASS is optional unless the consumer requires it, and comes only after all relevant children succeed.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 33,
+      "unit_sha256": "3df121b879480291024c1b973c00af396202aa1b3ad26035e1cc4cba10a0bfa1",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Capture with the harness's complete exported event or direct stdout/stderr capture.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 34,
+      "unit_sha256": "56f4122f8484f452d84ec754a144dbd10608678a176a9d6d78d88a681314d06f",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "An export must stay independently accessible after handoff; otherwise save the raw command result locally.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 36,
+      "unit_sha256": "e1e81dfb69848a6f572d5936b0c80d940187df7d566aa9ef4b0baa4645284813",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Record unavailable metadata as `n/a`, not midnight, zero or an inferred model/effort.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 38,
+      "unit_sha256": "aa352af34b4becb6fb74edf176bf3d76a444ca6d73281324ba8b08f2b40eed8f",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "If they change, keep the old result as historical and revalidate only affected obligations.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 40,
+      "unit_sha256": "c4e3f8b2b43a769660c43f948b72cb5113b6be346b1a3cd9edf4b49c4f6fc107",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Exact-byte edits and checks preserve the specified delimiter and final newline, never normalizing either away.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 44,
+      "unit_sha256": "3afcf9d1790925fe627cca44f28880b4bab540b0ce1f22c9933668a475ccd8e7",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "For Full, use [execution checks](full-checks.md) when the harness lacks complete capture or canonical lint automation; the smaller `evidence-capture.md` example serves the other routes.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 45,
+      "unit_sha256": "2b6053e15fa6aedeeca2ca4f5983da23ab6f4aa1fc591b3b27bd62300370dbc6",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "For Full, use [execution checks](full-checks.md) when the harness lacks complete capture or canonical lint automation; the smaller `evidence-capture.md` example serves the other routes.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 46,
+      "unit_sha256": "f86e37759bece95711e9d96b801c4cffdf4b5b9206606814d4a353fef2e3e814",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Establish effective write confinement before the first PLAN write/check and keep it in RUN, recording its observed capability apart from instructions.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 48,
+      "unit_sha256": "12aa6eea58717772b318a15fd8821e66cfee6911f1a3cbc6b15223a2cc90483f",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "One captured command may discharge target, surrounding and integration obligations when its observed coverage includes them all; index that observation instead of rerunning unchanged checks to populate headings.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 53,
+      "unit_sha256": "6b52ec6c23d8365cac9dbd285c1b593cd82f851ec63651d6c1d61c7dea72f9d2",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Where the harness has native usage capture, use it at role start and again after the role's terminal event is externally observed, keeping its receipt and exact thread ID with the Run ID ([codex-native-usage.md](codex-native-usage.md) is one example).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 56,
+      "unit_sha256": "1af19bd38d1f99a7bebb4e804d6110598661c0dccfaafeb640078e8acc4ae6a6",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Save native token observations at their session scope; an exact terminal clock goes in the role's `resource-usage.md` finish row only with a reviewed Run ID/turn map.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 87,
+      "unit_sha256": "61b0eace49f25e2e982051277144f3318c06488b179c3776220c523245eb44ad",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Diagnose from their command, output and relevant input fingerprints; never repeat an unchanged failed check to rediscover its result.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 90,
+      "unit_sha256": "f8f5bfa120405c7276c2df7abac10eed53af5681c0235d7487c24d027ccf75e6",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Narrower diagnostic inspection stays allowed; diagnosis alone does not justify repeating acceptance.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 93,
+      "unit_sha256": "ef27d4f8b44d57350c496b6c1ac3af8c0277b641cced7ff42823fe1fcbe3cbfc",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "The escalation packet names the exact requirement/clause and revision, expected versus observed result, reproducer and raw-evidence pointer, affected consumers, attempts/cycles used and remaining, and the smallest unresolved decision.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 95,
+      "unit_sha256": "e1b426ac6fa7a3c31e5a5fa078747333cc85ac57323efb2d7b42fc67ba60c57c",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "It is a decision aid; it never silently replans, broadens scope, upgrades model or effort, dispatches a frontier role, or makes up a missing requirement.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 105,
+      "unit_sha256": "8efb69491010d4c03589b6c393f67c2ee95888c5c5a4f1e9ceaba73663cdd5ed",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "A relevant external change may justify a new diagnosis; a new actor/task name never resets this allowance.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 108,
+      "unit_sha256": "f1324030b1997e64db81897b6d963668f8b011fde9869fb9d3a58466e1d0df34",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "All other operational causes stay blocked pending the concrete needed capability or decision.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 114,
+      "unit_sha256": "b3d7601e3fb42aac6c368ae20bb038cbff3c1b5e971debb2a02d763cb6084ccd",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Never duplicate an irreversible action merely because a session ended without a terminal message.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 115,
+      "unit_sha256": "72d1620cd456d3cc01815107291d9a6701f9be9dee56e0e3a4418c5c1707c947",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Interrupted between record/report/board writes, reconcile all three against actual outcomes before repairing the incomplete update.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 116,
+      "unit_sha256": "443867bcbe196af4afd904733df58e0e549af41ae49db60cb66741fe2ee4d28d",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "A completed side effect is not repeated merely to fill a missing terminal row; unchecked work stays Interrupted or Checking.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 139,
+      "unit_sha256": "72ce2b05badcc563e6f32c2c9049117d1802e957a7795df0628b46d6a8a575c7",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Each failed implementation correction appends an attempt-journal entry, naming the observed failure, correction, validation command, result and cycle count, before another attempt, and re-reads the earlier entries.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 140,
+      "unit_sha256": "3a7afc3d9585ea19ba13a55a23164a05088c6fa142e7c542ccdea0b166e46f0a",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Each failed implementation correction appends an attempt-journal entry, naming the observed failure, correction, validation command, result and cycle count, before another attempt, and re-reads the earlier entries.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 141,
+      "unit_sha256": "653c4f44d2ad87c73c02dbc09f2b7e6a60c3cb242c5cac823efa99bf0f887833",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "A correction changing a contract or acceptance requires the authorized superseding decision first, then re-grounding and revalidation.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 160,
+      "unit_sha256": "daaab36cb7e551dc56b1efd63b7fdf156cd91f1dcb109f9582639f04e9941a36",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Mechanical execution, focused semantic review and adversarial audit are separate capabilities.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 160,
+      "unit_sha256": "a04aa3ed39b853b28cfccbf19a7a2f1e405a16e27e61ba1864187c7d8d230daa",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "The same agent may observe a deterministic command: real command evidence with its actual provenance, while its own review stays self-review, not independent.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 211,
+      "unit_sha256": "bbe8714e66aa2cc2ec4870888ce9fc9d512e3b4a04a87e6aff97ff05a18da73a",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "At serialization or unit boundaries, global checks include applicable valid adversarial inputs from the declared domain and the actual consumer parser/round trip; nominal sample output alone does not prove preservation of arbitrary allowed strings or numeric values.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 212,
+      "unit_sha256": "d1c96ba8e9a063ff5bd6342760d933427f8714b8bcc3640635928e64e3a4a8e2",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "At serialization or unit boundaries, global checks include applicable valid adversarial inputs from the declared domain and the actual consumer parser/round trip; nominal sample output alone does not prove preservation of arbitrary allowed strings or numeric values.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 213,
+      "unit_sha256": "6106a6500f678721b58f4e0af1070ba561fccb93496fa9e02063d5f5b0649fc0",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Before implementation, record required supported producer/consumer targets and available validation environments in the contract, then the actual producer and consumer runtimes and the claimed supported range.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 215,
+      "unit_sha256": "70e516713659877f9ea9ed43e777293eb00920b91fa1dc1484b20b906b6fa1ee",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Before implementation, record required supported producer/consumer targets and available validation environments in the contract, then the actual producer and consumer runtimes and the claimed supported range.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 238,
+      "unit_sha256": "e2242a6d861117536fe9aa42ff7e540b4e7b2c3bad96766da9c98a1b1a6c185f",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "An initiative a release names in scope stays subject to this global acceptance obligation until the evidence passes.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 239,
+      "unit_sha256": "5978ee27bfab89f843c76bee1207b3a6ebc05e6647a861e357aae60406b10edc",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "A board with no in-progress rows, or with all Tasks complete, cannot infer release acceptance; the release sweep consumes the named workspace's existing global-acceptance evidence rather than creating a second status source.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 247,
+      "unit_sha256": "e5a8581c714bb6c958e117a272ebeb84eca00f5bd27b4c940123de2c5c063818",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Historical closed and parked workspaces that are neither active nor selected stay non-gating; warn-severity lint rows keep their severity.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 257,
+      "unit_sha256": "0d9e5b4c872690a186c6142e8b03b6a59220795833ae1e6cdde7f7ea126ed9e1",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Unknown telemetry and optional coverage stay non-gating.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 270,
+      "unit_sha256": "495f7441a64059ca17dd4488d8c17b01c9074347f7ff8bfc1fa117fca69d87ee",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Once deliverable acceptance and its review/sign-off obligations pass, write the closure records, check only fields and obligations those writes affect, and respond.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 272,
+      "unit_sha256": "c52cb94dbe642ea8b1dafab3f41f213df1e82b645c90f26f9fb501b096c0ccac",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Never restart whole-plan lint, guide traversal or housekeeping after product acceptance without a relevant change, new failure, or explicit release/audit request.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 280,
+      "unit_sha256": "19a4d452498357ed89e84b0cb4a474dee6d1b1263d17c243428d4eea89f6c460",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Raw records are append-never/overwrite-never artifacts named with a unique Run, Task, validation ordinal and observed timestamp.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 282,
+      "unit_sha256": "eff97586ef0e161138fb34acc75bde29c1206b2ede43d53f7428f52fa8f00ebc",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "Record unknown telemetry as `n/a`; never infer duration, tokens, cost, actor, independence or success.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 38,
+      "unit_sha256": "c53c6b744a5d60bb5a39156c108500de4bbd90a56c377f14b590b845b0da89ae",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "During PLAN, select a capture destination, exact command and input selectors for each obligation: source, **all selected tests including additive files**, contract, input data, config and dependencies.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 39,
+      "unit_sha256": "ac745aaa0546bb41ba6b08a7c4e21dbba0f32c74b9adc63c63930f3848f397f1",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "During PLAN, select a capture destination, exact command and input selectors for each obligation: source, **all selected tests including additive files**, contract, input data, config and dependencies.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 43,
+      "unit_sha256": "f660ce96cd4161ae4f715beed64840ade661f97d5219251e15d0256470e180f8",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Never select credentials, home directories or generated evidence.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 46,
+      "unit_sha256": "ae6793ad6543cd98d1d6f116212de182e0627756c160fe97ba7afd6fc2efcd24",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "External read-only scripts need an authorized local snapshot or equivalent harness capture; never widen write permissions to copy them.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 53,
+      "unit_sha256": "0fde5c35cf9b5d40bf0ce2a40777e5b5cf1fec70c84d2247efda84091612310c",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "The script saves exact input bytes once per initiative in immutable content-addressed objects, with compatible per-record blob aliases, binary streams and actual child status; it does not judge whether a shell wrapper's logic is sound.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 56,
+      "unit_sha256": "455b80a17326bae5be009edca57d48e46b967266b64e33f6f5b0930626af44e5",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "The script serves foreground children that join their own children and cannot certify process-tree shutdown: on timeout, interrupt or background work, use the harness to stop all writers and record that confirmation before closing evidence.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 66,
+      "unit_sha256": "ff5cfbef569ece364c92edf8cc999c1a44900fb602fa858d2629ecb9f1289216",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Legacy specifications with only `destination` still use that explicitly selected directory as their storage root; generate no new implicit cwd destinations.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 69,
+      "unit_sha256": "26e67828387fd5e61ba9733d94317708e0d61d3f70916a75ff9f9c0e878d0269",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "For example selectors can cover `src/**/*.py`, `test*.py`, `SPEC.md` and the exact validation/config files.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 366,
+      "unit_sha256": "c036a3ddd337f860222f26f7f346dd503f2743a5abf8c7b871a0060b2897e2ea",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "`read_record` checks retained bytes and actual child status for both old per-observation blobs and the shared layout; it never infers that current source/configuration/runtime or semantic coverage is unchanged.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 369,
+      "unit_sha256": "899ae9b788e1ae1a6b88c6a9fee60465cc919c12f8f263d43cf98b69381a2bd5",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Keep the old record and rerun only dependent checks.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 406,
+      "unit_sha256": "f1ef0330e94a4114f15c6be77c2545e1d9d2f851027b85d3e62d6d14441f2c45",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "An authorized read-only source outside cwd is read and hash-verified, then snapshotted locally; helpers and outputs stay inside cwd.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 408,
+      "unit_sha256": "aa74931c2c124b85577c592394b829795ec74b2300e9e53981c8a2a163c5c738",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "A custom composition stays possible, but compare its actual captured script bytes with the extracted canonical bytes before claiming canonical coverage.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 593,
+      "unit_sha256": "bba878358847840540d0218546d38809f4f4bd81989cd8cfab3e32f166242561",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Preserve failures; wrapper success never certifies them.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 605,
+      "unit_sha256": "16a94d450401c289296a3ed12fcbb6530ee778a678130ce1cd887578b6fd01b9",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "A verification record may satisfy several obligations when its actual coverage does; never rerun a passing product suite merely to fill separate target, integration and global headings.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 626,
+      "unit_sha256": "744d68e160ad849b0b4551aaaec4168ae642251ec082ad0e3c077c97e8d6a39f",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Union dependencies; one edit can match several rows.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 627,
+      "unit_sha256": "b9e8af2c1119e2ceb18b83655ae02836f7962c67515c22a427ef2457db20f61a",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Never reuse row 15 without a verified expiry boundary; rerun this inexpensive row when freshness is uncertain.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 637,
+      "unit_sha256": "3ee92a9b524a5d1528e08237ef3a2185c06c57efbe533c1df47963f7dc9e8f45",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Finish with complete only when all mandatory obligations have current accessible evidence; otherwise with the bounded blocker packet from `run.md`, preserving completed unaffected work and the unresolved obligation.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 638,
+      "unit_sha256": "38239326fdeac3836774169a0375ff695cc71cae9b0213ad16440998f78b2725",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Finish with complete only when all mandatory obligations have current accessible evidence; otherwise with the bounded blocker packet from `run.md`, preserving completed unaffected work and the unresolved obligation.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 639,
+      "unit_sha256": "912833de8c4c9985780544db9f2b043b1361d036930249b681bd3bc6dbd0553a",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Budget exhaustion ends with an honest incomplete/blocked handoff, never justifying changed acceptance, omitted global coverage or another unbounded bookkeeping loop.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 640,
+      "unit_sha256": "f477e019f74979789b16de4644503067941e6e93f06c08a7d7071def4b976ad9",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Budget exhaustion ends with an honest incomplete/blocked handoff, never justifying changed acceptance, omitted global coverage or another unbounded bookkeeping loop.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 641,
+      "unit_sha256": "c599197de5863aaa795769b3e30960c7e0aeb5a5e96ecf461d7f6780d34e1f1c",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Correct an observed failure within the existing recovery budget; never restart unchanged preparation merely because a new heading or session begins.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 7,
+      "unit_sha256": "58ecfb65cdbfde63e57386e7373c19e8e1104305ca9321082422ef0e1e799746",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "A complete harness export stays equivalent.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 12,
+      "unit_sha256": "bc0f1b22599105dcbe1a56e5631aef50a4830a388b5a0522242b4a7551b396ca",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "The script is not an installed runner; introduce no dependency when the repository already has an equivalent capture mechanism.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 15,
+      "unit_sha256": "16263aeaa08db9852f30bceda71f210c6ed78a13e29299d7d80035fc0a50cf2b",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "Either capture mechanism works; the required verification record must be delivered and correspond to the final validated inputs.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 21,
+      "unit_sha256": "e411cc9a0a0ddea5c1d78a4b9395ad68eb475540a97cc42837e297cc16e5149c",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "Direct does not require this store when sufficient actual tool records already exist.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 27,
+      "unit_sha256": "e64e468bbd08017e689a74a4aee986c03a63aebd4e4c7117f51161538717114e",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "List all relevant inputs, tests and contract included; missing declared inputs fail rather than becoming empty hashes.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 28,
+      "unit_sha256": "8046a4b7658d7e5c9346a40b759cec047293d4c9baa814338a502cb653a61864",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "List all relevant inputs, tests and contract included; missing declared inputs fail rather than becoming empty hashes.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 32,
+      "unit_sha256": "b8da12b92549776b40ebfa77170c6513b2928de128b8b08a7f0572230c5075b9",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "This script supervises the direct child only: use it for checks that join all their children; background/process-tree work requires the harness's cancellation/isolation and confirmation that all writers stopped before closing evidence, otherwise mark completion unavailable.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 34,
+      "unit_sha256": "2d1231da4b78b8bcc8822b4d74a3e2001057e333a4b24d7717284e809715d1d9",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "This script supervises the direct child only: use it for checks that join all their children; background/process-tree work requires the harness's cancellation/isolation and confirmation that all writers stopped before closing evidence, otherwise mark completion unavailable.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 36,
+      "unit_sha256": "95f6a521000a85231eb81d6f79783fefe874c439c451f32fd0020f38bb57ae89",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "Never wrap an ordinary successful suite in a new human-summary regex/count/PASS gate.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 122,
+      "unit_sha256": "48e3253f3ad55ecfbd58ba5ae0f029c1041797dbf3360afe582aeb79dd8d9cd7",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "The capture runtime identifies this observer, not an inferred child runtime or model; add child runtime/actor facts only when observed.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 122,
+      "unit_sha256": "00e8672a9386b16f9a12f01b776d33370d4a1152e151bfb4c14d1cf6ca41e39b",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "The capture runtime identifies this observer, not an inferred child runtime or model; add child runtime/actor facts only when observed.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 125,
+      "unit_sha256": "a22d33a2681f72e24cbd9fe7d19e67743fcee2d86d9818318a8dc4c51a53e7a3",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "If code/tests/inputs changed during the check, keep its result as historical and revalidate affected checks on the actual final revision.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 131,
+      "unit_sha256": "c3f00714bd7a50e6c882fb6bc443b92bc1ed290f07bba8ef96c3a488edc365e5",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "It preserves the full observed record and stream fingerprints; it never invents role metadata or declares all product requirements met.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/evidence-capture.md",
+      "line": 135,
+      "unit_sha256": "d5e8082484006f832939423cbb230241a493154b9f307fb256ad2a92341630bd",
+      "disposition": "reworded",
+      "destination": "references/guides/evidence-capture.md",
+      "note": "Compound checks keep the exact checked script among hashed inputs.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 4,
+      "unit_sha256": "bfe852375a0762550d9d5c57f44b6420228ce712d427bc4551faa03dff23a2cd",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "A complete native export is equivalent only while all required bytes stay accessible for the retention period.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 10,
+      "unit_sha256": "f8584dfe1533f8df1a883a6be4f056f577a2128b746a2d1ca6863239bcb700c9",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "New Coordinated captures explicitly name the already authorized `workspace`; the store is its `verification-records/` directory, keeping its existing gitignore decision and never in the installed package.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 11,
+      "unit_sha256": "9b1618f9297442401868c11ddfe33e21e86e3f56fb4b577a8ba2d23abe26edff",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "New Coordinated captures explicitly name the already authorized `workspace`; the store is its `verification-records/` directory, keeping its existing gitignore decision and never in the installed package.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 11,
+      "unit_sha256": "7b00a02e73df3599946f85a3d22c5d1a685d1af0188ebe527739b7b33a48e40d",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "New Coordinated captures explicitly name the already authorized `workspace`; the store is its `verification-records/` directory, keeping its existing gitignore decision and never in the installed package.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 14,
+      "unit_sha256": "87003016f72e099d9ec1058bcc8daca7cbe0a8b9092cdd10286c7f0ee733f6f7",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "The legacy `observation-*/blobs/<sha256>`, `stdout.bin`, `stderr.bin`, `result.json` and `receipt.md` paths stay readable through relative aliases.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 15,
+      "unit_sha256": "4703872c044a37724add9c9feceb384a8736f6487c805bf7090bfad14a6c520b",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "New objects are copied, hashed, privately written and synced before atomic publication; existing objects are verified before reuse.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 16,
+      "unit_sha256": "fdb555e3274b86038287411fe8332ca2474904a7ad301bb9eaa716c1362533fe",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "New objects are copied, hashed, privately written and synced before atomic publication; existing objects are verified before reuse.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 19,
+      "unit_sha256": "4a935ffb83698eab51e7179229667ab14861a260c7b395d7c82dd981bdb9ea1d",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "Broad selectors exclude the store, maintenance files included; called scripts and config are still captured explicitly.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 19,
+      "unit_sha256": "ca715753dfac3b3ea4b96bd11300f9910671b53b5385af54e1fffcd235b929f2",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "Broad selectors exclude the store, maintenance files included; called scripts and config are still captured explicitly.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 27,
+      "unit_sha256": "b4c24e54afdd2730d499b39326539591ba3628828b2bee9fdcf26dfba4d22858",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "Confirm those capabilities on the actual filesystem or use an equivalent native export; never silently replace a failed durability operation with a success claim.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 28,
+      "unit_sha256": "c4eb0c9a74ddfa2abbe0c85f5c62ac58e15c388547b60fd665e90b1190e6471d",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "Capture and maintenance share an exclusive `.lock` lease; a competing writer stops with a visible busy result.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 29,
+      "unit_sha256": "f918f85262b894dc025ebca522b6bf372d80233dfe2c38e098111be4fe95d31e",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "Capture and maintenance share an exclusive `.lock` lease; a competing writer stops with a visible busy result.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 46,
+      "unit_sha256": "dccf27d6d3b476ecf7424ed939ed4fc98be4c2ef1d874e88ff0321f704fc0052",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "If reference writers cannot coordinate, prepare a preview but never run deletion.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 55,
+      "unit_sha256": "79e02c952083d76097f975af483f8e047d9ae31ebfd149181d7bdf7c3c3021ef",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "Status can report size and recoverable bytes but stays read-only.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 56,
+      "unit_sha256": "9b4d72176547a4df617aba269df429e22fa47abdf04b2055b654b415a9e667ff",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "A chosen hard limit or lack of disk space stops only the affected capture: keep prior data and complete streams, never truncated or replaced by summaries, and report the constraint and its affected obligation.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 58,
+      "unit_sha256": "32a4b3d34d5d1d2e8dd6a3bbefabc312f2da4770589a2a5b4ca564799ef2ab7f",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "A chosen hard limit or lack of disk space stops only the affected capture: keep prior data and complete streams, never truncated or replaced by summaries, and report the constraint and its affected obligation.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 62,
+      "unit_sha256": "b9637463dcb4bf780b3da4eefd5eff24353519cc9c89c7b6003ee62b6a944497",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "Preview is no authorization: historical user data needs explicit authorization or an already authorized initiative policy.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 347,
+      "unit_sha256": "12bf69b3c1d723c440d3cc719f0e113cf40201a8b3a76838cb22e2f659af15ca",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "`read_record(path)` verifies complete actual records, including unsuccessful historical checks; `read_record(path, require_pass=True)` also requires child acceptance.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 349,
+      "unit_sha256": "b27f6514e68ee521797ef995644622f0d02d575d79c92952ec68307d46de23a9",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "These integrity checks never replace current-input and semantic acceptance checks.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 350,
+      "unit_sha256": "fbc57d113b765c052ae376d196e46665c3844ab10ed3a0bfb5309a7feb510ce8",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "Existing `observation/blobs/<hash>` records stay supported.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 351,
+      "unit_sha256": "839c4368aff67079137721ca1293e5e46693f6b58f6c6f633b196a1e5c874def",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "Small legacy check summaries without saved input bytes stay valid only for the narrower evidence they actually retained; export cannot manufacture missing snapshots.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 363,
+      "unit_sha256": "60cc0273351b9e587f67fa2d4b471aab49bf36e9a670ec8579ed66aa316a5a25",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "Report measured logical bytes, unique hashes, file/alias counts and capture/maintenance costs separately; allocated disk usage, agent reads and billed tokens are different metrics.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 364,
+      "unit_sha256": "97c23c87007caf921d4e7bfa144ba4a23d3ef84a593d2178e6c5226c9f27f1e8",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "Report measured logical bytes, unique hashes, file/alias counts and capture/maintenance costs separately; allocated disk usage, agent reads and billed tokens are different metrics.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/record-lifecycle.md",
+      "line": 364,
+      "unit_sha256": "7a7a4ea6fc57ee2e4aab325f6421baad20472089c4f923aa02a165002410f8aa",
+      "disposition": "reworded",
+      "destination": "references/guides/record-lifecycle.md",
+      "note": "Include failed and interrupted records in measurement; never count unavailable telemetry as zero.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 16,
+      "unit_sha256": "8940307213ff7aaed538b14ca724f3dfaedf98d584badb57b94ef65af060c5ca",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "The task brief stays self-contained; never make a worker reconstruct its contract from summaries.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 16,
+      "unit_sha256": "c81a913c718a5ade82a11e0a14d48c54686b93a28d6fba377b7551c99046427c",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "The task brief stays self-contained; never make a worker reconstruct its contract from summaries.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 20,
+      "unit_sha256": "cb426c7cca2f8f91bf12f29436245f5e83e9cd03a5e020234a66d7d889ddb2f6",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "Obtain required membership from the current task brief and authoritative dependency map, never from the cache itself, and verify it before reuse.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 21,
+      "unit_sha256": "a5fc1abf51837d99854e9a8a6bb711af21a1a8cf7c2539fa0e7e3b9eaf9711ce",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "Obtain required membership from the current task brief and authoritative dependency map, never from the cache itself, and verify it before reuse.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 22,
+      "unit_sha256": "eddbe3198adae987e6b6c68927279fd724f7df5b51dba3d8520977e2508429fd",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "A changed contract, reopened task, new blocker, input selection change, event or unfinished maintenance makes the affected projection stale.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 23,
+      "unit_sha256": "5e94036cc939ca0be537d1e232dbd49f2ab43126077aa3e5a2c87b0907b8e44f",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "Rebuild from original sources, starting with affected partitions and expanding when completeness is uncertain; never summarize earlier summaries as the only source.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 27,
+      "unit_sha256": "9a35b8afe97694ed72c461abdd7b2373dd50fb2afa433351c23635ed421fcce4",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "The script hashes current authoritative files on each verification, so a large task board or decision file still costs bytes to verify.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 30,
+      "unit_sha256": "7e4108ab9e28fe1ba6881d06657d1549be1d4d90f51775668b1d2e7861a8fbc5",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "This conservative example's projection holds exact source text, not an unverified summary; a coordinator can present a shorter digest after reading it.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 31,
+      "unit_sha256": "5ce9ada68c6576d9edbc2964cf137b1d53c4d2ca3efa1957e8415ae8ea655faa",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "This conservative example's projection holds exact source text, not an unverified summary; a coordinator can present a shorter digest after reading it.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 36,
+      "unit_sha256": "93f84aab804c9a0e8418b1d38c7bfed04937bec051c0fce5c3c27d77406c30a9",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "Record an initiative-scoped policy in the existing workspace instructions: authorized paths, trigger (measured growth or milestone boundary), retained active sessions, segment target and recovery owner.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 48,
+      "unit_sha256": "222bd3cf2f52d6c8e218153fc292fea14b524c38242446e0123804cb9bc98584",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "Original heading references stay resolvable through the index/lookup: logical reference resolution, not an automatic redirect in a Markdown browser.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 49,
+      "unit_sha256": "25dc6b4effbbd720a820dea8d1a51780ab655b0f71911a3a7d0cb23dd332d428",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "Original heading references stay resolvable through the index/lookup: logical reference resolution, not an automatic redirect in a Markdown browser.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 50,
+      "unit_sha256": "cd73e72764d72b3c29543f079425888583421f9c5a5641d4ffa01db14d80d348",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "Before selected segmentation, check live history-anchor consumers and retarget them to the segment/original heading, or keep the legacy layout.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 52,
+      "unit_sha256": "aa23afc8759965a22e7ef1f5128813d64789470cc06b19b267e4a6251b288e54",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "Never declare migration complete while a required live link is broken; keep original historical text unchanged.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 56,
+      "unit_sha256": "72207993ba9475a1397653b5fbf128bf17fdbd29dcd0b27e2a144e8386d42913",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "Renaming, splitting or reopening tasks cannot give that unresolved failure a fresh allowance.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 65,
+      "unit_sha256": "14104cd15d5d96493dfd2dbf9f6903b036ed2060025f8c972481f6eed206d376",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "For interrupted completion, compare actual output, check records, report, task board and last fully recorded event.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 66,
+      "unit_sha256": "f33dce77d0c8f2c5016ca57d82ad261fad0a098b78dcd3827ca91ca1b23f1e61",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "Preserve an observed effect and complete missing bookkeeping when its checks support it; never rerun a completed side effect just because its final event is missing.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 69,
+      "unit_sha256": "5f0f48903deb29ac689742ad6bf98e576b05ffadeb60c1be64868b306eb4ce9b",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "Finish maintenance the run already requires before deliverable acceptance, and start no other bookkeeping/check cycle after acceptance.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 74,
+      "unit_sha256": "1f8d58986607ef5a3b1df44e0fd66f3e2403adc3d2a8fc207e30110e72f9a2ea",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "A handoff contains verified current source context, scope/revisions, authorization boundaries, failure lineage/budgets, next authorized action and the original historical events actually needed.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 80,
+      "unit_sha256": "9f98b5403c5eb8e9f0958ed0a070183be5e0efc01b3036d9fe9472fe6a1e3439",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "An explicit audit may load full history; routine handoff does not without a named reason.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 80,
+      "unit_sha256": "0d7b122792d978cfdccc86ceb60fabfa2d5bc3e3e83ccb1e533f6d2c177c5a97",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "An explicit audit may load full history; routine handoff does not without a named reason.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 97,
+      "unit_sha256": "cb0ef312ce1f55a12d8da3ac23feb28d4111238ed37fa713384419d7202525b5",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "The scope is an English-keyed object such as `tasks`, `requirements`, `milestone`; sources are exact workspace-relative authoritative paths, task briefs and required dependency outputs included.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 99,
+      "unit_sha256": "ee859795a394f3b99ad39cb78f795b255b45fbe2f598aa41ad18c8006164a60c",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "Never list projections as their own inputs.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 533,
+      "unit_sha256": "7866b37fe703371c1b1b45d39e85127f78b7ec9f38b44a79a095c2c210fcb4b5",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "The script does not validate user intent, semantic source selection, check acceptance or all milestone coverage; those stay the existing PLAN/RUN obligations.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 536,
+      "unit_sha256": "38879247548cf564c1485c0a957e41d24f0edb53d846088ed01325e0339e5c30",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "Measure logical content bytes read/written apart from metadata calls, retained bytes and unobserved filesystem journal/cache costs.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/context-lifecycle.md",
+      "line": 537,
+      "unit_sha256": "9e95fbb2e4503669892e853e04ada92584e44b81abe0c1a4fc038ec8535f536e",
+      "disposition": "reworded",
+      "destination": "references/guides/context-lifecycle.md",
+      "note": "Include initial indexing, every archive/recovery, projection rebuilding and export verification when comparing complete costs.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/status.md",
+      "line": 4,
+      "unit_sha256": "01face2fa8ada8b175a9c9a5075a60c0a737796a6c9cc2c82da3c36e70ddff1f",
+      "disposition": "reworded",
+      "destination": "references/guides/status.md",
+      "note": "STATUS answers the requested question about an initiative: status, available plans, the next Ready task or a cold-session resume.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/status.md",
+      "line": 5,
+      "unit_sha256": "50d46202fab7dac6e4f30e81af46d99abe005e04a7a228ba58d2a656eb1fd3a5",
+      "disposition": "reworded",
+      "destination": "references/guides/status.md",
+      "note": "It never executes a task or edits source, task board, history, decisions, questions, verification records or readiness.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/status.md",
+      "line": 15,
+      "unit_sha256": "d97449501388583de3819976eedec2aa6a5d2d56add26b74b49c622acd535799",
+      "disposition": "reworded",
+      "destination": "references/guides/status.md",
+      "note": "**Status** reads the relevant canonical task board, applicable decisions, open questions and latest history checkpoint, or a verified current-work projection backed by those sources.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/status.md",
+      "line": 17,
+      "unit_sha256": "bca8d0f2ad6d3999a1359f7b90500ddae7795797a74bb08d995df75d33cd5d36",
+      "disposition": "reworded",
+      "destination": "references/guides/status.md",
+      "note": "Include stale reference verification, failed checks, blockers or missing records when they affect that answer; observations grant no mutation permission.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/status.md",
+      "line": 23,
+      "unit_sha256": "471466424ad10b860f3e50881c4b5ba4339d9416f82adaed26b071cccaea38ab",
+      "disposition": "reworded",
+      "destination": "references/guides/status.md",
+      "note": "**Next** selects a Ready task with its purpose, dependencies, write scope and starting prompt.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/status.md",
+      "line": 26,
+      "unit_sha256": "f7803e340abc1d02f22c33930db1190df2a34b54a123687149511d4e06a8e0db",
+      "disposition": "reworded",
+      "destination": "references/guides/status.md",
+      "note": "Report current state, reusable verification records, relevant changes and the next authorized action.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/status.md",
+      "line": 33,
+      "unit_sha256": "c4e375eb703a6113f2acd91e264cd4f3bf942186bfa606f0f75197dcc68b4a48",
+      "disposition": "reworded",
+      "destination": "references/guides/status.md",
+      "note": "When requested or relevant, report reference age, checks actually run, task/blocker counts, weakest required verification, resource coverage and history size.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/status.md",
+      "line": 37,
+      "unit_sha256": "f035eaea66e77bf2827e913be8426a13db61263d2fb8b72be6b136fff46aa7d1",
+      "disposition": "reworded",
+      "destination": "references/guides/status.md",
+      "note": "STATUS reads only the current layout and never migrates automatically ([forward only](migrate.md#forward-only)); retired 8.x action-name aliases that reached STATUS keep their historical targets in [terminology.md](../terminology.md)'s Routes and actions section.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/status.md",
+      "line": 44,
+      "unit_sha256": "6e4274b0755075b2cbc4506ef18b7308257739a7386f197875786e203d012032",
+      "disposition": "reworded",
+      "destination": "references/guides/status.md",
+      "note": "Verify current work using [context-lifecycle.md](context-lifecycle.md#current-work): scope, required source membership/revisions, state revision and last fully recorded event.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/status.md",
+      "line": 45,
+      "unit_sha256": "616422aefdc350c9ae8365e10bdae16eb63f5a9b26e1ee363da5a4aec7488e38",
+      "disposition": "reworded",
+      "destination": "references/guides/status.md",
+      "note": "Reuse it with the necessary source records; never unconditionally read complete closed history.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/status.md",
+      "line": 46,
+      "unit_sha256": "783ec03e42dd232cdc1c1f78974b38ebc01af592695ffd3da2012337d4490c98",
+      "disposition": "reworded",
+      "destination": "references/guides/status.md",
+      "note": "If stale or incomplete, reconstruct affected context from authoritative sources, expanding when completeness is uncertain.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/status.md",
+      "line": 51,
+      "unit_sha256": "756c07589aab093c8f7d1248a1fa52e3a084fd0437cd8023332ae46052ec4169",
+      "disposition": "reworded",
+      "destination": "references/guides/status.md",
+      "note": "The portable handoff contains context; current task state and checkpoint; applicable decisions, blockers, unresolved questions and failure budgets; verified dependency/check references; and up to three next authorized actions with prompts and reading order.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/status.md",
+      "line": 81,
+      "unit_sha256": "3e3095140d2d888640dcbdb1a14d9a7dd263c3dd7ac51f6e051891b4cfa52f3d",
+      "disposition": "reworded",
+      "destination": "references/guides/status.md",
+      "note": "The policy names paths, observable triggers, retained active sessions and recovery.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/status.md",
+      "line": 85,
+      "unit_sha256": "205d10d58e2435bc09a0b01118a7d1eb199249966a47dea237b3d94482faf32d",
+      "disposition": "reworded",
+      "destination": "references/guides/status.md",
+      "note": "The ordinary legacy path keeps the newest five sessions in `history.md` and older entries in `history-archive.md`; never silently rewrite existing archives.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/status.md",
+      "line": 89,
+      "unit_sha256": "1965d48611817b39eed87de6d805545a11d7fdbf44ffdd720f49247a888684a9",
+      "disposition": "reworded",
+      "destination": "references/guides/status.md",
+      "note": "Keep the newest State snapshot, stable event references/original-heading lookup and one bounded maintenance record with before/after sizes and the committed checkpoint.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/status.md",
+      "line": 95,
+      "unit_sha256": "e4efd63fa797057e106a416df996faeb697c65a33f8b9e749375aa8ddeaf3a56",
+      "disposition": "reworded",
+      "destination": "references/guides/status.md",
+      "note": "STATUS reads only the current layout and never migrates automatically ([forward only](migrate.md#forward-only)); retired 8.x action-name aliases that reached STATUS keep their historical targets in [terminology.md](../terminology.md)'s Routes and actions section.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/status.md",
+      "line": 96,
+      "unit_sha256": "81913570e35be4b90a46a36ff7f136cf2da47f8c5e1b911a522b05846240572b",
+      "disposition": "reworded",
+      "destination": "references/guides/status.md",
+      "note": "STATUS reads only the current layout and never migrates automatically ([forward only](migrate.md#forward-only)); retired 8.x action-name aliases that reached STATUS keep their historical targets in [terminology.md](../terminology.md)'s Routes and actions section.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 4,
+      "unit_sha256": "013f140e6ee140236ae0b7c2d02c4b568ecc91baf89cef3c066cf8085661b44f",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "This guide defines the provider-independent lifecycle ledger and the optional exact-telemetry sidecar: a documentation contract, not a collector or executable.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 5,
+      "unit_sha256": "b6734e05aa84d0cdaf8c0de98fcaeac2c723ad2d3ef1f4425a0c76540e76723e",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "This guide defines the provider-independent lifecycle ledger and the optional exact-telemetry sidecar: a documentation contract, not a collector or executable.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 20,
+      "unit_sha256": "6510542c490a5b881b931127211aab75a8d2bd0fcf92554662d173a181a7e9a3",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "`Event` is `start`, `finish` or `observe-incomplete`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 21,
+      "unit_sha256": "318df0a5473229cf32a548476d524950f7b15707299c3dcecf211a295d326f66",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "A Coordinator may append `observe-incomplete` when a start lacks a finish; that observation time is no claimed end and derived duration stays `n/a`.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 34,
+      "unit_sha256": "fc708bc92890f243e9b1485748770e2c009b32896e67e088b504c756cccf444b",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "Unexposed clock or runtime metadata does not block otherwise observable work: record metadata as `n/a` and keep the command result.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 45,
+      "unit_sha256": "a834479b6e029a3c62a737354d49f5d35ffe0be4bbd643d70d2407cd8a9b8a1d",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "Never substitute a count label, a path that merely exists, or an unrelated task's event for those facts.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 47,
+      "unit_sha256": "9dd223c18e5e97e1c5b8ae0cea2ae7b468e7208de22697d3c940fcf28f055b08",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "The labels and ordering of those facts are no new history schema.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 48,
+      "unit_sha256": "079ba5e4488e1a0534c216444c9b88ae740c5b49e5ea02cfc78c14aeb0dcac66",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "With no correction observed, record zero with the observation source; with the history or observation unavailable, record `n/a` rather than inventing zero.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 60,
+      "unit_sha256": "57c4ac27b2dc0ada86191d55d6f0a74e666985aa7b6ee29d9474dff210494106",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "An executor cannot observe its own future process termination, so its finish timestamp is `n/a` unless an external observer supplies an actual terminal event; Source names the limitation.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 61,
+      "unit_sha256": "1c95b1fcc13dba72acf4a0764eaab5c7da43a74bd1798dbe2fd371ce66edf10e",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "An executor cannot observe its own future process termination, so its finish timestamp is `n/a` unless an external observer supplies an actual terminal event; Source names the limitation.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 62,
+      "unit_sha256": "1adfc53797bded04683abccd3f0a126692e814655e8dfc47f3844a3c95d10ec7",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "Never copy a test end or take a later reconstruction clock.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 69,
+      "unit_sha256": "cb581e337f529652cfbfb6bc6aefe7726eb2c19714ca52a9a5e7f1d120a53010",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "`resource-usage.telemetry.jsonl` contains one JSON object per observation in new workspaces; historical `usage.telemetry.jsonl` stays readable.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 71,
+      "unit_sha256": "7ea0aa1139abb7d0b24964ee9281a49000f59e9aaf7d66fdcb6c29a8be1c9bd1",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "Required envelope fields are `schema`, `captured_at`, `collector`, `source`, `scope`, `scope_id`, `run_id` when `scope=role`, `metrics` and `provenance`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 73,
+      "unit_sha256": "0c31410fd798476f5aaa53186976131c22dd26734d848d69a9d2d2f5e6054781",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "Scope is `role`, `session` or `account`; a session/account observation without exact attribution uses `run_id: n/a`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 76,
+      "unit_sha256": "5a585afab915b5b61c59920ee16b245f1ef966e4ec03de6d2a4ebb7847cfaacf",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "For Codex Desktop and `codex exec --json`, the optional literal [native capture recipe](codex-native-usage.md) can populate this sidecar at role start and after an externally observed close, reporting directly observed configured model/effort and a native terminal candidate separately; only an exact Run ID/turn mapping may fill a role end.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 78,
+      "unit_sha256": "1247292fea8fd99ce4b1fbc4d30957b9e1d169408717521382b83487202174b2",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "For Codex Desktop and `codex exec --json`, the optional literal [native capture recipe](codex-native-usage.md) can populate this sidecar at role start and after an externally observed close, reporting directly observed configured model/effort and a native terminal candidate separately; only an exact Run ID/turn mapping may fill a role end.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 79,
+      "unit_sha256": "0b55a0c1e38e4d92f3751aa772c898646f5d90bf2b5fb066f493596fa3a95110",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "Its absence or failure leaves telemetry `n/a` and never blocks the task.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 82,
+      "unit_sha256": "594a09882ea7f14061ffe16c4e6637c78a534f1a928d379aa8d97c2ac08952d7",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "The `metrics` object may expose any subset of `input_tokens`, `output_tokens`, `reasoning_tokens`, `cache_read_tokens`, `cache_write_tokens`, `requests`, `tool_calls`, `compactions`, `context_tokens`, `cost` and `currency`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 85,
+      "unit_sha256": "0cc216f5bd5b4fb62f53ffaa368481f2dd80207022b6aeea29cf35a4a0570c24",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "A local or API-equivalent cost is not canonical cost and must be labeled non-comparable source data.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 86,
+      "unit_sha256": "f81ee65bd362e641dfc63eb60435d68e58cb3ebce7b4dd8b770d051a83e3abfe",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "Session/account data is never allocated, divided or delta-inferred into a role.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 93,
+      "unit_sha256": "6aa2b24731b202e25b7aa5e07521facd83283f5e5c135fb79072d22ebfe63373",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "Compare only the same metric, unit, scope, collector semantics and pricing basis; subscription cost, API cost and API-equivalent estimates are separate bases.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 94,
+      "unit_sha256": "1488232924cd3580c15b2cd37fc67a4bd588a3cd19c6d77eb8940b32c12780f4",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "Compare only the same metric, unit, scope, collector semantics and pricing basis; subscription cost, API cost and API-equivalent estimates are separate bases.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 100,
+      "unit_sha256": "2969d01c761f820aee8d077a12bfc6437f97704239779a5a644796848c59c1ef",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "Zero or partial telemetry still supports duration, attempts, rework, incomplete runs, verification outcomes and task time to completion.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 101,
+      "unit_sha256": "d784b0f366e9c5153cbe029478916e9cb62f8312a7c6833abc51ce8ec5676f26",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "Partial exact coverage may list labeled observations but cannot produce totals, shares, rankings or tier recommendations.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 104,
+      "unit_sha256": "13136abe361cca9298cb1d94cd440d229d756d9619172488ff796d6dc98371ff",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "The universal ledger never depends on a collector; no hook, daemon, plugin, provider API or sidecar is required for a task to close.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 110,
+      "unit_sha256": "a6f306503158540c34178daa493a93a9b2c5b684ea239d398f50837d66a08c32",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "There the coordinator can fill the sidecar from local files, with no collector or recipe.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 111,
+      "unit_sha256": "845e80a8d168eb4c9b210093398b7fe9c8ea0e68aa48c4523b0bd362ac258dcc",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "Check the installed version first: these paths and fields can change.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 134,
+      "unit_sha256": "ff13ed2f2ee3649fe77df87cda4d7813d871b3e3ce7476a7f21d8405a49a64dd",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "Plan-limit percentages and the context-window count describe the account and the current context, not cumulative role usage.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 135,
+      "unit_sha256": "f479cd24e75c3624e6c2a5c9a47784ba8d3556309c9850d4ef592e8772b0ab4b",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "Plan-limit percentages and the context-window count describe the account and the current context, not cumulative role usage.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 140,
+      "unit_sha256": "35eb2893f5833433fbfc4702b1e0e7be2091bac527150e999262efbdffad0315",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "An eight-column header beginning `Point | Role | Tier | Model | Effort | Tokens in | Tokens out | Session` is legacy and stays readable.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 142,
+      "unit_sha256": "09ac33c889658d1609bff05ed2982d5bd937be6b43cdae8d850b0920e47957f7",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "Legacy rows without exact run ids stay legacy-scoped.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/codex-native-usage.md",
+      "line": 5,
+      "unit_sha256": "a914848cd54a2c70c83998ad531c036fc1b850412dd872cf57f1ef6dd47e8e9e",
+      "disposition": "reworded",
+      "destination": "references/guides/codex-native-usage.md",
+      "note": "It is optional: an unavailable trace does not block task completion, and the provider-independent contract in [usage-observability.md](usage-observability.md) stays authoritative.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/codex-native-usage.md",
+      "line": 7,
+      "unit_sha256": "14aff40b8ee310ccf1a1a3d4041d54f98f082801e911604b8f45d6b7872c9ebf",
+      "disposition": "reworded",
+      "destination": "references/guides/codex-native-usage.md",
+      "note": "It uses only Python's standard library, reads no authentication file and copies no prompt or tool content.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/codex-native-usage.md",
+      "line": 20,
+      "unit_sha256": "394e06c99347f599e82679608fe81c510cdf6306070264bf87bea8b8ce395c1c",
+      "disposition": "reworded",
+      "destination": "references/guides/codex-native-usage.md",
+      "note": "A Desktop capture produces the latest thread snapshot and the latest native observation for each turn, which overlap and must not be added together.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/codex-native-usage.md",
+      "line": 21,
+      "unit_sha256": "b7b150e426d7b825fb1f93af551910dc89b64be42bc640c5b640a22e0df0e8d6",
+      "disposition": "reworded",
+      "destination": "references/guides/codex-native-usage.md",
+      "note": "A Desktop capture produces the latest thread snapshot and the latest native observation for each turn, which overlap and must not be added together.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/codex-native-usage.md",
+      "line": 24,
+      "unit_sha256": "354420f0bd106f61a36561ec0ced700b2949b3ba3e8fd9fbbd13e367f9ff1d19",
+      "disposition": "reworded",
+      "destination": "references/guides/codex-native-usage.md",
+      "note": "An observed `task_complete` is a terminal **candidate**, a role end only when the Run ID maps exactly to that native turn.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/codex-native-usage.md",
+      "line": 24,
+      "unit_sha256": "60b6b5f96cde0901d9b9f593cd41de9ad80b074984019fd948a3ffd1acf8fada",
+      "disposition": "reworded",
+      "destination": "references/guides/codex-native-usage.md",
+      "note": "An observed `task_complete` is a terminal **candidate**, a role end only when the Run ID maps exactly to that native turn.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/codex-native-usage.md",
+      "line": 214,
+      "unit_sha256": "fda4f05106f47cda9c0fcd2d9334cbeee0d83dfcd99639845ea75152062996e8",
+      "disposition": "reworded",
+      "destination": "references/guides/codex-native-usage.md",
+      "note": "If the current executor cannot observe its own future close, capture after the native terminal event from another actor or next turn.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/system-one.md",
+      "line": 27,
+      "unit_sha256": "606658f12ee3800289f753ad723fe4e4ca2acf5c88b532c9297ced2c88dfc221",
+      "disposition": "reworded",
+      "destination": "references/guides/system-one.md",
+      "note": "The returned state keeps these entries in independent containers; the caller owns persisting it into the selected workspace.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/system-one.md",
+      "line": 40,
+      "unit_sha256": "0f32ab57e362b3edd65626cee3822ad6d18e0cc1703e9b01b78185cfc2ad8ed6",
+      "disposition": "reworded",
+      "destination": "references/guides/system-one.md",
+      "note": "A supplied in-process callable receives exactly `model`, `use` and `fragment` with model `jev-1.13.0`, and returns exactly `model`, `confidence` and `judgment`; these normalized dictionaries are not the TypeSafe wire protocol.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/system-one.md",
+      "line": 42,
+      "unit_sha256": "1ddd5511048a7aeba72aa62ac5612a1af3b8dbd80f82b89d0519a0f2e4d12f1a",
+      "disposition": "reworded",
+      "destination": "references/guides/system-one.md",
+      "note": "A supplied in-process callable receives exactly `model`, `use` and `fragment` with model `jev-1.13.0`, and returns exactly `model`, `confidence` and `judgment`; these normalized dictionaries are not the TypeSafe wire protocol.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/system-one.md",
+      "line": 53,
+      "unit_sha256": "f8c5b8513b2bb62555c689fc5fde9bd26a3cd0629bfd291bea689e2d4e2bfd5e",
+      "disposition": "reworded",
+      "destination": "references/guides/system-one.md",
+      "note": "The reference confidence minimum is `0.6` for `resume-selection` and `0.8` for the other uses, inclusive at the boundary: conservative reference defaults, not provider calibration.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/system-one.md",
+      "line": 67,
+      "unit_sha256": "bfa511c8ad21b15f0cdab978891f2c9f232449f7307b13b05ecdb11a119bb156",
+      "disposition": "reworded",
+      "destination": "references/guides/system-one.md",
+      "note": "History selection keeps its score rule: an entry is skipped only below `0.5` with confidence at least `0.6`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/system-one.md",
+      "line": 68,
+      "unit_sha256": "374ec37e2bec407d5c8ca5a17af7bf99ce987c8e47bd2543ee41c56638bbd62f",
+      "disposition": "reworded",
+      "destination": "references/guides/system-one.md",
+      "note": "The existing context bound, open obligations and spent counts remain; this generic function never selects or drops history.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/system-one.md",
+      "line": 69,
+      "unit_sha256": "77876e964123dd70620e0242972c58293ed9f66a6e036a36a120a60826374938",
+      "disposition": "reworded",
+      "destination": "references/guides/system-one.md",
+      "note": "The existing context bound, open obligations and spent counts remain; this generic function never selects or drops history.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/system-one.md",
+      "line": 70,
+      "unit_sha256": "39ec50ade2d4004d1ed9de619fa6a1a2c7f050d6ab178f9602c822f01d76b9ce",
+      "disposition": "reworded",
+      "destination": "references/guides/system-one.md",
+      "note": "Detection, persisted consent and SDK serialization belong to the separate integration consumer; agent compliance stays an independent evidence obligation.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/system-one.md",
+      "line": 72,
+      "unit_sha256": "3551b70e79a3a7485c322d8e1df32ff8dc5a4c93cbfb9c76b8716b9762d317d6",
+      "disposition": "reworded",
+      "destination": "references/guides/system-one.md",
+      "note": "Source-level tests establish neither held-out safety behavior, complete optional capability readiness nor release acceptance.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
     }
   ]
 }

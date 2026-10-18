@@ -24,8 +24,8 @@ transport=None)`. `state` is a closed builtin dictionary with a nonempty
 `workspace` string, a real boolean `configured`, `consent` and `asked`. Consent is
 `None` or a closed builtin dictionary containing a nonempty `workspace` and
 `answer` (`yes` or `no`). `asked` is a builtin list of unique nonempty workspace
-strings. The returned state preserves these entries in independent containers;
-the caller owns its persistence into the selected workspace.
+strings. The returned state keeps these entries in independent containers;
+the caller owns persisting it into the selected workspace.
 
 `configured` represents an already supplied configuration signal. Missing or
 foreign-workspace consent is unanswered: the function returns one fixed question
@@ -39,10 +39,10 @@ The four uses are `resume-selection`, `failure-class`, `no-progress` and
 `intake-size`. A fragment is a nonempty public string selected by the caller;
 its sensitivity is a separate caller obligation. A supplied in-process callable
 receives exactly `model`, `use` and `fragment` with model `jev-1.13.0`, and returns
-exactly `model`, `confidence` and `judgment`. These normalized dictionaries are
+exactly `model`, `confidence` and `judgment`; these normalized dictionaries are
 not the TypeSafe wire protocol. The separate state script supplies the
 actual adapter; this pure function performs no environment, filesystem or network
-operation. Behavior of a third-party callable is outside this pure function's proof.
+operation, and a third-party callable's behavior is outside its proof.
 
 Judgments use only exact builtin strings, booleans, integers, finite floats,
 lists, dictionaries with string keys and `None`. Container cycles, subclasses,
@@ -51,8 +51,8 @@ containers are valid. The function validates nested judgments iteratively and
 changes neither inputs nor transport responses.
 
 The reference confidence minimum is `0.6` for `resume-selection` and `0.8` for the
-other uses, inclusive at the boundary. These are conservative reference
-defaults, not provider calibration. Malformed responses, another model, insufficient
+other uses, inclusive at the boundary: conservative reference defaults, not
+provider calibration. Malformed responses, another model, insufficient
 confidence, absent transport or an ordinary transport `Exception` return the exact
 local judgment with a distinct fixed reason. A supplied transport is attempted at
 most once. `BaseException` propagates. There is no retry.
@@ -64,13 +64,13 @@ records model/confidence as `None`. Local reasons are `not-configured`,
 `consent-unanswered`, `consent-no`, `transport-unavailable`, `transport-failure`,
 `malformed-response`, `wrong-model` or `low-confidence`.
 
-History selection retains its score rule: an entry is skipped only below `0.5`
+History selection keeps its score rule: an entry is skipped only below `0.5`
 with confidence at least `0.6`. The existing context bound, open obligations and
-spent counts remain. This generic function does not select or drop history.
+spent counts remain; this generic function never selects or drops history.
 Detection, persisted consent and SDK serialization belong to the separate
-integration consumer; agent compliance remains an independent evidence obligation.
-Source-level tests do not establish held-out safety behavior, complete optional
-capability readiness or release acceptance.
+integration consumer; agent compliance stays an independent evidence obligation.
+Source-level tests establish neither held-out safety behavior, complete optional
+capability readiness nor release acceptance.
 
 <a id="system-one-functional-recipe"></a>
 ## The scripts
@@ -82,7 +82,7 @@ Both scripts are import-only modules with no command line. Insert `<skill>/scrip
   `system_one_decide(state, use, fragment, local_judgment, transport=None)` described above. It
   imports only `math.isfinite` and returns the closed result.
 - [system_one_state.py](../../scripts/system_one_state.py) holds the selected-workspace state and the
-  SDK adapter. It receives `system_one_decide` as `decide` rather than copying its algorithm.
+  SDK adapter, receiving `system_one_decide` as `decide` rather than copying its algorithm.
 
 `load_state(workspace, configured, asked)` reads only the selected workspace's `AGENTS.md` and
 `questions.md`; no parent or project consent is inherited. `record_consent(workspace, answer, actor, day)`
@@ -134,8 +134,8 @@ result = system_one_use(workspace, True, asked, "failure-class", fragment, "impl
 
 The adapter constructs typed Score/Choice questions and sends only the fragment, pinned model and one
 narrow question. Confidence defaults are inclusive: 0.6 for history, 0.8 otherwise. The optional SDK
-remains owner-installed; Tackle never requests installation. Official SDK 0.7.2 is the pinned local
-serializer check, using in-process MockTransport and fictitious authentication. That check is not
+stays owner-installed; Tackle never requests installation. Official SDK 0.7.2 is the pinned local
+serializer check, using in-process MockTransport and fictitious authentication; it is no
 live/provider or held-out evidence.
 
 `select_history(entries, allowed_ids, score_entry)` receives only entries already admitted/opened under

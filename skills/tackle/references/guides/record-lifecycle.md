@@ -1,22 +1,22 @@
 # Verification record lifecycle
 
 Use this guide only when retained check bytes or history justify a store. Direct may use
-sufficient actual tool records, and Focused may use its small explicit-workspace script. A complete
-native export is equivalent only while all required bytes remain accessible for the retention
+sufficient actual tool records, Focused its small explicit-workspace script. A complete
+native export is equivalent only while all required bytes stay accessible for the retention
 period. Hashes, mutable paths and potentially unavailable commits are not retained bytes.
 
 ## Scope and representation
 
 New Coordinated captures explicitly name the already authorized `workspace`; the store is its `verification-records/`
-directory. Keep its existing gitignore decision. Never include it in the installed package.
+directory, keeping its existing gitignore decision and never in the installed package.
 Every actual execution creates a separate immutable raw check record and check summary, even when
 commands and inputs match. `objects/<sha256>` stores shared input/script/artifact/stream bytes.
 The legacy `observation-*/blobs/<sha256>`, `stdout.bin`, `stderr.bin`, `result.json` and `receipt.md`
-paths remain readable through relative aliases. No mutable working file is hardlinked. New
-objects are copied, hashed, privately written and synced before atomic publication. Existing
+paths stay readable through relative aliases. No mutable working file is hardlinked. New
+objects are copied, hashed, privately written and synced before atomic publication; existing
 objects are verified before reuse. Records appear under their final name only after publication.
 
-Broad selectors exclude the store, including maintenance files. Called scripts and config are
+Broad selectors exclude the store, maintenance files included; called scripts and config are
 still captured explicitly. A `prior_records` list names bounded complete successful records;
 the capture snapshots their raw JSON and the transitive byte closure into the new record. It
 never selects a whole store recursively. Decide dependency completeness from the actual check.
@@ -25,8 +25,8 @@ runtime and freshness windows; integrity alone does not establish current applic
 
 The scripts use ordinary filesystem symlinks, same-filesystem atomic publication and directory
 sync. Confirm those capabilities on the actual filesystem or use an equivalent native export;
-do not silently replace a failed durability operation with a success claim. Capture and
-maintenance share an exclusive `.lock` lease. A competing writer stops with a visible busy
+never silently replace a failed durability operation with a success claim. Capture and
+maintenance share an exclusive `.lock` lease; a competing writer stops with a visible busy
 result. An unexpected exception leaves its lease and `.pending-*` directory intact, with partial
 streams available. Before `recover_lock`, establish through the harness that all writers have
 stopped; a missing PID or elapsed time alone is insufficient. Recovery removes only the lease,
@@ -43,7 +43,7 @@ the authoritative dependency map that determines membership. The preview records
 and maintenance rechecks them under the store lease. Changed sources invalidate a preview even
 when the caller supplies an old policy. All cooperating edits to those references must share
 the store lease; set `reference_writes_coordinated: true` only after establishing that practice.
-If reference writers cannot coordinate, prepare a preview but do not run deletion. Include a
+If reference writers cannot coordinate, prepare a preview but never run deletion. Include a
 concrete `reason`. Current, pinned and active references require bytes. Ordinary historical log
 mentions preserve an event's existence and outcome but do not permanently pin all its bytes.
 Failed results stay protected unless explicitly resolved by policy; partial captures protect
@@ -53,13 +53,13 @@ a failure or authorizes retirement.
 Choose retention criteria and optional byte/file warning budgets from measured growth and
 required coverage. There is no universal age or run-count cutoff. An authorized policy can
 select superseded data at a milestone or growth trigger. Status can report size and recoverable
-bytes, but remains read-only. A warning does not block work by default. A chosen hard limit or
-lack of disk space stops only the affected capture: keep prior data and complete streams; do
-not truncate them or substitute summaries. Report the constraint and its affected obligation.
+bytes but stays read-only. A warning does not block work by default. A chosen hard limit or
+lack of disk space stops only the affected capture: keep prior data and complete streams, never
+truncated or replaced by summaries, and report the constraint and its affected obligation.
 
 Prepare a read-only preview with scope, protected references/reasons, candidates, object hashes
 and recoverable logical bytes. Confirm the current obligation/pin lists are complete before
-using a policy. Preview is not authorization: historical user data needs explicit authorization
+using a policy. Preview is no authorization: historical user data needs explicit authorization
 or an already authorized initiative policy. Implementation/testing may use disposable fixtures.
 An authorized RUN can maintain its own policy-covered store without repeated per-file questions.
 Planning, STATUS and vocabulary updates do not authorize deletion.
@@ -88,10 +88,10 @@ script only with the owner's explicit authorization for this use ([script consen
 ## Portability, migration and delivery
 
 `read_record(path)` verifies complete actual records, including unsuccessful historical checks;
-`read_record(path, require_pass=True)` additionally requires child acceptance. Retired, incomplete,
-missing or corrupt data always fails. These integrity checks do not replace current-input and
-semantic acceptance checks. Existing `observation/blobs/<hash>` records remain supported.
-Small legacy check summaries without saved input bytes remain valid only for the narrower evidence they
+`read_record(path, require_pass=True)` also requires child acceptance. Retired, incomplete,
+missing or corrupt data always fails. These integrity checks never replace current-input and
+semantic acceptance checks. Existing `observation/blobs/<hash>` records stay supported.
+Small legacy check summaries without saved input bytes stay valid only for the narrower evidence they
 actually retained; export cannot manufacture missing snapshots.
 
 `export_records(store, names, new_directory)` includes selected original metadata and every
@@ -103,6 +103,6 @@ Keep original IDs and provenance even when physical location changes. A verified
 reversible compaction representation; removing the previous representation still needs the
 applicable retention authorization and a recoverable pointer switch.
 
-Report measured logical bytes, unique hashes, file/alias counts, and capture/maintenance costs
-separately. Allocated disk usage, agent reads and billed tokens are different metrics. Include
-failed and interrupted records in measurement; do not count unavailable telemetry as zero.
+Report measured logical bytes, unique hashes, file/alias counts and capture/maintenance costs
+separately; allocated disk usage, agent reads and billed tokens are different metrics. Include
+failed and interrupted records in measurement; never count unavailable telemetry as zero.

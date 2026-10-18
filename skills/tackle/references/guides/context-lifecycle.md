@@ -13,28 +13,28 @@ refuses an older workspace with `migrate first` ([forward only](migrate.md#forwa
 Compile the current view from the active tasks, applicable decisions (including old ones),
 unresolved blockers, failure identities and spent budgets, required dependency revisions, and
 next authorized action. Keep the complete requirement/owner map discoverable in `plan.md`; a
-digest need not list every closed task. The task brief remains self-contained. Do not make a
+digest need not list every closed task. The task brief stays self-contained; never make a
 worker reconstruct its contract from summaries.
 
 The checkpoint records semantic scope, exact required source membership and content revisions,
 the archive index revision, and the last fully recorded event. Obtain required membership from
-the current task brief and authoritative dependency map, never from the cache itself. Verify it
-before reuse. A changed contract, reopened task, new blocker, input selection change, event, or
+the current task brief and authoritative dependency map, never from the cache itself, and verify it
+before reuse. A changed contract, reopened task, new blocker, input selection change, event or
 unfinished maintenance makes the affected projection stale. Rebuild from original sources,
-starting with affected partitions and expanding when completeness is uncertain; do not summarize
+starting with affected partitions and expanding when completeness is uncertain; never summarize
 earlier summaries as the only source. No checkpoint grants authorization or resets a failure budget.
 
-The script hashes current authoritative files on each verification. Therefore a large
-task board or decision file still costs bytes to verify. It avoids reading sealed unrelated
-historical bodies; it does **not** claim constant total cost or cache trust without validation.
-The projection in this conservative example contains exact source text rather than an unverified
-summary. A coordinator can present a shorter digest after reading it. If active obligations
+The script hashes current authoritative files on each verification, so a large task board or
+decision file still costs bytes to verify. It avoids reading sealed unrelated historical bodies;
+it does **not** claim constant total cost or cache trust without validation. This conservative
+example's projection holds exact source text, not an unverified summary; a coordinator can present
+a shorter digest after reading it. If active obligations
 exceed a working-context target, load them or split the work; never truncate them.
 
 ## Maintenance and interruption
 
 Record an initiative-scoped policy in the existing workspace instructions: authorized paths,
-trigger (measured growth or milestone boundary), retained active sessions, segment target, and
+trigger (measured growth or milestone boundary), retained active sessions, segment target and
 recovery owner. The legacy 400-line warning is a prompt to assess cost, not permission to delete
 history. RUN may refresh projections and perform reversible archival within that recorded policy.
 STATUS is read-only; explicit handoff writes its projection/export only. Without a policy or an
@@ -46,14 +46,14 @@ only to depart from it.
 Archive **original bytes in chronological order**. `history/index.md` routes stable event numbers
 and original headings to immutable segments; `history.md` retains its introduction and active tail.
 Archives use `history-archive.md`. Original
-heading references remain resolvable through the index/lookup. This is logical reference
-resolution, not an automatic redirect in a Markdown browser. Before selected segmentation, check
-live history-anchor consumers and retarget them to the segment/original heading, or retain the
-legacy layout. Do not declare migration complete while a required live link is broken; keep
-original historical text unchanged. Closed and unrelated workspaces are not migrated automatically.
+heading references stay resolvable through the index/lookup: logical reference resolution, not an
+automatic redirect in a Markdown browser. Before selected segmentation, check live history-anchor
+consumers and retarget them to the segment/original heading, or keep the legacy layout. Never
+declare migration complete while a required live link is broken; keep original historical text
+unchanged. Closed and unrelated workspaces are not migrated automatically.
 Failed attempts and their failure identities survive archival. Retrieve the named original event
 when diagnosing or transferring a failure; the current task/report retains its live spent budget.
-Renaming, splitting, or reopening tasks cannot give that unresolved failure a fresh allowance.
+Renaming, splitting or reopening tasks cannot give that unresolved failure a fresh allowance.
 
 All cooperating history/projection writers use one workspace lock. Sealed segments accept no
 appends. A durable transaction records both expected revisions before index/tail replacement;
@@ -62,22 +62,22 @@ before/after revisions, then completes the same transaction once. An unexpected 
 blocks recovery without overwriting it. Copying/archiving is not retirement; retention and deletion
 follow [record-lifecycle.md](record-lifecycle.md) and their separate authorization.
 
-For interrupted completion, compare actual output, check records, report, task board, and last
+For interrupted completion, compare actual output, check records, report, task board and last
 fully recorded event. A stale projection cannot flip a task Complete. Preserve an observed effect
-and complete missing bookkeeping when its checks support it; do not rerun a completed side effect
+and complete missing bookkeeping when its checks support it; never rerun a completed side effect
 just because its final event is missing. Missing checks leave Checking/Interrupted or Unverifiable
-as appropriate. Finish maintenance already required by the run before deliverable acceptance;
-do not start another bookkeeping/check cycle after acceptance.
+as appropriate. Finish maintenance the run already requires before deliverable acceptance, and
+start no other bookkeeping/check cycle after acceptance.
 
 ## Portable handoff
 
 A handoff contains verified current source context, scope/revisions, authorization boundaries,
-failure lineage/budgets, next authorized action, and original historical events actually needed.
+failure lineage/budgets, next authorized action and the original historical events actually needed.
 Export required check records, including transitively retained prior records and their content objects,
 through an equivalent harness export or, with the owner's explicit authorization, the record lifecycle script. Local paths alone are insufficient. Verify every exported
 inventory after copying and again at the recipient. A context inventory proves its copied bytes,
 not check success or semantic completeness; validate required check records with their own reader.
-An explicit audit may load full history. Routine handoff does not do so without a named reason.
+An explicit audit may load full history; routine handoff does not without a named reason.
 
 ## Optional local script
 
@@ -96,8 +96,8 @@ directories as `record_bundles={"evidence": exported_directory}`. They are copie
 relative prefix and included in the context inventory; validate them with `verify_bundle` after
 export as well. Context hashing alone never promotes a failed check.
 The scope is an English-keyed object such as `tasks`, `requirements`, `milestone`; sources are exact
-workspace-relative authoritative paths, including task briefs and required dependency outputs.
-Do not list projections as their own inputs. This POSIX example needs advisory file locking; if
+workspace-relative authoritative paths, task briefs and required dependency outputs included.
+Never list projections as their own inputs. This POSIX example needs advisory file locking; if
 unavailable, use an equivalent observed lock capability or report the script unavailable.
 
 `segment_bytes` is a tuning parameter, not a context limit. The synthetic benchmark uses 64 KiB
@@ -105,10 +105,10 @@ segments and five active sessions, measures its setup/rebuild/export costs, and 
 that this target suits every initiative. A single large original event remains intact; import or run
 the script only with the owner's explicit authorization for this use ([script consent](../../scripts/README.md#consent)).
 
-The script does not validate user intent, semantic source selection, check acceptance, or all
-milestone coverage. Those remain the existing PLAN/RUN obligations. Missing/corrupt selected
+The script does not validate user intent, semantic source selection, check acceptance or all
+milestone coverage; those stay the existing PLAN/RUN obligations. Missing/corrupt selected
 history fails lookup; an unrelated segment is not rehashed on every resume. Immutable storage is
 a cooperation rule plus verified content addressing, not a defense against a hostile filesystem.
-Measure logical content bytes read/written separately from metadata calls, retained bytes, and
+Measure logical content bytes read/written apart from metadata calls, retained bytes and
 unobserved filesystem journal/cache costs. Include initial indexing, every archive/recovery,
-projection rebuilding, and export verification when comparing complete costs.
+projection rebuilding and export verification when comparing complete costs.

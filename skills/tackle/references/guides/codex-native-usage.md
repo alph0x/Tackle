@@ -4,8 +4,8 @@ This [script](../../scripts/codex_usage.py) reads native Codex Desktop or `codex
 session-scoped observations to `resource-usage.telemetry.jsonl`; it refuses a workspace that still
 holds an older `usage.md` ledger or a `usage.telemetry.jsonl` sidecar. It is optional: an
 unavailable trace does not block task completion, and the provider-independent contract in
-[usage-observability.md](usage-observability.md) remains authoritative. It uses only Python's
-standard library, reads no authentication file, and does not copy prompt or tool content.
+[usage-observability.md](usage-observability.md) stays authoritative. It uses only Python's
+standard library, reads no authentication file and copies no prompt or tool content.
 
 Prefer an equivalent harness usage export. With the owner's explicit authorization
 ([script consent](../../scripts/README.md#consent)), at a role's start and again after its externally
@@ -22,16 +22,15 @@ terminal clock in the lifecycle row separately.
 
 Desktop `thread_id` identifies the actor; `session_id` can identify its parent and must not
 replace it. A Desktop capture produces the latest thread snapshot and the latest native
-observation for each turn. These overlap and must not be added together. CLI completed turns
+observation for each turn, which overlap and must not be added together. CLI completed turns
 get distinct ordinal identities.
 All observations use session scope and `run_id: n/a`; they are never allocated to a role by
-timestamp or fraction. An observed `task_complete` is a terminal **candidate**. Use it as a
-role end only when the Run ID maps exactly to that native turn. Model and effort from
+timestamp or fraction. An observed `task_complete` is a terminal **candidate**, a role end only
+when the Run ID maps exactly to that native turn. Model and effort from
 `turn_context` are configured bindings, not independent server-model attestations. CLI launch
 flags are requested bindings; this stream alone does not attest them or a billing cost.
 
 Store the receipt in the role's verification record and cite it from the resource usage ledger Source. Keep
-missing metrics `n/a`; the sidecar records available fields only. Capture after the native
-terminal event from another actor or next turn if the current executor cannot observe its own
-future close. This optional script does not replace native raw evidence or the ordinary
-lifecycle start/finish rows.
+missing metrics `n/a`; the sidecar records available fields only. If the current executor cannot observe
+its own future close, capture after the native terminal event from another actor or next turn. This
+optional script replaces neither native raw evidence nor the ordinary lifecycle start/finish rows.

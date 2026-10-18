@@ -4,57 +4,57 @@
 <a id="state-transitions"></a>
 The card holds the single execution protocol for a Full task; the self-contained Lite procedure in
 `../lite-plan.tmpl.md` implements the same obligations for bounded work. Each section below is depth
-on demand, reached from the card's Depth list.
+on demand, from the card's Depth list.
 
 <a id="evidence-and-recovery"></a>
 <a id="verification-records-and-recovery"></a>
 ## Verification record fields
 
-Every target, correction, integration, or global validation is an observation. Record the actual
+Every target, correction, integration or global validation is an observation. Record the actual
 UTC start and end (or timeout), literal command, cwd, tool and runtime, executor/actor and context,
 input/code/config/dependency/contract revisions, stdout, stderr, exit code or signal, timeout, and
 artifact paths and hashes. The preflight records the protocol and contract revisions, relevant
-fingerprints, declared Write scope, executor binding, and the current tree. Store one immutable raw
+fingerprints, declared Write scope, executor binding and the current tree. Store one immutable raw
 check record per actual validation, referencing shared immutable objects where available; the local
 report may summarize it but cannot replace it. A generic transcript label without an accessible
 export is missing evidence.
 
-A printed PASS is not evidence when a child process, wrapper, generated artifact, or package failed.
-Check a real child return code, timeout and signal independently of wrapper output. A validation
-command's own process result is authoritative; a helper that prints PASS while its child failed is a
+A printed PASS is not evidence when a child process, wrapper, generated artifact or package failed.
+Check a real child return code, timeout and signal independently of wrapper output: a validation
+command's own process result is authoritative, and a helper printing PASS while its child failed is a
 failed observation. `set -u`, `pipefail` or a final PASS alone does not propagate a required
 assertion's failure; use checked subprocesses or explicit failure exits for each required condition.
-A final PASS is optional unless the consumer requires it; when used, emit it only after all relevant
-children succeed.
+A final PASS is optional unless the consumer requires it, and comes only after all relevant children
+succeed.
 
 ## Capture
 
 Choose an accessible evidence destination before the check, so a missing export is handled at
-capture time. Capture using the harness's complete exported event or direct stdout/stderr capture.
-An export must remain independently accessible after handoff; otherwise save the raw command result
+capture time. Capture with the harness's complete exported event or direct stdout/stderr capture.
+An export must stay independently accessible after handoff; otherwise save the raw command result
 locally. Never type a shortened command, paraphrased output or later clock reading into a file
-labelled raw. Record unavailable metadata as `n/a`, not midnight, zero, or an inferred model/effort.
+labelled raw. Record unavailable metadata as `n/a`, not midnight, zero or an inferred model/effort.
 Fingerprint the actual source/tests/config/inputs before the check and confirm they still match
-afterward; hash produced artifacts afterward. If they change, retain the old result as historical and
+afterward; hash produced artifacts afterward. If they change, keep the old result as historical and
 revalidate only affected obligations. A pre-edit test hash does not identify post-edit coverage.
-Exact-byte edits and checks preserve the specified delimiter and final newline; do not normalize
+Exact-byte edits and checks preserve the specified delimiter and final newline, never normalizing
 either away. Disposable directories may be created and removed after the observation, with
 pre-existing sentinels preserved.
 
 For Full, use [execution checks](full-checks.md) when the harness lacks complete capture or
-canonical lint automation. The smaller `evidence-capture.md` example serves the other routes.
-Establish effective write confinement before the first PLAN write/check and retain it in RUN; record
-its observed capability separately from instructions. Prepare the obligation/evidence index once,
+canonical lint automation; the smaller `evidence-capture.md` example serves the other routes.
+Establish effective write confinement before the first PLAN write/check and keep it in RUN, recording
+its observed capability apart from instructions. Prepare the obligation/evidence index once,
 snapshot the executed scripts and selected input membership, and close with affected checks. One
 captured command may discharge target, surrounding and integration obligations when its observed
-coverage includes them all; index that same observation instead of rerunning unchanged checks to
+coverage includes them all; index that observation instead of rerunning unchanged checks to
 populate headings.
 
 Where the harness has native usage capture, use it at role start and again after the role's terminal
-event is externally observed, keeping its receipt and exact thread ID with the Run ID;
-[codex-native-usage.md](codex-native-usage.md) is one example. Use configured model/effort only when
+event is externally observed, keeping its receipt and exact thread ID with the Run ID
+([codex-native-usage.md](codex-native-usage.md) is one example). Use configured model/effort only when
 the matching native turn records them; a requested CLI launch binding is labeled requested. Save
-native token observations at their session scope, and put an exact terminal clock in the role's
+native token observations at their session scope; an exact terminal clock goes in the role's
 `resource-usage.md` finish row only with a reviewed Run ID/turn map. If the environment or trace is
 unavailable, record `n/a` and continue. Missing telemetry does not block execution and must not be
 reconstructed.
@@ -85,15 +85,15 @@ Optional: [consented JEV](system-one.md#integration). A workspace with a signal 
 the [System One check](intake-and-gate.md#system-one-check) when RUN starts.
 
 Consume retained failed observations before another check, including on resume. Diagnose from their
-command, output and relevant input fingerprints; do not repeat an unchanged failed check to
+command, output and relevant input fingerprints; never repeat an unchanged failed check to
 rediscover its result. Recheck only after a recorded relevant input or environment change, or an
-actually justified permitted operational recovery below. Narrower diagnostic inspection remains
+actually justified permitted operational recovery below. Narrower diagnostic inspection stays
 allowed; diagnosis alone does not justify repeating acceptance.
 
 The escalation packet names the exact requirement/clause and revision, expected versus observed
-result, reproducer and raw-evidence pointer, affected consumers, attempts/cycles already used and
-remaining, and the smallest unresolved decision. The packet is a decision aid; it does not silently
-replan, broaden scope, upgrade model or effort, dispatch a frontier role, or make up a missing
+result, reproducer and raw-evidence pointer, affected consumers, attempts/cycles used and
+remaining, and the smallest unresolved decision. It is a decision aid; it never silently
+replans, broadens scope, upgrades model or effort, dispatches a frontier role, or makes up a missing
 requirement. Generic escalation records its trigger, minimal scope, budget and observed outcome.
 
 ## Operational recovery
@@ -103,18 +103,18 @@ failure signature (cause, command, relevant inputs and environment), inspect the
 records, then correct a workspace-local temporary-path issue, interrupted local capture, or restart an
 already-configured foreground tool after confirming prior writers stopped. One retry may establish
 recovery; if it fails, block that action with both records. A relevant external change may justify a
-new diagnosis, but a new actor/task name does not reset this allowance. Record recovery kind, action,
+new diagnosis; a new actor/task name never resets this allowance. Record recovery kind, action,
 result and spent allowance in the same journal. No global install, credentials, restricted access,
 protected expectation change or invented requirement is authorized. All other operational causes
-remain blocked pending the concrete needed capability or decision.
+stay blocked pending the concrete needed capability or decision.
 
 Before repeating an interrupted command or completion update, inspect the tree, process results,
 task-board/report revisions, checkpoint and raw records to determine whether it occurred. If
 occurrence is incomplete or unknown, record `observe-incomplete` and preserve the history before
-choosing a safe continuation. Do not duplicate an irreversible action merely because a session ended
-without a terminal message. If interrupted between record/report/board writes, reconcile all three
+choosing a safe continuation. Never duplicate an irreversible action merely because a session ended
+without a terminal message. Interrupted between record/report/board writes, reconcile all three
 against actual outcomes before repairing the incomplete update. A completed side effect is not
-repeated merely to fill a missing terminal row; unchecked work remains Interrupted or Checking.
+repeated merely to fill a missing terminal row; unchecked work stays Interrupted or Checking.
 
 <a id="correction-lineage-consistency-recipe"></a>
 ## Correction lineage
@@ -136,10 +136,10 @@ initiative pool and Task counter both retain the spent count, which survives res
 
 The spent count comes from the task-linked failed correction-validation records, whoever or whichever session wrote them; the State snapshot only projects it. A resume never assumes zero; zero requires records showing no failure: when the records disagree or are missing, it makes no further attempt until the count is reconciled from them, and blocks and reports the discrepancy if it cannot be.
 
-Each failed implementation correction appends an attempt-journal entry before another attempt and
-re-reads the earlier entries. The entry names the observed failure, correction, validation command,
-result, and cycle count. A correction that changes a contract or acceptance requires the authorized
-superseding decision first, then re-grounding and revalidation.
+Each failed implementation correction appends an attempt-journal entry, naming the observed failure,
+correction, validation command, result and cycle count, before another attempt, and re-reads the earlier
+entries. A correction changing a contract or acceptance requires the authorized superseding decision
+first, then re-grounding and revalidation.
 
 When tasks are reshaped, use stable failure IDs and cycle-event IDs in the existing journal. A cycle
 pool follows unresolved work; several descendant tasks can reference the same pool. Merging distinct
@@ -160,11 +160,11 @@ budget. Successful corrections, observations and dispatches are not failed-cycle
 <a id="verification-method-and-independence"></a>
 ## Independence and historical grades
 
-Mechanical execution, focused semantic review, and adversarial audit are separate capabilities. The
-same agent may observe a deterministic command; that observation is real command evidence with its
-actual provenance, while its own review remains self-review and is not independent. Use an
-independent session or human fallback only when the risk or obligation requires semantic
-independence; record the actual actor, profile, context and isolation. If the required isolation is
+Mechanical execution, focused semantic review and adversarial audit are separate capabilities. The
+same agent may observe a deterministic command: real command evidence with its actual provenance,
+while its own review stays self-review, not independent. Use an independent session or human fallback
+only when the risk or obligation requires semantic independence; record the actual actor, profile,
+context and isolation. If the required isolation is
 unavailable, mark that evidence obligation unavailable/blocked and do not claim independent E1. A
 renamed role or a fresh label is not proof of independence. Routine Run has no universal
 frontier checker or majority vote; its only routine independent reviews are the three [adversary
@@ -213,10 +213,10 @@ preserves unaffected history and invalidates the changed consumers and crossing 
 intersection cannot see.
 
 At serialization or unit boundaries, global checks include applicable valid adversarial inputs from
-the declared domain and the actual consumer parser/round trip. Nominal sample output alone does not
+the declared domain and the actual consumer parser/round trip; nominal sample output alone does not
 prove preservation of arbitrary allowed strings or numeric values. Before implementation, record
-required supported producer/consumer targets and available validation environments in the contract.
-Record the actual producer and consumer runtimes and the supported range being claimed. A pass on one
+required supported producer/consumer targets and available validation environments in the contract,
+then the actual producer and consumer runtimes and the claimed supported range. A pass on one
 runtime does not establish compatibility with another. An unverified required target blocks the Task
 or global obligation that owns it; an outstanding mandatory global obligation prevents initiative
 completion. Optional targets remain unverified without blocking the authorized narrower scope.
@@ -239,17 +239,17 @@ At closure, when the workspace has a map delta, offer to fold its `done` changes
 
 ## Release gating
 
-When a release names an initiative in scope, that initiative remains subject to this global
-acceptance obligation until the evidence passes. A board with no in-progress rows, or a board whose
-Tasks are all complete, cannot infer release acceptance; the release sweep consumes the named
-workspace's existing global-acceptance evidence rather than creating a second status source.
+An initiative a release names in scope stays subject to this global acceptance obligation until the
+evidence passes. A board with no in-progress rows, or with all Tasks complete, cannot infer release
+acceptance; the release sweep consumes the named workspace's existing global-acceptance evidence
+rather than creating a second status source.
 
 For release work, the Coordinator records the explicit workspace scope before running the sweep;
 unknown scope blocks the tag pending clarification. The release-gating set is the deduplicated union
 of active and selected workspaces: selection never exempts another active workspace from its
 mandatory lint and acceptance check gates. Selected workspaces also require current deliverable
 acceptance regardless of board status. Historical closed and parked workspaces that are neither
-active nor selected remain non-gating; warn-severity lint rows retain their severity.
+active nor selected stay non-gating; warn-severity lint rows keep their severity.
 
 ## Run record
 
@@ -258,7 +258,7 @@ its actual result and relevant final revisions, and matches it to the obligation
 stale or failed required verification-records/review/coverage blocks its owning scope; summaries
 cannot repair it. Board, report and final response must express that same scope and outcome. Role
 completion is separate: a reviewer may successfully report a blocked product, but a blocked
-implementation is not successful product completion. Unknown telemetry and optional coverage remain
+implementation is not successful product completion. Unknown telemetry and optional coverage stay
 non-gating.
 
 On complete, the Coordinator records the final report, raw evidence pointers, immutable revisions,
@@ -273,7 +273,7 @@ and `resource-usage.md`; it refuses any other with `migrate first` ([forward onl
 
 A closure report or local Run report is evidence, not permission to erase prior history. Once
 deliverable acceptance and its review/sign-off obligations pass, write the closure records, check only
-fields and obligations affected by those writes, and respond. Do not restart whole-plan lint, guide
+fields and obligations those writes affect, and respond. Never restart whole-plan lint, guide
 traversal or housekeeping after product acceptance without a relevant change, new failure, or
 explicit release/audit request. Reuse unchanged PLAN readiness checks; this does not skip initial PLAN
 lint, required product/review checks, or the separately requested release sweep.
@@ -282,9 +282,9 @@ The local report contains, in order: authorization and preflight; implementation
 observation; surrounding and integration observations; correction journal and any failure packet;
 deliverable acceptance; independent semantic review when required; final status and unresolved risk,
 closed by the receipt. Each observation links to its immutable raw record. Raw records are
-append-never/overwrite-never artifacts named with a unique Run, Task, validation ordinal, and observed
-timestamp. Record unknown telemetry as `n/a`; do not infer duration, tokens, cost, actor,
-independence, or success.
+append-never/overwrite-never artifacts named with a unique Run, Task, validation ordinal and observed
+timestamp. Record unknown telemetry as `n/a`; never infer duration, tokens, cost, actor,
+independence or success.
 
 Before RUN writes a receipt or a blocker report, it runs the [controlled-writing](controlled-writing.md)
 check on the text and fixes each finding or records the owner's acceptance.
