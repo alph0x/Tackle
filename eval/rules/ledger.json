@@ -4531,7 +4531,7 @@
       "rule_id": "R-REL-07",
       "statement": "Gate 9 checks that the script manifest lists every `*.py` under skills/tackle/scripts/, recursively, with its current sha256.",
       "statement_sha256": "7e307645e6336205de5368a259e5ac85a929d6282da3afa8fd3370d8840f6b9f",
-      "home": "MAINTAINING.md:61",
+      "home": "MAINTAINING.md:71",
       "home_fragment": "Gate 9 checks that the script manifest lists",
       "units": [],
       "mirrors": [],
@@ -4547,6 +4547,121 @@
         "scenarios": [],
         "cohort_id": null,
         "as_of": "2026-10-14"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-REL-08",
+      "statement": "Replay every step of `.github/workflows/ci.yml` locally before pushing the release branch; a step that cannot run locally is observed in CI, never assumed green.",
+      "statement_sha256": "5a823bfd01c0e6cf6a1db821672a13790cd5b30f9170782cf369b960c83b73f3",
+      "home": "MAINTAINING.md:35",
+      "home_fragment": "Replay every step of `.github/workflows/ci.yml` lo",
+      "units": [],
+      "mirrors": [],
+      "class": "maintainer",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "maintainer release procedure revision",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-18"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-REL-09",
+      "statement": "After the owner's order, run each publication command alone, one at a time, and check its exit before the next; a publication command is never piped.",
+      "statement_sha256": "58df25cb04b804614503c599e42dba75ca646ea8e1a7f4cf456226034384de52",
+      "home": "MAINTAINING.md:37",
+      "home_fragment": "After the owner's order, run each publication comm",
+      "units": [],
+      "mirrors": [],
+      "class": "maintainer",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "maintainer release procedure revision",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-18"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-REL-10",
+      "statement": "Publish a GitHub Release with the changelog entry as its notes, not only a tag.",
+      "statement_sha256": "5b946cccfd75bfc1d24a3cf657dcfe29287093b02b4aff0477a4f2df0af7e39c",
+      "home": "MAINTAINING.md:39",
+      "home_fragment": "Publish a GitHub Release with the changelog entry ",
+      "units": [],
+      "mirrors": [],
+      "class": "maintainer",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "maintainer release procedure revision",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-18"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-REL-11",
+      "statement": "Before declaring distribution fresh, compare the remote raw `https://raw.githubusercontent.com/alph0x/Tackle/main/skills/tackle/SKILL.md` with the skills.sh catalog snapshot.",
+      "statement_sha256": "9370208bd9aca54df60d95f41e9cfd25ac08a115ed6b5bd2753ecf5d53f12416",
+      "home": "MAINTAINING.md:41",
+      "home_fragment": "Before declaring distribution fresh, compare the r",
+      "units": [],
+      "mirrors": [],
+      "class": "maintainer",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "maintainer release procedure revision",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-18"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-REL-12",
+      "statement": "Review every new or changed script: any read whose path or hash comes from configuration stays confined to the working directory, and every pinned-script invocation runs with `python -I`.",
+      "statement_sha256": "4b96f4984f718b3550a020bf96fa91b8cd7bffd5d470ca3899da164b740d7cd0",
+      "home": "MAINTAINING.md:43",
+      "home_fragment": "Review every new or changed script: any read whose",
+      "units": [],
+      "mirrors": [],
+      "class": "maintainer",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "maintainer release procedure revision",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-18"
       },
       "historical": []
     },
