@@ -4,7 +4,8 @@
 
 - **The lint runner reads its rows from one place.** `scripts/lint_runner.py` now reads the lint rows only from the `lint.py` beside it, and verifies the exact bytes against a sha256 pinned in the runner's code, the way it already pins `capture.py`. A changed `lint.py` is refused before anything is written.
 - **A `lint.json` naming `source` or `source_sha256` is refused.** Those keys existed in the 10.0.0 config shape, one day old; the runner stops with an error that says to remove them. No configuration key selects what the runner executes.
-- **Tests.** New tests cover the refusal of both keys, the currency of the pin against `lint.py`, and the confinement of every path a configuration names to the working directory.
+- **The capture copy runs isolated.** A `capture_script` copy named in the configuration is run with `python -I`, so a module placed beside it cannot shadow the standard library; its bytes were already pinned.
+- **Tests.** New tests cover the refusal of both keys, the currency of the pin against `lint.py`, and the confinement of every path a configuration names to the working directory, and the isolated run of the capture copy.
 - **Nothing else changes.** Row results, the summary shape, the records and the exit codes are as in 10.0.0. The motivation is a LOW anomaly Socket reported on this script, which read a configured source file. No scanner result is promised, and that verdict cannot be reproduced locally.
 - **Evidence.** Deterministic tests only; no held-out behavioral cohort was run for this release.
 
