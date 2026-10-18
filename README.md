@@ -79,7 +79,7 @@ cp -R skills/tackle/scripts ~/.claude/skills/tackle/
 
 For Cursor, use `~/.cursor/skills/tackle/`. Other agents use their own skill directory. Tackle follows the [Agent Skills](https://github.com/anthropics/skills) format.
 
-The install contains only `SKILL.md`, `references/` and `scripts/`, with 78 installation-relative files. Repository branding, development tools, and evaluation fixtures are not part of the installed skill.
+The install contains only `SKILL.md`, `references/` and `scripts/`, with 79 installation-relative files. Repository branding, development tools, and evaluation fixtures are not part of the installed skill.
 The checkout copy commands above copy those files into the selected directory and leave any other files already there.
 
 For 9.0.1, the update checks used skills@1.7.0 in controlled synthetic Git fixtures; they did not change a real installation or test the public GitHub API route. In a copy-mode reinstall for one agent (`--copy -a <agent> -y -g`), the selected agent directory received the exact 55-file artifact. That route refreshed the selected agent copy and lock while leaving any old canonical `.agents/skills/tackle` directory untouched.

@@ -88,13 +88,15 @@ the styling of auxiliary pages, and it changes no file format.
 An active 9.3 workspace adopts 10.0.0 with this checklist. This release ships every program as a script under
 `scripts/` (Python 3.10 or later), and it changes no file format.
 
-1. If the workspace has a plan view, rebuild it with `scripts/plan_view.py` under its standing view request,
+1. An owner who runs a 9.3 loopback live producer stops it before updating; 10.0 retires the live view and
+   ships no producer.
+2. If the workspace has a plan view, rebuild it with `scripts/plan_view.py` under its standing view request,
    as the [plan view guide](plan-view.md) states. Without that request, build no view.
-2. Saved copies of 9.x recipe programs are obsolete; use the scripts under `scripts/` in their place.
-3. A verification record that an installed `capture.py` made while running from outside the working
+3. Saved copies of 9.x recipe programs are obsolete; use the scripts under `scripts/` in their place.
+4. A verification record that an installed `capture.py` or `lint_runner.py` made while running from outside the working
    directory names that script's sha256, so it is refused once the install updates the script. Rerun those
    checks under the updated install.
-4. [System One](system-one.md) goes through the host's `typesafe-ai` skill. A recorded `System One consent:` line keeps its
+5. [System One](system-one.md) goes through the host's `typesafe-ai` skill. A recorded `System One consent:` line keeps its
    meaning and needs no change; never copy one from a parent or neighboring workspace.
 
 <a id="schema-keyed-migration"></a>
