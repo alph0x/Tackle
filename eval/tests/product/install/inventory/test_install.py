@@ -237,6 +237,17 @@ class LinksTests(unittest.TestCase):
     def test_no_broken_links_in_the_named_files(self):
         self.assertEqual(check_links(ROOT), [])
 
+    def test_a_link_inside_a_code_span_is_ignored(self):
+        """Case: code span -- `[x](y)` between backticks is literal text, as in rendered Markdown;
+        a real dangling link outside the code span still fails, naming its target."""
+        with tempfile.TemporaryDirectory(prefix='install-code-span-link-') as scratch:
+            root = Path(scratch)
+            (root / 'README.md').write_text(
+                'Literal `[x](y)` is text, but [Real](missing.md) is a link.\n')
+            problems = check_links(root)
+            self.assertEqual(len(problems), 1)
+            self.assertIn('missing.md', problems[0])
+
 
 class GatesTests(unittest.TestCase):
     """Case: gates -- the self-lint gates run from MAINTAINING.md, each silent and exit 0."""
