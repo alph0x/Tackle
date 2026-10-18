@@ -280,7 +280,7 @@ An earlier, retired paired-experiment protocol ran twelve paired episodes agains
 
 The [eval suite](eval/README.md) contains **75 scenarios** (`s1`–`s80`): decision traps, one end-to-end lifecycle smoke test, three end-to-end planning tasks and two mid-task resumes judged by hidden acceptance tests. The manual A/B workflow compares a model following Tackle with the same model working without it. Each scenario's answer sheet stays outside the agent's copy. A smoke run provides evidence for that run, with its limits recorded alongside the result.
 
-Before release, the [release sweep](MAINTAINING.md#release-sweep) runs 9 shipped-skill gates covering the entry-file word budget, 11 core conventions, version and migration consistency, README claims, install contents, update boundaries, and script manifest currency. These are documented, copy-pasteable POSIX checks. The workspace table covers rows 1–17 (17 lint rows), which run only through `scripts/lint.py`.
+Before release, the [release sweep](MAINTAINING.md#release-sweep) runs 9 shipped-skill gates covering the entry-file word budget, 11 core conventions, version and migration consistency, README claims, install contents, update boundaries, and script manifest currency. These are documented, copy-pasteable POSIX checks. The workspace table covers rows 1–17 (17 lint rows), whose programs live in `scripts/lint.py`.
 
 Mechanical gate procedures cover `lint` rows, `catalog` integrity, each `done-signal`, the two-phase `ground` check, `eval` method arms, and `init` artifact completeness. Required independent review also gates completion. Release publication requires a separate owner request.
 

@@ -104,7 +104,7 @@ class InstallScripts(unittest.TestCase):
                 self.assertEqual(digest, pinned)
 
     def test_candidate_tree_stages_its_scripts(self):
-        root = archive('eca3ace', tempfile.mkdtemp(dir=self.dir))
+        root = archive('a5f4341', tempfile.mkdtemp(dir=self.dir))
         files = harness.read_install(root)
         shipped = sorted(p.relative_to(root).as_posix() for p in (root / 'scripts').rglob('*') if p.is_file())
         self.assertTrue(shipped)
