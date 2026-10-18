@@ -89,13 +89,18 @@ def captured_lint_verdict(source, expected_sha256, slug, row, script, record, ob
 def run_lint(config_path):
     root = Path.cwd().resolve()
     trusted_capture_sha256 = '3b0aaef26047e779c96735aa612858903db922c9e6921ed5a4d408aeaa304aea'
+    trusted_lint_sha256 = 'e105af7d3505fcfbdc81f0d595c8ba5076abbb37895a65b2d939872a1de2b5a1'
     def local(name):
         path = (root / name).resolve()
         path.relative_to(root)
         return path
     config = json.loads(local(config_path).read_text())
-    source = Path(config['source']).read_bytes()
-    rows = canonical_rows(source, config['source_sha256'], config['slug'])
+    if 'source' in config or 'source_sha256' in config:
+        raise ValueError('the lint source is the pinned lint.py beside the runner; remove source and source_sha256 from the configuration')
+    source = Path(__file__).resolve().with_name('lint.py').read_bytes()
+    if hashlib.sha256(source).hexdigest() != trusted_lint_sha256:
+        raise ValueError('lint source revision changed')
+    rows = canonical_rows(source, trusted_lint_sha256, config['slug'])
     if 'capture_script' in config:
         capture_script = local(config['capture_script'])
     else:
@@ -151,12 +156,12 @@ def run_lint(config_path):
             observation = receipt.parent
             record = json.loads((observation / 'result.json').read_text())
             if result.returncode in (0, 1) and not result.stderr:
-                verdict = captured_lint_verdict(source, config['source_sha256'], config['slug'],
+                verdict = captured_lint_verdict(source, trusted_lint_sha256, config['slug'],
                                                number, script, record, observation,
                                                programs.get('capture'))
         except (OSError, ValueError, UnicodeError):
             pass
-        results[number] = dict(row=number, source_sha256=config['source_sha256'],
+        results[number] = dict(row=number, source_sha256=trusted_lint_sha256,
                                command_sha256=rows[number]['command_sha256'], verdict=verdict,
                                capture_exit=result.returncode,
                                observation=str(observation.relative_to(root)) if observation else None)

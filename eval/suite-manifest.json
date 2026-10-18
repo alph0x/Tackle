@@ -60,7 +60,7 @@
         "test_controls.py",
         "test_isolated_veracity.py"
       ],
-      "tests": 40,
+      "tests": 43,
       "source": "eval/run/execution",
       "category": "product",
       "purpose": "Literal execution scripts, identity and verdict capture."

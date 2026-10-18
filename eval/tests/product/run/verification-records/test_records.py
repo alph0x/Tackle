@@ -179,13 +179,12 @@ class Records(unittest.TestCase):
         self.assertFalse((self.root / 'outside').exists())
 
     def test_new_lint_specs_use_explicit_shared_workspace(self):
-        (self.root / 'lint.py').write_text(recipe('lint_runner.py'))
-        source = INSTALL / 'scripts/lint.py'
-        config = dict(source=str(source), source_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
-                      workspace='initiative', slug='demo', rows=[12], capture_script='capture.py',
+        (self.root / 'lint_runner.py').write_text(recipe('lint_runner.py'))
+        (self.root / 'lint.py').write_bytes((INSTALL / 'scripts/lint.py').read_bytes())
+        config = dict(workspace='initiative', slug='demo', rows=[12], capture_script='capture.py',
                       selectors=[dict(glob='input.bin', required=True)], timeout_seconds=2)
         (self.root / 'lint.json').write_text(json.dumps(config))
-        run = subprocess.run([sys.executable, 'lint.py', 'lint.json'], cwd=self.root,
+        run = subprocess.run([sys.executable, 'lint_runner.py', 'lint.json'], cwd=self.root,
                              capture_output=True, timeout=10)
         self.assertTrue(run.stdout, run.stderr)
         summary = json.loads(Path(run.stdout.decode().strip()).read_text())
@@ -199,9 +198,7 @@ class Records(unittest.TestCase):
     def test_the_shipped_lint_script_runs_from_the_install_folder_with_its_own_capture(self):
         # cwd is the disposable root, outside the install: the capture script beside the lint script
         # is used, pinned by its bytes, and neither script needs to sit inside cwd.
-        source = INSTALL / 'scripts/lint.py'
-        config = dict(source=str(source), source_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
-                      workspace='initiative', slug='demo', rows=[12],
+        config = dict(workspace='initiative', slug='demo', rows=[12],
                       selectors=[dict(glob='input.bin', required=True)], timeout_seconds=2)
         (self.root / 'lint.json').write_text(json.dumps(config))
         run = subprocess.run([sys.executable, '-I', str(INSTALL / 'scripts/lint_runner.py'), 'lint.json'],

@@ -90,8 +90,7 @@ class OutsideCwdPrograms(unittest.TestCase):
                     self.reader.read_record(out)
 
     def test_lint_runner_outside_cwd_names_both_scripts_in_its_summary(self):
-        source = INSTALL / 'scripts/lint.py'
-        config = dict(source=str(source), source_sha256=sha(source), workspace='initiative', slug='demo',
+        config = dict(workspace='initiative', slug='demo',
                       rows=[12], selectors=[dict(glob='input.txt', required=True)], timeout_seconds=5)
         (self.root / 'lint.json').write_text(json.dumps(config))
         run = subprocess.run([sys.executable, '-I', str(LINT), 'lint.json'], cwd=self.root,
