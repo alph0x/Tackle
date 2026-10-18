@@ -145,7 +145,7 @@ The [`scripts/`](skills/tackle/scripts/README.md) folder holds the programs the 
 | Plan view | `plan_view.py` |
 | Architecture map | `architecture_map.py` |
 | Workspace lint | `lint.py` |
-| Check-line runner (needs its own authorization, not covered by the lint grant) | `lint_runner.py` |
+| Captured lint-row runner (needs its own authorization, not covered by the lint grant) | `lint_runner.py` |
 | Check and evidence capture | `capture.py`, `evidence_capture.py` |
 | Records and context bundle | `record_store.py`, `context_bundle.py` |
 | Task consistency, corrections and adversary checkpoints | `decompose_check.py`, `correction_lineage.py`, `adversary_checkpoints.py` |
@@ -223,7 +223,7 @@ This section describes how Tackle is built to behave; it is not a claim about an
 
 The install is `SKILL.md`, `references/` and `scripts/`: Markdown guides plus Python scripts that use the standard library only. Installing it runs nothing and installs no program (see the install contents [above](#get-started)). Ordinary invocation performs no network access and does not change the installation tree. Tackle ships no network client: the optional System One judgment goes through your host's `typesafe-ai` skill, and only when the workspace records your agreement ([System One](skills/tackle/references/guides/system-one.md)).
 
-An agent runs or imports a script under `scripts/` only with your explicit authorization, and prefers an equivalent capability of its own harness. An explicit plan or run request authorizes `scripts/lint.py` for that request and, by itself, no other script. Asking for a feature whose documented procedure is a script, such as the plan view, counts as that explicit authorization for that request. If you decline, the affected record is reported unavailable or produced another permitted way, never faked.
+An agent runs or imports a script under `scripts/` only with your explicit authorization, and prefers an equivalent capability of its own harness. An explicit plan or run request authorizes `scripts/lint.py` for that request and, by itself, no other script. Asking for a feature whose documented procedure is a script, such as the plan view, counts as explicit authorization for that script for that request. If you decline, the affected record is reported unavailable or produced another permitted way, never faked.
 
 RUN executes only the exact command line (argv) that each authorized, ready task declares, and captures each command with its exit status and output streams ([RUN card](skills/tackle/references/guides/run-card.md)).
 
