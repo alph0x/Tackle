@@ -376,6 +376,23 @@ class TaskContracts(unittest.TestCase):
                 if metric == 'Comprehension debt':
                     self.assertNotIn('T-C', result.stdout)
 
+    def test_b1_blocked_durations_ignore_state_snapshot_lines(self):
+        template = (INSTALL / 'references/retro.tmpl.md').read_text()
+        command = template.split('| Blocked durations | `', 1)[1].split('`', 1)[0]
+        history = ['# History', '', '## 2026-10-04 · session 1', '- T-0042 Blocked: waiting on the owner', '',
+                   '### State snapshot', '- Blocked on: nothing.', '- Blocked on: owner go-ahead for T-0043',
+                   '- Blocked on: none', '', '## 2026-10-05 · session 2', '- T-0042 unblocked',
+                   '- T-0044 ⏸ legacy pause']
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / 'history.md').write_text('\n'.join(history) + '\n', encoding='utf-8')
+            result = subprocess.run(['sh', '-c', command], cwd=root, text=True, capture_output=True, timeout=30)
+        self.assertEqual((result.returncode, result.stderr), (0, ''))
+        for fragment in ('T-0042 Blocked', '⏸', '## 2026-10-04', '## 2026-10-05'):
+            self.assertIn(fragment, result.stdout)
+        for fragment in ('Blocked on:', 'T-0043'):
+            self.assertNotIn(fragment, result.stdout)
+
 
 if __name__ == '__main__':
     unittest.main()

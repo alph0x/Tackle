@@ -207,6 +207,145 @@ class RetroRecipeTests(unittest.TestCase):
         self.assertIn('retro.tmpl.md', growth)
         self.assertIn('At most three failed correction-validation cycles per task', one_line(text(GUIDES / 'run-card.md')))
 
+    def run_metric(self, label, files):
+        with tempfile.TemporaryDirectory(prefix='tackle-retro-cases-') as temporary:
+            root = Path(temporary)
+            for name, lines in files.items():
+                (root / name).write_text('\n'.join(lines) + '\n', encoding='utf-8')
+            return subprocess.run(['sh', '-c', self.cell(label)], cwd=root, capture_output=True, text=True, timeout=30)
+
+    def echo(self, files, name, line):
+        hits = [number for number, text_line in enumerate(files[name], 1) if text_line == line]
+        self.assertEqual(len(hits), 1, line)
+        return '%s:%d: %s' % (name, hits[0], line)
+
+    def assert_attempts(self, files, counted, counts, over=(), unattributed=()):
+        child = self.run_metric('Attempts over budget', files)
+        self.assertEqual((child.returncode, child.stderr), (0, ''), child.stderr)
+        out = child.stdout.splitlines()
+        if not counted:
+            self.assertEqual(out, ['none'])
+            return
+        echoes = [l for l in out if re.match(r'history(-archive)?\.md:\d+: ', l)]
+        self.assertEqual(echoes, [self.echo(files, name, line) for name, line in counted], out)
+        got = {m[1]: int(m[2]) for m in (re.match(r'^([PT]-[A-Za-z0-9]+) (\d+)$', l) for l in out) if m}
+        self.assertEqual(got, counts, out)
+        self.assertEqual({l[len('over cap: '):] for l in out if l.startswith('over cap: ')}, set(over), out)
+        self.assertEqual({l for l in out if l.startswith('unattributed ')}, set(unattributed), out)
+
+    def assert_gate(self, files, gate, sessions, undated=(), completed='1', present=(), absent=()):
+        child = self.run_metric('Gate accuracy', files)
+        self.assertEqual((child.returncode, child.stderr), (0, ''), child.stderr)
+        out = child.stdout.splitlines()
+        self.assertEqual([l for l in out if l.startswith('Gate: ') or l == 'gate n/a'], [gate], out)
+        self.assertEqual([l for l in out if l.startswith('sessions ')], ['sessions %d' % sessions], out)
+        self.assertEqual({l for l in out if l.startswith('undated heading: ')}, set(undated), out)
+        self.assertEqual([l for l in out if l.startswith('completed ')], ['completed %s' % completed], out)
+        for fragment in present:
+            self.assertTrue(any(fragment in l for l in out), fragment)
+        for fragment in absent:
+            self.assertFalse(any(fragment in l for l in out), fragment)
+
+    def test_a1_both_journal_forms_count_across_the_archive_then_the_history(self):
+        files = {'history-archive.md': ['# History archive', '', '## 2026-10-01 · session 1',
+                                        '- T-0042 attempt 1: lint failed'],
+                 'history.md': ['# History', '', '## 2026-10-02 · session 2',
+                                '- 2026-10-02 — T-0042 correction cycle 2: test red',
+                                '- Correction cycle 3 of 3 sent to the T-0042 executor',
+                                '- T-0042 correction 4 of 3: still red']}
+        self.assert_attempts(files, [('history-archive.md', '- T-0042 attempt 1: lint failed'),
+                                     ('history.md', '- 2026-10-02 — T-0042 correction cycle 2: test red'),
+                                     ('history.md', '- Correction cycle 3 of 3 sent to the T-0042 executor'),
+                                     ('history.md', '- T-0042 correction 4 of 3: still red')],
+                             {'T-0042': 4}, over=['T-0042'])
+
+    def test_a2_state_snapshot_lines_are_skipped_whatever_their_case(self):
+        history = ['# History', '', '## 2026-10-02 · session 1', '- T-0042 attempt 1: x failed', '',
+                   '### State snapshot', '- Active obligations: 1 of 3 for T-0042 (attempt 1: x failed)',
+                   '- Blocked on: nothing.', '', '## 2026-10-03 · session 2', '- T-0042 Attempt 2: y failed']
+        self.assert_attempts({'history.md': history},
+                             [('history.md', '- T-0042 attempt 1: x failed'),
+                              ('history.md', '- T-0042 Attempt 2: y failed')], {'T-0042': 2})
+
+    def test_a3_only_attempt_and_cycle_lines_with_a_number_of_at_least_one_count(self):
+        history = ['# History', '', '## 2026-10-05 · session 1',
+                   '- T-0042 correction cycle 1 of 3: lint red → fix import; python3 -m unittest: fail',
+                   '- T-0042 attempt 2: retry with a clean cache', '- T-0042 attempt : noise',
+                   '- T-0042 correction cycle 0 noted']
+        self.assert_attempts({'history.md': history}, [('history.md', history[3]), ('history.md', history[4])],
+                             {'T-0042': 2})
+
+    def test_a4_a_history_without_counted_lines_prints_none(self):
+        self.assert_attempts({'history.md': ['# History', '', '## 2026-10-06 · session 1', '- T-0042 started']},
+                             [], {})
+
+    def test_a5_an_idless_counted_line_takes_the_ids_of_its_entry(self):
+        history = ['# History', '', '## 2026-10-07 · session 1', '- T-0042 started',
+                   '- correction cycle 1 of 3: lint red → fix; python3 -m unittest: pass']
+        self.assert_attempts({'history.md': history}, [('history.md', history[4])], {'T-0042': 1})
+
+    def test_a6_several_ids_are_credited_and_an_entry_without_ids_is_unattributed(self):
+        history = ['# History', '', '## 2026-10-08 · session 1', '- T-0042 and T-0043 share the parser',
+                   '- attempt 1: parser fix failed', '', '## 2026-10-09 · session 2', '- attempt 1: unowned failure']
+        self.assert_attempts({'history.md': history}, [('history.md', history[4]), ('history.md', history[7])],
+                             {'T-0042': 1, 'T-0043': 1}, unattributed=['unattributed history.md:8'])
+
+    def test_a7_exactly_three_counted_lines_are_not_over_the_cap(self):
+        history = ['# History', '', '## 2026-10-10 · session 1', '- T-0042 attempt 1: a', '- T-0042 attempt 2: b',
+                   '- T-0042 correction cycle 3 of 3: c → d; make test: fail']
+        self.assert_attempts({'history.md': history}, [('history.md', history[3]), ('history.md', history[4]),
+                                                       ('history.md', history[5])], {'T-0042': 3})
+
+    def test_a8_a_snapshot_ends_at_the_next_subheading_and_at_the_end_of_the_file(self):
+        archive = ['## 2026-10-10 · session 1', '- T-0042 attempt 1: a failed', '### State snapshot',
+                   '- Obligations: T-0042 (attempt 1: a failed)']
+        history = ['# History', '- T-0042 attempt 2: b failed', '', '## 2026-10-11 · session 2', '### State snapshot',
+                   '- Obligations: T-0042 (attempt 2: b failed)', '### Notes', '- T-0042 attempt 3: c failed']
+        self.assert_attempts({'history-archive.md': archive, 'history.md': history},
+                             [('history-archive.md', archive[1]), ('history.md', history[1]),
+                              ('history.md', history[7])], {'T-0042': 3})
+
+    def test_g1_a_full_gate_below_line_one_counts_distinct_session_labels_and_dates(self):
+        plan = ['# Action plan — Fixture', '', 'Gate: Full', '', '## 1. Objective']
+        history = ['# History', '', '## 2026-10-18 · session 1', '- T-0042 started; the gate held',
+                   '## 2026-10-18 · session 1', '- continued after a break', '## 2026-10-19 · session 2',
+                   '- delegate the review', '## Session 3 — 2026-10-19', '- T-0042 Complete',
+                   '## 2026-10-21 (continued)', '- x', '## 2026-10-21 (continued)', '- y']
+        board = ['Schema: tackle-workspace/4', '', '| Task | What | Brief | Depends on | Verification | Status |',
+                 '|---|---|---|---|---|---|', '| T-0042 | Parser work | tasks/T-0042.md | none | pending | Complete |']
+        self.assert_gate({'plan.md': plan, 'history.md': history, 'task-board.md': board}, 'Gate: Full', 4,
+                         undated=['undated heading: history.md:9'], present=['the gate held'], absent=['delegate'])
+
+    def test_g2_a_lite_plan_without_a_board_reports_completed_as_not_applicable(self):
+        self.assert_gate({'plan.md': ['Gate: Lite', '', '# Lite fixture'],
+                          'history.md': ['# History', '', '## 2026-10-20 · session 1', '- T-0042 Complete']},
+                         'Gate: Lite', 1, completed='n/a')
+
+    def test_g3_a_plan_without_a_gate_line_prints_gate_not_applicable_and_no_delegate_match(self):
+        board = ['Schema: tackle-workspace/4', '', '| Task | What | Brief | Depends on | Verification | Status |',
+                 '|---|---|---|---|---|---|', '| T-0042 | Parser work | tasks/T-0042.md | none | pending | Complete |']
+        self.assert_gate({'plan.md': ['# Action plan — Fixture', '', '## 1. Objective', '- delegate the investigation'],
+                          'history.md': ['# History', '', '## 2026-10-22 · session 1', '- we delegate this to the reviewer'],
+                          'task-board.md': board}, 'gate n/a', 1, absent=['delegate'])
+
+    def test_g4_an_undated_archive_heading_counts_and_fenced_or_commented_headings_do_not(self):
+        plan = ['# Action plan — Fixture', '', 'Gate: Full', '', '## 1. Objective']
+        archive = ['# History archive', '', '## Notes', '- legacy note', '', '## 2026-10-01 · session 1', '- a']
+        history = ['# History', '', '## 2026-10-02 · session 2', '```text', '## not a heading', '```', '<!--',
+                   '## also not a heading', '-->', '- b']
+        board = ['Schema: tackle-workspace/4', '', '| Task | What | Brief | Depends on | Verification | Status |',
+                 '|---|---|---|---|---|---|', '| T-0042 | Parser work | tasks/T-0042.md | none | pending | Complete |']
+        self.assert_gate({'plan.md': plan, 'history-archive.md': archive, 'history.md': history, 'task-board.md': board},
+                         'Gate: Full', 2, undated=['undated heading: history-archive.md:3'])
+
+    def test_g5_labels_shared_by_the_archive_and_the_history_count_once(self):
+        board = ['Schema: tackle-workspace/4', '', '| Task | What | Brief | Depends on | Verification | Status |',
+                 '|---|---|---|---|---|---|', '| T-0042 | Parser work | tasks/T-0042.md | none | pending | Complete |']
+        self.assert_gate({'plan.md': ['Gate: Full', '', '## 1. Objective'], 'task-board.md': board,
+                          'history-archive.md': ['## 2026-10-16 · session 1', '- a', '## 2026-10-17 · session 2', '- b'],
+                          'history.md': ['## 2026-10-18 · session 2', '- c', '## 2026-10-19 · session 3', '- d']},
+                         'Gate: Full', 3)
+
 
 class StatusObligationTests(unittest.TestCase):
     def test_the_status_guide_lists_open_obligations_and_next_reports_them_when_nothing_is_ready(self):
