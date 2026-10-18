@@ -4645,6 +4645,57 @@
         "as_of": "2026-10-13"
       },
       "historical": []
+    },
+    {
+      "rule_id": "R-RUN-32",
+      "statement": "Each attempt-journal line takes the form `correction cycle N of 3: <failure> → <correction>; <validation command>: <result>`.",
+      "statement_sha256": "182ca9c8bfcd64a50d9b7feb6dc9d46cd7b9ad175b74935cdca345e788aeb2bc",
+      "home": "references/guides/run.md:142",
+      "home_fragment": "Each attempt-journal line takes the form",
+      "units": [],
+      "mirrors": [
+        "references/history.tmpl.md:61"
+      ],
+      "class": "format",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "Batch retro 2026-10-18: the journal line form is named where RUN records a failed correction.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-18"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-LEARN-12",
+      "statement": "Recorded clocks take the form `YYYY-MM-DDTHH:MM:SS[.fff](Z|±HH:MM)`; minute-only and space-separated clocks are unmeasured.",
+      "statement_sha256": "57911777df8a1798eb5b6797681b92a39645e7936d02af3c1aab17420c99f2b7",
+      "home": "references/guides/retro.md:50",
+      "home_fragment": "Recorded clocks take the form",
+      "units": [],
+      "mirrors": [
+        "references/resource-usage.tmpl.md:4",
+        "references/lite-plan.tmpl.md:146"
+      ],
+      "class": "format",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "Batch retro 2026-10-18: the clock format is stated where ledgers are written.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-18"
+      },
+      "historical": []
     }
   ],
   "non_normative": [
