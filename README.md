@@ -61,6 +61,8 @@ In a later session, select Tackle and ask:
 Show the checkout validation plan's status. What is complete, blocked, and next?
 ```
 
+**Requirements:** the scripts need Python 3.10 or later and the standard library only; on Windows, run them with `py -3`. Installing runs nothing, and a script runs only with your authorization. See the [script manifest and consent rules](skills/tackle/scripts/README.md).
+
 These are example requests to the selected skill, not shell commands or captured results. If your app offers `/tackle`, select that entry and continue typing. The selection syntax depends on the app; Tackle has one entry, with the actions inside it. Requests can be in your preferred language.
 
 A scoped request such as “plan and implement this refactor” authorizes both preparation and execution. A plan-only request stops before implementation. Open Tackle without a request, or ask for `help`, to see the available actions without starting work or creating files.
@@ -82,17 +84,13 @@ For Cursor, use `~/.cursor/skills/tackle/`. Other agents use their own skill dir
 The install contains only `SKILL.md`, `references/` and `scripts/`, with 79 installation-relative files. Repository branding, development tools, and evaluation fixtures are not part of the installed skill.
 The checkout copy commands above copy those files into the selected directory and leave any other files already there.
 
-For 9.0.1, the update checks used skills@1.7.0 in controlled synthetic Git fixtures; they did not change a real installation or test the public GitHub API route. In a copy-mode reinstall for one agent (`--copy -a <agent> -y -g`), the selected agent directory received the exact 55-file artifact. That route refreshed the selected agent copy and lock while leaving any old canonical `.agents/skills/tackle` directory untouched.
-
-In two fresh synthetic global fixtures, default symlink mode for two agents (`--skill tackle -a <agent> <agent> -y -g`) replaced the canonical `.agents/skills/tackle` directory with the exact artifact and linked the first agent to it. An agent that resolves the canonical `.agents/skills` directory gets no separate link. Seeded floating and pinned ordinary updates exited successfully while retaining the old root-layout path and bytes; the pinned lock still named v9.0.0. These results do not establish automatic migration of older installs.
-
-After publication, sandboxed probes of 9.0.1 installed the exact 55-file artifact through both public routes: the `#v9.0.1` tag and the default no-ref source. For 10.0.0 the same flags apply to the tag once it exists:
+Before release, a local clone of the release commit installed exactly the 79 expected files through both the manual copy above and `npx skills@1.7.0 add` (offline, with `-a claude-code -y -g`). The public GitHub routes, by tag and by the default source, have not been probed for 10.0.0. To pin a release, install by tag:
 
 ```sh
 npx --yes skills@1.7.0 add 'https://github.com/alph0x/Tackle.git#v10.0.0' --skill tackle -a claude-code codex -y -g
 ```
 
-The 10.0.0 routes are probed only after publication, and the GitHub API fast path has not been tested. The controlled source used `.invalid#packaging-preparation-02`, rewritten to a local clone, with synthetic old-lock seeds. An earlier parser-invalid root probe selected a same-name two-file fixture; the 1,476-file figure describes repository/package blast radius or conditional root-copy risk, not observed historical installed content. Restart your session after an update if your agent cannot reload skills.
+Restart your session after an update if your agent cannot reload skills.
 
 </details>
 
@@ -137,6 +135,27 @@ For code, PLAN chooses the checks before implementation. Tackle prefers an end-t
 | `explore <question>` | Read the repository and answer with cited findings, options and a recommendation; writes nothing. |
 
 Status questions during an authorized run do not cancel that authorization. Unclear requests are clarified before action. See the [request guide](skills/tackle/references/guides/invocation.md) for intent boundaries, and [terminology](skills/tackle/references/terminology.md) for retired action-name aliases.
+
+### What the scripts do
+
+The [`scripts/`](skills/tackle/scripts/README.md) folder holds the programs the guides name, each in Python with the standard library only:
+
+| Purpose | Scripts |
+|---|---|
+| Plan view | `plan_view.py` |
+| Architecture map | `architecture_map.py` |
+| Workspace lint | `lint.py`, `lint_runner.py` |
+| Check and evidence capture | `capture.py`, `evidence_capture.py` |
+| Records and context bundle | `record_store.py`, `context_bundle.py` |
+| Task consistency, corrections and adversary checkpoints | `decompose_check.py`, `correction_lineage.py`, `adversary_checkpoints.py` |
+| Migration | `migrate/` |
+| Requirements base | `requirements_base.py` |
+| Controlled writing | `controlled_writing.py` |
+| System One state and decisions | `system_one_state.py`, `system_one_decide.py` |
+| Usage capture | `codex_usage.py` |
+| Retro confidence | `retro_confidence.py` |
+
+The [manifest](skills/tackle/scripts/README.md) lists every script with its sha256. A plan or run request authorizes `scripts/lint.py` for that request; an explicit request for a feature whose procedure is a script authorizes that script; otherwise no script runs ([consent](skills/tackle/scripts/README.md#consent)).
 
 ### What makes a task ready to hand off?
 
@@ -203,7 +222,7 @@ This section describes how Tackle is built to behave; it is not a claim about an
 
 The install is `SKILL.md`, `references/` and `scripts/`: Markdown guides plus Python scripts that use the standard library only. Installing it runs nothing and installs no program (see the install contents [above](#get-started)). Ordinary invocation performs no network access and does not change the installation tree. Tackle ships no network client: the optional System One judgment goes through your host's `typesafe-ai` skill, and only when the workspace records your agreement ([System One](skills/tackle/references/guides/system-one.md)).
 
-An agent runs or imports a script under `scripts/` only with your explicit authorization, and prefers an equivalent capability of its own harness. Asking for a feature whose documented procedure is a script, such as the plan view, counts as that authorization. If you decline, the affected record is reported unavailable or produced another permitted way, never faked.
+An agent runs or imports a script under `scripts/` only with your explicit authorization, and prefers an equivalent capability of its own harness. A plan or run request authorizes `scripts/lint.py` and no other script. Asking for a feature whose documented procedure is a script, such as the plan view, counts as that authorization for that script. If you decline, the affected record is reported unavailable or produced another permitted way, never faked.
 
 RUN executes only the exact command line (argv) that each authorized, ready task declares, and captures each command with its exit status and output streams ([RUN card](skills/tackle/references/guides/run-card.md)).
 
@@ -244,7 +263,7 @@ Visible sizing names map to existing routes: Direct (None), Focused (Lite), and 
 
 Historical records retain their meanings: E1 for independent command verification, E2 for semantic review, E3 for an assertion, and E0 for unverifiable work. They are not an ordinal scale.
 
-During 8.x, documented slash forms such as `/tackle-run` and `/tackle-verify` preserve their intent boundaries when the host passes them as text; they do not register separate picker entries. The retiring 8.x action-name aliases keep their historical targets in [terminology.md](skills/tackle/references/terminology.md).
+Documented slash forms such as `/tackle-run` and `/tackle-verify` stay text aliases: when the host passes them as text they keep their intent boundaries, never grant broader permission, and register no separate picker entries ([invocation](skills/tackle/references/guides/invocation.md#text-aliases)). Retired 8.x action names map to their historical targets in [terminology.md](skills/tackle/references/terminology.md).
 
 The install keeps the head of the checklist chain v2.0 → v10.0: [9.3 → 10.0](skills/tackle/references/guides/migrate.md#v93--v100-checklist), [9.2 → 9.3](skills/tackle/references/guides/migrate.md#v92--v93-checklist) and the [8.4 → 9.0](skills/tackle/references/guides/migrate.md#v84--v90-checklist) bridge, under one [adoption procedure](skills/tackle/references/guides/migrate.md#adopting-a-release). The historical checklists, v2.0 → v9.2.1, live in the repository's [`maintaining/migrations.md`](maintaining/migrations.md), including [9.2.0 → 9.2.1](maintaining/migrations.md#v920--v921-checklist), [9.1 → 9.2](maintaining/migrations.md#v91--v92-checklist), [9.1.0 → 9.1.1](maintaining/migrations.md#v910--v911-checklist), [9.0 → 9.1](maintaining/migrations.md#v90--v91-checklist), [9.0.0 → 9.0.1](maintaining/migrations.md#v900-v901-checklist), [8.4.0 → 8.4.1](maintaining/migrations.md#v840--v841-checklist), [8.3 → 8.4](maintaining/migrations.md#v83--v84-checklist), [8.2 → 8.3](maintaining/migrations.md#v82--v83-checklist), [8.1 → 8.2](maintaining/migrations.md#v81--v82-checklist), [8.0 → 8.1](maintaining/migrations.md#v80--v81-checklist), and the [copy-first 7.3 → 8.0 transition](maintaining/migrations.md#v73--v80-checklist).
 
