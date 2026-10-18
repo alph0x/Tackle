@@ -5630,7 +5630,7 @@
       "unit_sha256": "f4b733883aea7c79e29ed3bcc1e3d951b2c06757c028a934367c493c0475898e",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 13 · History over archive threshold or entry budget — `history.md` exceeds the archive threshold (default 400 lines; workspace-overridable via `Log archive threshold: N` in the workspace `AGENTS.md`), or a session entry (from its `## YYYY-MM-DD` heading through the line before the next `## ` heading, trailing blank lines excluded, `###` lines inside) runs past the entry budget (default 120 lines; workspace-overridable via `History entry budget: N`); a missing `history.md` is an error; fix path: RUN archives or shortens under the workspace's maintenance policy (default in `AGENTS.md`, recoverable maintenance in `context-lifecycle.md`), never STATUS | 0 lines of output — any line is a **warn** |",
+      "note": "| 13 · History over archive threshold or entry budget — `history.md` exceeds the archive threshold (default 400 lines; workspace-overridable via `Log archive threshold: N` in the workspace `AGENTS.md`), or a session entry (from its `## YYYY-MM-DD` heading through the line before the next `## ` heading, trailing blank lines excluded, `###` lines inside) runs past the entry budget (default 120 lines; workspace-overridable via `History entry budget: N`); after the newest `### State snapshot`, a dated `## ` heading or column-1 dated `- ` bullet prints `snapshot drift: <line>` and an undated `## ` heading prints `undated heading: <line>` (fenced code and HTML comments are skipped; with no snapshot there is no drift line); a missing `history.md` is an error; fix path: RUN archives or shortens under the workspace's maintenance policy (default in `AGENTS.md`, recoverable maintenance in `context-lifecycle.md`), never STATUS | 0 lines of output — any line is a **warn** |",
       "destination_unit_sha256": null
     },
     {
@@ -6729,7 +6729,7 @@
       "unit_sha256": "e9c55d68b5f765facbe420e1b664b6f00b20e03d52fd2e410b5755476f0b7778",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 13 · History over archive threshold or entry budget — `history.md` exceeds the archive threshold (default 400 lines; workspace-overridable via `Log archive threshold: N` in the workspace `AGENTS.md`), or a session entry (from its `## YYYY-MM-DD` heading through the line before the next `## ` heading, trailing blank lines excluded, `###` lines inside) runs past the entry budget (default 120 lines; workspace-overridable via `History entry budget: N`); a missing `history.md` is an error; fix path: RUN archives or shortens under the workspace's maintenance policy (default in `AGENTS.md`, recoverable maintenance in `context-lifecycle.md`), never STATUS | 0 lines of output — any line is a **warn** |",
+      "note": "| 13 · History over archive threshold or entry budget — `history.md` exceeds the archive threshold (default 400 lines; workspace-overridable via `Log archive threshold: N` in the workspace `AGENTS.md`), or a session entry (from its `## YYYY-MM-DD` heading through the line before the next `## ` heading, trailing blank lines excluded, `###` lines inside) runs past the entry budget (default 120 lines; workspace-overridable via `History entry budget: N`); after the newest `### State snapshot`, a dated `## ` heading or column-1 dated `- ` bullet prints `snapshot drift: <line>` and an undated `## ` heading prints `undated heading: <line>` (fenced code and HTML comments are skipped; with no snapshot there is no drift line); a missing `history.md` is an error; fix path: RUN archives or shortens under the workspace's maintenance policy (default in `AGENTS.md`, recoverable maintenance in `context-lifecycle.md`), never STATUS | 0 lines of output — any line is a **warn** |",
       "destination_unit_sha256": null
     },
     {
@@ -10008,7 +10008,7 @@
       "unit_sha256": "6beab43e15ae51914b59ff2781e68aa0481b85d9b1f927d17e1d598b201f5412",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 13 · History over archive threshold or entry budget — `history.md` exceeds the archive threshold (default 400 lines; workspace-overridable via `Log archive threshold: N` in the workspace `AGENTS.md`), or a session entry (from its `## YYYY-MM-DD` heading through the line before the next `## ` heading, trailing blank lines excluded, `###` lines inside) runs past the entry budget (default 120 lines; workspace-overridable via `History entry budget: N`); a missing `history.md` is an error; fix path: RUN archives or shortens under the workspace's maintenance policy (default in `AGENTS.md`, recoverable maintenance in `context-lifecycle.md`), never STATUS | 0 lines of output — any line is a **warn** |",
+      "note": "| 13 · History over archive threshold or entry budget — `history.md` exceeds the archive threshold (default 400 lines; workspace-overridable via `Log archive threshold: N` in the workspace `AGENTS.md`), or a session entry (from its `## YYYY-MM-DD` heading through the line before the next `## ` heading, trailing blank lines excluded, `###` lines inside) runs past the entry budget (default 120 lines; workspace-overridable via `History entry budget: N`); after the newest `### State snapshot`, a dated `## ` heading or column-1 dated `- ` bullet prints `snapshot drift: <line>` and an undated `## ` heading prints `undated heading: <line>` (fenced code and HTML comments are skipped; with no snapshot there is no drift line); a missing `history.md` is an error; fix path: RUN archives or shortens under the workspace's maintenance policy (default in `AGENTS.md`, recoverable maintenance in `context-lifecycle.md`), never STATUS | 0 lines of output — any line is a **warn** |",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -16947,6 +16947,15 @@
           "reason": "release version stamp bumped to 10.0.1"
         }
       ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 40,
+      "unit_sha256": "8ca5a0d1e67466fb5ac2613bc80680e9939e83332b618df6c483b648406789ee",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "| 13 · History over archive threshold or entry budget — `history.md` exceeds the archive threshold (default 400 lines; workspace-overridable via `Log archive threshold: N` in the workspace `AGENTS.md`), or a session entry (from its `## YYYY-MM-DD` heading through the line before the next `## ` heading, trailing blank lines excluded, `###` lines inside) runs past the entry budget (default 120 lines; workspace-overridable via `History entry budget: N`); after the newest `### State snapshot`, a dated `## ` heading or column-1 dated `- ` bullet prints `snapshot drift: <line>` and an undated `## ` heading prints `undated heading: <line>` (fenced code and HTML comments are skipped; with no snapshot there is no drift line); a missing `history.md` is an error; fix path: RUN archives or shortens under the workspace's maintenance policy (default in `AGENTS.md`, recoverable maintenance in `context-lifecycle.md`), never STATUS | 0 lines of output — any line is a **warn** |",
+      "destination_unit_sha256": null
     }
   ]
 }
