@@ -1,19 +1,19 @@
 # One skill, requests inside it
 
-Tackle ships one skill named `tackle`. The host controls how a user selects that skill: a picker,
-mention, or supported command. Tackle does not register separate commands for its actions.
-After selection, interpret the user's request in any language. Short action names are optional.
+Tackle ships one skill named `tackle`. The host controls how a user selects it: a picker, mention
+or supported command; Tackle registers no separate commands for its actions. After selection,
+interpret the user's request in any language; short action names are optional.
 In documentation and continuation prompts, recommend selecting Tackle and stating the action;
 never promise a separate menu entry for an action or a particular prefix in every host.
 
 ## Resolve intent
 
 1. A bare skill selection, `tackle`, or `help` with no task asks for help. Briefly offer plan, run, show status,
-   validate the plan, audit the result and review lessons, with a couple of examples.
-   Do not read project state or create/change files just to show help.
+   validate the plan, audit the result and review lessons, with a couple of examples. Never read project
+   state or create/change files just to show help.
 2. Prefer the complete request over an action token: a question about `run`, a quoted example,
    or “don't execute” does not authorize execution. If the action or its target is materially
-   ambiguous, ask one short clarification before writes. Do not invent an action for an unknown
+   ambiguous, ask one short clarification before writes. Never invent an action for an unknown
    token. If only the target is missing, use an unambiguous active context or ask.
 3. Route a clear request through the table. Natural language and short forms share the same
    intent, scope, consent and evidence rules. Activation itself is never execution consent.
@@ -48,17 +48,17 @@ STATUS staying read-only, so a request here is routed, not re-authorized from sc
 
 English and Spanish examples preserve intent: “Plan and implement this” / “Planificá e implementá esto” authorize both after readiness; “Plan only, do not execute” / “Solo el plan, no ejecutes” stop at preparation. “What does \`run\` mean?” and “El ejemplo dice \`run\`” are questions/examples, not authorization.
 
-## Compatibility during 8.x
+## Text aliases
 
-Previously documented slash strings remain text aliases when they reach the agent. Normalize
+Previously documented slash strings stay text aliases when they reach the agent. Normalize
 `/tackle-plan`, `/tackle-run`, `/tackle-status`, `/tackle-verify`, `/tackle-judge`, `/tackle-retro`
 and `/tackle-init` to the matching request above, retaining the target, flags and stated intent.
 For example, `/tackle-run --one` means `run --one`; `/tackle-verify` means `verify`. Typing a text
-alias cannot make a host register it or show it in a picker. If a host rejects it, select Tackle
-and use the request form instead. Normalizing a text alias never grants broader execution or write
+alias cannot make a host register it or show it in a picker; if a host rejects it, select Tackle
+and use the request form. Normalizing a text alias never grants broader execution or write
 permission.
 
 Action names retired at 9.0 keep their historical targets in the Routes and actions section of
 [terminology.md](../terminology.md), for interpreting an old workspace's requests. Preserve the
-requested operation: grounding, coverage and cold-resolvability remain their own checks within
+requested operation: grounding, coverage and cold-resolvability stay their own checks within
 [Verify](verify.md).

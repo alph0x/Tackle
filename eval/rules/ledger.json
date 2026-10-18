@@ -429,7 +429,7 @@
         "PLAN-only stops before implementation."
       ],
       "mirrors": [
-        "references/guides/communication.md:24"
+        "references/guides/communication.md:23"
       ],
       "class": "safety-invariant",
       "hot_path": true,
@@ -872,7 +872,7 @@
       "rule_id": "R-RUN-02",
       "statement": "Explicit PLAN+RUN authorization persists within scope: status questions during active work are answered and work continues without asking for execution permission again.",
       "statement_sha256": "46477588c66873c870e3dfd4772be0273d3545585e33a4e7e04bfb3190ef9bd0",
-      "home": "references/guides/communication.md:32",
+      "home": "references/guides/communication.md:31",
       "home_fragment": "an explicit pause/cancellation, or an incompatible",
       "units": [],
       "mirrors": [],
@@ -2073,7 +2073,7 @@
         "**STATUS** `status [<workspace>]` Read-only stat"
       ],
       "mirrors": [
-        "references/guides/communication.md:34"
+        "references/guides/communication.md:33"
       ],
       "class": "safety-invariant",
       "hot_path": true,
@@ -3367,7 +3367,7 @@
       "units": [],
       "mirrors": [
         "references/guides/plan-view.md:35",
-        "references/guides/plan-view.md:137",
+        "references/guides/plan-view.md:136",
         "references/guides/run-card.md:49",
         "references/guides/plan-view.md:16",
         "references/guides/plan-card.md:99"
@@ -3523,7 +3523,7 @@
       "rule_id": "R-STATUS-10",
       "statement": "Full and Focused views use the same template and export a self-contained executive presentation of the plan, its current progress or both through a separate light print report independent of screen filters, theme and collapsed sections, with original page title, temporary print attributes and focus restored after printing, cancellation or a print exception.",
       "statement_sha256": "7462bde8443a2a81b16d7eb0760090fd5c37a9d4ac61f28746ab802998c9fa0c",
-      "home": "references/guides/plan-view.md:121",
+      "home": "references/guides/plan-view.md:120",
       "home_fragment": "Full and Focused views use the same template",
       "units": [],
       "mirrors": [],
@@ -3934,7 +3934,7 @@
       "home_fragment": "The coordinator updates `view/summary.json` and",
       "units": [],
       "mirrors": [
-        "references/guides/plan-view.md:140"
+        "references/guides/plan-view.md:139"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -4004,7 +4004,7 @@
       "rule_id": "R-STATUS-20",
       "statement": "The plan view shows a Waiting on you section read from the files: open questions from questions.md with their Determines line, open unless the state carries a resolved mark, tasks Waiting on owner or Blocked with their Verification cell, and Open board obligations with owner and trigger; when nothing is open one line says so, a Focused plan shows its open questions only, and the PDF report keeps its own obligations table.",
       "statement_sha256": "206bec52b78fc5b5fb02cbd953c30ffbac75d71c31f1471db5b1437f60adb9fb",
-      "home": "references/guides/plan-view.md:108",
+      "home": "references/guides/plan-view.md:107",
       "home_fragment": "A Waiting on you section lists open questions",
       "units": [],
       "mirrors": [],
@@ -4027,7 +4027,7 @@
       "rule_id": "R-STATUS-21",
       "statement": "The Progress and Both reports of the PDF carry the same note. The build and its check also name, on stderr, each task whose state differs from the states a summary declares.",
       "statement_sha256": "05320f189fdd6c016ff9d60ddb136f59e81e4973780846df92a12a14e3215a0d",
-      "home": "references/guides/plan-view.md:140",
+      "home": "references/guides/plan-view.md:139",
       "home_fragment": "The Progress and Both reports of the PDF carry the same note",
       "units": [],
       "mirrors": [],
@@ -4050,7 +4050,7 @@
       "rule_id": "R-STATUS-22",
       "statement": "The export is read by people who do not know the plan, so its prose names no task, decision, question or requirement ids, file paths, backticks or workspace names. The build warns on stderr for each field that contains one and never fails.",
       "statement_sha256": "f80a21add416a374605a056aa2d366d6962d229b42122ec98e7e5082a945fdf4",
-      "home": "references/guides/plan-view.md:141",
+      "home": "references/guides/plan-view.md:140",
       "home_fragment": "The export is read by people who do not know the plan, so it",
       "units": [],
       "mirrors": [],
@@ -4073,7 +4073,7 @@
       "rule_id": "R-STATUS-23",
       "statement": "When a plan view exists, an authorized auxiliary page for the plan, such as a proposals, comparison or review page, uses the plan view's visual base by default without a question about style, built with the plan-view recipe's page mode.",
       "statement_sha256": "6d9aae937cffab5ddb9c49d27e9d2d133c3789d01990dcdd6918aa2dfe218437",
-      "home": "references/guides/plan-view.md:153",
+      "home": "references/guides/plan-view.md:152",
       "home_fragment": "When a plan view exists, an authorized auxiliary page for th",
       "units": [],
       "mirrors": [],
@@ -4096,7 +4096,7 @@
       "rule_id": "R-STATUS-24",
       "statement": "Each diagram the page draws, the task graph and each architecture picture, offers its Mermaid text to copy or download; the page never renders Mermaid and loads nothing.",
       "statement_sha256": "2ebe1b2bf811c5cb696900b5be1f51997ab88af77f7acb411f2b6e59c5d34aa8",
-      "home": "references/guides/plan-view.md:173",
+      "home": "references/guides/plan-view.md:172",
       "home_fragment": "Each diagram the page draws, the task graph and each archite",
       "units": [],
       "mirrors": [],
@@ -4119,7 +4119,7 @@
       "rule_id": "R-STATUS-25",
       "statement": "A dependency on a sibling workspace's task is drawn as an external node with the sibling's name and that task's state; it has no inspector.",
       "statement_sha256": "0da04e082040a4cc38a6b5c1e454229ff808b95748d4120377299469cab52f4a",
-      "home": "references/guides/plan-view.md:177",
+      "home": "references/guides/plan-view.md:176",
       "home_fragment": "A dependency on a sibling workspace's task is drawn as an ex",
       "units": [],
       "mirrors": [],

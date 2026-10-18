@@ -1,8 +1,8 @@
 # Architecture map
 
 The architecture map shows how a project is put together. The [plan view](plan-view.md) draws it twice: as
-the project is today, and as it will be after the plan. The map has a base, which the project keeps, and a
-delta, which each plan keeps in its workspace.
+the project is today and as it will be after the plan. The project keeps the map's base; each plan keeps a
+delta in its workspace.
 
 ## The base
 
@@ -30,9 +30,9 @@ component ids.
 
 ## No base
 
-When no base exists, the view says so, and Tackle offers once to create one. Tackle never invents a map. It
-reads the repository, proposes groups, components and relations with a source path it has seen for each, and
-shows them. It writes the file only after the owner says yes, and it tells the owner that `.tackle/` should
+When no base exists, the view says so, and Tackle offers once to create one. Tackle never invents a map: it
+reads the repository, proposes groups, components and relations, each with a source path it has seen, and
+shows them. It writes the file only after the owner says yes, telling the owner that `.tackle/` should
 stay out of version control.
 
 ## The delta
@@ -66,9 +66,9 @@ refuses an invalid one.
 Importing the script needs the owner's explicit authorization; an explicit architecture-map or plan-view request, or the owner's closure-fold confirmation, grants it for that request ([script consent](../../scripts/README.md#consent)). Prefer an equivalent harness capability. With that authorization, import [`scripts/architecture_map.py`](../../scripts/architecture_map.py) from `<skill>/scripts/`, where `<skill>` is the installed skill folder, by putting that folder first on `sys.path` and importing `architecture_map`. It has no command line, uses only the standard library
 and changes none of its inputs:
 
-- `validate(base, delta)` lists every problem. It names a change of an unknown component, an add of an
-  existing one, an unknown group, a relation end that is missing after the changes, and an `op` or `state`
-  outside the vocabulary.
+- `validate(base, delta)` lists every problem: a change of an unknown component, an add of an existing
+  one, an unknown group, a relation end missing after the changes, and an `op` or `state` outside the
+  vocabulary.
 - `after(base, delta)` returns the base with every change applied, and raises `ValueError` on a problem.
 - `neighbors(map, ids)` returns the ids and every component related to one of them, in either direction.
 - `stale(map, root)` returns the ids of components whose source path is missing under `root`.
@@ -84,11 +84,11 @@ python3 -I <skill>/scripts/plan_view.py --template <skill>/references/plan-view.
   --map .tackle/map/architecture.json --map-scope all <workspace> <workspace>/plan-view.html
 ```
 
-The page gains a Before and after section with a Cards tab and a Diagram tab, for Today and for After this
-plan. New and changed components carry their task and state. With no delta, the section shows only today.
+The page gains a Before and after section with Cards and Diagram tabs, for Today and for After this
+plan. New and changed components carry their task and state; with no delta, the section shows only today.
 Without `--map`, or when the `--map` file does not exist, the island's `map` is null, and a workspace that has
 a delta or a `--map` gets a note that there is no base map yet. An unreadable base or a wrong field type refuses,
-and the refusal names the field.
+naming the field.
 
 The view reads `<workspace>/map-delta.json` and resolves source paths against the repository root, three
 levels above the workspace. A component whose source path no longer exists, or whose glob pattern matches nothing, shows as stale. The view
@@ -96,9 +96,9 @@ refuses an invalid delta, names the problem and writes no file.
 
 ## Large project
 
-A project of more than 25 components is large. Before the first build for it, ask the owner what to show:
-the whole map (`--map-scope all`), or only the changed components with their neighbors
-(`--map-scope changed`). Use the answer for later rebuilds.
+A project of more than 25 components is large. Before its first build, ask the owner what to show:
+the whole map (`--map-scope all`) or only the changed components with their neighbors
+(`--map-scope changed`), and reuse the answer for later rebuilds.
 
 ## Closure fold
 
@@ -106,7 +106,7 @@ At plan closure, when the workspace has a delta, ask the owner to confirm the fo
 
 1. Call `fold(base, delta, revision, commit=..., date=...)` with the closing revision, commit and date, and
    write the result to `.tackle/map/architecture.json`. `verified_at` moves to that revision.
-2. The `done` changes are now in the base. The `planned` changes stay out. Report each one, with its task,
+2. The `done` changes are now in the base; the `planned` changes stay out. Report each one, with its task,
    to the owner.
 
-Without a yes, write nothing. The delta stays in the workspace.
+Without a yes, write nothing; the delta stays in the workspace.

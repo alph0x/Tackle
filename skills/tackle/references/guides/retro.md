@@ -1,8 +1,8 @@
 # Retro — initiative retrospective
 
 Triggered by `retro [initiative]` or a natural phrase like "retro" / "how did it go". Retro
-is optional: run it at initiative close or on demand as a clearly labelled partial retro. It does
-not replace RUN closure or create an autonomy loop.
+is optional: run it at initiative close or on demand as a clearly labelled partial retro. It
+neither replaces RUN closure nor creates an autonomy loop.
 
 **Principle: detection before judgment.** Mine `task-board.md` + `history.md` by grep/count first; use judgment only to distill the counts into lessons. For an unindexed archive, mining reads `history-archive.md` then `history.md`. For indexed segments use the validated chronological archive index from `context-lifecycle.md`, then the active history; never count checkpoints or summaries as original events. Missing/corrupt history makes affected metrics unavailable, never zero. Read-only over the selected task board, history and `decisions.md`; writes go where [Where results go](#where-results-go) lists them, starting with `docs/plans/<initiative>/retro.md` (instantiated from `references/retro.tmpl.md`).
 
@@ -24,14 +24,14 @@ Every metric carries a copy-paste recipe; the recipes live in the template's Met
 ## Lifecycle-first coverage
 
 Read the v2 ledger before any token arithmetic. For every metric and comparable scope, print
-`measured/eligible` plus a percentage; no eligible rows are shown as `0/N (0%)`, never as a
-zero-over-zero denominator. Duration, attempts, rework, incomplete runs, verification outcomes,
-and task time-to-green remain useful when exact telemetry coverage is 0%.
+`measured/eligible` plus a percentage; no eligible rows show as `0/N (0%)`, never as a
+zero-over-zero denominator. Duration, attempts, rework, incomplete runs, verification outcomes
+and task time-to-green stay useful at 0% exact telemetry coverage.
 
-- At 0% exact-token coverage, report `0/N (0%)` and suppress token totals, shares, rankings, and
+- At 0% exact-token coverage, report `0/N (0%)` and suppress token totals, shares, rankings and
   recommendations.
 - Partial exact coverage may list labeled observations, but totals and rankings require 100%
-  comparable coverage; mixed role/session scopes remain separate and unjoined.
+  comparable coverage; mixed role/session scopes stay separate and unjoined.
 - Tier/effort recommendations require 100% coverage, identical scope/source/semantics, and at
   least three completed like-for-like runs; otherwise label the result a hypothesis.
 
@@ -54,8 +54,8 @@ clock text never make a duration measured. A validation-child end is not a role-
 ## Cost analysis
 
 Mined from the exact-token recipe only after the coverage gate, never remembered; report the
-`n/a`-row counts alongside any permitted totals. Report `n/a` for the whole section when the
-workspace has no `resource-usage.md`. `resource-usage.md` remains the only ledger source; unexposed harness fields
+`n/a`-row counts alongside any permitted totals, and `n/a` for the whole section when the
+workspace has no `resource-usage.md`, the only ledger source; unexposed harness fields
 stay `n/a`, never estimated.
 
 ### Conclusions
@@ -72,14 +72,14 @@ stay `n/a`, never estimated.
 
 ## What worked / what didn't / lessons
 
-Distill from the metrics plus the Decisions and Blockers sections of the log. One line each. A lesson must be actionable by a future plan ("gate X earlier", "the attempt budget was too low for tasks shaped like Y"), not a platitude.
+Distill from the metrics plus the log's Decisions and Blockers sections, one line each. A lesson must be actionable by a future plan ("gate X earlier", "the attempt budget was too low for tasks shaped like Y"), not a platitude.
 
 <a id="profile-candidates-learning-loop"></a>
 ## Preferences and lessons candidates (profile learning loop)
 
-The learning loop is the only mechanism that lets Tackle adapt to a user or project. It is opt-in,
-per scope, and never silent. Lessons must identify an observed cause and a future action; an
-unsupported opinion does not become a global rule.
+The learning loop is the only mechanism that lets Tackle adapt to a user or project: opt-in, per
+scope, never silent. Lessons must identify an observed cause and a future action; an unsupported
+opinion never becomes a global rule.
 
 ### Opt-in (asked once per scope)
 
@@ -88,11 +88,11 @@ At the first learning opportunity, ask per scope:
 - **Both scopes** if neither `~/.tackle/user-profile.md` nor `.tackle/profile.md` exists.
 - **Project only** if the user profile already exists and is enabled.
 
-A "no" writes the disabled stub (`Evolution: disabled (YYYY-MM-DD)`) in the relevant profile file and is never re-asked. The user can flip it later by enabling evolution or deleting the file.
+A "no" writes the disabled stub (`Evolution: disabled (YYYY-MM-DD)`) in the relevant profile file and is never re-asked; the user can flip it later by enabling evolution or deleting the file.
 
 ### Distilling candidates
 
-Mine the following sources during retro:
+Mine these sources during retro:
 
 - `decisions.md` deltas vs recommended defaults (recurring overrides).
 - `history.md` attempt-journal lines that exceed the budget or show no-progress.
@@ -144,13 +144,13 @@ For each separately confirmed candidate:
 
 ### Directives
 
-Propose retirement or supersession of incompatible hypotheses without rewriting history. Intake already excludes them from defaults; pending cleanup does not block implementation. One isolated observation remains a hypothesis, not a mandatory global rule.
+Propose retirement or supersession of incompatible hypotheses without rewriting history. Intake already excludes them from defaults; pending cleanup never blocks implementation. One isolated observation stays a hypothesis, not a mandatory global rule.
 
 Recurring failure evidence may propose a `directive:` entry (C-20). A directive targets a named template or guide section and is considered at instantiation only when applicable and compatible with the current authority order. Project directives outrank user directives. A directive whose target section no longer exists is flagged **stale** for re-confirm-or-retire. When the failure evidence is a repeatable mid-session action (a commit message, a push, a release step), distil the directive with an `applies_to:` tag naming that action moment — instantiation-time application never reaches an action taken 30 sessions after intake (taptopaykit-integration A1: a commit-format directive written session 23, violated session 35).
 
 ### Opt-out anytime
 
-The user can stop evolution at any moment, per scope, with any phrasing. Two modes:
+The user can stop evolution at any moment, per scope, in any phrasing, in two modes:
 
 - **Pause**: flip the header to `Evolution: disabled (YYYY-MM-DD)`. Counters are kept; re-enabling resumes them.
 - **Purge**: delete the profile file entirely. The next learning opportunity may re-ask for opt-in.
@@ -164,7 +164,7 @@ At initiative close, consider whether the plan itself is worth distilling into `
 
 ### Eligibility
 
-Offer extraction only when **the decomposition held**: no major replans and no D-xx rewrites of the task/edge graph after intake — tasks closed against the graph that was planned. A plan that was substantially re-shaped mid-flight has no stable skeleton to distill; skip without asking.
+Offer extraction only when **the decomposition held**: no major replans and no D-xx rewrites of the task/edge graph after intake — tasks closed against the planned graph. A plan substantially re-shaped mid-flight has no stable skeleton to distill; skip without asking.
 
 ### Extraction template
 

@@ -1,6 +1,6 @@
 # Requirements base — depth for the [PLAN card](plan-card.md)
 
-A project may keep its required behavior in a requirements base that outlives each plan. The base is `docs/requirements/`, one Markdown file per domain.
+A project may keep its required behavior in a requirements base that outlives each plan: `docs/requirements/`, one Markdown file per domain.
 
 ## Location
 
@@ -67,12 +67,11 @@ In a multi-repo workspace each entry also carries `Repository: <id>` (see the mu
 - a scenario without a `Check:` line (see Scenarios) → `unchecked`;
 - in a multi-repo workspace, an entry without `Repository:` or naming an undeclared id → `repository`.
 
-An empty problem list is the only valid result. PLAN validates the delta before Ready of any task
-that owns a delta entry; an invalid delta blocks those tasks. Importing or running the script needs the owner's
-explicit authorization under the script consent rule: an explicit requirements-delta or validation
-request grants it for that validation. Without it, PLAN checks each entry against the rules above by
-reading the base and the delta, and reports every problem it finds; the fold's yes (see Closure fold) runs the
-script.
+An empty problem list is the only valid result. Importing or running the script needs the owner's explicit
+authorization under the script consent rule: an explicit requirements-delta or validation request grants it
+for that validation, and the fold's yes (see Closure fold) runs it.
+Without that authorization, PLAN checks each entry against the rules above by reading the base and the delta,
+and reports every problem it finds.
 
 ## Scenarios
 
@@ -89,5 +88,5 @@ Optional `- GIVEN <state>` precedes WHEN; `- AND` continues WHEN or THEN. `Check
 names either a runnable command with its pass condition or a named review rubric and reviewer role,
 per convention 5. The same grammar is a valid form for rows of a task's Case matrix and the plan's
 Behavior table: a WHEN/THEN row with an empty Check cell is a readiness finding (Step 6.75), never
-accepted as prose. Tables in the existing column form remain valid; the grammar is an alternative,
+accepted as prose. Tables in the existing column form stay valid; the grammar is an alternative,
 not a mandate.

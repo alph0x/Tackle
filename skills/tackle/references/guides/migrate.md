@@ -38,7 +38,7 @@ Apply the checklists in release order, from the workspace's `Methodology:` stamp
 skipping none. A stamp older than the 8.4 → 9.0 bridge, or from 9.0.0 through 9.2.0, needs intermediate
 checklists that do not ship with the install. The owner reads them in the public repository at
 https://github.com/alph0x/Tackle/blob/v10.0.0/maintaining/migrations.md; Tackle itself opens no network
-connection. Otherwise, start the remaining work in a fresh workspace and leave the old one as it is.
+connection. Or start the remaining work in a fresh workspace and leave the old one as it is.
 
 <a id="v84--v90-checklist"></a>
 ## v8.4 → v9.0 checklist

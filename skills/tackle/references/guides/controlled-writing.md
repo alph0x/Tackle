@@ -1,6 +1,6 @@
 # Controlled writing
 
-Owner texts and specifications use a controlled language. Short sentences, plain words and one idea per sentence make them easy to read and to check.
+Owner texts and specifications use a controlled language: short sentences, plain words and one idea per sentence make them easy to read and check.
 
 ## Scope
 
@@ -23,7 +23,7 @@ Write about 80% of ASD-STE100, with the no-ai-slop reference that the communicat
 
 ## Check
 
-The [script](../../scripts/controlled_writing.py) reports two kinds of finding. It gives the line of each one.
+The [script](../../scripts/controlled_writing.py) reports two kinds of finding, each one with its line.
 
 - `long-sentence`: a sentence over the limit of 25 words.
 - `vague`: a word or filler phrase from the lists below.
@@ -34,7 +34,7 @@ Importing or running the script needs the owner's explicit authorization ([scrip
 
 ## Vague words
 
-Vague words and filler phrases hide the fact. State the fact instead. The match ignores letter case.
+Vague words and filler phrases hide the fact; state the fact instead. The match ignores letter case.
 
 English: `leverage`, `utilize`, `various`, `robust`, `synergy`, `seamless`, `holistic`, `cutting-edge`, `best-in-class`, `game-changing`, `delve`, `myriad`, `plethora`, `etc`, `and so on`, `and so forth`, `and more`, `and the like`, `in order to`, `a number of`, `a wide range of`, `a variety of`, `it is worth noting`, `it should be noted`, `needless to say`, `at the end of the day`, `basically`, `essentially`, `really`, `very`, `stuff`.
 

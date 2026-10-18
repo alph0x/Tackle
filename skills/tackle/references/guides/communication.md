@@ -5,8 +5,7 @@ in their language; keep canonical identifiers, paths, commands, errors and schem
 Shipped instructions and newly defined schema names are English.
 
 Ask the owner only for what the agent may not decide or provide. The [RUN card](run-card.md)'s
-`Waiting on owner` row is the one list of those triggers; this policy does not restate a shorter
-one.
+`Waiting on owner` row is the one list of those triggers; this policy restates no shorter one.
 
 ## Decide whether input is needed
 
@@ -38,9 +37,9 @@ not a keyword match. This policy does not grant source execution to a diagnostic
 ## Match the message to the situation
 
 Start with the intended result, relevant scope and immediate action. During work, report a change,
-finding or uncertainty being resolved, following the host's update cadence. Continue after stating
+finding or uncertainty being resolved, at the host's update cadence, and continue after stating
 the next authorized action. A resumption states current work, reusable checks, relevant changes
-and next action. Completion states the delivered result, observed checks and material limitations.
+and next action; completion states the delivered result, observed checks and material limitations.
 Answer a specific status question first; add lint, collisions, resource usage or archive details
 only when relevant. These are information needs, not mandatory message templates.
 
@@ -50,7 +49,7 @@ removes a blocker, consequence, failed check or authorization boundary. Implemen
 checking, blocked work and accepted delivery must agree with the task board and actual records.
 
 Editorial reference: [no-ai-slop](https://github.com/petergyang/no-ai-slop). Use concrete language,
-preserve meaning and uncertainty, and remove repeated narration. This guidance incorporates no
+preserve meaning and uncertainty, remove repeated narration. This guidance incorporates no
 literal source material, dependency, installation requirement, word blacklist or per-message model call.
 The [controlled-writing](controlled-writing.md) guide holds the checked sentences and word list for owner
 texts and specifications.
@@ -65,6 +64,6 @@ texts and specifications.
 | Required capability unavailable | “Validation failed.” | “The compatibility check needs runtime 3.12, which is unavailable here. The 3.11 check passed; 3.12 acceptance remains unverified. Installing a runtime would require separate authorization.” | What ran, what did not and what enables continuation. |
 | Spanish, delegated choice | “Confirma que puedo elegir nombres.” | “Usaré ‘Task’ y `T-01` en los planes nuevos; los identificadores históricos siguen siendo legibles. Continúo con los cambios autorizados.” | No material decision is outstanding; canonical tokens are preserved. |
 
-Review an actual response by asking: what happened, what remains uncertain, does the user need
-to act, and will authorized work continue? Compare answers with records and scope. A terminology
+Review an actual response by asking: what happened, what stays uncertain, does the user need
+to act, and will authorized work continue? Compare answers with records and scope; a terminology
 regex or a short message alone cannot establish clarity or agent compliance.

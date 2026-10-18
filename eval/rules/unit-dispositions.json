@@ -6304,7 +6304,7 @@
       "unit_sha256": "0620aa0100215f2907ea4e696077c1de85366e6265e2c16076780e9c1b10ed9d",
       "disposition": "reworded",
       "destination": "references/terminology.md",
-      "note": "The [RUN card](guides/run-card.md) has the full state-transition table (entries, exits and triggers); the States table below keeps only the visible names and the migration's mapping of older values.",
+      "note": "The [RUN card](guides/run-card.md) has the full state-transition table (entries, exits, triggers); the States table below keeps only the visible names and the migration's mapping of older values.",
       "destination_unit_sha256": null
     },
     {
@@ -7714,7 +7714,7 @@
       "unit_sha256": "862b04be56a425af2baa72a72296f192cc240715ff5ad9c860bfcddc909b9242",
       "disposition": "reworded",
       "destination": "references/guides/plan-view.md",
-      "note": "An open view reloads itself after a rebuild, keeping its selection, filter and reading position: the build writes a small stamp script beside the page, and the page rereads it every few seconds, with no server and no process to stop.",
+      "note": "An open view reloads itself after a rebuild, keeping its selection, filter and reading position: the build writes a small stamp script beside the page, which the page rereads every few seconds, with no server and no process to stop.",
       "destination_unit_sha256": null
     },
     {
@@ -7787,7 +7787,7 @@
       "unit_sha256": "10a2c5a32dec9ff7c3f47e262d44f5c376436798980ae9e1c0f7e87eba0ca351",
       "disposition": "reworded",
       "destination": "references/guides/plan-view.md",
-      "note": "The script refuses to write when the sources disagree.",
+      "note": "The script refuses to write when the sources disagree, printing one `refused:` line for each problem:",
       "destination_unit_sha256": null
     },
     {
@@ -7814,7 +7814,7 @@
       "unit_sha256": "de5bbbf0be7e357bc88ad9a37a36b06987b46a6502b67e94971d6101a92929a3",
       "disposition": "reworded",
       "destination": "references/guides/plan-view.md",
-      "note": "When the plan names no requirement id, the script refuses with the Focused reason.",
+      "note": "When the plan names no requirement id, the script refuses with the Focused reason; it invents no board.",
       "destination_unit_sha256": null
     },
     {
@@ -7823,7 +7823,7 @@
       "unit_sha256": "18d291023f4293036522f6e4c61a0a9a702be750eb3dc4a6728ee1da4266824e",
       "disposition": "reworded",
       "destination": "references/guides/plan-view.md",
-      "note": "The script orders the cards with a bounded search, so the lines cross few times.",
+      "note": "The script orders the cards with a bounded search so lines cross few times; a long arrow passes through the bands between its ends.",
       "destination_unit_sha256": null
     },
     {
@@ -7832,7 +7832,7 @@
       "unit_sha256": "eb1cca7ff0bdcf6d91775a9a0580f632bd8d89c8ba8e27e4fafc35fc7093b0ae",
       "disposition": "reworded",
       "destination": "references/guides/plan-view.md",
-      "note": "The script picks Spanish only on clear Spanish evidence in the plan.",
+      "note": "The script picks Spanish only on clear Spanish evidence in the plan; any other plan gets English, and `lang` says `en`.",
       "destination_unit_sha256": null
     },
     {
@@ -8519,7 +8519,7 @@
       "unit_sha256": "3f711dcd065ccb5fe8636afc8f73ab7f85f264263577921757f8651c87278383",
       "disposition": "reworded",
       "destination": "references/guides/controlled-writing.md",
-      "note": "The [script](../../scripts/controlled_writing.py) reports two kinds of finding.",
+      "note": "The [script](../../scripts/controlled_writing.py) reports two kinds of finding, each one with its line.",
       "destination_unit_sha256": null
     },
     {
@@ -9137,7 +9137,7 @@
       "unit_sha256": "b062c60e718f0a2509dc301d54229ecab40d6aee6b0e548d5367a75d4b90cb61",
       "disposition": "reworded",
       "destination": "references/guides/requirements-base.md",
-      "note": "Importing or running the script needs the owner's explicit authorization under the script consent rule: an explicit requirements-delta or validation request grants it for that validation.",
+      "note": "Importing or running the script needs the owner's explicit authorization under the script consent rule: an explicit requirements-delta or validation request grants it for that validation, and the fold's yes (see Closure fold) runs it.",
       "destination_unit_sha256": null
     },
     {
@@ -9146,7 +9146,7 @@
       "unit_sha256": "76cc33deb6742f892f9abe731e2b54238c15e372a9066b5a732adb2c4d8ce04c",
       "disposition": "reworded",
       "destination": "references/guides/requirements-base.md",
-      "note": "Without it, PLAN checks each entry against the rules above by reading the base and the delta, and reports every problem it finds; the fold's yes (see Closure fold) runs the script.",
+      "note": "Without that authorization, PLAN checks each entry against the rules above by reading the base and the delta, and reports every problem it finds.",
       "destination_unit_sha256": null
     },
     {
@@ -15675,6 +15675,1203 @@
           "reason": "negation restated as never, no, neither/nor or without; same prohibition"
         }
       ]
+    },
+    {
+      "path": "references/guides/invocation.md",
+      "line": 3,
+      "unit_sha256": "c7bed6e6f6595e0bb42119e482ba9c1805624aac353a652875e7f2424d88c567",
+      "disposition": "reworded",
+      "destination": "references/guides/invocation.md",
+      "note": "The host controls how a user selects it: a picker, mention or supported command; Tackle registers no separate commands for its actions.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/invocation.md",
+      "line": 4,
+      "unit_sha256": "10b942ea5f9ef819d97af30db32a86067e72454d5b8d351aeb6e3b8f2907ad17",
+      "disposition": "reworded",
+      "destination": "references/guides/invocation.md",
+      "note": "The host controls how a user selects it: a picker, mention or supported command; Tackle registers no separate commands for its actions.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/invocation.md",
+      "line": 5,
+      "unit_sha256": "8453d7d665f89a0357c04131fb2de0dc86d17d695454232d3f80811f34b1aa79",
+      "disposition": "reworded",
+      "destination": "references/guides/invocation.md",
+      "note": "After selection, interpret the user's request in any language; short action names are optional.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/invocation.md",
+      "line": 5,
+      "unit_sha256": "7f1e59ebbf3d6dc4a6b8474e0c73aa93d9e3ff62949228e8d49e9473c8a99527",
+      "disposition": "reworded",
+      "destination": "references/guides/invocation.md",
+      "note": "After selection, interpret the user's request in any language; short action names are optional.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/invocation.md",
+      "line": 13,
+      "unit_sha256": "57419680eee3ff42b740ff48387a93bffd11e34c80b64e7bdd38293ef77fc3d3",
+      "disposition": "reworded",
+      "destination": "references/guides/invocation.md",
+      "note": "Never read project state or create/change files just to show help.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/invocation.md",
+      "line": 16,
+      "unit_sha256": "d7033be8269e71f9d6f5da432ccd2ce2a62f6b1e9d73ec68d60cecdddf9a1048",
+      "disposition": "reworded",
+      "destination": "references/guides/invocation.md",
+      "note": "Never invent an action for an unknown token.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/invocation.md",
+      "line": 53,
+      "unit_sha256": "3219243cc1b892234c14d64ed3bc33115fb74378b1dc2d121c1d8d3fb108decf",
+      "disposition": "reworded",
+      "destination": "references/guides/invocation.md",
+      "note": "Previously documented slash strings stay text aliases when they reach the agent.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/invocation.md",
+      "line": 56,
+      "unit_sha256": "1fbd19b1934c48e69d6dff8929ed2733946cd5e3facff01b7a79fdbc32f81654",
+      "disposition": "reworded",
+      "destination": "references/guides/invocation.md",
+      "note": "Typing a text alias cannot make a host register it or show it in a picker; if a host rejects it, select Tackle and use the request form.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/invocation.md",
+      "line": 57,
+      "unit_sha256": "7610e66163ae1d34e570b2f7cffcb35ad60f5ecde86d3af40acc45a3b89146d8",
+      "disposition": "reworded",
+      "destination": "references/guides/invocation.md",
+      "note": "Typing a text alias cannot make a host register it or show it in a picker; if a host rejects it, select Tackle and use the request form.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/invocation.md",
+      "line": 62,
+      "unit_sha256": "01a040a1cea54aecd0f1dd945e696a9959b3ba10960393eceddd1fab4bb03d23",
+      "disposition": "reworded",
+      "destination": "references/guides/invocation.md",
+      "note": "Preserve the requested operation: grounding, coverage and cold-resolvability stay their own checks within [Verify](verify.md).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/terminology.md",
+      "line": 3,
+      "unit_sha256": "4814e503783601f568907bdb2b608416ae11145c33c8f8ce28dce553f701c894",
+      "disposition": "reworded",
+      "destination": "references/terminology.md",
+      "note": "A repository contains initiatives, each with an objective, a plan and tasks.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/terminology.md",
+      "line": 3,
+      "unit_sha256": "ca568c37366337f2d90e5dbb7e9e07d740281a47d8891e692967543e14138877",
+      "disposition": "reworded",
+      "destination": "references/terminology.md",
+      "note": "A repository contains initiatives, each with an objective, a plan and tasks.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/terminology.md",
+      "line": 5,
+      "unit_sha256": "fd362fa8914addbd3c36de0fb25db5c32419617796ec7e26dcb20da35aabba2c",
+      "disposition": "reworded",
+      "destination": "references/terminology.md",
+      "note": "A workspace is the directory supporting one initiative, neither the repository nor the objective.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/terminology.md",
+      "line": 6,
+      "unit_sha256": "4977ad95a4b8220b9a1f9f9924abcda981d036ed133204b304cb99160c2b66be",
+      "disposition": "reworded",
+      "destination": "references/terminology.md",
+      "note": "A workspace is the directory supporting one initiative, neither the repository nor the objective.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/terminology.md",
+      "line": 9,
+      "unit_sha256": "ab2f49a7fb82b4debb42fc707fd32366c4450c57fc5215e88691570e276fc2a3",
+      "disposition": "reworded",
+      "destination": "references/terminology.md",
+      "note": "A role names a responsibility; it neither requires another agent nor proves independence.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/terminology.md",
+      "line": 70,
+      "unit_sha256": "d2ecf9a33c0fb5dff6fe7fa9ad7e396df6456d14d3c2c5d6554d2971c79c3910",
+      "disposition": "reworded",
+      "destination": "references/terminology.md",
+      "note": "The [RUN card](guides/run-card.md) has the full state-transition table (entries, exits, triggers); the States table below keeps only the visible names and the migration's mapping of older values.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/terminology.md",
+      "line": 103,
+      "unit_sha256": "864973f508c46a6d5a8e8d8cb201d0ed57b530768c74c93d4c02e7d4e13f26c9",
+      "disposition": "reworded",
+      "destination": "references/terminology.md",
+      "note": "Check-event states stay exact: started/incomplete, observed exit/timeout/signal, accepted or rejected child result; child acceptance is not semantic approval.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/terminology.md",
+      "line": 104,
+      "unit_sha256": "83154f99fd9e193a7f94ce85e146683adcf0338cd21bd25e8c905f61a1c11f03",
+      "disposition": "reworded",
+      "destination": "references/terminology.md",
+      "note": "Check-event states stay exact: started/incomplete, observed exit/timeout/signal, accepted or rejected child result; child acceptance is not semantic approval.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/terminology.md",
+      "line": 114,
+      "unit_sha256": "46658f6b3206cc87a52cdc4f0c0b5f63f383945f8f04a87c585cb20862fa9d2e",
+      "disposition": "reworded",
+      "destination": "references/terminology.md",
+      "note": "Never renumber a historical task, duplicate an identity or reset authorization/correction lineage to adopt terminology.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/communication.md",
+      "line": 7,
+      "unit_sha256": "4bc67b9fe99827ad8125c5ad1a9c9312ad811868dbb9b1672d1f41f116720b60",
+      "disposition": "reworded",
+      "destination": "references/guides/communication.md",
+      "note": "The [RUN card](run-card.md)'s `Waiting on owner` row is the one list of those triggers; this policy restates no shorter one.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/communication.md",
+      "line": 40,
+      "unit_sha256": "3a3cbba9d189229052ef1a9cc67027e3e590e0ac5271d473c70cf550a1cfac95",
+      "disposition": "reworded",
+      "destination": "references/guides/communication.md",
+      "note": "During work, report a change, finding or uncertainty being resolved, at the host's update cadence, and continue after stating the next authorized action.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/communication.md",
+      "line": 41,
+      "unit_sha256": "b98eea0ae5c39e05cabe3234a4311d8cc1929c75c632b7822ebf42a54ce51f93",
+      "disposition": "reworded",
+      "destination": "references/guides/communication.md",
+      "note": "During work, report a change, finding or uncertainty being resolved, at the host's update cadence, and continue after stating the next authorized action.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/communication.md",
+      "line": 42,
+      "unit_sha256": "cb37682ad3af95300ba6d0ddf5e4cdf58ad8e81379f2d945fef5845f77503cb4",
+      "disposition": "reworded",
+      "destination": "references/guides/communication.md",
+      "note": "A resumption states current work, reusable checks, relevant changes and next action; completion states the delivered result, observed checks and material limitations.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/communication.md",
+      "line": 43,
+      "unit_sha256": "f0e4b480c7743126868d2d4d0fa4b2ad6f29141ceaa601c40ee0ac26e50cda2e",
+      "disposition": "reworded",
+      "destination": "references/guides/communication.md",
+      "note": "A resumption states current work, reusable checks, relevant changes and next action; completion states the delivered result, observed checks and material limitations.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/communication.md",
+      "line": 52,
+      "unit_sha256": "6a29d7df7517bd02d0f7ea420977e5333e584162859f5fb5916af056d22c85a0",
+      "disposition": "reworded",
+      "destination": "references/guides/communication.md",
+      "note": "Use concrete language, preserve meaning and uncertainty, remove repeated narration.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/communication.md",
+      "line": 68,
+      "unit_sha256": "187e5c020e83d9b213cfc2e0570da7f85ea8bfd69668fec45394e25b92f97080",
+      "disposition": "reworded",
+      "destination": "references/guides/communication.md",
+      "note": "Review an actual response by asking: what happened, what stays uncertain, does the user need to act, and will authorized work continue?",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/communication.md",
+      "line": 69,
+      "unit_sha256": "1182e5d92da94d784e8ab5315a6e646567d93edb3ef128dc34213b80a3cccb98",
+      "disposition": "reworded",
+      "destination": "references/guides/communication.md",
+      "note": "Compare answers with records and scope; a terminology regex or a short message alone cannot establish clarity or agent compliance.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/communication.md",
+      "line": 69,
+      "unit_sha256": "dd0ef31e398b21140b31e317d55d591ffa0b515b98a329def9f18625eebb028f",
+      "disposition": "reworded",
+      "destination": "references/guides/communication.md",
+      "note": "Compare answers with records and scope; a terminology regex or a short message alone cannot establish clarity or agent compliance.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/controlled-writing.md",
+      "line": 3,
+      "unit_sha256": "6ad6b65434f247c09f3dac3c014e6342551077ba0a9ead40aa9d0821b9094e5a",
+      "disposition": "reworded",
+      "destination": "references/guides/controlled-writing.md",
+      "note": "Owner texts and specifications use a controlled language: short sentences, plain words and one idea per sentence make them easy to read and check.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/controlled-writing.md",
+      "line": 3,
+      "unit_sha256": "65cc0f1f29466f6992be314f4c7ed5345a18cd43703415a25c8374d9c03e7934",
+      "disposition": "reworded",
+      "destination": "references/guides/controlled-writing.md",
+      "note": "Owner texts and specifications use a controlled language: short sentences, plain words and one idea per sentence make them easy to read and check.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/controlled-writing.md",
+      "line": 26,
+      "unit_sha256": "3f711dcd065ccb5fe8636afc8f73ab7f85f264263577921757f8651c87278383",
+      "disposition": "reworded",
+      "destination": "references/guides/controlled-writing.md",
+      "note": "The [script](../../scripts/controlled_writing.py) reports two kinds of finding, each one with its line.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/controlled-writing.md",
+      "line": 26,
+      "unit_sha256": "49324f39e1cd7a23d95716539b79d8008d316371ad3f466291452d58b3f33ac9",
+      "disposition": "reworded",
+      "destination": "references/guides/controlled-writing.md",
+      "note": "The [script](../../scripts/controlled_writing.py) reports two kinds of finding, each one with its line.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/controlled-writing.md",
+      "line": 37,
+      "unit_sha256": "f7f5d1b3055869342555bdcdc092fd798976e07865dc3c0d686280dc6a335cc7",
+      "disposition": "reworded",
+      "destination": "references/guides/controlled-writing.md",
+      "note": "Vague words and filler phrases hide the fact; state the fact instead.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/controlled-writing.md",
+      "line": 37,
+      "unit_sha256": "cb266ad59bd192be93b79f85af9dfe1285472294e56af09fe261df07d1860e99",
+      "disposition": "reworded",
+      "destination": "references/guides/controlled-writing.md",
+      "note": "Vague words and filler phrases hide the fact; state the fact instead.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/judge.md",
+      "line": 9,
+      "unit_sha256": "3b5a062fb17e87288dd301b9b6e1b5d547bb2cfbedb9459f7f2630d6f104e152",
+      "disposition": "reworded",
+      "destination": "references/guides/judge.md",
+      "note": "**Scope:** A post-completion audit; pre-execution red-teaming uses `verify` (Step 7).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/judge.md",
+      "line": 9,
+      "unit_sha256": "4bdd58c8b8493de3cbcd55f3ba03a538de85e927759ac31242062a99ac0b7166",
+      "disposition": "reworded",
+      "destination": "references/guides/judge.md",
+      "note": "**Scope:** A post-completion audit; pre-execution red-teaming uses `verify` (Step 7).",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/judge.md",
+      "line": 9,
+      "unit_sha256": "76b5ee190a1e51e2c24824cfe668fbd1f71a27614ccf6b56a54b08bbc6896f65",
+      "disposition": "reworded",
+      "destination": "references/guides/judge.md",
+      "note": "The auditor never edits code; it delivers a verdict and, if asked, the smallest fix.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/judge.md",
+      "line": 15,
+      "unit_sha256": "225156acd8eb54b8cca26ace5bad9bd55f4457057e6e10f57287fad54d6ae122",
+      "disposition": "reworded",
+      "destination": "references/guides/judge.md",
+      "note": "**Collect the claims.** From the report or conversation, list what was supposedly done, supposedly verified (\"tests pass\", \"build green\", \"renders correctly\") and supposedly left untouched: each a row to prove or refute.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/judge.md",
+      "line": 15,
+      "unit_sha256": "709667394532d45aba22eee8f8742ec1ae97438a0a92355a324162b152bda494",
+      "disposition": "reworded",
+      "destination": "references/guides/judge.md",
+      "note": "**Collect the claims.** From the report or conversation, list what was supposedly done, supposedly verified (\"tests pass\", \"build green\", \"renders correctly\") and supposedly left untouched: each a row to prove or refute.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/judge.md",
+      "line": 16,
+      "unit_sha256": "24960a5310ef3ee333b89d60d150c6312ad031438b3dd9fc1cae1357baf9db06",
+      "disposition": "reworded",
+      "destination": "references/guides/judge.md",
+      "note": "**Establish what actually changed.** `git diff` and `git status` (or a directory diff against a pristine reference when there is no repo); compare the touched files against the ask's blast radius.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/judge.md",
+      "line": 16,
+      "unit_sha256": "da52920cf81154bb3c7a866891962f174982839aa8c0b0c9c78a80787b74ce17",
+      "disposition": "reworded",
+      "destination": "references/guides/judge.md",
+      "note": "**Establish what actually changed.** `git diff` and `git status` (or a directory diff against a pristine reference when there is no repo); compare the touched files against the ask's blast radius.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/judge.md",
+      "line": 17,
+      "unit_sha256": "45d45a93bca7d54cc9e8f9ff92008ff92d30813546c037ec239f59fcb3c0037d",
+      "disposition": "reworded",
+      "destination": "references/guides/judge.md",
+      "note": "**Re-run every claimed verification yourself.** Never read code and nod: run the tests, the build, the script, the page, and capture the actual output.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/judge.md",
+      "line": 17,
+      "unit_sha256": "972cd100867f3729a3b49009c9fe5f23124794ff9fc76979a58ac961d25e864e",
+      "disposition": "reworded",
+      "destination": "references/guides/judge.md",
+      "note": "**Re-run every claimed verification yourself.** Never read code and nod: run the tests, the build, the script, the page, and capture the actual output.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/judge.md",
+      "line": 31,
+      "unit_sha256": "54e47b6ad0183d6b1acc5e454c6700483b2e4aa3c1c9d6c49400e1652406b8b9",
+      "disposition": "reworded",
+      "destination": "references/guides/judge.md",
+      "note": "Format: the verdict first; then a claims table (claim, what was observed); then frauds found, if any; then the recommended action.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/judge.md",
+      "line": 31,
+      "unit_sha256": "0b6da55fcfa2e10c43647c3e75d3506ef70c237bf47238628157e84e3cee545f",
+      "disposition": "reworded",
+      "destination": "references/guides/judge.md",
+      "note": "Never soften a refutation to be polite, nor inflate a caveat into a refutation to look rigorous.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/judge.md",
+      "line": 35,
+      "unit_sha256": "bc1c3ed8c5b40dc7d3c6890489d01b3caec601469f9c44e43a845130ddd2ab6f",
+      "disposition": "reworded",
+      "destination": "references/guides/judge.md",
+      "note": "Staging, diff, audit and the judge packet follow this manual checklist; the judgment is never delegated.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/judge.md",
+      "line": 46,
+      "unit_sha256": "928ed50bdcd985dd8c28874d7085e0df648def12eabc72a7508c7f1e72a5139f",
+      "disposition": "reworded",
+      "destination": "references/guides/judge.md",
+      "note": "An invalid run is never scored nor counted as a null.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/judge.md",
+      "line": 69,
+      "unit_sha256": "871e2c8774e1e3635c6f3ba1037c8daaa1ce05fa415a6e4b17aad806c4dbbb0c",
+      "disposition": "reworded",
+      "destination": "references/guides/judge.md",
+      "note": "Then the aggregation table, the efficiency summary (only metrics both arms exposed), any invalidations (scenario, arm, reason, re-run outcome), per-scenario score lines with `verdict_summary`, and which traps triggered in each arm.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/judge.md",
+      "line": 80,
+      "unit_sha256": "aa699c136c32da512d5d0ffec0c1f3b36f0e1c9f816eb582d6275f924cfb5c36",
+      "disposition": "reworded",
+      "destination": "references/guides/judge.md",
+      "note": "If verification needs an environment you lack, hand that back instead of guessing.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/requirements-base.md",
+      "line": 3,
+      "unit_sha256": "0b8bc60cd1bc27b8433ecb5889fcf50b28a9fc85fb9effde5d1fe8e98cdc2e03",
+      "disposition": "reworded",
+      "destination": "references/guides/requirements-base.md",
+      "note": "A project may keep its required behavior in a requirements base that outlives each plan: `docs/requirements/`, one Markdown file per domain.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/requirements-base.md",
+      "line": 3,
+      "unit_sha256": "75d13e9bd980184aae93dc1b9cb92b5270d6cf8877b11092f846a3720aae7cb9",
+      "disposition": "reworded",
+      "destination": "references/guides/requirements-base.md",
+      "note": "A project may keep its required behavior in a requirements base that outlives each plan: `docs/requirements/`, one Markdown file per domain.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/requirements-base.md",
+      "line": 70,
+      "unit_sha256": "3706266fc38139ccc4b432a358e1ce5c6c9067969924b8de2b6575e3c9dfb26f",
+      "disposition": "reworded",
+      "destination": "references/guides/requirements-base.md",
+      "note": "Validate the delta before Ready of any task that owns an entry; validation reports every problem, and an invalid delta blocks those tasks.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/requirements-base.md",
+      "line": 71,
+      "unit_sha256": "b062c60e718f0a2509dc301d54229ecab40d6aee6b0e548d5367a75d4b90cb61",
+      "disposition": "reworded",
+      "destination": "references/guides/requirements-base.md",
+      "note": "Importing or running the script needs the owner's explicit authorization under the script consent rule: an explicit requirements-delta or validation request grants it for that validation, and the fold's yes (see Closure fold) runs it.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/requirements-base.md",
+      "line": 73,
+      "unit_sha256": "76cc33deb6742f892f9abe731e2b54238c15e372a9066b5a732adb2c4d8ce04c",
+      "disposition": "reworded",
+      "destination": "references/guides/requirements-base.md",
+      "note": "Without that authorization, PLAN checks each entry against the rules above by reading the base and the delta, and reports every problem it finds.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/requirements-base.md",
+      "line": 92,
+      "unit_sha256": "8baa5e3a7fc77ed5021eca50ecf2feaa9106f4486f2d8e57aeeae78ba1307cb2",
+      "disposition": "reworded",
+      "destination": "references/guides/requirements-base.md",
+      "note": "Tables in the existing column form stay valid; the grammar is an alternative, not a mandate.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/architecture-map.md",
+      "line": 3,
+      "unit_sha256": "964d71d2b0fbb87e2d65bce995c2f93d4518efa03a47c3cc19d14587ea3990a3",
+      "disposition": "reworded",
+      "destination": "references/guides/architecture-map.md",
+      "note": "The [plan view](plan-view.md) draws it twice: as the project is today and as it will be after the plan.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/architecture-map.md",
+      "line": 4,
+      "unit_sha256": "7d3e084b586d9e57e1dd5b53c52a200794dab511498513411ca0821a56c6f3ee",
+      "disposition": "reworded",
+      "destination": "references/guides/architecture-map.md",
+      "note": "The project keeps the map's base; each plan keeps a delta in its workspace.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/architecture-map.md",
+      "line": 33,
+      "unit_sha256": "d06daf694d5ce1640f93a2a69710502e33b451237391d71bc102c1ea8d837f6e",
+      "disposition": "reworded",
+      "destination": "references/guides/architecture-map.md",
+      "note": "Tackle never invents a map: it reads the repository, proposes groups, components and relations, each with a source path it has seen, and shows them.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/architecture-map.md",
+      "line": 33,
+      "unit_sha256": "fd90cb21894766823204f88041d5c9c097241109bd1dc597e4f0670cbe547ac1",
+      "disposition": "reworded",
+      "destination": "references/guides/architecture-map.md",
+      "note": "Tackle never invents a map: it reads the repository, proposes groups, components and relations, each with a source path it has seen, and shows them.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/architecture-map.md",
+      "line": 35,
+      "unit_sha256": "be03ea6a3522f74f1dc4fd671a4ae0e9c758792156b4fad777cbaea2e39a8ff5",
+      "disposition": "reworded",
+      "destination": "references/guides/architecture-map.md",
+      "note": "It writes the file only after the owner says yes, telling the owner that `.tackle/` should stay out of version control.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/architecture-map.md",
+      "line": 69,
+      "unit_sha256": "99b54691351b9b154b090c67eef1dfd8ae5345a82f2aae2b8c7e4fdb08065671",
+      "disposition": "reworded",
+      "destination": "references/guides/architecture-map.md",
+      "note": "`validate(base, delta)` lists every problem: a change of an unknown component, an add of an existing one, an unknown group, a relation end missing after the changes, and an `op` or `state` outside the vocabulary.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/architecture-map.md",
+      "line": 69,
+      "unit_sha256": "92f970db258f5d54ef3184400e377dd5db1f43bd6d9d1bdc74a65e094cd4c7d5",
+      "disposition": "reworded",
+      "destination": "references/guides/architecture-map.md",
+      "note": "`validate(base, delta)` lists every problem: a change of an unknown component, an add of an existing one, an unknown group, a relation end missing after the changes, and an `op` or `state` outside the vocabulary.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/architecture-map.md",
+      "line": 87,
+      "unit_sha256": "948f526b5351da30e98250a6321597073be3c64d386a681e198f0c5f5ad585a5",
+      "disposition": "reworded",
+      "destination": "references/guides/architecture-map.md",
+      "note": "The page gains a Before and after section with Cards and Diagram tabs, for Today and for After this plan.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/architecture-map.md",
+      "line": 88,
+      "unit_sha256": "4b5e56917e98d959061e9ed9fcb241a4ac50afa03985be924bc13bb10cf85b71",
+      "disposition": "reworded",
+      "destination": "references/guides/architecture-map.md",
+      "note": "New and changed components carry their task and state; with no delta, the section shows only today.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/architecture-map.md",
+      "line": 88,
+      "unit_sha256": "2b4bdd69f6f982c71de5bd18931d6b327569a41b3f44a7e5eb496b2b5a55b40e",
+      "disposition": "reworded",
+      "destination": "references/guides/architecture-map.md",
+      "note": "New and changed components carry their task and state; with no delta, the section shows only today.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/architecture-map.md",
+      "line": 90,
+      "unit_sha256": "e519d1ab526fbb1f5bb9742562e6febe0a57fa734f0a359a6ccd3f0824d2196d",
+      "disposition": "reworded",
+      "destination": "references/guides/architecture-map.md",
+      "note": "An unreadable base or a wrong field type refuses, naming the field.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/architecture-map.md",
+      "line": 99,
+      "unit_sha256": "f31955c265b8aabe0a6c4aa1ef0761e66346c2489667a1f2a49551a047a162f8",
+      "disposition": "reworded",
+      "destination": "references/guides/architecture-map.md",
+      "note": "Before its first build, ask the owner what to show: the whole map (`--map-scope all`) or only the changed components with their neighbors (`--map-scope changed`), and reuse the answer for later rebuilds.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/architecture-map.md",
+      "line": 101,
+      "unit_sha256": "5f41a6fdf4d17f36952723647a02865abbb91ecd097c5cd07533eb5557e266ab",
+      "disposition": "reworded",
+      "destination": "references/guides/architecture-map.md",
+      "note": "Before its first build, ask the owner what to show: the whole map (`--map-scope all`) or only the changed components with their neighbors (`--map-scope changed`), and reuse the answer for later rebuilds.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/architecture-map.md",
+      "line": 109,
+      "unit_sha256": "924fedca1c5843bbd1da1f49222349c100d309c61faa1d52700c074a9106f17c",
+      "disposition": "reworded",
+      "destination": "references/guides/architecture-map.md",
+      "note": "The `done` changes are now in the base; the `planned` changes stay out.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/architecture-map.md",
+      "line": 109,
+      "unit_sha256": "caf09e2c8de58b85cddcffe42509df4d2b06d781418a111b55eddd66e76f16ba",
+      "disposition": "reworded",
+      "destination": "references/guides/architecture-map.md",
+      "note": "The `done` changes are now in the base; the `planned` changes stay out.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/architecture-map.md",
+      "line": 112,
+      "unit_sha256": "1501f08e59038bde5c0d395868c4635efeb4ac375b67d5d3152e7db999e91706",
+      "disposition": "reworded",
+      "destination": "references/guides/architecture-map.md",
+      "note": "Without a yes, write nothing; the delta stays in the workspace.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/architecture-map.md",
+      "line": 112,
+      "unit_sha256": "580253a59bfc90239882430cadb4bc8a045a175daa0749d6e6aedde230a5e9a8",
+      "disposition": "reworded",
+      "destination": "references/guides/architecture-map.md",
+      "note": "Without a yes, write nothing; the delta stays in the workspace.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 9,
+      "unit_sha256": "b384bc6a1d6f4797052e2e37290ef6c8fc28723a523523b3705086b2957d3a4c",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "A request such as \"show the plan view\" or \"mostrá la vista del plan\" asks for it, in any language: its own request, not a STATUS mode, and STATUS never writes the view.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 9,
+      "unit_sha256": "ebc6659fece67feb65bd6e46f7c6d3e3152367a561c05807b3b41810172b0a34",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "A request such as \"show the plan view\" or \"mostrá la vista del plan\" asks for it, in any language: its own request, not a STATUS mode, and STATUS never writes the view.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 10,
+      "unit_sha256": "cb26901c19293b05975a9f7529c6973c66fb78a7a3f9cefd90529b9bc703ee23",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "A request such as \"show the plan view\" or \"mostrá la vista del plan\" asks for it, in any language: its own request, not a STATUS mode, and STATUS never writes the view.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 41,
+      "unit_sha256": "862b04be56a425af2baa72a72296f192cc240715ff5ad9c860bfcddc909b9242",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "An open view reloads itself after a rebuild, keeping its selection, filter and reading position: the build writes a small stamp script beside the page, which the page rereads every few seconds, with no server and no process to stop.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 43,
+      "unit_sha256": "150effb92b81335a665778e959b38578cc19adcf3095348cc7de932f4d1efe72",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "It reloads only when opened from its file in a browser; a host view that shows a snapshot cannot update, and the page says so with a notice.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 63,
+      "unit_sha256": "51af42f17b758181cb2f6b6a577adbed8408341c9d2c3ac425291148f04f670f",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "Exit 0 writes the view, exit 1 refuses and writes no file, exit 2 reports a usage error.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 63,
+      "unit_sha256": "b9683d9b8fd2db229cab3216f707c872b516ef36378f0777819eb690ae95bdbc",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "Exit 0 writes the view, exit 1 refuses and writes no file, exit 2 reports a usage error.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 63,
+      "unit_sha256": "fb225978115b7a57dde014912efdd9e5b94f2c8c6a03d9fcb9c9a4910ff437e4",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "Exit 0 writes the view, exit 1 refuses and writes no file, exit 2 reports a usage error.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 72,
+      "unit_sha256": "10a2c5a32dec9ff7c3f47e262d44f5c376436798980ae9e1c0f7e87eba0ca351",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "The script refuses to write when the sources disagree, printing one `refused:` line for each problem:",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 72,
+      "unit_sha256": "988aa339a15cb05024c8a96538ac587c18b6cfe6d55066ce44c446110faf853e",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "The script refuses to write when the sources disagree, printing one `refused:` line for each problem:",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 73,
+      "unit_sha256": "43e7536cbec2bf152f76ef3d7085c1eec17db09d0f22c7ef58308ad0aec255fc",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "The script refuses to write when the sources disagree, printing one `refused:` line for each problem:",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 84,
+      "unit_sha256": "4613e3516a0fd93ac954f2fac89e0eb3003eba26168959357a852d12634af827",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "With `--map <base>` and `--map-scope all|changed`, the view also draws the [architecture map](architecture-map.md) twice, today and after the plan, from `<workspace>/map-delta.json`, each picture with Cards and Diagram tabs.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 85,
+      "unit_sha256": "36c6de7253479b10ae810dd9c68d2d3d0c9a93c2fbf89da0a217c9c5a9975794",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "With `--map <base>` and `--map-scope all|changed`, the view also draws the [architecture map](architecture-map.md) twice, today and after the plan, from `<workspace>/map-delta.json`, each picture with Cards and Diagram tabs.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 92,
+      "unit_sha256": "8f0a5837d80a1fda7aba35cd731a7e5f067982069c86b326a207b2121a5a1f03",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "The view lists them, says the plan has no board and draws no graph.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 92,
+      "unit_sha256": "de5bbbf0be7e357bc88ad9a37a36b06987b46a6502b67e94971d6101a92929a3",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "When the plan names no requirement id, the script refuses with the Focused reason; it invents no board.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 93,
+      "unit_sha256": "6034dbdb6f57277e8c335bbf37432b85c1d0b0a0148839abab72ef8e3ff8a06d",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "When the plan names no requirement id, the script refuses with the Focused reason; it invents no board.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 97,
+      "unit_sha256": "600c13b7c20d10d55eedc9873f9c02e5365fefa30f1469fed08884ebd0f35407",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "The page itself draws the graph, in stage bands; a stage is a column, not an order of work.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 97,
+      "unit_sha256": "3be6faa75ffc230953eabbfb8f046ff275bfef99953d5ffd07fb013075ddf722",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "The page itself draws the graph, in stage bands; a stage is a column, not an order of work.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 97,
+      "unit_sha256": "18d291023f4293036522f6e4c61a0a9a702be750eb3dc4a6728ee1da4266824e",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "The script orders the cards with a bounded search so lines cross few times; a long arrow passes through the bands between its ends.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 98,
+      "unit_sha256": "bec4217b3b8e725c097fe8b1000029e2b192054137b1c58198598a99e8b219b9",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "The script orders the cards with a bounded search so lines cross few times; a long arrow passes through the bands between its ends.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 99,
+      "unit_sha256": "5d1d8057006949c78702088f464c0cf85ad5c4b7fb96288d3740fc0ae502ffbb",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "A click opens a task; the trace buttons follow what the task needs and what it unblocks.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 102,
+      "unit_sha256": "c9ca7c8a34027a2927ce1eeaf1afb23380c815ab82bf8b14737cdc4e8c3dfd00",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "The page marks the tasks a role run works on now and lists every open run: one whose `start` row has no `finish` or `observe-incomplete` row.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 102,
+      "unit_sha256": "dca0cb610812f33915f9b1fe7f848635e2beecb4d05a95d53b1f1aa461507fd2",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "The page marks the tasks a role run works on now and lists every open run: one whose `start` row has no `finish` or `observe-incomplete` row.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 111,
+      "unit_sha256": "5eab015249e62253e81796bf7fa6b16f699e4a6daee7b32dd236993625a64d92",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "The page escapes every workspace string; no workspace text runs as script.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 111,
+      "unit_sha256": "f44e6263d05f3c5f5a863b3d3c1f2e7f3997fdc6740f6435d2b0b2fac7f1d175",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "The page escapes every workspace string; no workspace text runs as script.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 112,
+      "unit_sha256": "eb1cca7ff0bdcf6d91775a9a0580f632bd8d89c8ba8e27e4fafc35fc7093b0ae",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "The script picks Spanish only on clear Spanish evidence in the plan; any other plan gets English, and `lang` says `en`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 113,
+      "unit_sha256": "b4d62d2eeacc694fcb98935fe49309d939b4511b15e78e07376669c2e525dcff",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "The script picks Spanish only on clear Spanish evidence in the plan; any other plan gets English, and `lang` says `en`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 123,
+      "unit_sha256": "4b120d5542a7f10d5857a9f452dc23b012f04ce179ca3ecef9d558e7b95f75a2",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "Choose a scope in the PDF controls and select Export PDF; in the browser's native print dialog, choose Save as PDF.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 123,
+      "unit_sha256": "17554f524512b4ba3bc875fea43a317664f3b84021a83e96ca172f88f17d004c",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "Choose a scope in the PDF controls and select Export PDF; in the browser's native print dialog, choose Save as PDF.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 142,
+      "unit_sha256": "587fc43e349d2aa936d88d2e6db8e94911eade46672377d720ac3c9e40964d3b",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "Ordinary browser print uses Both; native dialog, pagination and PDF destination behavior depend on the owner's browser.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 143,
+      "unit_sha256": "72299578e39a52013e105e083c59ebe0ef06f54b5797f25679fca602148f8fe8",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "Ordinary browser print uses Both; native dialog, pagination and PDF destination behavior depend on the owner's browser.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/retro.md",
+      "line": 4,
+      "unit_sha256": "0d1e48da16588edb3c159e1af06e290850a960b9d1759ef5628432c84aa27280",
+      "disposition": "reworded",
+      "destination": "references/guides/retro.md",
+      "note": "It neither replaces RUN closure nor creates an autonomy loop.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/retro.md",
+      "line": 26,
+      "unit_sha256": "afd3be4ab5b42f0306eb76fb4582c47842a1ab5e3953d929b93358376ab9c210",
+      "disposition": "reworded",
+      "destination": "references/guides/retro.md",
+      "note": "For every metric and comparable scope, print `measured/eligible` plus a percentage; no eligible rows show as `0/N (0%)`, never as a zero-over-zero denominator.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/retro.md",
+      "line": 28,
+      "unit_sha256": "769bea19de1259017feaedc004e137f6eabed46543a24b240e22ea3a56969536",
+      "disposition": "reworded",
+      "destination": "references/guides/retro.md",
+      "note": "Duration, attempts, rework, incomplete runs, verification outcomes and task time-to-green stay useful at 0% exact telemetry coverage.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/retro.md",
+      "line": 31,
+      "unit_sha256": "b8f1bb6f502bbdb6e8127a9e0cb6be1580ee453747e8aab36757ef5908841686",
+      "disposition": "reworded",
+      "destination": "references/guides/retro.md",
+      "note": "At 0% exact-token coverage, report `0/N (0%)` and suppress token totals, shares, rankings and recommendations.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/retro.md",
+      "line": 33,
+      "unit_sha256": "af57f4e7eb1b7a258fbb9eb3da2af481d1a97b3054d0371bb534963784138a86",
+      "disposition": "reworded",
+      "destination": "references/guides/retro.md",
+      "note": "Partial exact coverage may list labeled observations, but totals and rankings require 100% comparable coverage; mixed role/session scopes stay separate and unjoined.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/retro.md",
+      "line": 56,
+      "unit_sha256": "4e3b665a407483b826390a8a5c64f547882300a6af384133f6e2167afedb884f",
+      "disposition": "reworded",
+      "destination": "references/guides/retro.md",
+      "note": "Mined from the exact-token recipe only after the coverage gate, never remembered; report the `n/a`-row counts alongside any permitted totals, and `n/a` for the whole section when the workspace has no `resource-usage.md`, the only ledger source; unexposed harness fields stay `n/a`, never estimated.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/retro.md",
+      "line": 57,
+      "unit_sha256": "f642ff136b7734ca172829e3bb2b17b6b2015e3e750e21728b7178645349a735",
+      "disposition": "reworded",
+      "destination": "references/guides/retro.md",
+      "note": "Mined from the exact-token recipe only after the coverage gate, never remembered; report the `n/a`-row counts alongside any permitted totals, and `n/a` for the whole section when the workspace has no `resource-usage.md`, the only ledger source; unexposed harness fields stay `n/a`, never estimated.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/retro.md",
+      "line": 58,
+      "unit_sha256": "29771729e5375e4d4bf0cedca6ce65a1a3c88dcec4d26fffb53a06f2c71cd2b4",
+      "disposition": "reworded",
+      "destination": "references/guides/retro.md",
+      "note": "Mined from the exact-token recipe only after the coverage gate, never remembered; report the `n/a`-row counts alongside any permitted totals, and `n/a` for the whole section when the workspace has no `resource-usage.md`, the only ledger source; unexposed harness fields stay `n/a`, never estimated.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/retro.md",
+      "line": 75,
+      "unit_sha256": "22e3b491cbe37dfd897cfc5041488fe7bf40eafe7cd9290fc049923f6f9e69cd",
+      "disposition": "reworded",
+      "destination": "references/guides/retro.md",
+      "note": "Distill from the metrics plus the log's Decisions and Blockers sections, one line each.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/retro.md",
+      "line": 75,
+      "unit_sha256": "ab2dba341550eb87614473c6dd1e63c455c28a700ccff4c1284e05e8d3605206",
+      "disposition": "reworded",
+      "destination": "references/guides/retro.md",
+      "note": "Distill from the metrics plus the log's Decisions and Blockers sections, one line each.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/retro.md",
+      "line": 80,
+      "unit_sha256": "ca9fa402d53a8ebd9b1a2d974927fa99a4688d3c6442e3d67bed3189c59682b1",
+      "disposition": "reworded",
+      "destination": "references/guides/retro.md",
+      "note": "The learning loop is the only mechanism that lets Tackle adapt to a user or project: opt-in, per scope, never silent.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/retro.md",
+      "line": 80,
+      "unit_sha256": "376ff75da559743038e315743127d645644e8956b4c4b394510f602e9624d351",
+      "disposition": "reworded",
+      "destination": "references/guides/retro.md",
+      "note": "The learning loop is the only mechanism that lets Tackle adapt to a user or project: opt-in, per scope, never silent.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/retro.md",
+      "line": 81,
+      "unit_sha256": "5c1eb61ceb5178b34fc5edf65c8d3c5d91db1586633196420a9633035a2532c5",
+      "disposition": "reworded",
+      "destination": "references/guides/retro.md",
+      "note": "Lessons must identify an observed cause and a future action; an unsupported opinion never becomes a global rule.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/retro.md",
+      "line": 91,
+      "unit_sha256": "48bd8d0692d43bba55b08f2afeb2d94983e676133cd962d67b63b181db56c1b6",
+      "disposition": "reworded",
+      "destination": "references/guides/retro.md",
+      "note": "A \"no\" writes the disabled stub (`Evolution: disabled (YYYY-MM-DD)`) in the relevant profile file and is never re-asked; the user can flip it later by enabling evolution or deleting the file.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/retro.md",
+      "line": 91,
+      "unit_sha256": "ae6d0b6bc45777571f4ddcca19a6f95ec153fb5bdc96431f39890544f82c0ed1",
+      "disposition": "reworded",
+      "destination": "references/guides/retro.md",
+      "note": "A \"no\" writes the disabled stub (`Evolution: disabled (YYYY-MM-DD)`) in the relevant profile file and is never re-asked; the user can flip it later by enabling evolution or deleting the file.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/retro.md",
+      "line": 95,
+      "unit_sha256": "1f703d522a2279318befd21aa775eff6c815301d283457bc16e661f744d612ea",
+      "disposition": "reworded",
+      "destination": "references/guides/retro.md",
+      "note": "Mine these sources during retro:",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/retro.md",
+      "line": 230,
+      "unit_sha256": "8767db67a61d8309f11107e9a0d014e2968ee885659bc3aa4d4f7bddc33376b9",
+      "disposition": "reworded",
+      "destination": "references/guides/retro.md",
+      "note": "Intake already excludes them from defaults; pending cleanup never blocks implementation.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never, no, neither/nor or without; same prohibition"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/retro.md",
+      "line": 230,
+      "unit_sha256": "11dc6fc70487bcc3234ee0b43aeef2fafe4d0f6a7d36193b6dec9a3b670dcda8",
+      "disposition": "reworded",
+      "destination": "references/guides/retro.md",
+      "note": "One isolated observation stays a hypothesis, not a mandatory global rule.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/retro.md",
+      "line": 236,
+      "unit_sha256": "fe15e5e2c8a610105f51a7917c7a30070d29698daf2cc61c8d033c47eaa94561",
+      "disposition": "reworded",
+      "destination": "references/guides/retro.md",
+      "note": "The user can stop evolution at any moment, per scope, in any phrasing, in two modes:",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/retro.md",
+      "line": 236,
+      "unit_sha256": "4e168370dfaa8756acdd25a6de3cfc3711c2420ba9594f16dc2738b8895acecd",
+      "disposition": "reworded",
+      "destination": "references/guides/retro.md",
+      "note": "The user can stop evolution at any moment, per scope, in any phrasing, in two modes:",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/retro.md",
+      "line": 250,
+      "unit_sha256": "4b40e18d9761c6edfbd15e65e893d296b1e28d59b79da136fa2fc39e7c1d60c0",
+      "disposition": "reworded",
+      "destination": "references/guides/retro.md",
+      "note": "Offer extraction only when **the decomposition held**: no major replans and no D-xx rewrites of the task/edge graph after intake — tasks closed against the planned graph.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/retro.md",
+      "line": 250,
+      "unit_sha256": "07cb0a456944b22c2192e766ce1ab53a5550b8d24dcad86e00ee0d7f6dbfc4b1",
+      "disposition": "reworded",
+      "destination": "references/guides/retro.md",
+      "note": "A plan substantially re-shaped mid-flight has no stable skeleton to distill; skip without asking.",
+      "destination_unit_sha256": null
     }
   ]
 }

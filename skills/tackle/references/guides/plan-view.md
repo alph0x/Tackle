@@ -6,8 +6,8 @@ decisions, questions, history and `resource-usage.md`.
 
 ## Request
 
-A request such as "show the plan view" or "mostrá la vista del plan" asks for it, in any language. It
-is its own request. It is not a STATUS mode, and STATUS never writes the view.
+A request such as "show the plan view" or "mostrá la vista del plan" asks for it, in any language: its own
+request, not a STATUS mode, and STATUS never writes the view.
 STATUS runs no script for the view and never checks it: STATUS stays read-only and code-free.
 
 An explicit request creates the view and stands for its workspace. The owner can end that standing
@@ -40,8 +40,8 @@ It removes prose that it cannot update honestly. A rebuild after a role start or
 
 An open view reloads itself after
 a rebuild, keeping its selection, filter and reading position: the build writes a small stamp script beside
-the page, and the page rereads it every few seconds, with no server and no process to stop. The page reloads
-itself only when opened from its file in a browser; a host view that shows a snapshot cannot update, and the page
+the page, which the page rereads every few seconds, with no server and no process to stop. It reloads
+only when opened from its file in a browser; a host view that shows a snapshot cannot update, and the page
 says so with a notice. The coordinator never starts a server or background process to show the view; the stamp reload is
 the way to keep an open view current. When a rebuild is
 refused, the coordinator reports the refusal lines to the owner, and the earlier view keeps its earlier build
@@ -62,7 +62,7 @@ workspace, with `--map-scope all` or, for a [large project](architecture-map.md#
 when asked before the first build.
 Without that file, pass no `--map`.
 
-Exit 0 writes the view. Exit 1 refuses and writes no file. Exit 2 reports a usage error. The script uses only
+Exit 0 writes the view, exit 1 refuses and writes no file, exit 2 reports a usage error. The script uses only
 the standard library, makes no network access and writes only the output file.
 
 The page records one sha256 for each input and one overall digest. With `--check` and the build's arguments, the
@@ -71,8 +71,7 @@ prints `view stale:` with the changed inputs and exits 1. A page without digests
 
 ## Pre-flight
 
-The script refuses to write when the sources disagree. It prints one `refused:` line for each problem.
-The problems are:
+The script refuses to write when the sources disagree, printing one `refused:` line for each problem:
 
 - a board with no task rows, or a duplicate task id;
 - a dependency on an unknown task, or a dependency cycle;
@@ -84,25 +83,25 @@ The problems are:
 ## Architecture map
 
 With `--map <base>` and `--map-scope all|changed`, the view also draws the [architecture map](architecture-map.md)
-twice: as the project is today, and after the plan. It reads `<workspace>/map-delta.json`, and each picture has
-a Cards tab and a Diagram tab. Without `--map`, the page holds no map and its data island says `"map": null`.
+twice, today and after the plan, from `<workspace>/map-delta.json`, each picture with Cards and Diagram
+tabs. Without `--map`, the page holds no map and its data island says `"map": null`.
 
 ## Focused plans
 
 A Focused plan has a `Gate: Lite` line and no board. The script reads its requirement ids from the
 `Purpose / requirements` line of the Lite plan body, or from a criteria table, and its checks from the
-`Cases → checks` line. The view lists them, says that the plan has no board and draws no graph. When the plan
-names no requirement id, the script refuses with the Focused reason. It invents no board.
+`Cases → checks` line. The view lists them, says the plan has no board and draws no graph. When the plan
+names no requirement id, the script refuses with the Focused reason; it invents no board.
 
 ## The page
 
-- The graph is drawn by the page itself, in stage bands. A stage is a column, not an order of work. The script
-  orders the cards with a bounded search, so the lines cross few times. A long arrow passes through the bands
-  between its ends. It needs no network. A click opens a task, and the trace buttons follow
+- The page itself draws the graph, in stage bands; a stage is a column, not an order of work. The script
+  orders the cards with a bounded search so lines cross few times; a long arrow passes through the bands
+  between its ends. It needs no network. A click opens a task; the trace buttons follow
   what the task needs and what it unblocks.
 - Status filters, the coverage table and the decision log work with the same data.
-- The page marks the tasks that a role run works on now, and it lists every open run. A run is open
-  when its `start` row has no `finish` or `observe-incomplete` row.
+- The page marks the tasks a role run works on now and lists every open run: one whose `start` row has no
+  `finish` or `observe-incomplete` row.
 - The page names a running role `Live`, or `En marcha` on a Spanish page, so the badge never reads like the
   In progress state.
 - A Waiting on you section lists open questions from `questions.md` with their Determines line. It also lists tasks
@@ -110,9 +109,9 @@ names no requirement id, the script refuses with the Focused reason. It invents 
   A question is open unless its state carries 🟢 or ✅. When nothing is open, one line says so. A Focused plan
   shows its open questions only, and the PDF report keeps its own obligations table.
 - The footer shows the build time and the Methodology version of the workspace.
-- The page escapes every workspace string. No workspace text runs as script.
+- The page escapes every workspace string; no workspace text runs as script.
 - The interface has English and Spanish text. The script picks Spanish only on clear Spanish evidence in the
-  plan. Any other plan gets English, and `lang` says `en`.
+  plan; any other plan gets English, and `lang` says `en`.
 - A light and dark toggle and the embedded Outfit font with a system fallback keep the page local. Motion stops under
   `prefers-reduced-motion`.
 
@@ -122,9 +121,9 @@ Full and Focused views use the same template and export a self-contained executi
 plan, its current progress or both. The page retains detailed requirements, task records and the full
 decision archive. The complete technical plan, including code and later sections, stays in `plan.md`.
 
-Choose a scope in the PDF controls and select Export PDF. The page opens the browser's native print dialog;
-choose Save as PDF there. The view needs no network, external assets or additional runtime dependency.
-Each document names the plan, its scope and build time and includes context for a reader unfamiliar with it.
+Choose a scope in the PDF controls and select Export PDF; in the browser's native print dialog, choose
+Save as PDF. The view needs no network, external assets or additional runtime dependency. Each document names the
+plan, its scope and build time and includes context for a reader unfamiliar with it.
 
 - Plan presents the purpose, expected benefits, scope, work stages and key current choices.
 - Progress includes context, board-derived completion and state counts, achievements, remaining work and
@@ -142,7 +141,7 @@ a summary that declares no board, since its prose cannot be checked. The report 
 
 The light A4 report uses readable sections and wrapping text. The page restores its title, temporary
 print attributes and focus after printing, cancellation or a print exception. Ordinary browser print uses
-Both. Native dialog, pagination and PDF destination behavior depend on the owner's browser.
+Both; native dialog, pagination and PDF destination behavior depend on the owner's browser.
 
 ## Publishing
 

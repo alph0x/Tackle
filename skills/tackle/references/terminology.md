@@ -1,13 +1,13 @@
 # Terminology
 
-A repository contains initiatives. Each initiative has an objective, a plan and tasks. A run
-executes authorized tasks and produces a deliverable. Checks produce verification records that
-support acceptance. Decisions, blockers and history explain progress. A workspace is the directory
-supporting one initiative. It is not the repository or the objective.
+A repository contains initiatives, each with an objective, a plan and tasks. A run executes
+authorized tasks and produces a deliverable. Checks produce verification records that support
+acceptance. Decisions, blockers and history explain progress. A workspace is the directory
+supporting one initiative, neither the repository nor the objective.
 
 Use one term for one responsibility. A criterion states **what must hold**, a check states **how
-to observe it**, and a record preserves **what happened**. A role names a responsibility; it does
-not require another agent or prove independence.
+to observe it**, and a record preserves **what happened**. A role names a responsibility; it neither
+requires another agent nor proves independence.
 
 ## Component inventory
 
@@ -67,8 +67,8 @@ never a current one. `list`, `next` and plain `resume` are current STATUS reques
 | `pulse` | STATUS |
 | `handoff` | STATUS `--handoff` |
 
-The [RUN card](guides/run-card.md) has the full state-transition table (entries, exits and
-triggers); the States table below keeps only the visible names and the migration's mapping of older values.
+The [RUN card](guides/run-card.md) has the full state-transition table (entries, exits, triggers);
+the States table below keeps only the visible names and the migration's mapping of older values.
 
 **The card** is context-dependent: the PLAN card (`guides/plan-card.md`) in a PLAN-side guide, the
 RUN card (`guides/run-card.md`) in a RUN-side guide. The **RUN chain** is the mandatory reading of
@@ -101,7 +101,7 @@ older board's values as this table shows, and the mapping never adds evidence.
 | `UNVERIFIABLE`, unavailable required check | Unverifiable, with affected work blocked | A passing result. |
 
 Check-event states stay exact: started/incomplete, observed exit/timeout/signal, accepted or
-rejected child result. Child acceptance is not semantic approval. Describe verification by method
+rejected child result; child acceptance is not semantic approval. Describe verification by method
 (command/review/audit), result and **observed** independence. Renaming evidence never upgrades it or
 invents a reviewer.
 
@@ -111,8 +111,8 @@ Keep one authoritative file for each fact. Workspaces use T-ids, `tasks/`, `task
 `history.md` and `resource-usage.md`; existing D-ids, Q-ids, raw-record fields and documented anchors remain valid. Briefs use Write scope,
 Acceptance check, Task check and Related regression check; readers accept no older field name.
 Legacy section anchors have explicit HTML aliases where a heading changes. Existing schema tokens
-are never translated for a localized conversation. Do not renumber a historical task, duplicate an
-identity, or reset authorization/correction lineage to adopt terminology. A selected migration uses
+are never translated for a localized conversation. Never renumber a historical task, duplicate an
+identity or reset authorization/correction lineage to adopt terminology. A selected migration uses
 a reversible copy and explicit P→T mapping.
 
 A Coordinated workspace runs only on a `tackle-workspace/5` board, and a Focused one only on
