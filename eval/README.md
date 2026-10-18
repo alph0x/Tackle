@@ -102,6 +102,17 @@ a null is as informative as a win.
 arm avoids it; when the control also avoids it, record a null. A fixture never embeds the rule under test,
 and a control transcript that shows a skill load is invalid: re-run it, never score it.
 
+**Measurement rules.** Each rule applies to every behavioral run that supports a claim:
+
+- The pre-registered rule states a tie rule and a practical margin before any episode runs.
+- A development smoke runs the whole measurement chain before any held-out episode, and its instruments are fixed there, never changed on held-out data.
+- A wording change is judged on a pre-registered rate of 5 to 10 runs per arm, never on single episodes.
+- Every behavioral claim names its executor model and effort.
+- Each trap is calibrated on the old install; when the old install never falls on the subject executor model, the run moves to the tier the rule guides.
+- The oracle scores the effect the rule protects, not a proxy for that effect.
+- A safety condition is placed at the decision point, not buried in a preamble or appendix.
+- Behavioral evidence runs only on a tier verified to follow the method.
+
 ## Scenarios by feature
 
 Every directory under `scenarios/` is one scenario, and its answer sheet, `GROUND-TRUTH.md`, is never part

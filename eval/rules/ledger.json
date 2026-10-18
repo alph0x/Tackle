@@ -4666,6 +4666,190 @@
       "historical": []
     },
     {
+      "rule_id": "R-REL-13",
+      "statement": "The pre-registered rule states a tie rule and a practical margin before any episode runs.",
+      "statement_sha256": "535f12d630fc72bcfb2fb576ef33f6ac0f65628044d301cb0788a4f67996a561",
+      "home": "eval/README.md:107",
+      "home_fragment": "The pre-registered rule states a tie rule and a pr",
+      "units": [],
+      "mirrors": [],
+      "class": "maintainer",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "behavioral measurement method revision",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-18"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-REL-14",
+      "statement": "A development smoke runs the whole measurement chain before any held-out episode, and its instruments are fixed there, never changed on held-out data.",
+      "statement_sha256": "149bc564cc3ee051f120945adb976c5031ced01d51c78bfcda0b5cb3009fd910",
+      "home": "eval/README.md:108",
+      "home_fragment": "A development smoke runs the whole measurement cha",
+      "units": [],
+      "mirrors": [],
+      "class": "maintainer",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "behavioral measurement method revision",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-18"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-REL-15",
+      "statement": "A wording change is judged on a pre-registered rate of 5 to 10 runs per arm, never on single episodes.",
+      "statement_sha256": "0c06884c2491963672b0a401360f907e755f874ebdca09c320e2ea5e49e7d116",
+      "home": "eval/README.md:109",
+      "home_fragment": "A wording change is judged on a pre-registered rat",
+      "units": [],
+      "mirrors": [],
+      "class": "maintainer",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "behavioral measurement method revision",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-18"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-REL-16",
+      "statement": "Every behavioral claim names its executor model and effort.",
+      "statement_sha256": "8833594a779ee13a9991b7541bed5adaceec2898d0cb57fcd26ac1dbbe95fa4c",
+      "home": "eval/README.md:110",
+      "home_fragment": "Every behavioral claim names its executor model an",
+      "units": [],
+      "mirrors": [],
+      "class": "maintainer",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "behavioral measurement method revision",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-18"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-REL-17",
+      "statement": "Each trap is calibrated on the old install; when the old install never falls on the subject executor model, the run moves to the tier the rule guides.",
+      "statement_sha256": "1e00435440d5dc9f6a917f2c7652982666d640011110abffe6c88219532be01d",
+      "home": "eval/README.md:111",
+      "home_fragment": "Each trap is calibrated on the old install; when t",
+      "units": [],
+      "mirrors": [],
+      "class": "maintainer",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "behavioral measurement method revision",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-18"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-REL-18",
+      "statement": "The oracle scores the effect the rule protects, not a proxy for that effect.",
+      "statement_sha256": "6262356fd5296c3810d6234e91277b62a9b2dae8228752b1a5adcbec588f78c0",
+      "home": "eval/README.md:112",
+      "home_fragment": "The oracle scores the effect the rule protects, no",
+      "units": [],
+      "mirrors": [],
+      "class": "maintainer",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "behavioral measurement method revision",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-18"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-REL-19",
+      "statement": "A safety condition is placed at the decision point, not buried in a preamble or appendix.",
+      "statement_sha256": "998f9d74a6249df95086fe4a296859a80002c4bd3d993e5c12d84c2089977b78",
+      "home": "eval/README.md:113",
+      "home_fragment": "A safety condition is placed at the decision point",
+      "units": [],
+      "mirrors": [],
+      "class": "maintainer",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "behavioral measurement method revision",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-18"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-REL-20",
+      "statement": "Behavioral evidence runs only on a tier verified to follow the method.",
+      "statement_sha256": "a49309be971346fa691a0040a59a25f9fc33844aaf4acc88f6635ee6b96c9e27",
+      "home": "eval/README.md:114",
+      "home_fragment": "Behavioral evidence runs only on a tier verified t",
+      "units": [],
+      "mirrors": [],
+      "class": "maintainer",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "behavioral measurement method revision",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-18"
+      },
+      "historical": []
+    },
+    {
       "rule_id": "R-RUN-28",
       "statement": "Before declaring required confinement unavailable or requesting an exception, the agent names every write channel of the selected executor, classifies each as confined, unavailable or uncovered, treats a launcher failure as no proof of unavailability, probes the executor's own sandbox with sentinels that never write, replace or delete a real file, never edits a supplied profile or launcher, and blocks only the uncovered scope.",
       "statement_sha256": "532421a00931afcae48a5ab7c2cab0291bf0b990adf5f762a576ccd7c97bddb7",
