@@ -193,3 +193,4 @@ A sibling's files are read only. A Brief cell may name a sibling's brief as `../
 - A member with no `tackle-workspace/5` board is refused once, the root included, with the line above; a cycle across members is refused as `cycle across workspaces: <a> -> ... -> <a>`.
 - `--initiative --check` prints `view current` or `view stale: <keys>` with the single-page exit codes; its keys cover each member's `task-board.md`, `plan.md`, `AGENTS.md` and each brief its board names.
 - An initiative-view request is its own owner request and the owner's authorization for the script for that request; it does not add or remove scope relative to the single-workspace request.
+- Known limits: a deep link `#task-<key>:T-NN` does not reopen a task on the initiative page, and a root folder named like a declared sibling slug is not supported.
