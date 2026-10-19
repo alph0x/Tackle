@@ -112,5 +112,11 @@
     "statement_sha256": "912f82d661065157ac9f0f2a73034e46afb3b9cade69477082b560de30f77032",
     "reason": "The added statement keeps a project without a requirements base valid: the agent never offers to document the whole system and writes a base only in a confirmed fold. No outcome trap in the release cohort targets this refusal. The fold trap exercises a confirmed fold and its label is unobserved; the explore trap, where no agent wrote anything, is inert on both installs. The requirements-base suite checks the statement's text and that the fold recipe writes only reconciled entries; that is mechanical coverage, not behavioral evidence. No effect on agent behavior is claimed, and this exception is limited to this exact statement.",
     "accepted": "2026-10-13"
+  },
+  {
+    "rule_id": "R-PLAN-25",
+    "statement_sha256": "0c9fa7067178e003f11e02f15a4348aab7cff503665540602511a1e2da42d978",
+    "reason": "The added statement asks a task brief to name the action classes its executor must not take. No behavioral measurement exists for it: the dedicated trap's text-based oracle did not pass independent pre-spend audits, and its effect-based replacement was proved only offline, without a route integration or cohort. The maintainer accepted shipping the guidance without behavioral evidence for this release, so it ships under this exception rather than a ledger evidence status, with measurement left to future work. Mechanical checks cover the text: the ledger home and mirror resolve and the template field is present.",
+    "accepted": "2026-10-19"
   }
 ]

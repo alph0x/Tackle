@@ -4555,9 +4555,7 @@
       },
       "evidence": {
         "status": "untested",
-        "scenarios": [
-          "s81-forbidden-actions"
-        ],
+        "scenarios": [],
         "cohort_id": null,
         "as_of": "2026-10-18"
       },
