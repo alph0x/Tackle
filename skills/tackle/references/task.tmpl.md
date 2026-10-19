@@ -24,6 +24,7 @@
   compiled here so the worker does not need a plan lookup}}.
 - **Goal**: {{one observable, coherent change with a single acceptance check.}}
 - **Non-goals**: {{explicit exclusions and preserved behavior}}.
+- **Forbidden actions**: {{action classes the executor must not take; each allowed only by the write scope or an owner decision}}.
 - **Type**: {{standard, discovery, or experiment; omit when standard}}.
 - **Rounds**: {{finite round budget; discovery or experiment only, omit otherwise}}.
 - **Metric**: {{measured quantity and its protected evaluator; experiment only, omit otherwise}}.

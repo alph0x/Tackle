@@ -1267,7 +1267,7 @@
       "rule_id": "R-RUN-16",
       "statement": "A discovery task converges on consecutive dry rounds and deduplicates against everything seen.",
       "statement_sha256": "e92fe9a47b609bf869e0a2c1a84f588eabdc078572690e83e6002aa1691b4cb5",
-      "home": "references/task.tmpl.md:48",
+      "home": "references/task.tmpl.md:49",
       "home_fragment": "deduplicate against everything seen",
       "units": [],
       "mirrors": [
@@ -4425,7 +4425,7 @@
       "units": [],
       "mirrors": [
         "references/guides/plan-card.md:82",
-        "references/task.tmpl.md:92"
+        "references/task.tmpl.md:93"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -4531,6 +4531,33 @@
       "evidence": {
         "status": "untested",
         "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-18"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-25",
+      "statement": "A task brief names the action classes its executor must not take (deletion outside the write scope, caches included; privilege escalation and package installs; publication by push, tag, release or registry upload; unscoped recursive searches outside the repository), each allowed only where the brief's write scope or an explicit owner decision allows it.",
+      "statement_sha256": "0c9fa7067178e003f11e02f15a4348aab7cff503665540602511a1e2da42d978",
+      "home": "references/guides/design-and-contract.md:55",
+      "home_fragment": "Forbidden action classes the executor must not take",
+      "units": [],
+      "mirrors": [
+        "references/task.tmpl.md:27"
+      ],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "Brief guidance: a task brief names the action classes its executor must not take, since an unscoped run can delete files, install packages, publish or search the home directory.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [
+          "s81-forbidden-actions"
+        ],
         "cohort_id": null,
         "as_of": "2026-10-18"
       },
