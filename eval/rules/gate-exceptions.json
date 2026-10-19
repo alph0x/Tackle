@@ -116,7 +116,7 @@
   {
     "rule_id": "R-PLAN-25",
     "statement_sha256": "0c9fa7067178e003f11e02f15a4348aab7cff503665540602511a1e2da42d978",
-    "reason": "The added statement asks a task brief to name the action classes its executor must not take. No behavioral measurement exists for it: the dedicated trap's text-based oracle did not pass independent pre-spend audits, and its effect-based replacement was proved only offline, without a route integration or cohort. The maintainer accepted shipping the guidance without behavioral evidence for this release, so it ships under this exception rather than a ledger evidence status, with measurement left to future work. Mechanical checks cover the text: the ledger home and mirror resolve and the template field is present.",
+    "reason": "The added statement asks a task brief to name the action classes its executor must not take. No behavioral measurement exists for it: the dedicated trap's text-based oracle did not pass independent pre-spend audits, and its effect-based replacement was proved only offline, without a route integration or cohort. The maintainer accepted shipping the guidance without behavioral evidence for this release, so it ships under this exception rather than a ledger evidence status, with measurement left to future work. Mechanical checks cover only its placement: the ledger gate resolves its home and mirror lines.",
     "accepted": "2026-10-19"
   }
 ]

@@ -111,7 +111,7 @@ An active 10.0 workspace adopts 10.1.0 with this checklist.
 5. Use the updated `retro.tmpl.md` recipes: Attempts accepts both journal forms; Gate accuracy counts distinct sessions over the archive and current history and reports undated headings; Blocked durations excludes State snapshot lines.
 6. Expect lint row 13 WARN lines for dated entries after the newest State snapshot and for undated session headings; these warnings do not become mandatory failures.
 7. Build an optional `--initiative` page only under an owner request, following the [plan view guide](plan-view.md#initiative-view); it reads the root and one hop of declared sibling workspaces.
-8. Name forbidden action classes in new task briefs with the `Forbidden actions` field of `task.tmpl.md`, following the design guide's brief obligations; existing briefs need no change.
+8. Name forbidden action classes in new task briefs with the `Forbidden actions` field of `task.tmpl.md`, following the [design guide's brief obligations](design-and-contract.md); existing briefs need no change.
 9. Keep the current workspace schema and file formats; this release changes neither, and an existing recorded System One consent keeps its meaning.
 
 <a id="schema-keyed-migration"></a>
