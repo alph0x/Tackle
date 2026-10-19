@@ -1,5 +1,16 @@
 # Tackle changelog
 
+## Tackle 10.1.0
+
+- **Retro recipes count the recorded work.** Attempts reads archived and current history, recognizes both correction journal forms and credits each task once per counted line. Gate accuracy reads the recorded gate, counts distinct sessions and reports undated headings; it also handles Lite plans without a task board. Blocked durations ignores State snapshot lines. The history template and RUN guide name the correction-cycle journal form, the plan template records `Gate: Full` on line 3, and the resource ledgers state the seconds-precision clock format.
+- **History drift produces warnings.** Lint row 13 now warns about dated entries after the newest State snapshot and session headings without a date, skipping fenced blocks and HTML comments. The row count stays 17. A planted regression fixture also checks the existing row 2 failure for a plan task missing from its board.
+- **Briefs and readiness state three more checks.** Editing or removing an existing test requires a mutation audit of its retained checks. Before Ready to run, each brief command and worked example runs as written, with commands extracted by label and an observation recorded. Briefs state repository conventions and give every command that depends on its working directory an explicit `cd` or `-C`.
+- **Related workspaces can share one initiative view.** `plan_view.py --initiative` shows the root and one hop of declared siblings, with workspace-qualified task ids, cross-member dependencies, member progress and a combined freshness check. Cross-workspace cycles are refused; declarations outside the member set are reported without following them. Existing single-workspace pages remain byte-identical on the parity cases. Observed limits: keyed deep links do not reopen their task, and a root folder named like a sibling produces duplicate keys. Qualified ids can wrap in the task list’s narrow id column.
+- **Maintainer rules are recorded where releases and measurements happen.** The repository procedure now calls for a local replay of every CI step, review of configured script reads and isolated pinned invocations, one publication command at a time with its exit checked, a GitHub Release with changelog notes, and a comparison of remote and catalog versions. The measurement rules state calibration, development smoke, pre-registered rates, tie rules, practical margins and an oracle that measures the protected effect.
+- **Migration.** The `v10.0 → v10.1` checklist covers the template and journal changes, lifecycle clocks, corrected retro recipes, history warnings and the optional initiative page. No workspace schema or file format changes.
+- **Deferred.** The forbidden-action-classes rule is deferred from this release; its dedicated trap and behavioral comparison are not included.
+- **Evidence.** Deterministic tests cover the shipped artifacts and tools; no new held-out behavioral cohort was run for this release. These checks do not establish an improvement in agent behavior.
+
 ## Tackle 10.0.1
 
 - **The lint runner reads its rows from one place.** `scripts/lint_runner.py` now reads the lint rows only from the `lint.py` beside it, and verifies the exact bytes against a sha256 pinned in the runner's code, the way it already pins `capture.py`. A changed `lint.py` is refused before anything is written.
