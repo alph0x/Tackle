@@ -55,6 +55,12 @@ def strip_fences(text):
     return '\n'.join(out)
 
 
+def strip_code_spans(text):
+    """Blank out inline code spans (text between matching backtick runs on one line), keeping
+    their length, so a link-shaped string in code is not read as a link, as in rendered Markdown."""
+    return re.sub(r'(?<!`)(`+)(?!`).+?(?<!`)\1(?!`)', lambda match: ' ' * len(match.group(0)), text)
+
+
 LINK = re.compile(r'\[[^\]]*\]\(([^)]+)\)')
 HEADING = re.compile(r'^(#{1,6})\s+(.*)$')
 EXPLICIT_ANCHOR = re.compile(r'<a\s+id="([^"]+)"')
@@ -105,7 +111,7 @@ def check_links(root):
     install = INSTALL if root.resolve() == ROOT.resolve() else root
     problems = []
     for source in in_scope_files(root):
-        text = strip_fences(source.read_text(encoding='utf-8', errors='replace'))
+        text = strip_code_spans(strip_fences(source.read_text(encoding='utf-8', errors='replace')))
         for match in LINK.finditer(text):
             target = match.group(1).strip()
             if not target or target.startswith(('http://', 'https://', 'mailto:', '#')):
@@ -236,6 +242,17 @@ class LinksTests(unittest.TestCase):
 
     def test_no_broken_links_in_the_named_files(self):
         self.assertEqual(check_links(ROOT), [])
+
+    def test_a_link_inside_a_code_span_is_ignored(self):
+        """Case: code span -- `[x](y)` between backticks is literal text, as in rendered Markdown;
+        a real dangling link outside the code span still fails, naming its target."""
+        with tempfile.TemporaryDirectory(prefix='install-code-span-link-') as scratch:
+            root = Path(scratch)
+            (root / 'README.md').write_text(
+                'Literal `[x](y)` is text, but [Real](missing.md) is a link.\n')
+            problems = check_links(root)
+            self.assertEqual(len(problems), 1)
+            self.assertIn('missing.md', problems[0])
 
 
 class GatesTests(unittest.TestCase):

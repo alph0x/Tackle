@@ -1,5 +1,7 @@
 # Action plan — {{TITLE}}
 
+Gate: Full
+
 ## 1. Objective
 
 {{The observable result for the user or integrator, including stable requirement ids.}}

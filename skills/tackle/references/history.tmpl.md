@@ -58,7 +58,7 @@ counters, interrupted runs, integration evidence and deliverable acceptance.
 ### Blockers / open questions
 - {{see `questions.md`: Q-01, ...}}
 <!-- Failed attempts: one journal line per attempt, each with its verification block:
-attempt N: <what was tried> — failed because <lesson>
+correction cycle N of 3: <failure> → <correction>; <validation command>: <result>
 On budget exhaustion or no-progress (two consecutive attempts with identical evidence
 output), the task becomes Blocked and the entry carries the escalation packet:
 ### Escalation — T-NN

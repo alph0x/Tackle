@@ -114,7 +114,7 @@
         "test_scenario_checks.py",
         "test_scenario_check_reach.py"
       ],
-      "tests": 38,
+      "tests": 39,
       "source": "eval/lint/task-contracts",
       "category": "product",
       "purpose": "Task contracts, readiness and acceptance fields."
@@ -206,7 +206,7 @@
         "test_script_consent_points.py",
         "test_multi_repo_templates.py"
       ],
-      "tests": 108,
+      "tests": 124,
       "source": "eval/templates",
       "category": "product",
       "purpose": "Template fields, observed model routing, capability recovery and compiled briefs. The System One decision script's admission, workspace consent, normalized transport, confidence and provenance. The System One state script's consent persistence, caller-supplied client, SDK serialization, fallback and bounded history/intake consumers."
@@ -285,7 +285,7 @@
         "test_script_manifest.py",
         "test_no_network_surface.py"
       ],
-      "tests": 40,
+      "tests": 41,
       "source": "eval/install/inventory",
       "category": "product",
       "purpose": "Installed artifact inventory, links, root resolution and the absence of network clients, endpoints and home lookups."
