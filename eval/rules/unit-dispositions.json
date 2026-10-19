@@ -7463,7 +7463,7 @@
       "unit_sha256": "aaf35bbbd4225f125291dee02dbe34d5d0ca595aa494afae739b0402e1e18c66",
       "disposition": "reworded",
       "destination": "SKILL.md",
-      "note": "**Tackle 10.0.1** is a model-agnostic planning and execution method.",
+      "note": "**Tackle 10.1.0** is a model-agnostic planning and execution method.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -7482,7 +7482,7 @@
       "unit_sha256": "f1cc43ab2f94087d243f10bd5d65ad3bf5159204f6fb3d110bfb5b3eb54036a7",
       "disposition": "reworded",
       "destination": "references/AGENTS.tmpl.md",
-      "note": "**Methodology: Tackle 10.0.1**",
+      "note": "**Methodology: Tackle 10.1.0**",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -9488,7 +9488,7 @@
       "unit_sha256": "e9a9512d5a13e4376aa551a7ee3b7b522b6ba0a4217c72dcb25b90ae20d83714",
       "disposition": "reworded",
       "destination": "SKILL.md",
-      "note": "**Tackle 10.0.1** is a model-agnostic planning and execution method.",
+      "note": "**Tackle 10.1.0** is a model-agnostic planning and execution method.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -9503,7 +9503,7 @@
       "unit_sha256": "53452d01b6e4408fe6277a97c52d32cca2876996a890d66a9bcbb6c9e9386fe7",
       "disposition": "reworded",
       "destination": "references/AGENTS.tmpl.md",
-      "note": "**Methodology: Tackle 10.0.1** <!-- A future version reads this to decide whether to migrate. -->",
+      "note": "**Methodology: Tackle 10.1.0** <!-- A future version reads this to decide whether to migrate. -->",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -16879,7 +16879,7 @@
       "unit_sha256": "e3c6960f34d37cbf7b81664620943dc235d16a5fef4d4137087d3f1404f4093b",
       "disposition": "reworded",
       "destination": "SKILL.md",
-      "note": "**Tackle 10.0.1** is a model-agnostic planning and execution method.",
+      "note": "**Tackle 10.1.0** is a model-agnostic planning and execution method.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -16935,7 +16935,7 @@
       "unit_sha256": "2a10f42dd013c833ddc1d6f7ec2a1d4a1a0130ac962fd4318d50faacd709e3e7",
       "disposition": "reworded",
       "destination": "references/AGENTS.tmpl.md",
-      "note": "**Methodology: Tackle 10.0.1** <!-- A future version reads this to decide whether to migrate. -->",
+      "note": "**Methodology: Tackle 10.1.0** <!-- A future version reads this to decide whether to migrate. -->",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -17013,7 +17013,11 @@
       "destination_unit_sha256": null,
       "dropped": [
         {
-          "token": "0",
+          "token": "1",
+          "reason": "release version stamp bumped to 10.1.0"
+        },
+        {
+          "token": "10.0",
           "reason": "release version stamp bumped to 10.1.0"
         }
       ]
@@ -17028,7 +17032,11 @@
       "destination_unit_sha256": null,
       "dropped": [
         {
-          "token": "0",
+          "token": "1",
+          "reason": "release version stamp bumped to 10.1.0"
+        },
+        {
+          "token": "10.0",
           "reason": "release version stamp bumped to 10.1.0"
         }
       ]
@@ -17043,7 +17051,11 @@
       "destination_unit_sha256": null,
       "dropped": [
         {
-          "token": "0",
+          "token": "1",
+          "reason": "release version stamp bumped to 10.1.0"
+        },
+        {
+          "token": "10.0",
           "reason": "release version stamp bumped to 10.1.0"
         }
       ]
