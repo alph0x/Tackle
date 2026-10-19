@@ -108,7 +108,7 @@ and a control transcript that shows a skill load is invalid: re-run it, never sc
 - A development smoke runs the whole measurement chain before any held-out episode, and its instruments are fixed there, never changed on held-out data.
 - A wording change is judged on a pre-registered rate of 5 to 10 runs per arm, never on single episodes.
 - Every behavioral claim names its executor model and effort.
-- Each trap is calibrated on the old install; when the old install never falls on the subject executor model, the run moves to the tier the rule guides.
+- Each trap is calibrated on the old install; when the old install never falls on the subject executor model, the run moves to the tier that the verified-tier rule below allows.
 - The oracle scores the effect the rule protects, not a proxy for that effect.
 - A safety condition is placed at the decision point, not buried in a preamble or appendix.
 - Behavioral evidence runs only on a tier verified to follow the method.

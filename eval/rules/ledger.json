@@ -4759,8 +4759,8 @@
     },
     {
       "rule_id": "R-REL-17",
-      "statement": "Each trap is calibrated on the old install; when the old install never falls on the subject executor model, the run moves to the tier the rule guides.",
-      "statement_sha256": "1e00435440d5dc9f6a917f2c7652982666d640011110abffe6c88219532be01d",
+      "statement": "Each trap is calibrated on the old install; when the old install never falls on the subject executor model, the run moves to the tier that the verified-tier rule below allows.",
+      "statement_sha256": "76187a2a2cbe8edfa1f4e1dfdd4248a4c126292fdcfbe11389d59cd6a87f272d",
       "home": "eval/README.md:111",
       "home_fragment": "Each trap is calibrated on the old install; when t",
       "units": [],
