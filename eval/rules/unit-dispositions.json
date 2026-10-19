@@ -16983,6 +16983,21 @@
       "destination": "skills/tackle/scripts/README.md",
       "note": "| [plan_view.py](plan_view.py) | `b4f7d31b67212e1ad98430f1fe296110675b7e5d2d019f8df3083358dc8a4227` |",
       "destination_unit_sha256": null
+    },
+    {
+      "path": "MAINTAINING.md",
+      "line": 28,
+      "unit_sha256": "baea82d323c4703a0e3d74922978427d5fd85183aa7747a6767598ec0dde7f9a",
+      "disposition": "reworded",
+      "destination": "MAINTAINING.md",
+      "note": "Before tagging, complete these nine steps in this order; each follows the sweep above and none is optional:",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "4",
+          "reason": "the step count grew when the release steps were added"
+        }
+      ]
     }
   ]
 }

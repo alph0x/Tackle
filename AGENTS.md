@@ -16,7 +16,7 @@ Write paths are exclusive: profiles are written ONLY by `/tackle-retro` (batch-c
 
 - The skill source is `skills/tackle/SKILL.md` + `skills/tackle/references/`; the entry file has a ≤1100-word budget and 11 core conventions (incl. authority order) — preserve both when editing.
 - `docs/plans/` and `docs/seeds/` are both gitignored and local-only: this machine is the single publishing point for Tackle, so workspaces and backlog stay here, unexposed. Convention for any repo using Tackle: `docs/seeds/` gets the same gitignore decision as `docs/plans/` (convention 9) — a seed leaks an initiative's shape just like a plan does.
-- The install artifact is `SKILL.md` + `references/` ONLY; `docs/` (plans, seeds) never ships to installers.
+- The install artifact is `SKILL.md` + `references/` + `scripts/`; `docs/` (plans, seeds) never ships to installers.
 - Any add, change or delete of a normative rule needs a ledger diff before release, symmetrically; held-out evidence is required for a hot-path rule or a safety invariant (see `MAINTAINING.md` §Change gate).
 - Releases follow `CHANGELOG.md` discipline: granular commits, tag, GitHub release with the changelog entry as notes.
 

@@ -25,12 +25,17 @@ selected report WARN on failures and are non-gating; and (6) compute and report
 
 Migrate-chain currency: if the release changes any workspace-level contract (`AGENTS.tmpl.md`, status vocabulary, artifact names, closure protocol), the migrate guide MUST gain a checklist for the immediately previous version in the same release — a version bump without its migrate checklist is a release defect (precedent: v3.0→v3.1 and v3.3→v3.4 were both missed once).
 
-Before tagging, complete these four steps in this order; each follows the sweep above and none is optional:
+Before tagging, complete these nine steps in this order; each follows the sweep above and none is optional:
 
 1. Run the full registry under CI's interpreters before pushing the release branch: the `python3` of the `ubuntu-26.04` runner image, and the minimum Python that `skills/tackle/scripts/README.md` declares. The workflow (`.github/workflows/ci.yml`) pins no version for the first, so take it from the latest CI log, or use a matching local interpreter; its second job pins the minimum with `actions/setup-python`. A green run under a different interpreter does not count.
-2. Run the committed-text guard over everything a commit adds, untracked files included: build a temporary index, mark the new files with `git add -N`, and point the guard at that index by running it with `GIT_INDEX_FILE` set to the temporary index, so a file that is not yet tracked is checked like a committed one.
-3. Reproduce every documented install channel in a sandbox and count the installed files against the install artifact (`SKILL.md`, `references/` and `scripts/`); a channel that needs the tag is reproduced against a local clone of the candidate commit. Any extra or missing file blocks the tag.
-4. On the owner's order, push the release branch without a tag and observe CI; create the tag only after CI is green, never before. A local run hides host-dependent variants (gawk, mawk, original-awk and busybox; Linux interpreters), so only the CI observation clears this step.
+2. Replay every step of `.github/workflows/ci.yml` locally before pushing the release branch; a step that cannot run locally is observed in CI, never assumed green.
+3. Review every new or changed script: any read whose path or hash comes from configuration stays confined to the working directory, and every pinned-script invocation runs with `python -I`.
+4. Run the committed-text guard over everything a commit adds, untracked files included: build a temporary index, mark the new files with `git add -N`, and point the guard at that index by running it with `GIT_INDEX_FILE` set to the temporary index, so a file that is not yet tracked is checked like a committed one.
+5. Reproduce every documented install channel in a sandbox and count the installed files against the install artifact (`SKILL.md`, `references/` and `scripts/`); a channel that needs the tag is reproduced against a local clone of the candidate commit. Any extra or missing file blocks the tag.
+6. On the owner's order, push the release branch without a tag and observe CI; create the tag only after CI is green, never before. A local run hides host-dependent variants (gawk, mawk, original-awk and busybox; Linux interpreters), so only the CI observation clears this step.
+7. After the owner's order, run each publication command alone, one at a time, and check its exit before the next; a publication command is never piped.
+8. Publish a GitHub Release with the changelog entry as its notes, not only a tag.
+9. Before declaring distribution fresh, compare the remote raw `https://raw.githubusercontent.com/alph0x/Tackle/main/skills/tackle/SKILL.md` with the skills.sh catalog snapshot.
 
 ### Skill self-lint gates
 
