@@ -1,7 +1,7 @@
 # Resource usage ledger — {{TITLE}}
 
 New Coordinated (Full) workspaces use this v2-only ledger. For Focused (Lite), use the body in `lite-plan.tmpl.md`.
-A validation end must never be copied as a role end; use `At=n/a` when the role end was not observed and record the reason in Source. `At` is a clock in the form `YYYY-MM-DDTHH:MM:SS[.fff](Z|±HH:MM)`; minute-only and space-separated clocks are unmeasured, so record them as `At=n/a`.
+A validation end must never be copied as a role end; use `At=n/a` when the role end was not observed and record the reason in Source. `At` is a clock in the form `YYYY-MM-DDTHH:MM:SS[.fff](Z|±HH:MM)`; minute-only and space-separated clocks are unmeasured.
 
 ## v2 lifecycle ledger
 
