@@ -20,7 +20,7 @@ Tackle turns a goal into a plan stored in your repository. Each task carries the
 
 Use it for features, refactors, and investigations that span sessions or involve handoffs between agents or people.
 
-**Tackle 10.0.1** · Model-agnostic · Markdown and standard-library Python · MIT
+**Tackle 10.1.0** · Model-agnostic · Markdown and standard-library Python · MIT
 
 ## Why Tackle
 
@@ -84,10 +84,10 @@ For Cursor, use `~/.cursor/skills/tackle/`. Other agents use their own skill dir
 The install contains only `SKILL.md`, `references/` and `scripts/`, with 79 installation-relative files. Repository branding, development tools, and evaluation fixtures are not part of the installed skill.
 The checkout copy commands above copy those files into the selected directory and leave any other files already there.
 
-Before release, a local clone of the pre-release candidate, whose installed files are identical to v10.0.0, installed exactly the 79 expected files through both the manual copy above and `npx skills@1.7.0 add --skill tackle` (offline, single-agent, with `-a claude-code -y -g`). The public GitHub routes, by tag and by the default source, have not been probed for 10.0.0. To pin a release, install by tag:
+Local candidate installation is checked through the manual copy above and the cached `npx skills@1.7.0 add --skill tackle` channel (offline, single-agent, with `-a claude-code -y -g`), against the 79 expected files. The public GitHub routes, by tag and by the default source, have not been probed for 10.1.0. To pin a release, install by tag:
 
 ```sh
-npx --yes skills@1.7.0 add 'https://github.com/alph0x/Tackle.git#v10.0.0' --skill tackle -a claude-code codex -y -g
+npx --yes skills@1.7.0 add 'https://github.com/alph0x/Tackle.git#v10.1.0' --skill tackle -a claude-code codex -y -g
 ```
 
 Restart your session after an update if your agent cannot reload skills.
@@ -266,7 +266,7 @@ Historical records retain their meanings: E1 for independent command verificatio
 
 Previously documented slash forms such as `/tackle-run` and `/tackle-verify` stay text aliases: when the host passes them as text they keep their intent boundaries, never grant broader permission, and register no separate picker entries ([invocation](skills/tackle/references/guides/invocation.md#text-aliases)). Retired 8.x action names map to their historical targets in [terminology.md](skills/tackle/references/terminology.md).
 
-The install keeps the head of the checklist chain v2.0 → v10.0: [9.3 → 10.0](skills/tackle/references/guides/migrate.md#v93--v100-checklist), [9.2 → 9.3](skills/tackle/references/guides/migrate.md#v92--v93-checklist) and the [8.4 → 9.0](skills/tackle/references/guides/migrate.md#v84--v90-checklist) bridge, under one [adoption procedure](skills/tackle/references/guides/migrate.md#adopting-a-release). The historical checklists, v2.0 → v9.2.1, live in the repository's [`maintaining/migrations.md`](maintaining/migrations.md), including [9.2.0 → 9.2.1](maintaining/migrations.md#v920--v921-checklist), [9.1 → 9.2](maintaining/migrations.md#v91--v92-checklist), [9.1.0 → 9.1.1](maintaining/migrations.md#v910--v911-checklist), [9.0 → 9.1](maintaining/migrations.md#v90--v91-checklist), [9.0.0 → 9.0.1](maintaining/migrations.md#v900-v901-checklist), [8.4.0 → 8.4.1](maintaining/migrations.md#v840--v841-checklist), [8.3 → 8.4](maintaining/migrations.md#v83--v84-checklist), [8.2 → 8.3](maintaining/migrations.md#v82--v83-checklist), [8.1 → 8.2](maintaining/migrations.md#v81--v82-checklist), [8.0 → 8.1](maintaining/migrations.md#v80--v81-checklist), and the [copy-first 7.3 → 8.0 transition](maintaining/migrations.md#v73--v80-checklist).
+The install keeps the head of the checklist chain v2.0 → v10.1: [10.0 → 10.1](skills/tackle/references/guides/migrate.md#v100--v101-checklist), [9.3 → 10.0](skills/tackle/references/guides/migrate.md#v93--v100-checklist), [9.2 → 9.3](skills/tackle/references/guides/migrate.md#v92--v93-checklist) and the [8.4 → 9.0](skills/tackle/references/guides/migrate.md#v84--v90-checklist) bridge, under one [adoption procedure](skills/tackle/references/guides/migrate.md#adopting-a-release). The historical checklists, v2.0 → v9.2.1, live in the repository's [`maintaining/migrations.md`](maintaining/migrations.md), including [9.2.0 → 9.2.1](maintaining/migrations.md#v920--v921-checklist), [9.1 → 9.2](maintaining/migrations.md#v91--v92-checklist), [9.1.0 → 9.1.1](maintaining/migrations.md#v910--v911-checklist), [9.0 → 9.1](maintaining/migrations.md#v90--v91-checklist), [9.0.0 → 9.0.1](maintaining/migrations.md#v900-v901-checklist), [8.4.0 → 8.4.1](maintaining/migrations.md#v840--v841-checklist), [8.3 → 8.4](maintaining/migrations.md#v83--v84-checklist), [8.2 → 8.3](maintaining/migrations.md#v82--v83-checklist), [8.1 → 8.2](maintaining/migrations.md#v81--v82-checklist), [8.0 → 8.1](maintaining/migrations.md#v80--v81-checklist), and the [copy-first 7.3 → 8.0 transition](maintaining/migrations.md#v73--v80-checklist).
 
 </details>
 
