@@ -107,7 +107,7 @@ class EntryBudgetTests(Workspace):
     def test_an_older_entry_over_the_budget_is_reported_when_the_newest_is_short(self):
         root, starts = self.budget_root([entry('## 2026-09-23 · session 1', 121), entry('## 2026-09-24 · session 2', 9)])
         lines = self.assert_row(13, root, 'WARN')
-        self.assertEqual(len(lines), 1, lines)
+        self.assertEqual(lines[1:], ['snapshot drift: ## 2026-09-24 · session 2'])
         self.assertRegex(lines[0], r'\b%d\b' % starts[0])
         self.assertIn('121 > 120', lines[0])
 
@@ -138,11 +138,13 @@ class EntryBudgetTests(Workspace):
 
     def test_trailing_blank_lines_and_other_second_level_headings_bound_the_entry(self):
         root, _ = self.budget_root([entry('## 2026-09-23 · session 1', 120), entry('## 2026-09-24 · session 2', 10)], gap=15)
-        self.assertEqual(self.assert_row(13, root, 'PASS', 'blank lines after an entry'), [])
+        self.assertEqual(self.assert_row(13, root, 'WARN', 'blank lines after an entry'),
+                         ['snapshot drift: ## 2026-09-24 · session 2'])
         root, _ = self.budget_root([entry('## 2026-09-24 · session 1', 100)])
         with open(root / HISTORY, 'a', encoding='utf-8') as handle:
             handle.write('\n## Notes\n\n' + '\n'.join('- note %d' % number for number in range(1, 140)) + '\n')
-        self.assertEqual(self.assert_row(13, root, 'PASS', 'a later heading that is not a session'), [])
+        self.assertEqual(self.assert_row(13, root, 'WARN', 'an undated heading is warned, never a budget finding'),
+                         ['undated heading: ## Notes'])
         root, _ = self.budget_root([entry('## 2026-09-24 · session 1', 120)])
         with open(root / HISTORY, 'a', encoding='utf-8') as handle:
             handle.write('\n\n\n\n')
@@ -179,6 +181,46 @@ class EntryBudgetTests(Workspace):
         self.assertIn('RUN', description)
         self.assertIn('policy', description)
         self.assertNotIn('status.md', description)
+
+    def test_drift_after_the_newest_snapshot_is_warned_once_per_line(self):
+        for name, base, expected in (
+                ('fail-13d', 'pass-obligations', ['snapshot drift: ## 2026-09-25 · session 3']),
+                ('fail-13e', 'pass-obligations', ['snapshot drift: - 2026-09-25 T-0042 moved to Complete.']),
+                ('fail-13g', 'pass-obligations', ['snapshot drift: ## 2026-09-26 · session 4'])):
+            with self.subTest(case=name):
+                root = self.workspace(name, base)
+                self.assertEqual(self.assert_row(13, root, 'WARN', name), expected)
+
+    def test_undated_headings_warn_and_no_snapshot_means_no_drift(self):
+        root = self.workspace('fail-13f', 'pass-full')
+        self.assertEqual(self.assert_row(13, root, 'WARN', 'fail-13f'), ['undated heading: ## Session notes'])
+
+    def test_fenced_and_commented_text_is_skipped_including_unclosed_blocks(self):
+        for name, expected in (
+                ('fail-13h', ['snapshot drift: ## 2026-09-27 · session 5']),
+                ('fail-13j', ['snapshot drift: ## 2026-09-28 · session 6']),
+                ('fail-13k', ['snapshot drift: ## 2026-09-28 · session 6'])):
+            with self.subTest(case=name):
+                root = self.workspace(name, 'pass-obligations')
+                self.assertEqual(self.assert_row(13, root, 'WARN', name), expected)
+
+    def test_new_lines_follow_the_existing_output_in_a_fixed_order(self):
+        root = self.workspace('fail-13i', 'pass-obligations')
+        self.assertEqual(self.assert_row(13, root, 'WARN', 'fail-13i'), [
+            HISTORY + ' over archive threshold (10)',
+            HISTORY + ':3: entry over budget (6 > 5)',
+            HISTORY + ':12: entry over budget (8 > 5)',
+            'undated heading: ## Undated notes',
+            'snapshot drift: ## 2026-09-24 · session 2',
+            'snapshot drift: - 2026-09-24 T-0042 started.',
+            'undated heading: ## Another undated',
+            'snapshot drift: - 2026-09-25 T-0043 done.',
+            'snapshot drift: ## 2026-09-26 · session 3',
+        ])
+
+    def test_pass_obligations_is_silent_on_row_13(self):
+        root = self.workspace('pass-obligations')
+        self.assertEqual(self.assert_row(13, root, 'PASS', 'pass-obligations'), [])
 
 
 def keyword_only(root):

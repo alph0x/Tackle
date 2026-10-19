@@ -114,6 +114,8 @@ GENERATED = {
                 .replace('- **Type**: experiment.', '- **Type**: experiment · **Metric:** m · **Threshold:** t · **Rounds**:')},
     'fail-seal-unresolved': {'tasks/T-02.md': lambda: brief('T-02', depends='T-01', clause_sha='2' * 64, clause_id='C09')},
     'fail-seal-malformed': {'tasks/T-02.md': lambda: brief('T-02', depends='T-01', clause_sha='ABC', clause_id='C02')},
+    'fail-2d': {'plan.md': lambda: (FIXTURES / 'pass-full/docs/plans/demo/plan.md').read_text(encoding='utf-8')
+                                 + '| T-0042 | Planted missing task |\n'},
 }
 
 # (overlay, base, row, expected stdout fragment, verdict). A structural diagnostic that exits 1
@@ -124,6 +126,7 @@ FAILS = [
     ('fail-2', 'pass-full', 2, 'missing brief: tasks/T-03.md', 'FAIL'),
     ('fail-2b', 'pass-full', 2, 'mixed board identity: P-07', 'FAIL'),
     ('fail-2c', 'pass-full', 2, 'unresolved: T-09', 'FAIL'),
+    ('fail-2d', 'pass-full', 2, 'missing board task: T-0042', 'FAIL'),
     ('fail-3', 'pass-full', 3, 'bad status', 'FAIL'),
     ('fail-4', 'pass-full', 4, 'malformed', 'FAIL'),
     ('fail-4b', 'pass-full', 4, 'stale: decisions.md:1', 'FAIL'),
@@ -145,6 +148,14 @@ FAILS = [
     ('fail-13', 'pass-full', 13, 'over archive threshold', 'WARN'),
     ('fail-13b', 'pass-full', 13, '121 > 120', 'WARN'),
     ('fail-13c', 'pass-full', 13, '121 > 120', 'WARN'),
+    ('fail-13d', 'pass-obligations', 13, 'snapshot drift: ## 2026-09-25 · session 3', 'WARN'),
+    ('fail-13e', 'pass-obligations', 13, 'snapshot drift: - 2026-09-25 T-0042 moved to Complete.', 'WARN'),
+    ('fail-13f', 'pass-full', 13, 'undated heading: ## Session notes', 'WARN'),
+    ('fail-13g', 'pass-obligations', 13, 'snapshot drift: ## 2026-09-26 · session 4', 'WARN'),
+    ('fail-13h', 'pass-obligations', 13, 'snapshot drift: ## 2026-09-27 · session 5', 'WARN'),
+    ('fail-13i', 'pass-obligations', 13, 'undated heading: ## Undated notes', 'WARN'),
+    ('fail-13j', 'pass-obligations', 13, 'snapshot drift: ## 2026-09-28 · session 6', 'WARN'),
+    ('fail-13k', 'pass-obligations', 13, 'snapshot drift: ## 2026-09-28 · session 6', 'WARN'),
     ('fail-14', 'pass-full', 14, 'done task without closure report: T-02', 'FAIL'),
     ('fail-14b', 'pass-full', 14, 'done task without closure report: T-02', 'FAIL'),
     ('fail-15', 'pass-full', 15, 'stale reference-doc', 'WARN'),

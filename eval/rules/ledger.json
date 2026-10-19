@@ -3663,6 +3663,29 @@
       "historical": []
     },
     {
+      "rule_id": "R-STATE-15",
+      "statement": "Lint row 13 also warns, outside fenced code and HTML comments, on each dated `## ` heading and column-1 dated `- ` bullet after the newest `### State snapshot` (`snapshot drift:`), and on each undated `## ` heading in history.md (`undated heading:`); it never fails.",
+      "statement_sha256": "b361186dc3289cb6b39e8d77214824695ee2fc82fac94cb4c6eb5c9f09a908c6",
+      "home": "references/guides/lint-spec.md:40",
+      "home_fragment": "after the newest `### State snapshot`, a dated",
+      "units": [],
+      "mirrors": [],
+      "class": "format",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "History drift after the newest state snapshot and undated headings went unreported by row 13.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-18"
+      },
+      "historical": []
+    },
+    {
       "rule_id": "R-EVID-16",
       "statement": "Send only admitted public fragments needed by one of four uses: older-history score, RUN failure-class choice, no-progress signature comparison, or Direct/Focused/Coordinated intake. Never send credentials, secrets, unknown/private fragments, sealed material or answer sheets. The agent must classify sensitivity before calling the adapter; this is no general secret detector.",
       "statement_sha256": "6a723e4a93ddf9159e4b4d4dc253a562f6082fa96a6088ac6182a4871b134aad",
