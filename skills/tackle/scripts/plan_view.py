@@ -2835,18 +2835,18 @@ def initiative_gather(members, problems):
             ident = '%s:%s' % (key, row['id'])
             task = dict(row, id=ident, member=index, deps=['%s:%s' % (key, dep) for dep in row['deps']], sib_deps=[], traces='')
             if ident in seen:
-                problems.append('duplicate task id %s' % ident)
+                problems.append('%s: duplicate task id %s' % (key, row['id']))
             seen.add(ident)
             if row['status'] not in info['states']:
-                problems.append('task %s has status %s, outside the board states' % (ident, row['status']))
+                problems.append('%s: task %s has status %s, outside the board states' % (key, row['id'], row['status']))
             if not row['brief']:
-                problems.append('task %s names no brief' % ident)
+                problems.append('%s: task %s names no brief' % (key, row['id']))
             else:
                 path, _, brief_outside = resolve_brief(folder, row['brief'], info['siblings'])
                 if brief_outside:
-                    problems.append('brief %s for task %s is outside the workspace' % (row['brief'], ident))
+                    problems.append('%s: brief %s for task %s is outside the workspace' % (key, row['brief'], row['id']))
                 elif not path.is_file():
-                    problems.append('missing brief %s for task %s' % (row['brief'], ident))
+                    problems.append('%s: missing brief %s for task %s' % (key, row['brief'], row['id']))
                 else:
                     found = re.search(r'^- \*\*Traces to\*\*: (.+)$', path.read_text(encoding='utf-8'), re.M)
                     task['traces'] = found.group(1) if found else ''
@@ -2876,24 +2876,27 @@ def initiative_gather(members, problems):
                     externals.append(dict(id=external_id(slug, ref), slug=slug, task_id=ref, title=match['title'],
                                           status=match['status'], deps=[], external=True,
                                           href='%s#task-%s' % (view, ref) if view else None))
+            for dep in row['deps']:
+                if dep not in [r['id'] for r in info['rows']]:
+                    problems.append('%s: task %s depends on unknown task %s' % (key, row['id'], dep))
             tasks.append(task)
-    ids = {t['id'] for t in tasks}
-    for task in tasks:
-        for dep in task['deps']:
-            if dep not in ids:
-                problems.append('task %s depends on unknown task %s' % (task['id'], dep))
     problems[:] = list(dict.fromkeys(problems))
     root_key = members[0][0]
     root = boards.get(root_key, dict(text='', states=DEFAULT_STATES))
-    progress = [(key, sum(1 for r in boards[key]['rows'] if r['status'] == 'Complete'), len(boards[key]['rows']))
-                for key, _ in members if key in boards]
+    relations = {folder: relation for _, (folder, relation) in declared_siblings(members[0][1]).items()}
+    progress = [(key, '' if index == 0 else relations.get(folder, ''),
+                 sum(1 for r in boards[key]['rows'] if r['status'] == 'Complete'), len(boards[key]['rows']))
+                for index, (key, folder) in enumerate(members) if key in boards]
     return root['text'], root['states'], tasks, externals, progress
 
 
 def initiative_progress(progress, ui):
-    """The member list of an initiative page: each member's key with its completed count, in member order."""
-    entries = ''.join('<li><span class="sibling-slug">%s</span><span class="sibling-progress">%s</span></li>' % (
-        esc(key), esc(ui['sibling_progress'].format(done=done, total=total))) for key, done, total in progress)
+    """The member list of an initiative page: each member's key, its relation when the root declares one, and its completed
+    count, in member order, in the sibling_plans markup."""
+    entries = ''.join('<li><span class="sibling-plan" data-sibling="%s"><span class="sibling-slug">%s</span>%s'
+                      '<span class="sibling-progress">%s</span></span></li>' % (
+                          esc(key), esc(key), '<span class="sibling-relation">%s</span>' % esc(relation) if relation else '',
+                          esc(ui['sibling_progress'].format(done=done, total=total))) for key, relation, done, total in progress)
     return '<nav class="sibling-plans" aria-label="%s"><p class="sibling-plans-label">%s</p><ul>%s</ul></nav>' % (
         esc(ui['siblings']), esc(ui['siblings']), entries)
 
@@ -2960,7 +2963,8 @@ def main():
             board, states, tasks, externals, members_progress = initiative_gather(members, problems)
         else:
             board, states, tasks = read_board(ws, problems)
-        if not board:
+        root_refused = args.initiative and sibling_board(ws) is None
+        if not board and not root_refused:
             problems.append('task-board.md is missing or empty')
         if board and not tasks:
             problems.append('the board has no task rows')

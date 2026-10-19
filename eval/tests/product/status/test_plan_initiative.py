@@ -146,12 +146,12 @@ class InitiativeViewTests(unittest.TestCase):
             self.assertEqual(tasks['alpha:T-0002']['deps'], ['api:T-0007'])
             self.assertEqual(tasks['gamma:T-0001']['deps'], ['alpha:T-0002'])
             assert_edges(page, [('api:T-0007', 'alpha:T-0002'), ('alpha:T-0002', 'gamma:T-0001')])
-            progress = re.findall(r'<span class="sibling-slug">([^<]+)</span>(?:<span class="sibling-relation">[^<]*</span>)?'
-                                  r'<span class="sibling-progress">([^<]+)</span>', page)
+            progress = re.findall(r'<span class="sibling-plan" data-sibling="([^"]+)"><span class="sibling-slug">([^<]+)</span>'
+                                  r'(?:<span class="sibling-relation">([^<]*)</span>)?<span class="sibling-progress">([^<]+)</span></span>', page)
             self.assertEqual(progress[:3], [
-                ('alpha', self.labels['sibling_progress'].format(done=1, total=2)),
-                ('api', self.labels['sibling_progress'].format(done=1, total=3)),
-                ('gamma', self.labels['sibling_progress'].format(done=0, total=1))])
+                ('alpha', 'alpha', '', self.labels['sibling_progress'].format(done=1, total=2)),
+                ('api', 'api', 'api', self.labels['sibling_progress'].format(done=1, total=3)),
+                ('gamma', 'gamma', 'gamma', self.labels['sibling_progress'].format(done=0, total=1))])
             self.assertNotIn('outside the initiative', result.stderr)
 
     def test_initiative_edges_name_both_ends(self):
@@ -210,6 +210,9 @@ class InitiativeViewTests(unittest.TestCase):
             page = out.read_text(encoding='utf-8')
             self.assertIn('data-from="x:delta:T-0001" data-to="api:T-0008"', page)
             self.assertNotIn('data-task="x:', page)
+            node = re.search(r'<g class="xnode [^"]*"[^>]*aria-label="delta · T-0001 · Delta · Complete"[^>]*>', page)
+            self.assertIsNotNone(node, 'the outside node is missing its board status')
+            self.assertNotIn('tabindex', node.group(0))
             self.assertEqual(result.stderr.count('outside the initiative: delta'), 1, result.stderr)
 
     def test_initiative_member_undeclared_slug(self):
@@ -255,7 +258,36 @@ class InitiativeViewTests(unittest.TestCase):
             result, out = build(tmp, {'alpha/task-board.md': board(row('T-0001', 'First step', 'none', 'Complete'), schema=False)})
             self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
             self.assertIn('refused: sibling alpha has no tackle-workspace/5 task-board.md at docs/plans/alpha', result.stdout)
+            self.assertNotIn('refused: task-board.md is missing or empty', result.stdout)
             self.assertFalse(out.exists())
+
+    def test_initiative_member_problems_carry_the_key_prefix(self):
+        cases = {
+            'status': ({'beta/task-board.md': board(row('T-0007', 'Ship the client', 'none', 'Bogus'),
+                                                    row('T-0008', 'Ship the server', 'none', 'Complete'),
+                                                    row('T-0009', 'Ship the docs', 'none', 'Draft'))},
+                       'refused: api: task T-0007 has status Bogus, outside the board states'),
+            'missing brief': ({'beta/tasks/T-0007.md': None},
+                              'refused: api: missing brief tasks/T-0007.md for task T-0007'),
+            'unknown dependency': ({'beta/task-board.md': board(row('T-0007', 'Ship the client', 'none', 'In progress'),
+                                                                row('T-0008', 'Ship the server', 'none', 'Complete'),
+                                                                row('T-0009', 'Ship the docs', 'T-0099', 'Draft'))},
+                                   'refused: api: task T-0009 depends on unknown task T-0099'),
+            'duplicate id': ({'beta/task-board.md': board(row('T-0007', 'Ship the client', 'none', 'In progress'),
+                                                          row('T-0008', 'Ship the server', 'none', 'Complete'),
+                                                          row('T-0009', 'Ship the docs', 'none', 'Draft'),
+                                                          row('T-0009', 'Ship the docs again', 'none', 'Draft'))},
+                              'refused: api: duplicate task id T-0009'),
+            'root status': ({'alpha/task-board.md': board(row('T-0001', 'First step', 'none', 'Complete'),
+                                                          row('T-0002', 'Second step', 'T-0007 [api]', 'Bogus'))},
+                            'refused: alpha: task T-0002 has status Bogus, outside the board states'),
+        }
+        for label, (changes, line) in cases.items():
+            with self.subTest(case=label), tempfile.TemporaryDirectory() as tmp:
+                result, out = build(tmp, changes)
+                self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+                self.assertIn(line, refused(result))
+                self.assertFalse(out.exists())
 
     def test_initiative_refuses_absent_member_folder(self):
         with tempfile.TemporaryDirectory() as tmp:
