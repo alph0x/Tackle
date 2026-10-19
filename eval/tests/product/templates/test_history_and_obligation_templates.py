@@ -305,6 +305,14 @@ class RetroRecipeTests(unittest.TestCase):
                              [('history-archive.md', archive[1]), ('history.md', history[1]),
                               ('history.md', history[7])], {'T-0042': 3})
 
+    def test_a9_a_task_named_twice_on_one_counted_line_is_credited_once(self):
+        history = ['# History', '', '## 2026-10-12 · session 1',
+                   '- T-0042 correction cycle 2: T-0042 test red',
+                   '- T-0042 and T-0042 attempt 1: x',
+                   '- T-0042 attempt 2: y, T-0042 again']
+        self.assert_attempts({'history.md': history}, [('history.md', history[3]), ('history.md', history[4]),
+                                                       ('history.md', history[5])], {'T-0042': 3})
+
     def test_g1_a_full_gate_below_line_one_counts_distinct_session_labels_and_dates(self):
         plan = ['# Action plan — Fixture', '', 'Gate: Full', '', '## 1. Objective']
         history = ['# History', '', '## 2026-10-18 · session 1', '- T-0042 started; the gate held',
@@ -345,6 +353,30 @@ class RetroRecipeTests(unittest.TestCase):
                           'history-archive.md': ['## 2026-10-16 · session 1', '- a', '## 2026-10-17 · session 2', '- b'],
                           'history.md': ['## 2026-10-18 · session 2', '- c', '## 2026-10-19 · session 3', '- d']},
                          'Gate: Full', 3)
+
+
+    def test_r04_the_clock_format_and_its_unmeasured_clocks_are_stated_in_each_home(self):
+        clock = 'YYYY-MM-DDTHH:MM:SS[.fff](Z|±HH:MM)'
+        retro_lines = text(GUIDES / 'retro.md').splitlines()
+        lite = text(REF / 'lite-plan.tmpl.md').splitlines()
+        start = lite.index('# Resource usage')
+        end = next((i for i in range(start + 1, len(lite)) if lite[i].startswith('# ')), len(lite))
+        homes = {'resource-usage.tmpl.md': text(REF / 'resource-usage.tmpl.md'),
+                 'lite-plan.tmpl.md # Resource usage': '\n'.join(lite[start:end]),
+                 'guides/retro.md lines 42-50': '\n'.join(retro_lines[41:50])}
+        for home, body in homes.items():
+            flat = ' '.join(body.split())
+            self.assertIn(clock, flat, home)
+            self.assertRegex(flat, r'minute[- ]only', home)
+            self.assertRegex(flat, r'space[- ]separated', home)
+            self.assertRegex(flat, r'unmeasured|not measured', home)
+
+    def test_t1_the_plan_template_puts_the_full_gate_on_line_three_and_keeps_its_title_and_first_section(self):
+        lines = text(REF / 'plan.tmpl.md').splitlines()
+        self.assertEqual(lines[0], '# Action plan — {{TITLE}}')
+        self.assertEqual(lines[2], 'Gate: Full')
+        self.assertEqual(lines[3:5], ['', '## 1. Objective'])
+        self.assertEqual([l for l in lines if l.startswith('Gate: ')], ['Gate: Full'])
 
 
 class StatusObligationTests(unittest.TestCase):

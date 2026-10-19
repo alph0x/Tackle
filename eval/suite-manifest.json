@@ -205,7 +205,7 @@
         "test_script_consent_points.py",
         "test_multi_repo_templates.py"
       ],
-      "tests": 121,
+      "tests": 124,
       "source": "eval/templates",
       "category": "product",
       "purpose": "Template fields, observed model routing, capability recovery and compiled briefs. The System One decision script's admission, workspace consent, normalized transport, confidence and provenance. The System One state script's consent persistence, caller-supplied client, SDK serialization, fallback and bounded history/intake consumers."
