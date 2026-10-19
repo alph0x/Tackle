@@ -99,6 +99,20 @@ An active 9.3 workspace adopts 10.0.0 with this checklist. This release ships ev
 5. [System One](system-one.md) goes through the host's `typesafe-ai` skill. A recorded `System One consent:` line keeps its
    meaning and needs no change; never copy one from a parent or neighboring workspace.
 
+<a id="v100--v101-checklist"></a>
+## v10.0 → v10.1 checklist
+
+An active 10.0 workspace adopts 10.1.0 with this checklist.
+
+1. Add `Gate: Full` on line 3 of an active Coordinated plan, following `plan.tmpl.md`; keep its title on line 1 and keep a Lite plan’s `Gate: Lite` on line 1.
+2. Use the `history.tmpl.md` journal form `correction cycle N of 3: <failure> → <correction>; <validation command>: <result>` for new correction records; preserve older `attempt N:` records.
+3. Write lifecycle `At` clocks with seconds, `YYYY-MM-DDTHH:MM:SS[.fff](Z|±HH:MM)`, as `resource-usage.tmpl.md` states; minute-only and space-separated clocks remain unmeasured.
+4. Use the same `At` clock format in the ledger body of `lite-plan.tmpl.md`; keep an unobserved clock as `n/a`.
+5. Use the updated `retro.tmpl.md` recipes: Attempts accepts both journal forms; Gate accuracy counts distinct sessions over the archive and current history and reports undated headings; Blocked durations excludes State snapshot lines.
+6. Expect lint row 13 WARN lines for dated entries after the newest State snapshot and for undated session headings; these warnings do not become mandatory failures.
+7. Build an optional `--initiative` page only under an owner request, following the [plan view guide](plan-view.md#initiative-view); it reads the root and one hop of declared sibling workspaces.
+8. Keep the current workspace schema and file formats; this release changes neither, and an existing recorded System One consent keeps its meaning.
+
 <a id="schema-keyed-migration"></a>
 ## Schema-keyed migration (9.0.0)
 

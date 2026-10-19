@@ -2991,7 +2991,7 @@
         "references/guides/codex-native-usage.md:10",
         "references/guides/architecture-map.md:66",
         "references/guides/controlled-writing.md:33",
-        "references/guides/migrate.md:126",
+        "references/guides/migrate.md:140",
         "references/guides/plan-view.md:52",
         "references/guides/run.md:150",
         "references/guides/system-one.md:6",
@@ -5223,6 +5223,190 @@
         "scenarios": [],
         "cohort_id": null,
         "as_of": "2026-10-18"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-MIGRATE-05",
+      "statement": "Add `Gate: Full` on line 3 of an active Coordinated plan, following `plan.tmpl.md`; keep its title on line 1 and keep a Lite plan’s `Gate: Lite` on line 1.",
+      "statement_sha256": "aa129f0cbeacf6825c1b8397e2a3dc7e2269bf42a303eb026cfe7a6e88935faf",
+      "home": "references/guides/migrate.md:107",
+      "home_fragment": "Add `Gate: Full` on line 3 of an active Coordinated plan, fo",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "Migration checklist for the retro, history and initiative-view changes.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-19"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-MIGRATE-06",
+      "statement": "Use the `history.tmpl.md` journal form `correction cycle N of 3: <failure> → <correction>; <validation command>: <result>` for new correction records; preserve older `attempt N:` records.",
+      "statement_sha256": "de4c5b670890a78b05cb92845b06c453bc83ddd34ee3e4129e9478c75f1af547",
+      "home": "references/guides/migrate.md:108",
+      "home_fragment": "Use the `history.tmpl.md` journal form `correction cycle N o",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "Migration checklist for the retro, history and initiative-view changes.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-19"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-MIGRATE-07",
+      "statement": "Write lifecycle `At` clocks with seconds, `YYYY-MM-DDTHH:MM:SS[.fff](Z|±HH:MM)`, as `resource-usage.tmpl.md` states; minute-only and space-separated clocks remain unmeasured.",
+      "statement_sha256": "86593306f5e749466ffd792cb7ab29acca2082311e3b1f7753791803220f51de",
+      "home": "references/guides/migrate.md:109",
+      "home_fragment": "Write lifecycle `At` clocks with seconds, `YYYY-MM-DDTHH:MM:",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "Migration checklist for the retro, history and initiative-view changes.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-19"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-MIGRATE-08",
+      "statement": "Use the same `At` clock format in the ledger body of `lite-plan.tmpl.md`; keep an unobserved clock as `n/a`.",
+      "statement_sha256": "01828511d0935429b8368d29420105112ad8ee348bef7f3dea3af0d179506dd0",
+      "home": "references/guides/migrate.md:110",
+      "home_fragment": "Use the same `At` clock format in the ledger body of `lite-p",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "Migration checklist for the retro, history and initiative-view changes.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-19"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-MIGRATE-09",
+      "statement": "Use the updated `retro.tmpl.md` recipes: Attempts accepts both journal forms; Gate accuracy counts distinct sessions over the archive and current history and reports undated headings; Blocked durations excludes State snapshot lines.",
+      "statement_sha256": "9b9c2d5cbe11f501a6b2b0cd290ae16dfcbe2a570d8133dd00119ba6034c89e2",
+      "home": "references/guides/migrate.md:111",
+      "home_fragment": "Use the updated `retro.tmpl.md` recipes: Attempts accepts bo",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "Migration checklist for the retro, history and initiative-view changes.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-19"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-MIGRATE-10",
+      "statement": "Expect lint row 13 WARN lines for dated entries after the newest State snapshot and for undated session headings; these warnings do not become mandatory failures.",
+      "statement_sha256": "b522d5cd71a0a23fde02ea3f2a32a7ba5cd4361f2362b6c63774a386c5f9911b",
+      "home": "references/guides/migrate.md:112",
+      "home_fragment": "Expect lint row 13 WARN lines for dated entries after the ne",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "Migration checklist for the retro, history and initiative-view changes.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-19"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-MIGRATE-11",
+      "statement": "Build an optional `--initiative` page only under an owner request, following the [plan view guide](plan-view.md#initiative-view); it reads the root and one hop of declared sibling workspaces.",
+      "statement_sha256": "e979e386497df9b30511e97a8392736857b8b1a3ec7167788ef1b6c5d48d2e74",
+      "home": "references/guides/migrate.md:113",
+      "home_fragment": "Build an optional `--initiative` page only under an owner re",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "Migration checklist for the retro, history and initiative-view changes.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-19"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-MIGRATE-12",
+      "statement": "Keep the current workspace schema and file formats; this release changes neither, and an existing recorded System One consent keeps its meaning.",
+      "statement_sha256": "25b65ea9e9aac2a5c121d23780471a87193d92a8fac72653ff5b2b7262b8ca81",
+      "home": "references/guides/migrate.md:114",
+      "home_fragment": "Keep the current workspace schema and file formats; this rel",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.1.0",
+        "trigger": "Migration checklist for the retro, history and initiative-view changes.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-19"
       },
       "historical": []
     }
