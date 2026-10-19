@@ -179,7 +179,7 @@ function buildDocument(tree) {
   };
   doc.documentElement = build(tree);
   doc.body = doc.documentElement.querySelector('body');
-  doc.getElementById = (id) => doc.documentElement.querySelector('#' + id);
+  doc.getElementById = (id) => doc.documentElement.querySelector('[id="' + id + '"]');
   doc.querySelector = (s) => doc.documentElement.querySelector(s);
   doc.querySelectorAll = (s) => doc.documentElement.querySelectorAll(s);
   return doc;

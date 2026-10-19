@@ -184,3 +184,13 @@ A plan declares its sibling workspaces in `AGENTS.md`, under `## Sibling workspa
 - `sibling <slug> has no tackle-workspace/5 task-board.md at docs/plans/<name>`, printed once for each sibling
 
 A sibling's files are read only. A Brief cell may name a sibling's brief as `../<name>/tasks/<file>`; a path that leaves the sibling's `tasks/` folder keeps the refusal `brief <path> for task <id> is outside the workspace`.
+
+## Initiative view
+
+- `--initiative` writes one page over the workspace and the siblings it declares, one hop; `--template` stays required, and `--initiative` takes no `--page`, `--map` or `--map-scope`.
+- Members are read only; a sibling's own declaration that names a workspace outside the initiative prints `outside the initiative: <slug>` once on stderr and is not followed.
+- Tasks are keyed `<key>:T-NN`: the root's key is its folder name, and a sibling's key is the slug the root declares for it.
+- A member with no `tackle-workspace/5` board is refused once, the root included, as `refused: sibling <key> has no tackle-workspace/5 task-board.md at docs/plans/<folder>`; a cycle across members is refused as `cycle across workspaces: <a> -> ... -> <a>`.
+- `--initiative --check` prints `view current` or `view stale: <keys>` with the single-page exit codes; its keys cover each member's `task-board.md`, `plan.md`, `AGENTS.md` and each brief its board names.
+- An initiative-view request is its own owner request and the owner's authorization for the script for that request; it does not add or remove scope relative to the single-workspace request.
+- Observed limits: a deep link `#task-<key>:T-NN` does not reopen its task on the initiative page, and a root folder named like a declared sibling slug produces duplicate keys.
