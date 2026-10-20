@@ -421,6 +421,16 @@
       "source": "eval/requirements-base",
       "category": "product",
       "purpose": "Requirements base parsing, delta validation, reconciliation and fold through the shipped script, and the guide's rules."
+    },
+    {
+      "path": "eval/tests/product/validator",
+      "files": [
+        "test_project_validator.py"
+      ],
+      "tests": 8,
+      "source": "eval/validator",
+      "category": "product",
+      "purpose": "The project validator hook: the verify guide's declaration, invocation, output and exit contract, and the example validator run through that invocation."
     }
   ]
 }
