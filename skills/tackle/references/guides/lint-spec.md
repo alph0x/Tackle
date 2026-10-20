@@ -1,6 +1,6 @@
 # Plan lint spec — mechanical checks
 
-This table specifies the 17 mechanical checks; [`scripts/lint.py`](../../scripts/lint.py) holds each row's program and runs it with `sh -c` from the **repo root**: `python3 -I <skill>/scripts/lint.py [--row N] <slug>`, where `<slug>` is the initiative directory name (workspace = `docs/plans/<slug>/`). Each program uses plain sh, grep, sed and awk only. Running it falls under [script consent](../../scripts/README.md#consent). Every row reads only the current workspace layout; an older one is refused with `migrate first` ([forward only](migrate.md#forward-only)).
+This table specifies the 19 mechanical checks; [`scripts/lint.py`](../../scripts/lint.py) holds each row's program and runs it with `sh -c` from the **repo root**: `python3 -I <skill>/scripts/lint.py [--row N] <slug>`, where `<slug>` is the initiative directory name (workspace = `docs/plans/<slug>/`). Each program uses plain sh, grep, sed and awk only. Running it falls under [script consent](../../scripts/README.md#consent). Every row reads only the current workspace layout; an older one is refused with `migrate first` ([forward only](migrate.md#forward-only)).
 
 For Full without equivalent harness automation, use the connected extraction/capture script in
 [full-checks.md](full-checks.md#execute-canonical-lint-faithfully). It compares actual saved script
@@ -19,6 +19,9 @@ bytes before interpreting a row; a successful altered command cannot count as ca
 - Row 14 checks every Complete row, not the first; rows 11 and 14 emit every matching id through the shared Status extractor. Workspaces that are neither active nor selected fail row 14 as sweep WARN, non-gating; active or selected workspaces gate — a missing closure report blocks execution until written or explicitly waived, even for an all-complete selected board.
 - Row 15's date→epoch conversion feature-detects GNU vs BSD `date` exactly as `probe()` does; both flavors cover macOS and Linux hosts.
 - Row 17 reads O-ids only from `**Remains**:` receipt lines (exactly `none`, or `O-NN` ids separated by commas, one per line) and from the newest State snapshot's `Active obligations` line: the first such line under the last `### State snapshot` heading. Reports and `history.md` are read outside code fences, so a fenced example there, prose, an older snapshot and a non-task report never count; the board is read the way rows 2 and 3 read it, fenced rows included. An obligation is any row of a board table headed `Obligation`, and any other board table row whose first cell starts with `O-` or `o-` once leading markup (`*`, `_`, `~`, backticks, brackets, parentheses, `<`, `>`, `#`, `-`, `+`) is removed: that cell must be exactly `O-NN`, so `**O-01**`, `o-01`, `[O-01](#o-01)` and a backticked id are reported as malformed and the row is not registered; `State` and `Reference` are found by header name in the row's own table, and no column is named `Status`, so rows 3, 8, 10, 11, 12 and 14 never read an obligation as a task.
+- Row 18 prints, one per finding: `invalid detail: <T-id> <value>`, `interface brief ready: <T-id>`, `missing ledger: <T-id>`, `double producer: <name> by <T-id> <T-id>…`, `missing producer: <name> in <T-id>`, `wrong producer: <name> in <T-id> names <T-id>, produced by <T-id>`, `consumer without dependency: <name> in <T-id> on <T-id>` (or `(T-NN [sibling])` for a sibling source not in the `Depends on` cell) and `malformed consume: <name> in <T-id>`. A name is the first backtick span of a sub-item and is compared byte for byte, never as code. An `exists` source is a backtick-quoted citation in row 4's form, `path.ext:NN — "fragment"`, or its pinned form `path.ext@<rev>:NN — "fragment"`.
+- Row 19 prints `unknown owner: D-xx T-NN`, `owner brief missing D-xx: T-NN`, `clause not compiled: D-xx C-xx T-NN`, `seal race: C-xx T-NN T-NN` and `stale supersede: D-yy supersedes D-xx (in force: D-zz)`. A brief cites a decision when its text outside fenced code holds the id as a word. A superseded heading that names no successor is not compared.
+- Row 2 also prints `dependency on skipped: <T-id> on <T-id>` (or `on T-NN [sibling]`) and `dead requirement owner: <id>`, reading Status by its header, the backticked ids of the `Traces to` cells in `plan.md` §5 and the `**Lineage**:` lines of open briefs.
 - Row 6 covers `history-archive.md`; the archive's newest entry must not be younger than the active history's oldest.
 - Judgment-only checks (contract churn, quality dimensions, Q-guard…) stay in `decompose-and-lint.md` Step 6.5 — this table holds only what a command can decide.
 
@@ -26,7 +29,7 @@ Lifecycle validity semantics include duplicate starts, duplicate terminals, orph
 | Check | Pass condition |
 |---|---|
 | 1 · Lite shape and unfilled placeholders — no `{{…}}` left outside fenced code blocks in shipped workspace files, `legacy-*/` snapshots skipped; a Focused workspace still on `log.md`, `log-archive.md` or `usage.md` is refused | 0 lines of output |
-| 2 · Task identity and dependencies — every T id, brief path and dependency resolves in the `/5` workspace; mixed identities, absent briefs and an older layout fail | 0 lines of output |
+| 2 · Task identity and dependencies — every T id, brief path and dependency resolves in the `/5` workspace; mixed identities, absent briefs and an older layout fail; an open task that depends on a Skipped task, local or sibling, and a requirement id in `plan.md` §5 whose every tracing task is Skipped with no successor named on an open brief's `**Lineage**:` line also fail | 0 lines of output |
 | 3 · Invalid status vocabulary — the `Status` field in `task-board.md` uses the ten `/5` states, the nine English states and `Waiting on owner` (the field is found by its `Status` header, the fifth data column when no header names it; an emoji in another column does not count); an older board is refused | 0 lines of output |
 | 4 · Malformed/stale citations — every anchored citation, including every citation of a line, passes the anchored-citation drift check; an opened citation without a non-empty, closed quoted fragment is malformed (fragment still on line NN; fix path: the two-phase re-anchor flow in `verify.md` step 0) | 0 lines of output (0 stale) |
 | 5 · Status duplicated outside `task-board.md` — a `Status:` declaration, or a status emoji (incl. ⚪), in `plan.md` or `tasks/`; an older board is refused | 0 lines of output (grep exits 1) |
@@ -42,6 +45,8 @@ Lifecycle validity semantics include duplicate starts, duplicate terminals, orph
 | 15 · Reference-doc staleness — every `reference-docs/*.md` carrying a `captured: YYYY-MM-DD` first-line header is younger than the staleness window (default 14 days; workspace-overridable via `Reference staleness window: N` in the workspace `AGENTS.md`); undated files skip (the header convention lands in `reference-docs-README.tmpl.md`); fix path: re-snapshot from the live source and update `captured:` | 0 lines of output — any line is a **warn** |
 | 16 · Lifecycle validity — exactly one start, at most one legal terminal after it, stable Task/Role, valid Outcome and nonnegative or unknown counters; a positive Attempts count requires task-linked failed correction or one authorized escalation rather than a count label; legacy Point remains readable | 0 lines of output and exit 0; malformed state or unsupported known Attempts prints row16, line and Run ID diagnostics and exits nonzero |
 | 17 · Post-task obligations — every Complete task's report carries a receipt line, `**Remains**: none` or `**Remains**: O-NN[, O-NN…]` (code fences are not read); every `O-NN` cited in a receipt or in the newest State snapshot's `Active obligations` line has a row in the board's obligations table; every `Open` row is named in that snapshot line; a row's state is `Open`, `Discharged` or `Withdrawn`, and a `Discharged` or `Withdrawn` row cites a reference (a decision id, or a report or record path); every row of the table headed `Obligation`, and any row whose first cell starts with `O-`, is an obligation, and a first cell that is not exactly an `O-NN` id, whatever its decoration, is malformed; explicit Lite workspaces guard-skip after row 1 validates their shape; an older board is refused | 0 lines of output |
+| 18 · Brief symbol ledger and detail level — every brief the board names that declares `**Detail**:` has the value `full` or `interface`; an `interface` brief is not `Ready to run`; an open `full` brief carries `**Produces**` and `**Consumes**`; no name has two producers; and every consumed name names its source: a producer that is a transitive ancestor through `Depends on`, a sibling task in its own `Depends on` cell, or an `exists` anchored citation, pinned or not; fenced code is skipped, briefs without `**Detail**:` are not read, and an older board is refused | 0 lines of output |
+| 19 · Decision ownership and supersession chain — every active decision in `decisions.md` that carries an `**Owner**:` or `**Clauses**:` line names an owner on the board, whose brief cites it and, when open at `full` detail, carries each named clause compiled; no two unordered open owners change one clause; and a superseded predecessor names this decision as its successor; decisions without that line are not checked, and an older board is refused | 0 lines of output |
 
 Per citation, row 4 is equivalent to the canonical anchored-citation check (`sed -n 'NNp' path` piped to `grep -Fq "fragment"`), run as one loop over every citation.
 
@@ -54,17 +59,17 @@ The release sweep and the self-lint gates are documented in the repository's
 
 ## Score line
 
-Run all 17 rows. The script's `lint: K/17 rows silent` line counts silent rows and is not this score
+Run all 19 rows. The script's `lint: K/19 rows silent` line counts silent rows and is not this score
 line: the agent computes the numerator and denominator from the observed row results; this **agent-computed summary** closes the lint digest with exactly:
 
 `lint: N/M checks passed`
 
-- **M** = rows run (17 for this table; more if the workspace adds rows).
+- **M** = rows run (19 for this table; more if the workspace adds rows).
 - **N** = rows whose pass condition held.
 
 - Row 8 filters unmatched board/task globs before scanning; no boards means no board-based collision finding. Park seeds separately (`docs/seeds/`).
 - Discussing scanned symbols inside workspaces (status glyphs, placeholder braces): use U+XXXX prose notation and `$'\uXXXX'` shell escapes so rows 1/3/5 don't self-flag the discussion.
-- Rows 8, 13 and 15 are warn-severity: they lower N and are reported, but block nothing by themselves; a failure in rows 1–7, 9–12, 14, 16 and 17 blocks execution until fixed or explicitly waived by the user.
+- Rows 8, 13 and 15 are warn-severity: they lower N and are reported, but block nothing by themselves; a failure in rows 1–7, 9–12, 14 and 16–19 blocks execution until fixed or explicitly waived by the user.
 - This score line is what a human skims in a pulse or handoff for readiness (the pulse digest carries it); a lint digest without it is incomplete.
 
 ## Workspace format
@@ -81,7 +86,7 @@ or be added by a read-only audit. Unmarked workspaces receive the Full checks.
 
 Row 1 requires Focused plan/history/resource usage, refuses `log.md`, `log-archive.md` or `usage.md` with `migrate first`, and rejects both task-board.md and board.md, any `tasks/` or legacy `points/` entry
 (including dangling symlinks), and a Full Task or legacy Point decomposition heading outside fences. Run it before accepting
-the checked Lite skips in rows 2, 3, 5, 9, 10, 11, 12, 14 and 17. All seventeen commands still execute;
+the checked Lite skips in rows 2, 3, 5, 9, 10, 11, 12, 14, 17, 18 and 19. All nineteen commands still execute;
 row 5 retains its empty-output exit 1. A guard-skipped row alone never approves a workspace.
 Shared placeholders, citations in plan/optional reference, seals, chronology and lifecycle remain
 mandatory. Optional AGENTS overrides default when absent; read errors are not PASS. Row 8 keeps

@@ -64,7 +64,7 @@ tasks and stops before source execution.`
    [decompose-and-lint.md](decompose-and-lint.md#step-6--decompose-into-loop-runnable-points-and-delivery-obligations),
    Step 6 and [Step 6.6](decompose-and-lint.md#step-66--right-size-the-plan).
 6. **Lint.** Run every row of `lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py), which the plan request
-   authorizes ([script consent](../../scripts/README.md#consent)) — the 17 mechanical checks that decide
+   authorizes ([script consent](../../scripts/README.md#consent)) — the 19 mechanical checks that decide
    wiring, grounding, statuses, citations, seals and collisions — and report the agent-computed
    summary. Structural lint alone does not establish readiness: a passing board can still hold a
    Draft task or an unanswered product question, reported as a separate blocker, not a lint finding.

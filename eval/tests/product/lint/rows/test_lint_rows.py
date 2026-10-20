@@ -82,6 +82,10 @@ def brief(identity, kind='standard', fields=True, effort='- **Effort**: low', de
         lines.append(line)
     text = '\n'.join(lines).replace('{{D-xx}}', 'D-01')
     text = re.sub(r'\{\{.*?\}\}', 'x', text, flags=re.S)
+    # A generated brief declares full detail and an empty symbol ledger, so rows 18 and 19 see a clean adopter.
+    text = text.replace('- **Detail**: x\n', '- **Detail**: full\n')
+    text = re.sub(r'- \*\*Consumes\*\*: x\n(?:  - .*\n)+', '- **Consumes**: none\n', text)
+    text = re.sub(r'- \*\*Produces\*\*: x\n(?:  - .*\n)+', '- **Produces**: none\n', text)
     if clause_sha:
         text = text.replace('- **Inputs**: x.', '- **Inputs**: fixture sha256 `' + '0' * 64 + '`.')
     return text
@@ -114,6 +118,10 @@ GENERATED = {
                 .replace('- **Type**: experiment.', '- **Type**: experiment · **Metric:** m · **Threshold:** t · **Rounds**:')},
     'fail-seal-unresolved': {'tasks/T-02.md': lambda: brief('T-02', depends='T-01', clause_sha='2' * 64, clause_id='C09')},
     'fail-seal-malformed': {'tasks/T-02.md': lambda: brief('T-02', depends='T-01', clause_sha='ABC', clause_id='C02')},
+    'fail-18': {'tasks/{}-{:02d}.md'.format('T', 2): lambda: brief('{}-{:02d}'.format('T', 2), kind='experiment', depends='{}-{:02d}'.format('T', 1), scope='src/demo.txt')
+                .replace('- **Detail**: full', '- **Detail**: someday')},
+    'fail-19': {'decisions.md': lambda: (FIXTURES / 'pass-full/docs/plans/demo/decisions.md').read_text(encoding='utf-8')
+                + '\n## {}-{:02d} · Owned · ✅ active · 2026-10-20, session 1\n\n**Decision**: x\n**Supersedes**: none · **From**: —\n**Owner**: T-0099\n'.format('D', 3)},
     'fail-2d': {'plan.md': lambda: (FIXTURES / 'pass-full/docs/plans/demo/plan.md').read_text(encoding='utf-8')
                                  + '| T-0042 | Planted missing task |\n'},
 }
@@ -127,6 +135,8 @@ FAILS = [
     ('fail-2b', 'pass-full', 2, 'mixed board identity: P-07', 'FAIL'),
     ('fail-2c', 'pass-full', 2, 'unresolved: T-09', 'FAIL'),
     ('fail-2d', 'pass-full', 2, 'missing board task: T-0042', 'FAIL'),
+    ('fail-18', 'pass-full', 18, 'invalid detail: {}-{:02d} someday'.format('T', 2), 'FAIL'),
+    ('fail-19', 'pass-full', 19, 'unknown owner: {}-{:02d} T-0099'.format('D', 3), 'FAIL'),
     ('fail-3', 'pass-full', 3, 'bad status', 'FAIL'),
     ('fail-4', 'pass-full', 4, 'malformed', 'FAIL'),
     ('fail-4b', 'pass-full', 4, 'stale: decisions.md:1', 'FAIL'),
@@ -234,7 +244,7 @@ class LintRowTests(unittest.TestCase):
         for awk_name, awk in awk_variants():
             for fixture, base in PASSES:
                 root = self.workspace(fixture, base)
-                for number in range(1, 18):
+                for number in range(1, 20):
                     with self.subTest(awk=awk_name, fixture=fixture, row=number):
                         verdict, child = run_row(number, root, awk)
                         self.assertEqual(verdict, 'PASS', (child.returncode, child.stdout[:400], child.stderr[:400]))
@@ -249,7 +259,7 @@ class LintRowTests(unittest.TestCase):
                     self.assertIn(expected, child.stdout.decode())
 
     def test_every_row_has_a_planted_defect(self):
-        self.assertEqual({number for _, _, number, _, _ in FAILS}, set(range(1, 18)))
+        self.assertEqual({number for _, _, number, _, _ in FAILS}, set(range(1, 20)))
         self.assertTrue(all(wanted == ('WARN' if number in WARN_ROWS else wanted) for _, _, number, _, wanted in FAILS))
 
     def test_template_faithful_brief_passes_row_2(self):
@@ -279,7 +289,7 @@ class LintRowTests(unittest.TestCase):
         blocking = set()
         for low, high in re.findall(r'(\d+)(?:–(\d+))?', line.split('a failure in rows', 1)[1].split('blocks', 1)[0]):
             blocking.update(range(int(low), int(high or low) + 1))
-        self.assertEqual(blocking, set(range(1, 18)) - WARN_ROWS)
+        self.assertEqual(blocking, set(range(1, 20)) - WARN_ROWS)
 
     def test_seal_integrity_command(self):
         command = seal_command().replace('<slug>', SLUG)

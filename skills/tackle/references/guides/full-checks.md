@@ -82,9 +82,9 @@ declared selectors establishes whether those bytes cover the obligation.
 
 ## Execute canonical lint faithfully
 
-Run all 17 rows during PLAN before Ready with [`scripts/lint.py`](../../scripts/lint.py), which an
+Run all 19 rows during PLAN before Ready with [`scripts/lint.py`](../../scripts/lint.py), which an
 explicit plan or run request authorizes ([script consent](../../scripts/README.md#consent)):
-`python3 -I <skill>/scripts/lint.py <slug>` from the repository root runs rows 1-17 in order, and
+`python3 -I <skill>/scripts/lint.py <slug>` from the repository root runs rows 1-19 in order, and
 `--row N` runs one row, passing its stdout, stderr and exit through unchanged. Each row's program is
 that file's `ROW_NN` constant with only a validated single-component slug (`[a-z0-9][a-z0-9.-]*`)
 substituted for `<slug>`. For a captured record, save the canonical source snapshot/hash,
@@ -103,7 +103,7 @@ For an existing orchestrator, the two pure Python functions `canonical_rows` and
 [`scripts/lint_runner.py`](../../scripts/lint_runner.py) provide exact extraction and row
 interpretation. Save the extracted UTF-8 bytes verbatim as each script; capture that saved script
 with the capture script above. Supply the canonical source hash recorded at preflight, not a hash silently
-recomputed after a change. Check that all 17 returned rows are scheduled before initial execution.
+recomputed after a change. Check that all 19 returned rows are scheduled before initial execution.
 Each result carries `row`, `command_sha256`, `source_sha256`, raw check record path and verdict;
 build the index from those records. Equivalent harness automation is valid. Importing or running
 these functions needs the owner's explicit authorization.
@@ -118,7 +118,7 @@ changed`. An optional `capture_script` names a copy of it inside cwd, held to th
 scripts before changing that pin. The workspace must already exist. Legacy `destination`-only
 configurations are still accepted as an explicit workspace location; newly generated
 configurations name workspace. Optional `rows` selects
-affected checks; omission runs all 17. Initial PLAN still requires all 17. Include citation targets
+affected checks; omission runs all 19. Initial PLAN still requires all 19. Include citation targets
 and other actual dependencies in selectors. Helpers and outputs stay inside cwd. The script extracts, saves, captures and verifies
 each command itself; never transcribe row programs by hand into another script. A custom
 composition stays possible, but compare its actual captured script bytes with the extracted
@@ -173,17 +173,17 @@ Use this dependency map conservatively when selecting affected lint rows:
 | A Complete task's report content (its `**Remains**:` line) | 17 |
 | Workspace AGENTS | 13, 15 |
 | Reference-doc membership/content, current time crossing freshness window | 15 |
-| Lint source, command interpreter/tools or policy relevant to its execution | All affected rows; all 17 if impact cannot be established |
+| Lint source, command interpreter/tools or policy relevant to its execution | All affected rows; all 19 if impact cannot be established |
 
 Union dependencies; one edit can match several rows. Track glob membership, citation target files
 and time as well as hashes of known files. Never reuse row 15 without a verified expiry boundary;
 rerun this inexpensive row when freshness is uncertain. Unknown dependencies invalidate the
 potentially affected records. Product checks have their own input map.
 
-The final index still accounts for all 17 canonical rows, distinguishing fresh executions from
-reused current records; report `lint: N/17 checks passed` from their actual pass conditions
+The final index still accounts for all 19 canonical rows, distinguishing fresh executions from
+reused current records; report `lint: N/19 checks passed` from their actual pass conditions
 (and any additional workspace rows in the denominator). This is a current coverage summary;
-also report how many rows were executed versus reused. A selection of custom checks is not 17/17.
+also report how many rows were executed versus reused. A selection of custom checks is not 19/19.
 The release sweep still executes every prescribed row and gate; this reuse rule does not waive it.
 
 Finish with complete only when all mandatory obligations have current accessible evidence;
@@ -195,5 +195,5 @@ merely because a new heading or session begins.
 
 Explicit Focused applicability uses the first-line marker and shape checks in `lint-spec.md`, not
 absence of Coordinated files. Include plan.md in selectors for every row: route changes invalidate all
-applicability records. During release, execute all seventeen commands even for Focused and accept
+applicability records. During release, execute all nineteen commands even for Focused and accept
 Coordinated-only checked skips only after row 1 passes. This does not waive selected global acceptance.
