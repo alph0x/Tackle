@@ -48,7 +48,11 @@ def scaffold_names():
 
 def fill(text):
     text = text.replace('{{YYYY-MM-DD}}', '2026-09-24')
-    return re.sub(r'\{\{.*?\}\}', 'x', text, flags=re.S)
+    text = re.sub(r'\{\{.*?\}\}', 'x', text, flags=re.S)
+    # A filled brief declares full detail and an empty symbol ledger, as a clean adopter of rows 18 and 19.
+    text = text.replace('- **Detail**: x\n', '- **Detail**: full\n')
+    text = re.sub(r'- \*\*Consumes\*\*: x\n(?:  - .*\n)+', '- **Consumes**: none\n', text)
+    return re.sub(r'- \*\*Produces\*\*: x\n(?:  - .*\n)+', '- **Produces**: none\n', text)
 
 
 def compiled_brief(identity='T-01', clause=None):
@@ -89,7 +93,7 @@ def clause_bytes(contract, cid):
 def lint(root):
     source = (REF.parent / 'scripts/lint.py').read_bytes()
     verdicts = {}
-    for number in range(1, 18):
+    for number in range(1, 20):
         child = run_lint_row(root, number, slug=SLUG, source=source, timeout=60)
         record = dict(child_exit=child.returncode, timeout=False, launch_error=None,
                       signal=(-child.returncode if child.returncode < 0 else None), inputs_stable=True, artifacts_present=True)

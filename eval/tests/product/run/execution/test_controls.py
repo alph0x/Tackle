@@ -111,7 +111,7 @@ class CanonicalTests(unittest.TestCase):
         r=dict(child_exit=code,timeout=False,launch_error=None,signal=None,inputs_stable=True,artifacts_present=True)
         r.update(changes);return NS['lint_verdict'](row,r,out,err)
     def test_all_literal_cells_preserved(self):
-        rows=self.rows();self.assertEqual(len(rows),17)
+        rows=self.rows();self.assertEqual(len(rows),19)
         for node in ast.parse(CANONICAL.decode()).body:
             if not (isinstance(node,ast.Assign) and re.fullmatch(r'ROW_[0-9]{2}',node.targets[0].id)):continue
             # Independent expected bytes: the stored program with only the slug substituted.

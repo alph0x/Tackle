@@ -187,7 +187,7 @@ class AdoptionTests(unittest.TestCase):
     def test_a_9_0_1_workspace_fails_only_row_17_and_the_checklist_steps_make_it_pass_every_row(self):
         root = self.nine_zero_one()
         before = self.run_rows(root)
-        self.assertEqual(sorted(before), list(range(1, 18)))
+        self.assertEqual(sorted(before), list(range(1, 20)))
         self.assertEqual({number for number, (verdict, _) in before.items() if verdict != 'PASS'}, {17}, before)
         self.assertEqual(len(before[17][1]), 1, before[17])
         self.assertIn('T-A', before[17][1][0])
@@ -210,7 +210,7 @@ class AdoptionTests(unittest.TestCase):
         agents.write_text(agents.read_text(encoding='utf-8') + '\n' + policy + '\n', encoding='utf-8')
 
         after = self.run_rows(root)
-        self.assertEqual({number: verdict for number, (verdict, _) in after.items()}, {number: 'PASS' for number in range(1, 18)}, after)
+        self.assertEqual({number: verdict for number, (verdict, _) in after.items()}, {number: 'PASS' for number in range(1, 20)}, after)
         self.assertTrue(all(lines == [] for _, lines in after.values()), after)
 
     def test_an_open_obligation_is_carried_into_the_table_the_snapshot_and_the_receipt(self):
@@ -246,7 +246,7 @@ class AdoptionTests(unittest.TestCase):
                            '### State snapshot (record current state when appending; never edit an older snapshot)\n'
                            '- Task state: T-A Complete; T-B Draft.\n- Active obligations: O-01\n', encoding='utf-8')
         after = self.run_rows(root)
-        self.assertEqual({number: verdict for number, (verdict, _) in after.items()}, {number: 'PASS' for number in range(1, 18)}, after)
+        self.assertEqual({number: verdict for number, (verdict, _) in after.items()}, {number: 'PASS' for number in range(1, 20)}, after)
         self.assertTrue(all(lines == [] for _, lines in after.values()), after)
         self.assertTrue(history.read_text(encoding='utf-8').startswith(older))
 

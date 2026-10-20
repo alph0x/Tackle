@@ -61,7 +61,7 @@
       "unit_sha256": "1a54bdf402a4fec935c0ea3bef5baf038bf6f8ddebb3f788dc7bc732234f71de",
       "disposition": "reworded",
       "destination": "MAINTAINING.md",
-      "note": "The release sweep is a direct, ordered procedure: (1) record the explicit release scope and run self-lint gates 1–9 below; (2) run catalog integrity checks over `eval/scenarios/` and answer-sheet roots; (3) run rows 1–17 over every workspace; (4) run each initiative's done-signal; (5) apply the release-scope rule: every active or selected workspace must pass its mandatory rows and done-signal.",
+      "note": "The release sweep is a direct, ordered procedure: (1) record the explicit release scope and run self-lint gates 1–9 below; (2) run catalog integrity checks over `eval/scenarios/` and answer-sheet roots; (3) run rows 1–19 over every workspace; (4) run each initiative's done-signal; (5) apply the release-scope rule: every active or selected workspace must pass its mandatory rows and done-signal.",
       "destination_unit_sha256": null
     },
     {
@@ -3305,7 +3305,7 @@
       "unit_sha256": "67fc903a87d69a822836aac7d233f8e2949158f11830d6dbca17390a71a88669",
       "disposition": "reworded",
       "destination": "references/guides/plan-card.md",
-      "note": "**Lint.** Run every row of `lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py), which the plan request authorizes ([script consent](../../scripts/README.md#consent)) — the 17 mechanical checks that decide wiring, grounding, statuses, citations, seals and collisions — and report the agent-computed summary.",
+      "note": "**Lint.** Run every row of `lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py), which the plan request authorizes ([script consent](../../scripts/README.md#consent)) — the 19 mechanical checks that decide wiring, grounding, statuses, citations, seals and collisions — and report the agent-computed summary.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -4468,7 +4468,7 @@
       "unit_sha256": "4b2a7d9d6424f8a36079661fa12f216520c3e0e659e8ee10ca49ca198716ff5e",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 2 · Task identity and dependencies — every T id, brief path and dependency resolves in the `/5` workspace; mixed identities, absent briefs and an older layout fail | 0 lines of output |",
+      "note": "| 2 · Task identity and dependencies — every T id, brief path and dependency resolves in the `/5` workspace; mixed identities, absent briefs and an older layout fail; an open task that depends on a Skipped task, local or sibling, and a requirement id in `plan.md` §5 whose every tracing task is Skipped with no successor named on an open brief's `**Lineage**:` line also fail | 0 lines of output |",
       "destination_unit_sha256": null
     },
     {
@@ -5483,7 +5483,7 @@
       "unit_sha256": "3e1250fc9d565445e7fbccf24c415a4e943e8e4cd734edea95acc5e4402b8057",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 2 · Task identity and dependencies — every T id, brief path and dependency resolves in the `/5` workspace; mixed identities, absent briefs and an older layout fail | 0 lines of output |",
+      "note": "| 2 · Task identity and dependencies — every T id, brief path and dependency resolves in the `/5` workspace; mixed identities, absent briefs and an older layout fail; an open task that depends on a Skipped task, local or sibling, and a requirement id in `plan.md` §5 whose every tracing task is Skipped with no successor named on an open brief's `**Lineage**:` line also fail | 0 lines of output |",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -6585,7 +6585,7 @@
       "unit_sha256": "1a54bdf402a4fec935c0ea3bef5baf038bf6f8ddebb3f788dc7bc732234f71de",
       "disposition": "reworded",
       "destination": "MAINTAINING.md",
-      "note": "The release sweep is a direct, ordered procedure: (1) record the explicit release scope and run self-lint gates 1–9 below; (2) run catalog integrity checks over `eval/scenarios/` and answer-sheet roots; (3) run rows 1–17 over every workspace; (4) run each initiative's done-signal; (5) apply the release-scope rule: every active or selected workspace must pass its mandatory rows and done-signal.",
+      "note": "The release sweep is a direct, ordered procedure: (1) record the explicit release scope and run self-lint gates 1–9 below; (2) run catalog integrity checks over `eval/scenarios/` and answer-sheet roots; (3) run rows 1–19 over every workspace; (4) run each initiative's done-signal; (5) apply the release-scope rule: every active or selected workspace must pass its mandatory rows and done-signal.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -6600,7 +6600,7 @@
       "unit_sha256": "f5b060ffe3d3c9a3963b416d49575e5675ce935739391b3d463520f52b9ded70",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "Run all 17 rows.",
+      "note": "Run all 19 rows.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -6615,7 +6615,7 @@
       "unit_sha256": "f027b0486830190455b39b11a9594c5b71784b866489463f6abf8332ecce1ad5",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "**M** = rows run (17 for this table; more if the workspace adds rows).",
+      "note": "**M** = rows run (19 for this table; more if the workspace adds rows).",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -6630,7 +6630,7 @@
       "unit_sha256": "190adfaa4f0c584c29099a90baa0cd8e87ad554726044ce003f8b46430205e43",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "Rows 8, 13 and 15 are warn-severity: they lower N and are reported, but block nothing by themselves; a failure in rows 1–7, 9–12, 14, 16 and 17 blocks execution until fixed or explicitly waived by the user.",
+      "note": "Rows 8, 13 and 15 are warn-severity: they lower N and are reported, but block nothing by themselves; a failure in rows 1–7, 9–12, 14 and 16–19 blocks execution until fixed or explicitly waived by the user.",
       "destination_unit_sha256": null
     },
     {
@@ -6639,7 +6639,7 @@
       "unit_sha256": "7a4bb2778482de576661b5720a171d56f2e90c25cf686931ddafd77e1077bc5d",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "Run it before accepting the checked Lite skips in rows 2, 3, 5, 9, 10, 11, 12, 14 and 17.",
+      "note": "Run it before accepting the checked Lite skips in rows 2, 3, 5, 9, 10, 11, 12, 14, 17, 18 and 19.",
       "destination_unit_sha256": null
     },
     {
@@ -6648,7 +6648,7 @@
       "unit_sha256": "d66feeed9b26d4afdaf9c526fbbfaa0fe7866004efa3846f0a60f57c76bc2bb0",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "All seventeen commands still execute; row 5 retains its empty-output exit 1.",
+      "note": "All nineteen commands still execute; row 5 retains its empty-output exit 1.",
       "destination_unit_sha256": null
     },
     {
@@ -6666,7 +6666,7 @@
       "unit_sha256": "a24ab0eeaa64730e11e976de7e1d9ba6f21732c8ec3702a8e5fc910f475373a5",
       "disposition": "reworded",
       "destination": "references/guides/plan-card.md",
-      "note": "**Lint.** Run every row of `lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py), which the plan request authorizes ([script consent](../../scripts/README.md#consent)) — the 17 mechanical checks that decide wiring, grounding, statuses, citations, seals and collisions — and report the agent-computed summary.",
+      "note": "**Lint.** Run every row of `lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py), which the plan request authorizes ([script consent](../../scripts/README.md#consent)) — the 19 mechanical checks that decide wiring, grounding, statuses, citations, seals and collisions — and report the agent-computed summary.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -6714,7 +6714,7 @@
       "unit_sha256": "f869ce87836fc3351dc2aca5753581d7d0b724bc914f28488ad74a893dab96a3",
       "disposition": "reworded",
       "destination": "references/guides/scaffold.md",
-      "note": "After completing the brief and core files, run all 17 direct lint rows in `lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py), which the plan request authorizes ([script consent](../../scripts/README.md#consent)), before any PLAN handoff, even when a task stays Draft or a product question is unanswered.",
+      "note": "After completing the brief and core files, run all 19 direct lint rows in `lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py), which the plan request authorizes ([script consent](../../scripts/README.md#consent)), before any PLAN handoff, even when a task stays Draft or a product question is unanswered.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -7274,7 +7274,7 @@
       "unit_sha256": "64ae6dc5f3c28df848ffad35859422d57276de00f9e2237e5e83890a036f75e5",
       "disposition": "reworded",
       "destination": "MAINTAINING.md",
-      "note": "The release sweep is a direct, ordered procedure: (1) record the explicit release scope and run self-lint gates 1–9 below; (2) run catalog integrity checks over `eval/scenarios/` and answer-sheet roots; (3) run rows 1–17 over every workspace; (4) run each initiative's done-signal; (5) apply the release-scope rule: every active or selected workspace must pass its mandatory rows and done-signal.",
+      "note": "The release sweep is a direct, ordered procedure: (1) record the explicit release scope and run self-lint gates 1–9 below; (2) run catalog integrity checks over `eval/scenarios/` and answer-sheet roots; (3) run rows 1–19 over every workspace; (4) run each initiative's done-signal; (5) apply the release-scope rule: every active or selected workspace must pass its mandatory rows and done-signal.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -7454,7 +7454,7 @@
       "unit_sha256": "0ed6a9919b29164172cb6d0763fd2503660ed66a6e6c8f432c22a19af7910a6b",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 2 · Task identity and dependencies — every T id, brief path and dependency resolves in the `/5` workspace; mixed identities, absent briefs and an older layout fail | 0 lines of output |",
+      "note": "| 2 · Task identity and dependencies — every T id, brief path and dependency resolves in the `/5` workspace; mixed identities, absent briefs and an older layout fail; an open task that depends on a Skipped task, local or sibling, and a requirement id in `plan.md` §5 whose every tracing task is Skipped with no successor named on an open brief's `**Lineage**:` line also fail | 0 lines of output |",
       "destination_unit_sha256": null
     },
     {
@@ -9392,7 +9392,7 @@
       "unit_sha256": "f1fe81548f935a952e1c02a5f8e2927793fd2ee6c85728c19c63729b2231b0ee",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/lint_runner.py",
-      "note": "import ast import hashlib import re from pathlib import Path import json import subprocess import sys import tempfile def canonical_rows(source, expected_sha256, slug): \"\"\"Compile the row programs that scripts/lint.py holds as ROW_NN constants, without running it.\"\"\" if hashlib.sha256(source).hexdigest() != expected_sha256: raise ValueError('canonical source revision changed') if not re.fullmatch(r'[a-z0-9][a-z0-9.-]*', slug): raise ValueError('invalid slug') try: tree = ast.parse(source.decode('utf-8')) except SyntaxError: raise ValueError('malformed row source') from None rows = {} for node in tree.body: if not (isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name) and re.fullmatch(r'ROW_[0-9]+', node.targets[0].id)): continue number = int(node.targets[0].id[4:]) if number in rows or not isinstance(node.value, ast.Constant) or type(node.value.value) is not str: raise ValueError('duplicate or malformed row') command = node.value.value.replace('<slug>', slug).encode('utf-8') rows[number] = dict(command=command, command_sha256=hashlib.sha256(command).hexdigest()) if sorted(rows) != list(range(1, 18)): raise ValueError('expected exactly rows 1 through 17') return rows def lint_verdict(row, record, stdout, stderr): if row not in range(1, 18): raise ValueError('unknown row') code = record['child_exit'] if type(code) is not int or any(type(record.get(key)) is not bool for key in ('timeout', 'inputs_stable', 'artifacts_present')): return 'ERROR' allowed = (0, 1) if row in (5, 6, 11, 15, 16) else (0,) if (record['timeout'] or record['launch_error'] or record['signal'] is not None or stderr or code not in allowed or not record['inputs_stable'] or not record['artifacts_present']): return 'ERROR' if stdout: return 'WARN' if row in (8, 13, 15) else 'FAIL' if (row == 5 and code != 1) or (row != 5 and row != 15 and code != 0): return 'ERROR' return 'PASS' def captured_lint_verdict(source, expected_sha256, slug, row, script, record, observation, capture_program=None): try: if capture_program is not None and record.get('program') != capture_program: return 'ERROR' if (observation / 'retired.json').exists() or observation.name.startswith('.pending-'): return 'ERROR' if type(record.get('accepted')) is not bool: return 'ERROR' expected = canonical_rows(source, expected_sha256, slug)[row]['command'] if record['argv'] != ['sh', script]: return 'ERROR' digest = record['inputs_before'][script] if not re.fullmatch(r'[0-9a-f]{64}', digest) or record['inputs_after'][script] != digest: return 'ERROR' actual = (observation / 'blobs' / digest).read_bytes() if hashlib.sha256(actual).hexdigest() != digest or actual not in (expected, expected + b'\\n'): return 'ERROR' required = set(record.get('prior_objects', [])) for key in ('inputs_before', 'inputs_after', 'artifacts', 'prior_records'): required.update(record.get(key, {}).values()) for fingerprint in required: if not re.fullmatch(r'[0-9a-f]{64}', fingerprint): return 'ERROR' if hashlib.sha256((observation / 'blobs' / fingerprint).read_bytes()).hexdigest() != fingerprint: return 'ERROR' streams = [(observation / name).read_bytes() for name in ['stdout.bin', 'stderr.bin']] for name, data in zip(['stdout.bin', 'stderr.bin'], streams): if hashlib.sha256(data).hexdigest() != record['streams'][name]: return 'ERROR' return lint_verdict(row, record, *streams) except (KeyError, OSError, ValueError, TypeError): return 'ERROR' def run_lint(config_path): root = Path.cwd().resolve() trusted_capture_sha256 = '3b0aaef26047e779c96735aa612858903db922c9e6921ed5a4d408aeaa304aea' trusted_lint_sha256 = '9737e1872d2d43c0f9a6dde2ff401d67b142579770d98eadbedca1e2db546eb9' def local(name): path = (root / name).resolve() path.relative_to(root) return path config = json.loads(local(config_path).read_text()) if 'source' in config or 'source_sha256' in config: raise ValueError('the lint source is the pinned lint.py beside the runner; remove source and source_sha256 from the configuration') source = Path(__file__).resolve().with_name('lint.py').read_bytes() if hashlib.sha256(source).hexdigest() != trusted_lint_sha256: raise ValueError('lint source revision changed') rows = canonical_rows(source, trusted_lint_sha256, config['slug']) if 'capture_script' in config: capture_script = local(config['capture_script']) else: capture_script = Path(__file__).resolve().with_name('capture.py') if hashlib.sha256(capture_script.read_bytes().rstrip(b'\\n')).hexdigest() != trusted_capture_sha256: raise ValueError('capture script revision changed') selected = config.get('rows', list(rows)) if not selected or len(set(selected)) != len(selected) or any(n not in rows for n in selected): raise ValueError('invalid selected rows') if 'workspace' in config: workspace = local(config['workspace']).resolve() if not workspace.is_dir(): raise ValueError('authorized workspace must already exist') else: workspace = local(config['destination']).resolve() workspace.mkdir(parents=True, exist_ok=True) destination = workspace / ('verification-records' if (workspace / 'task-board.md').is_file() else 'evidence') destination.resolve().relative_to(workspace) destination.mkdir(parents=True, exist_ok=True) batch = Path(tempfile.mkdtemp(prefix='lint-', dir=destination)) (batch / 'lint.py').write_bytes(source) selectors = list(config['selectors']) for path in [config_path, batch / 'lint.py', __file__, capture_script]: resolved = (root / path).resolve() if root in resolved.parents: selectors.append(dict(glob=str(resolved.relative_to(root)), required=True)) programs = {} for label, path in (('lint_runner', Path(__file__)), ('capture', capture_script)): resolved = (root / path).resolve() if root not in resolved.parents: programs[label] = dict(path=str(resolved), sha256=hashlib.sha256(resolved.read_bytes()).hexdigest()) results = {} for number in selected: script_path = batch / ('row-%02d.sh' % number) script_path.write_bytes(rows[number]['command']) script = str(script_path.relative_to(root)) spec = dict(workspace=str(workspace.relative_to(root)), argv=['sh', script], selectors=selectors, artifacts=[], destination=str((batch / ('row-%02d' % number)).relative_to(root)), timeout_seconds=config['timeout_seconds']) spec_path = batch / ('row-%02d.json' % number) spec_path.write_text(json.dumps(spec, indent=2)) result = subprocess.run([sys.executable, '-I', str(capture_script), str(spec_path)], cwd=root, capture_output=True) (batch / ('capture-%02d.stdout' % number)).write_bytes(result.stdout) (batch / ('capture-%02d.stderr' % number)).write_bytes(result.stderr) observation = None verdict = 'ERROR' try: if not result.stdout.strip(): raise ValueError('missing capture receipt') receipt = local(result.stdout.decode().strip()) receipt.relative_to(batch) observation = receipt.parent record = json.loads((observation / 'result.json').read_text()) if result.returncode in (0, 1) and not result.stderr: verdict = captured_lint_verdict(source, trusted_lint_sha256, config['slug'], number, script, record, observation, programs.get('capture')) except (OSError, ValueError, UnicodeError): pass results[number] = dict(row=number, source_sha256=trusted_lint_sha256, command_sha256=rows[number]['command_sha256'], verdict=verdict, capture_exit=result.returncode, observation=str(observation.relative_to(root)) if observation else None) summary = dict(rows=results, total=len(results), passed=sum(r['verdict'] == 'PASS' for r in results.values()), complete=len(results) == 17 and all(r['verdict'] in ('PASS', 'WARN') for r in results.values())) if programs: summary['programs'] = programs summary_path = batch / 'summary.json' summary_path.write_text(json.dumps(summary, indent=2)) print(summary_path) return all(r['verdict'] in ('PASS', 'WARN') for r in results.values()) if __name__ == '__main__': raise SystemExit(0 if run_lint(sys.argv[1]) else 1)",
+      "note": "import ast import hashlib import re from pathlib import Path import json import subprocess import sys import tempfile def canonical_rows(source, expected_sha256, slug): \"\"\"Compile the row programs that scripts/lint.py holds as ROW_NN constants, without running it.\"\"\" if hashlib.sha256(source).hexdigest() != expected_sha256: raise ValueError('canonical source revision changed') if not re.fullmatch(r'[a-z0-9][a-z0-9.-]*', slug): raise ValueError('invalid slug') try: tree = ast.parse(source.decode('utf-8')) except SyntaxError: raise ValueError('malformed row source') from None rows = {} for node in tree.body: if not (isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name) and re.fullmatch(r'ROW_[0-9]+', node.targets[0].id)): continue number = int(node.targets[0].id[4:]) if number in rows or not isinstance(node.value, ast.Constant) or type(node.value.value) is not str: raise ValueError('duplicate or malformed row') command = node.value.value.replace('<slug>', slug).encode('utf-8') rows[number] = dict(command=command, command_sha256=hashlib.sha256(command).hexdigest()) if sorted(rows) != list(range(1, 20)): raise ValueError('expected exactly rows 1 through 19') return rows def lint_verdict(row, record, stdout, stderr): if row not in range(1, 20): raise ValueError('unknown row') code = record['child_exit'] if type(code) is not int or any(type(record.get(key)) is not bool for key in ('timeout', 'inputs_stable', 'artifacts_present')): return 'ERROR' allowed = (0, 1) if row in (5, 6, 11, 15, 16) else (0,) if (record['timeout'] or record['launch_error'] or record['signal'] is not None or stderr or code not in allowed or not record['inputs_stable'] or not record['artifacts_present']): return 'ERROR' if stdout: return 'WARN' if row in (8, 13, 15) else 'FAIL' if (row == 5 and code != 1) or (row != 5 and row != 15 and code != 0): return 'ERROR' return 'PASS' def captured_lint_verdict(source, expected_sha256, slug, row, script, record, observation, capture_program=None): try: if capture_program is not None and record.get('program') != capture_program: return 'ERROR' if (observation / 'retired.json').exists() or observation.name.startswith('.pending-'): return 'ERROR' if type(record.get('accepted')) is not bool: return 'ERROR' expected = canonical_rows(source, expected_sha256, slug)[row]['command'] if record['argv'] != ['sh', script]: return 'ERROR' digest = record['inputs_before'][script] if not re.fullmatch(r'[0-9a-f]{64}', digest) or record['inputs_after'][script] != digest: return 'ERROR' actual = (observation / 'blobs' / digest).read_bytes() if hashlib.sha256(actual).hexdigest() != digest or actual not in (expected, expected + b'\\n'): return 'ERROR' required = set(record.get('prior_objects', [])) for key in ('inputs_before', 'inputs_after', 'artifacts', 'prior_records'): required.update(record.get(key, {}).values()) for fingerprint in required: if not re.fullmatch(r'[0-9a-f]{64}', fingerprint): return 'ERROR' if hashlib.sha256((observation / 'blobs' / fingerprint).read_bytes()).hexdigest() != fingerprint: return 'ERROR' streams = [(observation / name).read_bytes() for name in ['stdout.bin', 'stderr.bin']] for name, data in zip(['stdout.bin', 'stderr.bin'], streams): if hashlib.sha256(data).hexdigest() != record['streams'][name]: return 'ERROR' return lint_verdict(row, record, *streams) except (KeyError, OSError, ValueError, TypeError): return 'ERROR' def run_lint(config_path): root = Path.cwd().resolve() trusted_capture_sha256 = '3b0aaef26047e779c96735aa612858903db922c9e6921ed5a4d408aeaa304aea' trusted_lint_sha256 = 'e6aa42d846ce562559a1bcd33eba2baaba711811cd2ddd8fa90438a897269d94' def local(name): path = (root / name).resolve() path.relative_to(root) return path config = json.loads(local(config_path).read_text()) if 'source' in config or 'source_sha256' in config: raise ValueError('the lint source is the pinned lint.py beside the runner; remove source and source_sha256 from the configuration') source = Path(__file__).resolve().with_name('lint.py').read_bytes() if hashlib.sha256(source).hexdigest() != trusted_lint_sha256: raise ValueError('lint source revision changed') rows = canonical_rows(source, trusted_lint_sha256, config['slug']) if 'capture_script' in config: capture_script = local(config['capture_script']) else: capture_script = Path(__file__).resolve().with_name('capture.py') if hashlib.sha256(capture_script.read_bytes().rstrip(b'\\n')).hexdigest() != trusted_capture_sha256: raise ValueError('capture script revision changed') selected = config.get('rows', list(rows)) if not selected or len(set(selected)) != len(selected) or any(n not in rows for n in selected): raise ValueError('invalid selected rows') if 'workspace' in config: workspace = local(config['workspace']).resolve() if not workspace.is_dir(): raise ValueError('authorized workspace must already exist') else: workspace = local(config['destination']).resolve() workspace.mkdir(parents=True, exist_ok=True) destination = workspace / ('verification-records' if (workspace / 'task-board.md').is_file() else 'evidence') destination.resolve().relative_to(workspace) destination.mkdir(parents=True, exist_ok=True) batch = Path(tempfile.mkdtemp(prefix='lint-', dir=destination)) (batch / 'lint.py').write_bytes(source) selectors = list(config['selectors']) for path in [config_path, batch / 'lint.py', __file__, capture_script]: resolved = (root / path).resolve() if root in resolved.parents: selectors.append(dict(glob=str(resolved.relative_to(root)), required=True)) programs = {} for label, path in (('lint_runner', Path(__file__)), ('capture', capture_script)): resolved = (root / path).resolve() if root not in resolved.parents: programs[label] = dict(path=str(resolved), sha256=hashlib.sha256(resolved.read_bytes()).hexdigest()) results = {} for number in selected: script_path = batch / ('row-%02d.sh' % number) script_path.write_bytes(rows[number]['command']) script = str(script_path.relative_to(root)) spec = dict(workspace=str(workspace.relative_to(root)), argv=['sh', script], selectors=selectors, artifacts=[], destination=str((batch / ('row-%02d' % number)).relative_to(root)), timeout_seconds=config['timeout_seconds']) spec_path = batch / ('row-%02d.json' % number) spec_path.write_text(json.dumps(spec, indent=2)) result = subprocess.run([sys.executable, '-I', str(capture_script), str(spec_path)], cwd=root, capture_output=True) (batch / ('capture-%02d.stdout' % number)).write_bytes(result.stdout) (batch / ('capture-%02d.stderr' % number)).write_bytes(result.stderr) observation = None verdict = 'ERROR' try: if not result.stdout.strip(): raise ValueError('missing capture receipt') receipt = local(result.stdout.decode().strip()) receipt.relative_to(batch) observation = receipt.parent record = json.loads((observation / 'result.json').read_text()) if result.returncode in (0, 1) and not result.stderr: verdict = captured_lint_verdict(source, trusted_lint_sha256, config['slug'], number, script, record, observation, programs.get('capture')) except (OSError, ValueError, UnicodeError): pass results[number] = dict(row=number, source_sha256=trusted_lint_sha256, command_sha256=rows[number]['command_sha256'], verdict=verdict, capture_exit=result.returncode, observation=str(observation.relative_to(root)) if observation else None) summary = dict(rows=results, total=len(results), passed=sum(r['verdict'] == 'PASS' for r in results.values()), complete=len(results) == 19 and all(r['verdict'] in ('PASS', 'WARN') for r in results.values())) if programs: summary['programs'] = programs summary_path = batch / 'summary.json' summary_path.write_text(json.dumps(summary, indent=2)) print(summary_path) return all(r['verdict'] in ('PASS', 'WARN') for r in results.values()) if __name__ == '__main__': raise SystemExit(0 if run_lint(sys.argv[1]) else 1)",
       "destination_unit_sha256": null
     },
     {
@@ -9527,7 +9527,7 @@
       "unit_sha256": "8047b8f1035f900ada17f1dbc390fc95f8643b6237e84b51306435d66cce479a",
       "disposition": "reworded",
       "destination": "references/guides/full-checks.md",
-      "note": "Run all 17 rows during PLAN before Ready with [`scripts/lint.py`](../../scripts/lint.py), which an explicit plan or run request authorizes ([script consent](../../scripts/README.md#consent)): `python3 -I <skill>/scripts/lint.py <slug>` from the repository root runs rows 1-17 in order, and `--row N` runs one row, passing its stdout, stderr and exit through unchanged.",
+      "note": "Run all 19 rows during PLAN before Ready with [`scripts/lint.py`](../../scripts/lint.py), which an explicit plan or run request authorizes ([script consent](../../scripts/README.md#consent)): `python3 -I <skill>/scripts/lint.py <slug>` from the repository root runs rows 1-19 in order, and `--row N` runs one row, passing its stdout, stderr and exit through unchanged.",
       "destination_unit_sha256": null
     },
     {
@@ -9621,7 +9621,7 @@
       "unit_sha256": "f22bf872c9a89d78349392b01a00395018820b72e8c3d8a316fef3061ae9500b",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "This table specifies the 17 mechanical checks; [`scripts/lint.py`](../../scripts/lint.py) holds each row's program and runs it with `sh -c` from the **repo root**",
+      "note": "This table specifies the 19 mechanical checks; [`scripts/lint.py`](../../scripts/lint.py) holds each row's program and runs it with `sh -c` from the **repo root**",
       "destination_unit_sha256": null
     },
     {
@@ -9682,7 +9682,7 @@
       "unit_sha256": "aaa6eebf4c720740bbdeb36dc5d6c6f6d2d7bbbe8566c5c55439a5c3ca0c8981",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 2 · Task identity and dependencies — every T id, brief path and dependency resolves in the `/5` workspace; mixed identities, absent briefs and an older layout fail | 0 lines of output |",
+      "note": "| 2 · Task identity and dependencies — every T id, brief path and dependency resolves in the `/5` workspace; mixed identities, absent briefs and an older layout fail; an open task that depends on a Skipped task, local or sibling, and a requirement id in `plan.md` §5 whose every tracing task is Skipped with no successor named on an open brief's `**Lineage**:` line also fail | 0 lines of output |",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -10257,7 +10257,7 @@
       "unit_sha256": "6e51987d95a3678daef89ce59b1b9535a7f0d8236cd7e88a5e3fef78ff420c8c",
       "disposition": "reworded",
       "destination": "references/guides/plan-card.md",
-      "note": "**Lint.** Run every row of `lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py), which the plan request authorizes ([script consent](../../scripts/README.md#consent)) — the 17 mechanical checks that decide wiring, grounding, statuses, citations, seals and collisions — and report the agent-computed summary.",
+      "note": "**Lint.** Run every row of `lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py), which the plan request authorizes ([script consent](../../scripts/README.md#consent)) — the 19 mechanical checks that decide wiring, grounding, statuses, citations, seals and collisions — and report the agent-computed summary.",
       "destination_unit_sha256": null
     },
     {
@@ -10266,7 +10266,7 @@
       "unit_sha256": "bfd0821d0ac3051937c3c005dd6363fad48a47099d1754413e05872f147bea53",
       "disposition": "reworded",
       "destination": "references/guides/scaffold.md",
-      "note": "After completing the brief and core files, run all 17 direct lint rows in `lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py), which the plan request authorizes ([script consent](../../scripts/README.md#consent)), before any PLAN handoff, even when a task stays Draft or a product question is unanswered.",
+      "note": "After completing the brief and core files, run all 19 direct lint rows in `lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py), which the plan request authorizes ([script consent](../../scripts/README.md#consent)), before any PLAN handoff, even when a task stays Draft or a product question is unanswered.",
       "destination_unit_sha256": null
     },
     {
@@ -12946,7 +12946,7 @@
       "unit_sha256": "bfd0821d0ac3051937c3c005dd6363fad48a47099d1754413e05872f147bea53",
       "disposition": "reworded",
       "destination": "references/guides/scaffold.md",
-      "note": "After completing the brief and core files, run all 17 direct lint rows in `lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py), which the plan request authorizes ([script consent](../../scripts/README.md#consent)), before any PLAN handoff, even when a task stays Draft or a product question is unanswered.",
+      "note": "After completing the brief and core files, run all 19 direct lint rows in `lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py), which the plan request authorizes ([script consent](../../scripts/README.md#consent)), before any PLAN handoff, even when a task stays Draft or a product question is unanswered.",
       "destination_unit_sha256": null
     },
     {
@@ -16963,7 +16963,7 @@
       "unit_sha256": "66a059ebec272ce1ff0ed3e3fb5dd3120f1a48742d272341e7b3f3f824e56899",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
-      "note": "| [lint_runner.py](lint_runner.py) | `4f8b4c1d272e7a9905d8c3999d873b44d8182e82b96ff00bf7fd564a7bb6ffed` |",
+      "note": "| [lint_runner.py](lint_runner.py) | `33469e45996777b0632f8c18b0617e84f440b75721b4a8337b58f93461608e8b` |",
       "destination_unit_sha256": null
     },
     {
@@ -16972,7 +16972,7 @@
       "unit_sha256": "c0097f1f2c85ab155e5d7cc35f7ec81d20c82a7ce4dfb3e17b3d85d728d66d82",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
-      "note": "| [lint.py](lint.py) | `9737e1872d2d43c0f9a6dde2ff401d67b142579770d98eadbedca1e2db546eb9` |",
+      "note": "| [lint.py](lint.py) | `e6aa42d846ce562559a1bcd33eba2baaba711811cd2ddd8fa90438a897269d94` |",
       "destination_unit_sha256": null
     },
     {
@@ -17085,6 +17085,300 @@
       "disposition": "reworded",
       "destination": "references/task.tmpl.md",
       "note": "`{{name}}` — {{its semantic or exact contract}}",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "MAINTAINING.md",
+      "line": 16,
+      "unit_sha256": "a5a6ba1fc840d5e6b2e57946c179b21eec24f4a3bb45f5d7c9624c0bbc545de7",
+      "disposition": "reworded",
+      "destination": "MAINTAINING.md",
+      "note": "The release sweep is a direct, ordered procedure: (1) record the explicit release scope and run self-lint gates 1–9 below; (2) run catalog integrity checks over `eval/scenarios/` and answer-sheet roots; (3) run rows 1–19 over every workspace; (4) run each initiative's done-signal; (5) apply the release-scope rule: every active or selected workspace must pass its mandatory rows and done-signal.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "17",
+          "reason": "the lint table gained rows 18 and 19, so the count is now nineteen"
+        }
+      ]
+    },
+    {
+      "path": "eval/README.md",
+      "line": 19,
+      "unit_sha256": "56acc10042d64de5eada4c24960e4e119f60b772db6cc6728fca3b6763d0bded",
+      "disposition": "reworded",
+      "destination": "eval/README.md",
+      "note": "| **Readiness lint**: lint rows 1–19, task identity, task contracts and citation grounding | `lint/rows`, `lint/task-identity`, `lint/task-contracts` | `s7`, `s29`, `s35`, `s46` |",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "17",
+          "reason": "the lint table gained rows 18 and 19, so the count is now nineteen"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 85,
+      "unit_sha256": "c3e71800c5ba98c9c736e7abb85d056fb5e5483b6027bc871530f19c9fbc8020",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Run all 19 rows during PLAN before Ready with [`scripts/lint.py`](../../scripts/lint.py), which an explicit plan or run request authorizes ([script consent](../../scripts/README.md#consent)): `python3 -I <skill>/scripts/lint.py <slug>` from the repository root runs rows 1-19 in order, and `--row N` runs one row, passing its stdout, stderr and exit through unchanged.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "17",
+          "reason": "the lint table gained rows 18 and 19, so the count is now nineteen"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 106,
+      "unit_sha256": "7240cb5fd389bd1ebaba31f145495f5a44389700937efb2ed7868d8f5b72eeca",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Check that all 19 returned rows are scheduled before initial execution.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "17",
+          "reason": "the lint table gained rows 18 and 19, so the count is now nineteen"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 120,
+      "unit_sha256": "653db456d7c2fc8fdae5405549f7725f150c0f9247ca2da3019ed11cc3bc2ce2",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Optional `rows` selects affected checks; omission runs all 19.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "17",
+          "reason": "the lint table gained rows 18 and 19, so the count is now nineteen"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 121,
+      "unit_sha256": "df0ca8991435beac66db16472d2d842c0b8ac013c7098b32901533d4b50adce9",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "Initial PLAN still requires all 19.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "17",
+          "reason": "the lint table gained rows 18 and 19, so the count is now nineteen"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 176,
+      "unit_sha256": "8b94d43fbace548a4734768092e1e118c27dcadc3d2bcd9a747d1ca2845548a0",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "| Lint source, command interpreter/tools or policy relevant to its execution | All affected rows; all 19 if impact cannot be established |",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "17",
+          "reason": "the lint table gained rows 18 and 19, so the count is now nineteen"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 183,
+      "unit_sha256": "6932fdf97ac8d27219876152e7811be221a489d1f3c7bab581c0f425e627ce9c",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "The final index still accounts for all 19 canonical rows, distinguishing fresh executions from reused current records; report `lint: N/19 checks passed` from their actual pass conditions (and any additional workspace rows in the denominator).",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "17",
+          "reason": "the lint table gained rows 18 and 19, so the count is now nineteen"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 186,
+      "unit_sha256": "531ca1ef295bdb778afa0adb905f7a27664fbc788b6c50e39b28708b3b9e2dfb",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "A selection of custom checks is not 19/19.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "17",
+          "reason": "the lint table gained rows 18 and 19, so the count is now nineteen"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/full-checks.md",
+      "line": 198,
+      "unit_sha256": "ee0dfd00f53be05d945fb0c06c90df2717df66468872959b56c0770008fcaf15",
+      "disposition": "reworded",
+      "destination": "references/guides/full-checks.md",
+      "note": "During release, execute all nineteen commands even for Focused and accept Coordinated-only checked skips only after row 1 passes.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 3,
+      "unit_sha256": "a3dc1eb175cea6838da28d77c1fe03e1999c27583eaf29068b0c380c2c72c1d4",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "This table specifies the 19 mechanical checks; [`scripts/lint.py`](../../scripts/lint.py) holds each row's program and runs it with `sh -c` from the **repo root**: `python3 -I <skill>/scripts/lint.py [--row N] <slug>`, where `<slug>` is the initiative directory name (workspace = `docs/plans/<slug>/`).",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "17",
+          "reason": "the lint table gained rows 18 and 19, so the count is now nineteen"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 29,
+      "unit_sha256": "f98005dda40bf5359175530dd2fa2b1b91533ef3557dff78d84b029ba89ded29",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "| 2 · Task identity and dependencies — every T id, brief path and dependency resolves in the `/5` workspace; mixed identities, absent briefs and an older layout fail; an open task that depends on a Skipped task, local or sibling, and a requirement id in `plan.md` §5 whose every tracing task is Skipped with no successor named on an open brief's `**Lineage**:` line also fail | 0 lines of output |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 57,
+      "unit_sha256": "c79ba0dc30260e7c942b67a24b494e0b88096865587c581827817bab82321c92",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "Run all 19 rows.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "17",
+          "reason": "the lint table gained rows 18 and 19, so the count is now nineteen"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 57,
+      "unit_sha256": "0e7716ad067d0cec9daf89f2226cf26ce73885073a7dc9c487ecbff02418f1ae",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "The script's `lint: K/19 rows silent` line counts silent rows and is not this score line: the agent computes the numerator and denominator from the observed row results; this **agent-computed summary** closes the lint digest with exactly:",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "17",
+          "reason": "the lint table gained rows 18 and 19, so the count is now nineteen"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 62,
+      "unit_sha256": "d10b8a1a5c83ed1770c38ad4194a0a8af6b65addd308ca60de4409d6fb1c561a",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "**M** = rows run (19 for this table; more if the workspace adds rows).",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "17",
+          "reason": "the lint table gained rows 18 and 19, so the count is now nineteen"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 67,
+      "unit_sha256": "2c738c2ab90a4c0051d3bc369bcb8e30625c40f01269e3178dfd0c2ef7398803",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "Rows 8, 13 and 15 are warn-severity: they lower N and are reported, but block nothing by themselves; a failure in rows 1–7, 9–12, 14 and 16–19 blocks execution until fixed or explicitly waived by the user.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "17",
+          "reason": "the lint table gained rows 18 and 19, so the count is now nineteen"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 83,
+      "unit_sha256": "b56a5b74773bc846b37c15e01946b0d4382c8238d385a8fe7b8f1a60a95fbc95",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "Run it before accepting the checked Lite skips in rows 2, 3, 5, 9, 10, 11, 12, 14, 17, 18 and 19.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 84,
+      "unit_sha256": "a104cd8a8403f35cf32696d5e55488ce7eb354c52274bf15a134056f9f385be4",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "All nineteen commands still execute; row 5 retains its empty-output exit 1.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-card.md",
+      "line": 66,
+      "unit_sha256": "11adc90e6e24cb6341696911735d348f8ce33bce20cf0ac203edb72fbab6242a",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-card.md",
+      "note": "**Lint.** Run every row of `lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py), which the plan request authorizes ([script consent](../../scripts/README.md#consent)) — the 19 mechanical checks that decide wiring, grounding, statuses, citations, seals and collisions — and report the agent-computed summary.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "17",
+          "reason": "the lint table gained rows 18 and 19, so the count is now nineteen"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/scaffold.md",
+      "line": 70,
+      "unit_sha256": "eb9b551ed4ce4ba8d3c9856c433c566b0afd07bae92da7ca7dd07e66ff1464ad",
+      "disposition": "reworded",
+      "destination": "references/guides/scaffold.md",
+      "note": "After completing the brief and core files, run all 19 direct lint rows in `lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py), which the plan request authorizes ([script consent](../../scripts/README.md#consent)), before any PLAN handoff, even when a task stays Draft or a product question is unanswered.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "17",
+          "reason": "the lint table gained rows 18 and 19, so the count is now nineteen"
+        }
+      ]
+    },
+    {
+      "path": "skills/tackle/scripts/README.md",
+      "line": 23,
+      "unit_sha256": "1d2dc2941ad3cdbdb50cce134827ec9fb6357589d10ce8b46d25ee567665b2f0",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "| [lint_runner.py](lint_runner.py) | `33469e45996777b0632f8c18b0617e84f440b75721b4a8337b58f93461608e8b` |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "skills/tackle/scripts/README.md",
+      "line": 24,
+      "unit_sha256": "46a3a54ffaa2febd6b0166dc646ba46b65bd0b2243bc96a096f5d4de7d61327e",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "| [lint.py](lint.py) | `e6aa42d846ce562559a1bcd33eba2baaba711811cd2ddd8fa90438a897269d94` |",
       "destination_unit_sha256": null
     }
   ]

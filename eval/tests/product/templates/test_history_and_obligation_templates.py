@@ -405,14 +405,14 @@ class StatusObligationTests(unittest.TestCase):
 
 
 class CountAgreementTests(unittest.TestCase):
-    WORDS = {17: 'seventeen'}
+    WORDS = {19: 'nineteen'}
 
     def rows(self):
         return len(re.findall(r'^\| [0-9]+ ·', text(GUIDES / 'lint-spec.md'), re.M))
 
     def test_every_document_that_counts_the_lint_rows_agrees_with_the_spec(self):
         n = self.rows()
-        self.assertEqual(n, 17)
+        self.assertEqual(n, 19)
         word = self.WORDS[n]
         expected = {
             GUIDES / 'lint-spec.md': ['Run all %d rows' % n, 'rows run (%d for this table' % n,
