@@ -698,7 +698,7 @@
       "rule_id": "R-PLAN-08",
       "statement": "Cold probes keep their risk trigger and bounded allowance.",
       "statement_sha256": "690a29c4d62a9dc21db558eb830607982656922a4550bef03a703539d3efcbd7",
-      "home": "references/guides/verify.md:143",
+      "home": "references/guides/verify.md:144",
       "home_fragment": "Cold-resolvability probe",
       "units": [],
       "mirrors": [],
@@ -4448,7 +4448,7 @@
       "rule_id": "R-PLAN-21",
       "statement": "A workspace may declare sibling workspaces in its AGENTS.md, and a task may then depend on a sibling's task as T-NN [sibling] or keep its brief under that sibling's tasks/.",
       "statement_sha256": "4ed116103230892e37ddbdf8ac29eac35f8b603166ac5ffc364165caeb269c6f",
-      "home": "references/guides/scaffold.md:96",
+      "home": "references/guides/scaffold.md:97",
       "home_fragment": "A workspace may declare sibling workspaces in its AGENTS.md,",
       "units": [],
       "mirrors": [],
@@ -5156,7 +5156,7 @@
       "rule_id": "R-RUN-30",
       "statement": "A task's Write scope paths are relative to its repository's root, and a task writes only inside its own repository.",
       "statement_sha256": "584e0d61f7bc0a5dd0f678e6e53e81979b2ec697c6b91a79fe029cabb5349d8a",
-      "home": "references/guides/scaffold.md:105",
+      "home": "references/guides/scaffold.md:106",
       "home_fragment": "A task's Write scope paths are relative to its",
       "units": [],
       "mirrors": [],
@@ -5497,6 +5497,104 @@
         "references/decisions.tmpl.md:18"
       ],
       "class": "format",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "A field report of a large Coordinated plan: five verification rounds within two days did not reduce the number of findings; the most frequent blocking findings were orphan or double-owned symbols, decisions not applied by their owner and edits to closed records, and bulk fixes introduced new defects.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-20"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-30",
+      "statement": "A verification of more than one round keeps a finding ledger; every later round re-checks each open finding by its evidence first, admits a new finding only with mechanical evidence deduplicated against every recorded finding, and treats active decisions and settled findings as out of scope for redesign.",
+      "statement_sha256": "ce89abc6c3105b119a9f41b560b2ba761b4ba4dcc4f86721742e02366715f349",
+      "home": "references/guides/verify.md:193",
+      "home_fragment": "Every round after the first re-checks each",
+      "units": [],
+      "mirrors": [
+        "references/guides/verify.md:189",
+        "references/guides/verify.md:196",
+        "references/guides/plan-card.md:104"
+      ],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "A field report of a large Coordinated plan: five verification rounds within two days did not reduce the number of findings; the most frequent blocking findings were orphan or double-owned symbols, decisions not applied by their owner and edits to closed records, and bulk fixes introduced new defects.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-20"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-31",
+      "statement": "Readiness after a multi-round verification is claimed only after a round with no new and no open HIGH or MEDIUM finding; at most three rounds run unless the workspace sets its cap, and at the cap the owner receives one bounded choice.",
+      "statement_sha256": "8502b3be608c46397a699955f9edfa71abb01bf8c0376907f40a4d8c678fa2f9",
+      "home": "references/guides/verify.md:201",
+      "home_fragment": "At most three rounds run, unless the workspace",
+      "units": [],
+      "mirrors": [
+        "references/guides/verify.md:199"
+      ],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "A field report of a large Coordinated plan: five verification rounds within two days did not reduce the number of findings; the most frequent blocking findings were orphan or double-owned symbols, decisions not applied by their owner and edits to closed records, and bulk fixes introduced new defects.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-20"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-32",
+      "statement": "A mechanically confirmed finding is HIGH only when an executor following the brief literally would fail or stall, MEDIUM when the executor would likely produce a wrong result that the stated checks would accept, and LOW when it has no executor impact.",
+      "statement_sha256": "75df04a6b0904cfbdb51e2ae0bce215f5c1978810e3bb9f10ff70337633dc8f6",
+      "home": "references/guides/verify.md:100",
+      "home_fragment": "Severity also weighs the executor",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "A field report of a large Coordinated plan: five verification rounds within two days did not reduce the number of findings; the most frequent blocking findings were orphan or double-owned symbols, decisions not applied by their owner and edits to closed records, and bulk fixes introduced new defects.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-20"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-33",
+      "statement": "After findings are applied and before readiness is claimed, every lint row is rerun and the diff since the round began is verified; a defect found there is a new finding of the next round.",
+      "statement_sha256": "8bfe4f65e7bc79db43a116594d05313891c169c659b14ec9d84e0a4fff31560a",
+      "home": "references/guides/verify.md:205",
+      "home_fragment": "After findings are applied, in bulk or one by one",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
       "hot_path": false,
       "origin": {
         "added_in": "10.2.0",

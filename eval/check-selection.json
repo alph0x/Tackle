@@ -41,7 +41,10 @@
         "eval/plan/**",
         "skills/tackle/references/guides/controlled-writing.md",
         "skills/tackle/references/plan.tmpl.md",
-        "skills/tackle/scripts/controlled_writing.py"
+        "skills/tackle/scripts/controlled_writing.py",
+        "skills/tackle/references/guides/verify.md",
+        "skills/tackle/references/guides/scaffold.md",
+        "skills/tackle/references/guides/plan-card.md"
       ],
       "families": [
         "eval/tests/product/plan"
