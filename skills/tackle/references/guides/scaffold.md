@@ -88,6 +88,7 @@ Create only when their trigger fires:
 - `current-work.md` — Coordinator continuity projection (multi-agent execution).
 - `reports/` — task closure reports (created at first task close, Full gate).
 - `reference-docs/` — read-only external snapshots.
+- `findings.md` — finding ledger of a multi-round verification ([verification rounds](verify.md#verification-rounds)).
 
 (`task-board.md` is a core artifact, not depth: the scaffold copies it, per the §File map in `AGENTS.tmpl.md`.)
 

@@ -101,6 +101,9 @@ tasks and stops before source execution.`
    Under that standing view request, the last action before handoff is a `--check` of the view that passes.
    If it says stale, rebuild the view and check again.
    A brief locks only after its `lock` [adversary checkpoint](run.md#adversary-checkpoints).
+   A validation that needs more than one round follows the [round protocol](verify.md#verification-rounds):
+   open findings first, settled decisions out of scope, and a stop when a round finds no new HIGH or MEDIUM
+   finding or reaches the cap.
 
 **Stop rule.** PLAN exists to unblock execution. When the next step is small and clear, do it; never
 re-plan a plan or open a second planning session to restate a decision this one already settled.

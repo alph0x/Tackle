@@ -13,12 +13,13 @@
       "files": [
         "test_controlled_writing.py",
         "test_intake_requests.py",
-        "test_plan.py"
+        "test_plan.py",
+        "test_verify_rounds.py"
       ],
-      "tests": 9,
+      "tests": 14,
       "source": "eval/plan",
       "category": "product",
-      "purpose": "Plan section order, and the controlled-writing script and guide for owner texts and specifications."
+      "purpose": "Plan section order, the controlled-writing script and guide for owner texts and specifications, and the verify guide's multi-round protocol and executor-centric severity."
     },
     {
       "path": "eval/tests/product/run/card",

@@ -97,6 +97,7 @@ Classify every finding with a certainty level:
   - Examples: a variable name feels inconsistent with project convention; a prose description could be read two ways but the code is probably correct.
 
 Calibrate with these examples: unsure whether a finding is HIGH, downgrade it; not mechanically reproducible, it is not HIGH.
+Severity also weighs the executor. A mechanically confirmed finding is HIGH only when an executor following the brief literally would fail or stall. It is MEDIUM when the executor would likely produce a wrong result that the stated checks would accept. It is LOW when it has no executor impact.
 
 Output: during PLAN, append readiness findings to its evidence and handoff; during an explicit audit, append
 findings to `history.md` only when that audit is authorized to write history. Verification itself never
@@ -172,6 +173,38 @@ artifact; preserve unaffected readiness and historical grades. So a configuratio
 named configuration consumers, an unrelated documentation change does not. Regenerate changed compiled
 clauses, rerun their target/surround fixtures and update the affected evidence slots before handoff. Hash
 comparison detects drift; dependency reasoning decides its blast radius.
+
+<a id="verification-rounds"></a>
+## Verification rounds
+
+A verification that takes more than one round keeps a finding ledger: `findings.md` in the workspace, an
+optional depth artifact holding one table.
+
+```markdown
+| Finding | Round | Severity | Task | Evidence | State | Reference |
+|---|---|---|---|---|---|---|
+| F-0001 | 1 | HIGH | T-0002 | lint row 4: `tasks/T-0002-api.md:14 stale: src/api.py:30` | open | — |
+```
+
+- A finding keeps a stable `F-NN` id that is never reused. Its evidence is mechanical: a command with its
+  observed output, or an anchored citation with its fragment. Its state is `open`, `fixed`, `dismissed` or
+  `settled`; `fixed` cites the change, `dismissed` its reason or decision, and `settled` the owner decision
+  that closed the question.
+- Every round after the first re-checks each `open` finding by its recorded evidence first. It then admits a
+  new finding only with mechanical evidence, deduplicated against every row in any state; a reframing of an
+  existing finding is not new.
+- Reviewers receive the active decisions and the `settled` findings as out of scope for redesign. A reviewer
+  raises one again only as a new finding whose evidence shows a contradiction with a source higher in the
+  authority order.
+- Readiness may be claimed for the selected tasks after a round with no new HIGH or MEDIUM finding and no
+  `open` HIGH or MEDIUM finding.
+- At most three rounds run, unless the workspace `AGENTS.md` sets `Verify round cap: N`. The round stops
+  when the cap is reached with an open or new HIGH or MEDIUM finding. The owner then receives one bounded
+  choice through the [blocker recovery policy](communication.md#actionable-blocker-recovery): accept the
+  named risk, narrow the selected tasks, or re-scope.
+- After findings are applied, in bulk or one by one, rerun every lint row before readiness is claimed. Then
+  verify only the diff since the round began: each changed brief, contract or decision line against the step
+  list above. A defect found there is a new finding of the next round and counts toward the cap.
 
 ## Milestone readiness
 
