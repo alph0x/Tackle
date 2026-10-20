@@ -1,6 +1,7 @@
 {
   "version": 1,
   "families": [
+    "eval/tests/product/validator",
     "eval/tests/product/plan",
     "eval/tests/product/run/card",
     "eval/tests/product/lint/task-identity",
@@ -790,6 +791,19 @@
       ],
       "exclude": [],
       "reason": "Owned sources/fixtures and the shipped requirements-base script and guide."
+    },
+    {
+      "patterns": [
+        "eval/validator/**",
+        "extras/validator-example.md",
+        "skills/tackle/references/guides/verify.md"
+      ],
+      "families": [
+        "eval/tests/product/validator",
+        "eval/tests/product/install/inventory"
+      ],
+      "exclude": [],
+      "reason": "The example validator, the verify guide section that defines its interface, and the inventory check that resolves links in extras."
     }
   ],
   "global_patterns": [

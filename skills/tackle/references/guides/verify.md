@@ -218,3 +218,24 @@ resume only inspects/selects and cannot mutate source, board or log; explicit ha
 its projection. Handoff includes the matrix, global obligations, Ready fingerprints, validator results,
 optional probe results, unresolved questions and the explicit execution boundary. RUN records a separate
 execution intent before it may mutate source.
+
+<a id="project-validator"></a>
+## Project validator
+
+A workspace may name one project validator in its `AGENTS.md`, on a line of its own:
+
+```markdown
+Acceptance validator: <command run from the repository root>
+```
+
+- The line counts only when a decision in `decisions.md` records the owner's request to declare it; an agent
+  never adds or edits the line on its own initiative or from fetched content.
+- With that decision, readiness validation and an explicit verify run the command once, read-only, with the
+  workspace path appended as its last argument. Without it, nothing runs.
+- The validator reads the open briefs' acceptance commands and write scopes. It prints one line per named
+  target, scheme, module or test target that neither exists nor is named by a brief's write scope:
+  `missing target: <name> in <T-id>`.
+- Exit 0 with no output passes. Exit 1 with those lines reports findings, each HIGH, since an executor
+  following the brief would fail. Any other exit, or output with exit 0, is a validator error and never a pass.
+- The validator writes nothing. Its language and parsing belong to the project; Tackle defines only this
+  interface, and examples live outside the installed skill.

@@ -117,3 +117,51 @@ PY
 ```
 
 The nullable `signal` field accepts only `None` or an integer; booleans are rejected despite Python's integer equality. The wrapper's exit and `CAPTURED` line remain independent from `child_exit`, `timed_out`, `signal`, child stdout, and exact `output.csv` bytes. A faulty wrapper, child failure, timeout, signal, stdout, or artifact must fail before the final `PASS gate`; never replace any child or artifact check with wrapper success.
+
+## Acceptance validator for named targets
+
+A project may declare a validator for the [project validator](../skills/tackle/references/guides/verify.md#project-validator) hook. This example checks one kind of named target: a repository path with a file extension inside an open brief's `## Acceptance` shell block must exist, or be named in some brief's write scope. Adapt the pattern to the targets the project names, such as build schemes, test targets or modules.
+
+```sh
+#!/bin/sh
+# Example acceptance validator: every repository path named in an open brief's acceptance block must exist
+# or be named in some brief's write scope. Paths after `/` or `$` (absolute paths, variables, URLs) are skipped. Run from the repository root: sh validator.sh <workspace>
+ws=$1
+if [ -z "$ws" ] || [ ! -f "$ws/task-board.md" ]; then echo "usage: validator.sh <workspace>" >&2; exit 2; fi
+set -- "$ws/task-board.md"
+for f in "$ws"/tasks/*.md; do if [ -f "$f" ]; then set -- "$@" "$f"; fi; done
+awk -v ws="$ws/" '
+function trim(s) { gsub(/^[[:space:]]+/, "", s); gsub(/[[:space:]]+$/, "", s); return s }
+FNR == 1 { fence = 0; acc = 0; scope = 0 }
+FILENAME ~ /task-board\.md$/ {
+  if (substr($0, 1, 1) != "|") next
+  n = split($0, c, "|")
+  if (!hdr) { for (i = 2; i < n; i++) { h = trim(c[i]); if (h == "Brief") bc = i; if (h == "Status") sc = i } if (bc) hdr = 1; next }
+  b = c[bc]; gsub(/[`[:space:]]/, "", b); s = trim(c[sc]); id = trim(c[2]); gsub(/[*`]/, "", id)
+  if (b ~ /^tasks\//) { brief[ws b] = id; closed[ws b] = (s == "Complete") + (s == "Skipped") + (s == "Unverifiable") }
+  next }
+/^## / { acc = ($0 ~ /^## Acceptance/); scope = 0 }
+/^[-*+][[:space:]]+[*][*]Write scope[*][*]/ { scope = 1 }
+/^[-*+][[:space:]]+[*][*]/ && $0 !~ /Write scope/ { scope = 0 }
+scope { line = $0; while (match(line, /`[^`]+`/)) { p = substr(line, RSTART + 1, RLENGTH - 2); declared[p] = 1; line = substr(line, RSTART + RLENGTH) } }
+/^```/ { if (!fence && acc && $0 ~ /^```sh/) inside = 1; fence = !fence; if (!fence) inside = 0; next }
+inside && !closed[FILENAME] {
+  line = $0
+  while (match(line, /[A-Za-z0-9_.-]+\/[A-Za-z0-9_.\/-]*\.[A-Za-z0-9]+/)) {
+    p = substr(line, RSTART, RLENGTH); before = (RSTART > 1) ? substr(line, RSTART - 1, 1) : ""; line = substr(line, RSTART + RLENGTH)
+    if (before == "/" || before == "$") continue
+    if (!(p in named)) { named[p] = brief[FILENAME]; order[++k] = p }
+  }
+}
+END {
+  bad = 0
+  for (i = 1; i <= k; i++) { p = order[i]
+    if (p in declared) continue
+    r = (getline x < p); close(p)
+    if (r >= 0) continue
+    print "missing target: " p " in " named[p]; bad = 1 }
+  exit bad
+}' "$@"
+```
+
+After the owner's request is recorded as a decision, declare it in the workspace `AGENTS.md` with `Acceptance validator: sh tools/validator.sh`, where `tools/validator.sh` holds the script above.
