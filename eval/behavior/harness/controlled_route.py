@@ -1747,6 +1747,14 @@ def isolated_put(store, path, data):
     return isolated_record('Artifact', artifact=ref['artifact'], sha256=ref['sha256'], byte_length=ref['byte_length'])
 
 
+def isolated_kill_group(process):
+    """SIGKILL the capture's process group; a group that already exited (macOS reports EPERM for a zombie leader) is done."""
+    try: os.killpg(process.pid, signal.SIGKILL)
+    except (ProcessLookupError, PermissionError):
+        try: process.kill()
+        except ProcessLookupError: pass
+
+
 def isolated_capture(argv, data, deadline, limits, record_store):
     """Actual host subprocess capture; callers cannot turn missing EOF into success."""
     import selectors
@@ -1767,8 +1775,7 @@ def isolated_capture(argv, data, deadline, limits, record_store):
         if now >= deadline or overflow:
             timeout = timeout or now >= deadline
             if not killed:
-                try: os.killpg(process.pid, signal.SIGKILL)
-                except ProcessLookupError: pass
+                isolated_kill_group(process)
                 killed, drain_deadline = True, now + 1
             if now >= drain_deadline: break
         for key, _ in selector.select(.02):
@@ -1795,8 +1802,7 @@ def isolated_capture(argv, data, deadline, limits, record_store):
         else:
             timeout = True
     if process.poll() is None:
-        try: os.killpg(process.pid, signal.SIGKILL)
-        except ProcessLookupError: pass
+        isolated_kill_group(process)
     code = process.wait(timeout=2)
     for stream in (process.stdin, process.stdout, process.stderr):
         if not stream.closed: stream.close()
