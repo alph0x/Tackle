@@ -9,6 +9,7 @@
 
 - **Depends on**: {{none / T-0X — name the concrete artifact consumed}}.
 - **Traces to**: {{spec, ticket, or constitution anchor}}.
+- **Detail**: {{full or interface; bare token without trailing punctuation}}
 - **Write scope**: {{complete file and directory write set; flag shipped paths}}.
 - **Repository**: {{repository id from the workspace Repositories table; omit this field in a single-repository workspace}}.
 - **Autonomy**: {{resolved concrete value; production paths cap at L2}}.
@@ -76,8 +77,11 @@ and exits apply only when specified; otherwise valid semantic equivalents are ac
 
 ### Interface and invariants
 
-- **Consumes**: {{named inputs, revisions/hashes, and allowed forms}}.
-- **Produces**: {{named files, values, diagnostics, and their semantic or exact contracts}}.
+- **Consumes**: {{none, or one indented sub-item per consumed name, each with its source}}
+  - `{{name}}` from {{T-NN or T-NN [sibling]}}
+  - `{{name}}` exists `{{path.ext:NN}} — "{{fragment}}"`
+- **Produces**: {{none, or one indented sub-item per produced name}}
+  - `{{name}}` — {{its semantic or exact contract}}
 - **Errors**: {{recoverable, terminal, and unknown-input behavior}}.
 - **Invariants**: {{properties a test can observe; include mutation/effect boundaries}}.
 - **Dependencies**: {{crossing artifacts and why each is needed; ordering alone is labelled}}.

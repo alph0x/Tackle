@@ -1267,7 +1267,7 @@
       "rule_id": "R-RUN-16",
       "statement": "A discovery task converges on consecutive dry rounds and deduplicates against everything seen.",
       "statement_sha256": "e92fe9a47b609bf869e0a2c1a84f588eabdc078572690e83e6002aa1691b4cb5",
-      "home": "references/task.tmpl.md:49",
+      "home": "references/task.tmpl.md:50",
       "home_fragment": "deduplicate against everything seen",
       "units": [],
       "mirrors": [
@@ -4517,7 +4517,7 @@
       "rule_id": "R-PLAN-24",
       "statement": "Repository conventions the executor cannot infer, such as the commit message format, stated in the brief whether or not the repository has a conventions file; every cwd-dependent command carries its own cd or -C",
       "statement_sha256": "6f498490a1ce400809a1aeff35d84a2be1ef7cfbccd876efd5b89fdecdd73a75",
-      "home": "references/guides/design-and-contract.md:54",
+      "home": "references/guides/design-and-contract.md:57",
       "home_fragment": "Repository conventions the executor cannot infer",
       "units": [],
       "mirrors": [],
@@ -4540,7 +4540,7 @@
       "rule_id": "R-PLAN-25",
       "statement": "A task brief names the action classes its executor must not take (deletion outside the write scope, caches included; privilege escalation and package installs; publication by push, tag, release or registry upload; unscoped recursive searches outside the repository), each allowed only where the brief's write scope or an explicit owner decision allows it.",
       "statement_sha256": "0c9fa7067178e003f11e02f15a4348aab7cff503665540602511a1e2da42d978",
-      "home": "references/guides/design-and-contract.md:55",
+      "home": "references/guides/design-and-contract.md:58",
       "home_fragment": "Forbidden action classes the executor must not take",
       "units": [],
       "mirrors": [
@@ -5432,6 +5432,82 @@
         "scenarios": [],
         "cohort_id": null,
         "as_of": "2026-10-19"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-26",
+      "statement": "A brief declares its detail level: full puts every Definition-of-ready item in scope, and interface fixes only the goal, write scope, dependencies, requirement owners and symbol ledger.",
+      "statement_sha256": "aab003ce0b2945d26aaa45051cce0ec8c305567a8b328ee9d7cd6f4cd477a7d9",
+      "home": "references/guides/design-and-contract.md:59",
+      "home_fragment": "The detail level: `**Detail**: full` puts every",
+      "units": [],
+      "mirrors": [
+        "references/task.tmpl.md:12"
+      ],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "A field report of a large Coordinated plan: five verification rounds within two days did not reduce the number of findings; the most frequent blocking findings were orphan or double-owned symbols, decisions not applied by their owner and edits to closed records, and bulk fixes introduced new defects.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-20"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-27",
+      "statement": "A brief that declares its detail level lists the names it produces and the names it consumes, each consumed name with its source (a task, a sibling task, or an anchored citation of where it exists); under full both lists are required.",
+      "statement_sha256": "2cdd9d9b2897da43a24fa0c487a4012474c08134a3c94ac388d333f6b68dc604",
+      "home": "references/guides/design-and-contract.md:60",
+      "home_fragment": "The symbol ledger of a brief that declares",
+      "units": [],
+      "mirrors": [
+        "references/task.tmpl.md:80",
+        "references/task.tmpl.md:83"
+      ],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "A field report of a large Coordinated plan: five verification rounds within two days did not reduce the number of findings; the most frequent blocking findings were orphan or double-owned symbols, decisions not applied by their owner and edits to closed records, and bulk fixes introduced new defects.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-20"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATE-16",
+      "statement": "A decision applied by one task names it as Owner and a decision that changes contract clauses names them as Clauses; the owner brief cites the decision and, at full detail, carries each named clause compiled.",
+      "statement_sha256": "b7b830275a026dc176aadb714ec0f7ceded93a959d38a95b63caa6c826c2a9f1",
+      "home": "references/guides/design-and-contract.md:43",
+      "home_fragment": "A decision applied by one task names it in",
+      "units": [],
+      "mirrors": [
+        "references/decisions.tmpl.md:18"
+      ],
+      "class": "format",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "A field report of a large Coordinated plan: five verification rounds within two days did not reduce the number of findings; the most frequent blocking findings were orphan or double-owned symbols, decisions not applied by their owner and edits to closed records, and bulk fixes introduced new defects.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-20"
       },
       "historical": []
     }

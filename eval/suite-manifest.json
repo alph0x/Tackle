@@ -204,12 +204,13 @@
         "test_system_one_functional.py",
         "test_system_one_integration.py",
         "test_script_consent_points.py",
-        "test_multi_repo_templates.py"
+        "test_multi_repo_templates.py",
+        "test_brief_ledger_template.py"
       ],
-      "tests": 124,
+      "tests": 130,
       "source": "eval/templates",
       "category": "product",
-      "purpose": "Template fields, observed model routing, capability recovery and compiled briefs. The System One decision script's admission, workspace consent, normalized transport, confidence and provenance. The System One state script's consent persistence, caller-supplied client, SDK serialization, fallback and bounded history/intake consumers."
+      "purpose": "Template fields, observed model routing, capability recovery and compiled briefs. The System One decision script's admission, workspace consent, normalized transport, confidence and provenance. The System One state script's consent persistence, caller-supplied client, SDK serialization, fallback and bounded history/intake consumers. The brief and decision templates' declaration grammar: detail level, symbol ledger and decision ownership."
     },
     {
       "path": "eval/tests/tooling/protocol-v2",

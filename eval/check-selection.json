@@ -264,6 +264,7 @@
         "skills/tackle/references/AGENTS.tmpl.md",
         "skills/tackle/references/design-contract.tmpl.md",
         "skills/tackle/references/guides/decompose-and-lint.md",
+        "skills/tackle/references/guides/design-and-contract.md",
         "skills/tackle/references/guides/lint-spec.md",
         "skills/tackle/references/guides/migrate.md",
         "skills/tackle/references/guides/quality-dimensions.md",

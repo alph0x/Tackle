@@ -49,6 +49,8 @@ reads it only when the card sends it there, so none of it counts.
   judgment goes through the host's `typesafe-ai` skill and that importing a script needs consent.
   It then raises the chain limit to the measured 4711 because `SKILL.md`'s consent sentence now states that
   an explicit plan or run request authorizes `scripts/lint.py`, which runs the lint rows.
+  10.2 raises the chain limit to the measured 4741 because `task.tmpl.md` now carries the `**Detail**` field
+  and the symbol ledger grammar of its `**Consumes**` and `**Produces**` fields.
 - `--card <path>` measures another file as the card. It showed the old route: with `run.md` as the card,
   the chain was 13,722 words.
 

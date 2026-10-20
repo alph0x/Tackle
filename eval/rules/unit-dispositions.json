@@ -6092,7 +6092,7 @@
       "disposition": "merged",
       "destination": "references/task.tmpl.md",
       "note": null,
-      "destination_unit_sha256": "63f3f339e0888986cc197f7fc92f4150771ca3d140cd511c4d37a8165159cc73"
+      "destination_unit_sha256": "f5c613cff283ec0cf20524303ff71c2e4f6230425ec83451d9c89337c9b7bcdd"
     },
     {
       "path": "references/point.tmpl.md",
@@ -17059,6 +17059,33 @@
           "reason": "release version stamp bumped to 10.1.0"
         }
       ]
+    },
+    {
+      "path": "references/decisions.tmpl.md",
+      "line": 15,
+      "unit_sha256": "6217be4fbc6038ffe854b4280f71987357109bddc1b98d742693943292492474",
+      "disposition": "reworded",
+      "destination": "references/decisions.tmpl.md",
+      "note": "**Decision**: {{what was decided, concretely.}} **Why**: {{rationale; the tradeoff accepted.}} **Supersedes**: {{none / D-xx}} · **From**: {{Q-xx if it resolved a question, else \"—\"}}",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/task.tmpl.md",
+      "line": 78,
+      "unit_sha256": "63f3f339e0888986cc197f7fc92f4150771ca3d140cd511c4d37a8165159cc73",
+      "disposition": "reworded",
+      "destination": "references/task.tmpl.md",
+      "note": "**Consumes**: {{none, or one indented sub-item per consumed name, each with its source}}",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/task.tmpl.md",
+      "line": 79,
+      "unit_sha256": "a3c531bec348e025b7183156fe17c8906e7cca34677323fdaa6a834aacd2b11a",
+      "disposition": "reworded",
+      "destination": "references/task.tmpl.md",
+      "note": "`{{name}}` — {{its semantic or exact contract}}",
+      "destination_unit_sha256": null
     }
   ]
 }
