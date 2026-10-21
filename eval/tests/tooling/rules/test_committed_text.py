@@ -83,6 +83,33 @@ class CommittedTextTests(unittest.TestCase):
         self.git(root, 'add', '-A')
         self.assertEqual([item.token for item in self.scan(root, base)], ['T' + '-0' + '9'])
 
+    def test_rename_pairing_does_not_depend_on_how_many_files_the_diff_adds(self):
+        root, base = self.repository()
+        old_lines = ['Example: map P' + '-0' + '1 to T' + '-0' + '1 when migrating.\n'] + [
+            'Unchanged guide line %d about migration.\n' % number for number in range(30)]
+        self.write(root, 'old/guide.md', ''.join(old_lines))
+        self.git(root, 'add', '-A')
+        self.git(root, 'commit', '-q', '-m', 'guide at its old path')
+        base = self.git(root, 'rev-parse', 'HEAD').stdout.strip()
+        (root / 'old/guide.md').unlink()
+        self.write(root, 'new/handbook.md', ''.join(old_lines + ['Appended line %d.\n' % n for n in range(3)]))
+        for number in range(4):
+            self.write(root, 'extra/file%d.md' % number, 'Plain extra file %d.\n' % number)
+        self.git(root, 'add', '-A')
+        # A rename limit of one stands for a diff that adds more files than git's default allows.
+        keys = {'GIT_CONFIG_COUNT': '1', 'GIT_CONFIG_KEY_0': 'diff.renameLimit', 'GIT_CONFIG_VALUE_0': '1'}
+        saved = {key: os.environ.get(key) for key in keys}
+        os.environ.update(keys)
+        try:
+            findings = self.scan(root, base)
+        finally:
+            for key, value in saved.items():
+                if value is None:
+                    os.environ.pop(key, None)
+                else:
+                    os.environ[key] = value
+        self.assertEqual(findings, [])
+
     def test_every_class_case_hyphen_and_width_is_rejected(self):
         root, base = self.repository()
         tokens = []
