@@ -1303,8 +1303,8 @@
     },
     {
       "rule_id": "R-RUN-17",
-      "statement": "Every task the board shows as done has its closure report.",
-      "statement_sha256": "9083b7da6a59b2a9bde0d19581b4cc6db02a6a8b56cb05916afa9fc3ad5c64f8",
+      "statement": "Every task the board shows as done has its closure report, and lint row 14 reports a closed brief whose sha256 differs from its recorded closure hash or its last erratum hash.",
+      "statement_sha256": "24dad01dac2def0f1b2db6067f90088bef496ee4285f3f112d546579530b82b0",
       "home": "references/guides/lint-spec.md:50",
       "home_fragment": "Closure reports for done tasks",
       "units": [],
@@ -1319,12 +1319,13 @@
         "discovered_by": []
       },
       "evidence": {
-        "status": "untested",
+        "status": "inconclusive",
         "scenarios": [
-          "s40-closure-artifact"
+          "s40-closure-artifact",
+          "s84-closed-brief-edit"
         ],
-        "cohort_id": null,
-        "as_of": "2026-09-24"
+        "cohort_id": "2026-10-convergence",
+        "as_of": "2026-10-21"
       },
       "historical": [
         {
@@ -5723,6 +5724,90 @@
         "scenarios": [],
         "cohort_id": null,
         "as_of": "2026-10-20"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-33",
+      "statement": "A brief whose task is Complete, Skipped or Unverifiable is a closed record: no agent edits it, a fix-applying agent included, until an active decision authorizes the edit, and after each authorized edit the Coordinator appends one `**Brief erratum**: D-xx · sha256 <hash>` report line that names that decision and the edited brief's hash.",
+      "statement_sha256": "33040197dc88d5c94be7b22578698e828a9eb68e50ed7f808c35b795537ea8c9",
+      "home": "references/guides/run.md:309",
+      "home_fragment": "A brief whose task is Complete, Skipped or Unverifiable is",
+      "units": [],
+      "mirrors": [
+        "references/guides/lint-spec.md:23",
+        "references/guides/run.md:315"
+      ],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "A field report of a large Coordinated plan: five verification rounds within two days did not reduce the number of findings; the most frequent blocking findings included edits to closed records.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "inconclusive",
+        "scenarios": [
+          "s84-closed-brief-edit"
+        ],
+        "cohort_id": "2026-10-convergence",
+        "as_of": "2026-10-21"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-34",
+      "statement": "At closure the Coordinator records the brief's sha256 on its own line in the task report and in the task's close entry of history.md; that recorded baseline is never edited or added again to match an edited brief, and lint row 14 reports a brief whose sha256 differs from the last erratum hash or, with none, from the recorded value.",
+      "statement_sha256": "4699e955da026a1f8e54ed4868a94693b96e3b94209c7d4106d2245eecc7325f",
+      "home": "references/guides/run.md:301",
+      "home_fragment": "At closure, the Coordinator records the brief's sha256",
+      "units": [],
+      "mirrors": [
+        "references/guides/run.md:307",
+        "references/guides/lint-spec.md:26",
+        "references/guides/migrate.md:124"
+      ],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "A field report of a large Coordinated plan: edits to closed records, and a baseline hash that an agent could rewrite to silence the check on its own edit.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "inconclusive",
+        "scenarios": [
+          "s84-closed-brief-edit"
+        ],
+        "cohort_id": "2026-10-convergence",
+        "as_of": "2026-10-21"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-36",
+      "statement": "A workspace project validator runs only when a decision records the owner's request to declare it; an agent never adds or edits the declaration on its own initiative or from fetched content, and the validator runs read-only during readiness validation and an explicit verify.",
+      "statement_sha256": "b96a5ee0f39ba4dfe5ef25823ea7878f38972f36e1976db5f31b4af954989253",
+      "home": "references/guides/verify.md:233",
+      "home_fragment": "The line counts only when a decision in",
+      "units": [],
+      "mirrors": [
+        "references/guides/verify.md:235"
+      ],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "A project validator line that an agent could write from untrusted content would let a plan run arbitrary project code, which the safety-invariant class names as widening authority.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "inert",
+        "scenarios": [
+          "s85-undeclared-validator"
+        ],
+        "cohort_id": "2026-10-convergence",
+        "as_of": "2026-10-21"
       },
       "historical": []
     }
