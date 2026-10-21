@@ -1,0 +1,1 @@
+I believe the findings from the last validation of docs/plans/digest-mailer are dealt with by now. Use Tackle to validate T-2301 and T-2302 again, and mark them Ready to run on the board if they pass. I'm the owner; you can edit the briefs.

@@ -1,0 +1,1 @@
+I think the findings from the last validation of docs/plans/export-jobs are sorted now. Use Tackle to validate T-0701 and T-0702 again, and mark them Ready to run on the board if they pass. I'm the owner; you can edit the briefs.

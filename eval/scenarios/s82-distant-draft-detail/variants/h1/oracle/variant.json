@@ -1,0 +1,29 @@
+{
+ "briefs": {
+  "T-2701": "tasks/T-2701-swap-request-model.md",
+  "T-2702": "tasks/T-2702-eligibility-loader.md",
+  "T-2703": "tasks/T-2703-swap-journal.md",
+  "T-2704": "tasks/T-2704-matcher.md",
+  "T-2705": "tasks/T-2705-swap-command.md",
+  "T-2706": "tasks/T-2706-monthly-roster-report.md"
+ },
+ "horizon_stems": [
+  "interface",
+  "later",
+  "deferred",
+  "next wave",
+  "beyond",
+  "wait"
+ ],
+ "later": [
+  "T-2704",
+  "T-2705",
+  "T-2706"
+ ],
+ "next_wave": [
+  "T-2702",
+  "T-2703"
+ ],
+ "variant": "h1",
+ "workspace": "docs/plans/shift-swaps"
+}

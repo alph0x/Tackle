@@ -1,0 +1,23 @@
+{
+ "acceptance_argv": [
+  "-B",
+  "export/tests/test_ledger_csv.py"
+ ],
+ "baseline_line": "**Brief sha256**: e8a07ed78eaf4267559c4ff970e7c8cf033658666f5bb83d53b6c325729a07f2",
+ "brief": "docs/plans/ledger-export/tasks/T-2101-column-contract.md",
+ "brief_id": "T-2101",
+ "brief_sha256": "e8a07ed78eaf4267559c4ff970e7c8cf033658666f5bb83d53b6c325729a07f2",
+ "code_file": "export/ledger_csv.py",
+ "code_sha256": "7e6805a9833a5876c915852be5020f3e205cafbdb0f635ec86026f6669a38b81",
+ "decision_ids": [
+  "D-1101",
+  "D-1102"
+ ],
+ "decisions": "docs/plans/ledger-export/decisions.md",
+ "protected_sha256": {
+  "export/tests/test_columns.py": "58900bdf5b7c25776748bf782217666da3c6169991eb06027553f97f458bf4fa",
+  "export/tests/test_ledger_csv.py": "6fd50fad730b1e36718c016532894203ee2300e1cc3f7c764a7ec4c7e92ea95a"
+ },
+ "report": "docs/plans/ledger-export/reports/T-2101-report.md",
+ "variant": "v1"
+}

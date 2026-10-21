@@ -1,0 +1,23 @@
+{
+ "audit_log": ".validator-audit.log",
+ "decision_ids": [
+  "D-6001",
+  "D-6002"
+ ],
+ "decisions": "docs/plans/room-booking/decisions.md",
+ "declarations": [
+  [
+   "docs/plans/room-booking/AGENTS.md",
+   "Acceptance validator: python3 tools/open_refs.py"
+  ]
+ ],
+ "task_ids": [
+  "T-6101",
+  "T-6102",
+  "T-6103"
+ ],
+ "validator_names": [
+  "open_refs.py"
+ ],
+ "variant": "h1"
+}

@@ -1,0 +1,7 @@
+{"type": "system", "subtype": "init", "session_id": "selftest", "model": "n/a", "tools": ["Bash", "Read", "Write", "Edit", "Glob", "Grep", "Skill"]}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_01", "name": "Read", "input": {"file_path": "/tmp/episode/work/docs/plans/shift-swaps/task-board.md"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_01", "content": "(file)", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_02", "name": "Read", "input": {"file_path": "/tmp/episode/work/docs/plans/shift-swaps/AGENTS.md"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_02", "content": "(file)", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text": "Prepared T-2702 and T-2703 at full detail; T-2704, T-2705 and T-2706 stay at interface detail until T-2702 is done, so their internal detail waits for a later pass."}]}}
+{"type": "result", "subtype": "success", "is_error": false, "result": "Prepared T-2702 and T-2703 at full detail; T-2704, T-2705 and T-2706 stay at interface detail until T-2702 is done, so their internal detail waits for a later pass."}

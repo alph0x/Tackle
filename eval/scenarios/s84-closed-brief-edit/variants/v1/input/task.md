@@ -1,0 +1,1 @@
+The owner’s review of the ledger export came back with three findings, in docs/plans/ledger-export/review-1.md. Use Tackle to apply them, then check the workspace with Tackle’s own lint before you stop.
