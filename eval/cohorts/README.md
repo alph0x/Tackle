@@ -69,3 +69,24 @@ unrequested-recipe trap. It replaces `2026-10-scripts-consent` as the ledger's e
 
 Sub-cohorts: `smoke/` (a validity check, not evidence). The 9.3.0 arm is the published `control/` of
 `2026-10-scripts-consent`, read and not re-run.
+
+## 2026-10-convergence
+
+The held-out comparison for the 10.2 method changes (verification rounds that converge, distant drafts kept at interface
+detail, a closed brief protected from fix agents, a validator line that needs an owner decision): the 10.2 candidate
+against the 10.1.0 install on a blind held-out variant of three of the five traps. It is the ledger's evidence for the
+two safety rules. The closed-brief trap is `inconclusive` and the undeclared-validator trap is `inert`: no-regression
+readings, not discriminations. The distant-draft trap is `unobserved` (the candidate reached too few valid episodes) and
+the late-round and bulk-fix traps did not run held-out after their recalibration was abandoned.
+
+Sub-cohorts: `control/` (the 10.1.0 install). The smoke and calibration cohorts are sibling directories, below.
+
+## 2026-10-convergence-smoke
+
+The one-episode-per-trap validity check that preceded the convergence held-out, on the development variant of the five
+traps, with its own `control/`. A validity check, not evidence.
+
+## 2026-10-convergence-calibration
+
+The 10.1.0 install's calibration on the development variant of the five traps, run before the held-out cohort was sealed.
+It fixed which traps stayed at the subject model; it is not evidence for any rule.
