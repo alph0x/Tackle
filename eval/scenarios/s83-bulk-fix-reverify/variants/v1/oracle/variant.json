@@ -1,0 +1,53 @@
+{
+ "added_edges": [
+  [
+   "T-0802",
+   "T-0803"
+  ],
+  [
+   "T-0803",
+   "T-0804"
+  ],
+  [
+   "T-0804",
+   "T-0802"
+  ]
+ ],
+ "briefs": {
+  "T-0801": "tasks/T-0801-catalog-schema.md",
+  "T-0802": "tasks/T-0802-row-reader.md",
+  "T-0803": "tasks/T-0803-stemmer.md",
+  "T-0804": "tasks/T-0804-ranker.md",
+  "T-0805": "tasks/T-0805-sync-command.md"
+ },
+ "cycle_scope": [
+  "T-0802",
+  "T-0803",
+  "T-0804",
+  "T-0805"
+ ],
+ "cycle_stems": [
+  "cycle",
+  "cyclic",
+  "circular"
+ ],
+ "markers": [
+  {
+   "path": "tasks/T-0801-catalog-schema.md",
+   "present": "empty"
+  },
+  {
+   "absent": "tests.test_cli_main",
+   "path": "tasks/T-0805-sync-command.md"
+  }
+ ],
+ "scope": [
+  "T-0801",
+  "T-0802",
+  "T-0803",
+  "T-0804",
+  "T-0805"
+ ],
+ "variant": "v1",
+ "workspace": "docs/plans/catalog-sync"
+}

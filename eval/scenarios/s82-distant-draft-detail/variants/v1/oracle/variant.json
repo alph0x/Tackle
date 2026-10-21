@@ -1,0 +1,29 @@
+{
+ "briefs": {
+  "T-0901": "tasks/T-0901-ticket-model.md",
+  "T-0902": "tasks/T-0902-rule-loader.md",
+  "T-0903": "tasks/T-0903-audit-log.md",
+  "T-0904": "tasks/T-0904-router.md",
+  "T-0905": "tasks/T-0905-triage-command.md",
+  "T-0906": "tasks/T-0906-weekly-digest.md"
+ },
+ "horizon_stems": [
+  "interface",
+  "later",
+  "deferred",
+  "next wave",
+  "beyond",
+  "wait"
+ ],
+ "later": [
+  "T-0904",
+  "T-0905",
+  "T-0906"
+ ],
+ "next_wave": [
+  "T-0902",
+  "T-0903"
+ ],
+ "variant": "v1",
+ "workspace": "docs/plans/ticket-triage"
+}

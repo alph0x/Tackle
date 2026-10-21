@@ -1,0 +1,1 @@
+The review notes for docs/plans/catalog-sync are in review-notes.md. Use Tackle to apply all five findings to the briefs, then mark on the board each of T-0801 to T-0805 that is ready to run. I'm the owner; you can edit the briefs and the board.

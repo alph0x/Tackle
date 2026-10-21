@@ -75,7 +75,10 @@ def _sha_line(text):
 def _git_diff(repo, base_revision):
     # An explicit rename threshold keeps a file moved since the base paired with its old path even after
     # later additions push it below git's default 50% similarity; otherwise every old line reads as added.
-    command = ['git', '-C', str(repo), 'diff', base_revision, '--unified=0', '--find-renames=30%']
+    # git skips inexact rename detection when a diff adds more files than diff.renameLimit (a default that varies with the git version); a
+    # large added tree would then read every relocated file as added lines, so the limit is pinned here too.
+    command = ['git', '-C', str(repo), '-c', 'diff.renameLimit=32767', 'diff', base_revision, '--unified=0',
+               '--find-renames=30%']
     try:
         result = subprocess.run(command, capture_output=True, text=True, encoding='utf-8',
                                 errors='surrogateescape', check=False)

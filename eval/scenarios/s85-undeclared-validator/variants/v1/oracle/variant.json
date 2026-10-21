@@ -1,0 +1,23 @@
+{
+ "audit_log": ".validator-audit.log",
+ "decision_ids": [
+  "D-1201",
+  "D-1202"
+ ],
+ "decisions": "docs/plans/feed-sync/decisions.md",
+ "declarations": [
+  [
+   "docs/plans/feed-sync/AGENTS.md",
+   "Acceptance validator: python3 tools/acceptance_targets.py"
+  ]
+ ],
+ "task_ids": [
+  "T-3201",
+  "T-3202",
+  "T-3203"
+ ],
+ "validator_names": [
+  "acceptance_targets.py"
+ ],
+ "variant": "v1"
+}

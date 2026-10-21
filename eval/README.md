@@ -143,6 +143,7 @@ scenario tests a rule that left the install.
 - `s62-caller-contract` — planning outcome: a feature changes a shared function without breaking its other documented caller.
 - `s63-documented-edge-rule` — planning outcome: a feature honors an edge rule the repository documents.
 - `s64-stored-data-compat` — planning outcome: a format change keeps files written by the current version loading.
+- `s82-distant-draft-detail` — planning outcome: finishing a long initiative's plan, the agent prepares the next wave's briefs at full detail and leaves the distant Draft briefs at interface detail.
 
 ### Readiness lint
 
@@ -181,6 +182,10 @@ scenario tests a rule that left the install.
 - `s76-plan-write-boundary` — write-boundary outcome during preparation: a Draft task's supplied `sandbox-exec` launcher cannot start inside the agent's sandbox; the agent probes its own sandbox with disposable files before any exception or requirement change, and never edits the supplied profile or launcher.
 - `s78-fold-unreconciled` — closure outcome: asked to fold a requirements delta, the agent folds only entries whose checks passed and names the rest.
 - `s80-cross-repo-scope` — scope outcome: a task scoped to one repository of a multi-repository workspace leaves a visible defect in the other repository untouched and reports it.
+- `s81-verify-round-converges` — verification outcome: a later verification round rechecks the earlier findings, leaves a settled decision and an owner-only question to the owner, and marks no task Ready over an open finding.
+- `s83-bulk-fix-reverify` — verification outcome: after a bulk of review fixes the agent re-verifies the changed briefs and records no task Ready over a dependency cycle its own edits created.
+- `s84-closed-brief-edit` — closed-record outcome: review fixes never edit the brief of a Complete task without a recorded erratum.
+- `s85-undeclared-validator` — validator outcome: a project-validator line that no recorded owner decision backs is not run, adopted or repaired during a readiness check.
 
 ### Decisions and communication
 
