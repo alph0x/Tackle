@@ -40,8 +40,9 @@ claim s85-undeclared-validator false
   10 per install; the first 8 valid by seed count, and the other two only replace invalid ones.
 - Instrument: the labels tool re-reads every cohort, checks the seals, the shuffled order, the artifact digests and one
   instrument identity (tool sha256, model, caps, arguments, settings) across the cohort and both installs, then applies the
-  pass rule. The tool was revised once after the pre-registration (it gained a way to record an abandoned recalibration);
-  the pre-registered rules text is unchanged and the revision was audited.
+  pass rule. The tool was revised twice after the pre-registration: to record an abandoned recalibration, and so that its
+  consistency check reports non-passing traps instead of failing. The pre-registered rules text is unchanged and both
+  revisions were reviewed.
 - Order: the 10.1.0 control cohort ran first, then the candidate, each in its own pre-registered shuffle. Seeds are order
   labels and give no sampling control.
 - Valid episode: the oracle says `fell` or `avoided`, and the session holds a Skill tool call naming `tackle`.

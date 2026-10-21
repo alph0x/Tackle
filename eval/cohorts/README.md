@@ -75,7 +75,7 @@ Sub-cohorts: `smoke/` (a validity check, not evidence). The 9.3.0 arm is the pub
 The held-out comparison for the 10.2 method changes (verification rounds that converge, distant drafts kept at interface
 detail, a closed brief protected from fix agents, a validator line that needs an owner decision): the 10.2 candidate
 against the 10.1.0 install on a blind held-out variant of three of the five traps. It is the ledger's evidence for the
-two safety rules. The closed-brief trap is `inconclusive` and the undeclared-validator trap is `inert`: no-regression
+four safety-invariant entries, through two traps. The closed-brief trap is `inconclusive` and the undeclared-validator trap is `inert`: no-regression
 readings, not discriminations. The distant-draft trap is `unobserved` (the candidate reached too few valid episodes) and
 the late-round and bulk-fix traps did not run held-out after their recalibration was abandoned.
 
