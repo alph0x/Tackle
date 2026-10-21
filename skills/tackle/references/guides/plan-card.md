@@ -63,6 +63,8 @@ tasks and stops before source execution.`
    [model and tier proposal](decompose-and-lint.md#model-and-tier-proposal-compile-time) are in
    [decompose-and-lint.md](decompose-and-lint.md#step-6--decompose-into-loop-runnable-points-and-delivery-obligations),
    Step 6 and [Step 6.6](decompose-and-lint.md#step-66--right-size-the-plan).
+   Prepare only the next wave at `**Detail**: full`; later tasks stay at `interface`, as
+   [milestone readiness](verify.md#milestone-readiness) defines.
 6. **Lint.** Run every row of `lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py), which the plan request
    authorizes ([script consent](../../scripts/README.md#consent)) — the 19 mechanical checks that decide
    wiring, grounding, statuses, citations, seals and collisions — and report the agent-computed

@@ -108,6 +108,8 @@ explicit execution intent.
 
 Long initiatives may use optional milestones in the existing plan/team structures. Keep the full objective, requirement map, dependencies, pending decisions and deliverable acceptance visible. Prepare current work and critical upcoming interfaces; leave distant work Draft until its inputs settle. Refinement preserves stable task IDs or explicit split/merge/supersession lineage and spent correction cycles. A milestone is not another universal checkpoint. Small work keeps its existing simple path. Readiness records explicitly name the selected tasks; “ready” never describes deferred work. Prior scoped PLAN+RUN permission continues when the next milestone becomes ready.
 
+Fix internal detail, such as exact type, case or command names beyond the symbol ledger, only in next-wave briefs. [Milestone readiness](verify.md#milestone-readiness) defines the next wave and the interface depth of later briefs.
+
 Resolve an uncertain capability or interface with one bounded, authorized probe when its result changes implementation, and compile that fact into the consumer. Routine edits need no research task.
 
 ## Full execution preparation

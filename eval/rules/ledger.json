@@ -610,7 +610,7 @@
       "rule_id": "R-PLAN-06",
       "statement": "PLAN validates coverage, dependencies, interfaces and semantic counterexamples.",
       "statement_sha256": "a46fb72de469b3c53649cac3eaf84fcc223ce869b64948a3bcb7499c0b2ef663",
-      "home": "references/guides/plan-card.md:77",
+      "home": "references/guides/plan-card.md:79",
       "home_fragment": "Readiness validation",
       "units": [],
       "mirrors": [],
@@ -662,7 +662,7 @@
       "rule_id": "R-PLAN-07",
       "statement": "A workspace PLAN verifies its scaffold files and runs all 19 lint rows with `scripts/lint.py`, and reports and fixes failures before handoff.",
       "statement_sha256": "f7980e3617ac3a2c7c0eb1092117ce7f631c25d3e6ea4ef80d36d5a5cd0702e6",
-      "home": "references/guides/plan-card.md:66",
+      "home": "references/guides/plan-card.md:68",
       "home_fragment": "with [`scripts/lint.py`](../../scripts/lint.py)",
       "units": [],
       "mirrors": [],
@@ -820,7 +820,7 @@
       "rule_id": "R-PLAN-12",
       "statement": "Planning always runs on a more capable tier than the Executor's whenever more than one suitable tier binds; a one-tier harness records its limitation. These are role proposals, not claims that a host binding occurred.",
       "statement_sha256": "f2516914cd7def40bbf47bf3973d6b24cd128e5ac88a7d378b148c84cc53d2ff",
-      "home": "references/guides/decompose-and-lint.md:158",
+      "home": "references/guides/decompose-and-lint.md:160",
       "home_fragment": "Planning always runs on a more capable tier",
       "units": [],
       "mirrors": [],
@@ -4328,7 +4328,7 @@
       "rule_id": "R-PLAN-16",
       "statement": "Each subagent role targets the cheapest available model that fits its tier in the team table. Before the first dispatch, show the owner the concrete role-to-model table for every subagent role and get an explicit confirmation. A run intent is not a model confirmation. Any later model change for a role, an escalation included, needs a new confirmation before that dispatch. Without that confirmation, the affected task waits on the owner.",
       "statement_sha256": "9e1444771bd9b09f8349106d55d032baef3862449540e6d91dd19af142217542",
-      "home": "references/guides/decompose-and-lint.md:165",
+      "home": "references/guides/decompose-and-lint.md:167",
       "home_fragment": "Each subagent role targets the cheapest",
       "units": [],
       "mirrors": [],
@@ -4351,7 +4351,7 @@
       "rule_id": "R-PLAN-17",
       "statement": "When a task looks too hard for the cheapest bindable tier, strengthen its brief before any Tier deviation. Add the missing context, split the work into smaller steps, and give exact commands with their expected results. The planner, on a more capable tier, writes the brief so that the Executor makes no design decision. A brief that leaves one to the Executor is not ready. When an Executor cannot finish, the planner strengthens the brief first; an escalation is the exception. A Tier deviation is the last resort, and its `**Tier reason**` says why a stronger brief is not enough. A review role (lock or complete) runs one tier above the Executor whose task it reviews. When that tier does not bind, record the limitation. An audit runs at the Auditor's tier in the team table.",
       "statement_sha256": "5ee7a8f573a659ff497f3dca95293acb2c5b4a121321266cc4841a383194cc32",
-      "home": "references/guides/decompose-and-lint.md:171",
+      "home": "references/guides/decompose-and-lint.md:173",
       "home_fragment": "When a task looks too hard for the cheapest",
       "units": [],
       "mirrors": [],
@@ -5668,6 +5668,54 @@
       "origin": {
         "added_in": "10.2.0",
         "trigger": "A field report of a large Coordinated plan: orphan or double-owned symbols, decisions not applied by their owner, and owners that could never run were the most frequent blocking findings of five non-converging verification rounds.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-20"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-34",
+      "statement": "The next wave is the open tasks whose every dependency is Complete, In progress or Checking; verification runs at full depth only on the selected next-wave tasks and at interface level elsewhere, and a finding about the internal detail of an interface brief is dismissed.",
+      "statement_sha256": "3c55d5e5a4f187ab5a6a86b0fa2ae57f83b68b27c6d8de9f15055decfad30cd4",
+      "home": "references/guides/verify.md:213",
+      "home_fragment": "**Horizon depth.** The next wave is the open tasks",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "A field report of a large Coordinated plan: five verification rounds within two days did not reduce the number of findings; the most frequent blocking findings were orphan or double-owned symbols, decisions not applied by their owner and edits to closed records, and bulk fixes introduced new defects.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-20"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-35",
+      "statement": "PLAN fixes internal detail only in next-wave briefs and keeps later tasks at interface detail; an interface brief is never Ready to run.",
+      "statement_sha256": "34691b74d26d68963981c613d735d548708f7a1e2907a82f3f5c398c78acda44",
+      "home": "references/guides/decompose-and-lint.md:111",
+      "home_fragment": "Fix internal detail, such as exact type, case or",
+      "units": [],
+      "mirrors": [
+        "references/guides/plan-card.md:66"
+      ],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "A field report of a large Coordinated plan: five verification rounds within two days did not reduce the number of findings; the most frequent blocking findings were orphan or double-owned symbols, decisions not applied by their owner and edits to closed records, and bulk fixes introduced new defects.",
         "discovered_by": []
       },
       "evidence": {
