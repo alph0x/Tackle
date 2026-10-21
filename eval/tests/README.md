@@ -16,7 +16,7 @@ consumer; dates and experiment identifiers belong to evidence provenance.
 | product | [product/lint/task-contracts](product/lint/task-contracts/) | Task contracts, readiness and acceptance fields. |
 | product | [product/lint/task-identity](product/lint/task-identity/) | Task identity, scaffold paths and workspace naming. Lint row 2 resolves and refuses sibling workspace references as the plan view does. |
 | product | [product/migration](product/migration/) | Workspace schema migration, scripts and census refusal. Migration keeps historical record paths, makes citations follow their moved files, leaves links into other workspaces unchanged, reports what history still cites, and keeps the text after a legacy status glyph as a board note. |
-| product | [product/plan](product/plan/) | Plan section order, the controlled-writing script and guide for owner texts and specifications, and the verify guide's multi-round protocol and executor-centric severity. |
+| product | [product/plan](product/plan/) | Plan section order, the controlled-writing script and guide for owner texts and specifications, and the verify guide's multi-round protocol and executor-centric severity. It also covers horizon-scoped readiness and the MEDIUM severity sentence. |
 | product | [product/requirements-base](product/requirements-base/) | Requirements base parsing, delta validation, reconciliation and fold through the shipped script, and the guide's rules. |
 | product | [product/resume](product/resume/) | The cold-resume read order, its links from every read list, the spent-count source and the closure listing of open obligations. |
 | product | [product/run/card](product/run/card/) | Execution state transitions, template bindings and adversary-checkpoint records. |

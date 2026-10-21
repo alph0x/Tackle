@@ -14,12 +14,13 @@
         "test_controlled_writing.py",
         "test_intake_requests.py",
         "test_plan.py",
-        "test_verify_rounds.py"
+        "test_verify_rounds.py",
+        "test_horizon_readiness.py"
       ],
-      "tests": 14,
+      "tests": 19,
       "source": "eval/plan",
       "category": "product",
-      "purpose": "Plan section order, the controlled-writing script and guide for owner texts and specifications, and the verify guide's multi-round protocol and executor-centric severity."
+      "purpose": "Plan section order, the controlled-writing script and guide for owner texts and specifications, and the verify guide's multi-round protocol and executor-centric severity. It also covers horizon-scoped readiness and the MEDIUM severity sentence."
     },
     {
       "path": "eval/tests/product/run/card",

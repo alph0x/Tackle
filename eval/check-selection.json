@@ -45,7 +45,8 @@
         "skills/tackle/scripts/controlled_writing.py",
         "skills/tackle/references/guides/verify.md",
         "skills/tackle/references/guides/scaffold.md",
-        "skills/tackle/references/guides/plan-card.md"
+        "skills/tackle/references/guides/plan-card.md",
+        "skills/tackle/references/guides/decompose-and-lint.md"
       ],
       "families": [
         "eval/tests/product/plan"

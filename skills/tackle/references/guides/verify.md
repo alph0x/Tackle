@@ -210,6 +210,8 @@ optional depth artifact holding one table.
 
 For long initiatives, validate complete requirement ownership and critical cross-milestone interfaces now; detailed briefs may be deferred to their input boundary. Readiness applies only to the explicitly selected prepared tasks. A later Draft task does not prevent independent prepared work, but a missing product decision or incompatible dependency blocks its consumers. Every deferred requirement retains an owner and future check obligation. Deliverable acceptance still covers the entire authorized objective; a ready milestone or all-green prepared subset cannot close it. A contract/interface change invalidates affected prepared consumers and deferred assumptions.
 
+**Horizon depth.** The next wave is the open tasks whose every dependency is Complete, In progress or Checking, or that depend on nothing. PLAN prepares the next wave at `**Detail**: full` and leaves later tasks Draft at `**Detail**: interface`. Verification runs at full depth only on the selected next-wave tasks: every step above, the semantic counterexample review and the fixtures. Elsewhere it checks requirement ownership in the coverage matrix, dependency sanity, the symbol ledger and decision ownership. A finding about the internal detail of an interface brief is out of scope and is dismissed by this rule. An interface brief is never Ready to run. When its dependencies enter the next wave, a PLAN pass raises it to `full` and verifies it at full depth.
+
 ## PLAN-only intent and handoff
 
 Preparation must record `INTENT: PLAN prepares tasks and stops before source execution.` PLAN may write its
