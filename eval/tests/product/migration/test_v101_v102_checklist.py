@@ -2,7 +2,9 @@
 gate for stamp 10.2.0, its steps name the artifacts they apply and end with the stamp, and a workspace shaped like
 10.1 adopts the closed-record hash and the open-brief fields step by step. The steps are applied mechanically
 (the hash with the shipped `sha256sum` or `shasum -a 256` command the first step names) and judged by the shipped
-lint rows, never by a copy of their logic.
+lint rows, never by a copy of their logic. Every sentence of the steps that a wrong checklist could change without
+failing a shipped row is pinned by a phrase assertion (ordering, ancestor and sibling sources, one producer, the
+superseded predecessor, the round cap, the Skipped repairs, the task boundary and the history line).
 """
 from pathlib import Path
 import re
@@ -114,11 +116,74 @@ class ChecklistText(unittest.TestCase):
         baseline = next(i for i, item in enumerate(items) if 'sha256sum' in item)
         self.assertLess(baseline, len(items) - 1)
 
-    def test_step_three_states_the_position_and_that_it_is_the_only_closed_record_change(self):
+    def test_step_three_states_the_position_the_history_line_and_the_order(self):
         three = step(self.text, 3)
         for phrase in ("right before the report's `Final status:` line, or right before its `**Remains**:` line when it has none",
-                       "only change adoption makes to a closed task's records", 'outside code fences'):
+                       "only changes adoption makes to a closed task's records", 'outside code fences',
+                       '`Brief sha256 T-NN: <the same hash>`', 'to the end of `history.md`',
+                       'History only grows: never edit an older entry.',
+                       'Do both before any other edit to a closed brief.'):
             self.assertIn(phrase, three)
+
+    def test_the_hash_is_taken_and_recorded_before_any_brief_is_edited_and_the_stamp_is_last(self):
+        items = numbered(self.text)
+        hashed = next(i for i, item in enumerate(items) if 'sha256sum' in item)
+        recorded = next(i for i, item in enumerate(items) if '`**Brief sha256**:' in item)
+        edits = [i for i, item in enumerate(items) if any(p in item for p in ('`- **Detail**:', '`**Produces**`', '`**Owner**:'))]
+        self.assertEqual((hashed, recorded), (1, 2))
+        self.assertTrue(edits and min(edits) > recorded, (edits, recorded))
+        self.assertEqual([i for i, item in enumerate(items) if 'Methodology: Tackle' in item], [len(items) - 1])
+        self.assertEqual([i for i, item in enumerate(items) if 'scripts/lint.py' in item], [7, len(items) - 1])
+
+    def test_step_four_authorizes_an_erratum_by_an_active_decision_after_step_three(self):
+        four = step(self.text, 4)
+        for phrase in ('After step 3, a closed brief changes only by erratum.', 'An active decision authorizes the edit',
+                       'append `**Brief erratum**: D-NN · sha256 <hash after the edit>` to its report'):
+            self.assertIn(phrase, four)
+
+    def test_steps_five_and_six_edit_an_in_progress_or_checking_brief_only_at_its_task_boundary(self):
+        five, six = step(self.text, 5), step(self.text, 6)
+        self.assertIn("Edit the brief of an In progress or Checking task only at that task's boundary, never during an attempt.", five)
+        self.assertIn('The task-boundary rule of step 5 applies here too.', six)
+
+    def test_step_six_states_the_source_rules_and_the_single_producer(self):
+        six = step(self.text, 6)
+        for phrase in ('Every consumed name gets one source: `from T-NN`, `from T-NN [sibling]` or `exists` with an anchored citation.',
+                       'A `from T-NN` task must be an ancestor through `Depends on`.',
+                       "A `[sibling]` source must also appear in the brief's own `Depends on` cell.",
+                       'A name has one producing brief; row 18 fails a name that two briefs produce.',
+                       'An interface brief needs no ledger.'):
+            self.assertIn(phrase, six)
+        self.assertNotIn('descendant', six)
+
+    def test_step_seven_names_the_successor_of_a_superseded_decision(self):
+        seven = step(self.text, 7)
+        self.assertIn('When a decision with these lines supersedes an earlier one, the earlier heading names it, '
+                      'as `⤴ superseded by D-NN`. Row 19 fails a heading that names another, and a still-active predecessor is no finding.', seven)
+        self.assertIn("The owner's brief must cite the decision id and, at `full` detail, carry each named clause compiled.", seven)
+
+    def test_step_eight_expects_19_silent_rows_and_repairs_a_closed_brief_only_by_erratum(self):
+        self.assertIn('expect 19 of 19 rows silent. Repair a finding from another row as its own guide states, '
+                      'and a closed brief only by erratum.', step(self.text, 8))
+
+    def test_step_nine_states_what_keeps_working_and_the_two_row_two_repairs(self):
+        nine = step(self.text, 9)
+        for phrase in ('Rows 18 and 19 skip legacy briefs and decisions, and row 14 asks for the hash only after the 10.2.0 stamp.',
+                       'Repair the first by depending on the successor, and the second by naming the Skipped task on '
+                       "an open successor's `**Lineage**:` line."):
+            self.assertIn(phrase, nine)
+        self.assertNotIn('depending on the Skipped task', nine)
+        self.assertNotIn("the successor's `**Lineage**", nine.replace("an open successor's", ''))
+
+    def test_step_ten_states_the_round_cap_and_its_override_and_the_validator_decision(self):
+        ten = step(self.text, 10)
+        self.assertIn('capped at three rounds unless `AGENTS.md` sets `Verify round cap: N`', ten)
+        self.assertIn('An `Acceptance validator:` line in `AGENTS.md` needs a decision recording the owner\'s request.', ten)
+
+    def test_the_stamp_waits_for_every_complete_task(self):
+        last = step(self.text, len(numbered(self.text)))
+        self.assertIn('only after step 3 covers every Complete task', last)
+        self.assertIn('From now on row 14 requires that line in each Complete report.', last)
 
     def test_step_five_states_the_detail_rule(self):
         five = step(self.text, 5)
@@ -183,11 +248,18 @@ class Adoption(unittest.TestCase):
     def baseline(self, final_status=False):
         """Step 3, from the checklist's own line, at the position step 3 states."""
         text = MIGRATE.read_text(encoding='utf-8')
-        line = span_with(step(text, 3), 'Brief sha256').replace('<64 lowercase hex digits>', brief_hash(self.ws / 'tasks/{}.md'.format(TA)))
+        line = span_with(step(text, 3), '**Brief sha256**').replace('<64 lowercase hex digits>', brief_hash(self.ws / 'tasks/{}.md'.format(TA)))
         name = 'reports/{}-report.md'.format(TA)
         if final_status:
             self.edit(name, lambda report: report.replace(RECEIPT, 'Final status: Complete. Next owner: the coordinator.\n' + RECEIPT))
         self.edit(name, lambda report: place(report, line))
+        return line
+
+    def history_line(self):
+        """Step 3's second line, from the checklist's own text, appended to the end of history.md."""
+        text = MIGRATE.read_text(encoding='utf-8')
+        line = span_with(step(text, 3), 'Brief sha256 T-NN').replace('T-NN', TA).replace('<the same hash>', brief_hash(self.ws / 'tasks/{}.md'.format(TA)))
+        self.edit('history.md', lambda history: history.rstrip('\n') + '\n' + line + '\n')
         return line
 
     def test_a_workspace_that_adopts_nothing_passes_every_row(self):
@@ -235,6 +307,52 @@ class Adoption(unittest.TestCase):
         self.edit('task-board.md', lambda text: re.sub(r'(\| %s \|.*\|) Draft \|' % TB, r'\1 Ready to run |', text))
         result = self.rows()
         self.assertIn('interface brief ready: ' + TB, result[18][1], result)
+
+    def test_both_step_three_lines_pass_and_a_baseline_rewritten_after_an_edit_is_caught(self):
+        self.baseline()
+        self.history_line()
+        self.stamp('10.2.0')
+        self.only({})
+        self.edit('tasks/{}.md'.format(TA), lambda text: text + '\nAn edit after closure.\n')
+        report = 'reports/{}-report.md'.format(TA)
+        new_hash = brief_hash(self.ws / 'tasks/{}.md'.format(TA))
+        self.edit(report, lambda text: re.sub(r'(\*\*Brief sha256\*\*: )[0-9a-f]{64}', lambda m: m.group(1) + new_hash, text))
+        self.only({14: ['rewritten brief hash: ' + TA]})
+
+    def test_the_history_line_alone_never_replaces_the_report_line(self):
+        self.history_line()
+        self.stamp('10.2.0')
+        self.only({14: ['rewritten brief hash: ' + TA]})
+        self.baseline()
+        self.only({})
+
+    def test_a_closed_brief_edit_with_both_lines_still_needs_the_erratum(self):
+        self.baseline()
+        self.history_line()
+        self.edit('tasks/{}.md'.format(TA), lambda text: text + '\nAn edit after closure.\n')
+        self.only({14: ['closed brief changed: ' + TA]})
+        template = span_with(step(MIGRATE.read_text(encoding='utf-8'), 4), 'Brief erratum')
+        line = template.replace('D-NN', DA).replace('<hash after the edit>', brief_hash(self.ws / 'tasks/{}.md'.format(TA))) + '\n'
+        self.edit('reports/{}-report.md'.format(TA), lambda text: text + line)
+        self.only({})
+
+    def test_the_earlier_heading_must_name_the_decision_that_supersedes_it(self):
+        later, earlier, other = ident('D', 3), ident('D', 4), ident('D', 5)
+        self.edit('tasks/{}.md'.format(TB), lambda text: text + '\nThis task applies {}.\n'.format(later))
+        self.edit('decisions.md', lambda text: text
+                  + '\n## {} \u00b7 Earlier \u00b7 \u2934 superseded by {} \u00b7 2026-09-22, session 1\n\n**Decision**: earlier.\n'.format(earlier, other)
+                  + '\n## {} \u00b7 New \u00b7 \u2705 active \u00b7 2026-09-25, session 1\n\n**Decision**: new.\n**Supersedes**: {}\n**Owner**: {}\n'.format(later, earlier, TB))
+        self.only({19: ['stale supersede: {} supersedes {} (in force: {})'.format(later, earlier, other)]})
+        self.edit('decisions.md', lambda text: text.replace('superseded by ' + other, 'superseded by ' + later, 1))
+        self.only({})
+
+    def test_a_still_active_predecessor_is_no_finding(self):
+        later, earlier = ident('D', 3), ident('D', 4)
+        self.edit('tasks/{}.md'.format(TB), lambda text: text + '\nThis task applies {}.\n'.format(later))
+        self.edit('decisions.md', lambda text: text
+                  + '\n## {} \u00b7 Earlier \u00b7 \u2705 active \u00b7 2026-09-22, session 1\n\n**Decision**: earlier.\n'.format(earlier)
+                  + '\n## {} \u00b7 New \u00b7 \u2705 active \u00b7 2026-09-25, session 1\n\n**Decision**: new.\n**Supersedes**: {}\n**Owner**: {}\n'.format(later, earlier, TB))
+        self.only({})
 
     def decide(self, line):
         self.edit('tasks/{}.md'.format(TB), lambda text: text + '\nThis task applies {}.\n'.format(DA))
