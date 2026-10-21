@@ -280,7 +280,7 @@ class LintRowTests(unittest.TestCase):
                 self.assertNotIn(b'|', row['command'])
 
     def test_status_rows_share_the_header_extractor(self):
-        for number in (3, 8, 10, 11, 12, 14):
+        for number in (3, 7, 8, 10, 11, 12, 14):
             with self.subTest(row=number):
                 self.assertIn(EXTRACTOR.encode(), rows()[number]['command'])
 
