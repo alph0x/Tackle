@@ -20,8 +20,8 @@ a script adds or updates its row.
 | [migrate/step_pre3_to_3.py](migrate/step_pre3_to_3.py) | `b08e63d7182d5a51d30a1973ba3f098448a174e208e9739783688d7ca82ab4b3` |
 | [capture.py](capture.py) | `5fd79dbbd5edd2efb308e22d9bb71e5007a80f425fde41aa5b297adc02cb755d` |
 | [evidence_capture.py](evidence_capture.py) | `f542532dc57a0e1dc7b101da8371822f66959683b2852e29b816000fef6e1ce0` |
-| [lint_runner.py](lint_runner.py) | `33469e45996777b0632f8c18b0617e84f440b75721b4a8337b58f93461608e8b` |
-| [lint.py](lint.py) | `e6aa42d846ce562559a1bcd33eba2baaba711811cd2ddd8fa90438a897269d94` |
+| [lint_runner.py](lint_runner.py) | `0469ea0e7c5eb4b984a43b26bba6c6cb37216008094b727764899db9f979fcd6` |
+| [lint.py](lint.py) | `ecc461a4b82fe6a171f029bd7ef12adc03ca53be4855f923433b20bf69c1920f` |
 | [context_bundle.py](context_bundle.py) | `5bed1907877c5bb016d8555969eef0c564f70b11aa7bf707849b3cf4b1c0d63f` |
 | [record_store.py](record_store.py) | `8983f36d60a19894cbc215b8d34a3805d82fa50d03195650af9c58d3b8e4d640` |
 | [decompose_check.py](decompose_check.py) | `22a9efddfbcf7ef33dfeac625c3c2fcdd786b99bb3beda6f555b872f2c15a6f5` |
