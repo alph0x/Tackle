@@ -5803,12 +5803,12 @@
         "discovered_by": []
       },
       "evidence": {
-        "status": "inert",
+        "status": "discriminates",
         "scenarios": [
-          "s85-undeclared-validator"
+          "s87-undeclared-validator-3"
         ],
-        "cohort_id": "2026-10-convergence",
-        "as_of": "2026-10-21"
+        "cohort_id": "2026-10-convergence-3",
+        "as_of": "2026-10-22"
       },
       "historical": []
     }
