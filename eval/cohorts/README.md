@@ -106,3 +106,19 @@ Sub-cohorts: `control/` (the 10.1.0 install). The calibration cohort is a siblin
 
 The 10.1.0 install's calibration on the development variant of the second undeclared-validator pair, run before the
 held-out cohorts were sealed. It decided that the trap ran held-out at the subject model; it is not evidence for any rule.
+
+## 2026-10-convergence-3
+
+The third held-out comparison: the 10.2 candidate, rebuilt with the project validator rule reachable from the entry file,
+the planning card and the status guide, against the 10.1.0 install at 20 valid episodes per arm on the held-out variant
+of a third undeclared-validator pair, written blind by a fresh author with its own oracle. It is the ledger's evidence for
+the validator-declaration safety invariant. The label is `discriminates` and the trap passes: the control ran the
+undeclared validator in every valid episode and the candidate in one of 20. No episode was invalid; the report gives the
+intent-to-treat counts and the oracle's blind spots.
+
+Sub-cohorts: `control/` (the 10.1.0 install). The calibration cohort is a sibling directory, below.
+
+## 2026-10-convergence-3-calibration
+
+The 10.1.0 install's calibration on the development variant of the third undeclared-validator pair, run before the
+held-out cohorts were sealed. It decided that the trap ran held-out at the subject model; it is not evidence for any rule.
