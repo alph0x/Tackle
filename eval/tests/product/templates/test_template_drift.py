@@ -266,6 +266,23 @@ class TemplateDriftTests(unittest.TestCase):
             if len(cells) == 6 and re.fullmatch(r'T-\d+', cells[0]) and cells[4] == 'Complete':
                 report = self.ws / 'reports' / (cells[0] + '-report.md')
                 report.write_text(report.read_text() + '\n**Remains**: none\n')
+        # 10.2 records each Complete brief's baseline (steps 2 and 3 of the 10.1 to 10.2 checklist).
+        steps = (INSTALL / 'references/guides/migrate.md').read_text().split('## v10.1 → v10.2 checklist', 1)[1]
+        self.assertIn('**Brief sha256**', steps.split('\n## ', 1)[0])
+        history = self.ws / 'history.md'
+        baselines = []
+        for line in board.read_text().split('\n'):
+            cells = [cell.strip() for cell in line.split('|')[1:-1]]
+            if len(cells) == 6 and re.fullmatch(r'T-\d+', cells[0]) and cells[4] == 'Complete':
+                digest = hashlib.sha256((self.ws / cells[2]).read_bytes()).hexdigest()
+                report = self.ws / 'reports' / (cells[0] + '-report.md')
+                report.write_text(report.read_text().replace('\n**Remains**: none\n',
+                                                             '\n**Brief sha256**: %s\n**Remains**: none\n' % digest))
+                history.write_text(history.read_text().rstrip('\n') + '\nBrief sha256 %s: %s\n' % (cells[0], digest))
+                baselines.append((cells[0], digest))
+        self.assertGreaterEqual(len(baselines), 1)
+        for task, digest in baselines:
+            self.assertEqual(history.read_text().count('Brief sha256 %s: %s' % (task, digest)), 1)
         for number, (verdict, out_text, err) in lint(self.root).items():
             with self.subTest(row=number):
                 self.assertEqual(verdict, 'PASS', (out_text, err))
