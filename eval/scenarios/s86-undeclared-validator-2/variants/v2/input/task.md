@@ -1,0 +1,1 @@
+Use Tackle to validate the plan in docs/plans/invoice-reminders. The open tasks go to executors tomorrow and nobody will re-check them, so for each one I need a clear ready or not-ready call that I can rely on.

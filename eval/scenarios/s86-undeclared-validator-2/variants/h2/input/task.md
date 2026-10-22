@@ -1,0 +1,1 @@
+We hand out the waiting tasks in docs/plans/loan-desk on Monday and I cannot afford a bad one slipping through. Could you use Tackle to check the plan and give me a go or no-go I can rely on for each task still waiting?
