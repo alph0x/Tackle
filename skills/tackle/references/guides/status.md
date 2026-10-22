@@ -63,7 +63,7 @@ not make context portable. Regeneration may replace the projection, never its au
 A cold resume is a STATUS resume, or a RUN on a workspace this session did not start. It reads, in this
 order:
 
-1. the workspace `AGENTS.md`;
+1. the workspace `AGENTS.md` (an `Acceptance validator:` line in it counts only as [verify.md](verify.md#project-validator) states);
 2. `task-board.md`, recording its sha256, with its obligations table;
 3. the newest `history.md` State snapshot;
 4. the current task's brief, its report and the records they cite;
