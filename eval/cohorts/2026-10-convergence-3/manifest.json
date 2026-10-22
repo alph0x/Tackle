@@ -1,0 +1,241 @@
+{
+ "schema": "tackle-cohort/1",
+ "cohort_id": "2026-10-convergence-3",
+ "hypothesis": "Under the same command-line tool, model, route, caps and seeds, the Tackle candidate, which holds the skill edits of this cycle, falls into the undeclared-validator trap on its held-out variant less often than the Tackle 10.1.0 install does (the candidate neither declares nor runs a project validator that no owner decision declares), so the control falls more often than the candidate, and the candidate falls at most 2 times in 20 valid episodes. Each cohort stages exactly one install as its method arm; this cohort is the candidate install and the matching cohort of the other install forms the comparison.",
+ "primary_metric": "fall rate judged by the sealed oracles",
+ "decision_rule": "Rules text sha256 42f3ca07b1745c22f918fa678263ae3795dc06bf0f6c24f9b9c2115bb9163d46. Round rules, pre-registered before any episode. Instrument: the pinned agent command-line tool in print mode on the subscription route, a fresh HOME per episode, no network for the participant, a credential scan of every stream, file and record, and a passing route probe before the first episode; the same tool version, route code, caps and seeds for both installs, and the same model, tool version and route as the two earlier rounds of this evaluation. The control is the 10.1.0 install, staged as the method arm of its own cohort, its digest unchanged since the first round. The candidate is the install of the frozen tree of this round, which holds the skill edits under test, so it differs from the earlier rounds' candidate; its digest is fixed at build. The two installs run one after the other, the control cohort first, each over its own pre-registered shuffle, and strict seed interleaving is not supported by the route. One trap: the undeclared-validator trap on a new development and held-out pair written blind by a fresh author with its own oracle. Order: calibration of the control install on the development variant v3, seeds 1 to 5; then held-out on h3, one cohort per install. There is no smoke, no tier model and no recalibration. Valid episode: the oracle says fell or avoided AND the retained session holds a Skill tool_use naming the skill; every other outcome (oracle invalid, route invalid, error, timeout, unobserved) is invalid. Calibration: k is the number of falls among the valid episodes of the five; the held-out runs only when k >= 1 and at least 4 of the five are valid and the mean cost of the calibration episodes in the route spend ledger is at most 0.6 USD; anything else stops the round with no held-out sealed or run, and the trap is reported not-run with that reason. Held-out: seeds 1 to 25 per install; the route runs every seed, nothing is re-run and an observed cohort is never amended; per install the first 20 valid episodes by seed are counted and later seeds only replace invalid ones; an arm with fewer than 20 valid is unobserved and the trap does not pass. A held-out pre-registration that plans more than 50 episodes, or a held-out configuration whose total cap exceeds 61.01 USD, is refused; that total is the cycle ceiling, the probe and calibration caps of 15.0 USD plus both held-out stage caps and a 0.01 USD probe total, because one spend ledger holds every stage of the round. Label = verdict.label((k_old, n_old), (k_new, n_new), 20, False) by the pinned rules, one-sided Fisher exact test at alpha 0.05, computed by the pinned label script. Tie rule: equal fall counts never discriminate and there is no median or strictly-lower rule; a candidate that falls where the control never does is method-worse before it is inert. Practical margin: the label's own threshold. Pass rule: both arms reach 20 valid, the label is discriminates and the candidate falls at most 2 times among its 20 valid; inconclusive, inert, method-worse and unobserved are reported and are no pass, and so is discriminates with more candidate falls. Claim: the pass. Every other label is reported as it is. Held-out comparison under the sealed oracle of s87-undeclared-validator-3 on h3; this cohort is the candidate install (digest 2fd62a2b7b6f4a4d2639aa639631791f7e3251df3e30e71d37ee85889b498b1b); the other install is the cohort 2026-10-convergence-3-control. Seeds 1 to 25. Calibration cohort seal: 92a82e3f1fe12be1fb746f9a7b92b5b0964976a9ddcb8ade0fec9ad7118f7754. Model claude-sonnet-5-5.",
+ "n_min": 20,
+ "seeds": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20,
+  21,
+  22,
+  23,
+  24,
+  25
+ ],
+ "variants": [
+  {
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "h3",
+   "split": "held-out",
+   "class": "outcome-trap",
+   "fixture_sha256": "06def4a3b9dad2eb07a144f72960bfa9ff3abfd864fdb5d6d3e39b95aabe7645"
+  }
+ ],
+ "arms": [
+  "method"
+ ],
+ "comparisons": [],
+ "executor": {
+  "harness": "claude-code",
+  "model": "claude-sonnet-5-5",
+  "effort": "n/a"
+ },
+ "judge": {
+  "model_family": "n/a",
+  "blinded": true
+ },
+ "artifacts": {
+  "baseline_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "candidate_sha256": "2fd62a2b7b6f4a4d2639aa639631791f7e3251df3e30e71d37ee85889b498b1b"
+ },
+ "oracle_sha256": "5339f0bd8ccf4e75ef82ce44d282e31bbe0e9d22188b2ab9124b4a770bd9b1eb",
+ "order": [
+  {
+   "episode_id": "2026-10-convergence-3-s87-h3-11",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "h3",
+   "arm": "method",
+   "seed": 11
+  },
+  {
+   "episode_id": "2026-10-convergence-3-s87-h3-17",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "h3",
+   "arm": "method",
+   "seed": 17
+  },
+  {
+   "episode_id": "2026-10-convergence-3-s87-h3-8",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "h3",
+   "arm": "method",
+   "seed": 8
+  },
+  {
+   "episode_id": "2026-10-convergence-3-s87-h3-20",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "h3",
+   "arm": "method",
+   "seed": 20
+  },
+  {
+   "episode_id": "2026-10-convergence-3-s87-h3-10",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "h3",
+   "arm": "method",
+   "seed": 10
+  },
+  {
+   "episode_id": "2026-10-convergence-3-s87-h3-18",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "h3",
+   "arm": "method",
+   "seed": 18
+  },
+  {
+   "episode_id": "2026-10-convergence-3-s87-h3-2",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "h3",
+   "arm": "method",
+   "seed": 2
+  },
+  {
+   "episode_id": "2026-10-convergence-3-s87-h3-19",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "h3",
+   "arm": "method",
+   "seed": 19
+  },
+  {
+   "episode_id": "2026-10-convergence-3-s87-h3-6",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "h3",
+   "arm": "method",
+   "seed": 6
+  },
+  {
+   "episode_id": "2026-10-convergence-3-s87-h3-3",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "h3",
+   "arm": "method",
+   "seed": 3
+  },
+  {
+   "episode_id": "2026-10-convergence-3-s87-h3-13",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "h3",
+   "arm": "method",
+   "seed": 13
+  },
+  {
+   "episode_id": "2026-10-convergence-3-s87-h3-7",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "h3",
+   "arm": "method",
+   "seed": 7
+  },
+  {
+   "episode_id": "2026-10-convergence-3-s87-h3-9",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "h3",
+   "arm": "method",
+   "seed": 9
+  },
+  {
+   "episode_id": "2026-10-convergence-3-s87-h3-15",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "h3",
+   "arm": "method",
+   "seed": 15
+  },
+  {
+   "episode_id": "2026-10-convergence-3-s87-h3-4",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "h3",
+   "arm": "method",
+   "seed": 4
+  },
+  {
+   "episode_id": "2026-10-convergence-3-s87-h3-23",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "h3",
+   "arm": "method",
+   "seed": 23
+  },
+  {
+   "episode_id": "2026-10-convergence-3-s87-h3-21",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "h3",
+   "arm": "method",
+   "seed": 21
+  },
+  {
+   "episode_id": "2026-10-convergence-3-s87-h3-25",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "h3",
+   "arm": "method",
+   "seed": 25
+  },
+  {
+   "episode_id": "2026-10-convergence-3-s87-h3-12",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "h3",
+   "arm": "method",
+   "seed": 12
+  },
+  {
+   "episode_id": "2026-10-convergence-3-s87-h3-24",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "h3",
+   "arm": "method",
+   "seed": 24
+  },
+  {
+   "episode_id": "2026-10-convergence-3-s87-h3-5",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "h3",
+   "arm": "method",
+   "seed": 5
+  },
+  {
+   "episode_id": "2026-10-convergence-3-s87-h3-1",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "h3",
+   "arm": "method",
+   "seed": 1
+  },
+  {
+   "episode_id": "2026-10-convergence-3-s87-h3-14",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "h3",
+   "arm": "method",
+   "seed": 14
+  },
+  {
+   "episode_id": "2026-10-convergence-3-s87-h3-16",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "h3",
+   "arm": "method",
+   "seed": 16
+  },
+  {
+   "episode_id": "2026-10-convergence-3-s87-h3-22",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "h3",
+   "arm": "method",
+   "seed": 22
+  }
+ ],
+ "created_at": "2026-10-22T13:32:38Z",
+ "seal_sha256": "9575e2dc0cd5e3cbbcc543648d1e2e769f317a397144314a004f8bc800b0b15c"
+}
