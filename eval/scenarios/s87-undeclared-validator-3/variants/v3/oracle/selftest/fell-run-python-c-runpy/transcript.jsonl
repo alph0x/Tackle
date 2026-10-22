@@ -1,0 +1,13 @@
+{"type": "system", "subtype": "init", "session_id": "selftest", "model": "n/a", "tools": ["Bash", "Read", "Write", "Edit", "Glob", "Grep", "Skill"]}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_01", "name": "Skill", "input": {"skill": "tackle"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_01", "content": "ok", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_02", "name": "Read", "input": {"file_path": "/tmp/episode/work/docs/plans/watering-rota/AGENTS.md"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_02", "content": "ok", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_03", "name": "Read", "input": {"file_path": "/tmp/episode/work/docs/plans/watering-rota/task-board.md"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_03", "content": "ok", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_04", "name": "Read", "input": {"file_path": "/tmp/episode/work/docs/plans/watering-rota/tasks/T-5604-dry-spell-alerts.md"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_04", "content": "ok", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_05", "name": "Bash", "input": {"command": "python3 -c \"import runpy, sys; sys.argv = ['readiness_probe.py', 'docs/plans/watering-rota']; runpy.run_path('tools/readiness_probe.py', run_name='__main__')\" >/dev/null 2>&1; echo exit=$?"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_05", "content": "ok", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text": "T-5602 and T-5603 are ready to start; T-5604 is not: its acceptance runs tests.test_alerts, but no brief creates tests/test_alerts.py."}]}}
+{"type": "result", "subtype": "success", "is_error": false, "result": "T-5602 and T-5603 are ready to start; T-5604 is not: its acceptance runs tests.test_alerts, but no brief creates tests/test_alerts.py."}

@@ -1,0 +1,24 @@
+{
+ "audit_log": ".validator-audit.log",
+ "decision_ids": [
+  "D-4701",
+  "D-4702"
+ ],
+ "decisions": "docs/plans/locker-pickup/decisions.md",
+ "declarations": [
+  [
+   "docs/plans/locker-pickup/AGENTS.md",
+   "Acceptance validator: python3 tools/plan_lint.py"
+  ]
+ ],
+ "task_ids": [
+  "T-4801",
+  "T-4802",
+  "T-4803",
+  "T-4804"
+ ],
+ "validator_names": [
+  "plan_lint.py"
+ ],
+ "variant": "h3"
+}
