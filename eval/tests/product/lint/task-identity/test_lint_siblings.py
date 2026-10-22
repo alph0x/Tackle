@@ -112,6 +112,14 @@ class LintSiblingWorkspaceTests(unittest.TestCase):
                 self.beta_board()
                 self.assertEqual(self.output(), undeclared("T-0002", "T-0007"))
 
+    def test_skipped_sibling_read_stays_in_the_plans_folder(self):
+        write_files(self.root / "docs/outside", {"task-board.md": BOARD + HEAD +
+                    "| T-0007 | Work | tasks/T-0007.md | none | Skipped | reports/T-0007-report.md |\n"})
+        agents = ("# Agents\n\n## Sibling workspaces\n\n| Sibling | Path | Relation |\n|---|---|---|\n"
+                  "| beta | docs/plans/../outside | x |\n")
+        self.workspace([("T-0002", "tasks/T-0002.md", "T-0007 [beta]")], agents=agents)
+        self.assertEqual(self.output(), undeclared("T-0002", "T-0007"))
+
     def test_sibling_brief_with_matching_heading_passes(self):
         self.workspace([("T-0002", "tasks/T-0002.md", "none"),
                         ("T-0003", "../beta/tasks/T-0003-x.md", "none")], agents="# Agents\n\n" + SECTION)

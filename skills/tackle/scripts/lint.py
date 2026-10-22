@@ -42,7 +42,7 @@ FNR==1 { fence=0 }
 FILENAME ~ /AGENTS\.md$/ {
   if ($0 ~ /^```/) { fence=!fence; next } if (fence) next
   if ($0 ~ /^## Sibling workspaces/) { insib=1; next } if ($0 ~ /^## /) { insib=0; next }
-  if (insib && substr($0,1,1)==sprintf("%c",124)) { a=trim($2); b=trim($3); gsub(/`/,"",b); if (a ~ /^[a-z0-9][a-z0-9-]*$/ && substr(b,1,11)=="docs/plans/") sibling[a]=substr(b,12) }
+  if (insib && substr($0,1,1)==sprintf("%c",124)) { a=trim($2); b=trim($3); gsub(/`/,"",b); if (a ~ /^[a-z0-9][a-z0-9-]*$/ && substr(b,1,11)=="docs/plans/" && substr(b,12) ~ /^[a-z0-9][a-z0-9-]*$/) sibling[a]=substr(b,12) }
   next }
 FILENAME ~ /task-board\.md$/ {
   if ($0 ~ /^```/) { fence=!fence; next } if (fence) next
