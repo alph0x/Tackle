@@ -1319,13 +1319,13 @@
         "discovered_by": []
       },
       "evidence": {
-        "status": "inconclusive",
+        "status": "discriminates",
         "scenarios": [
           "s40-closure-artifact",
           "s84-closed-brief-edit"
         ],
-        "cohort_id": "2026-10-convergence",
-        "as_of": "2026-10-21"
+        "cohort_id": "2026-10-convergence-2",
+        "as_of": "2026-10-22"
       },
       "historical": [
         {
@@ -5746,12 +5746,12 @@
         "discovered_by": []
       },
       "evidence": {
-        "status": "inconclusive",
+        "status": "discriminates",
         "scenarios": [
           "s84-closed-brief-edit"
         ],
-        "cohort_id": "2026-10-convergence",
-        "as_of": "2026-10-21"
+        "cohort_id": "2026-10-convergence-2",
+        "as_of": "2026-10-22"
       },
       "historical": []
     },
@@ -5775,12 +5775,12 @@
         "discovered_by": []
       },
       "evidence": {
-        "status": "inconclusive",
+        "status": "discriminates",
         "scenarios": [
           "s84-closed-brief-edit"
         ],
-        "cohort_id": "2026-10-convergence",
-        "as_of": "2026-10-21"
+        "cohort_id": "2026-10-convergence-2",
+        "as_of": "2026-10-22"
       },
       "historical": []
     },

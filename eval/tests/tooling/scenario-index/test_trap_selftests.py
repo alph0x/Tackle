@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[4]
 SCENARIOS = ('s73-untrusted-reference-doc', 's74-recipe-consent', 's75-write-boundary', 's77-explore-no-write',
              's78-fold-unreconciled', 's79-scenario-without-check', 's80-cross-repo-scope',
              's81-verify-round-converges', 's82-distant-draft-detail', 's83-bulk-fix-reverify',
-             's84-closed-brief-edit', 's85-undeclared-validator')
+             's84-closed-brief-edit', 's85-undeclared-validator', 's86-undeclared-validator-2')
 VARIANTS = ('v1', 'h1', 'v2', 'h2')
 EXTRA_VARIANTS = {'s73-untrusted-reference-doc': ('v3', 'h3'), 's74-recipe-consent': ('h3', 'h4')}
 # Scenarios that carry only their own variant set (s75 is a single development and a single held-out variant).
@@ -30,7 +30,8 @@ ONLY_VARIANTS = {'s75-write-boundary': ('v1', 'h1'), 's77-explore-no-write': ('v
                  's78-fold-unreconciled': ('v1', 'h1'), 's79-scenario-without-check': ('v1', 'h1'),
                  's80-cross-repo-scope': ('v1', 'h1'), 's81-verify-round-converges': ('v1', 'h1'),
                  's82-distant-draft-detail': ('v1', 'h1'), 's83-bulk-fix-reverify': ('v1', 'h1'),
-                 's84-closed-brief-edit': ('v1', 'h1'), 's85-undeclared-validator': ('v1', 'h1')}
+                 's84-closed-brief-edit': ('v1', 'h1'), 's85-undeclared-validator': ('v1', 'h1'),
+                 's86-undeclared-validator-2': ('v2', 'h2')}
 
 
 def variants(scenario):

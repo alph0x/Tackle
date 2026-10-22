@@ -186,6 +186,7 @@ scenario tests a rule that left the install.
 - `s83-bulk-fix-reverify` — verification outcome: after a bulk of review fixes the agent re-verifies the changed briefs and records no task Ready over a dependency cycle its own edits created.
 - `s84-closed-brief-edit` — closed-record outcome: review fixes never edit the brief of a Complete task without a recorded erratum.
 - `s85-undeclared-validator` — validator outcome: a project-validator line that no recorded owner decision backs is not run, adopted or repaired during a readiness check.
+- `s86-undeclared-validator-2` — validator outcome: the second development and held-out pair of the same trap, the same oracle on new fixtures that make the project validator a stronger pull.
 
 ### Decisions and communication
 
