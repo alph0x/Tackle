@@ -20,13 +20,20 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[4]
 SCENARIOS = ('s73-untrusted-reference-doc', 's74-recipe-consent', 's75-write-boundary', 's77-explore-no-write',
-             's78-fold-unreconciled', 's79-scenario-without-check', 's80-cross-repo-scope')
+             's78-fold-unreconciled', 's79-scenario-without-check', 's80-cross-repo-scope',
+             's81-verify-round-converges', 's82-distant-draft-detail', 's83-bulk-fix-reverify',
+             's84-closed-brief-edit', 's85-undeclared-validator', 's86-undeclared-validator-2',
+             's87-undeclared-validator-3')
 VARIANTS = ('v1', 'h1', 'v2', 'h2')
 EXTRA_VARIANTS = {'s73-untrusted-reference-doc': ('v3', 'h3'), 's74-recipe-consent': ('h3', 'h4')}
 # Scenarios that carry only their own variant set (s75 is a single development and a single held-out variant).
 ONLY_VARIANTS = {'s75-write-boundary': ('v1', 'h1'), 's77-explore-no-write': ('v1', 'h1'),
                  's78-fold-unreconciled': ('v1', 'h1'), 's79-scenario-without-check': ('v1', 'h1'),
-                 's80-cross-repo-scope': ('v1', 'h1')}
+                 's80-cross-repo-scope': ('v1', 'h1'), 's81-verify-round-converges': ('v1', 'h1'),
+                 's82-distant-draft-detail': ('v1', 'h1'), 's83-bulk-fix-reverify': ('v1', 'h1'),
+                 's84-closed-brief-edit': ('v1', 'h1'), 's85-undeclared-validator': ('v1', 'h1'),
+                 's86-undeclared-validator-2': ('v2', 'h2'),
+                 's87-undeclared-validator-3': ('v3', 'h3')}
 
 
 def variants(scenario):
@@ -119,6 +126,12 @@ def cases(scenario, variant):
     return sorted(p for p in base.iterdir() if p.is_dir()) if base.is_dir() else []
 
 
+def recorded_verdicts(scenario, variant):
+    """The variant's ``oracle/selftest/expected.json`` ({case: {outcome, scores}}), or {} when it records none."""
+    path = variant_dir(scenario, variant) / 'oracle/selftest/expected.json'
+    return json.loads(path.read_text(encoding='utf-8')) if path.is_file() else {}
+
+
 def tree_hashes(root):
     return {p.relative_to(root).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
             for p in sorted(root.rglob('*')) if p.is_file()}
@@ -138,6 +151,10 @@ class TrapSelftests(unittest.TestCase):
         for scenario in SCENARIOS:
             for variant in variants(scenario):
                 before = tree_hashes(variant_dir(scenario, variant))
+                recorded = recorded_verdicts(scenario, variant)
+                if recorded:
+                    with self.subTest(scenario=scenario, variant=variant, check='expected.json names every case'):
+                        self.assertEqual(set(recorded), {case.name for case in cases(scenario, variant)})
                 for case in cases(scenario, variant):
                     expected = case.name.split('-', 1)[0]
                     with self.subTest(scenario=scenario, variant=variant, case=case.name):
@@ -157,6 +174,13 @@ class TrapSelftests(unittest.TestCase):
                             self.assertIn(score, (0, 1, 2, None), name)
                         for name, score in EXPECTED_SCORES.get((scenario, variant, case.name), {}).items():
                             self.assertEqual(verdict['scores'].get(name), score, name)
+                        if recorded:
+                            want = recorded[case.name]
+                            self.assertEqual(verdict['outcome'], want['outcome'])
+                            if 'scores' in want:
+                                self.assertEqual(verdict['scores'], want['scores'])
+                            if 'reason' in want:
+                                self.assertEqual(verdict['invalid_reason'], want['reason'])
                 with self.subTest(scenario=scenario, variant=variant, check='writes nothing'):
                     self.assertEqual(tree_hashes(variant_dir(scenario, variant)), before)
 

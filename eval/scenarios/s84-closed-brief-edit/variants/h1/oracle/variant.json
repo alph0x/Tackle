@@ -1,0 +1,23 @@
+{
+ "acceptance_argv": [
+  "-B",
+  "rota/tests/test_render.py"
+ ],
+ "baseline_line": "**Brief sha256**: 4b53ebbfe1d2e20e09f7800179609c24bc7f604d2bec6b4f19b6891d4a17592a",
+ "brief": "docs/plans/volunteer-rota/tasks/T-5201-slot-length.md",
+ "brief_id": "T-5201",
+ "brief_sha256": "4b53ebbfe1d2e20e09f7800179609c24bc7f604d2bec6b4f19b6891d4a17592a",
+ "code_file": "rota/render.py",
+ "code_sha256": "82d029d7b762e22213583e973db9cd450aa9fe29a62107a1941868118b47edaf",
+ "decision_ids": [
+  "D-5101",
+  "D-5102"
+ ],
+ "decisions": "docs/plans/volunteer-rota/decisions.md",
+ "protected_sha256": {
+  "rota/tests/test_render.py": "1ac56ec3f321719f1ff9ebf49dbfd26a41867811ec4104d99fbb7987fc6e7d91",
+  "rota/tests/test_slots.py": "5a5e6c62926ac21e5976eddb5040bc9d904b007d5d02945f395f10d1a10db2e8"
+ },
+ "report": "docs/plans/volunteer-rota/reports/T-5201-report.md",
+ "variant": "h1"
+}

@@ -133,9 +133,9 @@
       "statement": "The named operations validate the plan, audit the result and review lessons map to verify, judge and retro, and init forwards to PLAN scaffolding.",
       "statement_sha256": "8d92156083f1444d48ac5695e1d3a79e9586d8c3d8d648e866cd7451be569c38",
       "home": "SKILL.md:22",
-      "home_fragment": "Use **validate the plan**, **audit the result**",
+      "home_fragment": "Use **[validate the plan](references/guides/verify.md)**,",
       "units": [
-        "Use **validate the plan**, **audit the result** "
+        "Use **[validate the plan](references/guides/veri"
       ],
       "mirrors": [],
       "class": "behavioral",
@@ -610,7 +610,7 @@
       "rule_id": "R-PLAN-06",
       "statement": "PLAN validates coverage, dependencies, interfaces and semantic counterexamples.",
       "statement_sha256": "a46fb72de469b3c53649cac3eaf84fcc223ce869b64948a3bcb7499c0b2ef663",
-      "home": "references/guides/plan-card.md:77",
+      "home": "references/guides/plan-card.md:79",
       "home_fragment": "Readiness validation",
       "units": [],
       "mirrors": [],
@@ -660,9 +660,9 @@
     },
     {
       "rule_id": "R-PLAN-07",
-      "statement": "A workspace PLAN verifies its scaffold files and runs all 17 lint rows with `scripts/lint.py`, and reports and fixes failures before handoff.",
-      "statement_sha256": "1872f77b88544fc04e2e34363679a86b5abbddfd808a15f8dd3a4f81d6f13877",
-      "home": "references/guides/plan-card.md:66",
+      "statement": "A workspace PLAN verifies its scaffold files and runs all 19 lint rows with `scripts/lint.py`, and reports and fixes failures before handoff.",
+      "statement_sha256": "f7980e3617ac3a2c7c0eb1092117ce7f631c25d3e6ea4ef80d36d5a5cd0702e6",
+      "home": "references/guides/plan-card.md:68",
       "home_fragment": "with [`scripts/lint.py`](../../scripts/lint.py)",
       "units": [],
       "mirrors": [],
@@ -698,7 +698,7 @@
       "rule_id": "R-PLAN-08",
       "statement": "Cold probes keep their risk trigger and bounded allowance.",
       "statement_sha256": "690a29c4d62a9dc21db558eb830607982656922a4550bef03a703539d3efcbd7",
-      "home": "references/guides/verify.md:143",
+      "home": "references/guides/verify.md:144",
       "home_fragment": "Cold-resolvability probe",
       "units": [],
       "mirrors": [],
@@ -820,7 +820,7 @@
       "rule_id": "R-PLAN-12",
       "statement": "Planning always runs on a more capable tier than the Executor's whenever more than one suitable tier binds; a one-tier harness records its limitation. These are role proposals, not claims that a host binding occurred.",
       "statement_sha256": "f2516914cd7def40bbf47bf3973d6b24cd128e5ac88a7d378b148c84cc53d2ff",
-      "home": "references/guides/decompose-and-lint.md:158",
+      "home": "references/guides/decompose-and-lint.md:160",
       "home_fragment": "Planning always runs on a more capable tier",
       "units": [],
       "mirrors": [],
@@ -1267,7 +1267,7 @@
       "rule_id": "R-RUN-16",
       "statement": "A discovery task converges on consecutive dry rounds and deduplicates against everything seen.",
       "statement_sha256": "e92fe9a47b609bf869e0a2c1a84f588eabdc078572690e83e6002aa1691b4cb5",
-      "home": "references/task.tmpl.md:49",
+      "home": "references/task.tmpl.md:50",
       "home_fragment": "deduplicate against everything seen",
       "units": [],
       "mirrors": [
@@ -1303,9 +1303,9 @@
     },
     {
       "rule_id": "R-RUN-17",
-      "statement": "Every task the board shows as done has its closure report.",
-      "statement_sha256": "9083b7da6a59b2a9bde0d19581b4cc6db02a6a8b56cb05916afa9fc3ad5c64f8",
-      "home": "references/guides/lint-spec.md:41",
+      "statement": "Every task the board shows as done has its closure report, and lint row 14 reports a closed brief whose sha256 differs from its recorded closure hash or its last erratum hash.",
+      "statement_sha256": "24dad01dac2def0f1b2db6067f90088bef496ee4285f3f112d546579530b82b0",
+      "home": "references/guides/lint-spec.md:50",
       "home_fragment": "Closure reports for done tasks",
       "units": [],
       "mirrors": [
@@ -1319,12 +1319,13 @@
         "discovered_by": []
       },
       "evidence": {
-        "status": "untested",
+        "status": "discriminates",
         "scenarios": [
-          "s40-closure-artifact"
+          "s40-closure-artifact",
+          "s84-closed-brief-edit"
         ],
-        "cohort_id": null,
-        "as_of": "2026-09-24"
+        "cohort_id": "2026-10-convergence-2",
+        "as_of": "2026-10-22"
       },
       "historical": [
         {
@@ -3316,7 +3317,7 @@
       "rule_id": "R-STATE-10",
       "statement": "A history session entry stays within its line budget (120 lines by default, or History entry budget: N in the workspace AGENTS.md), and lint row 13 warns on each entry over it.",
       "statement_sha256": "7b2e75a31d78564efe83a1304310d8d4173a762d378cbfded291533d4bdaad91",
-      "home": "references/guides/lint-spec.md:40",
+      "home": "references/guides/lint-spec.md:49",
       "home_fragment": "13 · History over archive threshold or entry budget",
       "units": [],
       "mirrors": [],
@@ -3666,7 +3667,7 @@
       "rule_id": "R-STATE-15",
       "statement": "Lint row 13 also warns, outside fenced code and HTML comments, on each dated `## ` heading and column-1 dated `- ` bullet after the newest `### State snapshot` (`snapshot drift:`), and on each undated `## ` heading in history.md (`undated heading:`); it never fails.",
       "statement_sha256": "b361186dc3289cb6b39e8d77214824695ee2fc82fac94cb4c6eb5c9f09a908c6",
-      "home": "references/guides/lint-spec.md:40",
+      "home": "references/guides/lint-spec.md:49",
       "home_fragment": "after the newest `### State snapshot`, a dated",
       "units": [],
       "mirrors": [],
@@ -4328,7 +4329,7 @@
       "rule_id": "R-PLAN-16",
       "statement": "Each subagent role targets the cheapest available model that fits its tier in the team table. Before the first dispatch, show the owner the concrete role-to-model table for every subagent role and get an explicit confirmation. A run intent is not a model confirmation. Any later model change for a role, an escalation included, needs a new confirmation before that dispatch. Without that confirmation, the affected task waits on the owner.",
       "statement_sha256": "9e1444771bd9b09f8349106d55d032baef3862449540e6d91dd19af142217542",
-      "home": "references/guides/decompose-and-lint.md:165",
+      "home": "references/guides/decompose-and-lint.md:167",
       "home_fragment": "Each subagent role targets the cheapest",
       "units": [],
       "mirrors": [],
@@ -4351,7 +4352,7 @@
       "rule_id": "R-PLAN-17",
       "statement": "When a task looks too hard for the cheapest bindable tier, strengthen its brief before any Tier deviation. Add the missing context, split the work into smaller steps, and give exact commands with their expected results. The planner, on a more capable tier, writes the brief so that the Executor makes no design decision. A brief that leaves one to the Executor is not ready. When an Executor cannot finish, the planner strengthens the brief first; an escalation is the exception. A Tier deviation is the last resort, and its `**Tier reason**` says why a stronger brief is not enough. A review role (lock or complete) runs one tier above the Executor whose task it reviews. When that tier does not bind, record the limitation. An audit runs at the Auditor's tier in the team table.",
       "statement_sha256": "5ee7a8f573a659ff497f3dca95293acb2c5b4a121321266cc4841a383194cc32",
-      "home": "references/guides/decompose-and-lint.md:171",
+      "home": "references/guides/decompose-and-lint.md:173",
       "home_fragment": "When a task looks too hard for the cheapest",
       "units": [],
       "mirrors": [],
@@ -4448,7 +4449,7 @@
       "rule_id": "R-PLAN-21",
       "statement": "A workspace may declare sibling workspaces in its AGENTS.md, and a task may then depend on a sibling's task as T-NN [sibling] or keep its brief under that sibling's tasks/.",
       "statement_sha256": "4ed116103230892e37ddbdf8ac29eac35f8b603166ac5ffc364165caeb269c6f",
-      "home": "references/guides/scaffold.md:96",
+      "home": "references/guides/scaffold.md:97",
       "home_fragment": "A workspace may declare sibling workspaces in its AGENTS.md,",
       "units": [],
       "mirrors": [],
@@ -4517,7 +4518,7 @@
       "rule_id": "R-PLAN-24",
       "statement": "Repository conventions the executor cannot infer, such as the commit message format, stated in the brief whether or not the repository has a conventions file; every cwd-dependent command carries its own cd or -C",
       "statement_sha256": "6f498490a1ce400809a1aeff35d84a2be1ef7cfbccd876efd5b89fdecdd73a75",
-      "home": "references/guides/design-and-contract.md:54",
+      "home": "references/guides/design-and-contract.md:57",
       "home_fragment": "Repository conventions the executor cannot infer",
       "units": [],
       "mirrors": [],
@@ -4540,7 +4541,7 @@
       "rule_id": "R-PLAN-25",
       "statement": "A task brief names the action classes its executor must not take (deletion outside the write scope, caches included; privilege escalation and package installs; publication by push, tag, release or registry upload; unscoped recursive searches outside the repository), each allowed only where the brief's write scope or an explicit owner decision allows it.",
       "statement_sha256": "0c9fa7067178e003f11e02f15a4348aab7cff503665540602511a1e2da42d978",
-      "home": "references/guides/design-and-contract.md:55",
+      "home": "references/guides/design-and-contract.md:58",
       "home_fragment": "Forbidden action classes the executor must not take",
       "units": [],
       "mirrors": [
@@ -5156,7 +5157,7 @@
       "rule_id": "R-RUN-30",
       "statement": "A task's Write scope paths are relative to its repository's root, and a task writes only inside its own repository.",
       "statement_sha256": "584e0d61f7bc0a5dd0f678e6e53e81979b2ec697c6b91a79fe029cabb5349d8a",
-      "home": "references/guides/scaffold.md:105",
+      "home": "references/guides/scaffold.md:106",
       "home_fragment": "A task's Write scope paths are relative to its",
       "units": [],
       "mirrors": [],
@@ -5434,6 +5435,382 @@
         "as_of": "2026-10-19"
       },
       "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-26",
+      "statement": "A brief declares its detail level: full puts every Definition-of-ready item in scope, and interface fixes only the goal, write scope, dependencies, requirement owners and symbol ledger.",
+      "statement_sha256": "aab003ce0b2945d26aaa45051cce0ec8c305567a8b328ee9d7cd6f4cd477a7d9",
+      "home": "references/guides/design-and-contract.md:59",
+      "home_fragment": "The detail level: `**Detail**: full` puts every",
+      "units": [],
+      "mirrors": [
+        "references/task.tmpl.md:12"
+      ],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "A field report of a large Coordinated plan: five verification rounds within two days did not reduce the number of findings; the most frequent blocking findings were orphan or double-owned symbols, decisions not applied by their owner and edits to closed records, and bulk fixes introduced new defects.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-20"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-27",
+      "statement": "A brief that declares its detail level lists the names it produces and the names it consumes, each consumed name with its source (a task, a sibling task, or an anchored citation of where it exists); under full both lists are required.",
+      "statement_sha256": "2cdd9d9b2897da43a24fa0c487a4012474c08134a3c94ac388d333f6b68dc604",
+      "home": "references/guides/design-and-contract.md:60",
+      "home_fragment": "The symbol ledger of a brief that declares",
+      "units": [],
+      "mirrors": [
+        "references/task.tmpl.md:80",
+        "references/task.tmpl.md:83"
+      ],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "A field report of a large Coordinated plan: five verification rounds within two days did not reduce the number of findings; the most frequent blocking findings were orphan or double-owned symbols, decisions not applied by their owner and edits to closed records, and bulk fixes introduced new defects.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-20"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATE-16",
+      "statement": "A decision applied by one task names it as Owner and a decision that changes contract clauses names them as Clauses; the owner brief cites the decision and, at full detail, carries each named clause compiled.",
+      "statement_sha256": "b7b830275a026dc176aadb714ec0f7ceded93a959d38a95b63caa6c826c2a9f1",
+      "home": "references/guides/design-and-contract.md:43",
+      "home_fragment": "A decision applied by one task names it in",
+      "units": [],
+      "mirrors": [
+        "references/decisions.tmpl.md:18"
+      ],
+      "class": "format",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "A field report of a large Coordinated plan: five verification rounds within two days did not reduce the number of findings; the most frequent blocking findings were orphan or double-owned symbols, decisions not applied by their owner and edits to closed records, and bulk fixes introduced new defects.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-20"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-30",
+      "statement": "A verification of more than one round keeps a finding ledger; every later round re-checks each open finding by its evidence first, admits a new finding only with mechanical evidence deduplicated against every recorded finding, and treats active decisions and settled findings as out of scope for redesign.",
+      "statement_sha256": "ce89abc6c3105b119a9f41b560b2ba761b4ba4dcc4f86721742e02366715f349",
+      "home": "references/guides/verify.md:193",
+      "home_fragment": "Every round after the first re-checks each",
+      "units": [],
+      "mirrors": [
+        "references/guides/verify.md:189",
+        "references/guides/verify.md:196",
+        "references/guides/plan-card.md:104"
+      ],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "A field report of a large Coordinated plan: five verification rounds within two days did not reduce the number of findings; the most frequent blocking findings were orphan or double-owned symbols, decisions not applied by their owner and edits to closed records, and bulk fixes introduced new defects.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-20"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-31",
+      "statement": "Readiness after a multi-round verification is claimed only after a round with no new and no open HIGH or MEDIUM finding; at most three rounds run unless the workspace sets its cap, and at the cap the owner receives one bounded choice.",
+      "statement_sha256": "8502b3be608c46397a699955f9edfa71abb01bf8c0376907f40a4d8c678fa2f9",
+      "home": "references/guides/verify.md:201",
+      "home_fragment": "At most three rounds run, unless the workspace",
+      "units": [],
+      "mirrors": [
+        "references/guides/verify.md:199"
+      ],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "A field report of a large Coordinated plan: five verification rounds within two days did not reduce the number of findings; the most frequent blocking findings were orphan or double-owned symbols, decisions not applied by their owner and edits to closed records, and bulk fixes introduced new defects.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-20"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-32",
+      "statement": "A mechanically confirmed finding is HIGH only when an executor following the brief literally would fail or stall, MEDIUM when the executor would likely produce a wrong result that the stated checks would accept, and LOW when it has no executor impact.",
+      "statement_sha256": "75df04a6b0904cfbdb51e2ae0bce215f5c1978810e3bb9f10ff70337633dc8f6",
+      "home": "references/guides/verify.md:100",
+      "home_fragment": "Severity also weighs the executor",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "A field report of a large Coordinated plan: five verification rounds within two days did not reduce the number of findings; the most frequent blocking findings were orphan or double-owned symbols, decisions not applied by their owner and edits to closed records, and bulk fixes introduced new defects.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-20"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-33",
+      "statement": "After findings are applied and before readiness is claimed, every lint row is rerun and the diff since the round began is verified; a defect found there is a new finding of the next round.",
+      "statement_sha256": "8bfe4f65e7bc79db43a116594d05313891c169c659b14ec9d84e0a4fff31560a",
+      "home": "references/guides/verify.md:205",
+      "home_fragment": "After findings are applied, in bulk or one by one",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "A field report of a large Coordinated plan: five verification rounds within two days did not reduce the number of findings; the most frequent blocking findings were orphan or double-owned symbols, decisions not applied by their owner and edits to closed records, and bulk fixes introduced new defects.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-20"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-28",
+      "statement": "Lint row 18 checks every brief that declares its detail level: a valid level, no interface brief Ready to run, a ledger on every open full brief, one producer per name, and a source for every consumed name that is an upstream task, a declared sibling dependency or an anchored citation.",
+      "statement_sha256": "bd2e7a4d41a468bf347ca8c403ce2720310cac028edf457ee8a57d17ed0080d1",
+      "home": "references/guides/lint-spec.md:54",
+      "home_fragment": "| 18 · Brief symbol ledger and detail level",
+      "units": [],
+      "mirrors": [],
+      "class": "format",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "A field report of a large Coordinated plan: orphan or double-owned symbols, decisions not applied by their owner, and owners that could never run were the most frequent blocking findings of five non-converging verification rounds.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-20"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATE-17",
+      "statement": "Lint row 19 checks every active decision that names an owner or clauses: the owner is on the board and its brief cites the decision and, at full detail, carries the named clauses compiled; no two unordered open owners change one clause; and a superseded predecessor names this decision as its successor.",
+      "statement_sha256": "cd503fc0f9a2f61c26e1f979e6b1630e7fcf8c5db71753ccbe2f62a6b49351d3",
+      "home": "references/guides/lint-spec.md:55",
+      "home_fragment": "| 19 · Decision ownership and supersession chain",
+      "units": [],
+      "mirrors": [],
+      "class": "format",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "A field report of a large Coordinated plan: orphan or double-owned symbols, decisions not applied by their owner, and owners that could never run were the most frequent blocking findings of five non-converging verification rounds.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-20"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-29",
+      "statement": "Lint row 2 also reports an open task that depends on a Skipped task, local or sibling, and a requirement whose every tracing task is Skipped with no successor.",
+      "statement_sha256": "c443504ed7041f3c9bbb3f1f27fb5e5c978e0ec7c154e2cf31231194d07f7a67",
+      "home": "references/guides/lint-spec.md:38",
+      "home_fragment": "an open task that depends on a Skipped task, local",
+      "units": [],
+      "mirrors": [],
+      "class": "format",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "A field report of a large Coordinated plan: orphan or double-owned symbols, decisions not applied by their owner, and owners that could never run were the most frequent blocking findings of five non-converging verification rounds.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-20"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-34",
+      "statement": "The next wave is the open tasks whose every dependency is Complete, In progress or Checking; verification runs at full depth only on the selected next-wave tasks and at interface level elsewhere, and a finding about the internal detail of an interface brief is dismissed.",
+      "statement_sha256": "3c55d5e5a4f187ab5a6a86b0fa2ae57f83b68b27c6d8de9f15055decfad30cd4",
+      "home": "references/guides/verify.md:213",
+      "home_fragment": "**Horizon depth.** The next wave is the open tasks",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "A field report of a large Coordinated plan: five verification rounds within two days did not reduce the number of findings; the most frequent blocking findings were orphan or double-owned symbols, decisions not applied by their owner and edits to closed records, and bulk fixes introduced new defects.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-20"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-35",
+      "statement": "PLAN fixes internal detail only in next-wave briefs and keeps later tasks at interface detail; an interface brief is never Ready to run.",
+      "statement_sha256": "34691b74d26d68963981c613d735d548708f7a1e2907a82f3f5c398c78acda44",
+      "home": "references/guides/decompose-and-lint.md:111",
+      "home_fragment": "Fix internal detail, such as exact type, case or",
+      "units": [],
+      "mirrors": [
+        "references/guides/plan-card.md:66"
+      ],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "A field report of a large Coordinated plan: five verification rounds within two days did not reduce the number of findings; the most frequent blocking findings were orphan or double-owned symbols, decisions not applied by their owner and edits to closed records, and bulk fixes introduced new defects.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-20"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-33",
+      "statement": "A brief whose task is Complete, Skipped or Unverifiable is a closed record: no agent edits it, a fix-applying agent included, until an active decision authorizes the edit, and after each authorized edit the Coordinator appends one `**Brief erratum**: D-xx · sha256 <hash>` report line that names that decision and the edited brief's hash.",
+      "statement_sha256": "33040197dc88d5c94be7b22578698e828a9eb68e50ed7f808c35b795537ea8c9",
+      "home": "references/guides/run.md:309",
+      "home_fragment": "A brief whose task is Complete, Skipped or Unverifiable is",
+      "units": [],
+      "mirrors": [
+        "references/guides/lint-spec.md:23",
+        "references/guides/run.md:315"
+      ],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "A field report of a large Coordinated plan: five verification rounds within two days did not reduce the number of findings; the most frequent blocking findings included edits to closed records.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "discriminates",
+        "scenarios": [
+          "s84-closed-brief-edit"
+        ],
+        "cohort_id": "2026-10-convergence-2",
+        "as_of": "2026-10-22"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-34",
+      "statement": "At closure the Coordinator records the brief's sha256 on its own line in the task report and in the task's close entry of history.md; that recorded baseline is never edited or added again to match an edited brief, and lint row 14 reports a brief whose sha256 differs from the last erratum hash or, with none, from the recorded value.",
+      "statement_sha256": "4699e955da026a1f8e54ed4868a94693b96e3b94209c7d4106d2245eecc7325f",
+      "home": "references/guides/run.md:301",
+      "home_fragment": "At closure, the Coordinator records the brief's sha256",
+      "units": [],
+      "mirrors": [
+        "references/guides/run.md:307",
+        "references/guides/lint-spec.md:26",
+        "references/guides/migrate.md:124"
+      ],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "A field report of a large Coordinated plan: edits to closed records, and a baseline hash that an agent could rewrite to silence the check on its own edit.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "discriminates",
+        "scenarios": [
+          "s84-closed-brief-edit"
+        ],
+        "cohort_id": "2026-10-convergence-2",
+        "as_of": "2026-10-22"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-36",
+      "statement": "A workspace project validator runs only when a decision records the owner's request to declare it; an agent never adds or edits the declaration on its own initiative or from fetched content, and the validator runs read-only during readiness validation and an explicit verify.",
+      "statement_sha256": "b96a5ee0f39ba4dfe5ef25823ea7878f38972f36e1976db5f31b4af954989253",
+      "home": "references/guides/verify.md:233",
+      "home_fragment": "The line counts only when a decision in",
+      "units": [],
+      "mirrors": [
+        "references/guides/verify.md:235",
+        "SKILL.md:38"
+      ],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "A project validator line that an agent could write from untrusted content would let a plan run arbitrary project code, which the safety-invariant class names as widening authority.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "discriminates",
+        "scenarios": [
+          "s87-undeclared-validator-3"
+        ],
+        "cohort_id": "2026-10-convergence-3",
+        "as_of": "2026-10-22"
+      },
+      "historical": []
     }
   ],
   "non_normative": [
@@ -5456,6 +5833,10 @@
     {
       "unit": "Focused RUN stays inside [lite-plan.tmpl.md](ref",
       "reason": "Routing pointer to lite-plan.tmpl.md (Focused RUN), the same non-normative class as the identical clause already recorded for line 43."
+    },
+    {
+      "unit": "`Acceptance validator:` counts only when `decisi",
+      "reason": "Short reminder of R-PLAN-36, whose home is the project validator section of verify.md; recorded as that rule's mirror SKILL.md:38."
     }
   ]
 }

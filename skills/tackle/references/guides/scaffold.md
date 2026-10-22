@@ -67,7 +67,7 @@ Compile each new Full brief from `task.tmpl.md` into `tasks/T-0N-<name>.md` and 
 `P-` workspace is migrated before it runs ([forward only](migrate.md#forward-only)). Write each brief's
 `**Effort**:` as one bare vocabulary token with no trailing punctuation; row 12 validates the exact value.
 
-After completing the brief and core files, run all 17 direct lint rows in `lint-spec.md` with
+After completing the brief and core files, run all 19 direct lint rows in `lint-spec.md` with
 [`scripts/lint.py`](../../scripts/lint.py), which the plan request authorizes
 ([script consent](../../scripts/README.md#consent)), before any PLAN handoff, even when a task stays Draft
 or a product question is unanswered. Structural lint does not establish readiness: report that blocker
@@ -88,6 +88,7 @@ Create only when their trigger fires:
 - `current-work.md` — Coordinator continuity projection (multi-agent execution).
 - `reports/` — task closure reports (created at first task close, Full gate).
 - `reference-docs/` — read-only external snapshots.
+- `findings.md` — finding ledger of a multi-round verification ([verification rounds](verify.md#verification-rounds)).
 
 (`task-board.md` is a core artifact, not depth: the scaffold copies it, per the §File map in `AGENTS.tmpl.md`.)
 

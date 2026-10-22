@@ -63,8 +63,10 @@ tasks and stops before source execution.`
    [model and tier proposal](decompose-and-lint.md#model-and-tier-proposal-compile-time) are in
    [decompose-and-lint.md](decompose-and-lint.md#step-6--decompose-into-loop-runnable-points-and-delivery-obligations),
    Step 6 and [Step 6.6](decompose-and-lint.md#step-66--right-size-the-plan).
+   Prepare only the next wave at `**Detail**: full`; later tasks stay at `interface`, as
+   [milestone readiness](verify.md#milestone-readiness) defines.
 6. **Lint.** Run every row of `lint-spec.md` with [`scripts/lint.py`](../../scripts/lint.py), which the plan request
-   authorizes ([script consent](../../scripts/README.md#consent)) — the 17 mechanical checks that decide
+   authorizes ([script consent](../../scripts/README.md#consent)) — the 19 mechanical checks that decide
    wiring, grounding, statuses, citations, seals and collisions — and report the agent-computed
    summary. Structural lint alone does not establish readiness: a passing board can still hold a
    Draft task or an unanswered product question, reported as a separate blocker, not a lint finding.
@@ -89,6 +91,7 @@ tasks and stops before source execution.`
    and [Step 6.75's Ready-to-run criteria](decompose-and-lint.md#step-675--integrated-readiness-validation)
    (coverage, interfaces and fixtures coherent and passing, fingerprints recorded, no material
    contradiction or unowned obligation left).
+   A workspace `Acceptance validator:` line follows [the project validator rule](verify.md#project-validator).
    The full validation contract, [including its two halves](verify.md#product-verification-has-two-halves),
    the coverage matrix, the [cold-resolvability probe](verify.md#cold-resolvability-probe-risk-triggered)
    and the milestone-readiness rules are in
@@ -101,6 +104,9 @@ tasks and stops before source execution.`
    Under that standing view request, the last action before handoff is a `--check` of the view that passes.
    If it says stale, rebuild the view and check again.
    A brief locks only after its `lock` [adversary checkpoint](run.md#adversary-checkpoints).
+   A validation that needs more than one round follows the [round protocol](verify.md#verification-rounds):
+   open findings first, settled decisions out of scope, and a stop when a round finds no new HIGH or MEDIUM
+   finding or reaches the cap.
 
 **Stop rule.** PLAN exists to unblock execution. When the next step is small and clear, do it; never
 re-plan a plan or open a second planning session to restate a decision this one already settled.

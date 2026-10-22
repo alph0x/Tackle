@@ -1,0 +1,1 @@
+The owner went through the printed volunteer rota and wrote down what looked wrong; the three findings are in docs/plans/volunteer-rota/review-1.md. Please get them dealt with through Tackle, and have Tackle's lint look over the workspace once you are done.

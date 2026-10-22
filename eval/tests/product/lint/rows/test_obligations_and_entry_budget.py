@@ -265,7 +265,7 @@ class ObligationTests(Workspace):
         for fixture, fixture_base in (('pass-obligations', None), ('pass-full', None), ('pass-full-5', None),
                                       ('pass-lite', None)):
             root = self.workspace(fixture, fixture_base)
-            for number in range(1, 18):
+            for number in range(1, 20):
                 self.assertEqual(self.assert_row(number, root, 'PASS', fixture), [], (fixture, number))
 
     def test_each_planted_defect_is_reported_with_the_id_the_brief_names(self):

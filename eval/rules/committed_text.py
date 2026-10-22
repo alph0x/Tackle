@@ -75,7 +75,10 @@ def _sha_line(text):
 def _git_diff(repo, base_revision):
     # An explicit rename threshold keeps a file moved since the base paired with its old path even after
     # later additions push it below git's default 50% similarity; otherwise every old line reads as added.
-    command = ['git', '-C', str(repo), 'diff', base_revision, '--unified=0', '--find-renames=30%']
+    # git skips inexact rename detection when a diff adds more files than diff.renameLimit (a default that varies with the git version); a
+    # large added tree would then read every relocated file as added lines, so the limit is pinned here too.
+    command = ['git', '-C', str(repo), '-c', 'diff.renameLimit=32767', 'diff', base_revision, '--unified=0',
+               '--find-renames=30%']
     try:
         result = subprocess.run(command, capture_output=True, text=True, encoding='utf-8',
                                 errors='surrogateescape', check=False)
@@ -649,7 +652,7 @@ def _lifecycle_lite_typed_spans(repo, path):
                     if isinstance(node, ast.For) and _name(node.target, 'number') and
                     isinstance(node.iter, ast.Call) and _name(node.iter.func, 'range') and
                     len(node.iter.args) == 2 and all(isinstance(arg, ast.Constant)
-                    for arg in node.iter.args) and [arg.value for arg in node.iter.args] == [1, 18]), ())
+                    for arg in node.iter.args) and [arg.value for arg in node.iter.args] == [1, 20]), ())
                 for block in scope:
                     if not isinstance(block, ast.With):
                         continue
@@ -829,7 +832,7 @@ def _lifecycle_fixture_typed_spans(repo, path):
                             _name(row_loop.iter.func, 'range') and
                             len(row_loop.iter.args) == 2 and
                             all(isinstance(arg, ast.Constant) for arg in row_loop.iter.args) and
-                            [arg.value for arg in row_loop.iter.args] == [1, 18]):
+                            [arg.value for arg in row_loop.iter.args] == [1, 20]):
                         continue
                     for subtest in row_loop.body:
                         if not isinstance(subtest, ast.With):

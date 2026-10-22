@@ -1,6 +1,7 @@
 {
   "version": 1,
   "families": [
+    "eval/tests/product/validator",
     "eval/tests/product/plan",
     "eval/tests/product/run/card",
     "eval/tests/product/lint/task-identity",
@@ -41,7 +42,11 @@
         "eval/plan/**",
         "skills/tackle/references/guides/controlled-writing.md",
         "skills/tackle/references/plan.tmpl.md",
-        "skills/tackle/scripts/controlled_writing.py"
+        "skills/tackle/scripts/controlled_writing.py",
+        "skills/tackle/references/guides/verify.md",
+        "skills/tackle/references/guides/scaffold.md",
+        "skills/tackle/references/guides/plan-card.md",
+        "skills/tackle/references/guides/decompose-and-lint.md"
       ],
       "families": [
         "eval/tests/product/plan"
@@ -264,6 +269,7 @@
         "skills/tackle/references/AGENTS.tmpl.md",
         "skills/tackle/references/design-contract.tmpl.md",
         "skills/tackle/references/guides/decompose-and-lint.md",
+        "skills/tackle/references/guides/design-and-contract.md",
         "skills/tackle/references/guides/lint-spec.md",
         "skills/tackle/references/guides/migrate.md",
         "skills/tackle/references/guides/quality-dimensions.md",
@@ -786,6 +792,19 @@
       ],
       "exclude": [],
       "reason": "Owned sources/fixtures and the shipped requirements-base script and guide."
+    },
+    {
+      "patterns": [
+        "eval/validator/**",
+        "extras/validator-example.md",
+        "skills/tackle/references/guides/verify.md"
+      ],
+      "families": [
+        "eval/tests/product/validator",
+        "eval/tests/product/install/inventory"
+      ],
+      "exclude": [],
+      "reason": "The example validator, the verify guide section that defines its interface, and the inventory check that resolves links in extras."
     }
   ],
   "global_patterns": [

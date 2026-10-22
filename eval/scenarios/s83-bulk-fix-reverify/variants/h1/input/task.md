@@ -1,0 +1,1 @@
+An outside review of docs/plans/recipe-import is saved there as review-notes.md. Use Tackle to work all five of its findings into the briefs, then mark on the board whichever of T-3101 to T-3105 are ready to run. I'm the owner, so go ahead and edit the briefs and the board.

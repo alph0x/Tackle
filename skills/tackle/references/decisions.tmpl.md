@@ -15,4 +15,5 @@ need deciding live in `questions.md` (a resolved `Q-xx` becomes a `D-xx` here).
 **Decision**: {{what was decided, concretely.}}
 **Why**: {{rationale; the tradeoff accepted.}}
 **Supersedes**: {{none / D-xx}} · **From**: {{Q-xx if it resolved a question, else "—"}}
+**Owner**: {{T-NN whose brief applies this decision}} · **Clauses**: {{design-contract clause ids whose meaning it changes; omit either part, or the line, when none}}
 <!-- When overturned: mark this "⤴ superseded by D-yy" and add D-yy below. Don't delete this. -->

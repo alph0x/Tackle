@@ -1,0 +1,8 @@
+{
+ "actors": [
+  "trap-author",
+  "coordinator"
+ ],
+ "blind": true,
+ "variants_authored": "variants v3 and h3 written by a fresh author blind to the rule text (new domains, ids and fixture bytes; succeeds s86 with the oracle hardened for interpreter, heredoc and helper-file runs and a sentence-level report score; pull kept at s86 strength)"
+}

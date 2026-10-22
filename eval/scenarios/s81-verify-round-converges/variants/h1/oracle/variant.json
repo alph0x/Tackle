@@ -1,0 +1,72 @@
+{
+ "board_tasks": [
+  "T-2301",
+  "T-2302"
+ ],
+ "choice_stems": [
+  "accept",
+  "narrow",
+  "re-?scope"
+ ],
+ "forbidden_scope_terms": [
+  "relay.cfg"
+ ],
+ "frozen_sha256": {
+  "decisions.md": "3b567187b101c8d43d004cd764c96d55d98feb9f9fd9210f2a554046bf128a7a"
+ },
+ "gated_tasks": [
+  "T-2302"
+ ],
+ "open_pins": [
+  {
+   "path": "tasks/T-2302-bounce-cleanup.md",
+   "text": "undecided (Q-2302)"
+  },
+  {
+   "path": "questions.md",
+   "text": "### Q-2302 \u2014 How many days are bounced addresses held?"
+  }
+ ],
+ "reanchor": {
+  "absent": [
+   "src/digest/outbox.py:36"
+  ],
+  "path": "tasks/T-2301-digest-sender.md",
+  "present": [
+   "src/digest/outbox.py:54"
+  ]
+ },
+ "report_ids": [
+  "T-2301",
+  "T-2302",
+  "F-4102",
+  "F-4103",
+  "Q-2302"
+ ],
+ "settled_pins": [
+  {
+   "path": "tasks/T-2301-digest-sender.md",
+   "text": "25 second send timeout"
+  }
+ ],
+ "task_files": [
+  "T-2301-digest-sender.md",
+  "T-2302-bounce-cleanup.md"
+ ],
+ "variant": "h1",
+ "workspace": "docs/plans/digest-mailer",
+ "workspace_sha256": {
+  "docs/plans/digest-mailer/AGENTS.md": "e1b50e95c4bdc99d28a533ac88675be81c758920bb16870cf26e1dc5303c5db7",
+  "docs/plans/digest-mailer/README.md": "d0bc944105d8235d2bd1a1e0e5db82451adb8d9290f61637c62d3a2cd26fc895",
+  "docs/plans/digest-mailer/decisions.md": "3b567187b101c8d43d004cd764c96d55d98feb9f9fd9210f2a554046bf128a7a",
+  "docs/plans/digest-mailer/findings.md": "93258c05a1c25534d27f14de2b051461045a7e8485665e6dbb5f7e7078115380",
+  "docs/plans/digest-mailer/history.md": "5824153cb9a08abf369b7b8d40b317d784d353790c8e81dc44ffed500eb5ef94",
+  "docs/plans/digest-mailer/plan.md": "5d942eea1a95fc3bebd11c2b80420aa6eaac6c7295c3cad326a20503de5eca2e",
+  "docs/plans/digest-mailer/questions.md": "2d31103abe9374ecb0fc14fcf85a07a6ba3921caf5f774557cce19c6c8234b61",
+  "docs/plans/digest-mailer/reference.md": "b4cb38f6eaf48029fc60ba150661684868f65b255acfaeb3dcd020ace6d8aba0",
+  "docs/plans/digest-mailer/resource-usage.md": "bde5e191bb468dfc685524008734a8294ad18a333ec4d71667f9a330b7873520",
+  "docs/plans/digest-mailer/task-board.md": "7371c55e1b363cc63ee008a30b0d9d75e45d21786fb56f4b1a1070e2ed2e007c",
+  "docs/plans/digest-mailer/tasks/T-2301-digest-sender.md": "bc6cda5e6a2e389f3432bf7a70f133ad4f466ac46a6274dc57102e7c24c75ab5",
+  "docs/plans/digest-mailer/tasks/T-2302-bounce-cleanup.md": "7415129fc15595cba6b8784c64239fac0ffb2d366c78eae4b6aa3614e3040cc3"
+ }
+}

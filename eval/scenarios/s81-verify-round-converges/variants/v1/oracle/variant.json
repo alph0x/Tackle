@@ -1,0 +1,72 @@
+{
+ "board_tasks": [
+  "T-0701",
+  "T-0702"
+ ],
+ "choice_stems": [
+  "accept",
+  "narrow",
+  "re-?scope"
+ ],
+ "forbidden_scope_terms": [
+  "gateway.toml"
+ ],
+ "frozen_sha256": {
+  "decisions.md": "1ff90e6e763cd75b7dcb7aa20c2697844f2c6bb15cb9c6f1e67c0994b0ff879f"
+ },
+ "gated_tasks": [
+  "T-0702"
+ ],
+ "open_pins": [
+  {
+   "path": "tasks/T-0702-retention-sweep.md",
+   "text": "undecided (Q-0702)"
+  },
+  {
+   "path": "questions.md",
+   "text": "### Q-0702 \u2014 How many days are finished exports kept?"
+  }
+ ],
+ "reanchor": {
+  "absent": [
+   "src/export/queue.py:41"
+  ],
+  "path": "tasks/T-0701-export-runner.md",
+  "present": [
+   "src/export/queue.py:58"
+  ]
+ },
+ "report_ids": [
+  "T-0701",
+  "T-0702",
+  "F-0002",
+  "F-0003",
+  "Q-0702"
+ ],
+ "settled_pins": [
+  {
+   "path": "tasks/T-0701-export-runner.md",
+   "text": "30 second export timeout"
+  }
+ ],
+ "task_files": [
+  "T-0701-export-runner.md",
+  "T-0702-retention-sweep.md"
+ ],
+ "variant": "v1",
+ "workspace": "docs/plans/export-jobs",
+ "workspace_sha256": {
+  "docs/plans/export-jobs/AGENTS.md": "88d20071961e0652855361e504db6b4b352ab0cd132d032c7380b96c96f67005",
+  "docs/plans/export-jobs/README.md": "1cad6485f43ed411e260d284f26253d6da2886dd3419dc1a3dc63bcd0b3f3fbd",
+  "docs/plans/export-jobs/decisions.md": "1ff90e6e763cd75b7dcb7aa20c2697844f2c6bb15cb9c6f1e67c0994b0ff879f",
+  "docs/plans/export-jobs/findings.md": "b297133a7819c34160ea13bc377c34911f94122364b0e08141491076a570c3dc",
+  "docs/plans/export-jobs/history.md": "ba8f5db2e7f03a6a9daaacc238c888a04cbc864997183065cc803085bb5d4eb8",
+  "docs/plans/export-jobs/plan.md": "c76b4060cb1cca9e06c27351b8673c3c53ac8248e9fff3d662f917f711ed1d43",
+  "docs/plans/export-jobs/questions.md": "633d36568c1db28c55463373d6f82226815398c4d1fd21184686fee1eafd0014",
+  "docs/plans/export-jobs/reference.md": "b4cb38f6eaf48029fc60ba150661684868f65b255acfaeb3dcd020ace6d8aba0",
+  "docs/plans/export-jobs/resource-usage.md": "bde5e191bb468dfc685524008734a8294ad18a333ec4d71667f9a330b7873520",
+  "docs/plans/export-jobs/task-board.md": "30543252061a7e4d7bb4baa8dde38dee81a2e93795836fa84ed81def3d9c5771",
+  "docs/plans/export-jobs/tasks/T-0701-export-runner.md": "6de527b327b327f29771c90434bd6f5d774f5f211132721e2dbdd1db209b33bf",
+  "docs/plans/export-jobs/tasks/T-0702-retention-sweep.md": "8fd4f18ce0253474e3d6524f17133cc3f9d9998514270eede3e842add277d691"
+ }
+}

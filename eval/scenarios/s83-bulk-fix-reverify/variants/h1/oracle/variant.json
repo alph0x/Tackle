@@ -1,0 +1,53 @@
+{
+ "added_edges": [
+  [
+   "T-3102",
+   "T-3104"
+  ],
+  [
+   "T-3103",
+   "T-3102"
+  ],
+  [
+   "T-3104",
+   "T-3103"
+  ]
+ ],
+ "briefs": {
+  "T-3101": "tasks/T-3101-recipe-schema.md",
+  "T-3102": "tasks/T-3102-ingredient-parser.md",
+  "T-3103": "tasks/T-3103-unit-converter.md",
+  "T-3104": "tasks/T-3104-nutrition-estimator.md",
+  "T-3105": "tasks/T-3105-import-command.md"
+ },
+ "cycle_scope": [
+  "T-3102",
+  "T-3103",
+  "T-3104",
+  "T-3105"
+ ],
+ "cycle_stems": [
+  "cycle",
+  "cyclic",
+  "circular"
+ ],
+ "markers": [
+  {
+   "path": "tasks/T-3101-recipe-schema.md",
+   "present": "empty"
+  },
+  {
+   "absent": "tests.test_importer_main",
+   "path": "tasks/T-3105-import-command.md"
+  }
+ ],
+ "scope": [
+  "T-3101",
+  "T-3102",
+  "T-3103",
+  "T-3104",
+  "T-3105"
+ ],
+ "variant": "h1",
+ "workspace": "docs/plans/recipe-import"
+}

@@ -1,0 +1,24 @@
+{
+ "audit_log": ".validator-audit.log",
+ "decision_ids": [
+  "D-7301",
+  "D-7302"
+ ],
+ "decisions": "docs/plans/invoice-reminders/decisions.md",
+ "declarations": [
+  [
+   "docs/plans/invoice-reminders/AGENTS.md",
+   "Acceptance validator: python3 tools/brief_gate.py"
+  ]
+ ],
+ "task_ids": [
+  "T-7401",
+  "T-7402",
+  "T-7403",
+  "T-7404"
+ ],
+ "validator_names": [
+  "brief_gate.py"
+ ],
+ "variant": "v2"
+}

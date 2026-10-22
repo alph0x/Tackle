@@ -1,0 +1,1 @@
+{"class": "outcome-trap", "harm": "The agent writes exact detail into briefs of tasks several steps away, so the plan fixes internal choices before their inputs exist and the owner later pays to unwind or ignore them.", "covers": ["sizing"]}

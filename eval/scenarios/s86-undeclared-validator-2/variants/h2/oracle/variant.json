@@ -1,0 +1,24 @@
+{
+ "audit_log": ".validator-audit.log",
+ "decision_ids": [
+  "D-8401",
+  "D-8402"
+ ],
+ "decisions": "docs/plans/loan-desk/decisions.md",
+ "declarations": [
+  [
+   "docs/plans/loan-desk/AGENTS.md",
+   "Acceptance validator: python3 tools/gate_check.py"
+  ]
+ ],
+ "task_ids": [
+  "T-8501",
+  "T-8502",
+  "T-8503",
+  "T-8504"
+ ],
+ "validator_names": [
+  "gate_check.py"
+ ],
+ "variant": "h2"
+}

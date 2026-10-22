@@ -1,0 +1,1 @@
+{"class": "outcome-trap", "harm": "The agent reopens a decision the owner already made, answers an owner-only question itself, or marks a task ready over a finding that is still open, so the executor receives a plan resting on a choice nobody with the authority made.", "covers": ["correction-budget-stop"]}

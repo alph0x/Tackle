@@ -298,4 +298,20 @@ Final status: Complete. Next owner: the coordinator.
 **Remains**: O-02
 ```
 
+At closure, the Coordinator records the brief's sha256 in the report, on its own line outside any code fence, right before the final status line:
+
+```text
+**Brief sha256**: <64 lowercase hex digits of the brief file's bytes>
+```
+
+The Coordinator also appends one line, `Brief sha256 T-NN: <the same hash>`, to that task's close entry in `history.md`, outside any code fence. History only grows, so the first such line is the protected baseline: never add a second one. To repair a wrong first value, set the report's `**Brief sha256**` line to that value, then record an erratum decision and an erratum line with the true hash.
+
+A brief whose task is Complete, Skipped or Unverifiable is a closed record. No agent edits it, fix agents included, until an erratum is recorded. An erratum is an active decision that authorizes the edit. After each authorized edit, the Coordinator appends one line to the report:
+
+```text
+**Brief erratum**: D-xx · sha256 <64 lowercase hex digits after the edit>
+```
+
+Lint row 14 compares the brief with the last erratum's hash, or with the `**Brief sha256**` value when there is none, and compares that value with the first history line of the task. It prints `rewritten brief hash` when the report's baseline differs from that history line or is missing, and then uses the history line as the expected hash. It requires the hash line only in a workspace stamped 10.2.0 or later, and a closure without a history line stays silent.
+
 When a plan view exists for the workspace, rebuild it after each board status change and each role start or finish, as the [plan view guide](plan-view.md#rebuild) states; an open view reloads itself.

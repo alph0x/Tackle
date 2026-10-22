@@ -13,12 +13,14 @@
       "files": [
         "test_controlled_writing.py",
         "test_intake_requests.py",
-        "test_plan.py"
+        "test_plan.py",
+        "test_verify_rounds.py",
+        "test_horizon_readiness.py"
       ],
-      "tests": 9,
+      "tests": 19,
       "source": "eval/plan",
       "category": "product",
-      "purpose": "Plan section order, and the controlled-writing script and guide for owner texts and specifications."
+      "purpose": "Plan section order, the controlled-writing script and guide for owner texts and specifications, and the verify guide's multi-round protocol and executor-centric severity. It also covers horizon-scoped readiness and the MEDIUM severity sentence."
     },
     {
       "path": "eval/tests/product/run/card",
@@ -185,12 +187,15 @@
         "test_row_contracts.py",
         "test_lifecycle_semantics.py",
         "test_obligations_and_entry_budget.py",
-        "test_lint_script.py"
+        "test_lint_script.py",
+        "test_ledger_and_ownership_rows.py",
+        "test_closed_record_row.py",
+        "test_closed_record_hardening.py"
       ],
-      "tests": 129,
+      "tests": 176,
       "source": "eval/lint/rows",
       "category": "product",
-      "purpose": "Canonical lint rows, formats, severities, AWK variants, lifecycle outcomes, clock coverage, Attempts evidence and the lint script that runs them."
+      "purpose": "Canonical lint rows, formats, severities, AWK variants, lifecycle outcomes, clock coverage, Attempts evidence and the lint script that runs them. Rows 18 and 19 and the row 2 live-owner checks on planted defects, with rows 1-17 as the control arm. Row 14 closed-record hashes and errata. Row 7 closed-seal exemption, the row 14 protected baseline and the strict erratum line."
     },
     {
       "path": "eval/tests/product/templates",
@@ -204,12 +209,13 @@
         "test_system_one_functional.py",
         "test_system_one_integration.py",
         "test_script_consent_points.py",
-        "test_multi_repo_templates.py"
+        "test_multi_repo_templates.py",
+        "test_brief_ledger_template.py"
       ],
-      "tests": 124,
+      "tests": 130,
       "source": "eval/templates",
       "category": "product",
-      "purpose": "Template fields, observed model routing, capability recovery and compiled briefs. The System One decision script's admission, workspace consent, normalized transport, confidence and provenance. The System One state script's consent persistence, caller-supplied client, SDK serialization, fallback and bounded history/intake consumers."
+      "purpose": "Template fields, observed model routing, capability recovery and compiled briefs. The System One decision script's admission, workspace consent, normalized transport, confidence and provenance. The System One state script's consent persistence, caller-supplied client, SDK serialization, fallback and bounded history/intake consumers. The brief and decision templates' declaration grammar: detail level, symbol ledger and decision ownership."
     },
     {
       "path": "eval/tests/tooling/protocol-v2",
@@ -229,7 +235,7 @@
         "test_sealed_scenario_admission.py",
         "test_unit_diff.py"
       ],
-      "tests": 109,
+      "tests": 110,
       "source": "eval/rules",
       "category": "tooling",
       "purpose": "Normative inventory, ledger gates, committed-text leak scanning (including digest-keyed admission of sealed scenario trees) and removed-unit accounting."
@@ -317,12 +323,13 @@
         "test_migration_history_paths.py",
         "test_unclosed_fence.py",
         "test_migration.py",
-        "test_v90_v91_checklist.py"
+        "test_v90_v91_checklist.py",
+        "test_v101_v102_checklist.py"
       ],
-      "tests": 150,
+      "tests": 179,
       "source": "eval/migration",
       "category": "product",
-      "purpose": "Workspace schema migration, scripts and census refusal. Migration keeps historical record paths, makes citations follow their moved files, leaves links into other workspaces unchanged, reports what history still cites, and keeps the text after a legacy status glyph as a board note."
+      "purpose": "Workspace schema migration, scripts and census refusal. Migration keeps historical record paths, makes citations follow their moved files, leaves links into other workspaces unchanged, reports what history still cites, and keeps the text after a legacy status glyph as a board note. The 10.1 to 10.2 checklist adopts closed-record hashes without a schema change."
     },
     {
       "path": "eval/tests/tooling/maintaining/field-report",
@@ -421,6 +428,16 @@
       "source": "eval/requirements-base",
       "category": "product",
       "purpose": "Requirements base parsing, delta validation, reconciliation and fold through the shipped script, and the guide's rules."
+    },
+    {
+      "path": "eval/tests/product/validator",
+      "files": [
+        "test_project_validator.py"
+      ],
+      "tests": 8,
+      "source": "eval/validator",
+      "category": "product",
+      "purpose": "The project validator hook: the verify guide's declaration, invocation, output and exit contract, and the example validator run through that invocation."
     }
   ]
 }

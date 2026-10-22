@@ -40,6 +40,9 @@ Compile interfaces, invariants, dependency crossings, configuration consumers an
 writing the Task brief. Product decisions stay user-owned; reversible technical choices may be delegated when
 the choice and its evidence are recorded. When a contract changes, supersede the decision before regenerating
 dependent Task clauses.
+A decision applied by one task names it in `**Owner**`, and a decision that changes the meaning of contract
+clauses names them in `**Clauses**`; the owner's brief cites the decision id and, at full detail, carries
+each named clause compiled.
 
 <a id="point-briefing"></a>
 ## Task brief
@@ -53,6 +56,8 @@ For each prepared task, compile these obligations into the existing fields:
 - Recovery, procedure revision, stable identity and inherited failure-cycle references
 - Repository conventions the executor cannot infer, such as the commit message format, stated in the brief whether or not the repository has a conventions file; every cwd-dependent command carries its own `cd` or `-C`
 - Forbidden action classes the executor must not take, each allowed only where the write scope or an explicit owner decision allows it: deletion outside the write scope, caches included; privilege escalation and package installs; publication (push, tag, release, registry upload); unscoped recursive searches outside the repository
+- The detail level: `**Detail**: full` puts every Definition-of-ready item in scope; `interface` fixes only the goal, write scope, dependencies, requirement owners and symbol ledger, and leaves internal detail to a later PLAN pass
+- The symbol ledger of a brief that declares `**Detail**`: `**Produces**` lists each name the task creates for another task or check, and `**Consumes**` each name it uses without creating it, with its source: `from T-NN`, `from T-NN [sibling]`, or `exists` and an anchored citation in the form `path.ext:NN — "fragment"`, or `path.ext@<rev>:NN — "fragment"` when the cited file has changed since the brief was grounded; a field is `none` when empty, and under `full` both fields are required
 
 # Step 5.5 — Architecture recommendation
 

@@ -28,13 +28,13 @@ def canonical_rows(source, expected_sha256, slug):
             raise ValueError('duplicate or malformed row')
         command = node.value.value.replace('<slug>', slug).encode('utf-8')
         rows[number] = dict(command=command, command_sha256=hashlib.sha256(command).hexdigest())
-    if sorted(rows) != list(range(1, 18)):
-        raise ValueError('expected exactly rows 1 through 17')
+    if sorted(rows) != list(range(1, 20)):
+        raise ValueError('expected exactly rows 1 through 19')
     return rows
 
 
 def lint_verdict(row, record, stdout, stderr):
-    if row not in range(1, 18):
+    if row not in range(1, 20):
         raise ValueError('unknown row')
     code = record['child_exit']
     if type(code) is not int or any(type(record.get(key)) is not bool
@@ -89,7 +89,7 @@ def captured_lint_verdict(source, expected_sha256, slug, row, script, record, ob
 def run_lint(config_path):
     root = Path.cwd().resolve()
     trusted_capture_sha256 = '3b0aaef26047e779c96735aa612858903db922c9e6921ed5a4d408aeaa304aea'
-    trusted_lint_sha256 = '9737e1872d2d43c0f9a6dde2ff401d67b142579770d98eadbedca1e2db546eb9'
+    trusted_lint_sha256 = '58edad93d064cb2b81aa3d7f1d1b933a4d8690ef377444557dc926a3f3201748'
     def local(name):
         path = (root / name).resolve()
         path.relative_to(root)
@@ -167,7 +167,7 @@ def run_lint(config_path):
                                observation=str(observation.relative_to(root)) if observation else None)
     summary = dict(rows=results, total=len(results),
                    passed=sum(r['verdict'] == 'PASS' for r in results.values()),
-                   complete=len(results) == 17 and all(r['verdict'] in ('PASS', 'WARN') for r in results.values()))
+                   complete=len(results) == 19 and all(r['verdict'] in ('PASS', 'WARN') for r in results.values()))
     if programs:
         summary['programs'] = programs
     summary_path = batch / 'summary.json'

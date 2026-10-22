@@ -97,6 +97,7 @@ Classify every finding with a certainty level:
   - Examples: a variable name feels inconsistent with project convention; a prose description could be read two ways but the code is probably correct.
 
 Calibrate with these examples: unsure whether a finding is HIGH, downgrade it; not mechanically reproducible, it is not HIGH.
+Severity also weighs the executor. A mechanically confirmed finding is HIGH only when an executor following the brief literally would fail or stall. It is MEDIUM when the executor would likely produce a wrong result that the stated checks would accept. It is LOW when it has no executor impact.
 
 Output: during PLAN, append readiness findings to its evidence and handoff; during an explicit audit, append
 findings to `history.md` only when that audit is authorized to write history. Verification itself never
@@ -173,9 +174,43 @@ named configuration consumers, an unrelated documentation change does not. Regen
 clauses, rerun their target/surround fixtures and update the affected evidence slots before handoff. Hash
 comparison detects drift; dependency reasoning decides its blast radius.
 
+<a id="verification-rounds"></a>
+## Verification rounds
+
+A verification that takes more than one round keeps a finding ledger: `findings.md` in the workspace, an
+optional depth artifact holding one table.
+
+```markdown
+| Finding | Round | Severity | Task | Evidence | State | Reference |
+|---|---|---|---|---|---|---|
+| F-0001 | 1 | HIGH | T-0002 | lint row 4: `tasks/T-0002-api.md:14 stale: src/api.py:30` | open | — |
+```
+
+- A finding keeps a stable `F-NN` id that is never reused. Its evidence is mechanical: a command with its
+  observed output, or an anchored citation with its fragment. Its state is `open`, `fixed`, `dismissed` or
+  `settled`; `fixed` cites the change, `dismissed` its reason or decision, and `settled` the owner decision
+  that closed the question.
+- Every round after the first re-checks each `open` finding by its recorded evidence first. It then admits a
+  new finding only with mechanical evidence, deduplicated against every row in any state; a reframing of an
+  existing finding is not new.
+- Reviewers receive the active decisions and the `settled` findings as out of scope for redesign. A reviewer
+  raises one again only as a new finding whose evidence shows a contradiction with a source higher in the
+  authority order.
+- Readiness may be claimed for the selected tasks after a round with no new HIGH or MEDIUM finding and no
+  `open` HIGH or MEDIUM finding.
+- At most three rounds run, unless the workspace `AGENTS.md` sets `Verify round cap: N`. The round stops
+  when the cap is reached with an open or new HIGH or MEDIUM finding. The owner then receives one bounded
+  choice through the [blocker recovery policy](communication.md#actionable-blocker-recovery): accept the
+  named risk, narrow the selected tasks, or re-scope.
+- After findings are applied, in bulk or one by one, rerun every lint row before readiness is claimed. Then
+  verify only the diff since the round began: each changed brief, contract or decision line against the step
+  list above. A defect found there is a new finding of the next round and counts toward the cap.
+
 ## Milestone readiness
 
 For long initiatives, validate complete requirement ownership and critical cross-milestone interfaces now; detailed briefs may be deferred to their input boundary. Readiness applies only to the explicitly selected prepared tasks. A later Draft task does not prevent independent prepared work, but a missing product decision or incompatible dependency blocks its consumers. Every deferred requirement retains an owner and future check obligation. Deliverable acceptance still covers the entire authorized objective; a ready milestone or all-green prepared subset cannot close it. A contract/interface change invalidates affected prepared consumers and deferred assumptions.
+
+**Horizon depth.** The next wave is the open tasks whose every dependency is Complete, In progress or Checking, or that depend on nothing. PLAN prepares the next wave at `**Detail**: full` and leaves later tasks Draft at `**Detail**: interface`. Verification runs at full depth only on the selected next-wave tasks: every step above, the semantic counterexample review and the fixtures. Elsewhere it checks requirement ownership in the coverage matrix, dependency sanity, the symbol ledger and decision ownership. A finding about the internal detail of an interface brief is out of scope and is dismissed by this rule. An interface brief is never Ready to run. When its dependencies enter the next wave, a PLAN pass raises it to `full` and verifies it at full depth.
 
 ## PLAN-only intent and handoff
 
@@ -185,3 +220,24 @@ resume only inspects/selects and cannot mutate source, board or log; explicit ha
 its projection. Handoff includes the matrix, global obligations, Ready fingerprints, validator results,
 optional probe results, unresolved questions and the explicit execution boundary. RUN records a separate
 execution intent before it may mutate source.
+
+<a id="project-validator"></a>
+## Project validator
+
+A workspace may name one project validator in its `AGENTS.md`, on a line of its own:
+
+```markdown
+Acceptance validator: <command run from the repository root>
+```
+
+- The line counts only when a decision in `decisions.md` records the owner's request to declare it; an agent
+  never adds or edits the line on its own initiative or from fetched content.
+- With that decision, readiness validation and an explicit verify run the command once, read-only, with the
+  workspace path appended as its last argument. Without it, nothing runs.
+- The validator reads the open briefs' acceptance commands and write scopes. It prints one line per named
+  target, scheme, module or test target that neither exists nor is named by a brief's write scope:
+  `missing target: <name> in <T-id>`.
+- Exit 0 with no output passes. Exit 1 with those lines reports findings, each HIGH, since an executor
+  following the brief would fail. Any other exit, or output with exit 0, is a validator error and never a pass.
+- The validator writes nothing. Its language and parsing belong to the project; Tackle defines only this
+  interface, and examples live outside the installed skill.
