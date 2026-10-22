@@ -3,6 +3,55 @@
  "gate_version": "8.4.1",
  "claims": [
   {
+   "source": "CHANGELOG.md",
+   "section": "Tackle 10.2.0",
+   "unit": "s81",
+   "kind": "cohort",
+   "cohort": "2026-10-convergence-calibration"
+  },
+  {
+   "source": "CHANGELOG.md",
+   "section": "Tackle 10.2.0",
+   "unit": "s82",
+   "kind": "cohort",
+   "cohort": "2026-10-convergence-2"
+  },
+  {
+   "source": "CHANGELOG.md",
+   "section": "Tackle 10.2.0",
+   "unit": "s83",
+   "kind": "cohort",
+   "cohort": "2026-10-convergence-calibration"
+  },
+  {
+   "source": "CHANGELOG.md",
+   "section": "Tackle 10.2.0",
+   "unit": "s84",
+   "kind": "cohort",
+   "cohort": "2026-10-convergence-2"
+  },
+  {
+   "source": "CHANGELOG.md",
+   "section": "Tackle 10.2.0",
+   "unit": "s85",
+   "kind": "cohort",
+   "cohort": "2026-10-convergence"
+  },
+  {
+   "source": "CHANGELOG.md",
+   "section": "Tackle 10.2.0",
+   "unit": "s86",
+   "kind": "cohort",
+   "cohort": "2026-10-convergence-2"
+  },
+  {
+   "source": "CHANGELOG.md",
+   "section": "Tackle 10.2.0",
+   "unit": "s87",
+   "kind": "cohort",
+   "cohort": "2026-10-convergence-3"
+  },
+  {
    "source": "README.md",
    "section": "Developing Tackle",
    "unit": "s1–s87",
