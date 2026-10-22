@@ -91,6 +91,7 @@ tasks and stops before source execution.`
    and [Step 6.75's Ready-to-run criteria](decompose-and-lint.md#step-675--integrated-readiness-validation)
    (coverage, interfaces and fixtures coherent and passing, fingerprints recorded, no material
    contradiction or unowned obligation left).
+   A workspace `Acceptance validator:` line follows [the project validator rule](verify.md#project-validator).
    The full validation contract, [including its two halves](verify.md#product-verification-has-two-halves),
    the coverage matrix, the [cold-resolvability probe](verify.md#cold-resolvability-probe-risk-triggered)
    and the milestone-readiness rules are in

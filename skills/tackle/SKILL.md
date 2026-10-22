@@ -19,7 +19,7 @@ requests, including negation and quoted examples; see [invocation.md](references
 | **RUN** | `run`, `run --one`, `run <T-id>` | Execute authorized ready tasks with the [RUN card](references/guides/run-card.md): check, correct within budget, integrate and accept delivery. Focused RUN stays inside [lite-plan.tmpl.md](references/lite-plan.tmpl.md). |
 | **STATUS** | `status [<workspace>]` | Read-only status, list, next and plain resume. Explicit `--handoff` writes only its projection. |
 
-Use **validate the plan**, **audit the result** and **review lessons** for `verify`, `judge` and
+Use **[validate the plan](references/guides/verify.md)**, **audit the result** and **review lessons** for `verify`, `judge` and
 `retro`; `init` forwards to PLAN scaffolding. A diagnostic or standalone STATUS request authorizes no
 fix. An explicit resume request that also states execution intent enters RUN after preflight.
 
@@ -35,7 +35,7 @@ retained records before guides; reuse routing or read intake-and-gate.md alone t
 [lite-plan.tmpl.md](references/lite-plan.tmpl.md); **Coordinated (Full)** loads the [PLAN
 card](references/guides/plan-card.md). More guidance requires a specific unresolved capability.
 
-The PLAN card's seven steps take a Coordinated request from intake through readiness validation.
+The PLAN card's seven steps take a Coordinated request from intake through readiness validation. `Acceptance validator:` counts only when `decisions.md` records the owner's request ([verify.md](references/guides/verify.md#project-validator)).
 Follow the shared [decision and communication policy](references/guides/communication.md).
 Operational diagnosis uses permitted tools; recovery never widens access, product requirements or
 authorization.

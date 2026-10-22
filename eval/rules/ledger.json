@@ -133,9 +133,9 @@
       "statement": "The named operations validate the plan, audit the result and review lessons map to verify, judge and retro, and init forwards to PLAN scaffolding.",
       "statement_sha256": "8d92156083f1444d48ac5695e1d3a79e9586d8c3d8d648e866cd7451be569c38",
       "home": "SKILL.md:22",
-      "home_fragment": "Use **validate the plan**, **audit the result**",
+      "home_fragment": "Use **[validate the plan](references/guides/verify.md)**,",
       "units": [
-        "Use **validate the plan**, **audit the result** "
+        "Use **[validate the plan](references/guides/veri"
       ],
       "mirrors": [],
       "class": "behavioral",
@@ -5792,7 +5792,8 @@
       "home_fragment": "The line counts only when a decision in",
       "units": [],
       "mirrors": [
-        "references/guides/verify.md:235"
+        "references/guides/verify.md:235",
+        "SKILL.md:38"
       ],
       "class": "safety-invariant",
       "hot_path": false,
@@ -5802,12 +5803,12 @@
         "discovered_by": []
       },
       "evidence": {
-        "status": "inert",
+        "status": "discriminates",
         "scenarios": [
-          "s85-undeclared-validator"
+          "s87-undeclared-validator-3"
         ],
-        "cohort_id": "2026-10-convergence",
-        "as_of": "2026-10-21"
+        "cohort_id": "2026-10-convergence-3",
+        "as_of": "2026-10-22"
       },
       "historical": []
     }
@@ -5832,6 +5833,10 @@
     {
       "unit": "Focused RUN stays inside [lite-plan.tmpl.md](ref",
       "reason": "Routing pointer to lite-plan.tmpl.md (Focused RUN), the same non-normative class as the identical clause already recorded for line 43."
+    },
+    {
+      "unit": "`Acceptance validator:` counts only when `decisi",
+      "reason": "Short reminder of R-PLAN-36, whose home is the project validator section of verify.md; recorded as that rule's mirror SKILL.md:38."
     }
   ]
 }

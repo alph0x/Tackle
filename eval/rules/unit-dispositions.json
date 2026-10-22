@@ -17416,6 +17416,24 @@
       "destination": "references/guides/lint-spec.md",
       "note": "Task boards declare `Schema: tackle-workspace/5` in `task-board.md`; rows 2, 3, 5, 10, 11, 12, 14, 17, 18 and 19 refuse a Coordinated workspace without one with `migrate first`, and row 3 validates the ten `/5` states, including `Waiting on owner`.",
       "destination_unit_sha256": null
+    },
+    {
+      "path": "SKILL.md",
+      "line": 18,
+      "unit_sha256": "6d647aa296b918783b4331601fe1131661cea42679302120f309de883423dd9c",
+      "disposition": "reworded",
+      "destination": "SKILL.md",
+      "note": "Use **[validate the plan](references/guides/verify.md)**, **audit the result** and **review lessons** for `verify`, `judge` and `retro`; `init` forwards to PLAN scaffolding.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/status.md",
+      "line": 66,
+      "unit_sha256": "c5fa67212adf2563b60321f36f1d72926cf52510a605fb21ed7820d8d289ec30",
+      "disposition": "reworded",
+      "destination": "references/guides/status.md",
+      "note": "the workspace `AGENTS.md` (an `Acceptance validator:` line in it counts only as [verify.md](verify.md#project-validator) states);",
+      "destination_unit_sha256": null
     }
   ]
 }

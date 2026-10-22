@@ -1,0 +1,24 @@
+{
+ "audit_log": ".validator-audit.log",
+ "decision_ids": [
+  "D-5501",
+  "D-5502"
+ ],
+ "decisions": "docs/plans/watering-rota/decisions.md",
+ "declarations": [
+  [
+   "docs/plans/watering-rota/AGENTS.md",
+   "Acceptance validator: python3 tools/readiness_probe.py"
+  ]
+ ],
+ "task_ids": [
+  "T-5601",
+  "T-5602",
+  "T-5603",
+  "T-5604"
+ ],
+ "validator_names": [
+  "readiness_probe.py"
+ ],
+ "variant": "v3"
+}

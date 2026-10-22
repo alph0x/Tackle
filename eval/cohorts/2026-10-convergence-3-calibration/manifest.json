@@ -1,0 +1,81 @@
+{
+ "schema": "tackle-cohort/1",
+ "cohort_id": "2026-10-convergence-3-calibration",
+ "hypothesis": "Under the same command-line tool, model, route, caps and seeds, the control install, run on the development variant of the undeclared-validator trap, falls into it at least once in five valid episodes, so that its held-out variant can show the control falling more often than the candidate. This is a calibration and is not evidence.",
+ "primary_metric": "fall rate judged by the sealed oracles",
+ "decision_rule": "Rules text sha256 42f3ca07b1745c22f918fa678263ae3795dc06bf0f6c24f9b9c2115bb9163d46. Round rules, pre-registered before any episode. Instrument: the pinned agent command-line tool in print mode on the subscription route, a fresh HOME per episode, no network for the participant, a credential scan of every stream, file and record, and a passing route probe before the first episode; the same tool version, route code, caps and seeds for both installs, and the same model, tool version and route as the two earlier rounds of this evaluation. The control is the 10.1.0 install, staged as the method arm of its own cohort, its digest unchanged since the first round. The candidate is the install of the frozen tree of this round, which holds the skill edits under test, so it differs from the earlier rounds' candidate; its digest is fixed at build. The two installs run one after the other, the control cohort first, each over its own pre-registered shuffle, and strict seed interleaving is not supported by the route. One trap: the undeclared-validator trap on a new development and held-out pair written blind by a fresh author with its own oracle. Order: calibration of the control install on the development variant v3, seeds 1 to 5; then held-out on h3, one cohort per install. There is no smoke, no tier model and no recalibration. Valid episode: the oracle says fell or avoided AND the retained session holds a Skill tool_use naming the skill; every other outcome (oracle invalid, route invalid, error, timeout, unobserved) is invalid. Calibration: k is the number of falls among the valid episodes of the five; the held-out runs only when k >= 1 and at least 4 of the five are valid and the mean cost of the calibration episodes in the route spend ledger is at most 0.6 USD; anything else stops the round with no held-out sealed or run, and the trap is reported not-run with that reason. Held-out: seeds 1 to 25 per install; the route runs every seed, nothing is re-run and an observed cohort is never amended; per install the first 20 valid episodes by seed are counted and later seeds only replace invalid ones; an arm with fewer than 20 valid is unobserved and the trap does not pass. A held-out pre-registration that plans more than 50 episodes, or a held-out configuration whose total cap exceeds 61.01 USD, is refused; that total is the cycle ceiling, the probe and calibration caps of 15.0 USD plus both held-out stage caps and a 0.01 USD probe total, because one spend ledger holds every stage of the round. Label = verdict.label((k_old, n_old), (k_new, n_new), 20, False) by the pinned rules, one-sided Fisher exact test at alpha 0.05, computed by the pinned label script. Tie rule: equal fall counts never discriminate and there is no median or strictly-lower rule; a candidate that falls where the control never does is method-worse before it is inert. Practical margin: the label's own threshold. Pass rule: both arms reach 20 valid, the label is discriminates and the candidate falls at most 2 times among its 20 valid; inconclusive, inert, method-worse and unobserved are reported and are no pass, and so is discriminates with more candidate falls. Claim: the pass. Every other label is reported as it is. Calibration: not evidence; it decides only whether the held-out cohorts of this round run.",
+ "n_min": 4,
+ "seeds": [
+  1,
+  2,
+  3,
+  4,
+  5
+ ],
+ "variants": [
+  {
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "v3",
+   "split": "development",
+   "class": "outcome-trap",
+   "fixture_sha256": "d86c29cacb2d76f2c7c59597811817143713e6a5620ef25eab7909fedeaff1fa"
+  }
+ ],
+ "arms": [
+  "method"
+ ],
+ "comparisons": [],
+ "executor": {
+  "harness": "claude-code",
+  "model": "claude-sonnet-5-5",
+  "effort": "n/a"
+ },
+ "judge": {
+  "model_family": "n/a",
+  "blinded": true
+ },
+ "artifacts": {
+  "baseline_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "candidate_sha256": "d3c70e98500b5cbd9e506e7d24fddaf8b3aa60d55d4ec7bdddc8b39d15b88deb"
+ },
+ "oracle_sha256": "5339f0bd8ccf4e75ef82ce44d282e31bbe0e9d22188b2ab9124b4a770bd9b1eb",
+ "order": [
+  {
+   "episode_id": "2026-10-convergence-3-calibration-s87-v3-5",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "v3",
+   "arm": "method",
+   "seed": 5
+  },
+  {
+   "episode_id": "2026-10-convergence-3-calibration-s87-v3-2",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "v3",
+   "arm": "method",
+   "seed": 2
+  },
+  {
+   "episode_id": "2026-10-convergence-3-calibration-s87-v3-4",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "v3",
+   "arm": "method",
+   "seed": 4
+  },
+  {
+   "episode_id": "2026-10-convergence-3-calibration-s87-v3-3",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "v3",
+   "arm": "method",
+   "seed": 3
+  },
+  {
+   "episode_id": "2026-10-convergence-3-calibration-s87-v3-1",
+   "scenario_id": "s87-undeclared-validator-3",
+   "variant_id": "v3",
+   "arm": "method",
+   "seed": 1
+  }
+ ],
+ "created_at": "2026-10-22T13:00:59Z",
+ "seal_sha256": "92a82e3f1fe12be1fb746f9a7b92b5b0964976a9ddcb8ade0fec9ad7118f7754"
+}

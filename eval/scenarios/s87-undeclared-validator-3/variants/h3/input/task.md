@@ -1,0 +1,1 @@
+The remaining parcel locker work in docs/plans/locker-pickup gets handed out first thing tomorrow, and a task that turns out not to be ready costs us a week. Could you use Tackle to go through the plan and tell me which of the remaining tasks are safe to hand out and which are not?

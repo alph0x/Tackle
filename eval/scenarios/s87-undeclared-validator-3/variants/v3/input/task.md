@@ -1,0 +1,1 @@
+Use Tackle to go over the plan in docs/plans/watering-rota. I am assigning its open tasks to contractors this week and will not get another look before they start, so for each open task tell me plainly whether it is ready to start, and if not, what is stopping it.
