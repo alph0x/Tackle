@@ -872,7 +872,7 @@
       "rule_id": "R-RUN-02",
       "statement": "Explicit PLAN+RUN authorization persists within scope: status questions during active work are answered and work continues without asking for execution permission again.",
       "statement_sha256": "46477588c66873c870e3dfd4772be0273d3545585e33a4e7e04bfb3190ef9bd0",
-      "home": "references/guides/communication.md:33",
+      "home": "references/guides/communication.md:35",
       "home_fragment": "an explicit pause/cancellation, or an incompatible",
       "units": [],
       "mirrors": [],
@@ -945,7 +945,7 @@
       "rule_id": "R-RUN-05",
       "statement": "Reuse verified current state and sufficient existing checks; do not append equivalent assertions or unchanged closure reruns.",
       "statement_sha256": "d9beacfc73bfe0717bd839e70c569c8c6a2133391f0bbffcb8e6877522d2ff55",
-      "home": "references/guides/run.md:328",
+      "home": "references/guides/run.md:331",
       "home_fragment": "Reuse unchanged PLAN readiness checks",
       "units": [],
       "mirrors": [],
@@ -968,7 +968,7 @@
       "rule_id": "R-RUN-06",
       "statement": "Changed content, selector membership, configuration, interfaces, runtime or freshness invalidate affected consumers, and unknown dependencies require conservative checks.",
       "statement_sha256": "1c1280f74aeef7eb7f7257c0cd7e6857d1cdb14607295e70d0e2dac102a2fd0e",
-      "home": "references/guides/run.md:256",
+      "home": "references/guides/run.md:259",
       "home_fragment": "only the dependent checks; re-ground and revalidate",
       "units": [],
       "mirrors": [],
@@ -991,7 +991,7 @@
       "rule_id": "R-RUN-07",
       "statement": "Task, related regression and affected merged-tree integration checks pass before a task becomes Complete, and deliverable acceptance precedes initiative completion.",
       "statement_sha256": "d3301a1f5ebbba1c848bc0b74aecc74ef0aa2bbce18ca99a6a237e8064424f42",
-      "home": "references/guides/run-card.md:50",
+      "home": "references/guides/run-card.md:54",
       "home_fragment": "deliverable acceptance precedes initiative completion",
       "units": [],
       "mirrors": [
@@ -1029,7 +1029,7 @@
       "rule_id": "R-RUN-08",
       "statement": "By default, three failed correction-validation cycles per task or two identical no-progress observations bound implementation correction; only a specifically owner-approved higher ceiling extends that same pool without erasing spent cycles, no-progress stops or lineage across split, merge and resume.",
       "statement_sha256": "3cba28ae8dd78be86150fd92cf24a7fc207c88e810a8dc4b05ee19732602d520",
-      "home": "references/guides/run.md:182",
+      "home": "references/guides/run.md:185",
       "home_fragment": "The three-cycle ceiling is the default",
       "units": [],
       "mirrors": [
@@ -1202,7 +1202,7 @@
       "rule_id": "R-RUN-14",
       "statement": "New tests follow red, green, refactor: the chosen failing test is seen failing before the implementation, and an opt-out needs a decision recorded first.",
       "statement_sha256": "c33bea5f8bef201516b6c34e8f5345884dbb59406f0c985bddb840e073df8ae6",
-      "home": "references/guides/testing.md:33",
+      "home": "references/guides/testing.md:38",
       "home_fragment": "red \u2192 green \u2192 refactor is the Executor's default shape",
       "units": [],
       "mirrors": [],
@@ -1269,7 +1269,7 @@
       "rule_id": "R-RUN-16",
       "statement": "A discovery task converges on consecutive dry rounds and deduplicates against everything seen.",
       "statement_sha256": "e92fe9a47b609bf869e0a2c1a84f588eabdc078572690e83e6002aa1691b4cb5",
-      "home": "references/task.tmpl.md:54",
+      "home": "references/task.tmpl.md:55",
       "home_fragment": "deduplicate against everything seen",
       "units": [],
       "mirrors": [
@@ -3267,7 +3267,7 @@
       "rule_id": "R-RUN-19",
       "statement": "An obligation that outlives its task is recorded when it is created as an O-NN row of the board's obligations table and prevents initiative completion while it is Open, unless the owner withdrew it.",
       "statement_sha256": "6d1baf55e5ae97b57a522eb306cc74f95574013a45a9a47e4800fd2267c2978a",
-      "home": "references/guides/run.md:269",
+      "home": "references/guides/run.md:272",
       "home_fragment": "An obligation that outlives its task is recorded when it is",
       "units": [],
       "mirrors": [
@@ -3294,7 +3294,7 @@
       "rule_id": "R-RUN-20",
       "statement": "RUN calls a fresh, independent adversarial review at three moments only (lock, repeat-failure and complete), the reviewer records its actual independence, and a moment with no independent reviewer stops the task Waiting on owner unless a recorded owner decision waives it.",
       "statement_sha256": "6a7f89f981c2bda43e934d6c4f5fd7152fb97189fb55cc785b7e81e2ec579da8",
-      "home": "references/guides/run.md:229",
+      "home": "references/guides/run.md:232",
       "home_fragment": "Run calls an independent adversarial review at three moments",
       "units": [],
       "mirrors": [],
@@ -3473,7 +3473,7 @@
       "rule_id": "R-RUN-21",
       "statement": "The spent correction count comes from the task-linked failed correction-validation records, whoever wrote them, the State snapshot only projects it, and a resume never assumes zero: zero requires records showing no failure.",
       "statement_sha256": "6221975721f94893108f8666f7f45bba55da011825b1862a7add60f8531e745c",
-      "home": "references/guides/run.md:176",
+      "home": "references/guides/run.md:179",
       "home_fragment": "The spent count comes from the task-linked failed corr",
       "units": [],
       "mirrors": [],
@@ -3498,7 +3498,7 @@
       "rule_id": "R-RUN-22",
       "statement": "Before an initiative is declared closed, and at every cold resume, every Open obligation in the table and every id on a Complete task's Remains receipt is listed. Before an initiative is declared closed, every Complete task's brief and report and every record a report cites, verification records included, are opened and read, with the history (history-archive.md included), decisions and questions, as prose for owner requests or follow-ups not yet done, each is recorded as an Open obligation and raised with the owner before closing, and a missing table or Remains line never shows that nothing remains.",
       "statement_sha256": "15bea7ad5cefc858c1db1e962ae9d3839bb2f5dc687a619fe2af58c7576691b6",
-      "home": "references/guides/run.md:271",
+      "home": "references/guides/run.md:274",
       "home_fragment": "Before an initiative is declared closed, and at every cold",
       "units": [],
       "mirrors": [
@@ -4306,7 +4306,7 @@
       "rule_id": "R-RUN-25",
       "statement": "Closing a Complete task sets its map delta changes to done before any view rebuild.",
       "statement_sha256": "63123fa9f2c6cd6a7386247812b9f677fa94a2a95b651238865145ad81f2076c",
-      "home": "references/guides/run-card.md:48",
+      "home": "references/guides/run-card.md:52",
       "home_fragment": "Set a Complete task's `map-delta.json` changes to `done`",
       "units": [],
       "mirrors": [
@@ -4474,7 +4474,7 @@
       "rule_id": "R-PLAN-22",
       "statement": "A task that edits or removes an existing test adds a mutation audit to its acceptance: break the behavior the changed test guards, and observe each retained check fail. New tests stay covered by their red phase, with no audit added.",
       "statement_sha256": "6f1e321f917c764253e9a92fde24516029dc76fd849ec0762b8e4dd4871ac21c",
-      "home": "references/guides/testing.md:71",
+      "home": "references/guides/testing.md:76",
       "home_fragment": "A task that edits or removes an existing test",
       "units": [],
       "mirrors": [],
@@ -4520,7 +4520,7 @@
       "rule_id": "R-PLAN-24",
       "statement": "Repository conventions the executor cannot infer, such as the commit message format, stated in the brief whether or not the repository has a conventions file; every cwd-dependent command carries its own cd or -C",
       "statement_sha256": "6f498490a1ce400809a1aeff35d84a2be1ef7cfbccd876efd5b89fdecdd73a75",
-      "home": "references/guides/design-and-contract.md:57",
+      "home": "references/guides/design-and-contract.md:61",
       "home_fragment": "Repository conventions the executor cannot infer",
       "units": [],
       "mirrors": [],
@@ -4543,7 +4543,7 @@
       "rule_id": "R-PLAN-25",
       "statement": "A task brief names the action classes its executor must not take (deletion outside the write scope, caches included; privilege escalation and package installs; publication by push, tag, release or registry upload; unscoped recursive searches outside the repository), each allowed only where the brief's write scope or an explicit owner decision allows it.",
       "statement_sha256": "0c9fa7067178e003f11e02f15a4348aab7cff503665540602511a1e2da42d978",
-      "home": "references/guides/design-and-contract.md:58",
+      "home": "references/guides/design-and-contract.md:62",
       "home_fragment": "Forbidden action classes the executor must not take",
       "units": [],
       "mirrors": [
@@ -5207,7 +5207,7 @@
       "rule_id": "R-RUN-32",
       "statement": "Each new attempt-journal line uses `correction cycle N of M: <failure> \u2192 <correction>; <validation command>: <result>`, where M is the default three or the explicitly approved total ceiling, while historical entries remain exact.",
       "statement_sha256": "a1629bb24afe42a074660c970fc0970c45a2ca3ec0619e71eb07efc9589d4fed",
-      "home": "references/guides/run.md:181",
+      "home": "references/guides/run.md:184",
       "home_fragment": "Each attempt-journal line takes the form",
       "units": [],
       "mirrors": [
@@ -5442,7 +5442,7 @@
       "rule_id": "R-PLAN-26",
       "statement": "A brief declares its detail level: full puts every Definition-of-ready item in scope, and interface fixes only the goal, write scope, dependencies, requirement owners and symbol ledger.",
       "statement_sha256": "aab003ce0b2945d26aaa45051cce0ec8c305567a8b328ee9d7cd6f4cd477a7d9",
-      "home": "references/guides/design-and-contract.md:59",
+      "home": "references/guides/design-and-contract.md:63",
       "home_fragment": "The detail level: `**Detail**: full` puts every",
       "units": [],
       "mirrors": [
@@ -5467,7 +5467,7 @@
       "rule_id": "R-PLAN-27",
       "statement": "A brief that declares its detail level lists the names it produces and the names it consumes, each consumed name with its source (a task, a sibling task, or an anchored citation of where it exists); under full both lists are required.",
       "statement_sha256": "2cdd9d9b2897da43a24fa0c487a4012474c08134a3c94ac388d333f6b68dc604",
-      "home": "references/guides/design-and-contract.md:60",
+      "home": "references/guides/design-and-contract.md:64",
       "home_fragment": "The symbol ledger of a brief that declares",
       "units": [],
       "mirrors": [
@@ -5733,7 +5733,7 @@
       "rule_id": "R-RUN-33",
       "statement": "A brief whose task is Complete, Skipped or Unverifiable is a closed record: no agent edits it, a fix-applying agent included, until an active decision authorizes the edit, and after each authorized edit the Coordinator appends one `**Brief erratum**: D-xx \u00b7 sha256 <hash>` report line that names that decision and the edited brief's hash.",
       "statement_sha256": "33040197dc88d5c94be7b22578698e828a9eb68e50ed7f808c35b795537ea8c9",
-      "home": "references/guides/run.md:359",
+      "home": "references/guides/run.md:362",
       "home_fragment": "A brief whose task is Complete, Skipped or Unverifiable is",
       "units": [],
       "mirrors": [
@@ -5761,7 +5761,7 @@
       "rule_id": "R-RUN-34",
       "statement": "At closure the Coordinator records the brief's sha256 on its own line in the task report and in the task's close entry of history.md; that recorded baseline is never edited or added again to match an edited brief, and lint row 14 reports a brief whose sha256 differs from the last erratum hash or, with none, from the recorded value.",
       "statement_sha256": "4699e955da026a1f8e54ed4868a94693b96e3b94209c7d4106d2245eecc7325f",
-      "home": "references/guides/run.md:351",
+      "home": "references/guides/run.md:354",
       "home_fragment": "At closure, the Coordinator records the brief's sha256",
       "units": [],
       "mirrors": [
@@ -5818,7 +5818,7 @@
       "rule_id": "R-PLAN-37",
       "statement": "The worker-facing task package names absolute repository, checkout, workspace and verification-record paths plus each command cwd; approach guidance separates preparation mechanics from named reviewer judgment, states exact consumers and effects with valid alternatives, makes aggregate denominators explicit (five passing of six is 83.333\u2026%, not acceptance when all six are required), treats deficient briefs, inputs or capture instructions as preparation defects, classifies missing or incomplete required records and fully captured child failures by observed cause while preserving existing accounting, rejects replacing any missing, incomplete or failed required child record with a wrapper PASS or remaining fraction as acceptance, and observes actual Python, awk or child-process reads rather than keywords.",
       "statement_sha256": "0126b2e950f72474cc9301c68c7e5d59a10eff09338f3a941e696ccf4591f787",
-      "home": "references/guides/design-and-contract.md:62",
+      "home": "references/guides/design-and-contract.md:66",
       "home_fragment": "The worker-facing package also names",
       "units": [],
       "mirrors": [
@@ -5844,7 +5844,7 @@
       "rule_id": "R-PLAN-38",
       "statement": "A prepared operation is a per-job procedure, not an installed runner or always-read RUN recipe: declare fixed revision, cwd and paths, exact before/after bytes and hashes, operation identity, unique anchors, child command and recovery. For the concrete worked example, before any write require its fixed records/ parent to be an existing real non-symlink directory confined within the fixture cwd. Recognize a matching full poststate before old anchors, preserve check status, stop drift/zero/duplicate anchors before writes, reconcile interrupted and concurrent states before repeats, and propagate the actual child exit.",
       "statement_sha256": "dfadb44cd31da30c9c7a2074abdeaacc314d60be8c44859d3396399c6601ae2b",
-      "home": "references/guides/design-and-contract.md:78",
+      "home": "references/guides/design-and-contract.md:82",
       "home_fragment": "A prepared operation is a per-job procedure",
       "units": [],
       "mirrors": [],
@@ -5867,7 +5867,7 @@
       "rule_id": "R-RUN-35",
       "statement": "At task close record the role\u2019s observed finish clock as `finishAt` with its Run ID; when either is unavailable use `n/a` with the reason, and never substitute validation end time.",
       "statement_sha256": "f149794a131d150f921d25f5da586911e4b98b55db3516ef26e81f2f96cec4dd",
-      "home": "references/guides/run-card.md:54",
+      "home": "references/guides/run-card.md:58",
       "home_fragment": "Capture the role's observed finish clock",
       "units": [],
       "mirrors": [
@@ -5963,7 +5963,7 @@
       "rule_id": "R-RUN-37",
       "statement": "Commit and close each start reservation before returning dispatch permission; permit at most one active unit and never refund started reservations. Preserve same-pool opening consumption, unknowns, corrections and parent-result lineage; missing knowledge is not zero. Duplicate acknowledgements, interruption or an unknown result never authorize repeating an effect. Reconciliation fills only unknown facts and cannot erase known failures, overruns, stops, corrections or reservation facts.",
       "statement_sha256": "48910dc822308e88adcd4b802a48811739e9256b0570396e5d9dbc5bc2ad0f5d",
-      "home": "references/guides/evaluation-rounds.md:29",
+      "home": "references/guides/evaluation-rounds.md:31",
       "home_fragment": "`record` appends one event",
       "units": [],
       "mirrors": [
@@ -5988,7 +5988,7 @@
       "rule_id": "R-EVID-20",
       "statement": "Keep the canonical manifest seal, public-local input hashes, sequenced event hash chain, receipt references and result identity immutable and rechecked. Opaque inputs are never opened. Compute and replay read retained evidence without journal recovery or mutation; replay compares canonical bytes for the same seal and event head without calling a model, adapter or subprocess. A match establishes deterministic local replay only, not custody, external validity, host confinement, independent judgment or acceptance.",
       "statement_sha256": "c489d23760889ebecf3d285304a2ada2a62f6ddba09d555a3f0dbe4c2296b889",
-      "home": "references/guides/evaluation-rounds.md:33",
+      "home": "references/guides/evaluation-rounds.md:35",
       "home_fragment": "`replay` performs the same fold",
       "units": [],
       "mirrors": [
@@ -6199,7 +6199,7 @@
       "rule_id": "R-RUN-39",
       "statement": "The optional pure correction_usage approved_limits mapping accepts only selected pools and exact integer total ceilings above their default or legacy caps, preserves all spent event and merge identities and original limits behavior, and performs arithmetic only while the caller binds each explicit ceiling to an actual owner decision for the same pool.",
       "statement_sha256": "7b60114ce42c6ed1947683625d37647312f61fa77849c92f11b1e05586b70583",
-      "home": "references/guides/run.md:199",
+      "home": "references/guides/run.md:202",
       "home_fragment": "The optional keyword-only `approved_limits` mapping",
       "units": [],
       "mirrors": [],
@@ -6215,6 +6215,240 @@
         "scenarios": [],
         "cohort_id": null,
         "as_of": "2026-10-23"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-40",
+      "statement": "Before an interface contract is fixed, an interface whose behavior appears only in the real environment is probed once on that real surface with a value-free shape read of key names and value types; schema files, fixtures and synthetic phases do not establish those shapes.",
+      "statement_sha256": "cf13b4d1fec2fe396a992d3ccebb63f009d59b27b5cd425d26f3e8d3258abfa6",
+      "home": "references/guides/design-and-contract.md:46",
+      "home_fragment": "An interface whose behavior appears only in the real",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "Owner adopted lessons from a measured executor pilot's close retrospective into the skill.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-25"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-41",
+      "statement": "A safety or boundary oracle classifies an observation by whether its argument could reach the protected boundary, never by a message string that harmless and boundary inputs share, and its fixtures include a harmless input producing the same message that the oracle must leave safe.",
+      "statement_sha256": "d2de9d8a978d8facfa84f834177e279e3f0b1d0cb5a84d3aad77ecd9a9ecf6cc",
+      "home": "references/guides/testing.md:27",
+      "home_fragment": "A safety or boundary oracle classifies an observation by",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "Owner adopted lessons from a measured executor pilot's close retrospective into the skill.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-25"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-EVID-21",
+      "statement": "A record that cites evidence outside the workspace store captures it into the store before publication, and at initiative close the coordinator captures referenced evidence still outside the store and removes unreferenced scratch the initiative created.",
+      "statement_sha256": "ac5bade2c91e591d6cadcdf704cf61dad0d27a2cf5b02ed49dc23b38a124d90a",
+      "home": "references/guides/record-lifecycle.md:12",
+      "home_fragment": "A record that cites evidence outside the store, such as",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "Owner adopted lessons from a measured executor pilot's close retrospective into the skill.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-25"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATE-20",
+      "statement": "An obligation is Discharged only when its discharge check passed; when the check cannot be met without inventing evidence, the coordinator offers the owner Withdrawn with a disposition record that keeps the affected records unchanged and unqualified instead of holding it Open.",
+      "statement_sha256": "6d002464067a37065225dc080b54ae127b72131a69b56e096454016d798a11eb",
+      "home": "references/task-board.tmpl.md:32",
+      "home_fragment": "`Discharged` means the discharge check passed.",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "Owner adopted lessons from a measured executor pilot's close retrospective into the skill.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-25"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-EVID-22",
+      "statement": "Measurement cases are calibrated before sealing: development cases at the bound model and effort must show the baseline arm failing some cases and each treatment's trigger occurring, otherwise the round stops for an owner decision before measurement spend.",
+      "statement_sha256": "f270601f2d4101293cbed6164101d2091bb700b57e05f5938f2441ba9bb747f8",
+      "home": "references/guides/evaluation-rounds.md:15",
+      "home_fragment": "Calibrate measurement cases before sealing them.",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "Owner adopted lessons from a measured executor pilot's close retrospective into the skill.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-25"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-EVID-23",
+      "statement": "A child round keeps its parent's exact limits unless its opening carries an owner extension receipt, in which case each limit may equal or exceed the parent's and never fall below it; an extension receipt without a parent result is refused.",
+      "statement_sha256": "f68833fd8ace6e5dac17d15a61311c5e49995d9052b78d712e9c665a401fff3c",
+      "home": "references/guides/evaluation-rounds.md:17",
+      "home_fragment": "A child round keeps its parent's exact limits, unless",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "Owner adopted lessons from a measured executor pilot's close retrospective into the skill.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-25"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-EVID-24",
+      "statement": "A stopped round is replaced by a new child round whose parent is the stopped round's computed result and whose added budget cites the owner's extension receipt; the stopped round is never edited or reopened, and caller request-identity stores start fresh for the child.",
+      "statement_sha256": "6456c879191acc0984c76922e922bb99bae9cf5cc77709362b36b16d6df4c4d3",
+      "home": "references/guides/evaluation-rounds.md:37",
+      "home_fragment": "To replace a stopped round, seal a new child round",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "Owner adopted lessons from a measured executor pilot's close retrospective into the skill.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-25"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-40",
+      "statement": "Inside a declared repair corridor the corridor's total budget is the task pool across roles, in-corridor defects are corrected and revalidated without another owner approval, a new decision is asked only when effects or risk widen, and a review without a verdict within its reserved time stays incomplete.",
+      "statement_sha256": "02d1b793e58855cc4aeed421b33bed7d94dc56a67a25550a2f0cc4495e256124",
+      "home": "SKILL.md:74",
+      "home_fragment": "a declared repair corridor is one budget across roles",
+      "units": [],
+      "mirrors": [
+        "references/guides/run-card.md:41",
+        "references/task.tmpl.md:21",
+        "references/guides/communication.md:30"
+      ],
+      "class": "behavioral",
+      "hot_path": true,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "Owner adopted lessons from a measured executor pilot's close retrospective into the skill.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-25"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-41",
+      "statement": "When a declared corridor's budget is spent, the recovery recommendation reports any run of three or more consecutive narrowing HOLDs as convergence evidence for the owner's choice, never as a pause inside the corridor.",
+      "statement_sha256": "ac020f7932aa585ba48c08b087830daf24e0f99d3e31d303e0f4fa57eeea7101",
+      "home": "references/guides/run.md:121",
+      "home_fragment": "When a declared corridor's budget is spent, report any run",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "Owner adopted lessons from a measured executor pilot's close retrospective into the skill.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-25"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-42",
+      "statement": "Lint row 9 flags a brief whose Corridor field lacks any of files, invariants, budget, review or verification, repeats a part, or whose budget is not a positive integer of full cycles; parts are separated by semicolons and lists inside a part by commas.",
+      "statement_sha256": "ce9d0abdb02c077df6bc7e2c8e356ed5137a07870de4d3750297895b8e1a3961",
+      "home": "references/guides/lint-spec.md:45",
+      "home_fragment": "a brief that declares a `**Corridor**:` field names",
+      "units": [],
+      "mirrors": [],
+      "class": "format",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "Owner adopted lessons from a measured executor pilot's close retrospective into the skill.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-25"
       },
       "historical": []
     }

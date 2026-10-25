@@ -116,9 +116,10 @@
         "test_task_contracts.py",
         "test_scenario_checks.py",
         "test_scenario_check_reach.py",
-        "test_correction_recovery.py"
+        "test_correction_recovery.py",
+        "test_repair_corridor.py"
       ],
-      "tests": 45,
+      "tests": 60,
       "source": "eval/lint/task-contracts",
       "category": "product",
       "purpose": "Task contracts, readiness and acceptance fields."
@@ -450,12 +451,13 @@
     {
       "path": "eval/tests/tooling/evaluation-rounds",
       "files": [
-        "test_rounds.py"
+        "test_rounds.py",
+        "test_replacement_rounds.py"
       ],
-      "tests": 4,
+      "tests": 8,
       "source": "skills/tackle/scripts/evaluation_rounds.py",
       "category": "tooling",
-      "purpose": "Finite round sealing, append-only event receipts, paired decisions and durable budgets through the shipped CLI, including interruption, concurrent recording and effect-free replay on disposable public fixtures."
+      "purpose": "Finite round sealing, append-only event receipts, paired decisions and durable budgets through the shipped CLI, including interruption, concurrent recording and effect-free replay on disposable public fixtures. Replacement of a stopped round by a child round, extended only through an owner extension receipt."
     },
     {
       "path": "eval/tests/tooling/effects",

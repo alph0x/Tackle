@@ -220,7 +220,7 @@
       "disposition": "merged",
       "destination": "MAINTAINING.md",
       "note": null,
-      "destination_unit_sha256": "082f3c3fb468c1789492dcc1787b8e2647c0a3027b21d783d7c1f783a1f56495"
+      "destination_unit_sha256": "05363e5e85bcc5bdce4f4021605a09c0afce9b9965e61f979bc27fa5291a1223"
     },
     {
       "path": "references/guides/lint-spec.md",
@@ -5646,7 +5646,7 @@
       "unit_sha256": "d7f01b11b8e45080330d8dd504e331767de6bc5ba61c642d538dec16cc45d9b9",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 9 \u00b7 Loop-task budget fields \u2014 every `Type: discovery` task declares `Rounds:`, every `Type: experiment` task declares `Metric:`, `Threshold:` and `Rounds:`, each as a field (bold, or at the start of its line), never in quoted prose | 0 lines of output |",
+      "note": "| 9 \u00b7 Loop-task and corridor budget fields \u2014 every `Type: discovery` task declares `Rounds:`, every `Type: experiment` task declares `Metric:`, `Threshold:` and `Rounds:`, each as a field (bold, or at the start of its line), never in quoted prose; a brief that declares a `**Corridor**:` field names all five parts `files=`, `invariants=`, `budget=`, `review=` and `verification=`, separated by `;` (a list inside a part is comma-separated), each at most once, with `budget` a positive integer of full cycles | 0 lines of output |",
       "destination_unit_sha256": null
     },
     {
@@ -6285,7 +6285,7 @@
       "disposition": "merged",
       "destination": "references/task.tmpl.md",
       "note": null,
-      "destination_unit_sha256": "028085059d8f83123f3d99645a66ce99967aff8f823b77a4321464a06e97dd06"
+      "destination_unit_sha256": "b2dc365f364dfd1f0f849596b5dd8279a139a2a76d128e74f6a62cd9827f1d78"
     },
     {
       "path": "references/terminology.md",
@@ -6464,7 +6464,7 @@
       "unit_sha256": "8dc6ba36a9a5d5b8c6d746fbac79ca4ec7fb28eefed69e261f39f423870b8f95",
       "disposition": "reworded",
       "destination": "MAINTAINING.md",
-      "note": "**Word budget** \u2014 `SKILL.md` \u2264 1100 words: `[ \"$(wc -w < skills/tackle/SKILL.md)\" -le 1100 ] || echo \"SKILL.md over budget\"`",
+      "note": "**Word budget** \u2014 `SKILL.md` \u2264 1120 words: `[ \"$(wc -w < skills/tackle/SKILL.md)\" -le 1120 ] || echo \"SKILL.md over budget\"`",
       "destination_unit_sha256": null
     },
     {
@@ -9522,7 +9522,7 @@
       "unit_sha256": "f1fe81548f935a952e1c02a5f8e2927793fd2ee6c85728c19c63729b2231b0ee",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/lint_runner.py",
-      "note": "import ast import hashlib import re from pathlib import Path import json import subprocess import sys import tempfile def canonical_rows(source, expected_sha256, slug): \"\"\"Compile the row programs that scripts/lint.py holds as ROW_NN constants, without running it.\"\"\" if hashlib.sha256(source).hexdigest() != expected_sha256: raise ValueError('canonical source revision changed') if not re.fullmatch(r'[a-z0-9][a-z0-9.-]*', slug): raise ValueError('invalid slug') try: tree = ast.parse(source.decode('utf-8')) except SyntaxError: raise ValueError('malformed row source') from None rows = {} for node in tree.body: if not (isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name) and re.fullmatch(r'ROW_[0-9]+', node.targets[0].id)): continue number = int(node.targets[0].id[4:]) if number in rows or not isinstance(node.value, ast.Constant) or type(node.value.value) is not str: raise ValueError('duplicate or malformed row') command = node.value.value.replace('<slug>', slug).encode('utf-8') rows[number] = dict(command=command, command_sha256=hashlib.sha256(command).hexdigest()) if sorted(rows) != list(range(1, 20)): raise ValueError('expected exactly rows 1 through 19') return rows def lint_verdict(row, record, stdout, stderr): if row not in range(1, 20): raise ValueError('unknown row') code = record['child_exit'] if type(code) is not int or any(type(record.get(key)) is not bool for key in ('timeout', 'inputs_stable', 'artifacts_present')): return 'ERROR' allowed = (0, 1) if row in (5, 6, 11, 15, 16) else (0,) if (record['timeout'] or record['launch_error'] or record['signal'] is not None or stderr or code not in allowed or not record['inputs_stable'] or not record['artifacts_present']): return 'ERROR' if stdout: return 'WARN' if row in (8, 13, 15) else 'FAIL' if (row == 5 and code != 1) or (row != 5 and row != 15 and code != 0): return 'ERROR' return 'PASS' def captured_lint_verdict(source, expected_sha256, slug, row, script, record, observation, capture_program=None): try: if capture_program is not None and record.get('program') != capture_program: return 'ERROR' if (observation / 'retired.json').exists() or observation.name.startswith('.pending-'): return 'ERROR' if type(record.get('accepted')) is not bool: return 'ERROR' expected = canonical_rows(source, expected_sha256, slug)[row]['command'] if record['argv'] != ['sh', script]: return 'ERROR' digest = record['inputs_before'][script] if not re.fullmatch(r'[0-9a-f]{64}', digest) or record['inputs_after'][script] != digest: return 'ERROR' actual = (observation / 'blobs' / digest).read_bytes() if hashlib.sha256(actual).hexdigest() != digest or actual not in (expected, expected + b'\\n'): return 'ERROR' required = set(record.get('prior_objects', [])) for key in ('inputs_before', 'inputs_after', 'artifacts', 'prior_records'): required.update(record.get(key, {}).values()) for fingerprint in required: if not re.fullmatch(r'[0-9a-f]{64}', fingerprint): return 'ERROR' if hashlib.sha256((observation / 'blobs' / fingerprint).read_bytes()).hexdigest() != fingerprint: return 'ERROR' streams = [(observation / name).read_bytes() for name in ['stdout.bin', 'stderr.bin']] for name, data in zip(['stdout.bin', 'stderr.bin'], streams): if hashlib.sha256(data).hexdigest() != record['streams'][name]: return 'ERROR' return lint_verdict(row, record, *streams) except (KeyError, OSError, ValueError, TypeError): return 'ERROR' def run_lint(config_path): root = Path.cwd().resolve() trusted_capture_sha256 = '3b0aaef26047e779c96735aa612858903db922c9e6921ed5a4d408aeaa304aea' trusted_lint_sha256 = '2bb1b2ad46281242854b095016c9ac995b4eef81458d58f9c3cbc43569a28cfe' def local(name): path = (root / name).resolve() path.relative_to(root) return path config = json.loads(local(config_path).read_text()) if 'source' in config or 'source_sha256' in config: raise ValueError('the lint source is the pinned lint.py beside the runner; remove source and source_sha256 from the configuration') source = Path(__file__).resolve().with_name('lint.py').read_bytes() if hashlib.sha256(source).hexdigest() != trusted_lint_sha256: raise ValueError('lint source revision changed') rows = canonical_rows(source, trusted_lint_sha256, config['slug']) if 'capture_script' in config: capture_script = local(config['capture_script']) else: capture_script = Path(__file__).resolve().with_name('capture.py') if hashlib.sha256(capture_script.read_bytes().rstrip(b'\\n')).hexdigest() != trusted_capture_sha256: raise ValueError('capture script revision changed') selected = config.get('rows', list(rows)) if not selected or len(set(selected)) != len(selected) or any(n not in rows for n in selected): raise ValueError('invalid selected rows') if 'workspace' in config: workspace = local(config['workspace']).resolve() if not workspace.is_dir(): raise ValueError('authorized workspace must already exist') else: workspace = local(config['destination']).resolve() workspace.mkdir(parents=True, exist_ok=True) destination = workspace / ('verification-records' if (workspace / 'task-board.md').is_file() else 'evidence') destination.resolve().relative_to(workspace) destination.mkdir(parents=True, exist_ok=True) batch = Path(tempfile.mkdtemp(prefix='lint-', dir=destination)) (batch / 'lint.py').write_bytes(source) selectors = list(config['selectors']) for path in [config_path, batch / 'lint.py', __file__, capture_script]: resolved = (root / path).resolve() if root in resolved.parents: selectors.append(dict(glob=str(resolved.relative_to(root)), required=True)) programs = {} for label, path in (('lint_runner', Path(__file__)), ('capture', capture_script)): resolved = (root / path).resolve() if root not in resolved.parents: programs[label] = dict(path=str(resolved), sha256=hashlib.sha256(resolved.read_bytes()).hexdigest()) results = {} for number in selected: script_path = batch / ('row-%02d.sh' % number) script_path.write_bytes(rows[number]['command']) script = str(script_path.relative_to(root)) spec = dict(workspace=str(workspace.relative_to(root)), argv=['sh', script], selectors=selectors, artifacts=[], destination=str((batch / ('row-%02d' % number)).relative_to(root)), timeout_seconds=config['timeout_seconds']) spec_path = batch / ('row-%02d.json' % number) spec_path.write_text(json.dumps(spec, indent=2)) result = subprocess.run([sys.executable, '-I', str(capture_script), str(spec_path)], cwd=root, capture_output=True) (batch / ('capture-%02d.stdout' % number)).write_bytes(result.stdout) (batch / ('capture-%02d.stderr' % number)).write_bytes(result.stderr) observation = None verdict = 'ERROR' try: if not result.stdout.strip(): raise ValueError('missing capture receipt') receipt = local(result.stdout.decode().strip()) receipt.relative_to(batch) observation = receipt.parent record = json.loads((observation / 'result.json').read_text()) if result.returncode in (0, 1) and not result.stderr: verdict = captured_lint_verdict(source, trusted_lint_sha256, config['slug'], number, script, record, observation, programs.get('capture')) except (OSError, ValueError, UnicodeError): pass results[number] = dict(row=number, source_sha256=trusted_lint_sha256, command_sha256=rows[number]['command_sha256'], verdict=verdict, capture_exit=result.returncode, observation=str(observation.relative_to(root)) if observation else None) summary = dict(rows=results, total=len(results), passed=sum(r['verdict'] == 'PASS' for r in results.values()), complete=len(results) == 19 and all(r['verdict'] in ('PASS', 'WARN') for r in results.values())) if programs: summary['programs'] = programs summary_path = batch / 'summary.json' summary_path.write_text(json.dumps(summary, indent=2)) print(summary_path) return all(r['verdict'] in ('PASS', 'WARN') for r in results.values()) if __name__ == '__main__': raise SystemExit(0 if run_lint(sys.argv[1]) else 1)",
+      "note": "import ast import hashlib import re from pathlib import Path import json import subprocess import sys import tempfile def canonical_rows(source, expected_sha256, slug): \"\"\"Compile the row programs that scripts/lint.py holds as ROW_NN constants, without running it.\"\"\" if hashlib.sha256(source).hexdigest() != expected_sha256: raise ValueError('canonical source revision changed') if not re.fullmatch(r'[a-z0-9][a-z0-9.-]*', slug): raise ValueError('invalid slug') try: tree = ast.parse(source.decode('utf-8')) except SyntaxError: raise ValueError('malformed row source') from None rows = {} for node in tree.body: if not (isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name) and re.fullmatch(r'ROW_[0-9]+', node.targets[0].id)): continue number = int(node.targets[0].id[4:]) if number in rows or not isinstance(node.value, ast.Constant) or type(node.value.value) is not str: raise ValueError('duplicate or malformed row') command = node.value.value.replace('<slug>', slug).encode('utf-8') rows[number] = dict(command=command, command_sha256=hashlib.sha256(command).hexdigest()) if sorted(rows) != list(range(1, 20)): raise ValueError('expected exactly rows 1 through 19') return rows def lint_verdict(row, record, stdout, stderr): if row not in range(1, 20): raise ValueError('unknown row') code = record['child_exit'] if type(code) is not int or any(type(record.get(key)) is not bool for key in ('timeout', 'inputs_stable', 'artifacts_present')): return 'ERROR' allowed = (0, 1) if row in (5, 6, 11, 15, 16) else (0,) if (record['timeout'] or record['launch_error'] or record['signal'] is not None or stderr or code not in allowed or not record['inputs_stable'] or not record['artifacts_present']): return 'ERROR' if stdout: return 'WARN' if row in (8, 13, 15) else 'FAIL' if (row == 5 and code != 1) or (row != 5 and row != 15 and code != 0): return 'ERROR' return 'PASS' def captured_lint_verdict(source, expected_sha256, slug, row, script, record, observation, capture_program=None): try: if capture_program is not None and record.get('program') != capture_program: return 'ERROR' if (observation / 'retired.json').exists() or observation.name.startswith('.pending-'): return 'ERROR' if type(record.get('accepted')) is not bool: return 'ERROR' expected = canonical_rows(source, expected_sha256, slug)[row]['command'] if record['argv'] != ['sh', script]: return 'ERROR' digest = record['inputs_before'][script] if not re.fullmatch(r'[0-9a-f]{64}', digest) or record['inputs_after'][script] != digest: return 'ERROR' actual = (observation / 'blobs' / digest).read_bytes() if hashlib.sha256(actual).hexdigest() != digest or actual not in (expected, expected + b'\\n'): return 'ERROR' required = set(record.get('prior_objects', [])) for key in ('inputs_before', 'inputs_after', 'artifacts', 'prior_records'): required.update(record.get(key, {}).values()) for fingerprint in required: if not re.fullmatch(r'[0-9a-f]{64}', fingerprint): return 'ERROR' if hashlib.sha256((observation / 'blobs' / fingerprint).read_bytes()).hexdigest() != fingerprint: return 'ERROR' streams = [(observation / name).read_bytes() for name in ['stdout.bin', 'stderr.bin']] for name, data in zip(['stdout.bin', 'stderr.bin'], streams): if hashlib.sha256(data).hexdigest() != record['streams'][name]: return 'ERROR' return lint_verdict(row, record, *streams) except (KeyError, OSError, ValueError, TypeError): return 'ERROR' def run_lint(config_path): root = Path.cwd().resolve() trusted_capture_sha256 = '3b0aaef26047e779c96735aa612858903db922c9e6921ed5a4d408aeaa304aea' trusted_lint_sha256 = 'b2a06322d7903260bec87bdce5913e134642a2abf87c83d15c9994ba0a30f2cc' def local(name): path = (root / name).resolve() path.relative_to(root) return path config = json.loads(local(config_path).read_text()) if 'source' in config or 'source_sha256' in config: raise ValueError('the lint source is the pinned lint.py beside the runner; remove source and source_sha256 from the configuration') source = Path(__file__).resolve().with_name('lint.py').read_bytes() if hashlib.sha256(source).hexdigest() != trusted_lint_sha256: raise ValueError('lint source revision changed') rows = canonical_rows(source, trusted_lint_sha256, config['slug']) if 'capture_script' in config: capture_script = local(config['capture_script']) else: capture_script = Path(__file__).resolve().with_name('capture.py') if hashlib.sha256(capture_script.read_bytes().rstrip(b'\\n')).hexdigest() != trusted_capture_sha256: raise ValueError('capture script revision changed') selected = config.get('rows', list(rows)) if not selected or len(set(selected)) != len(selected) or any(n not in rows for n in selected): raise ValueError('invalid selected rows') if 'workspace' in config: workspace = local(config['workspace']).resolve() if not workspace.is_dir(): raise ValueError('authorized workspace must already exist') else: workspace = local(config['destination']).resolve() workspace.mkdir(parents=True, exist_ok=True) destination = workspace / ('verification-records' if (workspace / 'task-board.md').is_file() else 'evidence') destination.resolve().relative_to(workspace) destination.mkdir(parents=True, exist_ok=True) batch = Path(tempfile.mkdtemp(prefix='lint-', dir=destination)) (batch / 'lint.py').write_bytes(source) selectors = list(config['selectors']) for path in [config_path, batch / 'lint.py', __file__, capture_script]: resolved = (root / path).resolve() if root in resolved.parents: selectors.append(dict(glob=str(resolved.relative_to(root)), required=True)) programs = {} for label, path in (('lint_runner', Path(__file__)), ('capture', capture_script)): resolved = (root / path).resolve() if root not in resolved.parents: programs[label] = dict(path=str(resolved), sha256=hashlib.sha256(resolved.read_bytes()).hexdigest()) results = {} for number in selected: script_path = batch / ('row-%02d.sh' % number) script_path.write_bytes(rows[number]['command']) script = str(script_path.relative_to(root)) spec = dict(workspace=str(workspace.relative_to(root)), argv=['sh', script], selectors=selectors, artifacts=[], destination=str((batch / ('row-%02d' % number)).relative_to(root)), timeout_seconds=config['timeout_seconds']) spec_path = batch / ('row-%02d.json' % number) spec_path.write_text(json.dumps(spec, indent=2)) result = subprocess.run([sys.executable, '-I', str(capture_script), str(spec_path)], cwd=root, capture_output=True) (batch / ('capture-%02d.stdout' % number)).write_bytes(result.stdout) (batch / ('capture-%02d.stderr' % number)).write_bytes(result.stderr) observation = None verdict = 'ERROR' try: if not result.stdout.strip(): raise ValueError('missing capture receipt') receipt = local(result.stdout.decode().strip()) receipt.relative_to(batch) observation = receipt.parent record = json.loads((observation / 'result.json').read_text()) if result.returncode in (0, 1) and not result.stderr: verdict = captured_lint_verdict(source, trusted_lint_sha256, config['slug'], number, script, record, observation, programs.get('capture')) except (OSError, ValueError, UnicodeError): pass results[number] = dict(row=number, source_sha256=trusted_lint_sha256, command_sha256=rows[number]['command_sha256'], verdict=verdict, capture_exit=result.returncode, observation=str(observation.relative_to(root)) if observation else None) summary = dict(rows=results, total=len(results), passed=sum(r['verdict'] == 'PASS' for r in results.values()), complete=len(results) == 19 and all(r['verdict'] in ('PASS', 'WARN') for r in results.values())) if programs: summary['programs'] = programs summary_path = batch / 'summary.json' summary_path.write_text(json.dumps(summary, indent=2)) print(summary_path) return all(r['verdict'] in ('PASS', 'WARN') for r in results.values()) if __name__ == '__main__': raise SystemExit(0 if run_lint(sys.argv[1]) else 1)",
       "destination_unit_sha256": null
     },
     {
@@ -10002,7 +10002,7 @@
       "unit_sha256": "192bf35122c3d4d3df0e468bce4e1be5c7afe42555fb58ed2f18adbb3bcf6997",
       "disposition": "reworded",
       "destination": "references/guides/lint-spec.md",
-      "note": "| 9 \u00b7 Loop-task budget fields \u2014 every `Type: discovery` task declares `Rounds:`, every `Type: experiment` task declares `Metric:`, `Threshold:` and `Rounds:`, each as a field (bold, or at the start of its line), never in quoted prose | 0 lines of output |",
+      "note": "| 9 \u00b7 Loop-task and corridor budget fields \u2014 every `Type: discovery` task declares `Rounds:`, every `Type: experiment` task declares `Metric:`, `Threshold:` and `Rounds:`, each as a field (bold, or at the start of its line), never in quoted prose; a brief that declares a `**Corridor**:` field names all five parts `files=`, `invariants=`, `budget=`, `review=` and `verification=`, separated by `;` (a list inside a part is comma-separated), each at most once, with `budget` a positive integer of full cycles | 0 lines of output |",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -17093,7 +17093,7 @@
       "unit_sha256": "66a059ebec272ce1ff0ed3e3fb5dd3120f1a48742d272341e7b3f3f824e56899",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
-      "note": "| [lint_runner.py](lint_runner.py) | `5ecdd0e37ba5e93de5e89d9a56703893a17c3b9c163cf28373dcca37fa1ac99d` |",
+      "note": "| [lint_runner.py](lint_runner.py) | `f63ff42f569fb189839d891a2ebd1a2de755b5dab22606ebb8b3dc03c90e3352` |",
       "destination_unit_sha256": null
     },
     {
@@ -17102,7 +17102,7 @@
       "unit_sha256": "c0097f1f2c85ab155e5d7cc35f7ec81d20c82a7ce4dfb3e17b3d85d728d66d82",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
-      "note": "| [lint.py](lint.py) | `2bb1b2ad46281242854b095016c9ac995b4eef81458d58f9c3cbc43569a28cfe` |",
+      "note": "| [lint.py](lint.py) | `b2a06322d7903260bec87bdce5913e134642a2abf87c83d15c9994ba0a30f2cc` |",
       "destination_unit_sha256": null
     },
     {
@@ -17537,7 +17537,7 @@
       "unit_sha256": "1d2dc2941ad3cdbdb50cce134827ec9fb6357589d10ce8b46d25ee567665b2f0",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
-      "note": "| [lint_runner.py](lint_runner.py) | `5ecdd0e37ba5e93de5e89d9a56703893a17c3b9c163cf28373dcca37fa1ac99d` |",
+      "note": "| [lint_runner.py](lint_runner.py) | `f63ff42f569fb189839d891a2ebd1a2de755b5dab22606ebb8b3dc03c90e3352` |",
       "destination_unit_sha256": null
     },
     {
@@ -17546,7 +17546,7 @@
       "unit_sha256": "46a3a54ffaa2febd6b0166dc646ba46b65bd0b2243bc96a096f5d4de7d61327e",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
-      "note": "| [lint.py](lint.py) | `2bb1b2ad46281242854b095016c9ac995b4eef81458d58f9c3cbc43569a28cfe` |",
+      "note": "| [lint.py](lint.py) | `b2a06322d7903260bec87bdce5913e134642a2abf87c83d15c9994ba0a30f2cc` |",
       "destination_unit_sha256": null
     },
     {
@@ -19781,6 +19781,66 @@
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
       "note": "| [correction_lineage.py](correction_lineage.py) | `38ad0d5ecc95ee721d9c15ad338c750b1dea78e96df3c8abdda9d087771eea60` |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "SKILL.md",
+      "line": 70,
+      "unit_sha256": "d27b8df08b51bde8c6e7db9169abbb265728d2f4ef019f914b367a16ba6c19a1",
+      "disposition": "reworded",
+      "destination": "SKILL.md",
+      "note": "**Run discipline** \u2014 explicit intent precedes mutation; pin procedure, classify failures and preserve shared correction budgets; a declared repair corridor is one budget across roles, and asks for a new decision only when effects or risk widen.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/lint-spec.md",
+      "line": 45,
+      "unit_sha256": "0651c39e4a5d278ede4e1a64427f4e56760948d9cf1d7c1611e23f418d0eebe7",
+      "disposition": "reworded",
+      "destination": "references/guides/lint-spec.md",
+      "note": "| 9 \u00b7 Loop-task and corridor budget fields \u2014 every `Type: discovery` task declares `Rounds:`, every `Type: experiment` task declares `Metric:`, `Threshold:` and `Rounds:`, each as a field (bold, or at the start of its line), never in quoted prose; a brief that declares a `**Corridor**:` field names all five parts `files=`, `invariants=`, `budget=`, `review=` and `verification=`, separated by `;` (a list inside a part is comma-separated), each at most once, with `budget` a positive integer of full cycles | 0 lines of output |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/task.tmpl.md",
+      "line": 171,
+      "unit_sha256": "028085059d8f83123f3d99645a66ce99967aff8f823b77a4321464a06e97dd06",
+      "disposition": "reworded",
+      "destination": "references/task.tmpl.md",
+      "note": "**Recovery**: follow the declared bounded correction budget, or the declared corridor's total budget.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "skills/tackle/scripts/README.md",
+      "line": 24,
+      "unit_sha256": "2547e864b6cb9f004fc1ddd74e892ba6ab065200d224f7d04f4ed5aff2818a5a",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "| [lint.py](lint.py) | `b2a06322d7903260bec87bdce5913e134642a2abf87c83d15c9994ba0a30f2cc` |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "MAINTAINING.md",
+      "line": 47,
+      "unit_sha256": "082f3c3fb468c1789492dcc1787b8e2647c0a3027b21d783d7c1f783a1f56495",
+      "disposition": "reworded",
+      "destination": "MAINTAINING.md",
+      "note": "**Word budget** \u2014 `SKILL.md` \u2264 1120 words: `[ \"$(wc -w < skills/tackle/SKILL.md)\" -le 1120 ] || echo \"SKILL.md over budget\"`",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "1100",
+          "reason": "the owner set aside size targets for this release, so the entry budget rises to the measured 1120 words"
+        }
+      ]
+    },
+    {
+      "path": "skills/tackle/scripts/README.md",
+      "line": 23,
+      "unit_sha256": "b1c0218b961774ae194bb3915fd407cd1e8c7a94d7c192e95dac859f17cae09c",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "| [lint_runner.py](lint_runner.py) | `f63ff42f569fb189839d891a2ebd1a2de755b5dab22606ebb8b3dc03c90e3352` |",
       "destination_unit_sha256": null
     }
   ]
