@@ -116,7 +116,7 @@
   {
     "rule_id": "R-EVID-20",
     "statement_sha256": "c489d23760889ebecf3d285304a2ada2a62f6ddba09d555a3f0dbe4c2296b889",
-    "reason": "Manifest seal, event hash chain, receipt references and replay identity are enforced by the shipped evaluation_rounds.py and verified through its real CLI by the evaluation-rounds family, including byte-identical replay against the previous engine. Whether an agent relies on the engine rather than hand-made records is not measured.",
+    "reason": "Manifest seal, event hash chain, receipt references and replay identity are enforced by the shipped evaluation_rounds.py and verified through its real CLI by the evaluation-rounds family, including byte-identical replay of the retained bytes under the same seal and event head. Whether an agent relies on the engine rather than hand-made records is not measured.",
     "accepted": "2026-10-25"
   },
   {
