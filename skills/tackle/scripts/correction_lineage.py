@@ -2,7 +2,7 @@ TASK_POOL_LIMIT = 3
 UNOWNED_INTEGRATION_POOL_LIMIT = 2
 
 
-def correction_usage(events, pool_ids, limits=None):
+def correction_usage(events, pool_ids, limits=None, *, approved_limits=None):
     unique = {}
     for event in events:
         identity = event['cycle_id']
@@ -16,7 +16,13 @@ def correction_usage(events, pool_ids, limits=None):
     if not set(limits) <= selected or any(
             limit not in (TASK_POOL_LIMIT, UNOWNED_INTEGRATION_POOL_LIMIT) for limit in limits.values()):
         raise ValueError('invalid pool limit')
-    caps = {pool: limits.get(pool, TASK_POOL_LIMIT) for pool in selected}
+    approved_limits = dict(approved_limits or {})
+    base_caps = {pool: limits.get(pool, TASK_POOL_LIMIT) for pool in selected}
+    if not set(approved_limits) <= selected or any(
+            type(ceiling) is not int or ceiling <= base_caps[pool]
+            for pool, ceiling in approved_limits.items()):
+        raise ValueError('invalid approved pool ceiling')
+    caps = {pool: approved_limits.get(pool, base_caps[pool]) for pool in selected}
     pools = {pool: 0 for pool in selected}
     counted = set()
     for identity, event in unique.items():
