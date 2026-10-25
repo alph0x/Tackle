@@ -27,6 +27,8 @@ consequences, and invite the owner's own solution. Wait only for the required an
 work while independently authorized work continues. Respect refusal; time passing is not consent.
 Use only observed capabilities and bounded authorized recovery; do not silently change provider,
 model, effort, access, product requirements, or task scope.
+An owner's approval of a declared repair corridor authorizes every correction cycle inside it; do not ask
+again for adjustments within its files, invariants and total budget.
 For an exhausted correction budget or repeated no-progress stop, follow the [RUN recovery recommendation](run.md#correction-recovery)
 and keep affected work stopped until the required owner decision is recorded.
 

@@ -18,6 +18,7 @@
   deviation; omit only when Tier is omitted and Effort is the compiled default)
 - **Escalation**: (declared; omit when the task does not permit the one capped retry; the owner still confirms the escalated model)
 - **Budget**: {{resolved correction, round, timeout, or tool limits, when applicable}}.
+- **Corridor**: (repair tasks only: `files=<allowed paths>; invariants=<what must hold>; budget=<N full implement-validate-review-correct cycles>; review=<time reserved for the reviewer's conclusion>; verification=<simplest check that gives sufficient evidence>`; `;` separates the parts and a list inside a part is comma-separated; omit otherwise)
 - **Procedure revision**: {{pinned procedure/version; adopt changes only at a task boundary}}.
 - **Lineage**: {{ancestor task IDs and unresolved failure/cycle-pool references; none for unrelated new work}}.
 - **Inputs**: {{resolved source, config, dependency, and contract revisions/hashes; values are
@@ -172,7 +173,7 @@ Omit this section when the Write scope has no shipped path.}}
   with the artifact, completed rubric, named reviewer, observed verdict and unresolved findings. Never
   substitute file existence, keywords or counts. If required review capability or isolation is unavailable,
   mark that evidence obligation blocked rather than assigning a grade.
-- **Recovery**: follow the declared bounded correction budget. When it is exhausted or yields repeated
+- **Recovery**: follow the declared bounded correction budget, or the declared corridor's total budget. When it is exhausted or yields repeated
   no-progress observations, stop and report expected/observed behavior, reproducer, affected consumers,
   attempts and the smallest unresolved decision. [Recovery](guides/run.md#correction-recovery).
 

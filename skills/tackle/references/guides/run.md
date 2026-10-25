@@ -118,6 +118,9 @@ count, prior and proposed total ceilings, exact correction scope and stop condit
 no-progress signatures, list remaining verification, and state known or unknown incremental cost and
 entitlement. An extension preserves spent cycles and the two-identical-no-progress stop; only an
 explicitly approved relevant remedy or re-ground can resolve that stop, never an unchanged retry.
+When a declared corridor's budget is spent, report any run of three or more consecutive HOLDs whose
+findings narrowed as convergence evidence for the owner's choice; inside the corridor such a run is not a
+reason to pause.
 
 A capability change is a separate recommendation. Require a demonstrated capability limit after the
 brief is strengthened; missing requirements, validator contradictions, permissions and environment

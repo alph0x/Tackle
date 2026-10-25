@@ -38,6 +38,10 @@ RUN starts only after explicit execution intent, including a scoped PLAN+RUN req
      validation of an implementation fault is not a cycle, and a successful correction resets no counter.
    - **Unowned integration.** One pool of two cycles per initiative, shared by all unowned integration
      faults.
+   - **Corridor.** A declared `**Corridor**:` budget is the task pool across all roles. Correct and
+     revalidate an in-corridor defect without asking; ask only when work widens effects or risk (other
+     files, public code, permissions, publication, acceptance, total budget, larger verification). A
+     review without a verdict in its reserved time stays `incomplete`, never PASS or HOLD.
    - **No progress.** Two identical no-progress observations stop the task immediately, even with
      fewer than three cycles spent. Identical means the same signature: command, failure class, failing
      assertion and normalized output, with timestamps, paths and durations removed.
