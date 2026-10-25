@@ -69,8 +69,8 @@ The development acceptance harness pins the exact nine executable command cells 
 of this document. After a reviewed command change, update its digest in
 `eval/validation-integrity/acceptance.py`; never derive that trust anchor from an unreviewed working copy.
 
-1. **Word budget** — `SKILL.md` ≤ 1100 words:
-   `[ "$(wc -w < skills/tackle/SKILL.md)" -le 1100 ] || echo "SKILL.md over budget"`
+1. **Word budget** — `SKILL.md` ≤ 1120 words:
+   `[ "$(wc -w < skills/tackle/SKILL.md)" -le 1120 ] || echo "SKILL.md over budget"`
 2. **Conventions count** — exactly 11 numbered core conventions (awk anchors on the §Core conventions heading, stops at the next `##`):
    `[ "$(awk '/^## Core conventions/{f=1;next} f && /^## /{exit} f && /^[0-9]+\. /{n++} END{print n+0}' skills/tackle/SKILL.md)" -eq 11 ] || echo "conventions count off"`
 3. **Changelog currency** — newest `## Tackle X.Y.Z` heading equals the `SKILL.md` version stamp:

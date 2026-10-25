@@ -76,7 +76,7 @@ class IntakeRequests(unittest.TestCase):
         self.assertLess(text.index(UPDATE_OR_NEW_SECTION), text.index(STEP_HEADING))
 
     def test_entry_stays_within_budget(self):
-        self.assertLessEqual(len(self.read(SKILL_PATH).split()), 1100)
+        self.assertLessEqual(len(self.read(SKILL_PATH).split()), 1120)
 
 
 if __name__ == "__main__":

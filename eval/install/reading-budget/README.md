@@ -53,6 +53,9 @@ reads it only when the card sends it there, so none of it counts.
   and the symbol ledger grammar of its `**Consumes**` and `**Produces**` fields.
   It then raises the chain limit to the measured 4752 because `SKILL.md` now links the verify guide and
   points to the project validator rule: such a line counts only when a decision records the owner's request.
+  It then raises the chain limit to the measured 4865 and the card limit to the measured 1045, by the owner's
+  decision to set aside size targets for this release: the RUN card's repair-corridor rule, the entry file's
+  corridor clause and the brief's `**Corridor**` field.
 - `--card <path>` measures another file as the card. It showed the old route: with `run.md` as the card,
   the chain was 13,722 words.
 

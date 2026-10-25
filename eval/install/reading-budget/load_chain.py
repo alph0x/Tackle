@@ -27,7 +27,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 from maintaining.install_root import current_root  # noqa: E402
 
-CHAIN_LIMIT, CARD_LIMIT = 4752, 995
+CHAIN_LIMIT, CARD_LIMIT = 4865, 1045
 CARD = 'references/guides/run-card.md'
 ENTRY, BRIEF_PROXY = 'SKILL.md', 'references/task.tmpl.md'
 DEPTH_HEADING = '## Depth (on demand)'

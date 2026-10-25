@@ -360,7 +360,7 @@ class SystemOneIntegration(unittest.TestCase):
 
     def test_actual_source_hooks_no_network_rule_and_artifact(self):
         entry=(ROOT/'skills/tackle/SKILL.md').read_text()
-        self.assertLessEqual(len(entry.split()),1100)
+        self.assertLessEqual(len(entry.split()),1120)
         self.assertEqual(len(re.findall(r'^\d+\. \*\*',entry,re.M)),11)
         for file in ['status','run','intake-and-gate','migrate']:
             self.assertIn('system-one.md',(ROOT/f'skills/tackle/references/guides/{file}.md').read_text())
