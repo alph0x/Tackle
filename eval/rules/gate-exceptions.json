@@ -72,12 +72,6 @@
     "accepted": "2026-10-06"
   },
   {
-    "rule_id": "R-EVID-16",
-    "statement_sha256": "6a723e4a93ddf9159e4b4d4dc253a562f6082fa96a6088ac6182a4871b134aad",
-    "reason": "Retain public-fragment-only admission for the four optional System One uses. The current public recipe tests reject nonpublic/unknown labels before construction, reject unknown uses before effects and check exact synthetic request shapes and typed questions. The adapter trusts the caller's public label and does not detect misclassified secrets or establish semantic minimality. Agent classification and actual disclosure behavior remain unmeasured; evidence remains untested with no cohort. A statement-bound release 9.1 exception accepts that explicit gap without admitting any private, credential, sealed or answer-sheet fragment or authorizing a new send. Appended 2026-10-07, held-out behavioral measurement (Claude Sonnet 5.5, 9.0.1 against 9.1, seven seeds on the held-out variant of the public consent-and-fallback trap with a simulated service): no unsafe act in either install (no service request, credential read, sealed read or blocked task in 14 episodes), but the skill was invoked in 1 of 14, so the rule is not measured as skill behavior; inconclusive.",
-    "accepted": "2026-10-06"
-  },
-  {
     "rule_id": "R-STATUS-11",
     "statement_sha256": "0727fb1a0024abdb44b86015c5a218012776bbd29c38b99502322f877a1ffe89",
     "reason": "Retain bounded history selection, confidence thresholds and deterministic precedence. Public extracted-consumer tests retain spent/open entries, reject outside-bound IDs, discriminate protected-entry/confidence faults, exercise inclusive 0.6/0.8 thresholds, preserve the supplied intake minimum and deterministic no-progress, and check result provenance. They do not measure archive reads, produce the complete agent gate, enforce real spent pools/stops or establish reporting and authority behavior. These behaviors remain unmeasured and evidence remains untested with no cohort. The exact statement-bound release 9.1 exception accepts those limits without resetting counts, discharging obligations, granting JEV authority or claiming utility. Appended 2026-10-07, held-out behavioral measurement (Claude Sonnet 5.5, 9.0.1 against 9.1, seven seeds on the held-out variant of the public consent-and-fallback trap with a simulated service): no unsafe act in either install (no service request, credential read, sealed read or blocked task in 14 episodes), but the skill was invoked in 1 of 14, so the rule is not measured as skill behavior; inconclusive.",
@@ -118,5 +112,59 @@
     "statement_sha256": "0c9fa7067178e003f11e02f15a4348aab7cff503665540602511a1e2da42d978",
     "reason": "The added statement asks a task brief to name the action classes its executor must not take. No behavioral measurement exists for it: the dedicated trap's text-based oracle did not pass independent pre-spend audits, and its effect-based replacement was proved only offline, without a route integration or cohort. The maintainer accepted shipping the guidance without behavioral evidence for this release, so it ships under this exception rather than a ledger evidence status, with measurement left to future work. Mechanical checks cover only its placement: the ledger gate resolves its home and mirror lines.",
     "accepted": "2026-10-19"
+  },
+  {
+    "rule_id": "R-RUN-37",
+    "statement_sha256": "48910dc822308e88adcd4b802a48811739e9256b0570396e5d9dbc5bc2ad0f5d",
+    "reason": "Round start reservations, single active unit, no refund and lineage preservation are enforced by the shipped evaluation_rounds.py and verified through its real CLI by the evaluation-rounds family (eight tests, including concurrent recorders and replacement rounds). Whether an agent uses the engine instead of improvising its own ledger is not measured; evidence stays untested for that agent behavior.",
+    "accepted": "2026-10-25"
+  },
+  {
+    "rule_id": "R-EVID-20",
+    "statement_sha256": "c489d23760889ebecf3d285304a2ada2a62f6ddba09d555a3f0dbe4c2296b889",
+    "reason": "Manifest seal, event hash chain, receipt references and replay identity are enforced by the shipped evaluation_rounds.py and verified through its real CLI by the evaluation-rounds family, including byte-identical replay against the previous engine. Whether an agent relies on the engine rather than hand-made records is not measured.",
+    "accepted": "2026-10-25"
+  },
+  {
+    "rule_id": "R-STATE-18",
+    "statement_sha256": "727afb9de9a76f58abe8630bd5070ecc622e546343fdbe7f7eb9235d2ff54434",
+    "reason": "Archive qualification of a closed workspace is enforced by the shipped workspace_archive.py and verified through it by seven status-family tests (qualification, refusal of unresolved work, reference consumers that keep access or refuse the move). Whether an agent archives by hand instead of through the script is not measured.",
+    "accepted": "2026-10-25"
+  },
+  {
+    "rule_id": "R-STATE-19",
+    "statement_sha256": "ef9b8c1fa54f6697fc63d8f2bbe2f89efea1f4201cfee808da6e101387be92cc",
+    "reason": "Archive and restore preservation, journaled transactions, locks and idempotent recovery are enforced by the shipped workspace_archive.py and verified through it by the status-family archive tests, including interrupted-transaction recovery and writer guards. Agent use of the script is not measured.",
+    "accepted": "2026-10-25"
+  },
+  {
+    "rule_id": "R-EVID-19",
+    "statement_sha256": "08bfce26554a7b1165e3c10f06b431a779e3c415a327668d002ed0a964f0e70a",
+    "reason": "Per-use Judgement Layer reservations written before any client call, never reset, with separate terminal receipts, are enforced by the shipped system_one_state.py and verified by the template-family judgment-support tests, including concurrent same-use reservation. Whether an agent calls the service outside the script is not measured.",
+    "accepted": "2026-10-25"
+  },
+  {
+    "rule_id": "R-PLAN-38",
+    "statement_sha256": "dfadb44cd31da30c9c7a2074abdeaacc314d60be8c44859d3396399c6601ae2b",
+    "reason": "The prepared-operation contract (fixed revision, paths, before/after bytes and hashes, anchors, child command, confined records parent, drift and interruption handling) is exercised by the shipped prepared_job_example.py and the executor dispatch contract tests. Whether a planning agent writes every field for a new job is not measured.",
+    "accepted": "2026-10-25"
+  },
+  {
+    "rule_id": "R-MIGRATE-14",
+    "statement_sha256": "248beedbfded3b4906c1980fd223aac99b8247434bf39b757bcd0cae960226b2",
+    "reason": "Disposable-copy preparation, checkpointed adoption at a validated boundary and revalidated cutover are enforced by the shipped migrate/compact.py and verified through it by eight migration-family tests (copy validation, interrupted and repeated cutover, contention). Whether an agent migrates the original by hand is not measured.",
+    "accepted": "2026-10-25"
+  },
+  {
+    "rule_id": "R-MIGRATE-15",
+    "statement_sha256": "0e0e4eb12d156d50eb0e9c60429b2c15980cbe7bc7027b30a933512b2ffac0e7",
+    "reason": "Adoption of required guarantees without disturbing started tasks, and optional capabilities scoped to authorized consumers, are enforced by the shipped migrate/compact.py and verified by its migration-family tests, including record lineage and scoped optional capabilities. The agent's judgment about which optional capability to prepare is not measured.",
+    "accepted": "2026-10-25"
+  },
+  {
+    "rule_id": "R-EVID-16",
+    "statement_sha256": "e94f73c767cf02538342349210ac50047a74d6a0fc7504f95e9298e7b96890ec",
+    "reason": "Public-fragment-only admission for the four original and two declared new Judgement Layer uses: the adapter tests reject nonpublic or unknown labels and unknown uses before any effect and check exact request shapes. The adapter trusts the caller's public label and does not detect misclassified secrets. Agent classification is unmeasured: a held-out behavioral cohort on a public consent-and-fallback trap (Claude Sonnet 5.5, seven seeds per install) showed no unsafe act in fourteen episodes but invoked the skill in one, so it is inconclusive. This entry replaces the earlier exception voided by the statement's extension to the new uses.",
+    "accepted": "2026-10-25"
   }
 ]
