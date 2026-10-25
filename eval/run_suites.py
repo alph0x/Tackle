@@ -78,18 +78,27 @@ def validate(root, manifest):
     return expected
 
 
-def plan(root, manifest, *, changed=None, phase='development'):
+def plan(root, manifest, *, changed=None, phase='development', manifest_baseline=None,
+         manifest_baseline_path=None, manifest_baseline_sha256=None):
     root = root.resolve()
     validate(root, manifest)
     spec = importlib.util.spec_from_file_location('check_selection', Path(__file__).with_name('check_selection.py'))
     selection = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(selection)
-    return selection.select(root, manifest, changed, phase)
+    return selection.select(root, manifest, changed, phase, manifest_baseline=manifest_baseline,
+                            manifest_baseline_path=manifest_baseline_path,
+                            manifest_baseline_sha256=manifest_baseline_sha256)
 
 
-def run(root, manifest, output, *, changed=None, phase='development', dry_run=False):
+def run(root, manifest, output, *, changed=None, phase='development', dry_run=False,
+        manifest_baseline=None, manifest_baseline_path=None, manifest_baseline_sha256=None):
     root = root.resolve()
-    selection = plan(root, manifest, changed=changed, phase=phase)
+    selection = plan(root, manifest, changed=changed, phase=phase, manifest_baseline=manifest_baseline,
+                     manifest_baseline_path=manifest_baseline_path,
+                     manifest_baseline_sha256=manifest_baseline_sha256)
+    baseline_inputs = {}
+    if manifest_baseline_path is not None and manifest_baseline_sha256 is not None:
+        baseline_inputs[str(manifest_baseline_path)] = manifest_baseline_sha256
     files = {root / suite['path'] / filename for suite in manifest['suites'] for filename in suite['files']}
     files.update(path for path in (Path(__file__).resolve(), Path(__file__).with_name('check_selection.py'),
                                   root / 'eval/check-selection.json') if path.is_file())
@@ -97,7 +106,7 @@ def run(root, manifest, output, *, changed=None, phase='development', dry_run=Fa
     if dry_run or not selection['selected']:
         report = dict(passed=None, tests=0, suites=[], selection=selection,
                       complete=False, registered_tests=selection['registered_tests'],
-                      scope='dry-run' if dry_run else 'no affected suites')
+                      scope='dry-run' if dry_run else 'no affected suites', inputs=baseline_inputs)
         (output / 'results.json').write_text(json.dumps(report, indent=2) + '\n')
         print(json.dumps(report, indent=2), flush=True)
         return report
@@ -135,13 +144,15 @@ def run(root, manifest, output, *, changed=None, phase='development', dry_run=Fa
                   + ' host-executed=' + ','.join(coverage['host_executed'])
                   + ' host-missing=' + ','.join(coverage['host_missing'])
                   + ' stdout=' + coverage['stdout'], flush=True)
+    inputs = {str(path.relative_to(root)) if path.is_relative_to(root) else str(path):
+              digest(path.read_bytes()) for path in sorted(files)}
+    inputs.update(baseline_inputs)
     report = dict(passed=all(item['passed'] for item in results), tests=sum(item['tests'] for item in results),
                   complete=selection['complete'], registered_tests=selection['registered_tests'], selection=selection,
                   scope='complete registry' if selection['complete'] else 'selected families only',
                   runtime=platform.platform(), python=platform.python_version(),
                   registry_sha256=digest(json.dumps(manifest, sort_keys=True).encode()),
-                  inputs={str(path.relative_to(root)) if path.is_relative_to(root) else str(path):
-                          digest(path.read_bytes()) for path in sorted(files)}, suites=results)
+                  inputs=inputs, suites=results)
     (output / 'results.json').write_text(json.dumps(report, indent=2) + '\n')
     return report
 
@@ -150,6 +161,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument('--manifest', type=Path)
+    parser.add_argument('--manifest-baseline', type=Path,
+                        help='Explicit baseline registry JSON; requires --manifest-baseline-sha256')
+    parser.add_argument('--manifest-baseline-sha256',
+                        help='Expected lowercase SHA-256 of the exact baseline bytes')
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--changed', action='append', help='Repository-relative changed path; repeat for the full change set')
     parser.add_argument('--phase', choices=['development', 'integration', 'release'], default='development')
@@ -157,8 +172,23 @@ def main():
     args = parser.parse_args()
     manifest = args.manifest or args.root / 'eval/suite-manifest.json'
     try:
+        if (args.manifest_baseline is None) != (args.manifest_baseline_sha256 is None):
+            raise ValueError('--manifest-baseline and --manifest-baseline-sha256 must be supplied together')
+        baseline = baseline_sha256 = None
+        if args.manifest_baseline is not None:
+            if not args.manifest_baseline.is_absolute():
+                raise ValueError('--manifest-baseline must be an absolute path')
+            if not re.fullmatch(r'[0-9a-f]{64}', args.manifest_baseline_sha256):
+                raise ValueError('--manifest-baseline-sha256 must be 64 lowercase hexadecimal characters')
+            baseline_bytes = args.manifest_baseline.read_bytes()
+            baseline_sha256 = digest(baseline_bytes)
+            if baseline_sha256 != args.manifest_baseline_sha256:
+                raise ValueError('manifest baseline SHA-256 does not match supplied digest')
+            baseline = json.loads(baseline_bytes)
         report = run(args.root, json.loads(manifest.read_text()), args.output,
-                     changed=args.changed, phase=args.phase, dry_run=args.dry_run)
+                     changed=args.changed, phase=args.phase, dry_run=args.dry_run,
+                     manifest_baseline=baseline, manifest_baseline_path=args.manifest_baseline,
+                     manifest_baseline_sha256=baseline_sha256)
     except (ValueError, KeyError, OSError) as error:
         message = 'suite discovery rejected: ' + str(error) + '\n'
         if not args.output.exists():

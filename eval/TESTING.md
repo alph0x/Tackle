@@ -46,6 +46,31 @@ regressions. Changing a producer selects its known consumers, including historic
 cohorts where applicable. Unknown dependencies select the full registry. The map
 in `check-selection.json` is conservative; it does not prove minimal selection.
 
+For a development change to `eval/suite-manifest.json`, an explicit pinned
+baseline can qualify a delta limited to test-file membership and expected native
+counts in existing families. Supply both `--manifest-baseline` (an absolute JSON
+path) and `--manifest-baseline-sha256` (the lowercase SHA-256 of those exact
+bytes). The runner reads the bytes once, verifies the digest and structure, and
+records the baseline path and digest with the selection. For example:
+
+```sh
+python3 eval/run_suites.py \
+  --changed eval/suite-manifest.json \
+  --changed eval/tests/tooling/maintaining/suite-integrity/test_manifest_impact.py \
+  --manifest-baseline /absolute/path/previous-suite-manifest.json \
+  --manifest-baseline-sha256 <64-lowercase-hex> \
+  --output /tmp/tackle-manifest-impact
+```
+
+The runner still validates every current registered test file before selection.
+For a qualified delta it selects changed-count/file families, discovery
+regressions and the reviewed manifest readers. File order alone is immaterial.
+Family membership, source/category/purpose, unknown fields or other top-level
+changes keep the selection full. A missing baseline, unknown changed path, other
+global input, default run, integration or release also keeps full selection.
+The baseline never narrows unrelated global paths, and a green result does not
+authorize automatic evidence reuse.
+
 Discovery validates **all** registered files before filtering execution. Missing,
 unregistered or duplicate files reject a partial run too. Native count mismatches,
 skips and child failures remain failures. Results retain commands, raw streams,

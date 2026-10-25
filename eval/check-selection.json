@@ -34,7 +34,9 @@
     "eval/tests/historical/verdicts/resume-comparison",
     "eval/tests/historical/verdicts/no-regression",
     "eval/tests/historical/migration/copy-and-adoption",
-    "eval/tests/product/requirements-base"
+    "eval/tests/product/requirements-base",
+    "eval/tests/tooling/evaluation-rounds",
+    "eval/tests/tooling/effects"
   ],
   "rules": [
     {
@@ -162,7 +164,6 @@
       "patterns": [
         "eval/maintaining/suite-integrity/**",
         "eval/run_suites.py",
-        "eval/suite-manifest.json",
         "skills/tackle/scripts/lint.py",
         "skills/tackle/scripts/lint_runner.py"
       ],
@@ -171,6 +172,18 @@
       ],
       "exclude": [],
       "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+    },
+    {
+      "patterns": [
+        "eval/suite-manifest.json"
+      ],
+      "families": [
+        "eval/tests/tooling/maintaining/suite-integrity",
+        "eval/tests/product/templates",
+        "eval/tests/tooling/behavior/judges/planning"
+      ],
+      "exclude": [],
+      "reason": "Direct and transitive readers validate registry membership, load registry-backed verification behavior and enforce runner integrity."
     },
     {
       "patterns": [
@@ -293,6 +306,7 @@
         "skills/tackle/references/guides/system-one.md",
         "skills/tackle/scripts/system_one_decide.py",
         "skills/tackle/scripts/system_one_state.py",
+        "skills/tackle/scripts/prepared_job_example.py",
         "skills/tackle/scripts/lint_runner.py",
         "skills/tackle/scripts/decompose_check.py",
         "skills/tackle/scripts/lint.py",
@@ -805,6 +819,129 @@
       ],
       "exclude": [],
       "reason": "The example validator, the verify guide section that defines its interface, and the inventory check that resolves links in extras."
+    },
+    {
+      "patterns": [
+        "eval/tests/product/templates/test_executor_dispatch_contract.py",
+        "eval/tests/product/templates/test_judgment_support.py"
+      ],
+      "families": [
+        "eval/tests/product/templates"
+      ],
+      "exclude": [],
+      "reason": "These new public-consumer checks are registered in the existing templates family; changes to either test select the complete affected family."
+    },
+    {
+      "patterns": [
+        "skills/tackle/scripts/evaluation_rounds.py",
+        "skills/tackle/references/guides/evaluation-rounds.md",
+        "skills/tackle/references/guides/verify.md"
+      ],
+      "families": [
+        "eval/tests/tooling/evaluation-rounds"
+      ],
+      "exclude": [],
+      "reason": "The finite-round CLI is the actual native consumer; its public guide and verify entry point retain that consumer conservatively."
+    },
+    {
+      "patterns": [
+        "eval/behavior/effects/**"
+      ],
+      "families": [
+        "eval/tests/tooling/effects"
+      ],
+      "exclude": [],
+      "reason": "The local effect evaluator and its public evidence contract are exercised by the complete effect-oracle family."
+    },
+    {
+      "patterns": [
+        "skills/tackle/scripts/README.md"
+      ],
+      "families": [
+        "eval/tests/product/requirements-base"
+      ],
+      "exclude": [],
+      "reason": "The requirements-base public script-catalog contract reads the shipped script README; existing install, load-chain and normative consumers remain selected."
+    },
+    {
+      "patterns": [
+        "eval/rules/ledger.json"
+      ],
+      "families": [
+        "eval/tests/product/templates",
+        "eval/tests/tooling/records",
+        "eval/tests/tooling/scenario-index"
+      ],
+      "exclude": [],
+      "reason": "The current template source hook and public record-currency/scenario-index tools consume the real ledger; retain them alongside the existing normative-tool rule without reading scenario inputs."
+    },
+    {
+      "patterns": [
+        "skills/tackle/scripts/workspace_archive.py",
+        "skills/tackle/references/guides/status.md",
+        "skills/tackle/references/guides/invocation.md",
+        "skills/tackle/references/guides/context-lifecycle.md",
+        "skills/tackle/references/guides/record-lifecycle.md",
+        "skills/tackle/references/guides/lint-spec.md"
+      ],
+      "families": [
+        "eval/tests/product/status",
+        "eval/tests/tooling/maintaining/field-report"
+      ],
+      "exclude": [],
+      "reason": "Archive helper and policy changes reach the whole archive/API and actual CLI/discovery consumer matrices; keep both families conservatively alongside all existing consumers."
+    },
+    {
+      "patterns": [
+        "MAINTAINING.md",
+        "maintaining/field_report.py"
+      ],
+      "families": [
+        "eval/tests/product/status",
+        "eval/tests/tooling/maintaining/field-report"
+      ],
+      "exclude": [],
+      "reason": "The extracted maintainer discovery block imports the archive helper and the real field-report CLI excludes reserved storage and aliases; preserve existing broader maintainer and document consumers."
+    },
+    {
+      "patterns": [
+        "skills/tackle/scripts/migrate/compact.py",
+        "skills/tackle/scripts/context_bundle.py",
+        "skills/tackle/scripts/decompose_check.py",
+        "skills/tackle/references/guides/migration-catalog.json",
+        "maintaining/check_migration_catalog.py",
+        "skills/tackle/references/guides/migrate.md",
+        "maintaining/migrations.md"
+      ],
+      "families": [
+        "eval/tests/product/migration",
+        "eval/tests/product/templates"
+      ],
+      "exclude": [],
+      "reason": "Compact migration, its shared Context and read-only task-field loaders, current catalog/provenance and release checker reach the native CLI/admission and retained representation consumers across these whole families; retain all existing schema/adapters, shared-helper consumers and global expansion."
+    },
+    {
+      "patterns": [
+        "eval/tests/product/status/test_workspace_archive.py",
+        "eval/tests/tooling/maintaining/field-report/test_archive_discovery.py"
+      ],
+      "families": [
+        "eval/tests/product/status",
+        "eval/tests/tooling/maintaining/field-report"
+      ],
+      "exclude": [],
+      "reason": "The two additive archive tests consume the same installed helper and real discovery entry points, so changes select both whole native families."
+    },
+    {
+      "patterns": [
+        "eval/tests/product/migration/test_compact_migration.py"
+      ],
+      "families": [
+        "eval/tests/product/migration",
+        "eval/tests/product/templates"
+      ],
+      "exclude": [],
+      "reason": "The real compact CLI and shared admission helpers are consumed by compact migration and retained template migration expectations; do not omit either whole family."
     }
   ],
   "global_patterns": [
