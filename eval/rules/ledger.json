@@ -6399,9 +6399,11 @@
         "discovered_by": []
       },
       "evidence": {
-        "status": "untested",
-        "scenarios": [],
-        "cohort_id": null,
+        "status": "inert",
+        "scenarios": [
+          "s88-repair-corridor"
+        ],
+        "cohort_id": "2026-10-repair-corridor",
         "as_of": "2026-10-25"
       },
       "historical": []
