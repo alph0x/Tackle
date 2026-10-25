@@ -29,7 +29,7 @@ The dependency graph remains in `plan.md` §5; this board records its task depen
 <a id="obligations"></a>
 ## Obligations
 
-An obligation that outlives its task, or belongs to the initiative with no task, is recorded here when it is created. The first cell is its stable `O-NN` id (two digits). State is `Open`, `Discharged` or `Withdrawn`; a `Discharged` or `Withdrawn` row cites a Reference: a decision id, a report path or a record path. Name every `Open` id in the `Active obligations` line of the newest State snapshot in `history.md`, and in the `**Remains**:` receipt of the report that leaves it open. Initiative completion requires that no obligation is `Open`, unless the owner withdrew it.
+An obligation that outlives its task, or belongs to the initiative with no task, is recorded here when it is created. The first cell is its stable `O-NN` id (two digits). State is `Open`, `Discharged` or `Withdrawn`; a `Discharged` or `Withdrawn` row cites a Reference: a decision id, a report path or a record path. Name every `Open` id in the `Active obligations` line of the newest State snapshot in `history.md`, and in the `**Remains**:` receipt of the report that leaves it open. Initiative completion requires that no obligation is `Open`, unless the owner withdrew it. `Discharged` means the discharge check passed. When the check cannot be met without inventing evidence, do not hold the row `Open` indefinitely: offer the owner `Withdrawn`, with a disposition record that keeps the affected records unchanged and marks them unqualified.
 
 | Obligation | What | Owner | Trigger | State | Discharge check | Reference |
 |---|---|---|---|---|---|---|

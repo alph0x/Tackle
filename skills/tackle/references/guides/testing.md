@@ -24,6 +24,11 @@ names, such as an annotated tag where the script passes one, the tree under test
 changes after validation. A convenient equivalent, such as a commit sha for the tag, does not exercise the
 consumer's call.
 
+A safety or boundary oracle classifies an observation by whether its argument could reach the protected
+boundary, never by a message string that harmless and boundary inputs share. Its fixtures include a harmless
+input that produces the same message as a boundary input (an empty path refused with the same reason as an
+absolute path, for example), and the oracle must leave it safe.
+
 ## Test-first execution
 
 The bounded None route follows `intake-and-gate.md` without expanding into this template-driven loop.

@@ -43,6 +43,10 @@ dependent Task clauses.
 A decision applied by one task names it in `**Owner**`, and a decision that changes the meaning of contract
 clauses names them in `**Clauses**`; the owner's brief cites the decision id and, at full detail, carries
 each named clause compiled.
+An interface whose behavior appears only in the real environment (a real login or account, the real provider,
+notifications a real client emits) is probed once on that real surface before its contract is fixed: one
+value-free shape read that records key names and value types, never values. A schema file, fixture or synthetic
+phase does not establish those shapes; a contract derived only from them is unverified until the probe runs.
 
 <a id="point-briefing"></a>
 ## Task brief

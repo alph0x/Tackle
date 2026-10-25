@@ -9,6 +9,10 @@ period. Hashes, mutable paths and potentially unavailable commits are not retain
 
 New Coordinated captures explicitly name the already authorized `workspace`; the store is its `verification-records/`
 directory, keeping its existing gitignore decision and never in the installed package.
+A record that cites evidence outside the store, such as a session temporary directory, captures that evidence
+into the store before the record is published; an uncaptured temporary path is not evidence, because the host
+may purge it. At initiative close, the coordinator captures referenced evidence still outside the store and
+removes the scratch the initiative created that no record references.
 Every actual execution creates a separate immutable raw check record and check summary, even when
 commands and inputs match. `objects/<sha256>` stores shared input/script/artifact/stream bytes.
 The legacy `observation-*/blobs/<sha256>`, `stdout.bin`, `stderr.bin`, `result.json` and `receipt.md`
