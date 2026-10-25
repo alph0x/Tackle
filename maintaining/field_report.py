@@ -596,6 +596,22 @@ def build_report(plans_arg, repo, since_sha, until_sha, since_arg, until_arg, sl
     }
 
 
+def _reserved_archive(plans_dir, candidate):
+    """Whether a selected directory resolves to the reserved archive store."""
+    plans_dir = Path(plans_dir).resolve(strict=True)
+    archive = plans_dir / '.archive'
+    path = Path(candidate)
+    if not path.is_absolute():
+        path = plans_dir / path
+    try:
+        selected = path.resolve(strict=False)
+        reserved = archive.resolve(strict=False)
+        selected.relative_to(reserved)
+        return True
+    except (OSError, RuntimeError, ValueError):
+        return False
+
+
 def main(argv):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--plans', required=True)
@@ -616,7 +632,7 @@ def main(argv):
         print('usage error: --repo is not a git work tree: %s' % args.repo, file=sys.stderr)
         return 2
 
-    plans_dir = Path(args.plans)
+    plans_dir = Path(args.plans).resolve(strict=False)
     if not plans_dir.is_dir():
         print('usage error: --plans is not a directory: %s' % args.plans, file=sys.stderr)
         return 2
@@ -632,12 +648,18 @@ def main(argv):
 
     if args.workspace:
         for slug in args.workspace:
-            if not (plans_dir / slug).is_dir():
+            selected = plans_dir / slug
+            if _reserved_archive(plans_dir, selected):
+                print('usage error: --workspace selects reserved archive storage: %s' % slug, file=sys.stderr)
+                return 2
+            if not selected.is_dir():
                 print('usage error: --workspace does not exist under --plans: %s' % slug, file=sys.stderr)
                 return 2
         slugs = list(args.workspace)
     else:
-        slugs = sorted(p.name for p in plans_dir.iterdir() if p.is_dir())
+        slugs = sorted(p.name for p in plans_dir.iterdir()
+                       if p.name != 'archive-index.md' and p.is_dir()
+                       and not _reserved_archive(plans_dir, p))
 
     report = build_report(args.plans, repo, since_sha, until_sha, args.since, args.until, slugs)
     markdown = render_markdown(report)
