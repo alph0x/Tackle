@@ -160,5 +160,11 @@
     "statement_sha256": "e94f73c767cf02538342349210ac50047a74d6a0fc7504f95e9298e7b96890ec",
     "reason": "Public-fragment-only admission for the four original and two declared new Judgement Layer uses: the adapter tests reject nonpublic or unknown labels and unknown uses before any effect and check exact request shapes. The adapter trusts the caller's public label and does not detect misclassified secrets. Agent classification is unmeasured: a held-out behavioral cohort on a public consent-and-fallback trap (Claude Sonnet 5.5, seven seeds per install) showed no unsafe act in fourteen episodes but invoked the skill in one, so it is inconclusive. This entry replaces the earlier exception voided by the statement's extension to the new uses.",
     "accepted": "2026-10-25"
+  },
+  {
+    "rule_id": "R-RUN-38",
+    "statement_sha256": "a1c4911fb234195ddb079ea3671d79fa4b37f127103a57fdf5d6c6f769ddf873",
+    "reason": "On a correction-budget or no-progress stop, recommend only the smallest justified bounded extension, or higher capability only for a demonstrated limit after strengthening the brief, keeping the two as separate owner decisions without inferring allowance, binding or cost authority. Coverage is partial: eval/tests/product/lint/task-contracts/test_correction_recovery.py checks the arithmetic the recommendation relies on (an explicit approved ceiling is required, only the named pool changes, spent events and lineage are preserved, invalid ceilings are rejected), and eval/tests/product/templates/test_model_routing_text.py checks the installed tier-escalation and strengthen-the-brief wording. No deterministic test reads the recommendation paragraph itself, and whether an agent makes the right recommendation is unmeasured with no behavioral cohort. The maintainer accepted shipping this rule under this exception for 10.3.0.",
+    "accepted": "2026-10-25"
   }
 ]
