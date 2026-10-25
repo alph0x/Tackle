@@ -59,6 +59,8 @@ counters, interrupted runs, integration evidence and deliverable acceptance.
 - {{see `questions.md`: Q-01, ...}}
 <!-- Failed attempts: one journal line per attempt, each with its verification block:
 correction cycle N of 3: <failure> → <correction>; <validation command>: <result>
+New records after an approved extension use the approved total ceiling (`correction cycle N of M`);
+historical entries retain their original `N of 3` wording.
 On budget exhaustion or no-progress (two consecutive attempts with identical evidence
 output), the task becomes Blocked and the entry carries the escalation packet:
 ### Escalation — T-NN

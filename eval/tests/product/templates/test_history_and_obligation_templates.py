@@ -8,6 +8,7 @@ structure only: they do not show that an agent obeys the policy.
 import importlib.util
 import json
 import re
+import json
 import shutil
 import subprocess
 import sys
@@ -441,12 +442,14 @@ class CountAgreementTests(unittest.TestCase):
         for path in current:
             with self.subTest(path=path.name):
                 self.assertEqual(stale.findall(text(path)), [])
-        # The historical checklists keep their own counts; the checklists from 9.1 on count none of the old.
-        guide = text(GUIDES / 'migrate.md')
-        before, after = guide.split('<a id="v92--v93-checklist"></a>', 1)
-        self.assertEqual(stale.findall(after.split('<a id="schema-keyed-migration"></a>', 1)[0]), [])
-        self.assertTrue(stale.findall(before.split('## v8.4 → v9.0 checklist', 1)[1]))
-        archived = text(ROOT / 'maintaining/migrations.md').split('## v9.0 → v9.1 checklist', 1)[1].split('\n## ', 1)[0]
+        catalog = json.loads((GUIDES / 'migration-catalog.json').read_bytes())
+        instructions = '\n'.join(item['text'] for rule in catalog['rules'] for item in rule['instructions'])
+        self.assertEqual(stale.findall(instructions), [])
+        self.assertEqual(catalog['target_methodology'], '10.2.0')
+        archive = text(ROOT / 'maintaining/migrations.md')
+        old = archive.split('## v8.4 → v9.0 checklist', 1)[1].split('\n## ', 1)[0]
+        self.assertTrue(stale.findall(old))
+        archived = archive.split('## v9.0 → v9.1 checklist', 1)[1].split('\n## ', 1)[0]
         self.assertEqual(stale.findall(archived), [])
 
 

@@ -1,8 +1,6 @@
-"""A workspace scaffolded, compiled and migrated from the shipped templates and guides is current and lint-clean.
+"""Shipped templates and actual compact copy/adoption reach the current native lint contract.
 
-Every case derives its input from the shipped documents (templates, scaffold.md, migrate.md,
-terminology.md, verify.md) and the archived 8.3 → 8.4 checklist in maintaining/migrations.md, and judges lint rows through the lint script's canonical extractor.
-"""
+Historical source fixtures remain inputs; the test does not implement a second structural migration."""
 import hashlib
 import importlib.util
 import re
@@ -210,82 +208,58 @@ class TemplateDriftTests(unittest.TestCase):
         self.assertIn(b'seal drift: C02', drift.stdout)
 
     def test_checklist_migrates_an_older_workspace_to_a_clean_5_workspace(self):
-        shutil.copytree(HERE / 'fixtures/legacy-p', self.root, dirs_exist_ok=True)
-        pairs = re.findall(r'`([^`]+)` → `([^`]+)`', checklist())
-        self.assertTrue(pairs, 'the checklist names no old → new artifact map')
-        for old, new in pairs:
-            if (self.ws / old.rstrip('/')).exists():
-                (self.ws / old.rstrip('/')).rename(self.ws / new.rstrip('/'))
-        states = state_map()
-        for path in sorted(self.ws.rglob('*')):
-            if path.is_file() and re.search(r'P-\d+', path.name):
-                path = path.rename(path.with_name(re.sub(r'P-(\d+)', r'T-\1', path.name)))
-            if path.is_file() and path.suffix == '.md':
-                text = path.read_text()
-                for old, new in pairs:
-                    text = text.replace(old, new)
-                text = re.sub(r'P-(\d+)', r'T-\1', text)
-                path.write_text(text)
-        board = self.ws / 'task-board.md'
-        lines = board.read_text().split('\n')
-        out = []
-        for line in lines:
-            cells = line.split(' | ')
-            if line.startswith('| Point |') or line.startswith('| Task |'):
-                line = ' | '.join(cells[:-1] + ['Verification']) + ' |'
-            elif re.match(r'^\| T-\d+ \|', line):
-                state = states[cells[4].strip()]
-                ref = 'reports/' + cells[0][2:].strip() + '-report.md' if state in ('Complete', 'Blocked') else 'pending'
-                line = ' | '.join(cells[:4] + [state, ref]) + ' |'
-            out.append(line)
-        text = '\n'.join(out)
-        self.assertIn('Schema: tackle-workspace/4', checklist())
-        board.write_text(re.sub(r'\n\n\|', '\n\nSchema: tackle-workspace/4\n\n|', text, count=1))
-        # 9.0 runs only bucket 5: the shipped schema-keyed step takes the /4 board there, then the 9.0
-        # checklist gives each open brief whose Effort departs from the default its Tier reason.
-        schema = load_script('scripts/migrate/schema.py')
-        step = load_script('scripts/migrate/step_4_to_5.py')
-        files = {p.relative_to(self.ws).as_posix(): p.read_bytes() for p in self.ws.rglob('*') if p.is_file()}
-        context = {'date': '2026-09-27', 'run_id': 'template-drift', 'methodology': 'Tackle ' + skill_stamp()}
-        adopted, _ = schema['adopt'](files, context, step['transform'])
-        for relative, data in adopted.items():
-            (self.ws / relative).parent.mkdir(parents=True, exist_ok=True)
-            (self.ws / relative).write_bytes(data)
-        self.assertIn('Schema: tackle-workspace/5', board.read_text())
-        closed = ('Complete', 'Skipped', 'Unverifiable')
-        for line in board.read_text().split('\n'):
-            cells = [cell.strip() for cell in line.split('|')[1:-1]]
-            if len(cells) == 6 and re.fullmatch(r'T-\d+', cells[0]) and cells[4] not in closed:
-                brief = self.ws / cells[2]
-                text = re.sub(r'(- \*\*Effort\*\*: (?!low\n).*\n)', r'\1- **Tier reason**: kept its Effort through migration\n',
-                              brief.read_text())
-                brief.write_text(text)
-        # 9.1 asks each Complete task's report for its receipt line (step 3 of the 9.0 to 9.1 checklist).
-        for line in board.read_text().split('\n'):
-            cells = [cell.strip() for cell in line.split('|')[1:-1]]
-            if len(cells) == 6 and re.fullmatch(r'T-\d+', cells[0]) and cells[4] == 'Complete':
-                report = self.ws / 'reports' / (cells[0] + '-report.md')
-                report.write_text(report.read_text() + '\n**Remains**: none\n')
-        # 10.2 records each Complete brief's baseline (steps 2 and 3 of the 10.1 to 10.2 checklist).
-        steps = (INSTALL / 'references/guides/migrate.md').read_text().split('## v10.1 → v10.2 checklist', 1)[1]
-        self.assertIn('**Brief sha256**', steps.split('\n## ', 1)[0])
-        history = self.ws / 'history.md'
-        baselines = []
-        for line in board.read_text().split('\n'):
-            cells = [cell.strip() for cell in line.split('|')[1:-1]]
-            if len(cells) == 6 and re.fullmatch(r'T-\d+', cells[0]) and cells[4] == 'Complete':
-                digest = hashlib.sha256((self.ws / cells[2]).read_bytes()).hexdigest()
-                report = self.ws / 'reports' / (cells[0] + '-report.md')
-                report.write_text(report.read_text().replace('\n**Remains**: none\n',
-                                                             '\n**Brief sha256**: %s\n**Remains**: none\n' % digest))
-                history.write_text(history.read_text().rstrip('\n') + '\nBrief sha256 %s: %s\n' % (cells[0], digest))
-                baselines.append((cells[0], digest))
-        self.assertGreaterEqual(len(baselines), 1)
-        for task, digest in baselines:
-            self.assertEqual(history.read_text().count('Brief sha256 %s: %s' % (task, digest)), 1)
-        for number, (verdict, out_text, err) in lint(self.root).items():
-            with self.subTest(row=number):
-                self.assertEqual(verdict, 'PASS', (out_text, err))
+        path = ROOT / 'eval/tests/product/migration/test_compact_migration.py'
+        spec = importlib.util.spec_from_file_location('compact_migration_fixture', path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        observer = module.CompactMigrationTests()
+        with observer.lab() as lab:
+            installed = observer.install(lab)
+            project = lab / 'project'
+            shutil.copytree(HERE / 'fixtures/legacy-p', project)
+            source = project / 'docs/plans/demo'
+            before = module.inventory(source)
+            job = lab / 'job'
+            manifest, plan, boundary = observer.plan(installed, source, job, next_wave=False)
+            observer.cli(installed, 'prepare', ['--manifest', manifest, '--job', job], 0)
+            module.write_json(job / 'boundary.json', boundary)
+            candidate = job / 'candidate-project/docs/plans/demo'
+            board = candidate / 'task-board.md'
+            self.assertIn('Schema: tackle-workspace/5', board.read_text())
+            baselines = []
+            for line in board.read_text().split('\n'):
+                cells = [cell.strip() for cell in line.split('|')[1:-1]]
+                if len(cells) != 6 or not re.fullmatch(r'T-\d+', cells[0]):
+                    continue
+                if cells[4] not in ('Complete', 'Skipped', 'Unverifiable'):
+                    brief = candidate / cells[2]
+                    text = brief.read_text()
+                    if '- **Tier reason**:' not in text:
+                        text = re.sub(r'(- \*\*Effort\*\*: (?!low\n).*\n)',
+                                      r'\1- **Tier reason**: kept its Effort through migration\n', text)
+                        brief.write_text(text)
+                if cells[4] == 'Complete':
+                    # The public fixture's closure is known to this operator; migration never infers none.
+                    report = candidate / 'reports' / (cells[0] + '-report.md')
+                    content = report.read_text()
+                    if '**Remains**:' not in content:
+                        content += '\n**Remains**: none\n'
+                    digest = hashlib.sha256((candidate / cells[2]).read_bytes()).hexdigest()
+                    content = content.replace('**Remains**: none', '**Brief sha256**: ' + digest + '\n**Remains**: none')
+                    report.write_text(content)
+                    history = candidate / 'history.md'
+                    history.write_text(history.read_text().rstrip('\n') + '\nBrief sha256 %s: %s\n' % (cells[0], digest))
+                    baselines.append((cells[0], digest))
+            self.assertGreaterEqual(len(baselines), 1)
+            observer.final_receipt(installed, source, job, candidate, plan)
+            observer.cli(installed, 'adopt', ['--job', job], 0)
+            self.assertEqual(module.inventory(job / 'original-backup'), before)
+            self.root, self.ws = project, source
+            for task, digest in baselines:
+                self.assertEqual((source / 'history.md').read_text().count('Brief sha256 %s: %s' % (task, digest)), 1)
+            for number, (verdict, out_text, err) in lint(self.root).items():
+                with self.subTest(row=number):
+                    self.assertEqual(verdict, 'PASS', (out_text, err))
 
     def test_agents_file_map_is_aligned_and_complete(self):
         block = (REF / 'AGENTS.tmpl.md').read_text().split('## File map', 1)[1].split('```')[1]

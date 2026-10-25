@@ -106,6 +106,18 @@ explicit execution intent.
 
 ## Preparation horizon
 
+The compiled brief carries the absolute repository and checkout, workspace, records root and each
+command's cwd. Keep source and evidence locations explicit so a later executor does not infer them
+from its shell. The approach separates preparation mechanics from named reviewer judgment. If a
+requirement counts several child checks, state the denominator and whether every child must pass;
+five of six is not acceptance when six are mandatory. Collect consumer reads from actual Python,
+awk or child-process observations rather than searching for keywords.
+
+When a task needs a prepared operation, put its bounded worked example in
+`design-and-contract.md#prepared-operation-example`. The task brief carries the per-job revision,
+paths, before/after hashes, anchor count, operation identity, child check and recovery rules. It does
+not install a general runner or move the procedure onto the always-read RUN path.
+
 Long initiatives may use optional milestones in the existing plan/team structures. Keep the full objective, requirement map, dependencies, pending decisions and deliverable acceptance visible. Prepare current work and critical upcoming interfaces; leave distant work Draft until its inputs settle. Refinement preserves stable task IDs or explicit split/merge/supersession lineage and spent correction cycles. A milestone is not another universal checkpoint. Small work keeps its existing simple path. Readiness records explicitly name the selected tasks; “ready” never describes deferred work. Prior scoped PLAN+RUN permission continues when the next milestone becomes ready.
 
 Fix internal detail, such as exact type, case or command names beyond the symbol ledger, only in next-wave briefs. [Milestone readiness](verify.md#milestone-readiness) defines the next wave and the interface depth of later briefs.

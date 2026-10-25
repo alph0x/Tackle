@@ -9,6 +9,8 @@ predating integrated readiness; it is no required pre-wave or pre-Task gate afte
 uses the single execution protocol in `references/guides/run-card.md` for explicit intent, preflight, target
 and related regression checks, persistent correction, integration and deliverable acceptance.
 
+For prepared, reusable evaluation rounds only, see the on-demand [evaluation-rounds guide](evaluation-rounds.md); this is separate from the finding rounds below.
+
 **Principle: detection before judgment.** Cheap mechanical checks (`grep`, `read`, `ast-grep`, `git`) first; the LLM only synthesizes the findings. This keeps the pass fast and cuts false positives.
 
 ## Shared validation contract

@@ -11,7 +11,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-TRUSTED_GATES_SHA256 = "37584ec6efcdb588f5ede6fcc6fd4cd2cc889cc673c712e22e054e0e65167ca6"
+TRUSTED_GATES_SHA256 = "e9e6834370ce8e40ca88035893df76429527fff6f21670f409828b8e43d802a1"
 
 
 def stamp():

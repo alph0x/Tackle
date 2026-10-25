@@ -497,9 +497,9 @@
       "statement": "A task brief carries observable purpose, requirements, outputs, interfaces, cases, constraints, non-goals, approach, checks, decisions, inputs and recovery, omitting only inapplicable fields.",
       "statement_sha256": "f0d7771b3140c3d4959976b4569ef0cf76b02ec7dfb7bfa691b93a5d47841f97",
       "home": "SKILL.md:72",
-      "home_fragment": "**Task contract** — include observable purpose",
+      "home_fragment": "**Task contract** \u2014 include observable purpose",
       "units": [
-        "**Task contract** — include observable purpose, "
+        "**Task contract** \u2014 include observable purpose, "
       ],
       "mirrors": [],
       "class": "format",
@@ -698,7 +698,7 @@
       "rule_id": "R-PLAN-08",
       "statement": "Cold probes keep their risk trigger and bounded allowance.",
       "statement_sha256": "690a29c4d62a9dc21db558eb830607982656922a4550bef03a703539d3efcbd7",
-      "home": "references/guides/verify.md:144",
+      "home": "references/guides/verify.md:146",
       "home_fragment": "Cold-resolvability probe",
       "units": [],
       "mirrors": [],
@@ -721,7 +721,7 @@
       "rule_id": "R-PLAN-09",
       "statement": "Long initiatives may prepare milestones; every requirement keeps an owner, and deferred tasks stay Draft until verified Ready.",
       "statement_sha256": "69a94acb2074238280e8a2ac7a65098bcad79386d4384fc83f55ce0c84a13d05",
-      "home": "references/guides/decompose-and-lint.md:109",
+      "home": "references/guides/decompose-and-lint.md:121",
       "home_fragment": "Long initiatives may use optional milestones",
       "units": [],
       "mirrors": [],
@@ -745,9 +745,9 @@
       "statement": "A task has one coherent observable acceptance target, checked by an honest command or a named review rubric with its actual reviewer, and valid alternatives are preserved.",
       "statement_sha256": "08cbf2c4468422cbdcc997d0f95cf53ea95acb859809f239980d2ca21d8fbd40",
       "home": "SKILL.md:73",
-      "home_fragment": "**One responsibility** — one task has one coherent",
+      "home_fragment": "**One responsibility** \u2014 one task has one coherent",
       "units": [
-        "**One responsibility** — one task has one cohere",
+        "**One responsibility** \u2014 one task has one cohere",
         "Preserve valid alternatives."
       ],
       "mirrors": [],
@@ -820,7 +820,7 @@
       "rule_id": "R-PLAN-12",
       "statement": "Planning always runs on a more capable tier than the Executor's whenever more than one suitable tier binds; a one-tier harness records its limitation. These are role proposals, not claims that a host binding occurred.",
       "statement_sha256": "f2516914cd7def40bbf47bf3973d6b24cd128e5ac88a7d378b148c84cc53d2ff",
-      "home": "references/guides/decompose-and-lint.md:160",
+      "home": "references/guides/decompose-and-lint.md:172",
       "home_fragment": "Planning always runs on a more capable tier",
       "units": [],
       "mirrors": [],
@@ -872,7 +872,7 @@
       "rule_id": "R-RUN-02",
       "statement": "Explicit PLAN+RUN authorization persists within scope: status questions during active work are answered and work continues without asking for execution permission again.",
       "statement_sha256": "46477588c66873c870e3dfd4772be0273d3545585e33a4e7e04bfb3190ef9bd0",
-      "home": "references/guides/communication.md:31",
+      "home": "references/guides/communication.md:33",
       "home_fragment": "an explicit pause/cancellation, or an incompatible",
       "units": [],
       "mirrors": [],
@@ -945,7 +945,7 @@
       "rule_id": "R-RUN-05",
       "statement": "Reuse verified current state and sufficient existing checks; do not append equivalent assertions or unchanged closure reruns.",
       "statement_sha256": "d9beacfc73bfe0717bd839e70c569c8c6a2133391f0bbffcb8e6877522d2ff55",
-      "home": "references/guides/run.md:278",
+      "home": "references/guides/run.md:328",
       "home_fragment": "Reuse unchanged PLAN readiness checks",
       "units": [],
       "mirrors": [],
@@ -968,7 +968,7 @@
       "rule_id": "R-RUN-06",
       "statement": "Changed content, selector membership, configuration, interfaces, runtime or freshness invalidate affected consumers, and unknown dependencies require conservative checks.",
       "statement_sha256": "1c1280f74aeef7eb7f7257c0cd7e6857d1cdb14607295e70d0e2dac102a2fd0e",
-      "home": "references/guides/run.md:211",
+      "home": "references/guides/run.md:256",
       "home_fragment": "only the dependent checks; re-ground and revalidate",
       "units": [],
       "mirrors": [],
@@ -1027,12 +1027,14 @@
     },
     {
       "rule_id": "R-RUN-08",
-      "statement": "Three failed correction-validation cycles per task or two identical no-progress observations bound implementation correction, and lineage keeps spent cycles across split, merge and resume.",
-      "statement_sha256": "9a6b0e2439703af8ce593d30e2c77c73bc87fa3af6a3b7d586613ea19e28bfb7",
-      "home": "references/guides/run-card.md:36",
-      "home_fragment": "three failed correction-validation cycles per task",
+      "statement": "By default, three failed correction-validation cycles per task or two identical no-progress observations bound implementation correction; only a specifically owner-approved higher ceiling extends that same pool without erasing spent cycles, no-progress stops or lineage across split, merge and resume.",
+      "statement_sha256": "3cba28ae8dd78be86150fd92cf24a7fc207c88e810a8dc4b05ee19732602d520",
+      "home": "references/guides/run.md:182",
+      "home_fragment": "The three-cycle ceiling is the default",
       "units": [],
-      "mirrors": [],
+      "mirrors": [
+        "references/guides/run-card.md:36"
+      ],
       "class": "behavioral",
       "hot_path": false,
       "origin": {
@@ -1054,7 +1056,7 @@
       "rule_id": "R-RUN-09",
       "statement": "Consume known failure evidence and repeat its check only after a relevant change or permitted recovery.",
       "statement_sha256": "3de071f2f68a5c703eab0ef6d85352b9a0fefd48c3b08f6fb3b816e79909b5c3",
-      "home": "references/guides/run.md:87",
+      "home": "references/guides/run.md:98",
       "home_fragment": "Consume retained failed observations before another check",
       "units": [],
       "mirrors": [],
@@ -1108,9 +1110,9 @@
       "statement": "Write only the declared task scope and authorized workspace artifacts, and preserve unrelated edits.",
       "statement_sha256": "7c63532dd55b04a6569045e57794d2f5d54567d799de1fc09f007027d8bebe17",
       "home": "SKILL.md:71",
-      "home_fragment": "**Scope** — write only declared task scope",
+      "home_fragment": "**Scope** \u2014 write only declared task scope",
       "units": [
-        "**Scope** — write only declared task scope and a"
+        "**Scope** \u2014 write only declared task scope and a"
       ],
       "mirrors": [],
       "class": "safety-invariant",
@@ -1133,9 +1135,9 @@
       "statement": "Explicit intent precedes mutation; RUN pins its procedure, classifies failures and preserves shared correction budgets.",
       "statement_sha256": "6e1660a43bd545ba3602a39a14a9762812942eda4c666bcd90896ed82924ae93",
       "home": "SKILL.md:74",
-      "home_fragment": "**Run discipline** — explicit intent precedes mutation",
+      "home_fragment": "**Run discipline** \u2014 explicit intent precedes mutation",
       "units": [
-        "**Run discipline** — explicit intent precedes mu"
+        "**Run discipline** \u2014 explicit intent precedes mu"
       ],
       "mirrors": [],
       "class": "safety-invariant",
@@ -1201,7 +1203,7 @@
       "statement": "New tests follow red, green, refactor: the chosen failing test is seen failing before the implementation, and an opt-out needs a decision recorded first.",
       "statement_sha256": "c33bea5f8bef201516b6c34e8f5345884dbb59406f0c985bddb840e073df8ae6",
       "home": "references/guides/testing.md:33",
-      "home_fragment": "red → green → refactor is the Executor's default shape",
+      "home_fragment": "red \u2192 green \u2192 refactor is the Executor's default shape",
       "units": [],
       "mirrors": [],
       "class": "behavioral",
@@ -1227,7 +1229,7 @@
         },
         {
           "record": "eval/scenarios/s17-test-first/GROUND-TRUTH.md",
-          "label": "discriminating — gate PASSED",
+          "label": "discriminating \u2014 gate PASSED",
           "seeds": 1
         }
       ]
@@ -1267,7 +1269,7 @@
       "rule_id": "R-RUN-16",
       "statement": "A discovery task converges on consecutive dry rounds and deduplicates against everything seen.",
       "statement_sha256": "e92fe9a47b609bf869e0a2c1a84f588eabdc078572690e83e6002aa1691b4cb5",
-      "home": "references/task.tmpl.md:50",
+      "home": "references/task.tmpl.md:54",
       "home_fragment": "deduplicate against everything seen",
       "units": [],
       "mirrors": [
@@ -1309,7 +1311,7 @@
       "home_fragment": "Closure reports for done tasks",
       "units": [],
       "mirrors": [
-        "references/guides/run.md:264"
+        "references/guides/run.md:298"
       ],
       "class": "safety-invariant",
       "hot_path": false,
@@ -1365,9 +1367,9 @@
       "statement": "Checks record the actual command, cwd, runtime, actor, revisions, complete streams, exit/timeout/signal, preserved inputs and artifact hashes, from complete native capture or the scoped capture recipe.",
       "statement_sha256": "4dfc44d7e987055daddd67daea53c25400b5abb1c2374b58f2fb82c2d9a1816c",
       "home": "SKILL.md:75",
-      "home_fragment": "**Records and independence** — capture actual",
+      "home_fragment": "**Records and independence** \u2014 capture actual",
       "units": [
-        "**Records and independence** — capture actual co"
+        "**Records and independence** \u2014 capture actual co"
       ],
       "mirrors": [],
       "class": "safety-invariant",
@@ -1424,7 +1426,7 @@
       "hot_path": true,
       "origin": {
         "added_in": "3.3.0",
-        "trigger": "CHANGELOG 3.3.0: checker ≠ maker is best-effort and recorded; 8.0.0 keeps reviewer independence explicit.",
+        "trigger": "CHANGELOG 3.3.0: checker \u2260 maker is best-effort and recorded; 8.0.0 keeps reviewer independence explicit.",
         "discovered_by": []
       },
       "evidence": {
@@ -1486,9 +1488,9 @@
       "statement": "Claims are verified against file:line or explicitly historical sources, and stale citations are re-anchored.",
       "statement_sha256": "e9ef909a1ed89de14fd1429975954d71b7c91b3e1d6b87e7dcf42020b26209fe",
       "home": "SKILL.md:70",
-      "home_fragment": "**Reference verification** — verify claims against",
+      "home_fragment": "**Reference verification** \u2014 verify claims against",
       "units": [
-        "**Reference verification** — verify claims again"
+        "**Reference verification** \u2014 verify claims again"
       ],
       "mirrors": [],
       "class": "behavioral",
@@ -1631,9 +1633,9 @@
       "statement": "Observe host model names, tier capabilities, model- and effort-binding controls, telemetry and their source before routing; use only actually available models, distinguish supported, unsupported and unknown, separate portable fields from host controls, and record unexposed telemetry as n/a. Report actual capabilities, model and effort; never invent bindings or assume a vendor mechanism.",
       "statement_sha256": "3cf4c76d73a9e6ca1bca63fed18daef19f2e8b6b386d448fbea0e40c07a45500",
       "home": "SKILL.md:79",
-      "home_fragment": "**Provider independence** — report actual capabilities",
+      "home_fragment": "**Provider independence** \u2014 report actual capabilities",
       "units": [
-        "**Provider independence** — report actual capabi",
+        "**Provider independence** \u2014 report actual capabi",
         "Observe host model names, tier capabilities, bin"
       ],
       "mirrors": [],
@@ -1848,7 +1850,7 @@
       "statement": "Validated boards may use Draft, Ready to run, In progress, Checking and Complete, while Blocked, Interrupted, Skipped and Unverifiable remain distinct.",
       "statement_sha256": "b983422187771d885ee4fa0f56c355ed1596a38f1e9d14b3eb0ae9106bbe179b",
       "home": "references/terminology.md:80",
-      "home_fragment": "Draft → Ready to run → In progress",
+      "home_fragment": "Draft \u2192 Ready to run \u2192 In progress",
       "units": [],
       "mirrors": [],
       "class": "format",
@@ -1906,13 +1908,13 @@
     },
     {
       "rule_id": "R-STATE-04",
-      "statement": "Historical E0–E3 codes remain readable and are never an ordinal scale.",
+      "statement": "Historical E0\u2013E3 codes remain readable and are never an ordinal scale.",
       "statement_sha256": "7d648b5ac45bc2fb19197cfab1ecd45526cf1d57b60673aefe9f07aa717af23f",
       "home": "SKILL.md:53",
-      "home_fragment": "Historical E0–E3 codes",
+      "home_fragment": "Historical E0\u2013E3 codes",
       "units": [],
       "mirrors": [
-        "references/guides/run.md:178"
+        "references/guides/run.md:212"
       ],
       "class": "format",
       "hot_path": false,
@@ -1938,7 +1940,7 @@
       "home_fragment": "The task board is canonical current state; history is",
       "units": [
         "The task board is canonical current state; histo",
-        "**State ownership** — board is current state; lo"
+        "**State ownership** \u2014 board is current state; lo"
       ],
       "mirrors": [],
       "class": "safety-invariant",
@@ -2074,7 +2076,7 @@
         "**STATUS** `status [<workspace>]` Read-only stat"
       ],
       "mirrors": [
-        "references/guides/communication.md:33"
+        "references/guides/communication.md:35"
       ],
       "class": "safety-invariant",
       "hot_path": true,
@@ -2254,9 +2256,9 @@
       "statement": "Select applicable, current lessons; incompatible hypotheses remain historical.",
       "statement_sha256": "534a55157470760c6e07fd3b53ee97a1b5fc878405a79ac3a296652634d4b968",
       "home": "SKILL.md:78",
-      "home_fragment": "**Learning consent** — select applicable, current",
+      "home_fragment": "**Learning consent** \u2014 select applicable, current",
       "units": [
-        "**Learning consent** — select applicable, curren"
+        "**Learning consent** \u2014 select applicable, curren"
       ],
       "mirrors": [],
       "class": "behavioral",
@@ -2438,7 +2440,7 @@
       "rule_id": "R-MIGRATE-02",
       "statement": "Interrupted tasks stay on their pinned procedure.",
       "statement_sha256": "ca47b7444be8f60ed391de3cf55fcba2b73ab4d991367080efd4a68fec428658",
-      "home": "references/guides/migrate.md:27",
+      "home": "references/guides/migrate.md:18",
       "home_fragment": "interrupted work under its pinned procedure",
       "units": [],
       "mirrors": [],
@@ -2461,7 +2463,7 @@
       "rule_id": "R-MIGRATE-03",
       "statement": "Usage v2 adoption appends after the preserved legacy table and never rewrites or backfills historical rows.",
       "statement_sha256": "6fd2bf428e375b64668f2cc2e1532f06d2db2c015bce4b795c8d12c1d85568d4",
-      "home": "maintaining/migrations.md:260",
+      "home": "maintaining/migrations.md:464",
       "home_fragment": "do not rewrite or backfill historical rows.",
       "units": [],
       "mirrors": [
@@ -2472,7 +2474,7 @@
       "hot_path": false,
       "origin": {
         "added_in": "7.2.0",
-        "trigger": "CHANGELOG 7.2.0: the reversible v7.1 → v7.2 legacy-ledger checklist with byte preservation.",
+        "trigger": "CHANGELOG 7.2.0: the reversible v7.1 \u2192 v7.2 legacy-ledger checklist with byte preservation.",
         "discovered_by": []
       },
       "evidence": {
@@ -2494,8 +2496,8 @@
     },
     {
       "rule_id": "R-REL-01",
-      "statement": "Ordinary invocation performs no network access or installation mutation; an optional [System One judgment](references/guides/system-one.md) goes through the host's `typesafe-ai` skill, only with the workspace's recorded consent.",
-      "statement_sha256": "41476c7983a34ffc06a4c4e82f97e3e0d78cca465cfc0eb2e1e21f948de6d14b",
+      "statement": "Ordinary invocation performs no network access or installation mutation; an optional [Judgement Layer](references/guides/system-one.md) goes through the host's `typesafe-ai` skill, only with the workspace's recorded consent.",
+      "statement_sha256": "6b7e37fbb1263bb4b17a8a91977c5dc6c6efc0398085fa5a774a34fb5b9ea92a",
       "home": "SKILL.md:64",
       "home_fragment": "Ordinary invocation performs no network access or",
       "units": [
@@ -2586,7 +2588,7 @@
       "rule_id": "R-REL-03",
       "statement": "After a verified replacement, remove only the exact legacy basename tackle-check, never with recursive or prefix cleanup.",
       "statement_sha256": "f1d9c84d6e7a84700c717480ec67ae13d6a5ac3da7cc2b37f355d6238e32c1bf",
-      "home": "references/guides/update.md:17",
+      "home": "references/guides/update.md:18",
       "home_fragment": "remove the exact legacy basename `tackle-check`",
       "units": [],
       "mirrors": [],
@@ -2643,9 +2645,9 @@
       "statement": "Authority order is user, then specification or contract, then protected tests or acceptance, then implementation; preferences and hypotheses cannot override it.",
       "statement_sha256": "109e9cf49e449ff3ec12237a0ea8df9323d2aa0187d4b8a0db061ca1dd91e097",
       "home": "SKILL.md:69",
-      "home_fragment": "**Authority order** — user >",
+      "home_fragment": "**Authority order** \u2014 user >",
       "units": [
-        "**Authority order** — user > specification/contr",
+        "**Authority order** \u2014 user > specification/contr",
         "Preferences and hypotheses cannot override this "
       ],
       "mirrors": [],
@@ -2684,9 +2686,9 @@
       "statement": "The user owns product choices; reversible technical choices are delegated within scope.",
       "statement_sha256": "46e5c521917cbe629778c56953649c6fda2ab7471e809b28cdffeaca2b5ce9ac",
       "home": "SKILL.md:77",
-      "home_fragment": "**Decision ownership** — user owns product choices;",
+      "home_fragment": "**Decision ownership** \u2014 user owns product choices;",
       "units": [
-        "**Decision ownership** — user owns product choic"
+        "**Decision ownership** \u2014 user owns product choic"
       ],
       "mirrors": [],
       "class": "safety-invariant",
@@ -2962,7 +2964,7 @@
         },
         {
           "record": "eval/scenarios/s18-resume-update-check/GROUND-TRUTH.md",
-          "label": "discriminating — gate PASSED",
+          "label": "discriminating \u2014 gate PASSED",
           "seeds": 1
         }
       ],
@@ -2978,8 +2980,8 @@
         "Running or importing a [script](scripts/README.m"
       ],
       "mirrors": [
-        "skills/tackle/scripts/README.md:37",
-        "skills/tackle/scripts/README.md:42",
+        "skills/tackle/scripts/README.md:41",
+        "skills/tackle/scripts/README.md:46",
         "references/guides/full-checks.md:4",
         "references/guides/full-checks.md:49",
         "references/guides/full-checks.md:59",
@@ -2992,10 +2994,10 @@
         "references/guides/codex-native-usage.md:10",
         "references/guides/architecture-map.md:66",
         "references/guides/controlled-writing.md:33",
-        "references/guides/migrate.md:141",
+        "references/guides/migrate.md:30",
         "references/guides/plan-view.md:52",
-        "references/guides/run.md:150",
-        "references/guides/system-one.md:6",
+        "references/guides/run.md:178",
+        "references/guides/system-one.md:8",
         "references/guides/context-lifecycle.md:77",
         "references/guides/evidence-capture.md:62",
         "references/guides/plan-view.md:16",
@@ -3070,7 +3072,7 @@
       "statement": "A profile entry retires when its cross count is at least 3 and its own computed, raw confidence is below 0.3.",
       "statement_sha256": "2013662cc5798c60df4042aa8329b5a11ff5b7517fd35afa1cb90e2578e22a5e",
       "home": "references/guides/retro.md:141",
-      "home_fragment": "If ✗ ≥ 3 and the entry's *computed* confidence",
+      "home_fragment": "If \u2717 \u2265 3 and the entry's *computed* confidence",
       "units": [],
       "mirrors": [],
       "class": "behavioral",
@@ -3244,7 +3246,7 @@
         "Same-release adoption of the selected active cop"
       ],
       "mirrors": [
-        "references/guides/migrate.md:32"
+        "references/guides/migrate.md:44"
       ],
       "class": "safety-invariant",
       "hot_path": true,
@@ -3265,7 +3267,7 @@
       "rule_id": "R-RUN-19",
       "statement": "An obligation that outlives its task is recorded when it is created as an O-NN row of the board's obligations table and prevents initiative completion while it is Open, unless the owner withdrew it.",
       "statement_sha256": "6d1baf55e5ae97b57a522eb306cc74f95574013a45a9a47e4800fd2267c2978a",
-      "home": "references/guides/run.md:224",
+      "home": "references/guides/run.md:269",
       "home_fragment": "An obligation that outlives its task is recorded when it is",
       "units": [],
       "mirrors": [
@@ -3292,7 +3294,7 @@
       "rule_id": "R-RUN-20",
       "statement": "RUN calls a fresh, independent adversarial review at three moments only (lock, repeat-failure and complete), the reviewer records its actual independence, and a moment with no independent reviewer stops the task Waiting on owner unless a recorded owner decision waives it.",
       "statement_sha256": "6a7f89f981c2bda43e934d6c4f5fd7152fb97189fb55cc785b7e81e2ec579da8",
-      "home": "references/guides/run.md:184",
+      "home": "references/guides/run.md:229",
       "home_fragment": "Run calls an independent adversarial review at three moments",
       "units": [],
       "mirrors": [],
@@ -3318,7 +3320,7 @@
       "statement": "A history session entry stays within its line budget (120 lines by default, or History entry budget: N in the workspace AGENTS.md), and lint row 13 warns on each entry over it.",
       "statement_sha256": "7b2e75a31d78564efe83a1304310d8d4173a762d378cbfded291533d4bdaad91",
       "home": "references/guides/lint-spec.md:49",
-      "home_fragment": "13 · History over archive threshold or entry budget",
+      "home_fragment": "13 \u00b7 History over archive threshold or entry budget",
       "units": [],
       "mirrors": [],
       "class": "format",
@@ -3417,7 +3419,7 @@
       "rule_id": "R-STATUS-09",
       "statement": "A cold resume reads the workspace AGENTS.md, the board with its obligations table, the newest State snapshot, the current brief and report and the named inputs in that order, and a snapshot that is missing, older than the board or in conflict with it loses: the board wins and the conflict is reported.",
       "statement_sha256": "d56426675d26a97599d6863e2ce3cb427fb850d2dfb6171d01e1df5e37260687",
-      "home": "references/guides/status.md:72",
+      "home": "references/guides/status.md:73",
       "home_fragment": "A snapshot that is missing, older than the board's last",
       "units": [],
       "mirrors": [],
@@ -3444,7 +3446,7 @@
       "rule_id": "R-STATUS-08",
       "statement": "Older history, history-archive.md included, opens only when the snapshot or a current record cites it by a stable id, or when the completeness of a spent correction count, an in-flight effect or an obligation is uncertain.",
       "statement_sha256": "0c6ed5eaf610fc3c26fa9819bbe1ed471aba355accbbe78e03ab67f7b45d7aa3",
-      "home": "references/guides/status.md:74",
+      "home": "references/guides/status.md:75",
       "home_fragment": "Older history, `history-archive.md` included, opens only",
       "units": [],
       "mirrors": [],
@@ -3471,7 +3473,7 @@
       "rule_id": "R-RUN-21",
       "statement": "The spent correction count comes from the task-linked failed correction-validation records, whoever wrote them, the State snapshot only projects it, and a resume never assumes zero: zero requires records showing no failure.",
       "statement_sha256": "6221975721f94893108f8666f7f45bba55da011825b1862a7add60f8531e745c",
-      "home": "references/guides/run.md:137",
+      "home": "references/guides/run.md:176",
       "home_fragment": "The spent count comes from the task-linked failed corr",
       "units": [],
       "mirrors": [],
@@ -3496,12 +3498,12 @@
       "rule_id": "R-RUN-22",
       "statement": "Before an initiative is declared closed, and at every cold resume, every Open obligation in the table and every id on a Complete task's Remains receipt is listed. Before an initiative is declared closed, every Complete task's brief and report and every record a report cites, verification records included, are opened and read, with the history (history-archive.md included), decisions and questions, as prose for owner requests or follow-ups not yet done, each is recorded as an Open obligation and raised with the owner before closing, and a missing table or Remains line never shows that nothing remains.",
       "statement_sha256": "15bea7ad5cefc858c1db1e962ae9d3839bb2f5dc687a619fe2af58c7576691b6",
-      "home": "references/guides/run.md:226",
+      "home": "references/guides/run.md:271",
       "home_fragment": "Before an initiative is declared closed, and at every cold",
       "units": [],
       "mirrors": [
         "references/guides/run-card.md:51",
-        "references/guides/status.md:72"
+        "references/guides/status.md:73"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -3547,7 +3549,7 @@
       "rule_id": "R-RUN-23",
       "statement": "Use optional System One only when a configuration signal exists and the selected workspace has recorded `yes`. Never ask the user to install TypeSafe/JEV. Tackle itself opens no network connection: a judgment goes through the host's `typesafe-ai` skill. Build the client under that skill and pass its constructor as `client_factory` to [system_one_state.py](../../scripts/system_one_state.py), which provides selected-workspace storage, the local consent logic and the SDK adapter.",
       "statement_sha256": "2ec9d2991149e3f1b2f4a50141f37290b9cefd553e9bd77879e63665e1851d20",
-      "home": "references/guides/system-one.md:6",
+      "home": "references/guides/system-one.md:8",
       "home_fragment": "Use optional System One only when",
       "units": [],
       "mirrors": [],
@@ -3570,7 +3572,7 @@
       "rule_id": "R-INTAKE-08",
       "statement": "A configuration signal is the host offering the `typesafe-ai` skill, the presence of the `TYPESAFE_API_KEY` environment variable, or the case-insensitive phrase `TypeSafe System One` in project-root AGENTS/CLAUDE or selected-workspace AGENTS. Check presence only and probe no home folder. Never read, print or send credential values or open credential files. A configuration signal cannot grant consent.",
       "statement_sha256": "1069c551dd9f63c2535f4e0296df0793bb03a1e484c892c0ab304ec93155f262",
-      "home": "references/guides/system-one.md:8",
+      "home": "references/guides/system-one.md:10",
       "home_fragment": "A configuration signal is the host offering",
       "units": [],
       "mirrors": [],
@@ -3593,12 +3595,12 @@
       "rule_id": "R-STATE-12",
       "statement": "Record the owner's explicit `yes` or `no`, date and actor in that workspace's AGENTS. Do not inherit an answer from another workspace. In PLAN/RUN ask once, retain an unanswered question in questions.md and never repeat it during the session or after an answer; read-only STATUS only detects/reads and never starts or mutates this workflow. Malformed/conflicting records cannot authorize a send.",
       "statement_sha256": "12b532de3be70f0d73383764d6510c19e34b44f38e6e295a99fcce2e359a4fd7",
-      "home": "references/guides/system-one.md:10",
+      "home": "references/guides/system-one.md:12",
       "home_fragment": "Record the owner's explicit",
       "units": [],
       "mirrors": [
-        "references/guides/migrate.md:100",
-        "references/guides/system-one.md:88"
+        "references/guides/migration-catalog.json:901",
+        "references/guides/system-one.md:12"
       ],
       "class": "safety-invariant",
       "hot_path": false,
@@ -3688,9 +3690,9 @@
     },
     {
       "rule_id": "R-EVID-16",
-      "statement": "Send only admitted public fragments needed by one of four uses: older-history score, RUN failure-class choice, no-progress signature comparison, or Direct/Focused/Coordinated intake. Never send credentials, secrets, unknown/private fragments, sealed material or answer sheets. The agent must classify sensitivity before calling the adapter; this is no general secret detector.",
-      "statement_sha256": "6a723e4a93ddf9159e4b4d4dc253a562f6082fa96a6088ac6182a4871b134aad",
-      "home": "references/guides/system-one.md:12",
+      "statement": "Send only admitted public fragments for the four original uses and the two explicitly declared new uses. For a new use, the caller classifies both the fragment and every outbound choice label as public. Never send credentials, secrets, unknown/private fragments, sealed material, answers, scope IDs or paths. Sensitivity is a caller obligation, not a general secret detector.",
+      "statement_sha256": "e94f73c767cf02538342349210ac50047a74d6a0fc7504f95e9298e7b96890ec",
+      "home": "references/guides/system-one.md:14",
       "home_fragment": "Send only admitted public fragments",
       "units": [],
       "mirrors": [],
@@ -3698,14 +3700,14 @@
       "hot_path": false,
       "origin": {
         "added_in": "9.1.0",
-        "trigger": "Optional System One integration: configuration-only detection, workspace consent, typed SDK requests and bounded advisory consumers. Qualified behavioral and held-out evidence remains pending.",
+        "trigger": "Executor contract adds two keyword-only advice uses; all dynamic outbound content must be caller-classified public, while the original four-use policy remains unchanged.",
         "discovered_by": []
       },
       "evidence": {
         "status": "untested",
         "scenarios": [],
         "cohort_id": null,
-        "as_of": "2026-10-06"
+        "as_of": "2026-10-22"
       },
       "historical": []
     },
@@ -3713,7 +3715,7 @@
       "rule_id": "R-STATUS-11",
       "statement": "Keep the cold-resume opened-history bound, spent counts and open obligations. Skip an unprotected entry only at score<0.5 and confidence>=0.6. Other answers need confidence>=0.8. Preserve the complete installed gate's deterministic minimum route, risk precedence and no-progress stops/counters; JEV never supplies authority or assigns blame. Report the actual use, model, confidence, adopted decision or local fallback reason.",
       "statement_sha256": "0727fb1a0024abdb44b86015c5a218012776bbd29c38b99502322f877a1ffe89",
-      "home": "references/guides/system-one.md:14",
+      "home": "references/guides/system-one.md:16",
       "home_fragment": "Keep the cold-resume opened-history bound",
       "units": [],
       "mirrors": [],
@@ -3762,7 +3764,7 @@
       "rule_id": "R-RUN-24",
       "statement": "Pin `jev-1.13.0`; refuse another response model or malformed/out-of-domain answer. SDK handles authentication through its configured owner environment. Use its verified TLS defaults, trusted endpoint, timeout and zero retries. Absent SDK/signal/recorded yes, low confidence, refusal or any ordinary transport error falls back to the agent's judgment without stopping the task; BaseException propagates. Never disable certificate verification or request installation.",
       "statement_sha256": "1289e5d3b060ca0ee1b8c2c92e5160908f81177517a5eae719dcedb87eb0c374",
-      "home": "references/guides/system-one.md:16",
+      "home": "references/guides/system-one.md:18",
       "home_fragment": "Pin `jev-1.13.0`",
       "units": [],
       "mirrors": [],
@@ -4329,7 +4331,7 @@
       "rule_id": "R-PLAN-16",
       "statement": "Each subagent role targets the cheapest available model that fits its tier in the team table. Before the first dispatch, show the owner the concrete role-to-model table for every subagent role and get an explicit confirmation. A run intent is not a model confirmation. Any later model change for a role, an escalation included, needs a new confirmation before that dispatch. Without that confirmation, the affected task waits on the owner.",
       "statement_sha256": "9e1444771bd9b09f8349106d55d032baef3862449540e6d91dd19af142217542",
-      "home": "references/guides/decompose-and-lint.md:167",
+      "home": "references/guides/decompose-and-lint.md:179",
       "home_fragment": "Each subagent role targets the cheapest",
       "units": [],
       "mirrors": [],
@@ -4352,7 +4354,7 @@
       "rule_id": "R-PLAN-17",
       "statement": "When a task looks too hard for the cheapest bindable tier, strengthen its brief before any Tier deviation. Add the missing context, split the work into smaller steps, and give exact commands with their expected results. The planner, on a more capable tier, writes the brief so that the Executor makes no design decision. A brief that leaves one to the Executor is not ready. When an Executor cannot finish, the planner strengthens the brief first; an escalation is the exception. A Tier deviation is the last resort, and its `**Tier reason**` says why a stronger brief is not enough. A review role (lock or complete) runs one tier above the Executor whose task it reviews. When that tier does not bind, record the limitation. An audit runs at the Auditor's tier in the team table.",
       "statement_sha256": "5ee7a8f573a659ff497f3dca95293acb2c5b4a121321266cc4841a383194cc32",
-      "home": "references/guides/decompose-and-lint.md:173",
+      "home": "references/guides/decompose-and-lint.md:185",
       "home_fragment": "When a task looks too hard for the cheapest",
       "units": [],
       "mirrors": [],
@@ -4426,7 +4428,7 @@
       "units": [],
       "mirrors": [
         "references/guides/plan-card.md:82",
-        "references/task.tmpl.md:93"
+        "references/task.tmpl.md:101"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -4566,7 +4568,7 @@
       "rule_id": "R-RUN-26",
       "statement": "Dispatch only a role-to-model binding that the owner confirmed. A review role dispatches at the tier the team table gives it, never by default at the coordinator's model. An unconfirmed binding leaves the task `Waiting on owner`.",
       "statement_sha256": "f380e511807f71fbae0bc76bacadb1b69b856cf449c37ce91073a90418723327",
-      "home": "references/guides/run.md:66",
+      "home": "references/guides/run.md:77",
       "home_fragment": "Dispatch only a role-to-model binding",
       "units": [],
       "mirrors": [],
@@ -4589,7 +4591,7 @@
       "rule_id": "R-RUN-27",
       "statement": "The owner confirms the escalated model before that dispatch.",
       "statement_sha256": "a9e7147f7966b9fefe46c75a53dd7ef94ffcbd4c38b7621c6f1df62e43f8c14d",
-      "home": "references/guides/run.md:72",
+      "home": "references/guides/run.md:83",
       "home_fragment": "The owner confirms the escalated model",
       "units": [],
       "mirrors": [],
@@ -4633,7 +4635,7 @@
     },
     {
       "rule_id": "R-INTAKE-09",
-      "statement": "Before sizing, check once per workspace for a System One configuration signal, as [system-one.md](system-one.md#integration) defines it. Use the host's own tools and check presence only. When there is a signal, a selected workspace and no recorded answer, ask the System One question in PLAN or RUN, then record it. The record is one line in the workspace's `AGENTS.md`, in the exact form that [the state script](../../scripts/system_one_state.py) reads: `System One consent: yes · date=YYYY-MM-DD · actor=\"name\"`, with `no` for a refusal. A new initiative has a workspace only after the scaffold, so ask right after the scaffold creates it. Without a signal, record nothing and continue.",
+      "statement": "Before sizing, check once per workspace for a System One configuration signal, as [system-one.md](system-one.md#integration) defines it. Use the host's own tools and check presence only. When there is a signal, a selected workspace and no recorded answer, ask the System One question in PLAN or RUN, then record it. The record is one line in the workspace's `AGENTS.md`, in the exact form that [the state script](../../scripts/system_one_state.py) reads: `System One consent: yes \u00b7 date=YYYY-MM-DD \u00b7 actor=\"name\"`, with `no` for a refusal. A new initiative has a workspace only after the scaffold, so ask right after the scaffold creates it. Without a signal, record nothing and continue.",
       "statement_sha256": "e24104e78e69ca35780fed9c975e23c2f790c76ac43a8c2aef284609d1cd4b2f",
       "home": "references/guides/intake-and-gate.md:75",
       "home_fragment": "Before sizing, check once per workspace",
@@ -4733,7 +4735,7 @@
       "rule_id": "R-EVID-18",
       "statement": "After a configuration signal, record each call and each local fallback as one [sidecar](usage-observability.md) record with `collector: system-one`. Use `scope: role` and the calling role's Run ID as `run_id`; without a Run ID, use `scope: session` and `run_id: n/a`. A Direct request has no workspace and writes no record. The record's metrics hold `requests` and, when the response reports them, token counts. `requests` is 1 when a request was sent and 0 when the fallback came before any send. The record's `provenance` holds the use, model, confidence and adopted decision or fallback reason. With a recorded `yes`, consult System One at every point where one of the four uses applies: each failure classification, each no-progress comparison, each cold-resume history choice and each intake sizing. Each consult keeps the thresholds and fallbacks above. A point with no admitted public fragment is a skipped point. Record a skipped point with its reason. Read-only STATUS makes no call and writes no record. A missing sidecar or a failed record write never fails the task.",
       "statement_sha256": "3304fc810b3951c0c10dbe27a85b48d2839150fe7ee14fadbf464696dd91aa55",
-      "home": "references/guides/system-one.md:14",
+      "home": "references/guides/system-one.md:16",
       "home_fragment": "After a configuration signal, record each call",
       "units": [],
       "mirrors": [],
@@ -4766,7 +4768,7 @@
         "references/guides/evidence-capture.md:46",
         "references/guides/context-lifecycle.md:106",
         "references/guides/decompose-and-lint.md:137",
-        "references/guides/system-one.md:118"
+        "references/guides/system-one.md:8"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -4787,7 +4789,7 @@
       "rule_id": "R-REL-07",
       "statement": "Gate 9 checks that the script manifest lists every `*.py` under skills/tackle/scripts/, recursively, with its current sha256.",
       "statement_sha256": "7e307645e6336205de5368a259e5ac85a929d6282da3afa8fd3370d8840f6b9f",
-      "home": "MAINTAINING.md:66",
+      "home": "MAINTAINING.md:90",
       "home_fragment": "Gate 9 checks that the script manifest lists",
       "units": [],
       "mirrors": [],
@@ -4810,7 +4812,7 @@
       "rule_id": "R-REL-08",
       "statement": "Replay every step of `.github/workflows/ci.yml` locally before pushing the release branch; a step that cannot run locally is observed in CI, never assumed green.",
       "statement_sha256": "5a823bfd01c0e6cf6a1db821672a13790cd5b30f9170782cf369b960c83b73f3",
-      "home": "MAINTAINING.md:31",
+      "home": "MAINTAINING.md:56",
       "home_fragment": "Replay every step of `.github/workflows/ci.yml` lo",
       "units": [],
       "mirrors": [],
@@ -4833,7 +4835,7 @@
       "rule_id": "R-REL-09",
       "statement": "After the owner's order, run each publication command alone, one at a time, and check its exit before the next; a publication command is never piped.",
       "statement_sha256": "58df25cb04b804614503c599e42dba75ca646ea8e1a7f4cf456226034384de52",
-      "home": "MAINTAINING.md:36",
+      "home": "MAINTAINING.md:61",
       "home_fragment": "After the owner's order, run each publication comm",
       "units": [],
       "mirrors": [],
@@ -4856,7 +4858,7 @@
       "rule_id": "R-REL-10",
       "statement": "Publish a GitHub Release with the changelog entry as its notes, not only a tag.",
       "statement_sha256": "5b946cccfd75bfc1d24a3cf657dcfe29287093b02b4aff0477a4f2df0af7e39c",
-      "home": "MAINTAINING.md:37",
+      "home": "MAINTAINING.md:62",
       "home_fragment": "Publish a GitHub Release with the changelog entry ",
       "units": [],
       "mirrors": [],
@@ -4879,7 +4881,7 @@
       "rule_id": "R-REL-11",
       "statement": "Before declaring distribution fresh, compare the remote raw `https://raw.githubusercontent.com/alph0x/Tackle/main/skills/tackle/SKILL.md` with the skills.sh catalog snapshot.",
       "statement_sha256": "9370208bd9aca54df60d95f41e9cfd25ac08a115ed6b5bd2753ecf5d53f12416",
-      "home": "MAINTAINING.md:38",
+      "home": "MAINTAINING.md:63",
       "home_fragment": "Before declaring distribution fresh, compare the r",
       "units": [],
       "mirrors": [],
@@ -4902,7 +4904,7 @@
       "rule_id": "R-REL-12",
       "statement": "Review every new or changed script: any read whose path or hash comes from configuration stays confined to the working directory, and every pinned-script invocation runs with `python -I`.",
       "statement_sha256": "4b96f4984f718b3550a020bf96fa91b8cd7bffd5d470ca3899da164b740d7cd0",
-      "home": "MAINTAINING.md:32",
+      "home": "MAINTAINING.md:57",
       "home_fragment": "Review every new or changed script: any read whose",
       "units": [],
       "mirrors": [],
@@ -5203,9 +5205,9 @@
     },
     {
       "rule_id": "R-RUN-32",
-      "statement": "Each attempt-journal line takes the form `correction cycle N of 3: <failure> → <correction>; <validation command>: <result>`.",
-      "statement_sha256": "182ca9c8bfcd64a50d9b7feb6dc9d46cd7b9ad175b74935cdca345e788aeb2bc",
-      "home": "references/guides/run.md:142",
+      "statement": "Each new attempt-journal line uses `correction cycle N of M: <failure> \u2192 <correction>; <validation command>: <result>`, where M is the default three or the explicitly approved total ceiling, while historical entries remain exact.",
+      "statement_sha256": "a1629bb24afe42a074660c970fc0970c45a2ca3ec0619e71eb07efc9589d4fed",
+      "home": "references/guides/run.md:181",
       "home_fragment": "Each attempt-journal line takes the form",
       "units": [],
       "mirrors": [
@@ -5228,14 +5230,14 @@
     },
     {
       "rule_id": "R-LEARN-12",
-      "statement": "Recorded clocks take the form `YYYY-MM-DDTHH:MM:SS[.fff](Z|±HH:MM)`; minute-only and space-separated clocks are unmeasured.",
+      "statement": "Recorded clocks take the form `YYYY-MM-DDTHH:MM:SS[.fff](Z|\u00b1HH:MM)`; minute-only and space-separated clocks are unmeasured.",
       "statement_sha256": "57911777df8a1798eb5b6797681b92a39645e7936d02af3c1aab17420c99f2b7",
       "home": "references/guides/retro.md:50",
       "home_fragment": "Recorded clocks take the form",
       "units": [],
       "mirrors": [
         "references/resource-usage.tmpl.md:4",
-        "references/lite-plan.tmpl.md:146"
+        "references/lite-plan.tmpl.md:147"
       ],
       "class": "format",
       "hot_path": false,
@@ -5254,10 +5256,10 @@
     },
     {
       "rule_id": "R-MIGRATE-05",
-      "statement": "Add `Gate: Full` on line 3 of an active Coordinated plan, following `plan.tmpl.md`; keep its title on line 1 and keep a Lite plan’s `Gate: Lite` on line 1.",
+      "statement": "Add `Gate: Full` on line 3 of an active Coordinated plan, following `plan.tmpl.md`; keep its title on line 1 and keep a Lite plan\u2019s `Gate: Lite` on line 1.",
       "statement_sha256": "aa129f0cbeacf6825c1b8397e2a3dc7e2269bf42a303eb026cfe7a6e88935faf",
-      "home": "references/guides/migrate.md:107",
-      "home_fragment": "Add `Gate: Full` on line 3 of an active Coordinated plan, fo",
+      "home": "references/guides/migration-catalog.json:183",
+      "home_fragment": "Add `Gate: Full` on line 3",
       "units": [],
       "mirrors": [],
       "class": "behavioral",
@@ -5277,10 +5279,10 @@
     },
     {
       "rule_id": "R-MIGRATE-06",
-      "statement": "Use the `history.tmpl.md` journal form `correction cycle N of 3: <failure> → <correction>; <validation command>: <result>` for new correction records; preserve older `attempt N:` records.",
-      "statement_sha256": "de4c5b670890a78b05cb92845b06c453bc83ddd34ee3e4129e9478c75f1af547",
-      "home": "references/guides/migrate.md:108",
-      "home_fragment": "Use the `history.tmpl.md` journal form `correction cycle N o",
+      "statement": "Use the `history.tmpl.md` journal form for new correction records, with three as the default ceiling or the explicitly approved total ceiling after an extension, and preserve older `attempt N:` and historical `N of 3` records.",
+      "statement_sha256": "4acf877020e77dffc9fe03f8a0a1a045afa65e7c90dd092537fa07bafda03e82",
+      "home": "references/history.tmpl.md:62",
+      "home_fragment": "New records after an approved extension use",
       "units": [],
       "mirrors": [],
       "class": "behavioral",
@@ -5300,10 +5302,10 @@
     },
     {
       "rule_id": "R-MIGRATE-07",
-      "statement": "Write lifecycle `At` clocks with seconds, `YYYY-MM-DDTHH:MM:SS[.fff](Z|±HH:MM)`, as `resource-usage.tmpl.md` states; minute-only and space-separated clocks remain unmeasured.",
+      "statement": "Write lifecycle `At` clocks with seconds, `YYYY-MM-DDTHH:MM:SS[.fff](Z|\u00b1HH:MM)`, as `resource-usage.tmpl.md` states; minute-only and space-separated clocks remain unmeasured.",
       "statement_sha256": "86593306f5e749466ffd792cb7ab29acca2082311e3b1f7753791803220f51de",
-      "home": "references/guides/migrate.md:109",
-      "home_fragment": "Write lifecycle `At` clocks with seconds, `YYYY-MM-DDTHH:MM:",
+      "home": "references/guides/migration-catalog.json:727",
+      "home_fragment": "Write lifecycle At clocks with seconds",
       "units": [],
       "mirrors": [],
       "class": "behavioral",
@@ -5325,8 +5327,8 @@
       "rule_id": "R-MIGRATE-08",
       "statement": "Use the same `At` clock format in the ledger body of `lite-plan.tmpl.md`; keep an unobserved clock as `n/a`.",
       "statement_sha256": "01828511d0935429b8368d29420105112ad8ee348bef7f3dea3af0d179506dd0",
-      "home": "references/guides/migrate.md:110",
-      "home_fragment": "Use the same `At` clock format in the ledger body of `lite-p",
+      "home": "references/guides/migration-catalog.json:727",
+      "home_fragment": "use the same form in the Lite ledger",
       "units": [],
       "mirrors": [],
       "class": "behavioral",
@@ -5348,8 +5350,8 @@
       "rule_id": "R-MIGRATE-09",
       "statement": "Use the updated `retro.tmpl.md` recipes: Attempts accepts both journal forms; Gate accuracy counts distinct sessions over the archive and current history and reports undated headings; Blocked durations excludes State snapshot lines.",
       "statement_sha256": "9b9c2d5cbe11f501a6b2b0cd290ae16dfcbe2a570d8133dd00119ba6034c89e2",
-      "home": "references/guides/migrate.md:111",
-      "home_fragment": "Use the updated `retro.tmpl.md` recipes: Attempts accepts bo",
+      "home": "references/guides/migration-catalog.json:941",
+      "home_fragment": "Use current retro.tmpl.md recipes prospectively",
       "units": [],
       "mirrors": [],
       "class": "behavioral",
@@ -5371,8 +5373,8 @@
       "rule_id": "R-MIGRATE-10",
       "statement": "Expect lint row 13 WARN lines for dated entries after the newest State snapshot and for undated session headings; these warnings do not become mandatory failures.",
       "statement_sha256": "b522d5cd71a0a23fde02ea3f2a32a7ba5cd4361f2362b6c63774a386c5f9911b",
-      "home": "references/guides/migrate.md:112",
-      "home_fragment": "Expect lint row 13 WARN lines for dated entries after the ne",
+      "home": "references/guides/migration-catalog.json:1173",
+      "home_fragment": "Expect lint row13 WARN lines",
       "units": [],
       "mirrors": [],
       "class": "behavioral",
@@ -5394,8 +5396,8 @@
       "rule_id": "R-MIGRATE-11",
       "statement": "Build an optional `--initiative` page only under an owner request, following the [plan view guide](plan-view.md#initiative-view); it reads the root and one hop of declared sibling workspaces.",
       "statement_sha256": "e979e386497df9b30511e97a8392736857b8b1a3ec7167788ef1b6c5d48d2e74",
-      "home": "references/guides/migrate.md:113",
-      "home_fragment": "Build an optional `--initiative` page only under an owner re",
+      "home": "references/guides/migration-catalog.json:1056",
+      "home_fragment": "Build an optional `--initiative` page only",
       "units": [],
       "mirrors": [],
       "class": "behavioral",
@@ -5417,8 +5419,8 @@
       "rule_id": "R-MIGRATE-12",
       "statement": "Keep the current workspace schema and file formats; this release changes neither, and an existing recorded System One consent keeps its meaning.",
       "statement_sha256": "25b65ea9e9aac2a5c121d23780471a87193d92a8fac72653ff5b2b7262b8ca81",
-      "home": "references/guides/migrate.md:115",
-      "home_fragment": "Keep the current workspace schema and file formats; this rel",
+      "home": "references/guides/migration-catalog.json:907",
+      "home_fragment": "The historical 10.1 statement",
       "units": [],
       "mirrors": [],
       "class": "behavioral",
@@ -5444,7 +5446,7 @@
       "home_fragment": "The detail level: `**Detail**: full` puts every",
       "units": [],
       "mirrors": [
-        "references/task.tmpl.md:12"
+        "references/task.tmpl.md:11"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -5469,8 +5471,8 @@
       "home_fragment": "The symbol ledger of a brief that declares",
       "units": [],
       "mirrors": [
-        "references/task.tmpl.md:80",
-        "references/task.tmpl.md:83"
+        "references/task.tmpl.md:84",
+        "references/task.tmpl.md:87"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -5516,12 +5518,12 @@
       "rule_id": "R-PLAN-30",
       "statement": "A verification of more than one round keeps a finding ledger; every later round re-checks each open finding by its evidence first, admits a new finding only with mechanical evidence deduplicated against every recorded finding, and treats active decisions and settled findings as out of scope for redesign.",
       "statement_sha256": "ce89abc6c3105b119a9f41b560b2ba761b4ba4dcc4f86721742e02366715f349",
-      "home": "references/guides/verify.md:193",
+      "home": "references/guides/verify.md:195",
       "home_fragment": "Every round after the first re-checks each",
       "units": [],
       "mirrors": [
-        "references/guides/verify.md:189",
-        "references/guides/verify.md:196",
+        "references/guides/verify.md:191",
+        "references/guides/verify.md:198",
         "references/guides/plan-card.md:104"
       ],
       "class": "behavioral",
@@ -5543,11 +5545,11 @@
       "rule_id": "R-PLAN-31",
       "statement": "Readiness after a multi-round verification is claimed only after a round with no new and no open HIGH or MEDIUM finding; at most three rounds run unless the workspace sets its cap, and at the cap the owner receives one bounded choice.",
       "statement_sha256": "8502b3be608c46397a699955f9edfa71abb01bf8c0376907f40a4d8c678fa2f9",
-      "home": "references/guides/verify.md:201",
+      "home": "references/guides/verify.md:203",
       "home_fragment": "At most three rounds run, unless the workspace",
       "units": [],
       "mirrors": [
-        "references/guides/verify.md:199"
+        "references/guides/verify.md:201"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -5568,7 +5570,7 @@
       "rule_id": "R-PLAN-32",
       "statement": "A mechanically confirmed finding is HIGH only when an executor following the brief literally would fail or stall, MEDIUM when the executor would likely produce a wrong result that the stated checks would accept, and LOW when it has no executor impact.",
       "statement_sha256": "75df04a6b0904cfbdb51e2ae0bce215f5c1978810e3bb9f10ff70337633dc8f6",
-      "home": "references/guides/verify.md:100",
+      "home": "references/guides/verify.md:102",
       "home_fragment": "Severity also weighs the executor",
       "units": [],
       "mirrors": [],
@@ -5591,7 +5593,7 @@
       "rule_id": "R-PLAN-33",
       "statement": "After findings are applied and before readiness is claimed, every lint row is rerun and the diff since the round began is verified; a defect found there is a new finding of the next round.",
       "statement_sha256": "8bfe4f65e7bc79db43a116594d05313891c169c659b14ec9d84e0a4fff31560a",
-      "home": "references/guides/verify.md:205",
+      "home": "references/guides/verify.md:207",
       "home_fragment": "After findings are applied, in bulk or one by one",
       "units": [],
       "mirrors": [],
@@ -5615,7 +5617,7 @@
       "statement": "Lint row 18 checks every brief that declares its detail level: a valid level, no interface brief Ready to run, a ledger on every open full brief, one producer per name, and a source for every consumed name that is an upstream task, a declared sibling dependency or an anchored citation.",
       "statement_sha256": "bd2e7a4d41a468bf347ca8c403ce2720310cac028edf457ee8a57d17ed0080d1",
       "home": "references/guides/lint-spec.md:54",
-      "home_fragment": "| 18 · Brief symbol ledger and detail level",
+      "home_fragment": "| 18 \u00b7 Brief symbol ledger and detail level",
       "units": [],
       "mirrors": [],
       "class": "format",
@@ -5638,7 +5640,7 @@
       "statement": "Lint row 19 checks every active decision that names an owner or clauses: the owner is on the board and its brief cites the decision and, at full detail, carries the named clauses compiled; no two unordered open owners change one clause; and a superseded predecessor names this decision as its successor.",
       "statement_sha256": "cd503fc0f9a2f61c26e1f979e6b1630e7fcf8c5db71753ccbe2f62a6b49351d3",
       "home": "references/guides/lint-spec.md:55",
-      "home_fragment": "| 19 · Decision ownership and supersession chain",
+      "home_fragment": "| 19 \u00b7 Decision ownership and supersession chain",
       "units": [],
       "mirrors": [],
       "class": "format",
@@ -5683,7 +5685,7 @@
       "rule_id": "R-PLAN-34",
       "statement": "The next wave is the open tasks whose every dependency is Complete, In progress or Checking; verification runs at full depth only on the selected next-wave tasks and at interface level elsewhere, and a finding about the internal detail of an interface brief is dismissed.",
       "statement_sha256": "3c55d5e5a4f187ab5a6a86b0fa2ae57f83b68b27c6d8de9f15055decfad30cd4",
-      "home": "references/guides/verify.md:213",
+      "home": "references/guides/verify.md:215",
       "home_fragment": "**Horizon depth.** The next wave is the open tasks",
       "units": [],
       "mirrors": [],
@@ -5706,7 +5708,7 @@
       "rule_id": "R-PLAN-35",
       "statement": "PLAN fixes internal detail only in next-wave briefs and keeps later tasks at interface detail; an interface brief is never Ready to run.",
       "statement_sha256": "34691b74d26d68963981c613d735d548708f7a1e2907a82f3f5c398c78acda44",
-      "home": "references/guides/decompose-and-lint.md:111",
+      "home": "references/guides/decompose-and-lint.md:123",
       "home_fragment": "Fix internal detail, such as exact type, case or",
       "units": [],
       "mirrors": [
@@ -5729,14 +5731,14 @@
     },
     {
       "rule_id": "R-RUN-33",
-      "statement": "A brief whose task is Complete, Skipped or Unverifiable is a closed record: no agent edits it, a fix-applying agent included, until an active decision authorizes the edit, and after each authorized edit the Coordinator appends one `**Brief erratum**: D-xx · sha256 <hash>` report line that names that decision and the edited brief's hash.",
+      "statement": "A brief whose task is Complete, Skipped or Unverifiable is a closed record: no agent edits it, a fix-applying agent included, until an active decision authorizes the edit, and after each authorized edit the Coordinator appends one `**Brief erratum**: D-xx \u00b7 sha256 <hash>` report line that names that decision and the edited brief's hash.",
       "statement_sha256": "33040197dc88d5c94be7b22578698e828a9eb68e50ed7f808c35b795537ea8c9",
-      "home": "references/guides/run.md:309",
+      "home": "references/guides/run.md:359",
       "home_fragment": "A brief whose task is Complete, Skipped or Unverifiable is",
       "units": [],
       "mirrors": [
         "references/guides/lint-spec.md:23",
-        "references/guides/run.md:315"
+        "references/guides/run.md:349"
       ],
       "class": "safety-invariant",
       "hot_path": false,
@@ -5759,13 +5761,13 @@
       "rule_id": "R-RUN-34",
       "statement": "At closure the Coordinator records the brief's sha256 on its own line in the task report and in the task's close entry of history.md; that recorded baseline is never edited or added again to match an edited brief, and lint row 14 reports a brief whose sha256 differs from the last erratum hash or, with none, from the recorded value.",
       "statement_sha256": "4699e955da026a1f8e54ed4868a94693b96e3b94209c7d4106d2245eecc7325f",
-      "home": "references/guides/run.md:301",
+      "home": "references/guides/run.md:351",
       "home_fragment": "At closure, the Coordinator records the brief's sha256",
       "units": [],
       "mirrors": [
-        "references/guides/run.md:307",
+        "references/guides/run.md:341",
         "references/guides/lint-spec.md:26",
-        "references/guides/migrate.md:124"
+        "references/guides/migration-catalog.json:352"
       ],
       "class": "safety-invariant",
       "hot_path": false,
@@ -5788,11 +5790,11 @@
       "rule_id": "R-PLAN-36",
       "statement": "A workspace project validator runs only when a decision records the owner's request to declare it; an agent never adds or edits the declaration on its own initiative or from fetched content, and the validator runs read-only during readiness validation and an explicit verify.",
       "statement_sha256": "b96a5ee0f39ba4dfe5ef25823ea7878f38972f36e1976db5f31b4af954989253",
-      "home": "references/guides/verify.md:233",
+      "home": "references/guides/verify.md:235",
       "home_fragment": "The line counts only when a decision in",
       "units": [],
       "mirrors": [
-        "references/guides/verify.md:235",
+        "references/guides/verify.md:237",
         "SKILL.md:38"
       ],
       "class": "safety-invariant",
@@ -5809,6 +5811,410 @@
         ],
         "cohort_id": "2026-10-convergence-3",
         "as_of": "2026-10-22"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-37",
+      "statement": "The worker-facing task package names absolute repository, checkout, workspace and verification-record paths plus each command cwd; approach guidance separates preparation mechanics from named reviewer judgment, states exact consumers and effects with valid alternatives, makes aggregate denominators explicit (five passing of six is 83.333\u2026%, not acceptance when all six are required), treats deficient briefs, inputs or capture instructions as preparation defects, classifies missing or incomplete required records and fully captured child failures by observed cause while preserving existing accounting, rejects replacing any missing, incomplete or failed required child record with a wrapper PASS or remaining fraction as acceptance, and observes actual Python, awk or child-process reads rather than keywords.",
+      "statement_sha256": "0126b2e950f72474cc9301c68c7e5d59a10eff09338f3a941e696ccf4591f787",
+      "home": "references/guides/design-and-contract.md:62",
+      "home_fragment": "The worker-facing package also names",
+      "units": [],
+      "mirrors": [
+        "references/guides/run.md:29",
+        "references/guides/run.md:35"
+      ],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "Executor contract adds bounded executor-package, prepared-operation, observed-close-clock or optional Judgment Layer contract detail; implementation evidence does not qualify held-out behavior.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-22"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-38",
+      "statement": "A prepared operation is a per-job procedure, not an installed runner or always-read RUN recipe: declare fixed revision, cwd and paths, exact before/after bytes and hashes, operation identity, unique anchors, child command and recovery. For the concrete worked example, before any write require its fixed records/ parent to be an existing real non-symlink directory confined within the fixture cwd. Recognize a matching full poststate before old anchors, preserve check status, stop drift/zero/duplicate anchors before writes, reconcile interrupted and concurrent states before repeats, and propagate the actual child exit.",
+      "statement_sha256": "dfadb44cd31da30c9c7a2074abdeaacc314d60be8c44859d3396399c6601ae2b",
+      "home": "references/guides/design-and-contract.md:78",
+      "home_fragment": "A prepared operation is a per-job procedure",
+      "units": [],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "Executor contract adds bounded executor-package, prepared-operation, observed-close-clock or optional Judgment Layer contract detail; implementation evidence does not qualify held-out behavior.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-22"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-35",
+      "statement": "At task close record the role\u2019s observed finish clock as `finishAt` with its Run ID; when either is unavailable use `n/a` with the reason, and never substitute validation end time.",
+      "statement_sha256": "f149794a131d150f921d25f5da586911e4b98b55db3516ef26e81f2f96cec4dd",
+      "home": "references/guides/run-card.md:54",
+      "home_fragment": "Capture the role's observed finish clock",
+      "units": [],
+      "mirrors": [
+        "references/guides/run.md:299"
+      ],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "Executor contract adds bounded executor-package, prepared-operation, observed-close-clock or optional Judgment Layer contract detail; implementation evidence does not qualify held-out behavior.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-22"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-36",
+      "statement": "The optional Judgement Layer adds only bounded-recovery and evidence-signal through keyword-only policy inputs; original four uses and result shape stay compatible. New choices and confidence are checked against the planner\u2019s closed domain, fall back locally below 0.8 or on malformed/out-of-domain advice, and never supply permission, correction-count changes, failed-check clearance or acceptance.",
+      "statement_sha256": "053496f8402840007e4fcbdb79968088c4ccf497d26e3464ef04c3109e326f0b",
+      "home": "references/guides/system-one.md:79",
+      "home_fragment": "The optional Judgement Layer adds only",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "Executor contract adds bounded executor-package, prepared-operation, observed-close-clock or optional Judgment Layer contract detail; implementation evidence does not qualify held-out behavior.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-22"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-EVID-19",
+      "statement": "For a new Judgement Layer use, validate consent, public content, policy, client and SDK before creating one exclusive per-use reservation; fully write, flush and fsync it before client_factory. Reservations are never reset or refunded; each post-reservation result gets a separate exclusive known-unsent, observed-response or unknown terminal receipt. Interruption, missing/truncated receipt or receipt-write failure never unlocks a slot, and optional telemetry cannot fail the task or alter consumption.",
+      "statement_sha256": "08bfce26554a7b1165e3c10f06b431a779e3c415a327668d002ed0a964f0e70a",
+      "home": "references/guides/system-one.md:121",
+      "home_fragment": "After consent, public-content, policy",
+      "units": [],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "Executor contract adds bounded executor-package, prepared-operation, observed-close-clock or optional Judgment Layer contract detail; implementation evidence does not qualify held-out behavior.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-22"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-39",
+      "statement": "Before responses, seal the finite public and opaque input identities, cases, arms, strata, comparisons, order, budgets, qualifications and lineage. Declare each paired-count threshold and measurement-pair floor in advance; starts require every retained qualification to pass. Decisions keep all required pairs and strata distinct, require complete valid pairs and the declared win or defect-reduction threshold, and apply exact timing and judgment-wait limits; missing or critical unknown facts never become favorable.",
+      "statement_sha256": "8c1cd5f91704301e594d404e55ecd5dde7a9cc58626f6f879af446d434350745",
+      "home": "references/guides/evaluation-rounds.md:9",
+      "home_fragment": "A `tackle-round/1` manifest",
+      "units": [],
+      "mirrors": [
+        "references/guides/verify.md:12"
+      ],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "Optional finite local evaluation rounds add sealed declarations, pre-dispatch reservation lineage and deterministic retained-evidence replay; local implementation checks do not qualify held-out behavior.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-23"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-37",
+      "statement": "Commit and close each start reservation before returning dispatch permission; permit at most one active unit and never refund started reservations. Preserve same-pool opening consumption, unknowns, corrections and parent-result lineage; missing knowledge is not zero. Duplicate acknowledgements, interruption or an unknown result never authorize repeating an effect. Reconciliation fills only unknown facts and cannot erase known failures, overruns, stops, corrections or reservation facts.",
+      "statement_sha256": "48910dc822308e88adcd4b802a48811739e9256b0570396e5d9dbc5bc2ad0f5d",
+      "home": "references/guides/evaluation-rounds.md:29",
+      "home_fragment": "`record` appends one event",
+      "units": [],
+      "mirrors": [
+        "references/guides/verify.md:12"
+      ],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "Optional finite local evaluation rounds add sealed declarations, pre-dispatch reservation lineage and deterministic retained-evidence replay; local implementation checks do not qualify held-out behavior.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-23"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-EVID-20",
+      "statement": "Keep the canonical manifest seal, public-local input hashes, sequenced event hash chain, receipt references and result identity immutable and rechecked. Opaque inputs are never opened. Compute and replay read retained evidence without journal recovery or mutation; replay compares canonical bytes for the same seal and event head without calling a model, adapter or subprocess. A match establishes deterministic local replay only, not custody, external validity, host confinement, independent judgment or acceptance.",
+      "statement_sha256": "c489d23760889ebecf3d285304a2ada2a62f6ddba09d555a3f0dbe4c2296b889",
+      "home": "references/guides/evaluation-rounds.md:33",
+      "home_fragment": "`replay` performs the same fold",
+      "units": [],
+      "mirrors": [
+        "references/guides/verify.md:12"
+      ],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "Optional finite local evaluation rounds add sealed declarations, pre-dispatch reservation lineage and deterministic retained-evidence replay; local implementation checks do not qualify held-out behavior.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-23"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATE-18",
+      "statement": "Only a separately qualified closed workspace may leave active discovery, retaining its original tree, stable id, card and verification links under docs/plans/.archive/. Qualification establishes accepted delivery, resolved obligations, settled effects and maintenance, and access for every required reader. Unknown closure, format, writer, alias or external-reference ownership holds the move; terminal counts or a reviewer label are insufficient. Inspect older closed layouts as data without migration, and recognize Lite only by its exact first-line marker and actual closure receipts.",
+      "statement_sha256": "727afb9de9a76f58abe8630bd5070ecc622e546343fdbe7f7eb9235d2ff54434",
+      "home": "references/guides/context-lifecycle.md:118",
+      "home_fragment": "The reversible workspace archive is distinct",
+      "units": [],
+      "mirrors": [
+        "references/guides/record-lifecycle.md:114"
+      ],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "Reversible closed-workspace archive adds scoped qualification, cooperating-writer transaction recovery and preserved historical evidence; fixture success does not qualify held-out behavior.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-23"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATE-19",
+      "statement": "Archive and restore preserve the original tree and historical record provenance through the fixed journal, same-filesystem rename, ordered metadata publication, real nonblocking archive/context locks and byte inventory. Preview and queries write nothing. Interrupted operations remain pending until separately scoped recovery revalidates the recorded stage, intact tree and fresh writer observation; both/neither trees, changed bytes or conflicting metadata refuse without overwrite or cleanup. The cooperation protocol provides no hostile-writer exclusion or universal host confinement. Relocation neither retires records nor makes them current proof; each real move needs explicit selected-set authority and qualification. Foreign unresolved context-maintenance journals and record-store leases remain blockers and archive recovery never removes those records; the archive operation removes its own transaction journal only after verifying completed publication and preserved workspace inventory.",
+      "statement_sha256": "ef9b8c1fa54f6697fc63d8f2bbe2f89efea1f4201cfee808da6e101387be92cc",
+      "home": "references/guides/context-lifecycle.md:127",
+      "home_fragment": "Archive and restore use the import-only helper's",
+      "units": [],
+      "mirrors": [
+        "references/guides/record-lifecycle.md:112",
+        "references/guides/record-lifecycle.md:116"
+      ],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "Reversible closed-workspace archive adds scoped qualification, cooperating-writer transaction recovery and preserved historical evidence; fixture success does not qualify held-out behavior.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-23"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATUS-32",
+      "statement": "Archive list/card queries do not traverse retained record trees; a resolver opens only the specifically requested member. Release and lint discovery use immediate active workspace directories, exclude the reserved archive store and index, retain unfamiliar normal and hidden directories, and union every explicitly selected workspace without exemptions. A selected archive path holds until its owner resolves or restores it; discovery exclusion never establishes direct-reader validity.",
+      "statement_sha256": "e799ac2316b9de5d4c3882b6851c1a3c7f606fe46d1fd73972675fec6c16fa53",
+      "home": "references/guides/status.md:97",
+      "home_fragment": "The completed-workspace archive is separate",
+      "units": [],
+      "mirrors": [
+        "references/guides/record-lifecycle.md:115",
+        "references/guides/lint-spec.md:104"
+      ],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "Reversible closed-workspace archive adds scoped qualification, cooperating-writer transaction recovery and preserved historical evidence; fixture success does not qualify held-out behavior.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-23"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-MIGRATE-13",
+      "statement": "Migration uses one ordered installed target catalog from observed supported structure and capabilities; schema, methodology stamp and effective adoption are distinct facts. Classify every obligation as satisfied, pending, not applicable or unknown with source, consumer and check. Preserve supported origins, preconditions, effects, exceptions and order when consolidating equivalent instructions, omit only genuinely satisfied actions, and keep distinct pre-stamp and post-stamp lint phases. Resolve the supported route with the installed artifact and standard library, without implicit network reads or a chronological checklist fallback.",
+      "statement_sha256": "d968abe64ae7c5829684bd92c040d4ca8ec159d9071df98b6c118a3927bdee46",
+      "home": "references/guides/migrate.md:28",
+      "home_fragment": "The installed catalog is the sole active route",
+      "units": [],
+      "mirrors": [
+        "references/guides/migration-catalog.json:177",
+        "references/guides/migration-catalog.json:1179",
+        "references/guides/migration-catalog.json:1261",
+        "MAINTAINING.md:51"
+      ],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "Compact installed migration replaces version-checklist execution with observed structure/capability diagnosis and copy-validated adoption while preserving supported origins and historical evidence.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-23"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-MIGRATE-14",
+      "statement": "Prepare only an explicitly selected active workspace on a disposable copy, preserve an exact checkpoint and historical byte prefixes, and keep the original authoritative until separately validated adoption at an evidenced task boundary. Revalidate source, candidate, catalog, install, frozen evidence and writer quiescence under cooperating locks before same-filesystem cutover. Missing required checks or independent semantic/boundary evidence holds adoption. Preserve closed records, external paths, snapshots and correction lineage, allowing only specifically required adoption receipts. Reconcile interruptions from recorded identities and physical inventories without overwriting conflicts; restore the exact checkpoint only while the adopted workspace is unchanged, and repeated completed operations validate as no-ops.",
+      "statement_sha256": "248beedbfded3b4906c1980fd223aac99b8247434bf39b757bcd0cae960226b2",
+      "home": "references/guides/migrate.md:44",
+      "home_fragment": "`verify` checks the candidate's exact inventory",
+      "units": [],
+      "mirrors": [
+        "references/guides/migrate.md:46",
+        "references/guides/migrate.md:153",
+        "references/guides/migration-catalog.json:352",
+        "references/guides/migration-catalog.json:1267"
+      ],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "Compact installed migration replaces version-checklist execution with observed structure/capability diagnosis and copy-validated adoption while preserving supported origins and historical evidence.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-23"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-MIGRATE-15",
+      "statement": "Adopt required guarantees in selected open work while started or interrupted tasks retain their procedure and correction lineage until a deliberate boundary. Prepare optional capabilities only for applicable explicitly declared upcoming consumers with the required owner authorization, selected-workspace consent and observed capability facts; preserve unknown and n/a instead of inventing availability or copying confirmations. Closed plans require no upgrade to become archive candidates. Missing required capability, evidence or permission stops the affected adoption; neither a stamp, caller declaration, successful stage nor migration creates Ready, acceptance, current proof, consultation budget or authority for the later writing task Check.",
+      "statement_sha256": "0e0e4eb12d156d50eb0e9c60429b2c15980cbe7bc7027b30a933512b2ffac0e7",
+      "home": "references/guides/migrate.md:42",
+      "home_fragment": "The context supplies the selected workspace basename",
+      "units": [],
+      "mirrors": [
+        "references/guides/migration-catalog.json:99",
+        "references/guides/migration-catalog.json:421",
+        "references/guides/migration-catalog.json:427",
+        "references/guides/migration-catalog.json:639",
+        "references/guides/migration-catalog.json:901",
+        "references/guides/invocation.md:32"
+      ],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "Compact installed migration replaces version-checklist execution with observed structure/capability diagnosis and copy-validated adoption while preserving supported origins and historical evidence.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-23"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-38",
+      "statement": "When budget or no-progress stops work, recommend the smallest justified bounded extension only for observed progress on a concrete remaining correction, or higher capability only for a demonstrated limit after strengthening the brief; otherwise resolve the actual prerequisite or stop, keeping cycle extensions and capability changes as separate owner decisions, preserving lineage and no-progress stops, reusing specific existing authorization and never inferring extra allowance, binding or cost authority from the recommendation.",
+      "statement_sha256": "a1c4911fb234195ddb079ea3671d79fa4b37f127103a57fdf5d6c6f769ddf873",
+      "home": "references/guides/run.md:113",
+      "home_fragment": "When a correction budget or no-progress stop blocks work",
+      "units": [],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "Owner requests evidence-based correction recovery with explicit bounded ceiling arithmetic and portable capability recommendations.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-23"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-39",
+      "statement": "The optional pure correction_usage approved_limits mapping accepts only selected pools and exact integer total ceilings above their default or legacy caps, preserves all spent event and merge identities and original limits behavior, and performs arithmetic only while the caller binds each explicit ceiling to an actual owner decision for the same pool.",
+      "statement_sha256": "7b60114ce42c6ed1947683625d37647312f61fa77849c92f11b1e05586b70583",
+      "home": "references/guides/run.md:199",
+      "home_fragment": "The optional keyword-only `approved_limits` mapping",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.2.0",
+        "trigger": "Owner requests evidence-based correction recovery with explicit bounded ceiling arithmetic and portable capability recommendations.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-23"
       },
       "historical": []
     }

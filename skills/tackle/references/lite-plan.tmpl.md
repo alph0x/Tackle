@@ -69,12 +69,13 @@ coordination, uncertain integration or a shared public contract upgrades to Full
    allow at most three failed implementation correction-validation cycles; stop after two identical
    no-progress observations. Journal each failed correction before another. Contract, validator,
    environment or unknown causes stop the affected slice with expected/observed, reproducer,
-   evidence and remaining budget; never silently replan or upgrade model. Preserve failed and stale
-   observations. One operational recovery may address a workspace-local temporary path, interrupted local
+    evidence and remaining budget; never silently replan or upgrade model. Preserve failed and stale
+    observations. One operational recovery may address a workspace-local temporary path, interrupted local
    capture, or restart of an already-configured foreground tool after confirmed writer shutdown.
    Diagnose first and retry once per unchanged cause/command/input/environment signature, recording
    this separate allowance in the same journal; task/actor renaming cannot reset it. A failed retry
-   blocks the affected action. No new install, credentials, restricted access or changed expectation
+    blocks the affected action. On a correction-budget or no-progress stop, use the [RUN recovery recommendation](guides/run.md#correction-recovery);
+    it recommends next steps without resuming the stopped work. No new install, credentials, restricted access or changed expectation
    is authorized. Before declaring complete, open each required evidence reference, confirm its
    actual result and final input/artifact revisions, and match it to the requirement it proves.
    A generic tool-transcript label without an accessible export is missing evidence. Failed,

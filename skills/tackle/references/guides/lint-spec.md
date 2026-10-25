@@ -98,3 +98,13 @@ Shared placeholders, citations in plan/optional reference, seals, chronology and
 mandatory. Optional AGENTS overrides default when absent; read errors are not PASS. Row 8 keeps
 board-based activity; selected Lite still requires mandatory lint and current global acceptance.
 Do not create fake Full artifacts. Route changes invalidate all row applicability observations.
+
+## Active workspace discovery and archive storage
+
+Release and lint discovery use immediate active workspace directories from the installed
+`workspace_archive.py` helper, not a raw `docs/plans/*/` glob. The helper excludes the reserved
+`.archive/` store and `archive-index.md`, retains unfamiliar normal and hidden directories, and
+does not inspect archived histories for card queries. The active set is still unioned with every
+explicitly selected workspace; selection adds obligations and never exempts an active workspace.
+If an explicitly selected path resolves into archive storage, stop and ask its owner to resolve or
+restore it before linting. Discovery exclusion is not evidence that a direct reader remains valid.

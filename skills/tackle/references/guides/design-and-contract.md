@@ -59,6 +59,59 @@ For each prepared task, compile these obligations into the existing fields:
 - The detail level: `**Detail**: full` puts every Definition-of-ready item in scope; `interface` fixes only the goal, write scope, dependencies, requirement owners and symbol ledger, and leaves internal detail to a later PLAN pass
 - The symbol ledger of a brief that declares `**Detail**`: `**Produces**` lists each name the task creates for another task or check, and `**Consumes**` each name it uses without creating it, with its source: `from T-NN`, `from T-NN [sibling]`, or `exists` and an anchored citation in the form `path.ext:NN — "fragment"`, or `path.ext@<rev>:NN — "fragment"` when the cited file has changed since the brief was grounded; a field is `none` when empty, and under `full` both fields are required
 
+The worker-facing package also names the absolute repository and checkout, task workspace,
+verification-record root, and cwd for every command. Keep these locations distinct when they differ.
+Approach guidance separates mechanical preparation from named reviewer judgment: the executor
+collects and validates inputs, while the assigned reviewer decides semantic questions the executor
+cannot infer. State the exact consumer and observable effect for each requirement, including a valid
+alternative where formatting or implementation details are intentionally flexible.
+
+For aggregate gates, state the denominator and required completion explicitly. For example, five passing of six
+is `5 / 6 = 83.333…%`; it is not acceptance when all six are required. Require
+complete successful child records when all children are mandatory. A wrapper result cannot hide a
+failed or missing child record. When read coverage matters, observe actual read consumers
+(including Python, awk or child processes); keyword presence is not read evidence.
+
+<a id="prepared-operation-example"></a>
+### Prepared operation example
+
+A prepared operation is a per-job procedure in the brief, not a new always-read RUN recipe or
+installed runner. Declare its fixed input revision, cwd and paths, exact before/after bytes and
+hashes, operation identity, unique anchors, native child command and recovery conditions. The
+consumer recognizes a matching operation identity and full poststate before requiring the old
+anchor. Preserve the prior check status: an already-applied result does not turn a failed or missing
+check into success. For a pending application, require the exact before hash and one anchor; drift,
+zero or duplicate anchors stop before writes. Record apply and check statuses separately.
+
+After an interruption, compare the target and receipt first. A verified full poststate permits only
+check-only recovery; a pristine before-state permits the pending application; mixed or concurrent
+state stops for reconciliation. Never repeat an unknown effect or rewrite unrelated bytes. The
+declared child must propagate its actual exit even when it prints `PASS` before exiting nonzero.
+Equivalent direct edits remain valid when they produce the declared bytes and checks.
+
+The fixed optional procedure is [`prepared_job_example.py`](../../scripts/prepared_job_example.py); running or importing it requires the owner’s explicit authorization under the [script consent rule](../../scripts/README.md#consent). Its test copies these exact shipped bytes to `prepared_job.py` in a fresh fixture cwd, then invokes Python with `-I` and no arguments. The fixture provides `owned/revision.txt` (`fixture-initial\n`), `owned/config.txt` (`version=old\n`) and `records/`; the only permitted effects are the exact `version=new\n` target and its receipt. Preserve the native exit code and receipt statuses; an interruption or missing/unknown check is not success. An equivalent direct edit remains valid when it yields the same target and child-check result.
+
+<a id="prepared-read-examples"></a>
+### Prepared read examples
+
+These examples are executed from a fresh fixture cwd. The labeled fence bodies are the consumers;
+the fixture input is `public/input.txt` with initial bytes `read-ok\n`.
+
+```python
+# fixture-read: python
+from pathlib import Path
+print(Path("public/input.txt").read_text(), end="")
+```
+
+~~~awk script
+# fixture-read: awk
+{ print }
+~~~
+
+The Python example opens the declared relative path, and awk receives that same input as its file
+argument. A check records actual stdout and verifies a changed fixture value is observed on replay;
+missing input fails. These examples establish local consumer reads only, not general agent compliance.
+
 # Step 5.5 — Architecture recommendation
 
 If Full, recommend an architecture only where the consumers need a structural choice, recorded as `D-xx` in

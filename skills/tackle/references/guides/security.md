@@ -35,7 +35,7 @@ transcript paths from the owner. No script looks up a home folder to find files.
 ## Network
 
 Tackle opens no network connection and ships no network client. An optional
-[System One](system-one.md) judgment goes through the host's `typesafe-ai` skill, and only with a
+[Judgement Layer](system-one.md) judgment goes through the host's `typesafe-ai` skill, and only with a
 recorded `System One consent: yes` line in the selected workspace's `AGENTS.md`. Only a fragment the
 caller classified as public may be sent. Without the skill's client, the SDK or consent, the judgment
 stays local. The plan view loads nothing from the network, and Tackle never publishes it.

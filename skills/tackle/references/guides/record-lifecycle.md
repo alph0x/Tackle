@@ -106,3 +106,14 @@ applicable retention authorization and a recoverable pointer switch.
 Report measured logical bytes, unique hashes, file/alias counts and capture/maintenance costs
 separately; allocated disk usage, agent reads and billed tokens are different metrics. Include
 failed and interrupted records in measurement; never count unavailable telemetry as zero.
+
+## Completed workspace archive boundary
+
+Moving a closed workspace into `docs/plans/.archive/` preserves its record files and their
+original provenance. It does not retire evidence, alter acceptance, normalize historical paths, or
+upgrade an old check to current proof. Required consumers must keep access to cited records or the
+archive operation refuses. Archive list/card queries do not traverse retained record trees; a
+resolver opens only the specifically requested member. Unresolved context-maintenance journals and
+record-store leases remain visible blockers; archive recovery never removes those foreign records.
+The archive operation removes its own transaction journal only after verifying the completed
+publication and preserved workspace inventory.

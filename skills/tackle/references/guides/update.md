@@ -2,10 +2,11 @@
 
 ## Boundary
 
-Ordinary Tackle invocation performs no network access or installation-tree mutation; an optional [System One judgment](system-one.md) goes through the host's `typesafe-ai` skill, only with the workspace's recorded consent. Tackle never
+Ordinary Tackle invocation performs no network access or installation-tree mutation; an optional [Judgement Layer](system-one.md) goes through the host's `typesafe-ai` skill, only with the workspace's recorded consent. Tackle never
 performs release checks, downloads, extraction, or installation-tree replacement, even when a newer
 release may exist. This guide is reference material for a user-controlled, out-of-band workflow
-only.
+only. Installing or updating the skill never migrates a workspace; an owner explicitly selects a workspace
+and uses the [installed migration catalog](migrate.md#compact-migration) for that separate operation.
 
 ## Owner-controlled workflow
 

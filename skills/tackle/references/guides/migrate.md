@@ -1,237 +1,177 @@
-# Step 8.5 — Migrate
+# Migrate
 
-Migration is a **copy-first, selected-active-work** operation. It never structurally rewrites a live
-workspace or its history during the migration trial,
-automatically migrates unrelated or closed work, upgrades historical evidence, or turns a query into
-execution. A workspace below bucket `5` reaches it with the 8.4 → 9.0 checklist below; a later
-release is adopted with its own checklist, under [Adopting a release](#adopting-a-release).
-Historical checklists for older workspaces are in the repository's
-`maintaining/migrations.md`; they remain readable historical context and cannot bypass the
-current selection, pinning, history or rollback guards.
+Migration uses one installed catalog route for an explicitly selected active workspace. It operates
+on a disposable copy, preserves closed and neighboring work, and leaves status, consent, and release
+acceptance to their existing owners. Historical sources remain available in
+`maintaining/migrations.md` as provenance; they do not select the active procedure.
 
-Only a selected active workspace is migrated, and only on a disposable copy. Closed P tasks retain
-their recorded state and evidence; future execution uses the RUN protocol at a task boundary.
+Historical checklists for older workspaces are in the repository's `maintaining/migrations.md`; they remain readable historical context and cannot bypass the current selection, pinning, history or rollback guards.
 
-`improve this plan`, `migrate`, and `upgrade` route to PLAN's migration preparation. An unstructured
-source is ingested fresh through PLAN.
+`improve this plan`, `migrate`, and `upgrade` route to PLAN preparation. An unstructured source is
+ingested through PLAN. See [invocation.md](invocation.md) for the current skill entry.
 
-Current interaction uses one skill entry: select Tackle, then state a request such as `plan`,
-`run`, `status` or `verify`. Update forward-looking prompts to that form when migrating selected
-work; preserve historical records verbatim. Old slash spellings in historical checklists are
-historical text aliases, not separately registered menu commands. See [invocation.md](invocation.md).
+Use the [compact migration route](#compact-migration) as the installed bridge; the historical archive does not select another execution procedure.
 
 <a id="adopting-a-release"></a>
 ## Adopting a release
 
-Each checklist below applies only to a selected active workspace, on a disposable copy at a task
-boundary; neighboring workspaces stay untouched. Continue started or interrupted work under its pinned procedure.
-A step that acts on the install, such as the bridge's step 1, comes first. Before any step that changes the
-workspace copy, record that procedure, the current lint result under it, and hashes of
-the board, briefs, reports, `AGENTS.md` and history; keep an unchanged checkpoint copy. After the release's
-steps, run the lint on the copy. Adopt only the validated copy: record the adoption, its checks and the rollback
-result, and bump the `Methodology:` stamp to the adopted release. A failed check holds adoption and
-leaves the original active and unchanged. Adoption rewrites no closed task, no historical record and no
-neighboring workspace. Roll back by restoring the checkpoint copy.
+1. Confirm the selected active workspace, observed structure, current target and actual capability requirements through the [compact route](#compact-migration). Continue started or interrupted work under its pinned procedure. A stamp alone proves neither structural compatibility nor adoption.
+2. Use a disposable copy at a task boundary for cutover. Record the original inventory, closed records, correction lineage and immutable checkpoint as described under [originals](#pre-migration-originals). `prepare` may build the isolated copy earlier; the original remains authoritative and adoption still waits for an evidenced boundary and writer quiescence.
+3. Resolve current semantic work in that copy: retain the required baselines and authorized errata, prepare only the declared upcoming work, and obtain actual applicability, consent and capability evidence for requested optional features. Neither an old checklist nor a copied answer supplies current authority.
+4. Validate the copy with structural verification, separate pre-stamp and post-stamp lint, read-only readiness, restoration rehearsal and independent semantic evidence. A failed check holds adoption. Adopt only the validated copy after rechecking source, candidate, resources and evidence under the cooperating locks; the next task’s writing Check remains post-adoption work.
+5. Record the adopted operation, exact mappings, checks and rollback result. Roll back by restoring the checkpoint copy. Use the explicit `restore` phase through its verified sibling stage only while the adopted workspace still matches its recorded posthash; preserve the job’s original backup and evidence. A completed repeat validates identity and adds no effects.
 
 <a id="older-stamps"></a>
-Apply the checklists in release order, from the workspace's `Methodology:` stamp to the current release,
-skipping none. A stamp older than the 8.4 → 9.0 bridge, or from 9.0.0 through 9.2.0, needs intermediate
-checklists that do not ship with the install. The owner reads them in the public repository at
-https://github.com/alph0x/Tackle/blob/v10.0.0/maintaining/migrations.md; Tackle itself opens no network
-connection. Or start the remaining work in a fresh workspace and leave the old one as it is.
+<a id="compact-migration"></a>
+## Compact migration route
 
-<a id="v84--v90-checklist"></a>
-## v8.4 → v9.0 checklist
+The installed catalog is the sole active route from supported workspace structure to Tackle 10.2.0. Read the workspace structure and its `Methodology:` stamp as separate facts: structure selects only the exact existing adapter, while the stamp records methodology and never proves adoption. The closed, installed-only catalog retains every historical obligation and its source provenance at [migration-catalog.json](migration-catalog.json).
 
-This major release replaces the RUN and PLAN guides with cards, keys migration on the board
-schema and retires the 8.x action-name aliases. Installing 9.0 migrates nothing by itself. 9.0 runs only
-the current layout and refuses a workspace that has not been migrated
-([forward only](#forward-only)).
+Use the five-command interface in order: `diagnose`, `prepare`, `verify`, `adopt`, and `restore`. Running the migration script requires the owner's explicit migration request under the [script consent](../../scripts/README.md#consent); an equivalent harness route may perform the same bounded operation. `diagnose` reads one explicitly selected absolute workspace and produces a complete observation manifest; pending or unknown facts remain visible. `prepare` requires a fresh external job directory on the same filesystem, records an immutable checkpoint, and creates the candidate using the existing schema adapters. Resolve listed owner decisions and semantic work in the copy. The original remains authoritative while the candidate is being prepared.
 
-1. Before updating the install, move any file you added under `references/archetypes/` to
-   `.tackle/archetypes/` or `~/.tackle/archetypes/`. The install no longer carries
-   self-development archetypes, and an update drops files left there.
-2. Migrate the board through the [schema-keyed migration](#schema-keyed-migration) and its
-   [steps](#migration-steps) to bucket `5`. A board whose fenced example never closes is refused;
-   close the fence and run the step again. A Focused workspace has no board: rename `log.md`,
-   `log-archive.md` and `usage.md` to `history.md`, `history-archive.md` and `resource-usage.md`.
-3. Run rows 1–16 on the migrated copy. Row 12 checks only the briefs of tasks that are not
-   closed (Complete, Skipped or Unverifiable), and reports `Effort without Tier reason` for such
-   a brief whose Effort is not `low` and that has no Tier and no Tier reason.
-   This is expected: add a `**Tier reason**` line to that brief saying why its Effort departs
-   from the default, as the [task template](../task.tmpl.md) shows. In the same open briefs, rename `**Touches**` to
-   `**Write scope**` and `Done-signal` to `Acceptance check`, and replace an `inherit` Effort with
-   a level.
-4. Replace retired 8.x action names in forward-looking prompts with the current request words;
-   [terminology.md](../terminology.md) maps each old name. Preserve historical records verbatim.
-5. Profiles need no action: an entry without an id stays readable, and the next retro that
-   touches it assigns an id and computes its confidence.
-6. The routing fields (`Tier`, `Tier reason`, `Escalation`) are optional; a brief without them
-   keeps the default. Planning runs on a more capable tier than the Executor's whenever the
-   model map binds more than one tier.
-7. Record the path mapping with the adoption.
+The CLI takes absolute paths for workspace, context, output, manifest, and job:
 
-<a id="v92--v93-checklist"></a>
-## v9.2 → v9.3 checklist
+```text
+python3 -I -B <installed-scripts>/migrate/compact.py diagnose --workspace <ABS_SOURCE> --target 10.2.0 --context <ABS_CONTEXT_JSON> --output <ABS_NEW_MANIFEST>
+python3 -I -B <installed-scripts>/migrate/compact.py prepare --manifest <ABS_MANIFEST> --job <ABS_JOB>
+python3 -I -B <installed-scripts>/migrate/compact.py verify --job <ABS_JOB>
+python3 -I -B <installed-scripts>/migrate/compact.py adopt --job <ABS_JOB>
+python3 -I -B <installed-scripts>/migrate/compact.py restore --job <ABS_JOB>
+```
 
-An active 9.2 workspace adopts 9.3.0 with this checklist. This release changes the plan view's template and
-the styling of auxiliary pages, and it changes no file format.
+The context supplies the selected workspace basename, target, upcoming task IDs, observed boundary receipt, requested optional capabilities, date, and fixed run ID. A declaration is evidence to review, not permission by itself. `diagnose` is read-only; a false or unsubstantiated boundary remains pending. Each obligation retains its canonical source identity/hash, actual consumer/check and status: satisfied, pending, not-applicable or unknown. Required unknown facts block the affected adoption; an optional unknown stays a recommendation. Omit satisfied actions only with observed inventory proof. Consolidate actions only when effect, resolved paths, preconditions, consent source, consumer and required postconditions all agree; pre-stamp and post-stamp lint remain separate. Structural adapters receive the source methodology stamp and preserve it until the deliberate final stamp action.
 
-1. If the workspace has a plan view, rebuild it under its standing view request, since the template changed.
-   Without that request, build no view. Existing auxiliary pages change only on request; move one to the
-   plan view's base only when the owner asks.
-2. Sibling workspaces are optional. A workspace that declares none needs no change.
+`verify` checks the candidate's exact inventory, source and install identities, required manual decisions, pre-stamp and post-stamp captures, current lint rows 1–19, read-only upcoming-task readiness, restoration rehearsal, and a separate `semantic-review.json` receipt. Caller declarations, a successful stage, or a same-version stamp do not establish permission or acceptance. Missing required evidence remains pending or unknown and blocks adoption. The writing Check in the next task's brief runs only after a separately verified and completed adoption.
 
-<a id="v93--v100-checklist"></a>
-## v9.3 → v10.0 checklist
+`adopt` is available only at an explicitly evidenced task boundary with known writer quiescence. It rechecks the original, candidate, catalog and installed artifact while holding the cooperating workspace locks, then records each same-filesystem rename phase. The original is preserved as the job's rollback source. Interrupted work reconciles only from matching recorded identities and physical hashes; conflicts and drift stop without overwriting. `restore` returns the exact checkpoint through a verified sibling stage only while the adopted workspace still matches its recorded post-adoption hash. Repeating a completed operation is a no-op.
 
-An active 9.3 workspace adopts 10.0.0 with this checklist. This release ships every program as a script under
-`scripts/` (Python 3.10 or later), and it changes no file format.
-
-1. An owner who runs a 9.3 loopback live producer stops it before updating; 10.0 retires the live view and
-   ships no producer.
-2. If the workspace has a plan view, rebuild it with `scripts/plan_view.py` under its standing view request,
-   as the [plan view guide](plan-view.md) states. Without that request, build no view.
-3. Saved copies of 9.x recipe programs are obsolete; use the scripts under `scripts/` in their place.
-4. A verification record that an installed `capture.py` or `lint_runner.py` made while running from outside the working
-   directory names that script's sha256, so it is refused once the install updates the script. Rerun those
-   checks under the updated install.
-5. [System One](system-one.md) goes through the host's `typesafe-ai` skill. A recorded `System One consent:` line keeps its
-   meaning and needs no change; never copy one from a parent or neighboring workspace.
-
-<a id="v100--v101-checklist"></a>
-## v10.0 → v10.1 checklist
-
-An active 10.0 workspace adopts 10.1.0 with this checklist.
-
-1. Add `Gate: Full` on line 3 of an active Coordinated plan, following `plan.tmpl.md`; keep its title on line 1 and keep a Lite plan’s `Gate: Lite` on line 1.
-2. Use the `history.tmpl.md` journal form `correction cycle N of 3: <failure> → <correction>; <validation command>: <result>` for new correction records; preserve older `attempt N:` records.
-3. Write lifecycle `At` clocks with seconds, `YYYY-MM-DDTHH:MM:SS[.fff](Z|±HH:MM)`, as `resource-usage.tmpl.md` states; minute-only and space-separated clocks remain unmeasured.
-4. Use the same `At` clock format in the ledger body of `lite-plan.tmpl.md`; keep an unobserved clock as `n/a`.
-5. Use the updated `retro.tmpl.md` recipes: Attempts accepts both journal forms; Gate accuracy counts distinct sessions over the archive and current history and reports undated headings; Blocked durations excludes State snapshot lines.
-6. Expect lint row 13 WARN lines for dated entries after the newest State snapshot and for undated session headings; these warnings do not become mandatory failures.
-7. Build an optional `--initiative` page only under an owner request, following the [plan view guide](plan-view.md#initiative-view); it reads the root and one hop of declared sibling workspaces.
-8. Name forbidden action classes in new task briefs with the `Forbidden actions` field of `task.tmpl.md`, following the [design guide's brief obligations](design-and-contract.md); existing briefs need no change.
-9. Keep the current workspace schema and file formats; this release changes neither, and an existing recorded System One consent keeps its meaning.
-
-<a id="v101--v102-checklist"></a>
-## v10.1 → v10.2 checklist
-
-An active 10.1 workspace adopts 10.2.0 with this checklist. It keeps `tackle-workspace/5` and adds no required field.
-
-1. Work on a disposable copy, as [Adopting a release](#adopting-a-release) states; leave the original unchanged until lint passes on the copy.
-2. For every Complete task on the board, hash its brief with `sha256sum <brief>`, or `shasum -a 256 <brief>` without `sha256sum`.
-3. Put `**Brief sha256**: <64 lowercase hex digits>` on its own line in the task's report, outside code fences. Place it right before the report's `Final status:` line, or right before its `**Remains**:` line when it has none. Then append `Brief sha256 T-NN: <the same hash>` on its own line, outside code fences, to the end of `history.md`. History only grows: never edit an older entry. That report line and the history line are the only changes adoption makes to a closed task's records. Do both before any other edit to a closed brief. Skipped and Unverifiable reports may carry both too.
-4. After step 3, a closed brief changes only by erratum. An active decision authorizes the edit; then append `**Brief erratum**: D-NN · sha256 <hash after the edit>` to its report.
-5. Give each open brief one line in Purpose and scope, `- **Detail**: full` or `- **Detail**: interface`. Use `full` for the [next wave](verify.md#milestone-readiness) and for any brief whose row is Ready to run, In progress or Checking. Use `interface` for the rest. Row 18 fails a Ready to run row that names an interface brief. Edit the brief of an In progress or Checking task only at that task's boundary, never during an attempt.
-6. Give a brief you raise to `full` the symbol ledger of `task.tmpl.md`. Under Interface and invariants, `**Produces**` and `**Consumes**` each hold `none` or indented sub-items. Every consumed name gets one source: `from T-NN`, `from T-NN [sibling]` or `exists` with an anchored citation. A `from T-NN` task must be an ancestor through `Depends on`. A `[sibling]` source must also appear in the brief's own `Depends on` cell. A name has one producing brief; row 18 fails a name that two briefs produce. The task-boundary rule of step 5 applies here too. An interface brief needs no ledger.
-7. Add `**Owner**: T-NN · **Clauses**: C-xx` after `**Supersedes**` only on a decision you want checked; either part may be omitted. The owner's brief must cite the decision id and, at `full` detail, carry each named clause compiled. When a decision with these lines supersedes an earlier one, the earlier heading names it, as `⤴ superseded by D-NN`. Row 19 fails a heading that names another, and a still-active predecessor is no finding.
-8. Run `scripts/lint.py <slug>` on the copy and expect 19 of 19 rows silent. Repair a finding from another row as its own guide states, and a closed brief only by erratum.
-9. A workspace that adopts nothing keeps working. Rows 18 and 19 skip legacy briefs and decisions, and row 14 asks for the hash only after the 10.2.0 stamp. Row 2 reports a dependency on a Skipped task and a requirement whose tracing tasks are all Skipped. Repair the first by depending on the successor, and the second by naming the Skipped task on an open successor's `**Lineage**:` line.
-10. A verification round may keep `findings.md`, capped at three rounds unless `AGENTS.md` sets `Verify round cap: N`. An `Acceptance validator:` line in `AGENTS.md` needs a decision recording the owner's request. Neither needs a migration step.
-11. Last, set the `**Methodology: Tackle 10.2.0**` stamp in the workspace `AGENTS.md`, only after step 3 covers every Complete task. Then run `scripts/lint.py <slug>` again and expect 19 of 19 rows silent. From now on row 14 requires that line in each Complete report.
+All command paths are absolute; the installed route uses Python 3.10+ standard library and the copied installed artifact only. Commands return 0 when their own stage completes, 1 for pending, unknown, conflict or failed checks, and 2 for invalid input. They never install, download, archive a workspace, manufacture task status, copy consent, run a service, or perform a migration against an unselected source. The external checkpoint, preserved original backup, and explicit restore phase provide the rollback boundary. If the supported route is blocked or unsuitable, the owner may explicitly select a fresh workspace for remaining work and leave the old source unchanged; migration never chooses that alternative silently.
 
 <a id="schema-keyed-migration"></a>
-## Schema-keyed migration (9.0.0)
+## Structure and current adoption
 
-Migration keys on the board's `Schema:` line, or on structure when the line is absent — never on the
-free-text `Methodology:` stamp, which is display-only. [`schema.py`](../../scripts/migrate/schema.py)'s
-`schema_of(files)` reads only the workspace root (top-level files; nested paths are ignored for
-detection) and ignores any `legacy-*/` directory, so a stray legacy snapshot next to a current board
-never changes the bucket. A workspace matching more than one row below is `unknown`; its scan for the
-`Schema:` line skips fenced code blocks.
+Read three independent facts: the observed workspace structure, its methodology stamp, and the
+actual evidence of adopted guarantees. A missing or old stamp is not a reason to run a structural
+rename, and a current stamp is not evidence that current obligations or optional capabilities hold.
+The installed catalog's supported buckets are `pre-3`, `3`, `4`, `5`, and explicit `Gate: Lite`.
+A schema-5 source skips satisfied renames with actual inventory proof; it still needs applicable
+current-target guarantees. Historical checklists supply provenance, never a version-ordered route
+or an instruction to fetch unshipped intermediate procedures.
 
-| Bucket | Detected by | Next step |
-|---|---|---|
-| `pre-3` | a `board.md` with no `Schema:` line, and a header row with `Point` or `Task` and a `Status` column | [`step_pre3_to_3.py`](../../scripts/migrate/step_pre3_to_3.py) |
-| `3` | a `board.md` whose line is `Schema: tackle-workspace/3` | [`step_3_to_4.py`](../../scripts/migrate/step_3_to_4.py) |
-| `4` | a `task-board.md` whose line is `Schema: tackle-workspace/4` | [`step_4_to_5.py`](../../scripts/migrate/step_4_to_5.py) |
-| `5` | a `task-board.md` whose line is `Schema: tackle-workspace/5` | none (current in 9.0.0) |
-| `lite` | a `plan.md` whose first line is `Gate: Lite` | none (no board schema) |
-| `unknown` | anything else | none; report and stop |
+Structural detection reads only top-level workspace files, ignores nested paths and every `legacy-*/` snapshot, and uses the board’s first unfenced `Schema:` declaration or the supported structure when that declaration is absent. A neighboring legacy snapshot cannot change the detected bucket. The `Methodology:` stamp never selects a structural adapter. The historical statement that 10.1.0 introduced no new schema applies only to that release and grants no general exemption from the observed-structure route.
+
+| Observed source | Structural route |
+|---|---|
+| `pre-3`: top-level `board.md` has no unfenced `Schema:` declaration and has an unfenced header followed by a delimiter row, naming `Point` or `Task` and `Status` | installed `step_pre3_to_3`, then the supported `3` and `4` steps |
+| `3`: top-level `board.md` declares `Schema: tackle-workspace/3` outside a fence | installed `step_3_to_4`, then `step_4_to_5` |
+| `4`: top-level `task-board.md` declares `Schema: tackle-workspace/4` outside a fence | installed `step_4_to_5` |
+| `5` | no structural adapter; diagnose current guarantees and capabilities |
+| `Gate: Lite` on the first line of `plan.md` | preserve the Lite carrier and Gate; rename only existing old history/archive/usage names with collision checks |
+| unknown, ambiguous, aliased, CRLF, or unclosed-fence source | diagnose and stop affected mutation; never infer a bucket, normalize history, downgrade or invent Ready |
 
 <a id="migration-steps"></a>
-## Migration steps
+The physical compact route calls each needed installed adapter through `schema.adopt`. It shares
+one `schema` module with the adapters; their `transform` and `verify` receive
+`schema.workspace_files` projections excluding `legacy-*/`, while adoption reassembles every
+existing legacy directory unchanged and adds the exact original step snapshot. The adapter context
+carries the validated date, run ID, source methodology and selected workspace name. Preserve the
+recorded own path/P-to-T map across active artifacts; own forward links follow actual moves, while
+external/history references remain preserved and unresolved ownership holds adoption. Do not call
+a historical inline conversion recipe or pass a full legacy-bearing mapping directly to transform.
 
-Each step is one idempotent detect → transform → verify script; a second run of any step on its own
-output is a byte-identical no-op. Standard library only. Importing these scripts needs the owner's explicit
-authorization; an explicit migration request grants it for that migration (the [script consent](../../scripts/README.md#consent)).
-Prefer an equivalent harness capability. The scripts have no command line: to run a step, put
-`<skill>/scripts/migrate/` first on `sys.path` and import the step by name (`step_pre3_to_3`,
-`step_3_to_4` or `step_4_to_5`). Each step imports [`schema.py`](../../scripts/migrate/schema.py) from its
-own folder, so each step's `detect`, `transform` and `verify` call `schema_of`, `parse_board` and the
-other shared helpers from that one module, not a copy. Advance a real workspace with
-`schema.adopt(files, context, step.transform)`, never by calling a step's `transform` directly on a
-workspace's full file mapping: `transform`'s `files` argument must already exclude any `legacy-*/`
-directory, and only `adopt` supplies that, then reassembles the result with every pre-existing
-`legacy-*/` directory preserved and the step's own new snapshot added. Passing a mapping that still
-holds `legacy-*/` straight to `transform` risks that step's rename or id-mapping logic reaching inside
-the legacy snapshot and rewriting it.
+### Structural adapter contracts
 
-The context passed to adopt holds date, run_id and methodology, and may hold workspace, the migrated workspace's directory name, so that the 8.3 to 8.4 step can tell its own links from links into other workspaces.
+Before each structural transform, retain a byte-identical snapshot of the non-legacy workspace exactly as that step read it in `legacy-<source-bucket>/`. Treat that pre-transform snapshot as read-only historical evidence. Carry every earlier `legacy-*/` directory forward unchanged; never feed snapshots back into the next transform as active workspace content.
 
-- [`step_pre3_to_3.py`](../../scripts/migrate/step_pre3_to_3.py) — generalizes `candidate_board()`
-  (`maintaining/migrations.md`) three ways: it accepts P- and T-ids, it maps the legacy states exactly
-  as [terminology.md](../terminology.md)'s States table does, and it never infers `Ready to run`. A
-  `/3` board (or later) returns unchanged.
-- [`step_3_to_4.py`](../../scripts/migrate/step_3_to_4.py) — the v8.3 → v8.4 layout, done mechanically: renames
-  the artifacts that exist (see the 8.3 → 8.4 checklist in `maintaining/migrations.md`), maps every P-id to one T-id and rewrites the ids
-  in the contents — not only the file names — of `plan.md`, every brief, the board and its dependencies,
-  every report, and the usage ledger's rows (its column format, 8-column legacy or v2 lifecycle, is
-  preserved; only the ids inside it are mapped). `history.md` keeps whichever of `log.md`'s or its own
-  original bytes was already there, plus one appended adoption entry, written exactly once even when
-  the workspace already carries it; `log.md` and `history.md` both present at once is a rename-target
-  collision (see below), refused by name rather than silently picked between. `decisions.md` and
-  `design-contract.md` are never rewritten; an interrupted, pinned task surfaces as residue for review
-  at that task's own boundary (R-MIGRATE-02), never a silent rewrite or a silent restart. An empty P→T
-  map and an absent `points/`
-  are valid inputs — a `/3` workspace already on `tasks/` and T-ids only gets its board renamed and
-  restamped. A `/4` board (or later) returns unchanged.
-- [`step_4_to_5.py`](../../scripts/migrate/step_4_to_5.py) — sets `Schema: tackle-workspace/5` and gives every
-  `Ready to run` row without a citation the Verification text `ready: legacy /4 readiness`. It changes
-  nothing else: a row that already carries some other, non-placeholder Verification text is left alone
-  and reported for review rather than overwritten. A `/5` board returns unchanged.
+The `pre-3` conversion accepts both P-ids and T-ids. Preserve the exact historical state mapping: 🔴 → Draft, 🟡 → In progress, ⏸ → Blocked, 🟢 → Complete, and ⚪ → Skipped, as described in [terminology.md](../terminology.md#states-and-observations). It never infers `Ready to run` or fresh verification from a legacy state.
 
-Each step's `verify(before, after)` takes the same `legacy-*/`-excluding `files` shape as `transform`
-(`schema.py`'s `workspace_files(files)` of the pre- and post-adoption mappings, not the adopted result
-itself, which still carries the legacy snapshots) and is self-contained Python, checked against this
-guide's own reading of each schema: state vocabulary, `Verification` references and, for `step_4_to_5.py`,
-the `ready:` rule.
-It does not shell out to the lint rows; the [9.0 checklist](#v84--v90-checklist) runs them on the
-migrated copy. `errors` gate adoption: the wrong bucket after the step, a second `transform` that is not
-byte-identical, a board invariant, or an old artifact name left in the root — each a check `verify`
-itself performs and reports. A rename-target collision is a separate, transform-time refusal, not a
-`verify` error: an old artifact name and its new name both already present (`usage.md` and
-`resource-usage.md`, `board.md` and `task-board.md`, `log.md` and `history.md`, or a `points/<id>`
-brief and a `tasks/<id>` one) makes `transform` itself raise by name before anything is written, so
-adoption never reaches `verify` for that workspace. `residue` lists what the agent must review before
-adoption, for example a stray id mention in rewritten prose.
+The `3` layout conversion renames existing artifacts and maps P-ids to T-ids in file names and in `plan.md`, briefs, the board and its dependencies, reports, and usage rows. Preserve the usage ledger’s eight-column legacy or v2 lifecycle format; only its mapped ids change. Never rewrite `decisions.md` or `design-contract.md`. Keep the original `log.md` or `history.md` bytes and append the structural adoption entry exactly once; both names present is a rename-target collision. An interrupted, pinned task remains residue for review at its own boundary, never a silent rewrite or restart. An empty P→T map and absent `points/` are valid: existing `tasks/` and T-ids need no invented move; the board is still renamed and restamped, and any other old artifact actually present follows its defined rename.
+
+The `4` conversion sets `Schema: tackle-workspace/5` without changing task statuses. For an existing `Ready to run` row, keep an existing `ready: ` citation with a nonempty reference. Default only an empty, `pending`, `—`, or `-` Verification cell to `ready: legacy /4 readiness`. Preserve any other old Verification text unchanged and report it as residue for review rather than overwrite a possible citation. A missing or nonstandard readiness citation must be resolved before adoption; preserving a Ready status does not invent readiness evidence.
+
+Each structural adapter’s `verify(before, after)` is self-contained Python and does not shell out to the lint rows. It does not replace the compact route’s separate actual lint observations on the migrated copy; both pre-stamp and post-stamp captures remain required.
+
+Check the target schema’s state vocabulary and Verification references before adopting a structural result. Schemas `3` and `4` use Draft, Ready to run, In progress, Checking, Complete, Blocked, Interrupted, Skipped and Unverifiable; Complete, Blocked and Unverifiable rows require exactly `reports/<id>-report.md` in Verification. The `4`→`5` path also checks the `ready: ` rule above. Pass `schema.workspace_files(before)` and `schema.workspace_files(after)` to each adapter’s self-contained Python `verify`, retaining its errors and residue for their required checks and manual review; do not pass the adopted legacy-bearing mapping or treat lint as that adapter oracle.
+
+`errors` gate adoption: the wrong bucket after the step, a second `transform` that is not byte-identical, a board invariant, or an old artifact name left in the root. A rename-target collision is a separate, transform-time refusal, not a `verify` error; adoption never reaches `verify` for that colliding proposal. Keep these errors distinct from residue that needs its own manual review; neither an error nor unresolved required residue may be hidden by a successful wrapper.
+
+Every structural step follows detect → transform → verify. A second call to that step’s transform on its own output must return byte-identical content and no new mapping or effects. This per-adapter idempotence is separate from recognition of a completed compact job as a no-op.
+
+Maintain this guide, its migration scripts and their fixtures as one bridge that retains detection and transformation for every supported bucket above. The installed guide and scripts must remain sufficient for ordinary migration; fixtures verify that bridge and are not installed-route inputs or a reason to fetch unshipped intermediate procedures.
+
+<a id="pre-migration-originals"></a>
+Only the explicitly selected active source gets a candidate. Record the pinned procedure, current
+source diagnostic, source/contract revisions, exact tree/type/mode/byte inventory, closed records,
+usage/correction lineage and neighbor sentinel before effects. The source and immutable checkpoint
+keep authority until separately validated cutover. Started or interrupted tasks retain procedure and
+counters until their own deliberate boundary. Required receipt additions are only the exact
+current-target baselines/errata, in their required order; there is no generic closed-history repair.
+Preserve original hashes and legacy snapshots as provenance, never as current proof.
 
 <a id="read-compatibility-promise"></a>
 <a id="forward-only"></a>
-## Forward only
+## Forward-only readers and supported source boundaries
 
-The install runs only a workspace in bucket `5`, or a Focused `plan.md` whose history and usage
-are `history.md` and `resource-usage.md`. PLAN, RUN and STATUS refuse any other workspace with
-`migrate first` and point here, and lint rows 1, 2, 3, 5, 10, 11, 12, 14 and 17 print that refusal.
-A board saved with CRLF line endings reads as older: convert it to LF first, because the rows, the
-scripts and this migration read LF only. This guide, its scripts and their fixtures are the one
-bridge: they keep detecting and transforming every bucket above. The readability statements in the 8.x checklists describe 8.x installs.
-Below the `pre-3` bucket nothing is promised, and this
-repository's historical checklists in `maintaining/migrations.md` apply.
+PLAN, RUN and STATUS run only bucket `5` or an explicitly selected Lite plan on current
+`history.md` and `resource-usage.md` carriers. Migration and repairs require separate authorization.
+Ambiguous structure, collisions, unknown required facts and CRLF/alias/fence diagnostics hold work;
+never normalize original bytes silently, downgrade or infer a supported source below `pre-3`.
+Closed work remains historical data; archive candidacy needs no upgrade, and archival requires separate authorization.
 
-<a id="pre-migration-originals"></a>
-## The pre-migration original's home
+PLAN, RUN and STATUS refuse any other workspace with `migrate first` and point here, and lint rows 1, 2, 3, 5, 10, 11, 12, 14 and 17 print that refusal.
 
-Each step's adoption writes the new content plus every `legacy-*/` directory that existed before,
-unchanged, and adds its own `legacy-<bucket>/` snapshot: the workspace root exactly as the step read it,
-byte-identical and read-only, before that step's transform ran. By construction this is
-outside every row that reads a board or history by its path. Row 1's placeholder scan skips every
-`legacy-*/` directory.
+Before migration or an archive-related decision, read the required
+[migration boundaries and capabilities](#migration-boundaries-and-capabilities).
+
+<a id="migration-boundaries-and-capabilities"></a>
+## Migration boundaries and capabilities
+
+The current installed PLAN, RUN and STATUS readers run only bucket `5`, or an explicitly selected
+Lite `plan.md` whose current history and usage carriers are `history.md` and `resource-usage.md`.
+Other supported structures report `migrate first` and point to this route; reading that refusal or
+asking STATUS never authorizes migration or repairs. Below `pre-3`, downgrade, ambiguous structure,
+collisions and unknown required facts have no best-effort route. Closed work may be read as
+historical data and requires no upgrade merely to become an archive candidate; any actual archive
+is a separately authorized operation. A CRLF/alias/fence diagnostic remains a hold until its owner
+resolves it in allowed scope, not permission to normalize original bytes silently.
+
+PLAN, RUN and STATUS refuse any other workspace with `migrate first` and point here, and lint rows 1, 2, 3, 5, 10, 11, 12, 14 and 17 print that refusal.
+
+Lint row 1’s placeholder scan skips every `legacy-*/` directory. That scan exclusion is distinct from the adapters’ legacy-excluding projections; neither exclusion makes old snapshots current evidence. See the row’s current contract in [lint-spec.md](lint-spec.md).
+
+Required guarantees apply to selected open work; optional capabilities need an actual declared
+upcoming consumer and their own applicability, consent and capability facts. Use the public name
+[Judgement Layer](system-one.md#integration) while preserving TypeSafe System One/Jev backend, API and durable
+`System One consent:` identifiers and old records. Migration consults no service, copies no answer,
+allocates no consultation budget and never creates Ready, accepted closure or host-isolation proof.
+Cooperating locks establish only their declared writer protocol; unknown capabilities remain
+unknown and unavailable telemetry remains `n/a`.
 
 <a id="migration-rollback"></a>
 ## Rollback
 
-A failed `verify` leaves the workspace active and unchanged: nothing is written. To undo an already
-adopted step, restore the checkpoint taken before that step ran; the pre-migration original is also
-available, byte-identical, at that step's own `legacy-<bucket>/` snapshot.
+A failed `verify` leaves the original workspace active and unchanged. After adoption, `restore`
+returns the exact pre-migration checkpoint through its verified sibling stage while the adopted
+workspace still matches its recorded post-adoption inventory. The original backup and checkpoint
+remain in the external job; history and legacy snapshots are preserved as evidence and are never
+used as substitutes for a current restore receipt. Drift or a conflicting physical layout remains
+pending for owner review.
+
+## Direct adapter API compatibility
+
+The installed `step_pre3_to_3.transform` API returns a `/3` board (or later) unchanged.
+
+The installed `step_3_to_4.transform` API returns a `/4` board (or later) unchanged.
+
+The installed `step_4_to_5.transform` API returns a `/5` board unchanged.
+
+These existing API guarantees do not select a migration procedure. The compact route still invokes only the needed adapters through `schema.adopt`.
+
+<a id="v84--v90-checklist"></a>
+## Historical checklist provenance
+
+The archived v8.4 → v9.0 checklist remains in the repository's `maintaining/migrations.md` as
+historical provenance. The installed [catalog provenance](migration-catalog.json) retains its source
+identities and obligations; the archived checklist is not an active procedure or an installed-route
+input. Use the [compact migration route](#compact-migration) for a separately authorized current
+migration, without fetching or replaying chronological checklists.

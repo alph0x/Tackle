@@ -6,12 +6,37 @@ It does not ship with the installed skill (`SKILL.md`, `references/` and `script
 
 ## Migration bridge
 
-The installed skill reads only the current workspace layout. The migration guide, its scripts and
-`eval/migration/` stay the one bridge: they keep detecting and transforming every older schema.
+The installed migration catalog is the current route from supported workspace structures to 10.2.0.
+The repository checker validates its retained source provenance; it is not part of the installed artifact.
 
 ## Release sweep
 
-Before any version tag, the owner names the workspace path(s) explicitly included in the release scope; unknown scope blocks the tag pending clarification. The agent runs every lint row on every discovered workspace (`docs/plans/*/`) plus the skill's own done-signals, then computes the lint summary from the observed row results. Release-gating workspaces are the deduplicated union of active workspaces (at least one task data row whose trimmed Status is legacy 🟡 or, under `tackle-workspace/3`, In progress, Checking or Interrupted) and explicitly selected workspaces. Selection adds obligations; it never exempts another active workspace. Mandatory failures in this union or the skill's own release gates block the tag until fixed or explicitly waived by the user; warn-severity rows retain their non-blocking severity.
+Before any version tag, the owner names the workspace path(s) explicitly included in the release scope; unknown scope blocks the tag pending clarification. The agent runs every lint row on each active workspace returned by the installed archive reader, plus the skill's own done-signals, then computes the lint summary from observed row results. Release-gating workspaces are the deduplicated union of active workspaces (at least one task data row whose trimmed Status is legacy 🟡 or, under `tackle-workspace/3`, In progress, Checking or Interrupted) and explicitly selected workspaces. Reserved `docs/plans/.archive/` storage and `archive-index.md` are excluded from active discovery, while unfamiliar ordinary directories remain visible. Selection adds obligations; it never exempts another active workspace. An explicitly selected archived path must be resolved by its owner before the sweep; it is not silently skipped or restored. Mandatory failures in this union or the skill's own release gates block the tag until fixed or explicitly waived by the user; warn-severity rows retain their non-blocking severity.
+
+The release sweep obtains active paths through the actual installed helper. Keep this block as the
+bounded discovery consumer; the field-report command separately enforces the same reserved-path
+boundary before creating output files.
+
+```python workspace-discovery
+import importlib.util
+from pathlib import Path
+import sys
+
+repo = Path(sys.argv[1]).resolve(strict=True)
+helper = Path(sys.argv[2]).resolve(strict=True)
+spec = importlib.util.spec_from_file_location("tackle_workspace_archive", helper)
+archive = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(archive)
+discovery = archive.list_workspaces(repo, state="active")
+if discovery["pending"]:
+    raise ValueError("archive discovery pending; resolve scoped recovery before the release sweep")
+for diagnostic in discovery["diagnostics"]:
+    print("archive discovery diagnostic: " + str(diagnostic), file=sys.stderr)
+    if diagnostic["code"] != "unqualified-active-name":
+        raise ValueError("archive discovery is incomplete")
+for entry in discovery["entries"]:
+    print(entry["path"])
+```
 
 The release sweep is a direct, ordered procedure: (1) record the explicit release scope and run self-lint gates 1–9 below;
 (2) run catalog integrity checks over `eval/scenarios/` and answer-sheet roots;
@@ -23,7 +48,7 @@ the changed deliverable. Historical closed or parked workspaces that are neither
 selected report WARN on failures and are non-gating; and (6) compute and report
 `sweep: N/M gates passed` from those observed results. The documented rows and gates are the only canonical contract.
 
-Migrate-chain currency: if the release changes any workspace-level contract (`AGENTS.tmpl.md`, status vocabulary, artifact names, closure protocol), the migrate guide MUST gain a checklist for the immediately previous version in the same release — a version bump without its migrate checklist is a release defect (precedent: v3.0→v3.1 and v3.3→v3.4 were both missed once).
+Migration-catalog currency: the installed catalog target and retained provenance must match the current supported route. A release that changes workspace contracts updates the catalog instructions and its symmetric normative accounting; historical checklists remain retained provenance rather than an active version-by-version route.
 
 Before tagging, complete these nine steps in this order; each follows the sweep above and none is optional:
 
@@ -50,15 +75,14 @@ of this document. After a reviewed command change, update its digest in
    `[ "$(awk '/^## Core conventions/{f=1;next} f && /^## /{exit} f && /^[0-9]+\. /{n++} END{print n+0}' skills/tackle/SKILL.md)" -eq 11 ] || echo "conventions count off"`
 3. **Changelog currency** — newest `## Tackle X.Y.Z` heading equals the `SKILL.md` version stamp:
    `[ "$(awk '/^## Tackle /{print $3; exit}' CHANGELOG.md)" = "$(awk '/^\*\*Tackle /{gsub(/\*/,"",$2); print $2; exit}' skills/tackle/SKILL.md)" ] || echo "changelog head mismatch"`
-4. **Migrate-chain currency** — the checklist heading into the current major.minor and the
-   7.3-to-8.0 transition both exist:
-   `v=$(awk '/^\*\*Tackle /{gsub(/\*/,"",$2); print $2; exit}' skills/tackle/SKILL.md); mm=${v%.*}; x=${mm%%.*}; y=${mm##*.}; if [ "$y" -gt 0 ]; then p="$x.$((y-1))"; else p="[0-9.]+"; fi; grep -Eq "^## v$p → v$mm checklist" skills/tackle/references/guides/migrate.md || echo "missing migrate checklist → v$mm"; grep -qF "## v7.3 → v8.0 checklist" maintaining/migrations.md || echo "missing candidate migrate checklist → v8.0"`
+4. **Migration catalog currency** — the installed catalog targets the current methodology and preserves required historical transition provenance:
+   `python3 maintaining/check_migration_catalog.py --repo .`
 5. **README currency** — every README version stamp equals the `SKILL.md` stamp (added 5.0.0 after the README drifted to 4.0.0 while the skill shipped 5.0.0; `sort -u` covers the stamp's two locations — header + Version line — so a half-updated README fails):
    `[ "$(grep -oE 'Tackle [0-9]+\.[0-9]+\.[0-9]+' README.md | sort -u)" = "Tackle $(awk '/^\*\*Tackle /{gsub(/\*/,"",$2); print $2; exit}' skills/tackle/SKILL.md)" ] || echo "README stamp mismatch"`
 6. **Artifact-manifest and legacy-transition currency** — the delivery channel lists exactly the install artifact that ships (`SKILL.md`, `references/` and `scripts/`), and the install/update copy path names all three. The owner-controlled transition must name the exact legacy tombstone (`tackle-check`) and preserve an unrelated sentinel after verified replacement; it never deletes `tackle` or uses recursive/prefix cleanup:
    `for f in SKILL.md references scripts; do grep -q "$f" skills/tackle/references/guides/update.md || echo "update.md missing artifact: $f"; done; m=$(grep -E '^[[:space:]]*3\. The owner-controlled installer' skills/tackle/references/guides/update.md); case "$m" in *SKILL.md*references/*scripts/*) ;; *) echo "update.md install copy path missing install artifact";; esac; grep -q "exact legacy basename.*tackle-check" skills/tackle/references/guides/update.md || echo "update.md missing legacy tombstone: exact legacy basename tackle-check"; grep -qi "unrelated neighboring files remain untouched" skills/tackle/references/guides/update.md || echo "update.md missing sentinel-preserving transition: unrelated neighbors"; if grep -Eq '(^|[[:space:]])(curl|tar -x)' skills/tackle/references/guides/update.md; then echo "update.md contains runtime transfer command"; fi`
-7. **README content claims** — the README's self-description matches the files it describes (added 5.4.0 after the 5.2.0 pre-release review caught four content defects gate 5's stamp check can't see: lint row count, scenario counts, migrate-chain head, direct-procedure coverage; the row-count, gate-count, chain-head and procedure-coverage checks echo nothing and exit on the final grep, so any echoed line blocks the tag):
-   `` n=$(grep -Ec '^\| [0-9]+ ·' skills/tackle/references/guides/lint-spec.md); grep -qF "rows 1–$n" README.md || echo "missing rows 1–$n"; grep -qF "($n lint rows)" README.md || echo "missing ($n lint rows)"; c=0; m=0; for d in eval/scenarios/*/; do [ -d "$d" ] || continue; c=$((c+1)); s=$(basename "$d"); s=${s%%-*}; s=${s#s}; [ "$s" -gt "$m" ] && m=$s; done; grep -qF "**$c scenarios** (" README.md || echo "scenario count off (**$c scenarios** ())"; grep -qF "\`s1\`–\`s$m\`" README.md || echo "scenario range off (\`s1\`–\`s$m\`)"; v=$(awk '/^\*\*Tackle /{gsub(/\*/,"",$2); print $2; exit}' skills/tackle/SKILL.md); mm=${v%.*}; grep -qF "checklist chain v2.0 → v$mm" README.md || echo "migrate-chain head off (v2.0 → v$mm)"; row=$(grep 'Mechanical gate' README.md); for t in lint catalog done-signal ground eval init; do case "$row" in *"\`$t"*) ;; *) echo "mode row missing \`$t";; esac; done; g=$(awk '/^### Skill self-lint gates/{f=1;next} f && /^##/{exit} f && /^[0-9]+\. /{n++} END{print n+0}' MAINTAINING.md); grep -qF "$g shipped-skill gates" README.md || echo "self-lint gate count off ($g shipped-skill gates)" ``
+7. **README content claims** — the README's self-description matches the files it describes (added 5.4.0 after the 5.2.0 pre-release review caught four content defects gate 5's stamp check can't see: lint row count, scenario counts, migration-catalog target, direct-procedure coverage; the row-count, gate-count, catalog-target and procedure-coverage checks echo nothing and exit on the final grep, so any echoed line blocks the tag):
+   `` n=$(grep -Ec '^\| [0-9]+ ·' skills/tackle/references/guides/lint-spec.md); grep -qF "rows 1–$n" README.md || echo "missing rows 1–$n"; grep -qF "($n lint rows)" README.md || echo "missing ($n lint rows)"; c=0; m=0; for d in eval/scenarios/*/; do [ -d "$d" ] || continue; c=$((c+1)); s=$(basename "$d"); s=${s%%-*}; s=${s#s}; [ "$s" -gt "$m" ] && m=$s; done; grep -qF "**$c scenarios** (" README.md || echo "scenario count off (**$c scenarios** ())"; grep -qF "\`s1\`–\`s$m\`" README.md || echo "scenario range off (\`s1\`–\`s$m\`)"; v=$(awk '/^\*\*Tackle /{gsub(/\*/,"",$2); print $2; exit}' skills/tackle/SKILL.md); mm=${v%.*}; target=$(python3 -c 'import json; print(json.load(open("skills/tackle/references/guides/migration-catalog.json", encoding="utf-8"))["target_methodology"])'); grep -qF "migration catalog targets Tackle $target" README.md || echo "migration-catalog target off (Tackle $target)"; row=$(grep 'Mechanical gate' README.md); for t in lint catalog done-signal ground eval init; do case "$row" in *"\`$t"*) ;; *) echo "mode row missing \`$t";; esac; done; g=$(awk '/^### Skill self-lint gates/{f=1;next} f && /^##/{exit} f && /^[0-9]+\. /{n++} END{print n+0}' MAINTAINING.md); grep -qF "$g shipped-skill gates" README.md || echo "self-lint gate count off ($g shipped-skill gates)" ``
 
 8. **Runtime update trust boundary** — ordinary runtime/update instructions and active security fixtures contain no automatic network/update clause, no unexpected-owner archive URL, and no present tracked `tackle`/`tackle-check` basename:
    `u=$(grep -Ehc 'On any invocation.*self-update|Run the Check phase.*every Tackle invocation|Remote > local.*run Update|Download the tag tarball|Replace only the install artifact' skills/tackle/SKILL.md skills/tackle/references/guides/intake-and-gate.md skills/tackle/references/guides/update.md eval/scenarios/s16-self-update-trap/skill/SKILL.md eval/scenarios/s16-self-update-trap/skill/references/guides/update.md 2>/dev/null | awk '{s+=$1} END{print s+0}'); [ "$u" -eq 0 ] || echo "Runtime update trust boundary: automatic update clause"; h=$(git grep -nE 'https://(api\.)?github\.com/(repos/)?tackle-fan/Tackle' -- eval/scenarios 2>/dev/null | wc -l | tr -d ' '); [ "$h" -eq 0 ] || echo "Runtime update trust boundary: hostile archive URL"; r=$(git ls-files | awk '/(^|\/)(tackle|tackle-check)$/ {print}' | while IFS= read -r p; do [ -e "$p" ] && printf '%s\n' "$p"; done | awk 'END{print NR+0}'); [ "$r" -eq 0 ] || echo "Runtime update trust boundary: present tracked runner basename"`
@@ -66,7 +90,7 @@ of this document. After a reviewed command change, update its digest in
 9. **Script manifest currency** — Gate 9 checks that the script manifest lists every `*.py` under skills/tackle/scripts/, recursively, with its current sha256. It runs from the repository root and echoes one line per missing, duplicate, stale or mismatched row:
    `sha() { if command -v sha256sum >/dev/null 2>&1; then sha256sum "$1"; else shasum -a 256 "$1"; fi | cut -c 1-64; }; S=skills/tackle/scripts; N=$S/README.md; files=$(find $S -name '*.py' | sed "s|^$S/||" | sort); for f in $files; do n=$(grep -cF "($f) |" $N); if [ "$n" -eq 0 ]; then echo "script manifest: missing row $f"; elif [ "$n" -gt 1 ]; then echo "script manifest: duplicate row $f"; else h=$(sha "$S/$f"); case "$(grep -F "($f) |" $N)" in *"$h"*) ;; *) echo "script manifest: hash mismatch $f";; esac; fi; done; sed -n 's/^| \[\([^]]*\)\](\1) |.*/\1/p' $N | while IFS= read -r p; do [ -f "$S/$p" ] || echo "script manifest: stale row $p"; done`
 
-Gate 4 derives the immediately previous version from the stamp: a minor bump requires exactly `v<x.(y-1)> → v<x.y>`; a major bump (`y` = 0) accepts the previous major's last minor on the left side — e.g. releasing 4.0.0 requires `## v3.4 → v4.0 checklist`.
+Gate 4 checks the current installed catalog, its target methodology and retained transition provenance through the standalone catalog checker; historical checklist headings do not select the active migration procedure.
 
 ## Change gate
 

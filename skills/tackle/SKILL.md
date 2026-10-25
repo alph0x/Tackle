@@ -62,7 +62,7 @@ STATUS never archives or cleans up.
 
 Migrate only selected active workspaces on a disposable copy first, preserve history and correction
 lineage, and adopt at an explicit task boundary. Ordinary invocation performs no network access or
-installation mutation; an optional [System One judgment](references/guides/system-one.md) goes through the host's `typesafe-ai` skill, only with the workspace's recorded consent. Running or importing a [script](scripts/README.md#consent) from `scripts/` needs the owner's explicit authorization (an explicit plan or run request authorizes `scripts/lint.py` for it); prefer an equivalent harness capability. Same-release adoption of the selected active copy is held when a required lifecycle row fails; closed records and neighboring workspaces remain untouched.
+installation mutation; an optional [Judgement Layer](references/guides/system-one.md) goes through the host's `typesafe-ai` skill, only with the workspace's recorded consent. Running or importing a [script](scripts/README.md#consent) from `scripts/` needs the owner's explicit authorization (an explicit plan or run request authorizes `scripts/lint.py` for it); prefer an equivalent harness capability. Same-release adoption of the selected active copy is held when a required lifecycle row fails; closed records and neighboring workspaces remain untouched.
 
 ## Core conventions
 

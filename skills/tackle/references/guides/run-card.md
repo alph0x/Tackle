@@ -2,13 +2,13 @@
 
 RUN starts only after explicit execution intent, including a scoped PLAN+RUN request.
 
-1. **Read.** Read `task-board.md` and record its sha256; stop with `migrate first` before any write unless it
+1. **Read.** Read `task-board.md`; record sha256; stop with `migrate first` before any write unless it
    declares `Schema: tackle-workspace/5` ([forward only](migrate.md#forward-only)).
-2. **Pick.** A named task takes the fast path. Otherwise, take the first `Ready to run` row in board order whose
-   dependencies are Complete and write scope intersects no In progress, Checking, Interrupted or `Waiting on owner`
-   row. With none, report what is waiting, on whom, and stop.
-3. **Claim.** Before work, re-read the board; reconcile a changed hash and never overwrite. Set the row to In
-   progress, append the start row with the Run ID. A row already claimed by another run is skipped, never retried.
+2. **Pick.** Named task: fast path. Otherwise choose first `Ready to run` board row with
+   Complete dependencies and write scope intersects no In progress, Checking, Interrupted or
+   `Waiting on owner` row. If none, report what awaits whom; stop.
+3. **Claim.** Re-read board; reconcile changed hashes without overwrite. Set In progress; append
+   the start row with Run ID. Skip another run's claim without retry.
 4. **Preflight.** Check the pinned procedure, which never changes silently; the brief, decision and
    contract revisions; the dependency outputs; the environment; the write scope; and a compiled Tier's
    [model-map binding](run.md#tier-dispatch-and-escalation-limits), which the owner must have confirmed; an
@@ -51,6 +51,8 @@ RUN starts only after explicit execution intent, including a scoped PLAN+RUN req
    Before closing the initiative, read every Complete task's brief, report and cited records as prose; an
    unmet owner request is an `Open` obligation raised with the owner; with a map delta or a requirements delta, also offer the
    owner its fold (`architecture-map.md` or `requirements-base.md`, Closure fold).
+   Capture the role's observed finish clock as `finishAt`; include Run ID, or `n/a` with reason
+   for unavailable fields. Never substitute validation end.
 
 ## State transitions
 
@@ -82,7 +84,7 @@ cycles.
 ## Depth (on demand)
 
 [Record fields](run.md#verification-record-fields), [capture](run.md#capture),
-[failure packet](run.md#failure-classification-and-escalation-packet), [recovery](run.md#operational-recovery),
+[failure/recovery packet](run.md#failure-classification-and-escalation-packet), [recovery](run.md#operational-recovery),
 [lineage](run.md#correction-lineage) and its [script](../../scripts/correction_lineage.py),
 [independence](run.md#independence-and-historical-grades),
 [acceptance](run.md#integration-and-deliverable-acceptance), [release gating](run.md#release-gating),

@@ -1,9 +1,8 @@
 <a id="task-t-0n--title"></a>
 # Task T-0N — {{title}}
 
-> **Self-contained briefing.** A new worker must be able to implement this Task from this
-> file alone. Links provide optional depth; explicitly named inputs are the only additional prerequisites.
-> The Task is the worker's executable contract, while the plan coordinates Tasks.
+> **Self-contained briefing.** Implement from this file alone and named inputs; links are optional depth.
+> Task governs execution; plan coordinates Tasks.
 
 ## Purpose and scope
 
@@ -32,6 +31,11 @@
 - **Threshold**: {{value Metric must reach to keep a change; experiment only, omit otherwise}}.
 - **Acceptance owner**: {{owner of the required checks/review; existing authorization suffices.
   Request separate approval only for an action outside scope; omit when already assigned}}.
+
+## Execution context
+
+{{Absolute repository, checkout, workspace, records and per-command cwd; distinguish differing paths.
+Use declared paths, not shell defaults; never relocate records into source.}}
 
 Ground the current state with exact citations:
 
@@ -170,7 +174,7 @@ Omit this section when the Write scope has no shipped path.}}
   mark that evidence obligation blocked rather than assigning a grade.
 - **Recovery**: follow the declared bounded correction budget. When it is exhausted or yields repeated
   no-progress observations, stop and report expected/observed behavior, reproducer, affected consumers,
-  attempts and the smallest unresolved decision.
+  attempts and the smallest unresolved decision. [Recovery](guides/run.md#correction-recovery).
 
 ### Definition of ready
 

@@ -7,17 +7,21 @@ a script adds or updates its row.
 
 | Script | sha256 |
 |---|---|
-| [correction_lineage.py](correction_lineage.py) | `64123960c4488e81203fc3f7627c5dc350748e1d803a7a301d9f002468f5b181` |
+| [evaluation_rounds.py](evaluation_rounds.py) | `0b299decbac6f8cb275c9e8cac8c122b2723b081417861f92a24bee25f1d4552` |
+| [correction_lineage.py](correction_lineage.py) | `38ad0d5ecc95ee721d9c15ad338c750b1dea78e96df3c8abdda9d087771eea60` |
 | [adversary_checkpoints.py](adversary_checkpoints.py) | `8be44a5b646ad3aabf179bbf899f4e80c3d34382ce5b636c9eadb26e5d0a92dd` |
 | [plan_view.py](plan_view.py) | `b4f7d31b67212e1ad98430f1fe296110675b7e5d2d019f8df3083358dc8a4227` |
 | [architecture_map.py](architecture_map.py) | `e3a82e160b486413e366c7d4eaee8561144555947b40a6ef329bfa44d03f532c` |
-| [system_one_decide.py](system_one_decide.py) | `a9c535bdd2e7fff2137b36c032c22ca55fd97886beb0bc883e8ba3dd2ffd3ffb` |
-| [system_one_state.py](system_one_state.py) | `2369d7ddad068ef7247b732ecc7f1fdeef921b1dbed3b6304844f43eef273c2a` |
+| [prepared_job_example.py](prepared_job_example.py) | `a737473be8d4a927a9a17415e6f055405e25232cc90ac872bb9e0d8d9209d751` |
+| [system_one_decide.py](system_one_decide.py) | `3307da7275085ac410423f24736a27e62edf28a58017a5ff22588784b4569f84` |
+| [system_one_state.py](system_one_state.py) | `8c2fe8ec5e06ec50c50573f03237ab403508ec61375266cb7931b852b8cc7a3e` |
 | [codex_usage.py](codex_usage.py) | `2fca95fcb854a8157a1b12770ff590bf776fce2f1e4307de12161ad5f83255aa` |
 | [migrate/schema.py](migrate/schema.py) | `6e7c3d3de8ca67089f0a5f395ebb14bb00e581fadaf4d1e9272707666a0d4809` |
 | [migrate/step_3_to_4.py](migrate/step_3_to_4.py) | `effc084a74cb31c1aea0983e89bc94e0a08a3bd26137ec87ae9fc94b9c2846f5` |
 | [migrate/step_4_to_5.py](migrate/step_4_to_5.py) | `ae4dcf1ee639aa556fccf4ddbc1b70229b942d84e6a365c12009023af717501b` |
 | [migrate/step_pre3_to_3.py](migrate/step_pre3_to_3.py) | `b08e63d7182d5a51d30a1973ba3f098448a174e208e9739783688d7ca82ab4b3` |
+| [migrate/compact.py](migrate/compact.py) | `db31087b330fa77c93d8081009253fe5e4ab2342ab1bbe29eccf036d002677c5` |
+| [workspace_archive.py](workspace_archive.py) | `b354cca81a1d261beb7d2c972f0e9371b59cd04f12ee569df6e246ebe696222f` |
 | [capture.py](capture.py) | `5fd79dbbd5edd2efb308e22d9bb71e5007a80f425fde41aa5b297adc02cb755d` |
 | [evidence_capture.py](evidence_capture.py) | `f542532dc57a0e1dc7b101da8371822f66959683b2852e29b816000fef6e1ce0` |
 | [lint_runner.py](lint_runner.py) | `5ecdd0e37ba5e93de5e89d9a56703893a17c3b9c163cf28373dcca37fa1ac99d` |

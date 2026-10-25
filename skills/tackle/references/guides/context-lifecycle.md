@@ -112,3 +112,24 @@ a cooperation rule plus verified content addressing, not a defense against a hos
 Measure logical content bytes read/written apart from metadata calls, retained bytes and
 unobserved filesystem journal/cache costs. Include initial indexing, every archive/recovery,
 projection rebuilding and export verification when comparing complete costs.
+
+## Completed workspace archive
+
+The reversible workspace archive is distinct from rotating `history.md`. It may remove only a
+separately qualified closed workspace from active discovery, retaining its original tree, stable
+id, card and verification links under `docs/plans/.archive/`. Qualification establishes accepted
+delivery, resolved obligations, settled effects and maintenance, plus access for every required
+reader. Unknown closure, format, writer, alias or external-reference ownership holds the move;
+terminal task counts or a reviewer label do not establish it. Older closed layouts are inspected
+as data without migration. A `Gate: Lite` plan is handled only by its exact first-line marker and
+its actual closure receipts.
+
+Archive and restore use the import-only helper's fixed journal, same-filesystem rename, ordered
+metadata publication, real nonblocking archive/context locks and byte inventory. Preview and
+queries write nothing. Interrupted operations remain pending until a separately scoped recovery
+revalidates the recorded stage, intact tree and fresh writer observation. Both/neither trees,
+changed bytes or conflicting metadata refuse without overwrite or cleanup. This cooperation
+protocol does not exclude hostile writers or provide universal host confinement. Retained records
+remain historical evidence with their original cwd, inputs and hashes; relocation neither retires
+them nor makes them current proof. No real workspace is moved without its own explicit selected-set
+authority and qualification.

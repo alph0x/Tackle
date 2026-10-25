@@ -26,6 +26,17 @@ failed observation. `set -u`, `pipefail` or a final PASS alone does not propagat
 assertion's failure; use checked subprocesses or explicit failure exits for each required condition.
 A final PASS is optional unless the consumer requires it, and comes only after all relevant children
 succeed.
+Deficient briefs, inputs or capture instructions are preparation defects. Classify missing or
+incomplete required records and fully captured child failures by their observed cause, preserving
+existing accounting. A missing, incomplete or failed required child record cannot be replaced by a
+wrapper PASS or the remaining fraction, and does not supply acceptance.
+
+The task package names the absolute repository, checkout, workspace, records root and cwd for each
+command. Run from the declared cwd and keep verification records at their declared root. A task
+that requires all children to pass records each actual child result; a percentage or wrapper PASS
+does not replace a missing record or a failed child. Where read coverage is required, record which fixture
+paths the actual Python, awk or child-process consumer opened and the observed output and effects.
+Text keywords alone do not establish that a consumer read the input.
 
 ## Capture
 
@@ -82,7 +93,7 @@ retried role starts its own new Run ID with its own start/finish pair, plus one 
 ## Failure classification and escalation packet
 
 Optional: [consented JEV](system-one.md#integration). A workspace with a signal and no recorded answer gets
-the [System One check](intake-and-gate.md#system-one-check) when RUN starts.
+the [Judgement Layer check](intake-and-gate.md#system-one-check) when RUN starts.
 
 Consume retained failed observations before another check, including on resume. Diagnose from their
 command, output and relevant input fingerprints; never repeat an unchanged failed check to
@@ -95,6 +106,34 @@ result, reproducer and raw-evidence pointer, affected consumers, attempts/cycles
 remaining, and the smallest unresolved decision. It is a decision aid; it never silently
 replans, broadens scope, upgrades model or effort, dispatches a frontier role, or makes up a missing
 requirement. Generic escalation records its trigger, minimal scope, budget and observed outcome.
+
+<a id="correction-recovery"></a>
+### Recovery recommendation
+
+When a correction budget or no-progress stop blocks work, keep the affected work stopped and give an
+actionable recommendation. Compare resolved and remaining guarantees, actual failure signatures and
+unexecuted checks. Recommend the smallest justified bounded extension only when retained observations narrow a concrete
+remaining correction; fewer static findings alone do not establish convergence. Name the pool, spent
+count, prior and proposed total ceilings, exact correction scope and stop condition. Preserve the
+no-progress signatures, list remaining verification, and state known or unknown incremental cost and
+entitlement. An extension preserves spent cycles and the two-identical-no-progress stop; only an
+explicitly approved relevant remedy or re-ground can resolve that stop, never an unchanged retry.
+
+A capability change is a separate recommendation. Require a demonstrated capability limit after the
+brief is strengthened; missing requirements, validator contradictions, permissions and environment
+failures are not capability gaps. Follow the existing Escalation declaration and [tier limits](#tier-dispatch-and-escalation-limits):
+one next bound tier, unchanged effort, one declared cycle, and an owner-confirmed binding. If the
+declaration is missing, recommend that amendment as part of the path; obtain its authorization
+before any escalated dispatch.
+Never skip tiers, exceed the frontier, dispatch a control arm, reset spent cycles or add allowance
+because the executor changes. Keep provider, harness and model details in the local binding; portable
+recommendations describe capabilities.
+
+More cycles and a capability change are independent owner decisions. Reuse explicit authorization
+within its scope; otherwise identify the missing owner decision and wait. Do not change a binding,
+ceiling or cost authorization automatically. This policy grants no extra allowance for an exhausted
+task. Recommend stopping when no bounded correction is supported;
+present only options that fit the observed failure and remaining checks.
 
 ## Operational recovery
 
@@ -140,6 +179,8 @@ Each failed implementation correction appends an attempt-journal entry, naming t
 correction, validation command, result and cycle count, before another attempt, and re-reads the earlier
 entries. A correction changing a contract or acceptance requires the authorized superseding decision
 first, then re-grounding and revalidation. Each attempt-journal line takes the form `correction cycle N of 3: <failure> → <correction>; <validation command>: <result>`.
+The three-cycle ceiling is the default; new records use `N of M` after an explicitly approved extension,
+while historical `N of 3` entries remain exact.
 
 When tasks are reshaped, use stable failure IDs and cycle-event IDs in the existing journal. A cycle
 pool follows unresolved work; several descendant tasks can reference the same pool. Merging distinct
@@ -155,6 +196,10 @@ equivalent harness capability. Import it from `<skill>/scripts/correction_lineag
 raise `ValueError` on an invalid, conflicting, lost or invented history. Callers
 validate failure attribution against the original records; arbitrary IDs cannot manufacture a fresh
 budget. Successful corrections, observations and dispatches are not failed-cycle events.
+The optional keyword-only `approved_limits` mapping supplies explicit total ceilings for selected pools;
+each value must be an exact integer above that pool's default or legacy limit. Callers bind every supplied
+ceiling to an owner decision for the same pool. The helper checks arithmetic only and never infers approval
+from events; omitting it preserves the default task limit of three and unowned-integration limit of two.
 
 <a id="independence-and-evidence-grades"></a>
 <a id="verification-method-and-independence"></a>
@@ -252,6 +297,11 @@ acceptance regardless of board status. Historical closed and parked workspaces t
 active nor selected stay non-gating; warn-severity lint rows keep their severity.
 
 ## Run record
+
+At task close, record the role's observed finish clock as `finishAt` and its Run ID. If either is
+unavailable, use n/a with reason; validation end cannot substitute for `finishAt`, and
+requested model settings or estimates are not observed finish data. Keep role completion separate
+from validation results and product status.
 
 Before choosing the terminal state, the Coordinator opens every required evidence reference, checks
 its actual result and relevant final revisions, and matches it to the obligation it proves. Missing,

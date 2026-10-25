@@ -27,6 +27,8 @@ consequences, and invite the owner's own solution. Wait only for the required an
 work while independently authorized work continues. Respect refusal; time passing is not consent.
 Use only observed capabilities and bounded authorized recovery; do not silently change provider,
 model, effort, access, product requirements, or task scope.
+For an exhausted correction budget or repeated no-progress stop, follow the [RUN recovery recommendation](run.md#correction-recovery)
+and keep affected work stopped until the required owner decision is recorded.
 
 PLAN+RUN authorization persists within its original scope until completion, an explicit pause/cancellation, or an incompatible
 new objective. A status question or comment during RUN is answered briefly, then work continues.

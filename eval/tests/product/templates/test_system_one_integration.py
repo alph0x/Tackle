@@ -324,7 +324,7 @@ class SystemOneIntegration(unittest.TestCase):
 
     def test_intake_checks_for_a_signal_on_every_route_before_sizing(self):
         intake=' '.join((ROOT/'skills/tackle/references/guides/intake-and-gate.md').read_text().split())
-        section=intake.split('## System One check (every route)',1)[1].split(' ## ',1)[0]
+        section=intake.split('## Judgement Layer check (every route)',1)[1].split(' ## ',1)[0]
         for phrase in ['Before sizing, check once per workspace for a System One configuration signal',
                        'check presence only',
                        'When there is a signal, a selected workspace and no recorded answer, ask the System One question in PLAN or RUN, then record it.',
@@ -334,11 +334,11 @@ class SystemOneIntegration(unittest.TestCase):
                        'Without a signal, record nothing and continue.']:
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase,section)
-        self.assertLess(intake.index('## System One check (every route)'),intake.index('# Step 2'))
+        self.assertLess(intake.index('## Judgement Layer check (every route)'),intake.index('# Step 2'))
         card=(ROOT/'skills/tackle/references/guides/plan-card.md').read_text()
-        self.assertIn('[System One check](intake-and-gate.md#system-one-check)',card)
+        self.assertIn('[Judgement Layer check](intake-and-gate.md#system-one-check)',card)
         run=' '.join((ROOT/'skills/tackle/references/guides/run.md').read_text().split())
-        self.assertIn('gets the [System One check](intake-and-gate.md#system-one-check) when RUN starts.',run)
+        self.assertIn('gets the [Judgement Layer check](intake-and-gate.md#system-one-check) when RUN starts.',run)
 
     def test_each_call_and_fallback_becomes_one_sidecar_record(self):
         guide=' '.join((ROOT/'skills/tackle/references/guides/system-one.md').read_text().split())

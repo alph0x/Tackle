@@ -29,7 +29,7 @@ never promise a separate menu entry for an action or a particular prefix in ever
 | **audit the result**, `judge [<target>]`, `judge suite <target>` / “auditá lo implementado” | Explicit post-work audit or suite evaluation; no implied fix | [Auditor](judge.md) |
 | **review lessons**, `retro [<workspace>]` / “review the lessons” | Optional learning review; profile writes require separate confirmation | [Retro](retro.md) |
 | `init <name>` | PLAN scaffolding with the existing setup consent | [Scaffold](scaffold.md) |
-| `migrate`, `upgrade`, “improve this plan” | Selected-workspace, copy-first migration preparation | [Migrate](migrate.md) |
+| `migrate`, `upgrade` | Explicitly selected, catalog-driven copy-first migration; diagnosis alone does not authorize adoption | [Migrate](migrate.md#compact-migration) |
 
 <a id="explore"></a>
 ## Explore
@@ -62,3 +62,14 @@ Action names retired at 9.0 keep their historical targets in the Routes and acti
 [terminology.md](../terminology.md), for interpreting an old workspace's requests. Preserve the
 requested operation: grounding, coverage and cold-resolvability stay their own checks within
 [Verify](verify.md).
+
+## Completed-workspace lookup and operation
+
+For a request to find or open a completed workspace, route to read-only STATUS: list active or
+archived cards, search their bounded metadata, then resolve only the requested record. Active
+workspace discovery excludes the reserved archive store and index; explicit selection is still
+retained in the active-plus-selected release union. An explicit archived path is reported for
+owner resolution or restoration, never silently dropped or restored by lookup. A request to archive
+or restore is a distinct write operation and needs its own scoped RUN authorization, qualified
+closure/reference evidence and current writer observation. A normal resume never performs archive
+recovery or repairs pending metadata.

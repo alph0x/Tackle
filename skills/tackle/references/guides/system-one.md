@@ -1,4 +1,6 @@
-# Optional System One (JEV)
+# Optional Judgement Layer
+
+Judgement Layer is the provider-independent optional judgment capability. The current adapter uses TypeSafe System One / Jev; its existing consent records, identifiers and compatibility paths retain their meaning.
 
 <a id="integration"></a>
 ## Integration contract
@@ -72,6 +74,61 @@ integration consumer; agent compliance stays an independent evidence obligation.
 Source-level tests establish neither held-out safety behavior, complete optional
 capability readiness nor release acceptance.
 
+### Bounded new-use extension
+
+The optional Judgement Layer adds only `bounded-recovery` and `evidence-signal`. The original four
+uses, their positional calls, consent question, SDK/model pin, collector name, result keys and
+policies remain unchanged. Only these two extensions accept the keyword-only `support_policy`;
+`system_one_use` additionally accepts keyword-only `budget_scope`. The pure signature is
+`system_one_decide(state, use, fragment, local_judgment, transport=None, *, support_policy=None)`;
+the adapter signature is
+`system_one_use(workspace, configured, asked, use, fragment, local_judgment, sensitivity, decide, client_factory=None, *, support_policy=None, budget_scope=None)`.
+
+The caller supplies a closed builtin policy `{choices, eligible, fallback, resolved}`. Its lists
+contain unique nonempty exact strings and `eligible` is a subset of `choices`. For
+`bounded-recovery`, choices are public recovery IDs declared by the planner; `retry-after-correction`
+and `rerun-read-only` are examples. `defer` is reserved and is sent only as an allowed stop choice. The fallback is
+an eligible choice or `defer`; an empty eligible list requires `defer` and skips consultation.
+For `evidence-signal`, choices and eligible are exactly `supports`, `partial`, `insufficient` and
+`contradictory`, and fallback is `requires-review`. A non-null `resolved` value is an explicit
+planner-declared deterministic result. It returns the local judgment before client construction or
+budget effects. A sole eligible recovery choice with `resolved=None` remains consultable.
+
+The new local judgment is exactly `{choice, confidence}`, where choice is the explicit resolved
+value or policy fallback and confidence is `None`. The accepted judgment has the same keys, with an
+eligible choice (or `defer` for bounded recovery) and finite numeric confidence from 0 through 1.
+The outer and inner confidence values must match; booleans, nonfinite values and values outside
+that range are invalid. Both new uses require confidence at least `0.8`, inclusive. Any refusal,
+transport error, wrong model, malformed response or out-of-domain choice returns the exact local
+judgment. New advice never clears a failed check, changes a correction count, grants permission or
+supplies acceptance.
+
+Only an explicitly declared extension may call either new use. Before sending, the caller must
+classify the fragment and all outbound choice labels as public. Do not send task/scope identity,
+paths, private or unknown material, sealed evidence or answers. Invalid policy is rejected by the
+pure consumer before transport; the adapter returns local fallback for invalid policy or unavailable
+budget. A deterministic resolution and an empty eligible set create no budget record and invoke
+neither factory nor request. The existing adapter still owns consent, configuration and client
+construction; the host-supplied factory keeps the pinned ten-second timeout and zero retries.
+
+For a new use, `budget_scope` is the closed builtin dictionary
+`{owner, identity, contract_sha256}`. The owner is a Task ID and the identity is stable across
+sessions; it is not a Run ID. The digest is 64 lowercase hexadecimal characters. The adapter stores
+the fixed limits and exact scope metadata under
+`verification-records/<owner>/judgment-budget/<sha256(identity)>/`. Existing metadata must match;
+unsafe links, malformed or mismatched files and unavailable storage fall back locally.
+
+After consent, public-content, policy, client and SDK checks, create the per-use reservation
+exclusively and write, flush and fsync it before invoking the client factory. One reservation file
+per new use enforces at most one consultation each and two total across imports/processes. Never
+rewrite, refund or reset a reservation. Every post-reservation outcome consumes its slot. Write a
+separate exclusive terminal receipt with `known-unsent`, `observed-response` or `unknown` and a
+reason. If interrupted or a `BaseException` escapes, keep the reservation without inventing a
+receipt; after restart, a missing or truncated receipt remains consumed. A failed reservation
+write permits no factory or send. A terminal-receipt failure returns local `budget-record-failure`
+and never unlocks the slot. Optional telemetry is separate from reservation/receipt state: its
+failure cannot fail the task, refund a slot or change an unknown request outcome.
+
 <a id="system-one-functional-recipe"></a>
 ## The scripts
 
@@ -79,7 +136,7 @@ Both scripts are import-only modules with no command line. Insert `<skill>/scrip
 `sys.path` and import them by name, under the [script consent rule](../../scripts/README.md#consent).
 
 - [system_one_decide.py](../../scripts/system_one_decide.py) holds the pure decision consumer
-  `system_one_decide(state, use, fragment, local_judgment, transport=None)` described above. It
+  `system_one_decide(state, use, fragment, local_judgment, transport=None, *, support_policy=None)` described above. It
   imports only `math.isfinite` and returns the closed result.
 - [system_one_state.py](../../scripts/system_one_state.py) holds the selected-workspace state and the
   SDK adapter, receiving `system_one_decide` as `decide` rather than copying its algorithm.
@@ -92,7 +149,7 @@ only in PLAN/RUN. STATUS only reads and suppresses the prompt. The caller carrie
 list through the session; a persisted pending question also prevents a duplicate across resumes.
 
 `system_one_use(workspace, configured, asked, use, fragment, local_judgment, sensitivity, decide,
-client_factory=None)` returns the closed result. Before calling it, the caller must classify the minimal
+client_factory=None, *, support_policy=None, budget_scope=None)` returns the closed result. Before calling it, the caller must classify the minimal
 fragment's sensitivity. Only a fragment admitted as public may be sent. Unknown, private, credential,
 secret, sealed-case and answer-sheet material is forbidden; the label is an explicit caller obligation,
 not an automatic secret detector. `client_factory` is the client constructor built under the host's

@@ -32,12 +32,13 @@ blocker, a failure, an owner decision, the next authorized task), and never omit
 failure or constraint. Digest text follows [controlled writing](controlled-writing.md).
 When requested or relevant, report reference age, checks actually run, task/blocker counts,
 weakest required verification, resource coverage and history size. Missing telemetry is `n/a`.
-Report a workspace's migration bucket from its board's `Schema:` line, per
-[migrate.md](migrate.md#schema-keyed-migration)'s table; a bucket other than `5`, or a Focused plan on
-older paths, reads `migrate first`, with its next step. STATUS reads only the current layout and never
-migrates automatically ([forward only](migrate.md#forward-only)); retired 8.x action-name aliases that
-reached STATUS keep their historical targets in [terminology.md](../terminology.md)'s Routes and actions
-section. All tasks Complete is insufficient to claim deliverable acceptance.
+Report workspace structure from the board's `Schema:` line and the `Methodology:` stamp separately.
+Use the installed [migration catalog](migrate.md#compact-migration) only after an explicit request selects
+that workspace and its copy-first procedure; a bucket other than `5`, or a Focused plan on older paths,
+reads `migrate first`, with its next step. STATUS reads only the current layout and never migrates or writes
+automatically ([forward only](migrate.md#forward-only)); retired 8.x action-name aliases that reached
+STATUS keep their historical targets in [terminology.md](../terminology.md)'s Routes and actions section.
+All tasks Complete is insufficient to claim deliverable acceptance.
 
 <a id="handoff-projection"></a>
 ## Handoff brief projection
@@ -90,3 +91,18 @@ segments and recoverable rotation in [context-lifecycle.md](context-lifecycle.md
 Keep the newest State snapshot, stable event references/original-heading lookup and one bounded
 maintenance record with before/after sizes and the committed checkpoint. Never replace originals
 with a paraphrase. Archive placement does not authorize evidence retirement.
+
+## Completed-workspace archive lookup
+
+The completed-workspace archive is separate from history rotation. Use the import-only
+[`workspace_archive.py`](../../scripts/workspace_archive.py) reader with an explicit repository
+root for active, archived or combined listing, literal topic search, and one requested detail.
+Importing the reader follows the [script-consent boundary](../../scripts/README.md#consent).
+Active discovery considers immediate workspace directories, including unfamiliar ordinary and
+hidden directories, while excluding the reserved `docs/plans/.archive/` store and its index.
+Archived cards are read from the catalog; a card query never walks or rehashes retained trees.
+Resolve reads only the named member and verifies its recorded bytes. A pending journal or metadata
+conflict is reported as pending/diagnostic and blocks affected detail; STATUS never repairs or
+finishes it. A list, resume, selected archived id or explicit operation request does not itself
+authorize a move. Archive and restore require a separate scoped RUN operation and fresh writer
+observation. See [the archive transaction boundary](context-lifecycle.md#completed-workspace-archive).

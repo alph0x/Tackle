@@ -70,7 +70,7 @@ Read `.tackle/archetypes/` (project scope) and `~/.tackle/archetypes/` (user sco
 If no reference plan matches, offer nothing. There is no scoring engine: read and judge, exactly as with profiles and seeds.
 
 <a id="system-one-check"></a>
-## System One check (every route)
+## Judgement Layer check (every route)
 
 Before sizing, check once per workspace for a System One configuration signal, as
 [system-one.md](system-one.md#integration) defines it. Use the host's own tools and check presence only.

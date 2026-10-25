@@ -102,21 +102,23 @@
       "files": [
         "test_discovery.py",
         "test_credential_guard.py",
-        "test_selection.py"
+        "test_selection.py",
+        "test_manifest_impact.py"
       ],
-      "tests": 39,
+      "tests": 42,
       "source": "eval/maintaining/suite-integrity",
       "category": "tooling",
-      "purpose": "Complete discovery, conservative selection and credential guards."
+      "purpose": "Complete discovery, native child outcomes, conservative selection, manifest impact classification and credential guards."
     },
     {
       "path": "eval/tests/product/lint/task-contracts",
       "files": [
         "test_task_contracts.py",
         "test_scenario_checks.py",
-        "test_scenario_check_reach.py"
+        "test_scenario_check_reach.py",
+        "test_correction_recovery.py"
       ],
-      "tests": 39,
+      "tests": 45,
       "source": "eval/lint/task-contracts",
       "category": "product",
       "purpose": "Task contracts, readiness and acceptance fields."
@@ -155,12 +157,13 @@
         "test_plan_siblings.py",
         "test_plan_sibling_navigation.py",
         "test_plan_layout_stability.py",
-        "test_plan_initiative.py"
+        "test_plan_initiative.py",
+        "test_workspace_archive.py"
       ],
-      "tests": 266,
+      "tests": 273,
       "source": "eval/status",
       "category": "product",
-      "purpose": "Context projections, archives, resume and handoff costs, the plan view and self-contained executive Plan/Progress/Both PDF export scripts, truthful canonical aggregates, print lifecycle and the architecture map. Optional curated presentation and complete canonical requirement and decision details through the actual shipped script. The page's own controller runs on its own markup in a minimal DOM: one reversible selection shared by the graph, the task list, the inspector, the title strip, the requirement list, anchors and the public API: a task traces its prerequisites and dependents, a requirement marks the tasks that cover it; filters, the persisted theme choice, readable-minimum diagram zoom, pinch and ctrl-wheel zoom around the pointer, a header index that stacks instead of clipping and the snapshot freshness line. A static copy that cannot reload itself (a non-file address or two failed stamp loads) shows one notice in the page language, hidden again by a later success and never suggesting a server. Architecture arrows carry their recorded words, a complete source, relation and destination guide precedes selection, and a selected component narrows arrows and guide and opens a lens of what flows into it and out of it, where neighbors can be walked, until cleared. Static readers get the same facts: a stage list in the graph's columns, a title strip in board order, Spanish state names and a print palette equal to the light screen tokens. Curated status prose written for an earlier board gives way to the canonical records with a visible note. Each build records one sha256 per page input, and a read-only check names the inputs changed since the build. A Waiting on you section lists open questions, waiting or blocked tasks and open obligations. Native browser layout, rendering and aesthetics remain outside these oracles. The PDF's Progress and Both reports carry the same note, and the build and its check name each task whose state differs from a summary's declared states. The build warns, per field, when the executive summary's prose contains task or requirement ids, file paths, backticks or workspace names. An authorized auxiliary page built with the page mode inherits the plan view's tokens, typography, top bar and both themes from the template's marked base, keeps product samples unchanged, stays local and has its own read-only check. The template's stylesheet is five cascade layers with one palette written through light-dark tokens and one marked base range, and its controller is named modules over one context. The plan view's text and state marks meet WCAG AA contrast in both themes, text colors come only from text tokens, and its interactive elements work from the keyboard. Each drawn diagram carries exact Mermaid text that the page copies or downloads offline. A plan may depend on tasks in declared sibling workspaces; the view resolves, refuses and digests them and draws them as external nodes. A plan with declared siblings lists them in its header with their relation, progress and a link to each existing sibling view, links its external nodes to the sibling task, prints the link targets and reads the sibling boards as inputs; a plan without siblings shows none of it. Action statuses, the copy fallback and the clear-trace control sit out of the control rows, the download leaves no link behind, and zoom and filters keep their region's box. The initiative view joins a workspace and its declared siblings into one page or refuses it: keyed tasks and edges across members, refusals, read-only members, per-member digests checked by the stale line, and selection across members."
+      "purpose": "Context projections, archives, resume and handoff costs, the plan view and self-contained executive Plan/Progress/Both PDF export scripts, truthful canonical aggregates, print lifecycle and the architecture map. Optional curated presentation and complete canonical requirement and decision details through the actual shipped script. The page's own controller runs on its own markup in a minimal DOM: one reversible selection shared by the graph, the task list, the inspector, the title strip, the requirement list, anchors and the public API: a task traces its prerequisites and dependents, a requirement marks the tasks that cover it; filters, the persisted theme choice, readable-minimum diagram zoom, pinch and ctrl-wheel zoom around the pointer, a header index that stacks instead of clipping and the snapshot freshness line. A static copy that cannot reload itself (a non-file address or two failed stamp loads) shows one notice in the page language, hidden again by a later success and never suggesting a server. Architecture arrows carry their recorded words, a complete source, relation and destination guide precedes selection, and a selected component narrows arrows and guide and opens a lens of what flows into it and out of it, where neighbors can be walked, until cleared. Static readers get the same facts: a stage list in the graph's columns, a title strip in board order, Spanish state names and a print palette equal to the light screen tokens. Curated status prose written for an earlier board gives way to the canonical records with a visible note. Each build records one sha256 per page input, and a read-only check names the inputs changed since the build. A Waiting on you section lists open questions, waiting or blocked tasks and open obligations. Native browser layout, rendering and aesthetics remain outside these oracles. The PDF's Progress and Both reports carry the same note, and the build and its check name each task whose state differs from a summary's declared states. The build warns, per field, when the executive summary's prose contains task or requirement ids, file paths, backticks or workspace names. An authorized auxiliary page built with the page mode inherits the plan view's tokens, typography, top bar and both themes from the template's marked base, keeps product samples unchanged, stays local and has its own read-only check. The template's stylesheet is five cascade layers with one palette written through light-dark tokens and one marked base range, and its controller is named modules over one context. The plan view's text and state marks meet WCAG AA contrast in both themes, text colors come only from text tokens, and its interactive elements work from the keyboard. Each drawn diagram carries exact Mermaid text that the page copies or downloads offline. A plan may depend on tasks in declared sibling workspaces; the view resolves, refuses and digests them and draws them as external nodes. A plan with declared siblings lists them in its header with their relation, progress and a link to each existing sibling view, links its external nodes to the sibling task, prints the link targets and reads the sibling boards as inputs; a plan without siblings shows none of it. Action statuses, the copy fallback and the clear-trace control sit out of the control rows, the download leaves no link behind, and zoom and filters keep their region's box. The initiative view joins a workspace and its declared siblings into one page or refuses it: keyed tasks and edges across members, refusals, read-only members, per-member digests checked by the stale line, and selection across members. Reversible whole-workspace archive, closure and reference qualification, original-byte preservation, bounded catalog lookup, real transaction recovery and restore on owned fixtures, including closed legacy and Lite inputs."
     },
     {
       "path": "eval/tests/product/resume",
@@ -210,12 +213,14 @@
         "test_system_one_integration.py",
         "test_script_consent_points.py",
         "test_multi_repo_templates.py",
-        "test_brief_ledger_template.py"
+        "test_brief_ledger_template.py",
+        "test_executor_dispatch_contract.py",
+        "test_judgment_support.py"
       ],
-      "tests": 130,
+      "tests": 137,
       "source": "eval/templates",
       "category": "product",
-      "purpose": "Template fields, observed model routing, capability recovery and compiled briefs. The System One decision script's admission, workspace consent, normalized transport, confidence and provenance. The System One state script's consent persistence, caller-supplied client, SDK serialization, fallback and bounded history/intake consumers. The brief and decision templates' declaration grammar: detail level, symbol ledger and decision ownership."
+      "purpose": "Template fields, observed model routing, capability recovery and compiled briefs. The executor-package and prepared-operation consumers verify declared context, actual read examples, replay and child-check propagation. The System One decision script covers original-use parity and bounded recovery/evidence policy; the state script covers consent, durable budget reservations, SDK serialization, fallbacks and bounded history/intake consumers."
     },
     {
       "path": "eval/tests/tooling/protocol-v2",
@@ -235,10 +240,10 @@
         "test_sealed_scenario_admission.py",
         "test_unit_diff.py"
       ],
-      "tests": 110,
+      "tests": 117,
       "source": "eval/rules",
       "category": "tooling",
-      "purpose": "Normative inventory, ledger gates, committed-text leak scanning (including digest-keyed admission of sealed scenario trees) and removed-unit accounting."
+      "purpose": "Normative inventory, ledger gates, committed-text leak scanning (including digest-keyed admission of sealed scenario trees) and removed-unit accounting over Markdown and decoded current migration-catalog instructions."
     },
     {
       "path": "eval/tests/tooling/records",
@@ -324,23 +329,26 @@
         "test_unclosed_fence.py",
         "test_migration.py",
         "test_v90_v91_checklist.py",
-        "test_v101_v102_checklist.py"
+        "test_v101_v102_checklist.py",
+        "test_compact_migration.py",
+        "test_closed_report_receipts.py"
       ],
-      "tests": 179,
+      "tests": 188,
       "source": "eval/migration",
       "category": "product",
-      "purpose": "Workspace schema migration, scripts and census refusal. Migration keeps historical record paths, makes citations follow their moved files, leaves links into other workspaces unchanged, reports what history still cites, and keeps the text after a legacy status glyph as a board note. The 10.1 to 10.2 checklist adopts closed-record hashes without a schema change."
+      "purpose": "Workspace schema migration, scripts and census refusal. Migration keeps historical record paths, makes citations follow their moved files, leaves links into other workspaces unchanged, reports what history still cites, and keeps the text after a legacy status glyph as a board note. The 10.1 to 10.2 checklist adopts closed-record hashes without a schema change. Compact current-target catalog with retained historical provenance, isolated copy preparation, native and external admission, physical adoption, contention, interrupted recovery and reversible restore; protected schema adapters remain unchanged. Closed-report receipt additions preserve prior bytes, admit only the specifically required missing Complete-report carrier, and reject conflicting values, unrelated edits and fenced or quoted substitutes; owner truth and semantic admission remain separate."
     },
     {
       "path": "eval/tests/tooling/maintaining/field-report",
       "files": [
         "test_field_report.py",
-        "test_unclosed_fence.py"
+        "test_unclosed_fence.py",
+        "test_archive_discovery.py"
       ],
-      "tests": 28,
+      "tests": 29,
       "source": "eval/maintaining/field-report",
       "category": "tooling",
-      "purpose": "Field-report aggregation, scope and malformed-input refusal."
+      "purpose": "Field-report aggregation, scope and malformed-input refusal. Reserved archive storage and normalized aliases are excluded by actual field-report and extracted maintainer discovery while ordinary hidden and option-shaped workspace names remain valid."
     },
     {
       "path": "eval/tests/product/lessons",
@@ -438,6 +446,26 @@
       "source": "eval/validator",
       "category": "product",
       "purpose": "The project validator hook: the verify guide's declaration, invocation, output and exit contract, and the example validator run through that invocation."
+    },
+    {
+      "path": "eval/tests/tooling/evaluation-rounds",
+      "files": [
+        "test_rounds.py"
+      ],
+      "tests": 4,
+      "source": "skills/tackle/scripts/evaluation_rounds.py",
+      "category": "tooling",
+      "purpose": "Finite round sealing, append-only event receipts, paired decisions and durable budgets through the shipped CLI, including interruption, concurrent recording and effect-free replay on disposable public fixtures."
+    },
+    {
+      "path": "eval/tests/tooling/effects",
+      "files": [
+        "test_effects.py"
+      ],
+      "tests": 5,
+      "source": "eval/behavior/effects",
+      "category": "tooling",
+      "purpose": "Observed attempts, completed fixture effects, qualified scoped absence and unknown coverage through local wrappers, Git and inventory/traversal evidence, with protected evaluation and effect-free replay; no host-wide isolation claim."
     }
   ]
 }
