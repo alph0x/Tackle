@@ -277,8 +277,11 @@ def validate_spec(raw, cwd):
         quals.add(key)
 
     opening = raw["opening"]
+    # An owner-authorized replacement of a stopped round may add an optional extension receipt.
+    extended = type(opening) is dict and "extension_receipt" in opening
     object_shape(opening, ("reserved", "known_consumed", "unknown", "corrections",
-                           "parent_receipt", "new_allocation_receipt"), "opening")
+                           "parent_receipt", "new_allocation_receipt") + (("extension_receipt",) if extended else ()),
+                 "opening")
     for field in ("reserved", "known_consumed", "unknown"):
         object_shape(opening[field], dims.keys(), "opening." + field)
         for key, value in opening[field].items():
@@ -291,6 +294,7 @@ def validate_spec(raw, cwd):
     ident(lineage["budget_pool_id"], "budget_pool_id")
     parent = lineage["parent_result"]
     if parent is None:
+        require(not extended, "an extension receipt requires a parent result")
         require(opening["parent_receipt"] is None and opening["new_allocation_receipt"] is not None,
                 "new allocation requires its receipt and no parent")
         ref_check(cwd, opening["new_allocation_receipt"], "new allocation receipt")
@@ -314,11 +318,17 @@ def validate_spec(raw, cwd):
         parent_budgets = parent_result.get("budgets")
         require(type(parent_budgets) is dict and set(parent_budgets) == set(dims),
                 "parent budget dimensions mismatch")
+        if extended:
+            ref_check(cwd, opening["extension_receipt"], "extension receipt")
         for key, row in dims.items():
             parent_budget = parent_budgets[key]
             require(type(parent_budget) is dict and type(parent_budget.get("limit")) is int and
-                    parent_budget.get("unit") == row["unit"] and parent_budget["limit"] == row["limit"],
-                    "parent budget unit/limit mismatch")
+                    parent_budget.get("unit") == row["unit"], "parent budget unit/limit mismatch")
+            # Without an extension the child keeps the parent's exact limits; with one, a limit may only grow.
+            if extended:
+                require(row["limit"] >= parent_budget["limit"], "an extension cannot lower a parent limit")
+            else:
+                require(parent_budget["limit"] == row["limit"], "parent budget unit/limit mismatch")
 
     # Opening commitments cannot already exceed any finite limit.
     for key, row in dims.items():
