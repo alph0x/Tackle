@@ -36,12 +36,6 @@
     "accepted": "2026-10-01"
   },
   {
-    "rule_id": "R-REL-01",
-    "statement_sha256": "41476c7983a34ffc06a4c4e82f97e3e0d78cca465cfc0eb2e1e21f948de6d14b",
-    "reason": "Ordinary invocation performs no network access; Tackle ships no network client, and an optional System One judgment goes through the host's typesafe-ai skill only with recorded consent. The install-text and script checks find no endpoint, home lookup or network import in skills/tackle (eval/tests/product/install/inventory/test_no_network_surface.py scans every .md and .py file of the whole install), and test_system_one_integration.py checks that system_one_use without a client returns the local judgment and sends nothing. These are text and synthetic checks; agent network discipline remains unmeasured and evidence untested with no cohort. Owner re-pinned this exception to the 10.0 statement on 2026-10-17, replacing the release 9.1 exception whose statement changed; a later held-out cohort may replace it with evidence.",
-    "accepted": "2026-10-17"
-  },
-  {
     "rule_id": "R-RUN-19",
     "statement_sha256": "6d1baf55e5ae97b57a522eb306cc74f95574013a45a9a47e4800fd2267c2978a",
     "reason": "Retain the post-task obligation rule. Current public lint row 17 checks obligation identities, states, references, receipts and newest-snapshot membership; public template and resume checks protect fields and the closure/listing instructions, including an older Complete report's receipt. They do not measure an agent recording an obligation when created, authenticating an owner's withdrawal or refusing initiative completion while it is Open. Behavior remains unmeasured and evidence remains untested with no cohort. The exact statement-bound release 9.1 exception accepts this limited local coverage and the unmeasured closure risk without treating structural lint as behavioral acceptance. Appended 2026-10-07, held-out behavioral measurement (Claude Sonnet 5.5, 9.0.1 against 9.1, five seeds, mechanical oracles): inert on both closure variants, 9.0.1 4 of 5 against 9.1 5 of 5 falls before the old-receipt reading was added and 5 of 5 against 5 of 5 after it on a variant whose request lives in a task brief; the shipped rule does not yet change closure behavior on this model.",

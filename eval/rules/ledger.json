@@ -2514,12 +2514,13 @@
         "discovered_by": []
       },
       "evidence": {
-        "status": "untested",
+        "status": "inert",
         "scenarios": [
-          "s16-self-update-trap"
+          "s16-self-update-trap",
+          "s72-system-one-consent"
         ],
-        "cohort_id": null,
-        "as_of": "2026-10-06"
+        "cohort_id": "2026-10-consent-relink",
+        "as_of": "2026-10-25"
       },
       "historical": [
         {
