@@ -1,0 +1,3558 @@
+{
+  "schema": "tackle-migration-catalog/1",
+  "revision": 1,
+  "target_methodology": "10.2.0",
+  "supported_buckets": [
+    "pre-3",
+    "3",
+    "4",
+    "5",
+    "lite"
+  ],
+  "rules": [
+    {
+      "id": "I",
+      "kind": "required",
+      "detector": "I",
+      "applies": "always",
+      "requires": [],
+      "effect": "I",
+      "postcondition": "I",
+      "recovery": "preserve-original",
+      "instructions": [
+        {
+          "text": "Before any separately owner-controlled install update, identify files the owner added under references/archetypes/ and preserve them through the owner in .tackle/archetypes/ or ~/.tackle/archetypes/. The installed artifact is SKILL.md plus references/ plus scripts/. Migration never performs the update or moves/deletes owner additions itself; if preservation is unresolved, keep the install-related step pending.",
+          "sources": [
+            "[\"G\",\"v8.4 → v9.0 checklist\",1]"
+          ]
+        },
+        {
+          "text": "If a retired loopback live producer is actually observed, have its owner stop it before a separately authorized install update. Current Tackle ships no live producer. Migration neither starts a replacement service nor stops arbitrary processes; absence of the producer creates no action.",
+          "sources": [
+            "[\"G\",\"v9.3 → v10.0 checklist\",1]"
+          ]
+        },
+        {
+          "text": "Use current installed scripts and their documented direct procedures, not saved historical recipe programs or a replacement task runner. An explicit request authorizes only its documented script use; ordinary project commands remain available under their own scope. Current lint uses installed lint.py and canonical rows, citation grounding retains its two phases, and scaffold/evaluation use the current installed guides. Migration performs no installation or network operation.",
+          "sources": [
+            "[\"G\",\"v9.3 → v10.0 checklist\",3]"
+          ]
+        },
+        {
+          "text": "The old no-helper/two-part install instruction is superseded by the current three-part artifact SKILL.md, references/ and scripts/. Observe installed resources and manifest before proceeding. Do not delete tracked project helpers or fixtures as a migration step. Only the owner-controlled update procedure may remove its exact verified legacy tombstone tackle-check, preserving tackle and unrelated sentinels; migration neither updates nor deletes install content.",
+          "sources": [
+            "[\"H\",\"v7.0 → v7.1 checklist\",1]"
+          ]
+        },
+        {
+          "text": "Use current installed scripts and their documented direct procedures, not saved historical recipe programs or a replacement task runner. An explicit request authorizes only its documented script use; ordinary project commands remain available under their own scope. Current lint uses installed lint.py and canonical rows, citation grounding retains its two phases, and scaffold/evaluation use the current installed guides. Migration performs no installation or network operation.",
+          "sources": [
+            "[\"H\",\"v7.0 → v7.1 checklist\",2]"
+          ]
+        },
+        {
+          "text": "Preserve the project boundary that docs/plans/ and docs/seeds/ are both gitignored and neither ships in the install artifact. Check the observed project policy without changing the original or neighboring files. A missing required boundary needs an owner decision in its own allowed scope, not silent staging, publication or a project-wide edit by migration.",
+          "sources": [
+            "[\"H\",\"v7.0 → v7.1 checklist\",4]"
+          ]
+        },
+        {
+          "text": "Do not execute historical blanket deletion of todo.md, tasks.md, checklist.md or execution-strategy.md. Preserve historical-only files and record their mapping or historical role; use only supported structural adapters for actual current renames. Keep one current task-board state and resolve dependencies from the current plan/board contract rather than maintaining a pasted second graph. Any proposed removal outside the compiled structural map needs separate owner authority.",
+          "sources": [
+            "[\"H\",\"v6.1 → v7.0 checklist\",2]"
+          ]
+        },
+        {
+          "text": "Historical automatic/daily self-update and old update-command instructions are superseded. Ordinary invocation and migration perform no network access or installation mutation. Only the owner-controlled out-of-band update workflow verifies and replaces the three-part artifact; installing/updating never selects or migrates a workspace. An already-current artifact requires no install action.",
+          "sources": [
+            "[\"H\",\"v4.0 → v4.1 checklist\",1]"
+          ]
+        }
+      ],
+      "provenance_ids": [
+        "[\"G\",\"v8.4 → v9.0 checklist\",1]",
+        "[\"G\",\"v9.3 → v10.0 checklist\",1]",
+        "[\"G\",\"v9.3 → v10.0 checklist\",3]",
+        "[\"H\",\"v7.0 → v7.1 checklist\",1]",
+        "[\"H\",\"v7.0 → v7.1 checklist\",2]",
+        "[\"H\",\"v7.0 → v7.1 checklist\",4]",
+        "[\"H\",\"v6.1 → v7.0 checklist\",2]",
+        "[\"H\",\"v4.0 → v4.1 checklist\",1]"
+      ],
+      "exceptions": [
+        "Already-current installation produces no install action; owner-controlled update and removal boundaries apply."
+      ]
+    },
+    {
+      "id": "P",
+      "kind": "required",
+      "detector": "P",
+      "applies": "active",
+      "requires": [
+        "I"
+      ],
+      "effect": "P",
+      "postcondition": "P",
+      "recovery": "defer",
+      "instructions": [
+        {
+          "text": "Select one explicitly named active workspace at an evidenced task boundary and keep its original authoritative. Work only on a disposable copy; the original remains unchanged before separately validated cutover. Before candidate edits, record the canonical path, selection rationale, source/contract revision, pinned task procedure and current diagnostic under that procedure. Hash board, briefs, reports, AGENTS.md/model map, history, usage, raw evidence and any sidecars/snapshots that exist. Preserve exact checks, test/replay inputs, correction lineage and historical completed/blocked/skipped/interrupted states; unavailable evidence stays unavailable. Create an unchanged checkpoint and observe a neighboring sentinel. Closed or unrelated workspaces and read-only STATUS/diagnosis requests authorize no migration. Started/Checking/Interrupted tasks retain their procedure/counters until their deliberate boundary.",
+          "sources": [
+            "[\"G\",\"v10.1 → v10.2 checklist\",1]",
+            "[\"H\",\"v9.2.0 → v9.2.1 checklist\",1]",
+            "[\"H\",\"v9.1 → v9.2 checklist\",1]",
+            "[\"H\",\"v9.1.0 → v9.1.1 checklist\",1]",
+            "[\"H\",\"v9.0 → v9.1 checklist\",1]",
+            "[\"H\",\"v9.0.0 → v9.0.1 checklist\",1]",
+            "[\"H\",\"v8.4.0 → v8.4.1 checklist\",1]",
+            "[\"H\",\"v8.3 → v8.4 checklist\",1]",
+            "[\"H\",\"v8.2 → v8.3 checklist\",1]",
+            "[\"H\",\"v8.2.0 → v8.2.1 checklist\",1]",
+            "[\"H\",\"v8.1 → v8.2 checklist\",1]",
+            "[\"H\",\"v8.0 → v8.1 checklist\",1]"
+          ]
+        },
+        {
+          "text": "Preserve every settled contract, state, grade, correction count and exact original history/usage/evidence byte, including whitespace, headers and the eight-column legacy table when present. A legacy row without an exact run_id remains legacy-scoped. Copy and hash these bytes before transformation; never rewrite, backfill, re-grade or reorder them, and leave the original and neighbors unchanged.",
+          "sources": [
+            "[\"H\",\"Historical migration shape\",2]"
+          ]
+        },
+        {
+          "text": "Select one explicitly named active workspace at an evidenced task boundary and keep its original authoritative. Work only on a disposable copy; the original remains unchanged before separately validated cutover. Before candidate edits, record the canonical path, selection rationale, source/contract revision, pinned task procedure and current diagnostic under that procedure. Hash board, briefs, reports, AGENTS.md/model map, history, usage, raw evidence and any sidecars/snapshots that exist. Preserve exact checks, test/replay inputs, correction lineage and historical completed/blocked/skipped/interrupted states; unavailable evidence stays unavailable. Create an unchanged checkpoint and observe a neighboring sentinel. Closed or unrelated workspaces and read-only STATUS/diagnosis requests authorize no migration. Started/Checking/Interrupted tasks retain their procedure/counters until their deliberate boundary.",
+          "sources": [
+            "[\"H\",\"v7.3 → v8.0 checklist\",1]"
+          ]
+        },
+        {
+          "text": "Preserve every settled contract, state, grade, correction count and exact original history/usage/evidence byte, including whitespace, headers and the eight-column legacy table when present. A legacy row without an exact run_id remains legacy-scoped. Copy and hash these bytes before transformation; never rewrite, backfill, re-grade or reorder them, and leave the original and neighbors unchanged.",
+          "sources": [
+            "[\"H\",\"v7.3 → v8.0 checklist\",2]",
+            "[\"H\",\"v7.1 → v7.2 checklist\",1]"
+          ]
+        },
+        {
+          "text": "For files without a current counterpart, including context.md or reference.md, retain them as historical data or map them to a real current artifact under an explicit recorded decision. Preserve the original bytes and mapping; never silently delete them, treat them as a second current state source or require a closed workspace to migrate.",
+          "sources": [
+            "[\"H\",\"Artifact renames\",3]"
+          ]
+        }
+      ],
+      "provenance_ids": [
+        "[\"G\",\"v10.1 → v10.2 checklist\",1]",
+        "[\"H\",\"v9.2.0 → v9.2.1 checklist\",1]",
+        "[\"H\",\"v9.1 → v9.2 checklist\",1]",
+        "[\"H\",\"v9.1.0 → v9.1.1 checklist\",1]",
+        "[\"H\",\"v9.0 → v9.1 checklist\",1]",
+        "[\"H\",\"v9.0.0 → v9.0.1 checklist\",1]",
+        "[\"H\",\"v8.4.0 → v8.4.1 checklist\",1]",
+        "[\"H\",\"v8.3 → v8.4 checklist\",1]",
+        "[\"H\",\"v8.2 → v8.3 checklist\",1]",
+        "[\"H\",\"v8.2.0 → v8.2.1 checklist\",1]",
+        "[\"H\",\"v8.1 → v8.2 checklist\",1]",
+        "[\"H\",\"v8.0 → v8.1 checklist\",1]",
+        "[\"H\",\"Historical migration shape\",2]",
+        "[\"H\",\"v7.3 → v8.0 checklist\",1]",
+        "[\"H\",\"v7.3 → v8.0 checklist\",2]",
+        "[\"H\",\"v7.1 → v7.2 checklist\",1]",
+        "[\"H\",\"Artifact renames\",3]"
+      ],
+      "exceptions": [
+        "Closed and neighboring workspaces remain unchanged; unknown closure or task boundary blocks migration."
+      ]
+    },
+    {
+      "id": "S",
+      "kind": "required",
+      "detector": "S",
+      "applies": "structure",
+      "requires": [
+        "P"
+      ],
+      "effect": "S",
+      "postcondition": "S",
+      "recovery": "preserve-original",
+      "instructions": [
+        {
+          "text": "Determine structure with the installed schema.schema_of, separately from the Methodology stamp. Supported routes are pre-3 to 3 to 4 to 5, 3 to 4 to 5, 4 to 5, already-5 and explicit Gate: Lite. Use only each exact installed detect/transform/verify adapter through schema.adopt; transform/verify receive schema.workspace_files projections excluding legacy directories. Preserve every existing legacy directory and add the exact original step snapshot. In Full copies record every actual path/P-to-T mapping across plan, board, briefs, dependencies, reports and usage; preserve original history plus the distinct once-only structural adoption entry. Lite keeps Gate and existing history/usage and renames only existing log.md/log-archive.md/usage.md to history.md/history-archive.md/resource-usage.md, with old/new collision refusal and no invented board/report/Full template. Unknown/ambiguous structure, unclosed fences, CRLF, aliases and collisions stop mutation; no below-pre-3 support, downgrade or inferred Ready is introduced.",
+          "sources": [
+            "[\"G\",\"v8.4 → v9.0 checklist\",2]"
+          ]
+        },
+        {
+          "text": "Add `Gate: Full` on line 3 of an active Coordinated plan, following `plan.tmpl.md`; keep its title on line 1 and keep a Lite plan’s `Gate: Lite` on line 1. Preserve a known selected Lite layout without adding Full artifacts. Missing or conflicting gate/layout evidence is a hold, never an inferred conversion.",
+          "sources": [
+            "[\"G\",\"v10.0 → v10.1 checklist\",1]"
+          ]
+        },
+        {
+          "text": "Determine structure with the installed schema.schema_of, separately from the Methodology stamp. Supported routes are pre-3 to 3 to 4 to 5, 3 to 4 to 5, 4 to 5, already-5 and explicit Gate: Lite. Use only each exact installed detect/transform/verify adapter through schema.adopt; transform/verify receive schema.workspace_files projections excluding legacy directories. Preserve every existing legacy directory and add the exact original step snapshot. In Full copies record every actual path/P-to-T mapping across plan, board, briefs, dependencies, reports and usage; preserve original history plus the distinct once-only structural adoption entry. Lite keeps Gate and existing history/usage and renames only existing log.md/log-archive.md/usage.md to history.md/history-archive.md/resource-usage.md, with old/new collision refusal and no invented board/report/Full template. Unknown/ambiguous structure, unclosed fences, CRLF, aliases and collisions stop mutation; no below-pre-3 support, downgrade or inferred Ready is introduced.",
+          "sources": [
+            "[\"H\",\"v8.3 → v8.4 checklist\",3]",
+            "[\"H\",\"Historical migration shape\",1]"
+          ]
+        },
+        {
+          "text": "Retain the historical contract.md to design-contract.md, strategy.md to execution-strategy.md and snapshots/ to reference-docs/ mapping as source provenance. Apply only a rename supported by the actual selected structural adapter and observed source, recording original and destination identities and refusing collisions. Do not run an obsolete additional version step or delete the old checkpoint.",
+          "sources": [
+            "[\"H\",\"Artifact renames\",1]"
+          ]
+        },
+        {
+          "text": "After an actual supported structural move, make the selected candidate’s forward-facing links resolve to the moved files using the recorded own path/ID map. Preserve links into other workspaces and historical evidence verbatim and diagnose unresolved references; do not rewrite every historical hit, another workspace or the original. Check current consumers and retain old resolution until the new references validate.",
+          "sources": [
+            "[\"H\",\"Artifact renames\",2]"
+          ]
+        },
+        {
+          "text": "Check that the selected candidate plan identifies all actual task IDs with their requirement traces and briefing paths. Use the observed structural map and current template only for the selected supported source; never invent a task, assume readiness, mass-normalize historical P IDs or create Full structure for Lite.",
+          "sources": [
+            "[\"H\",\"Historical structural conformance\",1]"
+          ]
+        }
+      ],
+      "provenance_ids": [
+        "[\"G\",\"v8.4 → v9.0 checklist\",2]",
+        "[\"G\",\"v10.0 → v10.1 checklist\",1]",
+        "[\"H\",\"v8.3 → v8.4 checklist\",3]",
+        "[\"H\",\"Historical migration shape\",1]",
+        "[\"H\",\"Artifact renames\",1]",
+        "[\"H\",\"Artifact renames\",2]",
+        "[\"H\",\"Historical structural conformance\",1]"
+      ],
+      "exceptions": [
+        "Unknown or ambiguous structure, CRLF, unclosed fences, aliases, and collisions retain existing refusal behavior; no support below pre-3 or downgrade."
+      ]
+    },
+    {
+      "id": "A",
+      "kind": "required",
+      "detector": "A",
+      "applies": "structure",
+      "requires": [
+        "S"
+      ],
+      "effect": "A",
+      "postcondition": "A",
+      "recovery": "preserve-original",
+      "instructions": [
+        {
+          "text": "Update forward-looking requests to the single Tackle skill entry followed by plan, run, verify, next, status, judge, retro or an explicitly scoped feature request. Historical slash/action/helper aliases remain preserved text, not separately installed commands. Next selects/prepares only; STATUS, diagnostics, quoted or negated requests do not execute or mutate. Retain current gates and independent checker closure. No wrapper, obsolete workspace flag or copied consent is introduced.",
+          "sources": [
+            "[\"G\",\"v8.4 → v9.0 checklist\",4]"
+          ]
+        },
+        {
+          "text": "A workspace that adopts nothing keeps working. Rows 18 and 19 skip legacy briefs and decisions, and row 14 asks for the hash only after the 10.2.0 stamp. Row 2 reports a dependency on a Skipped task and a requirement whose tracing tasks are all Skipped. Repair the first by depending on the successor, and the second by naming the Skipped task on an open successor's `**Lineage**:` line. Preserve closed states and spent correction lineage; do not execute skipped work or reset a pool.",
+          "sources": [
+            "[\"G\",\"v10.1 → v10.2 checklist\",9]"
+          ]
+        },
+        {
+          "text": "Keep the task board as sole current state and use only the exact terminology/adapter mapping. Preserve original legacy state/grade, completed reports, method/result/independence, IDs, correction lineage and raw history in checkpoint/mapping data. Never infer Ready from not-started, Complete from implementation finished, or current proof from a historic green mark. Started or interrupted work keeps its actual pinned procedure through its own boundary; unknown end data is recorded as observe-incomplete, not a restarted side effect. Only remaining forward-facing work changes in the selected copy.",
+          "sources": [
+            "[\"H\",\"v8.3 → v8.4 checklist\",2]",
+            "[\"H\",\"v8.1 → v8.2 checklist\",3]"
+          ]
+        },
+        {
+          "text": "Update forward-looking requests to the single Tackle skill entry followed by plan, run, verify, next, status, judge, retro or an explicitly scoped feature request. Historical slash/action/helper aliases remain preserved text, not separately installed commands. Next selects/prepares only; STATUS, diagnostics, quoted or negated requests do not execute or mutate. Retain current gates and independent checker closure. No wrapper, obsolete workspace flag or copied consent is introduced.",
+          "sources": [
+            "[\"H\",\"v8.0 → v8.1 checklist\",2]"
+          ]
+        },
+        {
+          "text": "Keep the task board as sole current state and use only the exact terminology/adapter mapping. Preserve original legacy state/grade, completed reports, method/result/independence, IDs, correction lineage and raw history in checkpoint/mapping data. Never infer Ready from not-started, Complete from implementation finished, or current proof from a historic green mark. Started or interrupted work keeps its actual pinned procedure through its own boundary; unknown end data is recorded as observe-incomplete, not a restarted side effect. Only remaining forward-facing work changes in the selected copy.",
+          "sources": [
+            "[\"H\",\"Historical migration shape\",3]",
+            "[\"H\",\"v7.3 → v8.0 checklist\",4]"
+          ]
+        },
+        {
+          "text": "Update forward-looking requests to the single Tackle skill entry followed by plan, run, verify, next, status, judge, retro or an explicitly scoped feature request. Historical slash/action/helper aliases remain preserved text, not separately installed commands. Next selects/prepares only; STATUS, diagnostics, quoted or negated requests do not execute or mutate. Retain current gates and independent checker closure. No wrapper, obsolete workspace flag or copied consent is introduced.",
+          "sources": [
+            "[\"H\",\"v7.0 → v7.1 checklist\",3]",
+            "[\"H\",\"v6.1 → v7.0 checklist\",1]",
+            "[\"H\",\"v6.1 → v7.0 checklist\",3]",
+            "[\"H\",\"v4.3 → v4.4 checklist\",1]"
+          ]
+        },
+        {
+          "text": "Retain observed legacy grades and the evidence from which each was derived; a declared grade never substitutes for actual independent checker command/output/exit evidence. Historical grade-backfill instructions do not authorize rewriting closed rows or upgrading old proof during current migration. If current readiness or acceptance needs that evidence, resolve it through current checks/review on selected open work; unavailable proof remains unavailable.",
+          "sources": [
+            "[\"H\",\"v3.4 → v4.0 checklist\",4]"
+          ]
+        },
+        {
+          "text": "Map only an observed deliberate skip to Skipped with its one-line reason. A skip is not Complete and grants no evidence; preserve original legacy state/grade in the migration record. The board is sole state, and unknown or unsupported state vocabulary holds rather than being guessed.",
+          "sources": [
+            "[\"H\",\"v3.3 → v3.4 checklist\",1]"
+          ]
+        },
+        {
+          "text": "The current task board is the sole state source. During a supported selected conversion, carry actual forward-facing task state into the board before removing a redundant current per-brief or plan Status field. Preserve all original bytes in the checkpoint and do not rewrite historical records. Conflicting state sources require resolution, never silent selection or a second state board.",
+          "sources": [
+            "[\"H\",\"Historical structural conformance\",2]"
+          ]
+        },
+        {
+          "text": "Map only an observed deliberate skip to Skipped with its one-line reason. A skip is not Complete and grants no evidence; preserve original legacy state/grade in the migration record. The board is sole state, and unknown or unsupported state vocabulary holds rather than being guessed.",
+          "sources": [
+            "[\"H\",\"Historical structural conformance\",3]"
+          ]
+        },
+        {
+          "text": "The current task board is the sole state source. During a supported selected conversion, carry actual forward-facing task state into the board before removing a redundant current per-brief or plan Status field. Preserve all original bytes in the checkpoint and do not rewrite historical records. Conflicting state sources require resolution, never silent selection or a second state board.",
+          "sources": [
+            "[\"H\",\"v2.0 → v2.1.0 checklist\",1]"
+          ]
+        }
+      ],
+      "provenance_ids": [
+        "[\"G\",\"v8.4 → v9.0 checklist\",4]",
+        "[\"G\",\"v10.1 → v10.2 checklist\",9]",
+        "[\"H\",\"v8.3 → v8.4 checklist\",2]",
+        "[\"H\",\"v8.1 → v8.2 checklist\",3]",
+        "[\"H\",\"v8.0 → v8.1 checklist\",2]",
+        "[\"H\",\"Historical migration shape\",3]",
+        "[\"H\",\"v7.3 → v8.0 checklist\",4]",
+        "[\"H\",\"v7.0 → v7.1 checklist\",3]",
+        "[\"H\",\"v6.1 → v7.0 checklist\",1]",
+        "[\"H\",\"v6.1 → v7.0 checklist\",3]",
+        "[\"H\",\"v4.3 → v4.4 checklist\",1]",
+        "[\"H\",\"v3.4 → v4.0 checklist\",4]",
+        "[\"H\",\"v3.3 → v3.4 checklist\",1]",
+        "[\"H\",\"Historical structural conformance\",2]",
+        "[\"H\",\"Historical structural conformance\",3]",
+        "[\"H\",\"v2.0 → v2.1.0 checklist\",1]"
+      ],
+      "exceptions": [
+        "No board state, completion grade, correction history, or closed evidence is inferred or rewritten."
+      ]
+    },
+    {
+      "id": "R",
+      "kind": "required",
+      "detector": "R",
+      "applies": "active",
+      "requires": [
+        "A"
+      ],
+      "effect": "R",
+      "postcondition": "R",
+      "recovery": "defer",
+      "instructions": [
+        {
+          "text": "For every Complete task on the board, hash its brief with `sha256sum <brief>`, or `shasum -a 256 <brief>` without `sha256sum`. Retain the exact baseline and original brief bytes before any other edit to a closed brief. A conflicting existing baseline holds; never recompute it to match an edited brief.",
+          "sources": [
+            "[\"G\",\"v10.1 → v10.2 checklist\",2]"
+          ]
+        },
+        {
+          "text": "Put `**Brief sha256**: <64 lowercase hex digits>` on its own line in the task's report, outside code fences. Place it right before the report's `Final status:` line, or right before its `**Remains**:` line when it has none. Then append `Brief sha256 T-NN: <the same hash>` on its own line, outside code fences, to the end of `history.md`. History only grows: never edit an older entry. That report line and the history line are the only changes adoption makes to a closed task's records. Do both before any other edit to a closed brief. Skipped and Unverifiable reports may carry both too. Preserve an existing identical receipt; a conflicting value is pending, not overwritten.",
+          "sources": [
+            "[\"G\",\"v10.1 → v10.2 checklist\",3]"
+          ]
+        },
+        {
+          "text": "After recording the baseline, a closed brief changes only by erratum. An active decision authorizes the edit; then append `**Brief erratum**: D-NN · sha256 <hash after the edit>` to its report. Retain the pre-edit baseline and decision; no generic repair or silent closed-history edit is allowed.",
+          "sources": [
+            "[\"G\",\"v10.1 → v10.2 checklist\",4]"
+          ]
+        },
+        {
+          "text": "End every required Complete report with `**Remains**: none`, or `**Remains**:` followed by the actual O-NN obligation IDs left behind. Resolve unknown Remains from the actual report/owner; never infer none from a terminal board mark, an empty list or a reviewer label. Add only a specifically required missing adoption receipt, preserving existing closed bytes and blocking conflicting values.",
+          "sources": [
+            "[\"H\",\"v9.0 → v9.1 checklist\",3]"
+          ]
+        },
+        {
+          "text": "On selected open work use the task-board template’s obligations section: every obligation outliving its task has an O-NN row with owner, trigger, state Open and discharge check. Append a new history State snapshot naming every Open ID in Active obligations; never edit an older snapshot. Preserve obligations through task split/merge/rename and require actual discharge evidence.",
+          "sources": [
+            "[\"H\",\"v9.0 → v9.1 checklist\",4]"
+          ]
+        },
+        {
+          "text": "Future closures require the actual report and Coordinator/independent checker evidence under the current RUN protocol before the board becomes Complete. A stub or a named reviewer alone is not current proof. Preserve existing closed reports, legacy sign-offs and the original state without retrospective repair or regrading; current-work/handoff are projections, never canonical state. Missing current required evidence holds its owning open-work closure.",
+          "sources": [
+            "[\"H\",\"v5.5 → v5.6 checklist\",1]",
+            "[\"H\",\"v3.2 → v3.3 checklist\",2]"
+          ]
+        }
+      ],
+      "provenance_ids": [
+        "[\"G\",\"v10.1 → v10.2 checklist\",2]",
+        "[\"G\",\"v10.1 → v10.2 checklist\",3]",
+        "[\"G\",\"v10.1 → v10.2 checklist\",4]",
+        "[\"H\",\"v9.0 → v9.1 checklist\",3]",
+        "[\"H\",\"v9.0 → v9.1 checklist\",4]",
+        "[\"H\",\"v5.5 → v5.6 checklist\",1]",
+        "[\"H\",\"v3.2 → v3.3 checklist\",2]"
+      ],
+      "exceptions": [
+        "Conflicting existing receipt or baseline values block; no generic historical repair."
+      ]
+    },
+    {
+      "id": "B",
+      "kind": "required",
+      "detector": "B",
+      "applies": "next-wave",
+      "requires": [
+        "R"
+      ],
+      "effect": "B",
+      "postcondition": "B",
+      "recovery": "defer",
+      "instructions": [
+        {
+          "text": "Prepare only caller-declared upcoming unstarted work; started/Checking/Interrupted briefs wait for their own deliberate boundary and closed work stays unchanged. Run the current rows 1–19 on the candidate. For an applicable open brief whose Effort is not low and has neither Tier nor Tier reason, add **Tier reason** explaining the departure from the default. Use current **Write scope** and Acceptance check labels instead of forward-facing Touches and Done-signal aliases; replace inherit Effort with an actual portable level supported by the observed map. Preserve original fields and refuse conflicting aliases rather than silently preferring one.",
+          "sources": [
+            "[\"G\",\"v8.4 → v9.0 checklist\",3]"
+          ]
+        },
+        {
+          "text": "Prepare only caller-declared upcoming unstarted work; started/Checking/Interrupted briefs wait for their own deliberate boundary and closed work stays unchanged. Name the forbidden action classes in each new compiled brief using the Forbidden actions field of task.tmpl.md. Copy the actual job contract, invariants, side-effect boundary, required checks and owner; do not add a new execution permission or mass-rewrite older briefs.",
+          "sources": [
+            "[\"G\",\"v10.0 → v10.1 checklist\",8]"
+          ]
+        },
+        {
+          "text": "Prepare only caller-declared upcoming unstarted work; started/Checking/Interrupted briefs wait for their own deliberate boundary and closed work stays unchanged. Give each open brief one line in Purpose and scope, `- **Detail**: full` or `- **Detail**: interface`. Use `full` for the [next wave](verify.md#milestone-readiness) and for any brief whose row is Ready to run, In progress or Checking. Use `interface` for the rest. Row 18 fails a Ready to run row that names an interface brief. Edit the brief of an In progress or Checking task only at that task's boundary, never during an attempt.",
+          "sources": [
+            "[\"G\",\"v10.1 → v10.2 checklist\",5]"
+          ]
+        },
+        {
+          "text": "Prepare only caller-declared upcoming unstarted work; started/Checking/Interrupted briefs wait for their own deliberate boundary and closed work stays unchanged. Give a brief raised to full the symbol ledger of task.tmpl.md. Under Interface and invariants, `**Produces**` and `**Consumes**` each hold `none` or indented sub-items. Every consumed name gets one source: `from T-NN`, `from T-NN [sibling]` or `exists` with an anchored citation. A `from T-NN` task must be an ancestor through `Depends on`. A `[sibling]` source must also appear in the brief's own `Depends on` cell. A name has one producing brief; row 18 fails a name that two briefs produce. The task-boundary rule applies here too. An interface brief needs no ledger.",
+          "sources": [
+            "[\"G\",\"v10.1 → v10.2 checklist\",6]"
+          ]
+        },
+        {
+          "text": "Prepare only caller-declared upcoming unstarted work; started/Checking/Interrupted briefs wait for their own deliberate boundary and closed work stays unchanged. Add `**Owner**: T-NN · **Clauses**: C-xx` after `**Supersedes**` only on a decision to be checked; either part may be omitted. The owner's brief must cite the decision id and, at `full` detail, carry each named clause compiled. When a decision with these lines supersedes an earlier one, the earlier heading names it, as `⤴ superseded by D-NN`. Row 19 fails a heading that names another, and a still-active predecessor is no finding.",
+          "sources": [
+            "[\"G\",\"v10.1 → v10.2 checklist\",7]"
+          ]
+        },
+        {
+          "text": "Prepare only caller-declared upcoming unstarted work; started/Checking/Interrupted briefs wait for their own deliberate boundary and closed work stays unchanged. For every actual acceptance case, provide a runnable literal Check with resolved absolute cwd, prerequisites, checked failure propagation and explicit pass condition (including required PASS/count/content); Or `review: <rubric> by <reviewer role>` for a genuine review criterion. A missing/empty extraction, TBD, cross-reference, prose or file-existence-only claim cannot establish Ready. Retain valid and invalid disposable controls and the native child result, not a wrapper PASS. This preparation never runs the upcoming writing Check before adoption.",
+          "sources": [
+            "[\"H\",\"v9.1 → v9.2 checklist\",2]"
+          ]
+        },
+        {
+          "text": "Prepare only caller-declared upcoming unstarted work; started/Checking/Interrupted briefs wait for their own deliberate boundary and closed work stays unchanged. For an active blocker record expected and observed facts, exact evidence, affected work, viable alternatives, recommendation, consequences and an affected-only wait. Continue independent authorized work and preserve closed reports. Missing capabilities stop only the dependent route, without model/provider/authority invention.",
+          "sources": [
+            "[\"H\",\"v9.0.0 → v9.0.1 checklist\",4]"
+          ]
+        },
+        {
+          "text": "Prepare only caller-declared upcoming unstarted work; started/Checking/Interrupted briefs wait for their own deliberate boundary and closed work stays unchanged. The obsolete tackle-gate flag is not current authority and cannot disable required checks or independent closure. Preserve existing pinned briefs until their boundary. New current-template briefs retain public-boundary E2E-first/replay obligations and explicit loop budgets; do not rewrite unrelated old fields merely to modernize them.",
+          "sources": [
+            "[\"H\",\"v8.4.0 → v8.4.1 checklist\",3]"
+          ]
+        },
+        {
+          "text": "Prepare only caller-declared upcoming unstarted work; started/Checking/Interrupted briefs wait for their own deliberate boundary and closed work stays unchanged. A stabilized compiled clause or acceptance heading retains its owning active decision and exact sealed text/hash. Adding/changing a clause ID or heading requires a superseding decision and regenerated source/seal hashes, followed by the installed verification procedure. Never manufacture an active predecessor, silently rehash a changed sealed clause or mark Ready before current checks.",
+          "sources": [
+            "[\"H\",\"v8.4.0 → v8.4.1 checklist\",4]"
+          ]
+        },
+        {
+          "text": "Prepare only caller-declared upcoming unstarted work; started/Checking/Interrupted briefs wait for their own deliberate boundary and closed work stays unchanged. Use terminology.md for future visible labels while preserving P IDs, filenames, links, schema tokens and historical bytes until an actual supported structural adapter maps them. Validate both old and new fields; conflicting aliases hold rather than silently preferring one. Resolve every own moved-file link and retain external/history references.",
+          "sources": [
+            "[\"H\",\"v8.1 → v8.2 checklist\",2]"
+          ]
+        },
+        {
+          "text": "Prepare only caller-declared upcoming unstarted work; started/Checking/Interrupted briefs wait for their own deliberate boundary and closed work stays unchanged. Re-ground only the actual declared upcoming wave: complete requirement coverage, concrete dependency identities/artifacts, interfaces, revisions, owners, outcomes, runnable future checks and correction lineage. Keep deferred work Draft; split/merge/rename resets no unresolved allowance. Apply risk precedence before simplifying. An explicitly selected already-authorized Lite source retains its first-line Gate: Lite and existing plan/history/usage, with no board/tasks/Full decomposition manufactured; missing Full artifacts is not evidence of Lite. Read-only audits do not relabel or upgrade plans and historical completed/blocked/skipped/unverifiable work is not re-executed.",
+          "sources": [
+            "[\"H\",\"v8.1 → v8.2 checklist\",4]",
+            "[\"H\",\"v8.0 → v8.1 checklist\",3]",
+            "[\"H\",\"Historical migration shape\",4]",
+            "[\"H\",\"Historical migration shape\",5]",
+            "[\"H\",\"v7.3 → v8.0 checklist\",3]"
+          ]
+        },
+        {
+          "text": "Prepare only caller-declared upcoming unstarted work; started/Checking/Interrupted briefs wait for their own deliberate boundary and closed work stays unchanged. Copy every prerequisite fact needed by the executor into its brief: exact inputs/source fragments, resolved cwd, scope, invariants, acceptance and permissions. Plan, board, AGENTS.md or conversational memory must not be hidden execution prerequisites; links provide depth rather than replacing required facts. Unknown needed facts hold readiness.",
+          "sources": [
+            "[\"H\",\"v7.2 → v7.3 checklist\",1]"
+          ]
+        },
+        {
+          "text": "Prepare only caller-declared upcoming unstarted work; started/Checking/Interrupted briefs wait for their own deliberate boundary and closed work stays unchanged. For every actual acceptance case, provide a runnable literal Check with resolved absolute cwd, prerequisites, checked failure propagation and explicit pass condition (including required PASS/count/content); Or `review: <rubric> by <reviewer role>` for a genuine review criterion. A missing/empty extraction, TBD, cross-reference, prose or file-existence-only claim cannot establish Ready. Retain valid and invalid disposable controls and the native child result, not a wrapper PASS. This preparation never runs the upcoming writing Check before adoption.",
+          "sources": [
+            "[\"H\",\"v7.2 → v7.3 checklist\",2]"
+          ]
+        },
+        {
+          "text": "Prepare only caller-declared upcoming unstarted work; started/Checking/Interrupted briefs wait for their own deliberate boundary and closed work stays unchanged. For semantic JSON contracts validate parsed keys, types and values; require bytes/whitespace only when the actual contract declares exact bytes. Do not invent formatting, newline, order or serialization requirements to reject an otherwise valid representation.",
+          "sources": [
+            "[\"H\",\"v7.2 → v7.3 checklist\",4]"
+          ]
+        },
+        {
+          "text": "Prepare only caller-declared upcoming unstarted work; started/Checking/Interrupted briefs wait for their own deliberate boundary and closed work stays unchanged. Resolve every upcoming file:line citation with its literal source fragment. Grounding first checks the cited line; on drift count whole-file matches: exactly one permits a mechanical line reanchor, zero is stale and more than one is ambiguous. Preserve line-accurate citations and choose unique new fragments. A moved/unrecoverable source may use explicit git-historical revision/path instead of reanchoring against wrong content. Last-verified uses ISO UTC seconds; legacy date-only stamps remain conservative and update only at the next legitimate grounding. Lint/read-only diagnosis reports staleness; writing reanchors need selected-candidate authority, stable inputs and the current installed procedure. An unread citation keeps the brief ungrounded; never use session memory as source truth.",
+          "sources": [
+            "[\"H\",\"v5.4 → v5.5 checklist\",2]",
+            "[\"H\",\"v5.2 → v5.3 checklist\",1]",
+            "[\"H\",\"v5.2 → v5.3 checklist\",2]",
+            "[\"H\",\"v5.2 → v5.3 checklist\",3]",
+            "[\"H\",\"v5.2 → v5.3 checklist\",4]"
+          ]
+        },
+        {
+          "text": "Prepare only caller-declared upcoming unstarted work; started/Checking/Interrupted briefs wait for their own deliberate boundary and closed work stays unchanged. For every actual acceptance case, provide a runnable literal Check with resolved absolute cwd, prerequisites, checked failure propagation and explicit pass condition (including required PASS/count/content); Or `review: <rubric> by <reviewer role>` for a genuine review criterion. A missing/empty extraction, TBD, cross-reference, prose or file-existence-only claim cannot establish Ready. Retain valid and invalid disposable controls and the native child result, not a wrapper PASS. This preparation never runs the upcoming writing Check before adoption.",
+          "sources": [
+            "[\"H\",\"v5.1 → v5.2 checklist\",5]"
+          ]
+        },
+        {
+          "text": "Prepare only caller-declared upcoming unstarted work; started/Checking/Interrupted briefs wait for their own deliberate boundary and closed work stays unchanged. Use current intake to understand intent before selecting a solution, infer from available facts and batch only material owner questions with useful defaults. Keep output concise but include the full security/irreversible-action/ambiguity facts needed for a safe decision. This is prospective communication guidance, not a historical workspace rewrite or extra permission.",
+          "sources": [
+            "[\"H\",\"v5.0 → v5.1 checklist\",2]",
+            "[\"H\",\"v5.0 → v5.1 checklist\",5]"
+          ]
+        },
+        {
+          "text": "Prepare only caller-declared upcoming unstarted work; started/Checking/Interrupted briefs wait for their own deliberate boundary and closed work stays unchanged. Absent Type retains standard; discovery/experiment uses need their actual closed-loop fields (rounds and, for experiment, metric and threshold). Every Depends on edge names the actual crossing artifact consumed; remove a false edge rather than waiving it. A genuine ordering-only edge requires an explicit owner decision, never a fabricated data dependency or reset lineage.",
+          "sources": [
+            "[\"H\",\"v3.4 → v4.0 checklist\",1]",
+            "[\"H\",\"v3.4 → v4.0 checklist\",2]"
+          ]
+        },
+        {
+          "text": "Prepare only caller-declared upcoming unstarted work; started/Checking/Interrupted briefs wait for their own deliberate boundary and closed work stays unchanged. Before a behavior-changing edit, retain an INTENT explaining current source behavior, the actual acceptance criterion and the authoritative source, and stop on contradiction. Source checks precede code changes; a desired PASS does not redefine the contract, protected expectation or owner authority.",
+          "sources": [
+            "[\"H\",\"v3.0 → v3.1 checklist\",1]"
+          ]
+        },
+        {
+          "text": "Prepare only caller-declared upcoming unstarted work; started/Checking/Interrupted briefs wait for their own deliberate boundary and closed work stays unchanged. Consider direct work only when the actual task is genuinely trivial (one file, fewer than 10 lines, no new behavior and no source search); After risk precedence and existing owner scope. Otherwise retain appropriate durable planning/verification. Historical sizing guidance does not bypass security, irreversible effects, unknown acceptance or current task gates.",
+          "sources": [
+            "[\"H\",\"v3.0 → v3.1 checklist\",4]"
+          ]
+        },
+        {
+          "text": "Prepare only caller-declared upcoming unstarted work; started/Checking/Interrupted briefs wait for their own deliberate boundary and closed work stays unchanged. Retain complete requirement traces for actual upcoming task IDs in the plan and each brief’s Traces to field, using the current template placement. Every remaining requirement must have an owner/outcome/check; preserve historical IDs and no invented completion or retrospective requirements delta.",
+          "sources": [
+            "[\"H\",\"Historical structural conformance\",4]"
+          ]
+        },
+        {
+          "text": "Prepare only caller-declared upcoming unstarted work; started/Checking/Interrupted briefs wait for their own deliberate boundary and closed work stays unchanged. Resolve every upcoming file:line citation with its literal source fragment. Grounding first checks the cited line; on drift count whole-file matches: exactly one permits a mechanical line reanchor, zero is stale and more than one is ambiguous. Preserve line-accurate citations and choose unique new fragments. A moved/unrecoverable source may use explicit git-historical revision/path instead of reanchoring against wrong content. Last-verified uses ISO UTC seconds; legacy date-only stamps remain conservative and update only at the next legitimate grounding. Lint/read-only diagnosis reports staleness; writing reanchors need selected-candidate authority, stable inputs and the current installed procedure. An unread citation keeps the brief ungrounded; never use session memory as source truth.",
+          "sources": [
+            "[\"H\",\"Historical citations\",1]",
+            "[\"H\",\"v2.1 → v3.0 checklist\",1]"
+          ]
+        },
+        {
+          "text": "Prepare only caller-declared upcoming unstarted work; started/Checking/Interrupted briefs wait for their own deliberate boundary and closed work stays unchanged. A stabilized compiled clause or acceptance heading retains its owning active decision and exact sealed text/hash. Adding/changing a clause ID or heading requires a superseding decision and regenerated source/seal hashes, followed by the installed verification procedure. Never manufacture an active predecessor, silently rehash a changed sealed clause or mark Ready before current checks.",
+          "sources": [
+            "[\"H\",\"v2.1 → v3.0 checklist\",3]"
+          ]
+        },
+        {
+          "text": "Prepare only caller-declared upcoming unstarted work; started/Checking/Interrupted briefs wait for their own deliberate boundary and closed work stays unchanged. Resolve every upcoming file:line citation with its literal source fragment. Grounding first checks the cited line; on drift count whole-file matches: exactly one permits a mechanical line reanchor, zero is stale and more than one is ambiguous. Preserve line-accurate citations and choose unique new fragments. A moved/unrecoverable source may use explicit git-historical revision/path instead of reanchoring against wrong content. Last-verified uses ISO UTC seconds; legacy date-only stamps remain conservative and update only at the next legitimate grounding. Lint/read-only diagnosis reports staleness; writing reanchors need selected-candidate authority, stable inputs and the current installed procedure. An unread citation keeps the brief ungrounded; never use session memory as source truth.",
+          "sources": [
+            "[\"H\",\"v2.1 → v3.0 checklist\",5]"
+          ]
+        },
+        {
+          "text": "Prepare only caller-declared upcoming unstarted work; started/Checking/Interrupted briefs wait for their own deliberate boundary and closed work stays unchanged. Retain complete requirement traces for actual upcoming task IDs in the plan and each brief’s Traces to field, using the current template placement. Every remaining requirement must have an owner/outcome/check; preserve historical IDs and no invented completion or retrospective requirements delta.",
+          "sources": [
+            "[\"H\",\"v2.0 → v2.1.0 checklist\",2]"
+          ]
+        },
+        {
+          "text": "Prepare only caller-declared upcoming unstarted work; started/Checking/Interrupted briefs wait for their own deliberate boundary and closed work stays unchanged. Resolve every upcoming file:line citation with its literal source fragment. Grounding first checks the cited line; on drift count whole-file matches: exactly one permits a mechanical line reanchor, zero is stale and more than one is ambiguous. Preserve line-accurate citations and choose unique new fragments. A moved/unrecoverable source may use explicit git-historical revision/path instead of reanchoring against wrong content. Last-verified uses ISO UTC seconds; legacy date-only stamps remain conservative and update only at the next legitimate grounding. Lint/read-only diagnosis reports staleness; writing reanchors need selected-candidate authority, stable inputs and the current installed procedure. An unread citation keeps the brief ungrounded; never use session memory as source truth.",
+          "sources": [
+            "[\"H\",\"v2.0 → v2.1.0 checklist\",3]"
+          ]
+        },
+        {
+          "text": "Prepare only caller-declared upcoming unstarted work; started/Checking/Interrupted briefs wait for their own deliberate boundary and closed work stays unchanged. For every actual acceptance case, provide a runnable literal Check with resolved absolute cwd, prerequisites, checked failure propagation and explicit pass condition (including required PASS/count/content); Or `review: <rubric> by <reviewer role>` for a genuine review criterion. A missing/empty extraction, TBD, cross-reference, prose or file-existence-only claim cannot establish Ready. Retain valid and invalid disposable controls and the native child result, not a wrapper PASS. This preparation never runs the upcoming writing Check before adoption.",
+          "sources": [
+            "[\"H\",\"v2.0 → v2.1.0 checklist\",4]"
+          ]
+        }
+      ],
+      "provenance_ids": [
+        "[\"G\",\"v8.4 → v9.0 checklist\",3]",
+        "[\"G\",\"v10.0 → v10.1 checklist\",8]",
+        "[\"G\",\"v10.1 → v10.2 checklist\",5]",
+        "[\"G\",\"v10.1 → v10.2 checklist\",6]",
+        "[\"G\",\"v10.1 → v10.2 checklist\",7]",
+        "[\"H\",\"v9.1 → v9.2 checklist\",2]",
+        "[\"H\",\"v9.0.0 → v9.0.1 checklist\",4]",
+        "[\"H\",\"v8.4.0 → v8.4.1 checklist\",3]",
+        "[\"H\",\"v8.4.0 → v8.4.1 checklist\",4]",
+        "[\"H\",\"v8.1 → v8.2 checklist\",2]",
+        "[\"H\",\"v8.1 → v8.2 checklist\",4]",
+        "[\"H\",\"v8.0 → v8.1 checklist\",3]",
+        "[\"H\",\"Historical migration shape\",4]",
+        "[\"H\",\"Historical migration shape\",5]",
+        "[\"H\",\"v7.3 → v8.0 checklist\",3]",
+        "[\"H\",\"v7.2 → v7.3 checklist\",1]",
+        "[\"H\",\"v7.2 → v7.3 checklist\",2]",
+        "[\"H\",\"v7.2 → v7.3 checklist\",4]",
+        "[\"H\",\"v5.4 → v5.5 checklist\",2]",
+        "[\"H\",\"v5.2 → v5.3 checklist\",1]",
+        "[\"H\",\"v5.2 → v5.3 checklist\",2]",
+        "[\"H\",\"v5.2 → v5.3 checklist\",3]",
+        "[\"H\",\"v5.2 → v5.3 checklist\",4]",
+        "[\"H\",\"v5.1 → v5.2 checklist\",5]",
+        "[\"H\",\"v5.0 → v5.1 checklist\",2]",
+        "[\"H\",\"v5.0 → v5.1 checklist\",5]",
+        "[\"H\",\"v3.4 → v4.0 checklist\",1]",
+        "[\"H\",\"v3.4 → v4.0 checklist\",2]",
+        "[\"H\",\"v3.0 → v3.1 checklist\",1]",
+        "[\"H\",\"v3.0 → v3.1 checklist\",4]",
+        "[\"H\",\"Historical structural conformance\",4]",
+        "[\"H\",\"Historical citations\",1]",
+        "[\"H\",\"v2.1 → v3.0 checklist\",1]",
+        "[\"H\",\"v2.1 → v3.0 checklist\",3]",
+        "[\"H\",\"v2.1 → v3.0 checklist\",5]",
+        "[\"H\",\"v2.0 → v2.1.0 checklist\",2]",
+        "[\"H\",\"v2.0 → v2.1.0 checklist\",3]",
+        "[\"H\",\"v2.0 → v2.1.0 checklist\",4]"
+      ],
+      "exceptions": [
+        "No new task, filled backlog, inferred dependency, or fabricated readiness is created."
+      ]
+    },
+    {
+      "id": "M",
+      "kind": "required",
+      "detector": "M",
+      "applies": "active",
+      "requires": [
+        "B"
+      ],
+      "effect": "M",
+      "postcondition": "M",
+      "recovery": "defer",
+      "instructions": [
+        {
+          "text": "For actual remaining roles use only host-observed capabilities, provider-neutral portable tiers and Effort low/medium/high/max, explicitly bound to exposed host controls with source. Mark supported/unsupported/unknown and retain n/a for unavailable telemetry; a portable speed tier is not request service-tier telemetry. Routing fields are optional and absent fields retain the current default. A planner is stronger than Executor only when more than one suitable tier is actually bound; otherwise record the limitation. Offer an observed alternative for an unavailable exact binding or stop its affected route; never invent a model/provider or copy a confirmation. Optional cumulative/partial usage remains informative, not gating.",
+          "sources": [
+            "[\"G\",\"v8.4 → v9.0 checklist\",6]"
+          ]
+        },
+        {
+          "text": "Show the owner the observed role-to-model/effort table for remaining roles and retain that initiative’s actual confirmation in AGENTS.md. Do not dispatch a subagent without the required current confirmation; an inherited record from another workspace or a capability label is not authorization. Migration itself dispatches no agent or model call.",
+          "sources": [
+            "[\"H\",\"v9.1.0 → v9.1.1 checklist\",3]"
+          ]
+        },
+        {
+          "text": "For actual remaining roles use only host-observed capabilities, provider-neutral portable tiers and Effort low/medium/high/max, explicitly bound to exposed host controls with source. Mark supported/unsupported/unknown and retain n/a for unavailable telemetry; a portable speed tier is not request service-tier telemetry. Routing fields are optional and absent fields retain the current default. A planner is stronger than Executor only when more than one suitable tier is actually bound; otherwise record the limitation. Offer an observed alternative for an unavailable exact binding or stop its affected route; never invent a model/provider or copy a confirmation. Optional cumulative/partial usage remains informative, not gating.",
+          "sources": [
+            "[\"H\",\"v9.0.0 → v9.0.1 checklist\",2]",
+            "[\"H\",\"v9.0.0 → v9.0.1 checklist\",3]",
+            "[\"H\",\"v5.1 → v5.2 checklist\",2]",
+            "[\"H\",\"v5.1 → v5.2 checklist\",3]"
+          ]
+        },
+        {
+          "text": "Retain the workspace’s explicitly selected autonomy level and task conditions; production-path work remains capped at L2 unless an active owner decision authorizes otherwise. Unattended L3 additionally requires actual eligible independent evidence through its dependency chain; asserted/review-only or unknown upstream proof cannot be upgraded into that authority. Record any limitation and preserve existing historical grades without backfill.",
+          "sources": [
+            "[\"H\",\"v3.4 → v4.0 checklist\",5]"
+          ]
+        },
+        {
+          "text": "For actual remaining roles use only host-observed capabilities, provider-neutral portable tiers and Effort low/medium/high/max, explicitly bound to exposed host controls with source. Mark supported/unsupported/unknown and retain n/a for unavailable telemetry; a portable speed tier is not request service-tier telemetry. Routing fields are optional and absent fields retain the current default. A planner is stronger than Executor only when more than one suitable tier is actually bound; otherwise record the limitation. Offer an observed alternative for an unavailable exact binding or stop its affected route; never invent a model/provider or copy a confirmation. Optional cumulative/partial usage remains informative, not gating.",
+          "sources": [
+            "[\"H\",\"v3.2 → v3.3 checklist\",1]"
+          ]
+        },
+        {
+          "text": "Retain the workspace’s explicitly selected autonomy level and task conditions; production-path work remains capped at L2 unless an active owner decision authorizes otherwise. Unattended L3 additionally requires actual eligible independent evidence through its dependency chain; asserted/review-only or unknown upstream proof cannot be upgraded into that authority. Record any limitation and preserve existing historical grades without backfill.",
+          "sources": [
+            "[\"H\",\"v2.1 → v3.0 checklist\",6]"
+          ]
+        },
+        {
+          "text": "For actual remaining roles use only host-observed capabilities, provider-neutral portable tiers and Effort low/medium/high/max, explicitly bound to exposed host controls with source. Mark supported/unsupported/unknown and retain n/a for unavailable telemetry; a portable speed tier is not request service-tier telemetry. Routing fields are optional and absent fields retain the current default. A planner is stronger than Executor only when more than one suitable tier is actually bound; otherwise record the limitation. Offer an observed alternative for an unavailable exact binding or stop its affected route; never invent a model/provider or copy a confirmation. Optional cumulative/partial usage remains informative, not gating.",
+          "sources": [
+            "[\"H\",\"v2.1 → v3.0 checklist\",8]",
+            "[\"H\",\"v2.0 → v2.1.0 checklist\",7]"
+          ]
+        }
+      ],
+      "provenance_ids": [
+        "[\"G\",\"v8.4 → v9.0 checklist\",6]",
+        "[\"H\",\"v9.1.0 → v9.1.1 checklist\",3]",
+        "[\"H\",\"v9.0.0 → v9.0.1 checklist\",2]",
+        "[\"H\",\"v9.0.0 → v9.0.1 checklist\",3]",
+        "[\"H\",\"v5.1 → v5.2 checklist\",2]",
+        "[\"H\",\"v5.1 → v5.2 checklist\",3]",
+        "[\"H\",\"v3.4 → v4.0 checklist\",5]",
+        "[\"H\",\"v3.2 → v3.3 checklist\",1]",
+        "[\"H\",\"v2.1 → v3.0 checklist\",6]",
+        "[\"H\",\"v2.1 → v3.0 checklist\",8]",
+        "[\"H\",\"v2.0 → v2.1.0 checklist\",7]"
+      ],
+      "exceptions": [
+        "Unknown host capability and telemetry remain unknown or n/a; no model or confirmation is invented."
+      ]
+    },
+    {
+      "id": "E",
+      "kind": "required",
+      "detector": "E",
+      "applies": "active",
+      "requires": [
+        "M"
+      ],
+      "effect": "E",
+      "postcondition": "E",
+      "recovery": "reconcile-job",
+      "instructions": [
+        {
+          "text": "A current check record binds the installed program hash, especially captures/lint invoked from outside the working directory. If that relevant script changes, refuse reuse as current proof and rerun only the affected authorized checks under the updated installed program; Retaining the old record unchanged and exact old/new identities.",
+          "sources": [
+            "[\"G\",\"v9.3 → v10.0 checklist\",4]"
+          ]
+        },
+        {
+          "text": "For new correction records use `correction cycle N of 3: <failure> → <correction>; <validation command>: <result>`; retain older `attempt N:` bytes. Count failed correction-validation cycles from actual trace evidence, cap the same lineage at three and stop/escalate at the bound or two identical no-progress observations under the current RUN protocol. Splitting/renaming/migration never resets spent allowance; no silent repeated attempt or invented positive Attempts.",
+          "sources": [
+            "[\"G\",\"v10.0 → v10.1 checklist\",2]"
+          ]
+        },
+        {
+          "text": "Write lifecycle At clocks with seconds as `YYYY-MM-DDTHH:MM:SS[.fff](Z|±HH:MM)` under resource-usage.tmpl.md, and use the same form in the Lite ledger. Unobserved clocks remain n/a; minute-only or space-separated historical clocks stay unmeasured and are not rewritten or used to invent measured seconds.",
+          "sources": [
+            "[\"G\",\"v10.0 → v10.1 checklist\",3]",
+            "[\"G\",\"v10.0 → v10.1 checklist\",4]"
+          ]
+        },
+        {
+          "text": "Future task closure needs both its target criterion and surrounding-system/integration checks on the actual merged tree plus independent Coordinator/checker closure with accessible evidence. Driver-only PASS, a grade label, a methodology stamp or an obsolete gate-off flag cannot grant Complete. Choose appropriate existing checks before implementation, preserve current test-first exceptions only under the actual owner decision, and do not rewrite historical closed methods/grades. For Lite and Full, unavailable mandatory coverage blocks its owning scope while optional coverage/unknown telemetry stay nongating; role Outcome is distinct from initiative completion.",
+          "sources": [
+            "[\"H\",\"v9.1.0 → v9.1.1 checklist\",2]"
+          ]
+        },
+        {
+          "text": "Do not add an Adversary line to a task completed before the applicable adoption. Only later tasks owe the current adversary-checkpoint observations under RUN. Preserve the historical task’s exact methods and limits; never manufacture an independent past review.",
+          "sources": [
+            "[\"H\",\"v9.0 → v9.1 checklist\",6]"
+          ]
+        },
+        {
+          "text": "On the selected candidate validate new lifecycle writes against legal role Outcome states, trace-backed positive Attempts, truthful n/a versus observed zero, and externally observed terminal clocks with exact Run ID. Retain row16 and the installed retro lifecycle diagnostic, commands/results and unresolved Run ID facts. A known invalid old row is a defect that holds adoption without rewriting closed rows or neighbors; the original stays authoritative.",
+          "sources": [
+            "[\"H\",\"v9.0.0 → v9.0.1 checklist\",6]"
+          ]
+        },
+        {
+          "text": "For remaining code work choose contract checks before the next implementation edit. Prefer one public-boundary E2E when it observes the contract; a feasible complex integrated feature requires one. Retain sufficient existing regressions without a unit quota. Before adding an isolated test, state its uncovered obligation, why E2E cannot observe it and each identified failure mode/valid alternative with expected result. Do not add late tests merely mirroring implemented behavior or alter protected expectations to fit output.",
+          "sources": [
+            "[\"H\",\"v8.2 → v8.3 checklist\",2]"
+          ]
+        },
+        {
+          "text": "Retain each actual acceptance command/script, resolved cwd, runtime/environment, stable fixtures, contract-derived expected and observed results, raw child stdout/stderr/exit/signal/timeout and source/input/output hashes. Keep wrapper and child status separate; wrapper PASS never masks child failure. A claim without replay inputs or propagated child outcome is pending. Replay only on authorized disposable/fresh destinations, preserving original artifacts/fixtures byte-identically; outputs stay frozen during validation. Independent later audit remains possible and failed attempts retain their exact journals.",
+          "sources": [
+            "[\"H\",\"v8.2 → v8.3 checklist\",3]"
+          ]
+        },
+        {
+          "text": "The Markdown lifecycle ledger remains the universal current record, with one truthful row/event per actual role and no historical backfill. Append schema-v2 records after the preserved legacy section only through the current installed template. Native telemetry/sidecars are optional: retain exact thread/Run ID, observation source, field coverage and n/a when unavailable; no session snapshot/time proximity may invent a role join or terminal clock. The old tackle-usage/1 note is superseded by optional tackle-observability-telemetry/1. Informational eval/scaffold/answer-isolation rules create no migration evaluation campaign or held-out read; any separately authorized evaluation retains its current integrity and no-answer-leak boundaries.",
+          "sources": [
+            "[\"H\",\"v8.2.0 → v8.2.1 checklist\",2]"
+          ]
+        },
+        {
+          "text": "Future task closure needs both its target criterion and surrounding-system/integration checks on the actual merged tree plus independent Coordinator/checker closure with accessible evidence. Driver-only PASS, a grade label, a methodology stamp or an obsolete gate-off flag cannot grant Complete. Choose appropriate existing checks before implementation, preserve current test-first exceptions only under the actual owner decision, and do not rewrite historical closed methods/grades. For Lite and Full, unavailable mandatory coverage blocks its owning scope while optional coverage/unknown telemetry stay nongating; role Outcome is distinct from initiative completion.",
+          "sources": [
+            "[\"H\",\"v7.3 → v8.0 checklist\",5]"
+          ]
+        },
+        {
+          "text": "The Markdown lifecycle ledger remains the universal current record, with one truthful row/event per actual role and no historical backfill. Append schema-v2 records after the preserved legacy section only through the current installed template. Native telemetry/sidecars are optional: retain exact thread/Run ID, observation source, field coverage and n/a when unavailable; no session snapshot/time proximity may invent a role join or terminal clock. The old tackle-usage/1 note is superseded by optional tackle-observability-telemetry/1. Informational eval/scaffold/answer-isolation rules create no migration evaluation campaign or held-out read; any separately authorized evaluation retains its current integrity and no-answer-leak boundaries.",
+          "sources": [
+            "[\"H\",\"v7.0 → v7.1 checklist\",5]"
+          ]
+        },
+        {
+          "text": "Append `Schema: tackle-observability/2` and the v2 lifecycle table below preserved legacy bytes, never replacing that table. After the marker write only the legal start, finish or observe-incomplete events. No historical row is rewritten/backfilled and adoption does not manufacture observations for previous roles.",
+          "sources": [
+            "[\"H\",\"v7.1 → v7.2 checklist\",2]"
+          ]
+        },
+        {
+          "text": "Read legacy and v2 records with their actual scope and report measured/eligible coverage. Missing/n/a is unknown, not zero. Join role telemetry only on an exact run_id with explicit reviewed mapping; session/account observations, timestamps, conversation IDs or limit deltas stay separate and never become an invented role correlation.",
+          "sources": [
+            "[\"H\",\"v7.1 → v7.2 checklist\",3]",
+            "[\"H\",\"v7.1 → v7.2 checklist\",4]"
+          ]
+        },
+        {
+          "text": "Canonical provider cost requires an authoritative observed source. Keep local/API-equivalent estimates under their own labeled basis and never promote them to canonical cost, tokens or runtime telemetry. Missing cost remains n/a and optional sidecar failures never block task closure or refund consumed consultations.",
+          "sources": [
+            "[\"H\",\"v7.1 → v7.2 checklist\",5]"
+          ]
+        },
+        {
+          "text": "Retain each actual acceptance command/script, resolved cwd, runtime/environment, stable fixtures, contract-derived expected and observed results, raw child stdout/stderr/exit/signal/timeout and source/input/output hashes. Keep wrapper and child status separate; wrapper PASS never masks child failure. A claim without replay inputs or propagated child outcome is pending. Replay only on authorized disposable/fresh destinations, preserving original artifacts/fixtures byte-identically; outputs stay frozen during validation. Independent later audit remains possible and failed attempts retain their exact journals.",
+          "sources": [
+            "[\"H\",\"v7.2 → v7.3 checklist\",3]"
+          ]
+        },
+        {
+          "text": "The Markdown lifecycle ledger remains the universal current record, with one truthful row/event per actual role and no historical backfill. Append schema-v2 records after the preserved legacy section only through the current installed template. Native telemetry/sidecars are optional: retain exact thread/Run ID, observation source, field coverage and n/a when unavailable; no session snapshot/time proximity may invent a role join or terminal clock. The old tackle-usage/1 note is superseded by optional tackle-observability-telemetry/1. Informational eval/scaffold/answer-isolation rules create no migration evaluation campaign or held-out read; any separately authorized evaluation retains its current integrity and no-answer-leak boundaries.",
+          "sources": [
+            "[\"H\",\"v6.0 → v6.1 checklist\",1]",
+            "[\"H\",\"v6.0 → v6.1 checklist\",2]",
+            "[\"H\",\"v5.6 → v6.0 checklist\",1]",
+            "[\"H\",\"v5.6 → v6.0 checklist\",2]",
+            "[\"H\",\"v5.1 → v5.2 checklist\",1]"
+          ]
+        },
+        {
+          "text": "Future task closure needs both its target criterion and surrounding-system/integration checks on the actual merged tree plus independent Coordinator/checker closure with accessible evidence. Driver-only PASS, a grade label, a methodology stamp or an obsolete gate-off flag cannot grant Complete. Choose appropriate existing checks before implementation, preserve current test-first exceptions only under the actual owner decision, and do not rewrite historical closed methods/grades. For Lite and Full, unavailable mandatory coverage blocks its owning scope while optional coverage/unknown telemetry stay nongating; role Outcome is distinct from initiative completion.",
+          "sources": [
+            "[\"H\",\"v4.4 → v5.0 checklist\",1]",
+            "[\"H\",\"v4.2 → v4.3 checklist\",1]",
+            "[\"H\",\"v4.2 → v4.3 checklist\",2]",
+            "[\"H\",\"v4.1 → v4.2 checklist\",1]"
+          ]
+        },
+        {
+          "text": "For new correction records use `correction cycle N of 3: <failure> → <correction>; <validation command>: <result>`; retain older `attempt N:` bytes. Count failed correction-validation cycles from actual trace evidence, cap the same lineage at three and stop/escalate at the bound or two identical no-progress observations under the current RUN protocol. Splitting/renaming/migration never resets spent allowance; no silent repeated attempt or invented positive Attempts.",
+          "sources": [
+            "[\"H\",\"v3.0 → v3.1 checklist\",2]"
+          ]
+        },
+        {
+          "text": "Future task closure needs both its target criterion and surrounding-system/integration checks on the actual merged tree plus independent Coordinator/checker closure with accessible evidence. Driver-only PASS, a grade label, a methodology stamp or an obsolete gate-off flag cannot grant Complete. Choose appropriate existing checks before implementation, preserve current test-first exceptions only under the actual owner decision, and do not rewrite historical closed methods/grades. For Lite and Full, unavailable mandatory coverage blocks its owning scope while optional coverage/unknown telemetry stay nongating; role Outcome is distinct from initiative completion.",
+          "sources": [
+            "[\"H\",\"v3.0 → v3.1 checklist\",3]"
+          ]
+        },
+        {
+          "text": "Retain each actual acceptance command/script, resolved cwd, runtime/environment, stable fixtures, contract-derived expected and observed results, raw child stdout/stderr/exit/signal/timeout and source/input/output hashes. Keep wrapper and child status separate; wrapper PASS never masks child failure. A claim without replay inputs or propagated child outcome is pending. Replay only on authorized disposable/fresh destinations, preserving original artifacts/fixtures byte-identically; outputs stay frozen during validation. Independent later audit remains possible and failed attempts retain their exact journals.",
+          "sources": [
+            "[\"H\",\"v3.0 → v3.1 checklist\",5]",
+            "[\"H\",\"v2.1 → v3.0 checklist\",2]"
+          ]
+        },
+        {
+          "text": "Future task closure needs both its target criterion and surrounding-system/integration checks on the actual merged tree plus independent Coordinator/checker closure with accessible evidence. Driver-only PASS, a grade label, a methodology stamp or an obsolete gate-off flag cannot grant Complete. Choose appropriate existing checks before implementation, preserve current test-first exceptions only under the actual owner decision, and do not rewrite historical closed methods/grades. For Lite and Full, unavailable mandatory coverage blocks its owning scope while optional coverage/unknown telemetry stay nongating; role Outcome is distinct from initiative completion.",
+          "sources": [
+            "[\"H\",\"v2.1 → v3.0 checklist\",7]"
+          ]
+        }
+      ],
+      "provenance_ids": [
+        "[\"G\",\"v9.3 → v10.0 checklist\",4]",
+        "[\"G\",\"v10.0 → v10.1 checklist\",2]",
+        "[\"G\",\"v10.0 → v10.1 checklist\",3]",
+        "[\"G\",\"v10.0 → v10.1 checklist\",4]",
+        "[\"H\",\"v9.1.0 → v9.1.1 checklist\",2]",
+        "[\"H\",\"v9.0 → v9.1 checklist\",6]",
+        "[\"H\",\"v9.0.0 → v9.0.1 checklist\",6]",
+        "[\"H\",\"v8.2 → v8.3 checklist\",2]",
+        "[\"H\",\"v8.2 → v8.3 checklist\",3]",
+        "[\"H\",\"v8.2.0 → v8.2.1 checklist\",2]",
+        "[\"H\",\"v7.3 → v8.0 checklist\",5]",
+        "[\"H\",\"v7.0 → v7.1 checklist\",5]",
+        "[\"H\",\"v7.1 → v7.2 checklist\",2]",
+        "[\"H\",\"v7.1 → v7.2 checklist\",3]",
+        "[\"H\",\"v7.1 → v7.2 checklist\",4]",
+        "[\"H\",\"v7.1 → v7.2 checklist\",5]",
+        "[\"H\",\"v7.2 → v7.3 checklist\",3]",
+        "[\"H\",\"v6.0 → v6.1 checklist\",1]",
+        "[\"H\",\"v6.0 → v6.1 checklist\",2]",
+        "[\"H\",\"v5.6 → v6.0 checklist\",1]",
+        "[\"H\",\"v5.6 → v6.0 checklist\",2]",
+        "[\"H\",\"v5.1 → v5.2 checklist\",1]",
+        "[\"H\",\"v4.4 → v5.0 checklist\",1]",
+        "[\"H\",\"v4.2 → v4.3 checklist\",1]",
+        "[\"H\",\"v4.2 → v4.3 checklist\",2]",
+        "[\"H\",\"v4.1 → v4.2 checklist\",1]",
+        "[\"H\",\"v3.0 → v3.1 checklist\",2]",
+        "[\"H\",\"v3.0 → v3.1 checklist\",3]",
+        "[\"H\",\"v3.0 → v3.1 checklist\",5]",
+        "[\"H\",\"v2.1 → v3.0 checklist\",2]",
+        "[\"H\",\"v2.1 → v3.0 checklist\",7]"
+      ],
+      "exceptions": [
+        "Optional sidecar failure never gates closure; canonical cost data requires an authoritative observation."
+      ]
+    },
+    {
+      "id": "J",
+      "kind": "optional",
+      "detector": "J",
+      "applies": "requested",
+      "requires": [
+        "E"
+      ],
+      "effect": "J",
+      "postcondition": "J",
+      "recovery": "defer",
+      "instructions": [
+        {
+          "text": "The optional public capability is Judgement Layer; the present TypeSafe System One/Jev backend and `System One consent:` record syntax keep their compatibility meaning. Use the host typesafe-ai route only with that selected workspace’s recorded explicit answer. With an applicable configuration signal and no answer, PLAN/RUN asks once, records exact yes/no/date/actor there and retains an unanswered question without repetition; read-only STATUS only reads/detects. Never copy consent from a parent/neighbor, fabricate an answer or consult during migration. Original four uses stay compatible; bounded-recovery/evidence-signal require a declared upcoming consumer, compiled policy/public content, selected-owner consent and retained budget_scope. No request creates no new use, artifact, consultation budget, permission or acceptance.",
+          "sources": [
+            "[\"G\",\"v9.3 → v10.0 checklist\",5]"
+          ]
+        },
+        {
+          "text": "The historical 10.1 statement that this release changes neither workspace schema nor file formats applies to that release only. It is not a universal no-adapter exemption: the actual selected pre-3/3/4/Lite source follows its supported structural route. Preserve existing recorded System One consent meaning and raw identifier syntax; changing the public label to Judgement Layer never creates or copies consent or modernizes historical records.",
+          "sources": [
+            "[\"G\",\"v10.0 → v10.1 checklist\",9]"
+          ]
+        },
+        {
+          "text": "The optional public capability is Judgement Layer; the present TypeSafe System One/Jev backend and `System One consent:` record syntax keep their compatibility meaning. Use the host typesafe-ai route only with that selected workspace’s recorded explicit answer. With an applicable configuration signal and no answer, PLAN/RUN asks once, records exact yes/no/date/actor there and retains an unanswered question without repetition; read-only STATUS only reads/detects. Never copy consent from a parent/neighbor, fabricate an answer or consult during migration. Original four uses stay compatible; bounded-recovery/evidence-signal require a declared upcoming consumer, compiled policy/public content, selected-owner consent and retained budget_scope. No request creates no new use, artifact, consultation budget, permission or acceptance.",
+          "sources": [
+            "[\"H\",\"v9.1.0 → v9.1.1 checklist\",4]"
+          ]
+        }
+      ],
+      "provenance_ids": [
+        "[\"G\",\"v9.3 → v10.0 checklist\",5]",
+        "[\"G\",\"v10.0 → v10.1 checklist\",9]",
+        "[\"H\",\"v9.1.0 → v9.1.1 checklist\",4]"
+      ],
+      "exceptions": [
+        "No consultation, permission, answer, consent, or budget allocation is created by migration."
+      ]
+    },
+    {
+      "id": "H",
+      "kind": "required",
+      "detector": "H",
+      "applies": "active",
+      "requires": [
+        "J"
+      ],
+      "effect": "H",
+      "postcondition": "H",
+      "recovery": "preserve-original",
+      "instructions": [
+        {
+          "text": "Use current retro.tmpl.md recipes prospectively: Attempts accepts both `correction cycle N of 3: <failure> → <correction>; <validation command>: <result>` and older `attempt N:` records. Gate accuracy counts distinct sessions across archive and current history and reports undated headings. Blocked durations excludes State snapshot lines. Preserve actual old bytes and counts; do not truncate history, backfill attempts or assign missing dates to improve a metric.",
+          "sources": [
+            "[\"G\",\"v10.0 → v10.1 checklist\",5]"
+          ]
+        },
+        {
+          "text": "Preserve an existing workspace maintenance policy, or supply the current AGENTS template default prospectively when missing. An over-budget old entry remains unchanged. Separate archive policy requires explicit scoped authority and its actual size/age trigger; ordinary threshold400 and newest-five-session default apply only where that policy is current. Migration itself never archives or retires records. For a recent entry/short history, retain an explicit suitable History entry budget or the documented non-gating row13 warning instead of shrinking history or making WARN mandatory.",
+          "sources": [
+            "[\"H\",\"v9.0 → v9.1 checklist\",5]"
+          ]
+        },
+        {
+          "text": "Use the current installed status.md cold-resume read order for the candidate’s own read lists, preserving current canonical sources and any legitimate wider-read condition. Do not introduce a second stale read-order source. Optional Judgement Layer/Jev retains the selected workspace’s recorded answer and is never silently consulted or given copied consent.",
+          "sources": [
+            "[\"H\",\"v9.0 → v9.1 checklist\",7]"
+          ]
+        },
+        {
+          "text": "Adopt optional context/projection/size-triggered metadata only for actual justified size/risk and required current consumers. Preserve original entries/indexes and validate source-backed views, stable references, archive integrity and exports on the copy. Record compaction/retirement has its own reversible prepare/verify/switch and separate policy authority; migration neither retires records nor drops old resolution before validated replacement.",
+          "sources": [
+            "[\"H\",\"v8.1 → v8.2 checklist\",5]"
+          ]
+        },
+        {
+          "text": "For an existing reference-docs snapshot used by a current consumer, retain its real captured date/provenance; re-snapshot from the actual source only under explicit authorized prospective work. Row15 may skip undated historical files, which are not backfilled with invented dates. A workspace without such snapshots needs no new artifact.",
+          "sources": [
+            "[\"H\",\"v5.5 → v5.6 checklist\",2]"
+          ]
+        },
+        {
+          "text": "Preserve an existing workspace maintenance policy, or supply the current AGENTS template default prospectively when missing. An over-budget old entry remains unchanged. Separate archive policy requires explicit scoped authority and its actual size/age trigger; ordinary threshold400 and newest-five-session default apply only where that policy is current. Migration itself never archives or retires records. For a recent entry/short history, retain an explicit suitable History entry budget or the documented non-gating row13 warning instead of shrinking history or making WARN mandatory.",
+          "sources": [
+            "[\"H\",\"v5.4 → v5.5 checklist\",1]"
+          ]
+        }
+      ],
+      "provenance_ids": [
+        "[\"G\",\"v10.0 → v10.1 checklist\",5]",
+        "[\"H\",\"v9.0 → v9.1 checklist\",5]",
+        "[\"H\",\"v9.0 → v9.1 checklist\",7]",
+        "[\"H\",\"v8.1 → v8.2 checklist\",5]",
+        "[\"H\",\"v5.5 → v5.6 checklist\",2]",
+        "[\"H\",\"v5.4 → v5.5 checklist\",1]"
+      ],
+      "exceptions": [
+        "The existing row-13 WARN exception remains non-gating where documented; records and history are never retired or shortened."
+      ]
+    },
+    {
+      "id": "N",
+      "kind": "required",
+      "detector": "N",
+      "applies": "multi-repo",
+      "requires": [
+        "H"
+      ],
+      "effect": "N",
+      "postcondition": "N",
+      "recovery": "defer",
+      "instructions": [
+        {
+          "text": "Only actual remaining multi-repository work needs a Repositories section with explicit repository IDs, canonical paths and observed revisions in AGENTS.md, plus `**Repository**: <id>` on its selected open briefs. A single-repository workspace adds neither. Resolve actual current/selected consumer fields; closed historical repository mentions alone do not create this obligation.",
+          "sources": [
+            "[\"H\",\"v9.1 → v9.2 checklist\",3]"
+          ]
+        }
+      ],
+      "provenance_ids": [
+        "[\"H\",\"v9.1 → v9.2 checklist\",3]"
+      ],
+      "exceptions": [
+        "Single-repository work creates no multi-repository artifact."
+      ]
+    },
+    {
+      "id": "Q",
+      "kind": "required",
+      "detector": "Q",
+      "applies": "current-consumer",
+      "requires": [
+        "N"
+      ],
+      "effect": "Q",
+      "postcondition": "Q",
+      "recovery": "defer",
+      "instructions": [
+        {
+          "text": "Create or update a source-anchored requirements base/delta only when an actual current consumer or new change adds, changes or retires required behavior. Preserve full upcoming-wave coverage and stable A-NN/source anchors where applicable; do not backfill deltas/anchors for tasks or historical spec/constitution text merely because it existed before adoption.",
+          "sources": [
+            "[\"H\",\"v9.1 → v9.2 checklist\",4]",
+            "[\"H\",\"v2.0 → v2.1.0 checklist\",6]"
+          ]
+        }
+      ],
+      "provenance_ids": [
+        "[\"H\",\"v9.1 → v9.2 checklist\",4]",
+        "[\"H\",\"v2.0 → v2.1.0 checklist\",6]"
+      ],
+      "exceptions": [
+        "No historical requirements delta is backfilled."
+      ]
+    },
+    {
+      "id": "W",
+      "kind": "optional",
+      "detector": "W",
+      "applies": "requested",
+      "requires": [
+        "Q"
+      ],
+      "effect": "W",
+      "postcondition": "W",
+      "recovery": "reconcile-job",
+      "instructions": [
+        {
+          "text": "Build an optional `--initiative` page only under an owner request, following the installed plan view guide; it reads the root and one hop of declared sibling workspaces. An existing standing request permits one rebuild with installed plan_view.py after the final invalidating input change, retaining exact outputs and reviewing stderr. Without that request build no view. Resolve stale curated board prose by updating/removing it and remove leaked internal identifiers from requested export summary prose; do not overwrite product samples. Existing auxiliary pages move to the plan-view base only when the owner asks; preserve current one-hop and page-request ownership bounds.",
+          "sources": [
+            "[\"G\",\"v9.2 → v9.3 checklist\",1]",
+            "[\"G\",\"v9.3 → v10.0 checklist\",2]",
+            "[\"G\",\"v10.0 → v10.1 checklist\",7]",
+            "[\"H\",\"v9.2.0 → v9.2.1 checklist\",2]",
+            "[\"H\",\"v9.1.0 → v9.1.1 checklist\",5]"
+          ]
+        }
+      ],
+      "provenance_ids": [
+        "[\"G\",\"v9.2 → v9.3 checklist\",1]",
+        "[\"G\",\"v9.3 → v10.0 checklist\",2]",
+        "[\"G\",\"v10.0 → v10.1 checklist\",7]",
+        "[\"H\",\"v9.2.0 → v9.2.1 checklist\",2]",
+        "[\"H\",\"v9.1.0 → v9.1.1 checklist\",5]"
+      ],
+      "exceptions": [
+        "No standing request means no view rebuild."
+      ]
+    },
+    {
+      "id": "O",
+      "kind": "optional",
+      "detector": "O",
+      "applies": "requested",
+      "requires": [
+        "W"
+      ],
+      "effect": "O",
+      "postcondition": "O",
+      "recovery": "defer",
+      "instructions": [
+        {
+          "text": "A profile entry without an ID remains readable. Only the next separately confirmed retro that actually touches it assigns an ID/confidence under the existing learning policy; migration writes no profile, seed or confidence and needs no profile-modernization action.",
+          "sources": [
+            "[\"G\",\"v8.4 → v9.0 checklist\",5]"
+          ]
+        },
+        {
+          "text": "Sibling workspaces are optional. With none declared, create no sibling map or artifact. A concrete upcoming consumer may use explicitly declared relationships under current read/owner bounds; historical references alone are not an opt-in.",
+          "sources": [
+            "[\"G\",\"v9.2 → v9.3 checklist\",2]"
+          ]
+        },
+        {
+          "text": "A verification round may keep findings.md, capped at three rounds unless `AGENTS.md` sets `Verify round cap: N`. An `Acceptance validator:` line in `AGENTS.md` needs a decision recording the owner's request. Neither needs a migration step. Preserve existing scope/counters and do not run the validator or allocate a new round just to migrate.",
+          "sources": [
+            "[\"G\",\"v10.1 → v10.2 checklist\",10]"
+          ]
+        },
+        {
+          "text": "Retain an applicable learning directive’s actual action scope, including commit-message/pre-push/release boundaries, and enforce it when that action occurs rather than only at session start. Migration neither performs those actions nor rewrites the profile; absence of a matching current action creates no artifact.",
+          "sources": [
+            "[\"H\",\"v5.5 → v5.6 checklist\",3]"
+          ]
+        },
+        {
+          "text": "Planning uses the installed intake/simplicity/architecture guides and templates. The removed companion-skill check does not authorize installing, recommending or fetching an external planning dependency during migration. This informational change requires no workspace edit.",
+          "sources": [
+            "[\"H\",\"v5.0 → v5.1 checklist\",1]"
+          ]
+        },
+        {
+          "text": "For a concrete upcoming consumer, optionally use the current simplicity ladder (need, reuse, standard library, native/installed dependency, one line, minimum code), security/architecture guidance and matching archetype. Lenses correctness/security/repro/performance/simplicity/polish stay opt-in and do not replace current independent review or become majority-vote authority by migration. Preserve absent/default single-checker behavior; never create an artifact, install dependency, copy an obsolete team block or rewrite old briefs merely to adopt a lens.",
+          "sources": [
+            "[\"H\",\"v5.0 → v5.1 checklist\",3]",
+            "[\"H\",\"v5.0 → v5.1 checklist\",4]",
+            "[\"H\",\"v4.0 → v4.1 checklist\",2]",
+            "[\"H\",\"v3.4 → v4.0 checklist\",3]",
+            "[\"H\",\"v3.4 → v4.0 checklist\",7]"
+          ]
+        },
+        {
+          "text": "At session start consider project .tackle/profile.md, user ~/.tackle/user-profile.md and parked docs/seeds under current learning rules. Profile writes occur only through separately batch-confirmed retro; seed changes are deliberate. Migration neither writes those files nor copies a profile/consent into another workspace.",
+          "sources": [
+            "[\"H\",\"v3.3 → v3.4 checklist\",2]"
+          ]
+        },
+        {
+          "text": "For a small remaining plan (at most four tasks and no multi-track uncertainty), offer the actual authorized Lite alternative only after risk precedence and owner selection. Do not automatically collapse Full, infer Lite from missing artifacts, reopen closed work or rewrite historical plans to reduce apparent size.",
+          "sources": [
+            "[\"H\",\"v2.0 → v2.1.0 checklist\",5]"
+          ]
+        }
+      ],
+      "provenance_ids": [
+        "[\"G\",\"v8.4 → v9.0 checklist\",5]",
+        "[\"G\",\"v9.2 → v9.3 checklist\",2]",
+        "[\"G\",\"v10.1 → v10.2 checklist\",10]",
+        "[\"H\",\"v5.5 → v5.6 checklist\",3]",
+        "[\"H\",\"v5.0 → v5.1 checklist\",1]",
+        "[\"H\",\"v5.0 → v5.1 checklist\",3]",
+        "[\"H\",\"v5.0 → v5.1 checklist\",4]",
+        "[\"H\",\"v4.0 → v4.1 checklist\",2]",
+        "[\"H\",\"v3.4 → v4.0 checklist\",3]",
+        "[\"H\",\"v3.4 → v4.0 checklist\",7]",
+        "[\"H\",\"v3.3 → v3.4 checklist\",2]",
+        "[\"H\",\"v2.0 → v2.1.0 checklist\",5]"
+      ],
+      "exceptions": [
+        "Optional artifacts and profiles are not created without a concrete upcoming consumer and existing authorization."
+      ]
+    },
+    {
+      "id": "V",
+      "kind": "required",
+      "detector": "V",
+      "applies": "active",
+      "requires": [
+        "O"
+      ],
+      "effect": "V",
+      "postcondition": "V",
+      "recovery": "reconcile-job",
+      "instructions": [
+        {
+          "text": "Expect lint row13 WARN lines for dated entries after the newest State snapshot and for undated session headings. Preserve those diagnostics without promoting them to mandatory failures, inventing dates, dropping entries or editing history to obtain silence.",
+          "sources": [
+            "[\"G\",\"v10.0 → v10.1 checklist\",6]"
+          ]
+        },
+        {
+          "text": "Run `scripts/lint.py <slug>` on the copy and expect 19 of 19 rows silent. Repair a finding from another row as its own guide states, and a closed brief only by erratum. Retain documented non-gating WARN exceptions instead of treating this expected silent control as permission to suppress warnings. Capture native raw bytes/exit and the distinct pre-stamp phase before the final Z stamp/post-stamp check.",
+          "sources": [
+            "[\"G\",\"v10.1 → v10.2 checklist\",8]"
+          ]
+        },
+        {
+          "text": "Capture the current installed canonical lint rows1–19 on unchanged source and selected candidate, preserving exact program/catalog/input/workspace identities, raw stdout/stderr and native child exit/signal/timeout. A below5 source may correctly report migrate first; retain it as a failed source diagnostic, never call it green. Exercise actual missing briefs, dangling dependencies, alias/path collisions, malformed states, superseded seals, loop budgets, Effort fields, history/archive order and lifecycle usage where applicable. Correct prospective source-backed findings only in the authorized copy; reanchor changed-source citations at an explicit revision and keep inherited raw/replay inputs. Required candidate FAIL/ERROR holds adoption; documented WARN rows8/13/15 stay nongating. Read-only schema/next-wave/readiness/precondition/admission checks must prove actual current S/A/V/Z mappings, not echo declarations; never run the upcoming writing Check before adoption. Compare exact history/evidence/checkpoint/neighbor hashes and restore a separate exact checkpoint probe to prove rollback. Independent reviewer observations retain unknowns and actual failures.",
+          "sources": [
+            "[\"H\",\"v9.0 → v9.1 checklist\",2]",
+            "[\"H\",\"v8.4.0 → v8.4.1 checklist\",2]",
+            "[\"H\",\"v8.3 → v8.4 checklist\",4]"
+          ]
+        },
+        {
+          "text": "Reuse observations only when every relevant consumed input remains unchanged. Migration is not publication authority. A later separately requested release explicitly selects its workspaces; All active workspaces retain mandatory lint/done-signal gates, selected work additionally needs current global acceptance even if all tasks are closed, and the union is counted once. Unselected historical/parked work reports nongating diagnostics. Preserve current nine self-lint gates/catalog/full-registry requirements; neither old gate counts nor historical green imply a current release PASS.",
+          "sources": [
+            "[\"H\",\"v8.0 → v8.1 checklist\",4]"
+          ]
+        },
+        {
+          "text": "Capture the current installed canonical lint rows1–19 on unchanged source and selected candidate, preserving exact program/catalog/input/workspace identities, raw stdout/stderr and native child exit/signal/timeout. A below5 source may correctly report migrate first; retain it as a failed source diagnostic, never call it green. Exercise actual missing briefs, dangling dependencies, alias/path collisions, malformed states, superseded seals, loop budgets, Effort fields, history/archive order and lifecycle usage where applicable. Correct prospective source-backed findings only in the authorized copy; reanchor changed-source citations at an explicit revision and keep inherited raw/replay inputs. Required candidate FAIL/ERROR holds adoption; documented WARN rows8/13/15 stay nongating. Read-only schema/next-wave/readiness/precondition/admission checks must prove actual current S/A/V/Z mappings, not echo declarations; never run the upcoming writing Check before adoption. Compare exact history/evidence/checkpoint/neighbor hashes and restore a separate exact checkpoint probe to prove rollback. Independent reviewer observations retain unknowns and actual failures.",
+          "sources": [
+            "[\"H\",\"Historical migration shape\",6]",
+            "[\"H\",\"v7.1 → v7.2 checklist\",6]",
+            "[\"H\",\"v6.1 → v7.0 checklist\",5]"
+          ]
+        },
+        {
+          "text": "Reuse observations only when every relevant consumed input remains unchanged. Migration is not publication authority. A later separately requested release explicitly selects its workspaces; All active workspaces retain mandatory lint/done-signal gates, selected work additionally needs current global acceptance even if all tasks are closed, and the union is counted once. Unselected historical/parked work reports nongating diagnostics. Preserve current nine self-lint gates/catalog/full-registry requirements; neither old gate counts nor historical green imply a current release PASS.",
+          "sources": [
+            "[\"H\",\"v5.3 → v5.4 checklist\",1]"
+          ]
+        },
+        {
+          "text": "Capture the current installed canonical lint rows1–19 on unchanged source and selected candidate, preserving exact program/catalog/input/workspace identities, raw stdout/stderr and native child exit/signal/timeout. A below5 source may correctly report migrate first; retain it as a failed source diagnostic, never call it green. Exercise actual missing briefs, dangling dependencies, alias/path collisions, malformed states, superseded seals, loop budgets, Effort fields, history/archive order and lifecycle usage where applicable. Correct prospective source-backed findings only in the authorized copy; reanchor changed-source citations at an explicit revision and keep inherited raw/replay inputs. Required candidate FAIL/ERROR holds adoption; documented WARN rows8/13/15 stay nongating. Read-only schema/next-wave/readiness/precondition/admission checks must prove actual current S/A/V/Z mappings, not echo declarations; never run the upcoming writing Check before adoption. Compare exact history/evidence/checkpoint/neighbor hashes and restore a separate exact checkpoint probe to prove rollback. Independent reviewer observations retain unknowns and actual failures.",
+          "sources": [
+            "[\"H\",\"v5.2 → v5.3 checklist\",5]",
+            "[\"H\",\"v5.1 → v5.2 checklist\",4]",
+            "[\"H\",\"v4.4 → v5.0 checklist\",2]",
+            "[\"H\",\"v3.4 → v4.0 checklist\",6]",
+            "[\"H\",\"v3.3 → v3.4 checklist\",3]",
+            "[\"H\",\"v2.1 → v3.0 checklist\",4]",
+            "[\"H\",\"v2.0 → v2.1.0 checklist\",8]"
+          ]
+        }
+      ],
+      "provenance_ids": [
+        "[\"G\",\"v10.0 → v10.1 checklist\",6]",
+        "[\"G\",\"v10.1 → v10.2 checklist\",8]",
+        "[\"H\",\"v9.0 → v9.1 checklist\",2]",
+        "[\"H\",\"v8.4.0 → v8.4.1 checklist\",2]",
+        "[\"H\",\"v8.3 → v8.4 checklist\",4]",
+        "[\"H\",\"v8.0 → v8.1 checklist\",4]",
+        "[\"H\",\"Historical migration shape\",6]",
+        "[\"H\",\"v7.1 → v7.2 checklist\",6]",
+        "[\"H\",\"v6.1 → v7.0 checklist\",5]",
+        "[\"H\",\"v5.3 → v5.4 checklist\",1]",
+        "[\"H\",\"v5.2 → v5.3 checklist\",5]",
+        "[\"H\",\"v5.1 → v5.2 checklist\",4]",
+        "[\"H\",\"v4.4 → v5.0 checklist\",2]",
+        "[\"H\",\"v3.4 → v4.0 checklist\",6]",
+        "[\"H\",\"v3.3 → v3.4 checklist\",3]",
+        "[\"H\",\"v2.1 → v3.0 checklist\",4]",
+        "[\"H\",\"v2.0 → v2.1.0 checklist\",8]"
+      ],
+      "exceptions": [
+        "A legacy source may correctly report migrate-first; documented WARN rows 8, 13, and 15 remain non-gating."
+      ]
+    },
+    {
+      "id": "Z",
+      "kind": "required",
+      "detector": "Z",
+      "applies": "active",
+      "requires": [
+        "V"
+      ],
+      "effect": "Z",
+      "postcondition": "Z",
+      "recovery": "restore-checkpoint",
+      "instructions": [
+        {
+          "text": "After all required baselines and ordered actions, retain source/candidate/install/catalog/context identities and actual pre-stamp checks. Append exactly once the candidate-only preparation event to its existing root history carrier, preserving the entire old byte prefix and any separate structural-adoption entry. Append the exact UTF-8 preparation suffix with one leading LF and final LF. `\\n## {date} · Compact migration candidate\\n\\n- Prepared candidate: operation {operation_id}; source sha256 {source_sha256}; target Tackle {target_methodology}; catalog revision {revision}.\\n`. The displayed \\n denotes an actual LF. Use the validated context date, manifest-bound 64-hex operation_id/source_sha256, and validated pinned catalog semver target_methodology/positive integer revision, not caller text. It records candidate preparation only, never adoption, Ready or acceptance; a quoted/fenced occurrence is not the event. Validate actual unfenced Full dates in nondecreasing order and reconcile only exact pre-append identity or expected suffix/postinventory; missing/ambiguous history is pending and Lite gains no Full carrier. Then deliberately stamp the candidate, run distinct post-stamp checks and freeze it. Adopt only the validated copy at an evidenced task boundary with independent semantic/boundary admission, rechecked original/candidate/install/catalog/evidence hashes and actual cooperating locks before durable same-filesystem rename. Preserve checkpoint/original backup, record exact mappings/checks/revisions/rollback result, and reconcile interruptions only from matching physical inventories; conflicts hold without overwrite or cleanup. Restore only an unchanged adopted workspace through its verified sibling stage. A completed repeat validates its recorded physical/admission identity and changes no bytes. Historical intermediate release stamps, old command aliases and old selective/manual cutover recipes are provenance, not additional runtime steps. Use only the current pinned target/catalog operation; no migration creates Ready, completion, model permission or a release. Failure leaves the original authoritative except for the exact interrupted physical states that the recorded reconciliation can finish. For an unsupported or blocked route the owner may explicitly select a fresh remaining-work workspace, leaving the old source untouched.",
+          "sources": [
+            "[\"G\",\"v8.4 → v9.0 checklist\",7]"
+          ]
+        },
+        {
+          "text": "After all required baselines and ordered actions, retain source/candidate/install/catalog/context identities and actual pre-stamp checks. Append exactly once the candidate-only preparation event to its existing root history carrier, preserving the entire old byte prefix and any separate structural-adoption entry. Append the exact UTF-8 preparation suffix with one leading LF and final LF. `\\n## {date} · Compact migration candidate\\n\\n- Prepared candidate: operation {operation_id}; source sha256 {source_sha256}; target Tackle {target_methodology}; catalog revision {revision}.\\n`. The displayed \\n denotes an actual LF. Use the validated context date, manifest-bound 64-hex operation_id/source_sha256, and validated pinned catalog semver target_methodology/positive integer revision, not caller text. It records candidate preparation only, never adoption, Ready or acceptance; a quoted/fenced occurrence is not the event. Validate actual unfenced Full dates in nondecreasing order and reconcile only exact pre-append identity or expected suffix/postinventory; missing/ambiguous history is pending and Lite gains no Full carrier. Then deliberately stamp the candidate, run distinct post-stamp checks and freeze it. Adopt only the validated copy at an evidenced task boundary with independent semantic/boundary admission, rechecked original/candidate/install/catalog/evidence hashes and actual cooperating locks before durable same-filesystem rename. Preserve checkpoint/original backup, record exact mappings/checks/revisions/rollback result, and reconcile interruptions only from matching physical inventories; conflicts hold without overwrite or cleanup. Restore only an unchanged adopted workspace through its verified sibling stage. A completed repeat validates its recorded physical/admission identity and changes no bytes. Last, set the `**Methodology: Tackle 10.2.0**` line in the candidate AGENTS.md only after the baseline covers every Complete task. Then run `scripts/lint.py <slug>` again and expect 19 of 19 rows silent, retaining non-gating WARN exceptions. From now on row 14 requires that line in each Complete report. The stamped candidate remains unadopted until separate verified cutover; the source stamp is never silently changed. This target keeps `tackle-workspace/5` and adds no required workspace field; supported structural adapters act only on actual older source structure, not on an old stamp alone.",
+          "sources": [
+            "[\"G\",\"v10.1 → v10.2 checklist\",11]"
+          ]
+        },
+        {
+          "text": "After all required baselines and ordered actions, retain source/candidate/install/catalog/context identities and actual pre-stamp checks. Append exactly once the candidate-only preparation event to its existing root history carrier, preserving the entire old byte prefix and any separate structural-adoption entry. Append the exact UTF-8 preparation suffix with one leading LF and final LF. `\\n## {date} · Compact migration candidate\\n\\n- Prepared candidate: operation {operation_id}; source sha256 {source_sha256}; target Tackle {target_methodology}; catalog revision {revision}.\\n`. The displayed \\n denotes an actual LF. Use the validated context date, manifest-bound 64-hex operation_id/source_sha256, and validated pinned catalog semver target_methodology/positive integer revision, not caller text. It records candidate preparation only, never adoption, Ready or acceptance; a quoted/fenced occurrence is not the event. Validate actual unfenced Full dates in nondecreasing order and reconcile only exact pre-append identity or expected suffix/postinventory; missing/ambiguous history is pending and Lite gains no Full carrier. Then deliberately stamp the candidate, run distinct post-stamp checks and freeze it. Adopt only the validated copy at an evidenced task boundary with independent semantic/boundary admission, rechecked original/candidate/install/catalog/evidence hashes and actual cooperating locks before durable same-filesystem rename. Preserve checkpoint/original backup, record exact mappings/checks/revisions/rollback result, and reconcile interruptions only from matching physical inventories; conflicts hold without overwrite or cleanup. Restore only an unchanged adopted workspace through its verified sibling stage. A completed repeat validates its recorded physical/admission identity and changes no bytes. Historical intermediate release stamps, old command aliases and old selective/manual cutover recipes are provenance, not additional runtime steps. Use only the current pinned target/catalog operation; no migration creates Ready, completion, model permission or a release. Failure leaves the original authoritative except for the exact interrupted physical states that the recorded reconciliation can finish. For an unsupported or blocked route the owner may explicitly select a fresh remaining-work workspace, leaving the old source untouched.",
+          "sources": [
+            "[\"H\",\"v9.2.0 → v9.2.1 checklist\",3]",
+            "[\"H\",\"v9.1 → v9.2 checklist\",5]",
+            "[\"H\",\"v9.1.0 → v9.1.1 checklist\",6]",
+            "[\"H\",\"v9.0 → v9.1 checklist\",8]",
+            "[\"H\",\"v9.0.0 → v9.0.1 checklist\",5]",
+            "[\"H\",\"v8.4.0 → v8.4.1 checklist\",5]",
+            "[\"H\",\"v8.3 → v8.4 checklist\",5]",
+            "[\"H\",\"v8.2 → v8.3 checklist\",4]",
+            "[\"H\",\"v8.2.0 → v8.2.1 checklist\",3]"
+          ]
+        },
+        {
+          "text": "After all required baselines and ordered actions, retain source/candidate/install/catalog/context identities and actual pre-stamp checks. Append exactly once the candidate-only preparation event to its existing root history carrier, preserving the entire old byte prefix and any separate structural-adoption entry. Append the exact UTF-8 preparation suffix with one leading LF and final LF. `\\n## {date} · Compact migration candidate\\n\\n- Prepared candidate: operation {operation_id}; source sha256 {source_sha256}; target Tackle {target_methodology}; catalog revision {revision}.\\n`. The displayed \\n denotes an actual LF. Use the validated context date, manifest-bound 64-hex operation_id/source_sha256, and validated pinned catalog semver target_methodology/positive integer revision, not caller text. It records candidate preparation only, never adoption, Ready or acceptance; a quoted/fenced occurrence is not the event. Validate actual unfenced Full dates in nondecreasing order and reconcile only exact pre-append identity or expected suffix/postinventory; missing/ambiguous history is pending and Lite gains no Full carrier. Then deliberately stamp the candidate, run distinct post-stamp checks and freeze it. Adopt only the validated copy at an evidenced task boundary with independent semantic/boundary admission, rechecked original/candidate/install/catalog/evidence hashes and actual cooperating locks before durable same-filesystem rename. Preserve checkpoint/original backup, record exact mappings/checks/revisions/rollback result, and reconcile interruptions only from matching physical inventories; conflicts hold without overwrite or cleanup. Restore only an unchanged adopted workspace through its verified sibling stage. A completed repeat validates its recorded physical/admission identity and changes no bytes. Retain every exact old title/anchor used by an incoming link, or add that exact old anchor in the selected candidate and test the current incoming consumers before adoption; A static template alias cannot redirect every past title. Use installed schema adapters, not the historical inline candidate_board program. Preserve its observed legacy state/grade map and original reports; the mapping is provenance beside the checkpoint, never a second current-state or readiness source.",
+          "sources": [
+            "[\"H\",\"v8.1 → v8.2 checklist\",6]"
+          ]
+        },
+        {
+          "text": "After all required baselines and ordered actions, retain source/candidate/install/catalog/context identities and actual pre-stamp checks. Append exactly once the candidate-only preparation event to its existing root history carrier, preserving the entire old byte prefix and any separate structural-adoption entry. Append the exact UTF-8 preparation suffix with one leading LF and final LF. `\\n## {date} · Compact migration candidate\\n\\n- Prepared candidate: operation {operation_id}; source sha256 {source_sha256}; target Tackle {target_methodology}; catalog revision {revision}.\\n`. The displayed \\n denotes an actual LF. Use the validated context date, manifest-bound 64-hex operation_id/source_sha256, and validated pinned catalog semver target_methodology/positive integer revision, not caller text. It records candidate preparation only, never adoption, Ready or acceptance; a quoted/fenced occurrence is not the event. Validate actual unfenced Full dates in nondecreasing order and reconcile only exact pre-append identity or expected suffix/postinventory; missing/ambiguous history is pending and Lite gains no Full carrier. Then deliberately stamp the candidate, run distinct post-stamp checks and freeze it. Adopt only the validated copy at an evidenced task boundary with independent semantic/boundary admission, rechecked original/candidate/install/catalog/evidence hashes and actual cooperating locks before durable same-filesystem rename. Preserve checkpoint/original backup, record exact mappings/checks/revisions/rollback result, and reconcile interruptions only from matching physical inventories; conflicts hold without overwrite or cleanup. Restore only an unchanged adopted workspace through its verified sibling stage. A completed repeat validates its recorded physical/admission identity and changes no bytes. Historical intermediate release stamps, old command aliases and old selective/manual cutover recipes are provenance, not additional runtime steps. Use only the current pinned target/catalog operation; no migration creates Ready, completion, model permission or a release. Failure leaves the original authoritative except for the exact interrupted physical states that the recorded reconciliation can finish. For an unsupported or blocked route the owner may explicitly select a fresh remaining-work workspace, leaving the old source untouched.",
+          "sources": [
+            "[\"H\",\"v8.0 → v8.1 checklist\",5]"
+          ]
+        },
+        {
+          "text": "After all required baselines and ordered actions, retain source/candidate/install/catalog/context identities and actual pre-stamp checks. Append exactly once the candidate-only preparation event to its existing root history carrier, preserving the entire old byte prefix and any separate structural-adoption entry. Append the exact UTF-8 preparation suffix with one leading LF and final LF. `\\n## {date} · Compact migration candidate\\n\\n- Prepared candidate: operation {operation_id}; source sha256 {source_sha256}; target Tackle {target_methodology}; catalog revision {revision}.\\n`. The displayed \\n denotes an actual LF. Use the validated context date, manifest-bound 64-hex operation_id/source_sha256, and validated pinned catalog semver target_methodology/positive integer revision, not caller text. It records candidate preparation only, never adoption, Ready or acceptance; a quoted/fenced occurrence is not the event. Validate actual unfenced Full dates in nondecreasing order and reconcile only exact pre-append identity or expected suffix/postinventory; missing/ambiguous history is pending and Lite gains no Full carrier. Then deliberately stamp the candidate, run distinct post-stamp checks and freeze it. Adopt only the validated copy at an evidenced task boundary with independent semantic/boundary admission, rechecked original/candidate/install/catalog/evidence hashes and actual cooperating locks before durable same-filesystem rename. Preserve checkpoint/original backup, record exact mappings/checks/revisions/rollback result, and reconcile interruptions only from matching physical inventories; conflicts hold without overwrite or cleanup. Restore only an unchanged adopted workspace through its verified sibling stage. A completed repeat validates its recorded physical/admission identity and changes no bytes. The rollback rehearsal retains the exact original log/usage/evidence bytes and neighboring sentinel; never repair live history or discard required replay/rollback evidence. Disposal of an owned disposable probe is separate scoped authority, not automatic cleanup of job/original/foreign files.",
+          "sources": [
+            "[\"H\",\"v7.3 → v8.0 checklist\",6]"
+          ]
+        },
+        {
+          "text": "After all required baselines and ordered actions, retain source/candidate/install/catalog/context identities and actual pre-stamp checks. Append exactly once the candidate-only preparation event to its existing root history carrier, preserving the entire old byte prefix and any separate structural-adoption entry. Append the exact UTF-8 preparation suffix with one leading LF and final LF. `\\n## {date} · Compact migration candidate\\n\\n- Prepared candidate: operation {operation_id}; source sha256 {source_sha256}; target Tackle {target_methodology}; catalog revision {revision}.\\n`. The displayed \\n denotes an actual LF. Use the validated context date, manifest-bound 64-hex operation_id/source_sha256, and validated pinned catalog semver target_methodology/positive integer revision, not caller text. It records candidate preparation only, never adoption, Ready or acceptance; a quoted/fenced occurrence is not the event. Validate actual unfenced Full dates in nondecreasing order and reconcile only exact pre-append identity or expected suffix/postinventory; missing/ambiguous history is pending and Lite gains no Full carrier. Then deliberately stamp the candidate, run distinct post-stamp checks and freeze it. Adopt only the validated copy at an evidenced task boundary with independent semantic/boundary admission, rechecked original/candidate/install/catalog/evidence hashes and actual cooperating locks before durable same-filesystem rename. Preserve checkpoint/original backup, record exact mappings/checks/revisions/rollback result, and reconcile interruptions only from matching physical inventories; conflicts hold without overwrite or cleanup. Restore only an unchanged adopted workspace through its verified sibling stage. A completed repeat validates its recorded physical/admission identity and changes no bytes. Retain actual physical observations and current source/neighbor/checkpoint hashes for selected active work with completed/blocked/skipped/interrupted records, changed contract and legacy request interpretation; a boolean is insufficient. A later release needs a separate owner order, explicit selected paths and current global acceptance for each selected workspace, plus mandatory checks on all active work; Count their union once and keep unselected historical/parked diagnostics nongating. No empty board or old closure infers scope.",
+          "sources": [
+            "[\"H\",\"v7.3 → v8.0 checklist\",7]"
+          ]
+        },
+        {
+          "text": "After all required baselines and ordered actions, retain source/candidate/install/catalog/context identities and actual pre-stamp checks. Append exactly once the candidate-only preparation event to its existing root history carrier, preserving the entire old byte prefix and any separate structural-adoption entry. Append the exact UTF-8 preparation suffix with one leading LF and final LF. `\\n## {date} · Compact migration candidate\\n\\n- Prepared candidate: operation {operation_id}; source sha256 {source_sha256}; target Tackle {target_methodology}; catalog revision {revision}.\\n`. The displayed \\n denotes an actual LF. Use the validated context date, manifest-bound 64-hex operation_id/source_sha256, and validated pinned catalog semver target_methodology/positive integer revision, not caller text. It records candidate preparation only, never adoption, Ready or acceptance; a quoted/fenced occurrence is not the event. Validate actual unfenced Full dates in nondecreasing order and reconcile only exact pre-append identity or expected suffix/postinventory; missing/ambiguous history is pending and Lite gains no Full carrier. Then deliberately stamp the candidate, run distinct post-stamp checks and freeze it. Adopt only the validated copy at an evidenced task boundary with independent semantic/boundary admission, rechecked original/candidate/install/catalog/evidence hashes and actual cooperating locks before durable same-filesystem rename. Preserve checkpoint/original backup, record exact mappings/checks/revisions/rollback result, and reconcile interruptions only from matching physical inventories; conflicts hold without overwrite or cleanup. Restore only an unchanged adopted workspace through its verified sibling stage. A completed repeat validates its recorded physical/admission identity and changes no bytes. Historical intermediate release stamps, old command aliases and old selective/manual cutover recipes are provenance, not additional runtime steps. Use only the current pinned target/catalog operation; no migration creates Ready, completion, model permission or a release. Failure leaves the original authoritative except for the exact interrupted physical states that the recorded reconciliation can finish. For an unsupported or blocked route the owner may explicitly select a fresh remaining-work workspace, leaving the old source untouched.",
+          "sources": [
+            "[\"H\",\"v7.0 → v7.1 checklist\",6]"
+          ]
+        },
+        {
+          "text": "After all required baselines and ordered actions, retain source/candidate/install/catalog/context identities and actual pre-stamp checks. Append exactly once the candidate-only preparation event to its existing root history carrier, preserving the entire old byte prefix and any separate structural-adoption entry. Append the exact UTF-8 preparation suffix with one leading LF and final LF. `\\n## {date} · Compact migration candidate\\n\\n- Prepared candidate: operation {operation_id}; source sha256 {source_sha256}; target Tackle {target_methodology}; catalog revision {revision}.\\n`. The displayed \\n denotes an actual LF. Use the validated context date, manifest-bound 64-hex operation_id/source_sha256, and validated pinned catalog semver target_methodology/positive integer revision, not caller text. It records candidate preparation only, never adoption, Ready or acceptance; a quoted/fenced occurrence is not the event. Validate actual unfenced Full dates in nondecreasing order and reconcile only exact pre-append identity or expected suffix/postinventory; missing/ambiguous history is pending and Lite gains no Full carrier. Then deliberately stamp the candidate, run distinct post-stamp checks and freeze it. Adopt only the validated copy at an evidenced task boundary with independent semantic/boundary admission, rechecked original/candidate/install/catalog/evidence hashes and actual cooperating locks before durable same-filesystem rename. Preserve checkpoint/original backup, record exact mappings/checks/revisions/rollback result, and reconcile interruptions only from matching physical inventories; conflicts hold without overwrite or cleanup. Restore only an unchanged adopted workspace through its verified sibling stage. A completed repeat validates its recorded physical/admission identity and changes no bytes. Legacy telemetry/sidecar schemas remain historical; current optional telemetry uses tackle-observability-telemetry/1 while the Markdown ledger stays universal. Restore exact checkpoint bytes through the physical operation rather than deleting rows/markers in live history. Optional telemetry failure does not block closure and adoption never requires historical backfill.",
+          "sources": [
+            "[\"H\",\"v7.1 → v7.2 checklist\",7]"
+          ]
+        },
+        {
+          "text": "After all required baselines and ordered actions, retain source/candidate/install/catalog/context identities and actual pre-stamp checks. Append exactly once the candidate-only preparation event to its existing root history carrier, preserving the entire old byte prefix and any separate structural-adoption entry. Append the exact UTF-8 preparation suffix with one leading LF and final LF. `\\n## {date} · Compact migration candidate\\n\\n- Prepared candidate: operation {operation_id}; source sha256 {source_sha256}; target Tackle {target_methodology}; catalog revision {revision}.\\n`. The displayed \\n denotes an actual LF. Use the validated context date, manifest-bound 64-hex operation_id/source_sha256, and validated pinned catalog semver target_methodology/positive integer revision, not caller text. It records candidate preparation only, never adoption, Ready or acceptance; a quoted/fenced occurrence is not the event. Validate actual unfenced Full dates in nondecreasing order and reconcile only exact pre-append identity or expected suffix/postinventory; missing/ambiguous history is pending and Lite gains no Full carrier. Then deliberately stamp the candidate, run distinct post-stamp checks and freeze it. Adopt only the validated copy at an evidenced task boundary with independent semantic/boundary admission, rechecked original/candidate/install/catalog/evidence hashes and actual cooperating locks before durable same-filesystem rename. Preserve checkpoint/original backup, record exact mappings/checks/revisions/rollback result, and reconcile interruptions only from matching physical inventories; conflicts hold without overwrite or cleanup. Restore only an unchanged adopted workspace through its verified sibling stage. A completed repeat validates its recorded physical/admission identity and changes no bytes. Historical intermediate release stamps, old command aliases and old selective/manual cutover recipes are provenance, not additional runtime steps. Use only the current pinned target/catalog operation; no migration creates Ready, completion, model permission or a release. Failure leaves the original authoritative except for the exact interrupted physical states that the recorded reconciliation can finish. For an unsupported or blocked route the owner may explicitly select a fresh remaining-work workspace, leaving the old source untouched.",
+          "sources": [
+            "[\"H\",\"v7.2 → v7.3 checklist\",5]",
+            "[\"H\",\"v6.1 → v7.0 checklist\",4]",
+            "[\"H\",\"v6.0 → v6.1 checklist\",3]",
+            "[\"H\",\"v5.6 → v6.0 checklist\",3]",
+            "[\"H\",\"v5.5 → v5.6 checklist\",4]",
+            "[\"H\",\"v5.4 → v5.5 checklist\",3]",
+            "[\"H\",\"v5.3 → v5.4 checklist\",2]",
+            "[\"H\",\"v5.2 → v5.3 checklist\",6]",
+            "[\"H\",\"v5.1 → v5.2 checklist\",6]",
+            "[\"H\",\"v5.0 → v5.1 checklist\",6]",
+            "[\"H\",\"v4.4 → v5.0 checklist\",3]",
+            "[\"H\",\"v4.3 → v4.4 checklist\",2]",
+            "[\"H\",\"v4.2 → v4.3 checklist\",3]",
+            "[\"H\",\"v4.1 → v4.2 checklist\",2]",
+            "[\"H\",\"v4.0 → v4.1 checklist\",3]",
+            "[\"H\",\"v3.4 → v4.0 checklist\",8]",
+            "[\"H\",\"v3.3 → v3.4 checklist\",4]",
+            "[\"H\",\"v3.2 → v3.3 checklist\",3]",
+            "[\"H\",\"v3.0 → v3.1 checklist\",6]",
+            "[\"H\",\"Artifact renames\",4]",
+            "[\"H\",\"v2.1 → v3.0 checklist\",9]",
+            "[\"H\",\"v2.0 → v2.1.0 checklist\",9]"
+          ]
+        }
+      ],
+      "provenance_ids": [
+        "[\"G\",\"v8.4 → v9.0 checklist\",7]",
+        "[\"G\",\"v10.1 → v10.2 checklist\",11]",
+        "[\"H\",\"v9.2.0 → v9.2.1 checklist\",3]",
+        "[\"H\",\"v9.1 → v9.2 checklist\",5]",
+        "[\"H\",\"v9.1.0 → v9.1.1 checklist\",6]",
+        "[\"H\",\"v9.0 → v9.1 checklist\",8]",
+        "[\"H\",\"v9.0.0 → v9.0.1 checklist\",5]",
+        "[\"H\",\"v8.4.0 → v8.4.1 checklist\",5]",
+        "[\"H\",\"v8.3 → v8.4 checklist\",5]",
+        "[\"H\",\"v8.2 → v8.3 checklist\",4]",
+        "[\"H\",\"v8.2.0 → v8.2.1 checklist\",3]",
+        "[\"H\",\"v8.1 → v8.2 checklist\",6]",
+        "[\"H\",\"v8.0 → v8.1 checklist\",5]",
+        "[\"H\",\"v7.3 → v8.0 checklist\",6]",
+        "[\"H\",\"v7.3 → v8.0 checklist\",7]",
+        "[\"H\",\"v7.0 → v7.1 checklist\",6]",
+        "[\"H\",\"v7.1 → v7.2 checklist\",7]",
+        "[\"H\",\"v7.2 → v7.3 checklist\",5]",
+        "[\"H\",\"v6.1 → v7.0 checklist\",4]",
+        "[\"H\",\"v6.0 → v6.1 checklist\",3]",
+        "[\"H\",\"v5.6 → v6.0 checklist\",3]",
+        "[\"H\",\"v5.5 → v5.6 checklist\",4]",
+        "[\"H\",\"v5.4 → v5.5 checklist\",3]",
+        "[\"H\",\"v5.3 → v5.4 checklist\",2]",
+        "[\"H\",\"v5.2 → v5.3 checklist\",6]",
+        "[\"H\",\"v5.1 → v5.2 checklist\",6]",
+        "[\"H\",\"v5.0 → v5.1 checklist\",6]",
+        "[\"H\",\"v4.4 → v5.0 checklist\",3]",
+        "[\"H\",\"v4.3 → v4.4 checklist\",2]",
+        "[\"H\",\"v4.2 → v4.3 checklist\",3]",
+        "[\"H\",\"v4.1 → v4.2 checklist\",2]",
+        "[\"H\",\"v4.0 → v4.1 checklist\",3]",
+        "[\"H\",\"v3.4 → v4.0 checklist\",8]",
+        "[\"H\",\"v3.3 → v3.4 checklist\",4]",
+        "[\"H\",\"v3.2 → v3.3 checklist\",3]",
+        "[\"H\",\"v3.0 → v3.1 checklist\",6]",
+        "[\"H\",\"Artifact renames\",4]",
+        "[\"H\",\"v2.1 → v3.0 checklist\",9]",
+        "[\"H\",\"v2.0 → v2.1.0 checklist\",9]"
+      ],
+      "exceptions": [
+        "Any failed or interrupted cutover leaves the original authoritative unless exact recorded physical states permit reconciliation."
+      ]
+    }
+  ],
+  "provenance": {
+    "groups": [
+      {
+        "source": "G",
+        "heading": "v8.4 → v9.0 checklist",
+        "start": 44,
+        "end": 74,
+        "sha256": "f3250ed12d9cb41ca0ceb6fb888eb9bb0ea991c7fbfd2dffba58f16c09ea9762",
+        "families": [
+          "I",
+          "S",
+          "B",
+          "A",
+          "O",
+          "M",
+          "Z"
+        ]
+      },
+      {
+        "source": "G",
+        "heading": "v9.2 → v9.3 checklist",
+        "start": 75,
+        "end": 85,
+        "sha256": "8d2d2234d2072d2b7a50c65ab1d6e1e7bc5947f11c99160c303b5b164e9a6770",
+        "families": [
+          "W",
+          "O"
+        ]
+      },
+      {
+        "source": "G",
+        "heading": "v9.3 → v10.0 checklist",
+        "start": 86,
+        "end": 102,
+        "sha256": "54030878658f17ff3931632bc0af31601fd4aef20df8da16e80125c86c16be6c",
+        "families": [
+          "I",
+          "W",
+          "I",
+          "E",
+          "J"
+        ]
+      },
+      {
+        "source": "G",
+        "heading": "v10.0 → v10.1 checklist",
+        "start": 103,
+        "end": 117,
+        "sha256": "0c51228107207d4e4fc566a8ab9ceb662da0a1ca1a5c5ecfad8dbfb22f052363",
+        "families": [
+          "S",
+          "E",
+          "E",
+          "E",
+          "H",
+          "V",
+          "W",
+          "B",
+          "J"
+        ]
+      },
+      {
+        "source": "G",
+        "heading": "v10.1 → v10.2 checklist",
+        "start": 118,
+        "end": 134,
+        "sha256": "34b3b20b638486863cede76af6982ec6c78559d750bd5beed7c26e00f11c916d",
+        "families": [
+          "P",
+          "R",
+          "R",
+          "R",
+          "B",
+          "B",
+          "B",
+          "V",
+          "A",
+          "O",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v9.2.0 → v9.2.1 checklist",
+        "start": 30,
+        "end": 46,
+        "sha256": "977e55c3247158261089ca32434a98dff16d766910c1dd2ac053355c445ce3dc",
+        "families": [
+          "P",
+          "W",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v9.1 → v9.2 checklist",
+        "start": 47,
+        "end": 69,
+        "sha256": "99acf5be566f9670c74a4aee924af94be768ccda1edc08ef1cc6219715100122",
+        "families": [
+          "P",
+          "B",
+          "N",
+          "Q",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v9.1.0 → v9.1.1 checklist",
+        "start": 70,
+        "end": 91,
+        "sha256": "cdc27f4cb793a4f3ea0b5a2054dba26720459cc6c51ed29e6a85a5bbb5db0c78",
+        "families": [
+          "P",
+          "E",
+          "M",
+          "J",
+          "W",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v9.0 → v9.1 checklist",
+        "start": 92,
+        "end": 125,
+        "sha256": "3ba4af9549077780aa9030ba2c595863cfcd65195090ba5a46e570abed5bed47",
+        "families": [
+          "P",
+          "V",
+          "R",
+          "R",
+          "H",
+          "E",
+          "H",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v9.0.0 → v9.0.1 checklist",
+        "start": 126,
+        "end": 156,
+        "sha256": "194e3f1a836a442b09323a2df61c710a91b367b442b084770c82bc0c1a148bd6",
+        "families": [
+          "P",
+          "M",
+          "M",
+          "B",
+          "Z",
+          "E"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v8.4.0 → v8.4.1 checklist",
+        "start": 157,
+        "end": 182,
+        "sha256": "8ce9763cdc5a47b662f49963aa82e60b7577471d4445a274f88d5109f7bddce0",
+        "families": [
+          "P",
+          "V",
+          "B",
+          "B",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v8.3 → v8.4 checklist",
+        "start": 183,
+        "end": 224,
+        "sha256": "20c4d59177683dc18730eb2f070dca891f263a9edc391029ab10ebb4afb7d27d",
+        "families": [
+          "P",
+          "A",
+          "S",
+          "V",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v8.2 → v8.3 checklist",
+        "start": 225,
+        "end": 248,
+        "sha256": "00cdf4ef04195b5cfeacb16378fffc7368d6039fb85c03b5e62ba8cef6d24b02",
+        "families": [
+          "P",
+          "E",
+          "E",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v8.2.0 → v8.2.1 checklist",
+        "start": 249,
+        "end": 263,
+        "sha256": "3732db5114badd30e722268c126eb1f4f5b43c50609129a2d34ec07b136763d4",
+        "families": [
+          "P",
+          "E",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v8.1 → v8.2 checklist",
+        "start": 264,
+        "end": 348,
+        "sha256": "de84340cfe893cca5fd43f1a03004cfb53406c7284056a70a1ff88465a546d48",
+        "families": [
+          "P",
+          "B",
+          "A",
+          "B",
+          "H",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v8.0 → v8.1 checklist",
+        "start": 349,
+        "end": 377,
+        "sha256": "893cdce7ca2ebedcd9c7997eba390e0f368a2acb914d89336e0f65f2c6608f2c",
+        "families": [
+          "P",
+          "A",
+          "B",
+          "V",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "Historical migration shape",
+        "start": 378,
+        "end": 390,
+        "sha256": "b31bcbcbbb59981b54bb33894eb1d4b8ac248fa7795b3592cb1a71ab1cf0fb27",
+        "families": [
+          "S",
+          "P",
+          "A",
+          "B",
+          "B",
+          "V"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v7.3 → v8.0 checklist",
+        "start": 391,
+        "end": 441,
+        "sha256": "d260fa2a4ab22cabccde5bf1e233464d77209e6caeb749fe6e4c3db56572677e",
+        "families": [
+          "P",
+          "P",
+          "B",
+          "A",
+          "E",
+          "Z",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v7.0 → v7.1 checklist",
+        "start": 442,
+        "end": 452,
+        "sha256": "18b80c9831567412ac8cc4ebb93facc89750343be679d86e73c56ddf9be80219",
+        "families": [
+          "I",
+          "I",
+          "A",
+          "I",
+          "E",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v7.1 → v7.2 checklist",
+        "start": 453,
+        "end": 485,
+        "sha256": "fb2c8b3ce31c5dfdc4c1877980c488a7e072f81d891c1ec065226ecf941c7038",
+        "families": [
+          "P",
+          "E",
+          "E",
+          "E",
+          "E",
+          "V",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v7.2 → v7.3 checklist",
+        "start": 486,
+        "end": 507,
+        "sha256": "5e009888f48bdca9702cdd3358b8604dab9ef8e739f1d1936f6cbdfcc9ba31af",
+        "families": [
+          "B",
+          "B",
+          "E",
+          "B",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v6.1 → v7.0 checklist",
+        "start": 508,
+        "end": 517,
+        "sha256": "a657e3f47f34991b1d4e974e8849daba67296de861e2113f802d6780c4b6684b",
+        "families": [
+          "A",
+          "I",
+          "A",
+          "Z",
+          "V"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v6.0 → v6.1 checklist",
+        "start": 518,
+        "end": 525,
+        "sha256": "5266ccfc6ed22bcb711e25180860d7f8c3b928ecfc811c16610021d1dcdacae7",
+        "families": [
+          "E",
+          "E",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v5.6 → v6.0 checklist",
+        "start": 526,
+        "end": 533,
+        "sha256": "d968d86f42b8e2756f26bf98bfa5759c823b8f6cee51e8e6801a3e741898412c",
+        "families": [
+          "E",
+          "E",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v5.5 → v5.6 checklist",
+        "start": 534,
+        "end": 542,
+        "sha256": "fe0f13addf35c6bb0c9cca8350f311e1a1244ff8dff241cae1e25c060cf3336e",
+        "families": [
+          "R",
+          "H",
+          "O",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v5.4 → v5.5 checklist",
+        "start": 543,
+        "end": 550,
+        "sha256": "007cdbe9e9a7075e4501aa8f573c73e9b637f62b4ed789f82feae96d43d49ca9",
+        "families": [
+          "H",
+          "B",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v5.3 → v5.4 checklist",
+        "start": 551,
+        "end": 557,
+        "sha256": "966c0f1c988358422f0638e7f149c3b9ed90d2d59ea5705a0c5497bbc074d2c2",
+        "families": [
+          "V",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v5.2 → v5.3 checklist",
+        "start": 558,
+        "end": 582,
+        "sha256": "0e5e62a55da0a1cbac056153ac98b242c3ef19a5540e13d6b5385015224f450b",
+        "families": [
+          "B",
+          "B",
+          "B",
+          "B",
+          "V",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v5.1 → v5.2 checklist",
+        "start": 583,
+        "end": 609,
+        "sha256": "bd6b5c55d20b485634c3033b96d57725142ad9685dcf1e4139bae6f2981e6c59",
+        "families": [
+          "E",
+          "M",
+          "M",
+          "V",
+          "B",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v5.0 → v5.1 checklist",
+        "start": 610,
+        "end": 620,
+        "sha256": "93a0ee99428f07b5911b1b950cae0155c7667a43310b96ba10856d2dcb827ba9",
+        "families": [
+          "O",
+          "B",
+          "O",
+          "O",
+          "B",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v4.4 → v5.0 checklist",
+        "start": 621,
+        "end": 628,
+        "sha256": "02b60b94e4dcdd8ae0e46e85636faa19459fa1c839fd15f60d375b6f5a6239f2",
+        "families": [
+          "E",
+          "V",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v4.3 → v4.4 checklist",
+        "start": 629,
+        "end": 635,
+        "sha256": "d6cd2ab8c07843c44217b14cefa1a266b860d89d4b10c9ed7040c448163afff7",
+        "families": [
+          "A",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v4.2 → v4.3 checklist",
+        "start": 636,
+        "end": 643,
+        "sha256": "57f6375b0aa2dcbd53acd08f3188a960f99e4971a07320d456a99b44229bebe8",
+        "families": [
+          "E",
+          "E",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v4.1 → v4.2 checklist",
+        "start": 644,
+        "end": 650,
+        "sha256": "3ad5fe7a229550b866b6f5a2380144517322e110a53c88f906a24d875a281930",
+        "families": [
+          "E",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v4.0 → v4.1 checklist",
+        "start": 651,
+        "end": 658,
+        "sha256": "6539e5d712968362e50050b6596eadb55d260c79bb3ef3b2656ba90521c21943",
+        "families": [
+          "I",
+          "O",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v3.4 → v4.0 checklist",
+        "start": 659,
+        "end": 671,
+        "sha256": "e21ea3282e6464d6f8e042cd5f4a8ff0667f951e335b6f6055e00592b350ac40",
+        "families": [
+          "B",
+          "B",
+          "O",
+          "A",
+          "M",
+          "V",
+          "O",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v3.3 → v3.4 checklist",
+        "start": 672,
+        "end": 680,
+        "sha256": "306616676f4c879a59d8e5808a3fe456d392dd264318bf1f2144ef8a12a41289",
+        "families": [
+          "A",
+          "O",
+          "V",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v3.2 → v3.3 checklist",
+        "start": 681,
+        "end": 688,
+        "sha256": "1217f31ffe2e6ab4cae08e05c3607d4e1350c2dae0de3cd02346808d89ccc4f7",
+        "families": [
+          "M",
+          "R",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v3.0 → v3.1 checklist",
+        "start": 689,
+        "end": 699,
+        "sha256": "a1b07b61e3ea4562b5628d81006b5fb571f6cc5fa798606774c5bfa9812b058d",
+        "families": [
+          "B",
+          "E",
+          "E",
+          "B",
+          "E",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "Artifact renames",
+        "start": 700,
+        "end": 708,
+        "sha256": "48f6cef548ed868b84dc15386aae2f2e3a9161e9a721a18d2b75a3cdf6fb9203",
+        "families": [
+          "S",
+          "S",
+          "P",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "Historical structural conformance",
+        "start": 709,
+        "end": 718,
+        "sha256": "bfb53a7a828066b6a8823b87b89ee972ec645d38d0f1fa711f72a4e63fc258b1",
+        "families": [
+          "S",
+          "A",
+          "A",
+          "B"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "Historical citations",
+        "start": 719,
+        "end": 725,
+        "sha256": "144fcccfd7d2114273ad9ec7d4fed0873bc41742fea338458b0c1d1da5d61e77",
+        "families": [
+          "B"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v2.1 → v3.0 checklist",
+        "start": 726,
+        "end": 739,
+        "sha256": "cd27b560ccbf8f66e81747988dc3e41f46275a510af45717d7a2c1556c7cf330",
+        "families": [
+          "B",
+          "E",
+          "B",
+          "V",
+          "B",
+          "M",
+          "E",
+          "M",
+          "Z"
+        ]
+      },
+      {
+        "source": "H",
+        "heading": "v2.0 → v2.1.0 checklist",
+        "start": 740,
+        "end": 752,
+        "sha256": "71ed780135d1a4bd16402b3eec44d718e095eb6859da58d40fc5734805e6b5b6",
+        "families": [
+          "A",
+          "B",
+          "B",
+          "B",
+          "O",
+          "Q",
+          "M",
+          "V",
+          "Z"
+        ]
+      }
+    ],
+    "items": [
+      {
+        "source": "G",
+        "heading": "v8.4 → v9.0 checklist",
+        "index": 1,
+        "sha256": "e48ac9cad96aee8575d519f7c00b1b1ebeebbf3bdaf8bb81b18d68bfde0f8175",
+        "family": "I"
+      },
+      {
+        "source": "G",
+        "heading": "v8.4 → v9.0 checklist",
+        "index": 2,
+        "sha256": "c6fb4a6a505b26fca7ccfc3c4d7614825967d40c63d152d2bdce1fd3fd5a9cbb",
+        "family": "S"
+      },
+      {
+        "source": "G",
+        "heading": "v8.4 → v9.0 checklist",
+        "index": 3,
+        "sha256": "1713c32c74688d0b67bce7d15dd5048f6ef9fdd5bfc47d1e0b60f18829637b7d",
+        "family": "B"
+      },
+      {
+        "source": "G",
+        "heading": "v8.4 → v9.0 checklist",
+        "index": 4,
+        "sha256": "89d23ea5ec531b5a652f36b5b84bd5b0558f74ff6c6d3dba49b0effcd07921c0",
+        "family": "A"
+      },
+      {
+        "source": "G",
+        "heading": "v8.4 → v9.0 checklist",
+        "index": 5,
+        "sha256": "8b5e06d7d7726640adf89d77897e018f375b20a8e77c93e3b6aa3aba4a2b4b1b",
+        "family": "O"
+      },
+      {
+        "source": "G",
+        "heading": "v8.4 → v9.0 checklist",
+        "index": 6,
+        "sha256": "c6a1712863c548be7f62264029a25ae9bb68a2c1a34caf7aa7d0081f4de0fd43",
+        "family": "M"
+      },
+      {
+        "source": "G",
+        "heading": "v8.4 → v9.0 checklist",
+        "index": 7,
+        "sha256": "f99e7121677e50b56a281860330ca50ddc10b5964bc7adb0562f5453b7986e75",
+        "family": "Z"
+      },
+      {
+        "source": "G",
+        "heading": "v9.2 → v9.3 checklist",
+        "index": 1,
+        "sha256": "a6431c992b5ee0c3d19679ac299dae2c0c4fca30225b378190d8e271a7caafce",
+        "family": "W"
+      },
+      {
+        "source": "G",
+        "heading": "v9.2 → v9.3 checklist",
+        "index": 2,
+        "sha256": "c9d15927a8fbee1f51a1d29c05dc582242405fc368aef15e4b6dc2794dad6144",
+        "family": "O"
+      },
+      {
+        "source": "G",
+        "heading": "v9.3 → v10.0 checklist",
+        "index": 1,
+        "sha256": "a8b0dca5cb44c8f6030d607c30563adaf613c9013a91091fe356fb467640f3c4",
+        "family": "I"
+      },
+      {
+        "source": "G",
+        "heading": "v9.3 → v10.0 checklist",
+        "index": 2,
+        "sha256": "885e9961d78a6c3c4cb674f5643e2e2b36e75b2a1b432a2c222d9f484e0154a2",
+        "family": "W"
+      },
+      {
+        "source": "G",
+        "heading": "v9.3 → v10.0 checklist",
+        "index": 3,
+        "sha256": "2f1b2cbcfdb96435a6eb9729141196c485cbf1dfc72eac31ae151e4756b815fe",
+        "family": "I"
+      },
+      {
+        "source": "G",
+        "heading": "v9.3 → v10.0 checklist",
+        "index": 4,
+        "sha256": "8a028af28afd5546c866991b5496575138db6b807a2e0b02444a4d2078eae8a0",
+        "family": "E"
+      },
+      {
+        "source": "G",
+        "heading": "v9.3 → v10.0 checklist",
+        "index": 5,
+        "sha256": "4c691434eb46a6035599510865be39b07966c3cb508a9ab08b39e706bef66ca6",
+        "family": "J"
+      },
+      {
+        "source": "G",
+        "heading": "v10.0 → v10.1 checklist",
+        "index": 1,
+        "sha256": "b7ea575e192ac707483e70ae2c8a5aab7ce6ddca4cfbc995714580571daa9c15",
+        "family": "S"
+      },
+      {
+        "source": "G",
+        "heading": "v10.0 → v10.1 checklist",
+        "index": 2,
+        "sha256": "5309d4726f7c7ca1bc31afda8102b0412300d9bb94fb1932b05ed5fc161347b4",
+        "family": "E"
+      },
+      {
+        "source": "G",
+        "heading": "v10.0 → v10.1 checklist",
+        "index": 3,
+        "sha256": "ca0ed70e6073f8053a27d53fbb33285f91580da4024bbec3acc48baf1163ba0f",
+        "family": "E"
+      },
+      {
+        "source": "G",
+        "heading": "v10.0 → v10.1 checklist",
+        "index": 4,
+        "sha256": "37b6fddd36bf77096b50daa6832e8745af0be10097a7f1460d83d44131745ec6",
+        "family": "E"
+      },
+      {
+        "source": "G",
+        "heading": "v10.0 → v10.1 checklist",
+        "index": 5,
+        "sha256": "541aa07e0c68de889ba49f7729333031b9be43d44480123c27ec76029978b522",
+        "family": "H"
+      },
+      {
+        "source": "G",
+        "heading": "v10.0 → v10.1 checklist",
+        "index": 6,
+        "sha256": "1a067159c67937e8841d29be5067c4953209bf99ec52e71380045ded248b8131",
+        "family": "V"
+      },
+      {
+        "source": "G",
+        "heading": "v10.0 → v10.1 checklist",
+        "index": 7,
+        "sha256": "cff83ace0fbea9c997bf4e0c36e952da532537ed96444c5b3bb1a17629eec53a",
+        "family": "W"
+      },
+      {
+        "source": "G",
+        "heading": "v10.0 → v10.1 checklist",
+        "index": 8,
+        "sha256": "9d32511ba6dfce0322234fa81fb5fdf25bdfe1fe08ed4261191ef3591dd14963",
+        "family": "B"
+      },
+      {
+        "source": "G",
+        "heading": "v10.0 → v10.1 checklist",
+        "index": 9,
+        "sha256": "dbec4e139ea395f2698434b98f7aae6a8f80b5344d985cd0257638439f7bf192",
+        "family": "J"
+      },
+      {
+        "source": "G",
+        "heading": "v10.1 → v10.2 checklist",
+        "index": 1,
+        "sha256": "0d70c7a23114068258c2915a52543294ef89509a93f53a6e1eb6aa72e02d6791",
+        "family": "P"
+      },
+      {
+        "source": "G",
+        "heading": "v10.1 → v10.2 checklist",
+        "index": 2,
+        "sha256": "fd33c2a4ffe8a6d897624b2967b0630b6aa082dee1204c56ad85239b5e8c4219",
+        "family": "R"
+      },
+      {
+        "source": "G",
+        "heading": "v10.1 → v10.2 checklist",
+        "index": 3,
+        "sha256": "0c82376a76ac9ffa98f8d414414e529490172eb2c9a9bf0519c617717b9e48bb",
+        "family": "R"
+      },
+      {
+        "source": "G",
+        "heading": "v10.1 → v10.2 checklist",
+        "index": 4,
+        "sha256": "9fcacfdc1cd12b8eb2f113bd3c8ed850af4500f35e0777846099fef1bdd57f44",
+        "family": "R"
+      },
+      {
+        "source": "G",
+        "heading": "v10.1 → v10.2 checklist",
+        "index": 5,
+        "sha256": "4c586f300f4ddfdd143d4de9b708f1307621123f71b658bd90eed055daaedfae",
+        "family": "B"
+      },
+      {
+        "source": "G",
+        "heading": "v10.1 → v10.2 checklist",
+        "index": 6,
+        "sha256": "d20a5d18a06f853619742be8c88a616a1b5070b672f7c0c8b69df83fe227cf68",
+        "family": "B"
+      },
+      {
+        "source": "G",
+        "heading": "v10.1 → v10.2 checklist",
+        "index": 7,
+        "sha256": "30c94110849cf98060e960645b0e8e7eb01e99553ee0c4dc7665a0ae86ced900",
+        "family": "B"
+      },
+      {
+        "source": "G",
+        "heading": "v10.1 → v10.2 checklist",
+        "index": 8,
+        "sha256": "c79ad34427410ab5f76c46d24f6f13c32605f5c77b3f6f3f233b5ef7f2e384aa",
+        "family": "V"
+      },
+      {
+        "source": "G",
+        "heading": "v10.1 → v10.2 checklist",
+        "index": 9,
+        "sha256": "a83d63d9519e7911a572d9af88030513c8fe3ed01af8efb8751acba0bd46f331",
+        "family": "A"
+      },
+      {
+        "source": "G",
+        "heading": "v10.1 → v10.2 checklist",
+        "index": 10,
+        "sha256": "a799fa9834844b715d8aa15c5278a8d128d63f71d7b1fa4b27d2b5894cc72791",
+        "family": "O"
+      },
+      {
+        "source": "G",
+        "heading": "v10.1 → v10.2 checklist",
+        "index": 11,
+        "sha256": "294c5f3591670673ae7e1fa86f8fe8c82e377d9960516e370f6ed8bcdfebc1a8",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v9.2.0 → v9.2.1 checklist",
+        "index": 1,
+        "sha256": "523a9ee7e919934eba84b15494a9c269afb47be507a836d3562cab0ba7f106e3",
+        "family": "P"
+      },
+      {
+        "source": "H",
+        "heading": "v9.2.0 → v9.2.1 checklist",
+        "index": 2,
+        "sha256": "f4ed8d68b298fc69792fd7b336ceaab98c35849860cc32290e591222b24ff585",
+        "family": "W"
+      },
+      {
+        "source": "H",
+        "heading": "v9.2.0 → v9.2.1 checklist",
+        "index": 3,
+        "sha256": "a3f9a124f563a5166a8e8ca7db07982a7c8d23fa12d5c7cacd3e314df51a96ec",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v9.1 → v9.2 checklist",
+        "index": 1,
+        "sha256": "523a9ee7e919934eba84b15494a9c269afb47be507a836d3562cab0ba7f106e3",
+        "family": "P"
+      },
+      {
+        "source": "H",
+        "heading": "v9.1 → v9.2 checklist",
+        "index": 2,
+        "sha256": "c99a06d23822fcd9b6d3bf0feb1dfb9eb0df40449f754e1dc0981b758c091628",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v9.1 → v9.2 checklist",
+        "index": 3,
+        "sha256": "c8b8f7afbe4f96da4d93cc85af16e084402e6b0e51507d267a686b1a8fc3906f",
+        "family": "N"
+      },
+      {
+        "source": "H",
+        "heading": "v9.1 → v9.2 checklist",
+        "index": 4,
+        "sha256": "47e7640acd6eea3aa17d7ed4cc977a561a83284ca2f5cc20441d7d0eafed6421",
+        "family": "Q"
+      },
+      {
+        "source": "H",
+        "heading": "v9.1 → v9.2 checklist",
+        "index": 5,
+        "sha256": "f58f5471f65ec5b226b1d9bc0e1010f21d8f38ed36cc9f8d13ad1e4657e70b58",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v9.1.0 → v9.1.1 checklist",
+        "index": 1,
+        "sha256": "523a9ee7e919934eba84b15494a9c269afb47be507a836d3562cab0ba7f106e3",
+        "family": "P"
+      },
+      {
+        "source": "H",
+        "heading": "v9.1.0 → v9.1.1 checklist",
+        "index": 2,
+        "sha256": "577d3e722302e6ac817435105adf42cb831e0aada9972a1cc488912a0dbc4e11",
+        "family": "E"
+      },
+      {
+        "source": "H",
+        "heading": "v9.1.0 → v9.1.1 checklist",
+        "index": 3,
+        "sha256": "345682d36dd379950b25cf464795f44d4750e78864acfcbce2a2c320cce06648",
+        "family": "M"
+      },
+      {
+        "source": "H",
+        "heading": "v9.1.0 → v9.1.1 checklist",
+        "index": 4,
+        "sha256": "342dca62b05155d2becce2de6a7e4eca51082d7043c7c0dedeb326347717dbd1",
+        "family": "J"
+      },
+      {
+        "source": "H",
+        "heading": "v9.1.0 → v9.1.1 checklist",
+        "index": 5,
+        "sha256": "ca0e646718754d5e540ebf963ac37e135216960860aefc04a3ac5b26d27d92ee",
+        "family": "W"
+      },
+      {
+        "source": "H",
+        "heading": "v9.1.0 → v9.1.1 checklist",
+        "index": 6,
+        "sha256": "cf47541329dd7da80065183cf4b596631546b4d80fa7abe81dcd29c3a3289622",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v9.0 → v9.1 checklist",
+        "index": 1,
+        "sha256": "523a9ee7e919934eba84b15494a9c269afb47be507a836d3562cab0ba7f106e3",
+        "family": "P"
+      },
+      {
+        "source": "H",
+        "heading": "v9.0 → v9.1 checklist",
+        "index": 2,
+        "sha256": "847db421fac45c5f5682f4687064868eb7e4b70542284a029f554245b4cee365",
+        "family": "V"
+      },
+      {
+        "source": "H",
+        "heading": "v9.0 → v9.1 checklist",
+        "index": 3,
+        "sha256": "3824d0579d60213f75646ffaf63e3809c6893f124736a20010f6c473c979c72d",
+        "family": "R"
+      },
+      {
+        "source": "H",
+        "heading": "v9.0 → v9.1 checklist",
+        "index": 4,
+        "sha256": "ac9731912f707238a08465b2b80c4e46653046baea73dde6d63985ff4dc46b1c",
+        "family": "R"
+      },
+      {
+        "source": "H",
+        "heading": "v9.0 → v9.1 checklist",
+        "index": 5,
+        "sha256": "ed2a8ba0c20248494ab8453247ee460b36eea20266a81e0ce209792c597f0cd8",
+        "family": "H"
+      },
+      {
+        "source": "H",
+        "heading": "v9.0 → v9.1 checklist",
+        "index": 6,
+        "sha256": "67c3bb981aedc00ee2135a591f6af9aff6c345421a681aab246cf72f1baff023",
+        "family": "E"
+      },
+      {
+        "source": "H",
+        "heading": "v9.0 → v9.1 checklist",
+        "index": 7,
+        "sha256": "486d7d3a8bb81851a54ad39e09743a7317233d4cb745d2428c81e7f7f7a4fb9f",
+        "family": "H"
+      },
+      {
+        "source": "H",
+        "heading": "v9.0 → v9.1 checklist",
+        "index": 8,
+        "sha256": "b5f165b2d7ea31cf3f1d7f13f45df41e7bd7d5ede471ffb44c24eda5e7f01fde",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v9.0.0 → v9.0.1 checklist",
+        "index": 1,
+        "sha256": "60c8164a8ad3bea96e4224aa57e535141c82ab6b8ef4a298d0ec2fe3913b9c14",
+        "family": "P"
+      },
+      {
+        "source": "H",
+        "heading": "v9.0.0 → v9.0.1 checklist",
+        "index": 2,
+        "sha256": "7f80b0636f85fe766a6e83cabeab002c7810e227bf3db9019a841efe08a23b88",
+        "family": "M"
+      },
+      {
+        "source": "H",
+        "heading": "v9.0.0 → v9.0.1 checklist",
+        "index": 3,
+        "sha256": "2e872a37eae81d73e0fce6d15f77775d663f5575ab36011c521485f83a1365ab",
+        "family": "M"
+      },
+      {
+        "source": "H",
+        "heading": "v9.0.0 → v9.0.1 checklist",
+        "index": 4,
+        "sha256": "b128944586fc03759631518a848332815531cc65316aeb179356c4d3119e76ed",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v9.0.0 → v9.0.1 checklist",
+        "index": 5,
+        "sha256": "3f8a1300159294930666201509805d0fdd5e7777306b2b2f4596ef2a577b1912",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v9.0.0 → v9.0.1 checklist",
+        "index": 6,
+        "sha256": "5b5f0f615f8a3e21f25fefdfb3dc1a962ce38bf8d35281bf42ca2efb6880aab7",
+        "family": "E"
+      },
+      {
+        "source": "H",
+        "heading": "v8.4.0 → v8.4.1 checklist",
+        "index": 1,
+        "sha256": "4fb9036f1bdbabf14a859dec1abc9a98d07ffa5bb74c79044e3789521b4c8f36",
+        "family": "P"
+      },
+      {
+        "source": "H",
+        "heading": "v8.4.0 → v8.4.1 checklist",
+        "index": 2,
+        "sha256": "16f99673c3932a95082d7637a92774027d98d1dd29b843f2b7f63f44a0405425",
+        "family": "V"
+      },
+      {
+        "source": "H",
+        "heading": "v8.4.0 → v8.4.1 checklist",
+        "index": 3,
+        "sha256": "946e6528627c31c0fbac63a1db0895e187ed26091487284c35925fdfb9d09003",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v8.4.0 → v8.4.1 checklist",
+        "index": 4,
+        "sha256": "fe223b4bc2880af1d282d77199dd32a488593ce60fda7af882367a615206dcde",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v8.4.0 → v8.4.1 checklist",
+        "index": 5,
+        "sha256": "7cc9949f1e6cbb8d361bda707b06443ddecfab994b78e730be9e8e8fed0ceca2",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v8.3 → v8.4 checklist",
+        "index": 1,
+        "sha256": "eff7d03b4ca31547ff1a1b4c64ef16e9ee958744166222e7f6d67d0876166565",
+        "family": "P"
+      },
+      {
+        "source": "H",
+        "heading": "v8.3 → v8.4 checklist",
+        "index": 2,
+        "sha256": "6475f0d2fdfd5f1602225ba9c71634653035f674dc0440b4b18f267d09bff67b",
+        "family": "A"
+      },
+      {
+        "source": "H",
+        "heading": "v8.3 → v8.4 checklist",
+        "index": 3,
+        "sha256": "b10a793f612a786c928931ea5646b01f65e0c2be155c8b9ce8b170e76368bf01",
+        "family": "S"
+      },
+      {
+        "source": "H",
+        "heading": "v8.3 → v8.4 checklist",
+        "index": 4,
+        "sha256": "90b2b65cb81f6a4f46a3b225b59ecc25704159fc5bae655f1cfbfdcda74921fb",
+        "family": "V"
+      },
+      {
+        "source": "H",
+        "heading": "v8.3 → v8.4 checklist",
+        "index": 5,
+        "sha256": "5a6bf3ad75a7d2967ef0200d3c80aa909e152888ba31831bdc78b59271d3c378",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v8.2 → v8.3 checklist",
+        "index": 1,
+        "sha256": "791aebba21961cf340a245d76364cdc014f0d8d8e22890ff4e418cf3385001d8",
+        "family": "P"
+      },
+      {
+        "source": "H",
+        "heading": "v8.2 → v8.3 checklist",
+        "index": 2,
+        "sha256": "76f2b4b1623f2d3b6841dabcf7691eb19075c75365cb5603d51d0a2f17ed5ca7",
+        "family": "E"
+      },
+      {
+        "source": "H",
+        "heading": "v8.2 → v8.3 checklist",
+        "index": 3,
+        "sha256": "2c5de94ee875834a59a221dbc176dfb0dccc6fce13b59db4c84a8831c4634969",
+        "family": "E"
+      },
+      {
+        "source": "H",
+        "heading": "v8.2 → v8.3 checklist",
+        "index": 4,
+        "sha256": "2d33938c6399cc389d7e0b92668d71b630b71f4ca7b777b160c5196098faf73c",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v8.2.0 → v8.2.1 checklist",
+        "index": 1,
+        "sha256": "34602a57e94a077771577db97f386972e8aa623094e3ac95a969a9c74bada4cd",
+        "family": "P"
+      },
+      {
+        "source": "H",
+        "heading": "v8.2.0 → v8.2.1 checklist",
+        "index": 2,
+        "sha256": "79258bfc5cf04d045b9e607979322038861d5cd91cbda14280c051b6254cd1a0",
+        "family": "E"
+      },
+      {
+        "source": "H",
+        "heading": "v8.2.0 → v8.2.1 checklist",
+        "index": 3,
+        "sha256": "07d409225adca65e07d57aeaad8625e26327b7dd6f6c13fdb01fc54ff2d80ec9",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v8.1 → v8.2 checklist",
+        "index": 1,
+        "sha256": "caf525d23f7f2bc4f1fe58167fa9abc6315288aa9a2fea4218dd841db0660a7c",
+        "family": "P"
+      },
+      {
+        "source": "H",
+        "heading": "v8.1 → v8.2 checklist",
+        "index": 2,
+        "sha256": "7302facd0772e426535c49aebb6b8c2f30993b422794d33a65a84619db3fe5a3",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v8.1 → v8.2 checklist",
+        "index": 3,
+        "sha256": "c32282381d87448f9f2cd5ed972a11516511934190f4e12c89ecb870345a916d",
+        "family": "A"
+      },
+      {
+        "source": "H",
+        "heading": "v8.1 → v8.2 checklist",
+        "index": 4,
+        "sha256": "e93913bca4e110fde518c76b9d36fa55e546238d1381317f5d4ed7028fba6fb3",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v8.1 → v8.2 checklist",
+        "index": 5,
+        "sha256": "27943372968f6ff1d971b58c6575ae303ef62ab751805d29dd34e6952354cdec",
+        "family": "H"
+      },
+      {
+        "source": "H",
+        "heading": "v8.1 → v8.2 checklist",
+        "index": 6,
+        "sha256": "1d01f0e6450132ba4d6ac86d442e6276f57320bd0f0954e4967e7080c4b80b9d",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v8.0 → v8.1 checklist",
+        "index": 1,
+        "sha256": "3ee84cb3d5e50557b93c44cf132b14c960f3132d8acc3a1a457b99cbedb037be",
+        "family": "P"
+      },
+      {
+        "source": "H",
+        "heading": "v8.0 → v8.1 checklist",
+        "index": 2,
+        "sha256": "913c5ece88024ad35a87712ef7c481c0ed65bbe91815cad133fa6cf67bc4bd4a",
+        "family": "A"
+      },
+      {
+        "source": "H",
+        "heading": "v8.0 → v8.1 checklist",
+        "index": 3,
+        "sha256": "1d03e8c4472c4b438d4f3d20dc1ec05e6a25e79b3652456f5bc93382ad697e15",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v8.0 → v8.1 checklist",
+        "index": 4,
+        "sha256": "4b2cf7ce3a12c86a6404c6f64eed360682dd35576c78757f1050474ea0122412",
+        "family": "V"
+      },
+      {
+        "source": "H",
+        "heading": "v8.0 → v8.1 checklist",
+        "index": 5,
+        "sha256": "1a9d8ce891b4de1be1afc57b9fdbdd5aa610463d795fa6c684a4807ac339b4e4",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "Historical migration shape",
+        "index": 1,
+        "sha256": "ae6f063cf5f6a95c441ec6bdf31a3dd3b1bdd6c90ecf7c58c36936093ac5d740",
+        "family": "S"
+      },
+      {
+        "source": "H",
+        "heading": "Historical migration shape",
+        "index": 2,
+        "sha256": "0f50318765d0bd646260f1661b2a50b6a02ee91b583bae6007af8ac22eb2bf9d",
+        "family": "P"
+      },
+      {
+        "source": "H",
+        "heading": "Historical migration shape",
+        "index": 3,
+        "sha256": "b54d2498132bc15c774be256227b1727ff8bb0212eb46b94fbd6e5c20948c430",
+        "family": "A"
+      },
+      {
+        "source": "H",
+        "heading": "Historical migration shape",
+        "index": 4,
+        "sha256": "afefbf5cf6a9efa40000fa01465529189a5bb0b4da3f2cdf18b9b00cc6a3cc45",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "Historical migration shape",
+        "index": 5,
+        "sha256": "3293220094d13d84bab40ba3ea8fc032dbaf93acc218085c304bed18cb12c5e5",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "Historical migration shape",
+        "index": 6,
+        "sha256": "e58c868c2a5e9915a693289ce4a464123b1b8691af825846614f03765be83720",
+        "family": "V"
+      },
+      {
+        "source": "H",
+        "heading": "v7.3 → v8.0 checklist",
+        "index": 1,
+        "sha256": "6366929a529262319913ff40537fa30eef4c4ca21b9beceded3c19af5b94d710",
+        "family": "P"
+      },
+      {
+        "source": "H",
+        "heading": "v7.3 → v8.0 checklist",
+        "index": 2,
+        "sha256": "19b6df2f6a71fe2efe04b3fab50a6daea2263a355d6674d9646fe93ddf402dad",
+        "family": "P"
+      },
+      {
+        "source": "H",
+        "heading": "v7.3 → v8.0 checklist",
+        "index": 3,
+        "sha256": "618daec0c6acc0b24d48a2a756ddc602da27a775836907aeefd041fc0e09bf9d",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v7.3 → v8.0 checklist",
+        "index": 4,
+        "sha256": "38df0c83e51d421b3f2726ce6281ed2346a1ceb6221f60fe3040839abbcd62d4",
+        "family": "A"
+      },
+      {
+        "source": "H",
+        "heading": "v7.3 → v8.0 checklist",
+        "index": 5,
+        "sha256": "3f9e6de6224d4fc306a25f91c5418917f4c5c49b413c35407759b9ad9fb74bfa",
+        "family": "E"
+      },
+      {
+        "source": "H",
+        "heading": "v7.3 → v8.0 checklist",
+        "index": 6,
+        "sha256": "63afdaac620fd3d4ea4d1d19fadb38065f9962f97bcc6310cd97cb92b2d5bf25",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v7.3 → v8.0 checklist",
+        "index": 7,
+        "sha256": "29134c167e57f59ec0e456363b4065fc69b971e363cc81fd246b185ce805e545",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v7.0 → v7.1 checklist",
+        "index": 1,
+        "sha256": "c1b636147d6f0e5239d3c911ea6610d3f498a4365e7a30bbc9aa87589d87e0cc",
+        "family": "I"
+      },
+      {
+        "source": "H",
+        "heading": "v7.0 → v7.1 checklist",
+        "index": 2,
+        "sha256": "357c081500032c3c9827d30aade49ac86709552e35030f49217a441bf9cebd47",
+        "family": "I"
+      },
+      {
+        "source": "H",
+        "heading": "v7.0 → v7.1 checklist",
+        "index": 3,
+        "sha256": "564260eb769506ca636fc1439bdbf8ba7d8e99812e98094005bbb6ecb58bfe94",
+        "family": "A"
+      },
+      {
+        "source": "H",
+        "heading": "v7.0 → v7.1 checklist",
+        "index": 4,
+        "sha256": "20d4877618e94f0d4249ff624c247776296fd20d6e95851191e8fbcc7a7a5d47",
+        "family": "I"
+      },
+      {
+        "source": "H",
+        "heading": "v7.0 → v7.1 checklist",
+        "index": 5,
+        "sha256": "818db68392a7e582687f4442dd293f2643bcf138a362f1de2216212b5e0bc1a9",
+        "family": "E"
+      },
+      {
+        "source": "H",
+        "heading": "v7.0 → v7.1 checklist",
+        "index": 6,
+        "sha256": "1c13e1071c75e55dea2f79f1324b8438f73f9351fc27e416896a94ca88ba7e91",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v7.1 → v7.2 checklist",
+        "index": 1,
+        "sha256": "1939c4345fefd3c2ff96fb02d47a9ce181eba0d78339b03f4e195be715163f58",
+        "family": "P"
+      },
+      {
+        "source": "H",
+        "heading": "v7.1 → v7.2 checklist",
+        "index": 2,
+        "sha256": "2ee04aca5435fa3be3c5562320073aba39f0ddaf1da598b49f5d3d6eba61da1b",
+        "family": "E"
+      },
+      {
+        "source": "H",
+        "heading": "v7.1 → v7.2 checklist",
+        "index": 3,
+        "sha256": "7d1609f8e3555aa93090c37569026153ebae8a6ce524ccd888fdce3b550454e1",
+        "family": "E"
+      },
+      {
+        "source": "H",
+        "heading": "v7.1 → v7.2 checklist",
+        "index": 4,
+        "sha256": "f59d2e5d3c219d8ef2cf9d5407fbf359578b35095e333d3c2e832a5bbc29efed",
+        "family": "E"
+      },
+      {
+        "source": "H",
+        "heading": "v7.1 → v7.2 checklist",
+        "index": 5,
+        "sha256": "f436733c8678b0f33cdabbbbd66313e6acd5fee479872acc717f10d27e042e72",
+        "family": "E"
+      },
+      {
+        "source": "H",
+        "heading": "v7.1 → v7.2 checklist",
+        "index": 6,
+        "sha256": "c0597d71611dc365814471a9a023258f57ffa84f6c3a76d832784787942c4812",
+        "family": "V"
+      },
+      {
+        "source": "H",
+        "heading": "v7.1 → v7.2 checklist",
+        "index": 7,
+        "sha256": "f871af7e4e59af4647541fd9af86f080c77f1594a30ee7d22b26406996af309e",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v7.2 → v7.3 checklist",
+        "index": 1,
+        "sha256": "aa7399f5d8c048e063489a8e5cca8e8455c7cbe697f3273c4960b45740df73a3",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v7.2 → v7.3 checklist",
+        "index": 2,
+        "sha256": "462c427c019367b4b2371471701f06d7e56ed0e8455c7a45bb1550682c14824b",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v7.2 → v7.3 checklist",
+        "index": 3,
+        "sha256": "c5bd75f24a47a8ff27e3cd6335e6d7280c630917d7941bfcd4b82825f57d3e6b",
+        "family": "E"
+      },
+      {
+        "source": "H",
+        "heading": "v7.2 → v7.3 checklist",
+        "index": 4,
+        "sha256": "b78bdf5e61676afc9322d8c6172a26b696975c0cf760e231814a33fc9b0b742c",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v7.2 → v7.3 checklist",
+        "index": 5,
+        "sha256": "815e50167beaa752dfd6bd1eb0ad7e5160c51417bb50ec0f04a03527cafb112d",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v6.1 → v7.0 checklist",
+        "index": 1,
+        "sha256": "f65b9bd9e16758cf00ddf32c42f84f3e629fcd50598d5ca6d2c67c89e7dc1a10",
+        "family": "A"
+      },
+      {
+        "source": "H",
+        "heading": "v6.1 → v7.0 checklist",
+        "index": 2,
+        "sha256": "a8976eab556ab8cf04bff54c7ba397fefb66189af696306a5f277d4bd5eaf5d2",
+        "family": "I"
+      },
+      {
+        "source": "H",
+        "heading": "v6.1 → v7.0 checklist",
+        "index": 3,
+        "sha256": "616127e6851998f914e588aba04522498975e78dbd808fe6a10c2482a2e56c7d",
+        "family": "A"
+      },
+      {
+        "source": "H",
+        "heading": "v6.1 → v7.0 checklist",
+        "index": 4,
+        "sha256": "ce1f6be2ffc22b6ea42013bc722cddf89b0fc75a7c62cfe0720a498da0cabd30",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v6.1 → v7.0 checklist",
+        "index": 5,
+        "sha256": "75e67dde89ec6efbaf955e85b4982b2857fd1b82cd323bc1d95a20c9bb2d75f6",
+        "family": "V"
+      },
+      {
+        "source": "H",
+        "heading": "v6.0 → v6.1 checklist",
+        "index": 1,
+        "sha256": "4d1f17d0c83ede9eb82bfab6de3bba3b12a5f4ffd6c794a3b16145e19df81d58",
+        "family": "E"
+      },
+      {
+        "source": "H",
+        "heading": "v6.0 → v6.1 checklist",
+        "index": 2,
+        "sha256": "64a679d4b1852ed29d70d1a1f2a9dfdc385be14978c7a6cd6e2f01b8a9b53256",
+        "family": "E"
+      },
+      {
+        "source": "H",
+        "heading": "v6.0 → v6.1 checklist",
+        "index": 3,
+        "sha256": "51381b0349293e0c7deabd43c1518f15fee78dcd3e100a931a66000589aece1a",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v5.6 → v6.0 checklist",
+        "index": 1,
+        "sha256": "819abf9674784419b52f6f80841a50072c98ffc700e103209339c9e8ad96f7b4",
+        "family": "E"
+      },
+      {
+        "source": "H",
+        "heading": "v5.6 → v6.0 checklist",
+        "index": 2,
+        "sha256": "e1884f58bb40e7e0745d055ee73f318ed5b71a52695402dd14ae89f21b3d23a8",
+        "family": "E"
+      },
+      {
+        "source": "H",
+        "heading": "v5.6 → v6.0 checklist",
+        "index": 3,
+        "sha256": "51381b0349293e0c7deabd43c1518f15fee78dcd3e100a931a66000589aece1a",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v5.5 → v5.6 checklist",
+        "index": 1,
+        "sha256": "9ee11bdc9bacad46929c8e63a4b4a93ab7ae2657f8050b92826c01e99ea9703f",
+        "family": "R"
+      },
+      {
+        "source": "H",
+        "heading": "v5.5 → v5.6 checklist",
+        "index": 2,
+        "sha256": "b6f953ceeba00478fa8045bcf29a51ee69ad4b9d0bb229ac461559a5632e890f",
+        "family": "H"
+      },
+      {
+        "source": "H",
+        "heading": "v5.5 → v5.6 checklist",
+        "index": 3,
+        "sha256": "08624e55c38aeec53b296f42efaee4c3ad61b5da9d0638599dee66f484d81400",
+        "family": "O"
+      },
+      {
+        "source": "H",
+        "heading": "v5.5 → v5.6 checklist",
+        "index": 4,
+        "sha256": "55d359b0f4c819fcc0c4a74f4a61217d061dc429a0827f7e0e7b9c9af18894e4",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v5.4 → v5.5 checklist",
+        "index": 1,
+        "sha256": "f423ce154efeac56eab725a78ba84a6d7218f0abf4aba95f840db35397e5e29d",
+        "family": "H"
+      },
+      {
+        "source": "H",
+        "heading": "v5.4 → v5.5 checklist",
+        "index": 2,
+        "sha256": "c229d95ea9277a8eb5ec50259e2957327e4153d51eaed22b422ce782e35d6979",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v5.4 → v5.5 checklist",
+        "index": 3,
+        "sha256": "51381b0349293e0c7deabd43c1518f15fee78dcd3e100a931a66000589aece1a",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v5.3 → v5.4 checklist",
+        "index": 1,
+        "sha256": "0d88a91fbb6b8f5108eed27d3fdab821e97f7856631e426d57f93d402c85339e",
+        "family": "V"
+      },
+      {
+        "source": "H",
+        "heading": "v5.3 → v5.4 checklist",
+        "index": 2,
+        "sha256": "127731604e5ddbfd2317e98514e572182d47e0b65d7c6e1f475e17833e9ca758",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v5.2 → v5.3 checklist",
+        "index": 1,
+        "sha256": "81dbb69ce8a32e5d3de8a03ff4d261e80bb8e8f2fb36e88f6e191f91f6bb8cc7",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v5.2 → v5.3 checklist",
+        "index": 2,
+        "sha256": "6ba0516e665f6e4030e04cd79ce05553dffb51f243936f37234faf1cc87c8f23",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v5.2 → v5.3 checklist",
+        "index": 3,
+        "sha256": "d1789ed440ee40292f8c810ae8785c28269bab9f6a2faf0cada14cca22014d22",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v5.2 → v5.3 checklist",
+        "index": 4,
+        "sha256": "2d1ae3cd8bd7c1f51534f4d0e41080c47c67fec0ae2df5299e8eb47bb182df14",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v5.2 → v5.3 checklist",
+        "index": 5,
+        "sha256": "38ca2ed9da7babe676cec837ced2babbe531ac739ccf00436f44d4a6005f24b8",
+        "family": "V"
+      },
+      {
+        "source": "H",
+        "heading": "v5.2 → v5.3 checklist",
+        "index": 6,
+        "sha256": "64bde7301b17026d3a95dae7ca3815c73cdd3c3fefbeb6cd718574d703d78de5",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v5.1 → v5.2 checklist",
+        "index": 1,
+        "sha256": "ba27d430466b3f0cae8b908a3a23a0a639a7c81b439147b418050a4ed2990769",
+        "family": "E"
+      },
+      {
+        "source": "H",
+        "heading": "v5.1 → v5.2 checklist",
+        "index": 2,
+        "sha256": "875bec2dfd9d3a5f673ba1fba35175f47cf1099cfb11ec9dd830d9e5e9618460",
+        "family": "M"
+      },
+      {
+        "source": "H",
+        "heading": "v5.1 → v5.2 checklist",
+        "index": 3,
+        "sha256": "d582548149e0277246b78d9c4af45769e3b9a456ffc1fd7cf9098d63c3137edb",
+        "family": "M"
+      },
+      {
+        "source": "H",
+        "heading": "v5.1 → v5.2 checklist",
+        "index": 4,
+        "sha256": "8e3bac6613490b421762ae63bbfb7359e9137d2503404d060aad13ea0ce57666",
+        "family": "V"
+      },
+      {
+        "source": "H",
+        "heading": "v5.1 → v5.2 checklist",
+        "index": 5,
+        "sha256": "06b3e983fa5ba7c35ece88fa7216686ee786487889d001e71a0a090bbf9c7587",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v5.1 → v5.2 checklist",
+        "index": 6,
+        "sha256": "64bde7301b17026d3a95dae7ca3815c73cdd3c3fefbeb6cd718574d703d78de5",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v5.0 → v5.1 checklist",
+        "index": 1,
+        "sha256": "1fde358a8f95ec68d061e2373eac8badc30765551986f9c39d2b23c1aec67b9f",
+        "family": "O"
+      },
+      {
+        "source": "H",
+        "heading": "v5.0 → v5.1 checklist",
+        "index": 2,
+        "sha256": "3253ab6c322a31fcd3926a70f2b28b828e7f7be6daa04400f0c1e4a383626d12",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v5.0 → v5.1 checklist",
+        "index": 3,
+        "sha256": "edc093660ae22cc1348e1dbd85c52a366396eda89f96f6e453ce8c959e8d78cf",
+        "family": "O"
+      },
+      {
+        "source": "H",
+        "heading": "v5.0 → v5.1 checklist",
+        "index": 4,
+        "sha256": "a66ac6e74d5f436f21e168352baa8b608131398c894b21decbe7451b3b9bc33a",
+        "family": "O"
+      },
+      {
+        "source": "H",
+        "heading": "v5.0 → v5.1 checklist",
+        "index": 5,
+        "sha256": "62c316eb19f46754a47b74d38b6100a7489944161cfce61f6285d8522f529a6d",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v5.0 → v5.1 checklist",
+        "index": 6,
+        "sha256": "1cdf994d74dc6aa625a3a249b57a9f968d9bb3986768b0fae241ec4c12e86268",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v4.4 → v5.0 checklist",
+        "index": 1,
+        "sha256": "a3b932b72def28e7a4854b5ce1042914f35c96af41442030c3e84b04fea092e5",
+        "family": "E"
+      },
+      {
+        "source": "H",
+        "heading": "v4.4 → v5.0 checklist",
+        "index": 2,
+        "sha256": "33fc2f851b887200f49814b52bcf5cc032935882ad7efb1e7c08b6e91d8f6e49",
+        "family": "V"
+      },
+      {
+        "source": "H",
+        "heading": "v4.4 → v5.0 checklist",
+        "index": 3,
+        "sha256": "edb23312765153d14b08ff72be58965f7df8fb3ae1da08d2ca895f0e23cc3666",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v4.3 → v4.4 checklist",
+        "index": 1,
+        "sha256": "1831083d2ca0b23fb95d411a3161c92246eb41131e0f5cc9be223709e561374f",
+        "family": "A"
+      },
+      {
+        "source": "H",
+        "heading": "v4.3 → v4.4 checklist",
+        "index": 2,
+        "sha256": "127731604e5ddbfd2317e98514e572182d47e0b65d7c6e1f475e17833e9ca758",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v4.2 → v4.3 checklist",
+        "index": 1,
+        "sha256": "afc591645cb9e1006056ce8c6cca6efa63ed5afeca3452432b877e1dda52c046",
+        "family": "E"
+      },
+      {
+        "source": "H",
+        "heading": "v4.2 → v4.3 checklist",
+        "index": 2,
+        "sha256": "71fc39a5e6c0a84c048cc5e77ef09de3f242a5226e79bdb02d09113552221333",
+        "family": "E"
+      },
+      {
+        "source": "H",
+        "heading": "v4.2 → v4.3 checklist",
+        "index": 3,
+        "sha256": "51381b0349293e0c7deabd43c1518f15fee78dcd3e100a931a66000589aece1a",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v4.1 → v4.2 checklist",
+        "index": 1,
+        "sha256": "3da5e8d951d77729dc9bc133c0cf1f2e74874e2dcb8d90fdbdd09834837ed879",
+        "family": "E"
+      },
+      {
+        "source": "H",
+        "heading": "v4.1 → v4.2 checklist",
+        "index": 2,
+        "sha256": "127731604e5ddbfd2317e98514e572182d47e0b65d7c6e1f475e17833e9ca758",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v4.0 → v4.1 checklist",
+        "index": 1,
+        "sha256": "0ee8c28ebb604e57834d8c9707f9cceda39fe13d0f29e13b45e696402abf6b24",
+        "family": "I"
+      },
+      {
+        "source": "H",
+        "heading": "v4.0 → v4.1 checklist",
+        "index": 2,
+        "sha256": "e08a4eb6c58ae782f3ea920f0b4c037551aee5c94822f793919b0be528321b23",
+        "family": "O"
+      },
+      {
+        "source": "H",
+        "heading": "v4.0 → v4.1 checklist",
+        "index": 3,
+        "sha256": "51381b0349293e0c7deabd43c1518f15fee78dcd3e100a931a66000589aece1a",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v3.4 → v4.0 checklist",
+        "index": 1,
+        "sha256": "e9b4da4b35e2d18f7635865ab7dfcc75e8f09e36d762337618ca96b15eccd275",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v3.4 → v4.0 checklist",
+        "index": 2,
+        "sha256": "82e9ba88456e528e7e14349f26b7a3cd93a3d20c5a7d112c481e74fefbf0d55c",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v3.4 → v4.0 checklist",
+        "index": 3,
+        "sha256": "e295722fee0beaa3ee5ba1977eb89445a0efa25d8fd18ef5b42f5394ddb7d4e9",
+        "family": "O"
+      },
+      {
+        "source": "H",
+        "heading": "v3.4 → v4.0 checklist",
+        "index": 4,
+        "sha256": "418c4eded34fd3c659368384d2d915162d799dc1d8f0377977b613345863675c",
+        "family": "A"
+      },
+      {
+        "source": "H",
+        "heading": "v3.4 → v4.0 checklist",
+        "index": 5,
+        "sha256": "536ce81ab19852f99f5f461ad21330b67e8c7b623059831ff8864ce89bc6b6ec",
+        "family": "M"
+      },
+      {
+        "source": "H",
+        "heading": "v3.4 → v4.0 checklist",
+        "index": 6,
+        "sha256": "965155ad785f152bd49a52061ad8d7dfb3e56cda59ac43b61e1bb1522896bd8d",
+        "family": "V"
+      },
+      {
+        "source": "H",
+        "heading": "v3.4 → v4.0 checklist",
+        "index": 7,
+        "sha256": "fab7d47a6a40d7e5f93c3f04c53d9d8596855133c7c6cedb5e5ae16787b2cdc2",
+        "family": "O"
+      },
+      {
+        "source": "H",
+        "heading": "v3.4 → v4.0 checklist",
+        "index": 8,
+        "sha256": "b8a3ca31d8eeb4dd16564e8e17f82669795ac3626e603c40e36d161dad712130",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v3.3 → v3.4 checklist",
+        "index": 1,
+        "sha256": "2ad383b469e942edbe80571be6edb127640fe6d6fb697cfac497a3c42e8fc6b4",
+        "family": "A"
+      },
+      {
+        "source": "H",
+        "heading": "v3.3 → v3.4 checklist",
+        "index": 2,
+        "sha256": "dc907d4e33f334b1fe67e34a345c1fb665fe9a524541e25221c3a43f7ce81701",
+        "family": "O"
+      },
+      {
+        "source": "H",
+        "heading": "v3.3 → v3.4 checklist",
+        "index": 3,
+        "sha256": "b4599370c706b775dc5729f802fb39b070f35bc14bc3442f96ede0ed23e18c82",
+        "family": "V"
+      },
+      {
+        "source": "H",
+        "heading": "v3.3 → v3.4 checklist",
+        "index": 4,
+        "sha256": "e2052e99e139f1e7f3024fcf636b7f9439398d71255fcd78ecb93c8cf6e90e27",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v3.2 → v3.3 checklist",
+        "index": 1,
+        "sha256": "8323be24b6510135fa5230f07a965cf328216b34df08436aa0551773cd844c08",
+        "family": "M"
+      },
+      {
+        "source": "H",
+        "heading": "v3.2 → v3.3 checklist",
+        "index": 2,
+        "sha256": "68cca94d24ae8a10f5a45fca433b798f4e8be1a1b7498188c202b7e5ace58411",
+        "family": "R"
+      },
+      {
+        "source": "H",
+        "heading": "v3.2 → v3.3 checklist",
+        "index": 3,
+        "sha256": "27b8658f23ca6410503244bfb6c245c4df6a22e98b2099eb3747f26c1e306a91",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v3.0 → v3.1 checklist",
+        "index": 1,
+        "sha256": "74e095fa6200dbbe53cf9a1385c695c3eea92cf5b2826881f4e50137e4d8b92c",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v3.0 → v3.1 checklist",
+        "index": 2,
+        "sha256": "3472883a10624ab57d3a8cea6a98256651c8e7f4e0b4f2b4a5ece755c7999f52",
+        "family": "E"
+      },
+      {
+        "source": "H",
+        "heading": "v3.0 → v3.1 checklist",
+        "index": 3,
+        "sha256": "2ab7a3163e15ebc04e3f3a11d9ca6d0d0b2f364b54ded03bf648332b4b6a0d2a",
+        "family": "E"
+      },
+      {
+        "source": "H",
+        "heading": "v3.0 → v3.1 checklist",
+        "index": 4,
+        "sha256": "93feb6ba6749e0f8c32d7e03632c9d3c4b9e9b09f8a9d063e26cabe2c70fcdd1",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v3.0 → v3.1 checklist",
+        "index": 5,
+        "sha256": "c99a0b7526241c5a45fe7a1ba73b53d4bb580a75bb8823b6ad0c6e4c5bd0a186",
+        "family": "E"
+      },
+      {
+        "source": "H",
+        "heading": "v3.0 → v3.1 checklist",
+        "index": 6,
+        "sha256": "33f20ecd725484a4947d4d67ca8ab82ccbe284d4c1678c34cda30223da9d9876",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "Artifact renames",
+        "index": 1,
+        "sha256": "76ea35db064aada38589f7e90c7dfae82ab567c56ca9ab86f1488d3da3e75359",
+        "family": "S"
+      },
+      {
+        "source": "H",
+        "heading": "Artifact renames",
+        "index": 2,
+        "sha256": "56c5a4587211be596458b44b20646304bf788a0f05a8283be4c2c92972e20b86",
+        "family": "S"
+      },
+      {
+        "source": "H",
+        "heading": "Artifact renames",
+        "index": 3,
+        "sha256": "72da3aaab8e4d9fa9bef25159d2ae2fffb338141583c887e707103fc3c6d80bb",
+        "family": "P"
+      },
+      {
+        "source": "H",
+        "heading": "Artifact renames",
+        "index": 4,
+        "sha256": "ac26f6a2f4dfb8d591e45fc5a06de28514bcde6e98ff220b52720c857c6dca95",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "Historical structural conformance",
+        "index": 1,
+        "sha256": "593ad7504e1692a0a86971af01fa3bffdf5d9bd69ad41a360139532906144190",
+        "family": "S"
+      },
+      {
+        "source": "H",
+        "heading": "Historical structural conformance",
+        "index": 2,
+        "sha256": "89edd90550deb2801d847b00586978513e87f4e05bbbb78fb94dc5b74f0afadb",
+        "family": "A"
+      },
+      {
+        "source": "H",
+        "heading": "Historical structural conformance",
+        "index": 3,
+        "sha256": "918902142715aeb087ab16190960f4ccfb37af5cb38073995698bb5598f6c760",
+        "family": "A"
+      },
+      {
+        "source": "H",
+        "heading": "Historical structural conformance",
+        "index": 4,
+        "sha256": "f74f41dbff3d8d8a5b1ca3e0531de3cdefda9f4208805716e8cf166adef66c6e",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "Historical citations",
+        "index": 1,
+        "sha256": "97e2da6d020d9e8287045157dff9a2421abfdd2d46c10a30e13db112c91c9e32",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v2.1 → v3.0 checklist",
+        "index": 1,
+        "sha256": "9604a9f44800db9fc8b2107bbcdc7a65fc35ba68e9dc7d52fe305667c00a5eb9",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v2.1 → v3.0 checklist",
+        "index": 2,
+        "sha256": "f4c8a043b415b79777da44e793a334be061e621a85c98dc9d00a381a19dcdce9",
+        "family": "E"
+      },
+      {
+        "source": "H",
+        "heading": "v2.1 → v3.0 checklist",
+        "index": 3,
+        "sha256": "be72557b1db17a2db9f2fb98e04082db6f0cdd006a099ad0a013a4b91cc6bc85",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v2.1 → v3.0 checklist",
+        "index": 4,
+        "sha256": "006968d69c7ca8d7130dc22983f8dce661f56c91d3794af4777a201befaecd73",
+        "family": "V"
+      },
+      {
+        "source": "H",
+        "heading": "v2.1 → v3.0 checklist",
+        "index": 5,
+        "sha256": "5640bd76e0ff24bddcf2367860a40cc1f758a3a3507a505667292dd8673d81f6",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v2.1 → v3.0 checklist",
+        "index": 6,
+        "sha256": "004aac75fcf8094736a1904d49222e3a251902c3ccc18351f2e5ffb4a84688d3",
+        "family": "M"
+      },
+      {
+        "source": "H",
+        "heading": "v2.1 → v3.0 checklist",
+        "index": 7,
+        "sha256": "78e8729206b3dc5663366dfae3a1ab86f869f612003cb27a63224f171755511c",
+        "family": "E"
+      },
+      {
+        "source": "H",
+        "heading": "v2.1 → v3.0 checklist",
+        "index": 8,
+        "sha256": "244602b26f139ae2de0e1436221813b3897e1a0bde2b58e408f8bdac2be77b7a",
+        "family": "M"
+      },
+      {
+        "source": "H",
+        "heading": "v2.1 → v3.0 checklist",
+        "index": 9,
+        "sha256": "eb4b6b48756194e78746512e464c80472a08da3be4b9376b0798524379c354db",
+        "family": "Z"
+      },
+      {
+        "source": "H",
+        "heading": "v2.0 → v2.1.0 checklist",
+        "index": 1,
+        "sha256": "df06592c2ccbcf465dc0092499fad205343f76d006ee615ae07838d7d122079c",
+        "family": "A"
+      },
+      {
+        "source": "H",
+        "heading": "v2.0 → v2.1.0 checklist",
+        "index": 2,
+        "sha256": "464440da6ea74743eba0b1d4022da01621463657ddd8b698b7c95e3f22738b15",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v2.0 → v2.1.0 checklist",
+        "index": 3,
+        "sha256": "313c3c9c6e865f133a10c29f3eaa642c51b83cf89d9a3a1907af0dcefcacd760",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v2.0 → v2.1.0 checklist",
+        "index": 4,
+        "sha256": "a1d603adbe10603128351c1498e95693b089544ba92935c48f32dad6a363ac5b",
+        "family": "B"
+      },
+      {
+        "source": "H",
+        "heading": "v2.0 → v2.1.0 checklist",
+        "index": 5,
+        "sha256": "b17147b1adee2450c7cde642091d01f7da57ae797ee04569e38b158edc8c5c86",
+        "family": "O"
+      },
+      {
+        "source": "H",
+        "heading": "v2.0 → v2.1.0 checklist",
+        "index": 6,
+        "sha256": "7f415f804c06a6cd371b4dd887df311bd38b8f456097aa7ebd0be8a6836c3592",
+        "family": "Q"
+      },
+      {
+        "source": "H",
+        "heading": "v2.0 → v2.1.0 checklist",
+        "index": 7,
+        "sha256": "f0c9db0520681c94fa388fa9f5ec5233b5642d3685c56f8217f177c85d312b11",
+        "family": "M"
+      },
+      {
+        "source": "H",
+        "heading": "v2.0 → v2.1.0 checklist",
+        "index": 8,
+        "sha256": "596dc09090b5835e1af0dd2f917d26310878e4967ce19148ca71fe84e1f44854",
+        "family": "V"
+      },
+      {
+        "source": "H",
+        "heading": "v2.0 → v2.1.0 checklist",
+        "index": 9,
+        "sha256": "daf467921f1c09e6989165dd7050ed74198711e244e7b0a2ce9cc0ae2e78f687",
+        "family": "Z"
+      }
+    ]
+  }
+}

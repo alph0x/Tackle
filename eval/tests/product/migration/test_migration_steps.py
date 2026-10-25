@@ -943,7 +943,7 @@ MOVED_CHECKLISTS = ('## v8.3 → v8.4 checklist', '## v8.4.0 → v8.4.1 checklis
 
 
 class MigrateGuideTests(unittest.TestCase):
-    """The five sections follow the checklists; each script link resolves; the two 8.x checklists
+    """The five structural sections follow the catalog route; each script link resolves; the two 8.x checklists
     moved to maintaining/migrations.md byte-identical to d024a3f; install-inventory and the self-lint
     gates stay green."""
 
@@ -953,15 +953,14 @@ class MigrateGuideTests(unittest.TestCase):
         self.archive = (ROOT / 'maintaining/migrations.md').read_text(encoding='utf-8')
 
     def test_five_sections_follow_the_checklists(self):
+        catalog = INSTALL / 'references/guides/migration-catalog.json'
+        self.assertTrue(catalog.is_file())
+        self.assertIn('migration-catalog.json', self.text)
+        self.assertIn('<a id="compact-migration"></a>', self.text)
+        boundary = self.text.index('<a id="compact-migration"></a>')
         for anchor in ('schema-keyed-migration', 'migration-steps', 'read-compatibility-promise',
                        'pre-migration-originals', 'migration-rollback'):
             self.assertIn('<a id="%s"></a>' % anchor, self.text)
-        # every section anchor appears after the last checklist the guide keeps
-        last_checklist = '## v9.3 → v10.0 checklist'
-        self.assertIn(last_checklist, self.text)
-        boundary = self.text.index(last_checklist)
-        for anchor in ('schema-keyed-migration', 'migration-steps', 'read-compatibility-promise',
-                       'pre-migration-originals', 'migration-rollback'):
             self.assertGreater(self.text.index('<a id="%s"></a>' % anchor), boundary)
 
     def test_the_two_8x_checklists_moved_byte_identical_to_d024a3f(self):
@@ -987,7 +986,7 @@ class MigrateGuideTests(unittest.TestCase):
 
     def test_the_guide_keeps_the_bridge_and_the_adoption_procedure(self):
         intro = self.text.split('<a id="adopting-a-release"></a>', 1)[0]
-        self.assertIn('8.4 → 9.0 checklist below', ' '.join(intro.split()))
+        self.assertIn('#compact-migration', intro)
         self.assertIn('`maintaining/migrations.md`', intro)
         adoption = ' '.join(self.text.split('## Adopting a release', 1)[1].split('\n## ', 1)[0].split())
         for phrase in ('selected active workspace', 'disposable copy at a task boundary',

@@ -72,7 +72,10 @@ class MigrationContract(unittest.TestCase):
                             ignore=shutil.ignore_patterns("__pycache__"))
             files = list(install.rglob("*"))
             self.assertTrue(files)
-            self.assertTrue(all(p.is_dir() or p.suffix == ".md" for p in (install / "references").rglob("*")))
+            catalog = install / "references/guides/migration-catalog.json"
+            self.assertTrue(catalog.is_file())
+            self.assertTrue(all(p.is_dir() or p.suffix == ".md" or p == catalog
+                                for p in (install / "references").rglob("*")))
             self.assertTrue(all(p.is_dir() or p.suffix in (".md", ".py") for p in (install / "scripts").rglob("*")))
             text = "\n".join(p.read_text() for p in install.rglob("*.md"))
             self.assertNotIn("docs/plans/tackle-plan-run", text)

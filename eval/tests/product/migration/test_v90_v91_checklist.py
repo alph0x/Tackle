@@ -1,13 +1,10 @@
-"""The 9.0 to 9.1 adoption path, now archived in maintaining/migrations.md: the checklist heading satisfies the
-migrate-chain gate for stamp 9.1.0, and a workspace shaped like 9.0.1 fails row 17 until the checklist's steps are
-applied, then passes rows 1 through 17.
+"""Archived adoption obligations retain their native row consumers.
 
-The steps are applied mechanically from the shipped templates (the obligations section of the board template, the
-policy line of the AGENTS template) and judged by the canonical rows, never by a copy of their logic.
-"""
+The current release gate checks catalog provenance; historical workspace inputs remain unchanged."""
 import hashlib
 import importlib.util
 import re
+import json
 import runpy
 import shutil
 import subprocess
@@ -108,25 +105,53 @@ class ChecklistTests(unittest.TestCase):
         self.assertNotIn(TITLE, MIGRATE.read_text(encoding='utf-8'))
 
     def test_the_migrate_chain_gate_accepts_a_9_1_0_stamp_only_with_this_exact_heading(self):
+        """The historical identity remains mandatory in the current installed catalog gate."""
         command = gate_four()
-        migrations = ROOT / 'maintaining/migrations.md'
-        # A 9.1.0 install shipped this checklist in its guide; rebuild that guide from the archived text.
-        shipped = ANCHOR + '\n' + TITLE + checklist(self.text)
-        for guide, wanted in ((shipped, True), (shipped.replace(TITLE, '## v9.0.1 → v9.1 checklist'), False),
-                              (shipped.replace(TITLE, '## v9.0 → v9.1  checklist'), False)):
-            with tempfile.TemporaryDirectory(prefix='tackle-gate-four-') as temporary:
-                root = Path(temporary)
-                (root / 'skills/tackle/references/guides').mkdir(parents=True)
-                (root / 'maintaining').mkdir()
-                (root / 'skills/tackle/SKILL.md').write_text('# Tackle\n\n**Tackle 9.1.0** — fixture stamp\n', encoding='utf-8')
-                (root / 'skills/tackle/references/guides/migrate.md').write_text(guide, encoding='utf-8')
-                shutil.copyfile(migrations, root / 'maintaining/migrations.md')
-                child = subprocess.run(['sh', '-c', command], cwd=root, capture_output=True, text=True)
-                self.assertEqual(child.stderr, '')
-                if wanted:
-                    self.assertEqual((child.returncode, child.stdout), (0, ''))
-                else:
-                    self.assertIn('missing migrate checklist → v9.1', child.stdout)
+        expected_heading = TITLE.removeprefix('## ')
+        cases = (('original', expected_heading, True),
+                 ('equivalent-json', expected_heading, True),
+                 ('catalog-identity', 'v9.0.1 → v9.1 checklist', False),
+                 ('catalog-identity', 'v9.0 → v9.1  checklist', False),
+                 ('current-target', expected_heading, False),
+                 ('retained-identity', 'v9.0.1 → v9.1 checklist', False),
+                 ('retained-identity', 'v9.0 → v9.1  checklist', False))
+        for mutation, heading, wanted in cases:
+            with self.subTest(mutation=mutation, heading=heading):
+                with tempfile.TemporaryDirectory(prefix='tackle-gate-four-') as temporary:
+                    root = Path(temporary)
+                    shutil.copytree(INSTALL, root / 'skills/tackle')
+                    (root / 'maintaining').mkdir()
+                    for name in ('check_migration_catalog.py', 'migrations.md'):
+                        shutil.copyfile(ROOT / 'maintaining' / name, root / 'maintaining' / name)
+                    target = root / 'skills/tackle/references/guides/migration-catalog.json'
+                    catalog = json.loads(target.read_bytes())
+                    self.assertEqual(catalog['target_methodology'], '10.2.0')
+                    groups = [group for group in catalog['provenance']['groups']
+                              if group['source'] == 'H' and group['heading'] == expected_heading]
+                    self.assertEqual(len(groups), 1)
+                    if mutation == 'catalog-identity':
+                        groups[0]['heading'] = heading
+                    elif mutation == 'current-target':
+                        catalog['target_methodology'] = '9.1.0'
+                    elif mutation == 'retained-identity':
+                        retained = root / 'maintaining/migrations.md'
+                        original = retained.read_text(encoding='utf-8')
+                        lines = original.splitlines(keepends=True)
+                        matches = [index for index, line in enumerate(lines)
+                                   if line.rstrip('\r\n') == TITLE]
+                        self.assertEqual(len(matches), 1)
+                        index = matches[0]
+                        lines[index] = lines[index].replace(TITLE, '## ' + heading, 1)
+                        retained.write_text(''.join(lines), encoding='utf-8')
+                    if mutation != 'original':
+                        target.write_text(json.dumps(catalog, ensure_ascii=False,
+                                                     sort_keys=True, indent=2) + '\n', encoding='utf-8')
+                    child = subprocess.run(['sh', '-c', command], cwd=root, capture_output=True, timeout=30)
+                    if wanted:
+                        self.assertEqual((child.returncode, child.stdout, child.stderr), (0, b'', b''))
+                    else:
+                        self.assertNotEqual(child.returncode, 0)
+                        self.assertTrue(child.stdout or child.stderr)
 
     def test_the_checklist_names_the_artifacts_the_adoption_applies_and_ends_with_the_stamp_bump(self):
         steps = checklist(self.text)

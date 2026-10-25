@@ -750,3 +750,104 @@ Run these when migrating a plan created with Tackle 2.0:
 7. **Agnosticism sweep** — remove any harness/LLM-specific language (model brand names, vendor commands, tool-specific paths) unless the point is explicitly about that harness.
 8. **Verify** — run `/tackle-verify` on the migrated plan; fix HIGH findings, decide on MEDIUM findings, note LOW findings.
 9. **Record** — write a `D-xx` in `decisions.md` describing the migration, append a `log.md` entry, and bump the plan stamp/version.
+
+
+## Original guide context for the retained installed migration source
+
+The following fenced snapshot preserves the five former installed checklists byte for byte.
+Links and anchors inside it resolve in the original `skills/tackle/references/guides/migrate.md` context.
+
+````markdown
+<a id="v84--v90-checklist"></a>
+## v8.4 → v9.0 checklist
+
+This major release replaces the RUN and PLAN guides with cards, keys migration on the board
+schema and retires the 8.x action-name aliases. Installing 9.0 migrates nothing by itself. 9.0 runs only
+the current layout and refuses a workspace that has not been migrated
+([forward only](#forward-only)).
+
+1. Before updating the install, move any file you added under `references/archetypes/` to
+   `.tackle/archetypes/` or `~/.tackle/archetypes/`. The install no longer carries
+   self-development archetypes, and an update drops files left there.
+2. Migrate the board through the [schema-keyed migration](#schema-keyed-migration) and its
+   [steps](#migration-steps) to bucket `5`. A board whose fenced example never closes is refused;
+   close the fence and run the step again. A Focused workspace has no board: rename `log.md`,
+   `log-archive.md` and `usage.md` to `history.md`, `history-archive.md` and `resource-usage.md`.
+3. Run rows 1–16 on the migrated copy. Row 12 checks only the briefs of tasks that are not
+   closed (Complete, Skipped or Unverifiable), and reports `Effort without Tier reason` for such
+   a brief whose Effort is not `low` and that has no Tier and no Tier reason.
+   This is expected: add a `**Tier reason**` line to that brief saying why its Effort departs
+   from the default, as the [task template](../task.tmpl.md) shows. In the same open briefs, rename `**Touches**` to
+   `**Write scope**` and `Done-signal` to `Acceptance check`, and replace an `inherit` Effort with
+   a level.
+4. Replace retired 8.x action names in forward-looking prompts with the current request words;
+   [terminology.md](../terminology.md) maps each old name. Preserve historical records verbatim.
+5. Profiles need no action: an entry without an id stays readable, and the next retro that
+   touches it assigns an id and computes its confidence.
+6. The routing fields (`Tier`, `Tier reason`, `Escalation`) are optional; a brief without them
+   keeps the default. Planning runs on a more capable tier than the Executor's whenever the
+   model map binds more than one tier.
+7. Record the path mapping with the adoption.
+
+<a id="v92--v93-checklist"></a>
+## v9.2 → v9.3 checklist
+
+An active 9.2 workspace adopts 9.3.0 with this checklist. This release changes the plan view's template and
+the styling of auxiliary pages, and it changes no file format.
+
+1. If the workspace has a plan view, rebuild it under its standing view request, since the template changed.
+   Without that request, build no view. Existing auxiliary pages change only on request; move one to the
+   plan view's base only when the owner asks.
+2. Sibling workspaces are optional. A workspace that declares none needs no change.
+
+<a id="v93--v100-checklist"></a>
+## v9.3 → v10.0 checklist
+
+An active 9.3 workspace adopts 10.0.0 with this checklist. This release ships every program as a script under
+`scripts/` (Python 3.10 or later), and it changes no file format.
+
+1. An owner who runs a 9.3 loopback live producer stops it before updating; 10.0 retires the live view and
+   ships no producer.
+2. If the workspace has a plan view, rebuild it with `scripts/plan_view.py` under its standing view request,
+   as the [plan view guide](plan-view.md) states. Without that request, build no view.
+3. Saved copies of 9.x recipe programs are obsolete; use the scripts under `scripts/` in their place.
+4. A verification record that an installed `capture.py` or `lint_runner.py` made while running from outside the working
+   directory names that script's sha256, so it is refused once the install updates the script. Rerun those
+   checks under the updated install.
+5. [System One](system-one.md) goes through the host's `typesafe-ai` skill. A recorded `System One consent:` line keeps its
+   meaning and needs no change; never copy one from a parent or neighboring workspace.
+
+<a id="v100--v101-checklist"></a>
+## v10.0 → v10.1 checklist
+
+An active 10.0 workspace adopts 10.1.0 with this checklist.
+
+1. Add `Gate: Full` on line 3 of an active Coordinated plan, following `plan.tmpl.md`; keep its title on line 1 and keep a Lite plan’s `Gate: Lite` on line 1.
+2. Use the `history.tmpl.md` journal form `correction cycle N of 3: <failure> → <correction>; <validation command>: <result>` for new correction records; preserve older `attempt N:` records.
+3. Write lifecycle `At` clocks with seconds, `YYYY-MM-DDTHH:MM:SS[.fff](Z|±HH:MM)`, as `resource-usage.tmpl.md` states; minute-only and space-separated clocks remain unmeasured.
+4. Use the same `At` clock format in the ledger body of `lite-plan.tmpl.md`; keep an unobserved clock as `n/a`.
+5. Use the updated `retro.tmpl.md` recipes: Attempts accepts both journal forms; Gate accuracy counts distinct sessions over the archive and current history and reports undated headings; Blocked durations excludes State snapshot lines.
+6. Expect lint row 13 WARN lines for dated entries after the newest State snapshot and for undated session headings; these warnings do not become mandatory failures.
+7. Build an optional `--initiative` page only under an owner request, following the [plan view guide](plan-view.md#initiative-view); it reads the root and one hop of declared sibling workspaces.
+8. Name forbidden action classes in new task briefs with the `Forbidden actions` field of `task.tmpl.md`, following the [design guide's brief obligations](design-and-contract.md); existing briefs need no change.
+9. Keep the current workspace schema and file formats; this release changes neither, and an existing recorded System One consent keeps its meaning.
+
+<a id="v101--v102-checklist"></a>
+## v10.1 → v10.2 checklist
+
+An active 10.1 workspace adopts 10.2.0 with this checklist. It keeps `tackle-workspace/5` and adds no required field.
+
+1. Work on a disposable copy, as [Adopting a release](#adopting-a-release) states; leave the original unchanged until lint passes on the copy.
+2. For every Complete task on the board, hash its brief with `sha256sum <brief>`, or `shasum -a 256 <brief>` without `sha256sum`.
+3. Put `**Brief sha256**: <64 lowercase hex digits>` on its own line in the task's report, outside code fences. Place it right before the report's `Final status:` line, or right before its `**Remains**:` line when it has none. Then append `Brief sha256 T-NN: <the same hash>` on its own line, outside code fences, to the end of `history.md`. History only grows: never edit an older entry. That report line and the history line are the only changes adoption makes to a closed task's records. Do both before any other edit to a closed brief. Skipped and Unverifiable reports may carry both too.
+4. After step 3, a closed brief changes only by erratum. An active decision authorizes the edit; then append `**Brief erratum**: D-NN · sha256 <hash after the edit>` to its report.
+5. Give each open brief one line in Purpose and scope, `- **Detail**: full` or `- **Detail**: interface`. Use `full` for the [next wave](verify.md#milestone-readiness) and for any brief whose row is Ready to run, In progress or Checking. Use `interface` for the rest. Row 18 fails a Ready to run row that names an interface brief. Edit the brief of an In progress or Checking task only at that task's boundary, never during an attempt.
+6. Give a brief you raise to `full` the symbol ledger of `task.tmpl.md`. Under Interface and invariants, `**Produces**` and `**Consumes**` each hold `none` or indented sub-items. Every consumed name gets one source: `from T-NN`, `from T-NN [sibling]` or `exists` with an anchored citation. A `from T-NN` task must be an ancestor through `Depends on`. A `[sibling]` source must also appear in the brief's own `Depends on` cell. A name has one producing brief; row 18 fails a name that two briefs produce. The task-boundary rule of step 5 applies here too. An interface brief needs no ledger.
+7. Add `**Owner**: T-NN · **Clauses**: C-xx` after `**Supersedes**` only on a decision you want checked; either part may be omitted. The owner's brief must cite the decision id and, at `full` detail, carry each named clause compiled. When a decision with these lines supersedes an earlier one, the earlier heading names it, as `⤴ superseded by D-NN`. Row 19 fails a heading that names another, and a still-active predecessor is no finding.
+8. Run `scripts/lint.py <slug>` on the copy and expect 19 of 19 rows silent. Repair a finding from another row as its own guide states, and a closed brief only by erratum.
+9. A workspace that adopts nothing keeps working. Rows 18 and 19 skip legacy briefs and decisions, and row 14 asks for the hash only after the 10.2.0 stamp. Row 2 reports a dependency on a Skipped task and a requirement whose tracing tasks are all Skipped. Repair the first by depending on the successor, and the second by naming the Skipped task on an open successor's `**Lineage**:` line.
+10. A verification round may keep `findings.md`, capped at three rounds unless `AGENTS.md` sets `Verify round cap: N`. An `Acceptance validator:` line in `AGENTS.md` needs a decision recording the owner's request. Neither needs a migration step.
+11. Last, set the `**Methodology: Tackle 10.2.0**` stamp in the workspace `AGENTS.md`, only after step 3 covers every Complete task. Then run `scripts/lint.py <slug>` again and expect 19 of 19 rows silent. From now on row 14 requires that line in each Complete report.
+
+<a id="schema-keyed-migration"></a>
+````

@@ -717,5 +717,193 @@ class NoLeakInCommittedTestNames(unittest.TestCase):
         self.assertEqual(decision_shaped.findall(scanned), [])
 
 
+class CatalogNormativeAccounting(GitRepoTestCase):
+    CATALOG = 'references/guides/migration-catalog.json'
+
+    def catalog(self, texts, **formatting):
+        # A projection fixture, not acceptance by the independent full catalog checker.
+        data = {
+            'schema': 'tackle-migration-catalog/1', 'revision': 1,
+            'target_methodology': '10.2.0', 'supported_buckets': ['pre-3', '3', '4', '5', 'lite'],
+            'rules': [{'id': 'I', 'kind': 'required', 'detector': 'I', 'applies': 'always',
+                       'requires': [], 'effect': 'I', 'postcondition': 'I', 'recovery': 'preserve-original',
+                       'instructions': [{'text': text, 'sources': ['["G","fixture",1]']}
+                                        for text in texts],
+                       'provenance_ids': [], 'exceptions': []}],
+            'provenance': {'groups': [], 'items': []},
+        }
+        return json.dumps(data, **formatting) + '\n'
+
+    def test_decoded_units_survive_equivalent_json_and_keep_multiset_removals(self):
+        sentence = 'Every reviewer must retain the "résumé" at C:\\records before closure.'
+        instructions = [sentence + '\nA separate sentence preserves the original inventory before adoption.']
+        baseline = self.catalog(instructions)
+        for style in ({'indent': 2}, {'sort_keys': True, 'ensure_ascii': False},
+                      {'separators': (',', ':'), 'ensure_ascii': True}):
+            with self.subTest(style=style):
+                equivalent = self.catalog(instructions, **style)
+                self.assertEqual(tool.removed_units_for_file(baseline, equivalent, self.CATALOG), [])
+        repeated = self.catalog([sentence, sentence])
+        once = self.catalog([sentence])
+        self.assertEqual([text for _, text in tool.removed_units_for_file(repeated, once, self.CATALOG)],
+                         [sentence])
+        self.assertEqual([unit.text for unit in tool.file_units(FILLER)], [FILLER.strip()])
+
+    def test_current_changes_need_the_specific_original_source_key(self):
+        removed = 'Every reviewer must retain the complete evidence before closing the selected workspace.'
+        replacement = 'Every reviewer must retain a signed evidence record before closing the selected workspace.'
+        for operation in ('changed', 'deleted'):
+            with self.subTest(operation=operation):
+                self.setUp()
+                original = self.catalog([removed, FILLER.strip()])
+                base_sha = self.base({self.CATALOG: original, HOME_Y: FILLER},
+                                     [rule(self.CATALOG + ':1')])
+                texts = [replacement, FILLER.strip()] if operation == 'changed' else [FILLER.strip()]
+                self.candidate({self.CATALOG: self.catalog(texts), HOME_Y: removed + '\n'})
+                self.write_dispositions([])
+                result = self.run_tool(base_sha)
+                self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+                self.assertIn('removed unit with no disposition: ' + self.CATALOG, result.stdout)
+                self.write_dispositions([record(self.CATALOG, 1, 'A different original source unit.',
+                                                'ruled', note='A descriptive fixture aside.')])
+                wrong = self.run_tool(base_sha)
+                self.assertEqual(wrong.returncode, 1, wrong.stdout + wrong.stderr)
+                self.assertIn('removed unit with no disposition: ' + self.CATALOG, wrong.stdout)
+                self.write_dispositions([record(self.CATALOG, 1, removed, 'merged',
+                                                destination=HOME_Y, destination_unit_sha256=sha(removed))])
+                admitted = self.run_tool(base_sha)
+                self.assertEqual(admitted.returncode, 0, admitted.stdout + admitted.stderr)
+
+    def test_only_tracked_current_catalog_instructions_auto_match(self):
+        moved = 'Every reviewer must preserve the original evidence before closing the selected workspace.'
+        for placement in ('active', 'relocated-active', 'provenance', 'exceptions',
+                          'unrelated-json', 'maintainer-copy', 'untracked-catalog'):
+            with self.subTest(placement=placement):
+                self.setUp()
+                files = {'SKILL.md': moved + '\n'}
+                if placement != 'untracked-catalog':
+                    files[self.CATALOG] = self.catalog([FILLER.strip()])
+                base_sha = self.base(files, [rule('SKILL.md:1')])
+                candidate = json.loads(self.catalog([moved if placement in ('active', 'relocated-active',
+                                                                          'untracked-catalog')
+                                                     else FILLER.strip()]))
+                if placement == 'provenance':
+                    candidate['provenance']['items'] = [{'historical_text': moved}]
+                if placement == 'exceptions':
+                    candidate['rules'][0]['exceptions'] = [moved]
+                self.candidate({'SKILL.md': FILLER, self.CATALOG: json.dumps(candidate)})
+                if placement == 'unrelated-json':
+                    self.write('references/guides/other.json', self.catalog([moved]))
+                    self.git('add', 'references/guides/other.json')
+                if placement == 'maintainer-copy':
+                    self.write('maintaining/migrations.md', moved + '\n')
+                if placement == 'relocated-active':
+                    (self.repo / 'skills/tackle').mkdir(parents=True)
+                    self.git('mv', 'SKILL.md', 'skills/tackle/SKILL.md')
+                    self.git('mv', 'references', 'skills/tackle/references')
+                self.write_dispositions([])
+                result = self.run_tool(base_sha)
+                expected = 0 if placement in ('active', 'relocated-active') else 1
+                self.assertEqual(result.returncode, expected, result.stdout + result.stderr)
+                if expected == 0:
+                    self.assertIn('auto-matched (shipped)', result.stdout)
+                else:
+                    self.assertNotIn('auto-matched (shipped)', result.stdout)
+                    self.assertIn('removed unit with no disposition', result.stdout)
+
+    def test_reworded_catalog_notes_decode_but_cannot_cross_instructions(self):
+        removed = 'Every reviewer must retain the complete evidence before closing the selected workspace.'
+        note = 'Every reviewer must retain the complete "evidence" at C:\\records\nbefore closing the selected workspace.'
+        for layout in ('whole', 'split'):
+            with self.subTest(layout=layout):
+                self.setUp()
+                base_sha = self.base({HOME_X: removed + '\n'}, [rule(HOME_X + ':1')])
+                texts = [note] if layout == 'whole' else note.split('\n')
+                self.candidate({HOME_X: FILLER, self.CATALOG: self.catalog(texts)})
+                self.write_dispositions([record(HOME_X, 1, removed, 'reworded',
+                                                destination=self.CATALOG, note=note)])
+                result = self.run_tool(base_sha)
+                self.assertEqual(result.returncode, 0 if layout == 'whole' else 1,
+                                 result.stdout + result.stderr)
+                if layout == 'split':
+                    self.assertIn('void', result.stdout + result.stderr)
+
+    def test_catalog_home_and_merged_hashes_use_decoded_current_units(self):
+        moved = 'Every reviewer must retain the "evidence" at C:\\records before closing this workspace.'
+        for disposition in ('home', 'merged'):
+            with self.subTest(disposition=disposition):
+                self.setUp()
+                original = self.catalog([moved])
+                base_sha = self.base({self.CATALOG: original, HOME_X: moved + '\n'},
+                                     [rule(self.CATALOG + ':1'), rule(HOME_X + ':1')])
+                self.candidate({HOME_X: FILLER, self.CATALOG: self.catalog([moved], indent=2)})
+                if disposition == 'home':
+                    records = [record(self.CATALOG, 1, moved, 'home')]
+                else:
+                    records = [record(HOME_X, 1, moved, 'merged', destination=self.CATALOG,
+                                      destination_unit_sha256=sha(moved))]
+                self.write_dispositions(records)
+                result = self.run_tool(base_sha)
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertNotIn('void', result.stdout + result.stderr)
+
+    def test_original_catalog_recovery_preserves_tokens_and_dormant_refusals(self):
+        removed = 'Every reviewer must preserve the original evidence before closing this workspace.'
+        note = 'Every actor must preserve the original evidence before closing this workspace.'
+        base_sha = self.base({self.CATALOG: self.catalog([removed])}, [rule(self.CATALOG + ':1')])
+        self.candidate({self.CATALOG: self.catalog([note])})
+        mapping = record(self.CATALOG, 1, removed, 'reworded', destination=self.CATALOG, note=note)
+        self.write_dispositions([mapping])
+        missing = self.run_tool(base_sha)
+        self.assertEqual(missing.returncode, 1, missing.stdout + missing.stderr)
+        self.assertIn('drops normative token(s): reviewer', missing.stdout + missing.stderr)
+        mapping['dropped'] = [{'token': 'reviewer', 'reason': 'This fixture explicitly changes the named actor.'}]
+        self.write_dispositions([mapping])
+        justified = self.run_tool(base_sha)
+        self.assertEqual(justified.returncode, 0, justified.stdout + justified.stderr)
+        dormant = record(HOME_X, 1, 'An older source sentence no longer present at this base.',
+                         'reworded', destination=self.CATALOG, note='This note is absent everywhere.')
+        self.write_dispositions([mapping, dormant])
+        invalid = self.run_tool(base_sha)
+        self.assertEqual(invalid.returncode, 1, invalid.stdout + invalid.stderr)
+        self.assertIn('void', invalid.stdout + invalid.stderr)
+
+    def test_malformed_known_catalog_refuses_at_each_read_boundary(self):
+        sentence = 'Every reviewer must preserve the original evidence before closing the selected workspace.'
+        good = self.catalog([sentence])
+        unknown = json.loads(good)
+        unknown['schema'] = 'unrecognized-format'
+        nontext = json.loads(good)
+        nontext['rules'][0]['instructions'][0]['text'] = None
+        extra = json.loads(good)
+        extra['unknown_field'] = 'ignored obligations would be unsafe'
+        bad_rule = json.loads(good)
+        bad_rule['rules'][0]['kind'] = None
+        duplicate = good.replace('"schema":', '"schema": "tackle-migration-catalog/1", "schema":', 1)
+        malformed = ('{', json.dumps(unknown), json.dumps(nontext), json.dumps(extra),
+                     json.dumps(bad_rule), duplicate)
+        for boundary in ('original', 'current', 'destination', 'shipped'):
+            for index, bad in enumerate(malformed):
+                with self.subTest(boundary=boundary, malformed=index):
+                    self.setUp()
+                    files = {HOME_X: sentence + '\n'}
+                    homes = [rule(HOME_X + ':1')]
+                    if boundary in ('original', 'current', 'shipped'):
+                        files[self.CATALOG] = bad if boundary == 'original' else good
+                    if boundary in ('original', 'current'):
+                        homes.append(rule(self.CATALOG + ':1'))
+                    base_sha = self.base(files, homes)
+                    self.candidate({HOME_X: FILLER,
+                                    self.CATALOG: good if boundary == 'original' else bad})
+                    mappings = ([record(HOME_X, 1, sentence, 'reworded',
+                                        destination=self.CATALOG, note=sentence)]
+                                if boundary == 'destination' else [])
+                    self.write_dispositions(mappings)
+                    result = self.run_tool(base_sha)
+                    self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+                    self.assertIn('catalog:', result.stdout + result.stderr)
+                    self.assertNotIn('Traceback', result.stdout + result.stderr)
+
+
 if __name__ == '__main__':
     unittest.main()

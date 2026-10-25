@@ -1,13 +1,9 @@
-"""The 10.1 to 10.2 adoption path in references/guides/migrate.md: the checklist heading satisfies the migrate-chain
-gate for stamp 10.2.0, its steps name the artifacts they apply and end with the stamp, and a workspace shaped like
-10.1 adopts the closed-record hash and the open-brief fields step by step. The steps are applied mechanically
-(the hash with the shipped `sha256sum` or `shasum -a 256` command the first step names) and judged by the shipped
-lint rows, never by a copy of their logic. Every sentence of the steps that a wrong checklist could change without
-failing a shipped row is pinned by a phrase assertion (ordering, ancestor and sibling sources, one producer, the
-superseded predecessor, the round cap, the Skipped repairs, the task boundary and the history line).
-"""
+"""Current catalog instructions retain baseline, erratum, next-wave and native lint guarantees.
+
+Historical source identities are provenance; runtime route order comes from the catalog."""
 from pathlib import Path
 import re
+import json
 import runpy
 import shutil
 import subprocess
@@ -38,12 +34,29 @@ RECEIPT = '**Remains**: none\n'
 STEP_FIVE_LINE = '- **Detail**: full\n'
 
 
-def steps_of(text):
-    return text.split(TITLE, 1)[1].split('\n## ', 1)[0].split('\n<a id=', 1)[0]
+def catalog_value():
+    return json.loads((INSTALL / 'references/guides/migration-catalog.json').read_bytes())
+
+
+def item_identity(number):
+    return json.dumps(['G', TITLE.removeprefix('## '), number], ensure_ascii=False, separators=(',', ':'))
 
 
 def numbered(text):
-    return re.findall(r'^\d+\. .*(?:\n(?!\d+\. ).*)*', steps_of(text), re.M)
+    # Test-only provenance projection. Runtime order is the catalog rule/requires order below.
+    rules = catalog_value()['rules']
+    result = []
+    for number in range(1, 12):
+        wanted = item_identity(number)
+        matches = [i['text'] for rule in rules for i in rule['instructions'] if wanted in i['sources']]
+        if len(matches) != 1:
+            raise AssertionError('one current instruction must retain this source obligation: ' + wanted)
+        result.append(str(number) + '. ' + matches[0])
+    return result
+
+
+def steps_of(text):
+    return '\n'.join(numbered(text))
 
 
 def brief_hash(path):
@@ -78,31 +91,65 @@ class ChecklistText(unittest.TestCase):
         self.text = MIGRATE.read_text(encoding='utf-8')
 
     def test_the_heading_is_exact_unique_and_anchored_after_the_previous_checklist(self):
-        lines = self.text.splitlines()
-        self.assertEqual(lines.count(TITLE), 1)
-        self.assertEqual(lines[lines.index(TITLE) - 1], ANCHOR)
-        self.assertLess(self.text.index('## v10.0 → v10.1 checklist'), self.text.index(TITLE))
-        self.assertLess(self.text.index(TITLE), self.text.index('<a id="schema-keyed-migration"></a>'))
+        self.assertNotIn(TITLE, self.text)
+        self.assertIn('migration-catalog.json', self.text)
+        catalog = catalog_value()
+        groups = [g for g in catalog['provenance']['groups'] if g['source'] == 'G']
+        self.assertEqual(sum(g['heading'] == TITLE.removeprefix('## ') for g in groups), 1)
+        self.assertLess([g['heading'] for g in groups].index('v10.0 → v10.1 checklist'),
+                        [g['heading'] for g in groups].index(TITLE.removeprefix('## ')))
+        self.assertLess(self.text.index('<a id="compact-migration"></a>'),
+                        self.text.index('<a id="schema-keyed-migration"></a>'))
 
     def test_the_migrate_chain_gate_accepts_a_10_2_0_stamp_only_with_this_exact_heading(self):
+        """The historical identity remains mandatory in the current installed catalog gate."""
         loader = runpy.run_path(str(ROOT / 'eval/validation-integrity/acceptance.py'))['canonical_gates']
         command = loader((ROOT / 'MAINTAINING.md').read_text(encoding='utf-8'))[3]
-        shipped = ANCHOR + '\n' + TITLE + steps_of(self.text)
-        for guide, wanted in ((shipped, True), (shipped.replace(TITLE, '## v10.0 → v10.2 checklist'), False),
-                              (shipped.replace(TITLE, '## v10.1 → v10.2  checklist'), False)):
-            with tempfile.TemporaryDirectory(prefix='tackle-gate-four-') as temporary:
-                root = Path(temporary)
-                (root / 'skills/tackle/references/guides').mkdir(parents=True)
-                (root / 'maintaining').mkdir()
-                (root / 'skills/tackle/SKILL.md').write_text('# Tackle\n\n**Tackle 10.2.0** — fixture stamp\n', encoding='utf-8')
-                (root / 'skills/tackle/references/guides/migrate.md').write_text(guide, encoding='utf-8')
-                shutil.copyfile(ROOT / 'maintaining/migrations.md', root / 'maintaining/migrations.md')
-                child = subprocess.run(['sh', '-c', command], cwd=root, capture_output=True, text=True)
-                self.assertEqual(child.stderr, '')
-                if wanted:
-                    self.assertEqual((child.returncode, child.stdout), (0, ''))
-                else:
-                    self.assertIn('missing migrate checklist → v10.2', child.stdout)
+        expected_heading = TITLE.removeprefix('## ')
+        cases = (('original', expected_heading, True),
+                 ('equivalent-json', expected_heading, True),
+                 ('catalog-identity', 'v10.0 → v10.2 checklist', False),
+                 ('catalog-identity', 'v10.1 → v10.2  checklist', False),
+                 ('current-target', expected_heading, False),
+                 ('retained-identity', 'v10.0 → v10.2 checklist', False),
+                 ('retained-identity', 'v10.1 → v10.2  checklist', False))
+        for mutation, heading, wanted in cases:
+            with self.subTest(mutation=mutation, heading=heading):
+                with tempfile.TemporaryDirectory(prefix='tackle-gate-four-') as temporary:
+                    root = Path(temporary)
+                    shutil.copytree(INSTALL, root / 'skills/tackle')
+                    (root / 'maintaining').mkdir()
+                    for name in ('check_migration_catalog.py', 'migrations.md'):
+                        shutil.copyfile(ROOT / 'maintaining' / name, root / 'maintaining' / name)
+                    target = root / 'skills/tackle/references/guides/migration-catalog.json'
+                    catalog = json.loads(target.read_bytes())
+                    self.assertEqual(catalog['target_methodology'], '10.2.0')
+                    groups = [group for group in catalog['provenance']['groups']
+                              if group['source'] == 'G' and group['heading'] == expected_heading]
+                    self.assertEqual(len(groups), 1)
+                    if mutation == 'catalog-identity':
+                        groups[0]['heading'] = heading
+                    elif mutation == 'current-target':
+                        catalog['target_methodology'] = '10.1.0'
+                    elif mutation == 'retained-identity':
+                        retained = root / 'maintaining/migrations.md'
+                        original = retained.read_text(encoding='utf-8')
+                        lines = original.splitlines(keepends=True)
+                        matches = [index for index, line in enumerate(lines)
+                                   if line.rstrip('\r\n') == TITLE]
+                        self.assertEqual(len(matches), 1)
+                        index = matches[0]
+                        lines[index] = lines[index].replace(TITLE, '## ' + heading, 1)
+                        retained.write_text(''.join(lines), encoding='utf-8')
+                    if mutation != 'original':
+                        target.write_text(json.dumps(catalog, ensure_ascii=False,
+                                                     sort_keys=True, indent=2) + '\n', encoding='utf-8')
+                    child = subprocess.run(['sh', '-c', command], cwd=root, capture_output=True, timeout=30)
+                    if wanted:
+                        self.assertEqual((child.returncode, child.stdout, child.stderr), (0, b'', b''))
+                    else:
+                        self.assertNotEqual(child.returncode, 0)
+                        self.assertTrue(child.stdout or child.stderr)
 
     def test_the_steps_name_each_adopted_artifact_and_end_with_the_stamp(self):
         steps = ' '.join(steps_of(self.text).split())
@@ -126,25 +173,27 @@ class ChecklistText(unittest.TestCase):
             self.assertIn(phrase, three)
 
     def test_the_hash_is_taken_and_recorded_before_any_brief_is_edited_and_the_stamp_is_last(self):
-        items = numbered(self.text)
-        hashed = next(i for i, item in enumerate(items) if 'sha256sum' in item)
-        recorded = next(i for i, item in enumerate(items) if '`**Brief sha256**:' in item)
-        edits = [i for i, item in enumerate(items) if any(p in item for p in ('`- **Detail**:', '`**Produces**`', '`**Owner**:'))]
-        self.assertEqual((hashed, recorded), (1, 2))
-        self.assertTrue(edits and min(edits) > recorded, (edits, recorded))
-        self.assertEqual([i for i, item in enumerate(items) if 'Methodology: Tackle' in item], [len(items) - 1])
-        self.assertEqual([i for i, item in enumerate(items) if 'scripts/lint.py' in item], [7, len(items) - 1])
+        rules = catalog_value()['rules']
+        order = [r['id'] for r in rules]
+        self.assertEqual(order, 'I P S A R B M E J H N Q W O V Z'.split())
+        for i, rule in enumerate(rules):
+            self.assertEqual(rule['requires'], [] if i == 0 else [order[i - 1]])
+        self.assertLess(order.index('R'), order.index('B'))
+        self.assertLess(order.index('R'), order.index('Z'))
+        self.assertLess(order.index('V'), order.index('Z'))
+        for phrase in ('sha256sum', '**Brief sha256**:', 'before any other edit'):
+            self.assertIn(phrase, ' '.join(i['text'] for r in rules if r['id'] == 'R' for i in r['instructions']))
 
     def test_step_four_authorizes_an_erratum_by_an_active_decision_after_step_three(self):
         four = step(self.text, 4)
-        for phrase in ('After step 3, a closed brief changes only by erratum.', 'An active decision authorizes the edit',
+        for phrase in ('After recording the baseline, a closed brief changes only by erratum.', 'An active decision authorizes the edit',
                        'append `**Brief erratum**: D-NN · sha256 <hash after the edit>` to its report'):
             self.assertIn(phrase, four)
 
     def test_steps_five_and_six_edit_an_in_progress_or_checking_brief_only_at_its_task_boundary(self):
         five, six = step(self.text, 5), step(self.text, 6)
         self.assertIn("Edit the brief of an In progress or Checking task only at that task's boundary, never during an attempt.", five)
-        self.assertIn('The task-boundary rule of step 5 applies here too.', six)
+        self.assertIn('The task-boundary rule applies here too.', six)
 
     def test_step_six_states_the_source_rules_and_the_single_producer(self):
         six = step(self.text, 6)
@@ -182,7 +231,7 @@ class ChecklistText(unittest.TestCase):
 
     def test_the_stamp_waits_for_every_complete_task(self):
         last = step(self.text, len(numbered(self.text)))
-        self.assertIn('only after step 3 covers every Complete task', last)
+        self.assertIn('only after the baseline covers every Complete task', last)
         self.assertIn('From now on row 14 requires that line in each Complete report.', last)
 
     def test_step_five_states_the_detail_rule(self):

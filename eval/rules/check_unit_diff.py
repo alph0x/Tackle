@@ -19,7 +19,8 @@ at that path, however many times.
 
 Auto-match, one live branch, forever: compute the **shipped** unit pool (this file's own splitter,
 the same one used everywhere else below, over `SKILL.md` plus every tracked `references/**`
-Markdown file, at the candidate). A removed unit whose
+Markdown file, plus the exact tracked migration catalog current instructions, at the candidate).
+Projection uses decoded instruction text individually, excluding provenance. A removed unit whose
 collapsed text is an exact member of that pool, at or above `duplicates.py`'s own `MIN_WORDS` floor,
 auto-closes with no committed record, printed `auto-matched (shipped): <path>:<line> -> shipped
 tree`. Every other removed unit -- including one whose only match lives in maintainer-only material
@@ -353,10 +354,91 @@ def resolve_base(repo, base_arg):
     return base_arg
 
 
-def removed_units_for_file(base_text, candidate_text):
+CATALOG_PATH = 'references/guides/migration-catalog.json'
+
+
+def catalog_texts(text):
+    """Only active instruction text from the existing installed catalog format.
+
+    This is the unit projection, not the catalog's independent semantic/provenance checker.
+    Unknown shapes and ambiguous JSON refuse instead of contributing an empty unit set.
+    """
+    def pairs(entries):
+        result = {}
+        for key, value in entries:
+            if key in result:
+                raise ValueError('duplicate key: ' + key)
+            result[key] = value
+        return result
+
+    def constant(value):
+        raise ValueError('non-JSON constant: ' + value)
+
+    try:
+        data = json.loads(text, object_pairs_hook=pairs, parse_constant=constant)
+    except ValueError as error:
+        raise BaseError('catalog: invalid JSON: ' + str(error)) from error
+    top = {'schema', 'revision', 'target_methodology', 'supported_buckets', 'rules', 'provenance'}
+    rule_fields = {'id', 'kind', 'detector', 'applies', 'requires', 'effect', 'postcondition',
+                   'recovery', 'instructions', 'provenance_ids', 'exceptions'}
+    if (not isinstance(data, dict) or set(data) != top
+            or data['schema'] != 'tackle-migration-catalog/1'
+            or type(data['revision']) is not int or data['revision'] < 1
+            or not is_text(data['target_methodology'])
+            or not isinstance(data['supported_buckets'], list)
+            or any(not is_text(value) for value in data['supported_buckets'])
+            or not isinstance(data['provenance'], dict)
+            or set(data['provenance']) != {'groups', 'items'}
+            or any(not isinstance(data['provenance'][key], list) for key in ('groups', 'items'))
+            or not isinstance(data['rules'], list) or not data['rules']):
+        raise BaseError('catalog: unknown schema or malformed catalog envelope')
+    texts = []
+    for rule in data['rules']:
+        if (not isinstance(rule, dict) or set(rule) != rule_fields
+                or any(not is_text(rule[key]) for key in
+                       ('id', 'kind', 'detector', 'applies', 'effect', 'postcondition', 'recovery'))
+                or rule['kind'] not in ('required', 'optional')
+                or any(not isinstance(rule[key], list)
+                       or any(not is_text(value) for value in rule[key])
+                       for key in ('requires', 'provenance_ids', 'exceptions'))
+                or not isinstance(rule['instructions'], list) or not rule['instructions']):
+            raise BaseError('catalog: malformed rule or instructions')
+        for instruction in rule['instructions']:
+            if (not isinstance(instruction, dict) or set(instruction) != {'text', 'sources'}
+                    or not is_text(instruction['text'])
+                    or not isinstance(instruction['sources'], list)
+                    or any(not is_text(source) for source in instruction['sources'])):
+                raise BaseError('catalog: malformed current instruction')
+            texts.append(instruction['text'])
+    return texts
+
+
+def resource_units(text, path=None):
+    """Keep Markdown callers exact; catalog units cite the physical JSON document root.
+
+    The existing identity is path plus collapsed-text hash, not the diagnostic line. Decoded
+    string lines are not physical JSON lines; no new position parser or record format is added.
+    """
+    if path != CATALOG_PATH:
+        return file_units(text)
+    root_line = text[:len(text) - len(text.lstrip())].count('\n') + 1
+    return [duplicates.Unit(root_line, unit.text)
+            for instruction in catalog_texts(text) for unit in file_units(instruction)]
+
+
+def tracked_catalog(repo):
+    """The one known JSON resource, in either supported install-root layout."""
+    code, paths = git_text(repo, 'ls-files', '--', CATALOG_PATH, 'skills/tackle/' + CATALOG_PATH)
+    if code != 0:
+        raise BaseError('catalog: cannot inspect tracked catalog')
+    return [CATALOG_PATH] if any(path in (CATALOG_PATH, 'skills/tackle/' + CATALOG_PATH)
+                                 for path in paths.splitlines()) else []
+
+
+def removed_units_for_file(base_text, candidate_text, path=None):
     """[(line, text)]: one entry per distinct removed text, base line of its first base occurrence."""
-    base_units = file_units(base_text) if base_text is not None else []
-    candidate_units = file_units(candidate_text) if candidate_text is not None else []
+    base_units = resource_units(base_text, path) if base_text is not None else []
+    candidate_units = resource_units(candidate_text, path) if candidate_text is not None else []
     base_counter = Counter(collapse(unit.text) for unit in base_units)
     candidate_counter = Counter(collapse(unit.text) for unit in candidate_units)
     removed = base_counter - candidate_counter
@@ -369,11 +451,11 @@ def removed_units_for_file(base_text, candidate_text):
 
 def shipped_pool(repo):
     pool = set()
-    for path in ['SKILL.md'] + tracked_md(repo, 'references'):
+    for path in ['SKILL.md'] + tracked_md(repo, 'references') + tracked_catalog(repo):
         text = read_current(repo, path)
         if text is None:
             continue
-        for unit in file_units(text):
+        for unit in resource_units(text, path):
             pool.add(collapse(unit.text))
     return pool
 
@@ -384,7 +466,7 @@ def current_unit_hashes(repo, path):
     if text is None:
         return {}
     found = {}
-    for unit in file_units(text):
+    for unit in resource_units(text, path):
         collapsed_text = collapse(unit.text)
         found[sha(collapsed_text)] = collapsed_text
     return found
@@ -412,7 +494,7 @@ def recover_removed_text(repo, base_rev, path, unit_sha256):
     base_text = git_show(repo, base_rev, path)
     if base_text is None:
         return None
-    for unit in file_units(base_text):
+    for unit in resource_units(base_text, path):
         text = collapse(unit.text)
         if sha(text) == unit_sha256:
             return text
@@ -471,7 +553,8 @@ def validate_record(repo, base_rev, record):
         dest_text = read_current(repo, destination)
         if dest_text is None:
             return False, 'reworded: destination does not resolve: %s' % destination
-        if collapse(note) not in collapse(dest_text):
+        destination_texts = catalog_texts(dest_text) if destination == CATALOG_PATH else [dest_text]
+        if not any(collapse(note) in collapse(text) for text in destination_texts):
             return False, "reworded: note is not a substring of destination's current text"
         if removed_text is not None:
             missing = check_tokens(removed_text, note, dropped)
@@ -534,7 +617,7 @@ def run(report, repo, base_arg):
     for path in sorted(files):
         base_text = git_show(repo, resolved_base, path)
         candidate_text = read_current(repo, path)
-        for line, text in removed_units_for_file(base_text, candidate_text):
+        for line, text in removed_units_for_file(base_text, candidate_text, path):
             removed[(path, sha(text))] = (line, text)
 
     pool = shipped_pool(repo)
