@@ -1,4 +1,5 @@
 import json
+import hashlib
 import os
 from pathlib import Path
 import re
@@ -143,7 +144,7 @@ def prepare_consent(workspace, configured, asked, mode, decide):
                             "Public consent preparation", "undetermined", decide, "malformed-consent")
 
 
-def _question(use):
+def _question(use, support_policy=None):
     from typesafe_sdk import Choice, Score
     if use == "resume-selection":
         return Score(criteria=["Not needed to resume this work", "Needed to resume this work"])
@@ -156,10 +157,14 @@ def _question(use):
     if use == "intake-size":
         return Choice(criteria={"Direct": "Bounded local edit", "Focused": "Bounded single-session task",
                                 "Coordinated": "Cross-module, public API, multiple sessions or coordination"})
+    if use == "bounded-recovery":
+        return Choice(criteria={label: None for label in list(support_policy["eligible"]) + ["defer"]})
+    if use == "evidence-signal":
+        return Choice(criteria={label: None for label in support_policy["choices"]})
     raise ValueError("system-one-use")
 
 
-def _normalized(response, use):
+def _normalized(response, use, support_policy=None):
     answer = response.answers["judgment"]
     confidence = answer.confidence
     if type(response.model) is not str or type(confidence) not in {float, int} or not isfinite(confidence) or not 0 <= confidence <= 1:
@@ -168,6 +173,12 @@ def _normalized(response, use):
         judgment = answer.score
         if answer.type != "score" or type(judgment) not in {float, int} or not isfinite(judgment) or not 0 <= judgment <= 1:
             raise ValueError("system-one-response")
+    elif use in {"bounded-recovery", "evidence-signal"}:
+        domain = (set(support_policy["eligible"]) | {"defer"} if use == "bounded-recovery"
+                  else {"supports", "partial", "insufficient", "contradictory"})
+        if answer.type != "choice" or type(answer.choice) is not str or answer.choice not in domain:
+            raise ValueError("system-one-response")
+        judgment = {"choice": answer.choice, "confidence": confidence}
     else:
         if answer.type != "choice" or type(answer.choice) is not str:
             raise ValueError("system-one-response")
@@ -179,13 +190,179 @@ def _normalized(response, use):
     return {"model": response.model, "confidence": confidence, "judgment": judgment}
 
 
+def _canonical(value):
+    return (json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False) + "\n").encode("utf-8")
+
+
+def _closed_scope(scope):
+    return (type(scope) is dict and set(scope) == {"owner", "identity", "contract_sha256"}
+            and all(type(scope[key]) is str and scope[key] for key in scope)
+            and re.fullmatch(r"T-[A-Za-z0-9]+", scope["owner"]) is not None
+            and re.fullmatch(r"[0-9a-f]{64}", scope["contract_sha256"]) is not None)
+
+
+def _budget_dirs(workspace, scope):
+    root = Path(workspace)
+    parts = ["verification-records", scope["owner"], "judgment-budget",
+             hashlib.sha256(scope["identity"].encode("utf-8")).hexdigest()]
+    current = root
+    for part in parts:
+        current = current / part
+        try:
+            metadata = current.lstat()
+        except FileNotFoundError:
+            try:
+                current.mkdir(mode=0o700)
+            except FileExistsError:
+                pass
+            try:
+                metadata = current.lstat()
+            except OSError:
+                raise ValueError("system-one-budget-path")
+        if not stat.S_ISDIR(metadata.st_mode) or stat.S_ISLNK(metadata.st_mode):
+            raise ValueError("system-one-budget-path")
+    return current
+
+
+def _read_budget_file(path):
+    try:
+        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    except OSError as error:
+        raise ValueError("system-one-budget-file") from error
+    try:
+        if not stat.S_ISREG(os.fstat(fd).st_mode):
+            raise ValueError("system-one-budget-file")
+        with os.fdopen(fd, "rb", closefd=False) as stream:
+            return stream.read()
+    finally:
+        os.close(fd)
+
+
+def _exclusive_json(path, value, sync=True):
+    data = _canonical(value)
+    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+    try:
+        if not stat.S_ISREG(os.fstat(fd).st_mode):
+            raise ValueError("system-one-budget-file")
+        view = memoryview(data)
+        while view:
+            written = os.write(fd, view)
+            if written <= 0:
+                raise OSError("short budget write")
+            view = view[written:]
+        if sync:
+            os.fsync(fd)
+    finally:
+        os.close(fd)
+    return data
+
+
+def _reserve(workspace, scope, use, policy):
+    directory = _budget_dirs(workspace, scope)
+    scope_record = {"schema": "tackle-judgment-budget/1", "workspace": str(Path(workspace).resolve()),
+                    "owner": scope["owner"], "identity": scope["identity"],
+                    "contract_sha256": scope["contract_sha256"],
+                    "limits": {"bounded-recovery": 1, "evidence-signal": 1}}
+    scope_bytes = _canonical(scope_record)
+    scope_path = directory / "scope.json"
+    try:
+        _exclusive_json(scope_path, scope_record)
+    except FileExistsError:
+        if _read_budget_file(scope_path) != scope_bytes:
+            raise ValueError("system-one-budget-scope")
+    reservation = {"scope_sha256": hashlib.sha256(scope_bytes).hexdigest(),
+                   "policy_sha256": hashlib.sha256(_canonical(policy)).hexdigest(),
+                   "use": use, "status": "reserved"}
+    reservation_path = directory / (use + ".reservation.json")
+    _exclusive_json(reservation_path, reservation)
+    return directory
+
+
+def _terminal(directory, use, status, reason):
+    _exclusive_json(directory / (use + ".terminal.json"),
+                    {"status": status, "reason": reason})
+
+
+def _new_use(workspace, state, use, fragment, local_judgment, sensitivity, decide,
+             client_factory, support_policy, budget_scope):
+    try:
+        result = decide(state, use, fragment, local_judgment, support_policy=support_policy)
+    except (ValueError, TypeError):
+        return {"judgment": local_judgment, "source": "local", "reason": "invalid-support-policy",
+                "state": state, "question": None, "model": None, "confidence": None}
+    if result["reason"] != "transport-unavailable":
+        return result
+    if type(sensitivity) is not str or sensitivity != "public":
+        result["reason"] = "fragment-not-public"
+        return result
+    if client_factory is None:
+        result["reason"] = "client-unavailable"
+        return result
+    if not _closed_scope(budget_scope):
+        result["reason"] = "budget-unavailable"
+        return result
+    try:
+        from typesafe_sdk import Choice, RetryPolicy, Score
+    except ModuleNotFoundError:
+        result["reason"] = "sdk-unavailable"
+        return result
+    try:
+        directory = _reserve(workspace, budget_scope, use, support_policy)
+    except (OSError, ValueError, TypeError):
+        result["reason"] = "budget-unavailable"
+        return result
+    progress = {"status": "known-unsent", "reason": "client-construction-failed"}
+
+    def transport(request):
+        nonlocal progress
+        progress = {"status": "unknown", "reason": "request-outcome-unknown"}
+        client = client_factory(model=MODEL, timeout=10.0, retry=RetryPolicy(max_retries=0))
+        try:
+            response = client.system_one(state={"fragment": request["fragment"]},
+                                         questions={"judgment": _question(use, support_policy)}, model=MODEL)
+            progress = {"status": "observed-response", "reason": "response-received"}
+            normalized = _normalized(response, use, support_policy)
+        except BaseException:
+            try:
+                client.close()
+            except Exception:
+                pass
+            raise
+        else:
+            client.close()
+            return normalized
+
+    result = decide(state, use, fragment, local_judgment, transport, support_policy=support_policy)
+    try:
+        _terminal(directory, use, progress["status"], progress["reason"])
+    except (OSError, ValueError):
+        result = dict(result, judgment=local_judgment, source="local", reason="budget-record-failure",
+                      model=None, confidence=None)
+    return result
+
+
 def system_one_use(workspace, configured, asked, use, fragment, local_judgment,
-                   sensitivity, decide, client_factory=None):
+                   sensitivity, decide, client_factory=None, *, support_policy=None, budget_scope=None):
     try:
         state, metadata = load_state(workspace, configured, asked)
     except (ValueError, OSError, UnicodeError):
+        if use in {"bounded-recovery", "evidence-signal"}:
+            try:
+                selected = str(Path(workspace).resolve())
+            except (OSError, ValueError, TypeError):
+                selected = str(workspace)
+            state = {"workspace": selected, "configured": configured, "consent": None,
+                     "asked": list(asked)}
+            return {"judgment": local_judgment, "source": "local", "reason": "malformed-consent",
+                    "state": state, "question": None, "model": None, "confidence": None}
         return _unavailable(workspace, configured, asked, use, fragment,
                             local_judgment, decide, "malformed-consent")
+    if use in {"bounded-recovery", "evidence-signal"}:
+        if support_policy is None:
+            return {"judgment": local_judgment, "source": "local", "reason": "invalid-support-policy",
+                    "state": state, "question": None, "model": None, "confidence": None}
+        return _new_use(workspace, state, use, fragment, local_judgment, sensitivity, decide,
+                        client_factory, support_policy, budget_scope)
     result = decide(state, use, fragment, local_judgment)
     if result["reason"] != "transport-unavailable":
         return result

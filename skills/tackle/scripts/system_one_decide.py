@@ -66,14 +66,45 @@ def _system_one_state_valid(state):
             and consent["answer"] in {"yes", "no"})
 
 
-def system_one_decide(state, use, fragment, local_judgment, transport=None):
-    uses = {"resume-selection", "failure-class", "no-progress", "intake-size"}
+def _support_policy_valid(use, policy):
+    if type(policy) is not dict or set(policy) != {"choices", "eligible", "fallback", "resolved"}:
+        return False
+    choices, eligible = policy["choices"], policy["eligible"]
+    if (type(choices) is not list or type(eligible) is not list
+            or any(type(item) is not str or not item for item in choices + eligible)
+            or len(choices) != len(set(choices)) or len(eligible) != len(set(eligible))
+            or not set(eligible) <= set(choices)
+            or type(policy["fallback"]) is not str or not policy["fallback"]
+            or (policy["resolved"] is not None and type(policy["resolved"]) is not str)):
+        return False
+    if use == "bounded-recovery":
+        return ("defer" not in choices and policy["fallback"] in set(eligible) | {"defer"}
+                and (eligible or policy["fallback"] == "defer")
+                and policy["resolved"] in set(eligible) | {"defer", None})
+    domain = {"supports", "partial", "insufficient", "contradictory"}
+    return (use == "evidence-signal" and set(choices) == domain and set(eligible) == domain
+            and policy["fallback"] == "requires-review"
+            and policy["resolved"] in domain | {"requires-review", None})
+
+
+def system_one_decide(state, use, fragment, local_judgment, transport=None, *, support_policy=None):
+    old_uses = {"resume-selection", "failure-class", "no-progress", "intake-size"}
+    new_uses = {"bounded-recovery", "evidence-signal"}
+    uses = old_uses | new_uses
     if (not _system_one_state_valid(state)
             or type(use) is not str or use not in uses
             or type(fragment) is not str or not fragment
             or not _system_one_json(local_judgment)
-            or (transport is not None and not callable(transport))):
+            or (transport is not None and not callable(transport))
+            or (use in old_uses and support_policy is not None)
+            or (use in new_uses and not _support_policy_valid(use, support_policy))):
         raise ValueError("system_one_input")
+
+    if use in new_uses:
+        expected = support_policy["resolved"] or support_policy["fallback"]
+        if (type(local_judgment) is not dict or set(local_judgment) != {"choice", "confidence"}
+                or local_judgment["choice"] != expected or local_judgment["confidence"] is not None):
+            raise ValueError("system_one_input")
 
     workspace = state["workspace"]
     consent = state["consent"]
@@ -88,6 +119,12 @@ def system_one_decide(state, use, fragment, local_judgment, transport=None):
         return {"judgment": local_judgment, "source": "local", "reason": reason,
                 "state": next_state, "question": question,
                 "model": None, "confidence": None}
+
+    if use in new_uses:
+        if support_policy["resolved"] is not None:
+            return local("deterministic-resolution")
+        if use == "bounded-recovery" and not support_policy["eligible"]:
+            return local("empty-eligible-set")
 
     if not state["configured"]:
         return local("not-configured")
@@ -104,6 +141,8 @@ def system_one_decide(state, use, fragment, local_judgment, transport=None):
         return local("transport-unavailable")
 
     request = {"model": "jev-1.13.0", "use": use, "fragment": fragment}
+    if use in new_uses:
+        request["choices"] = list(support_policy["eligible"]) + (["defer"] if use == "bounded-recovery" else [])
     try:
         response = transport(request)
     except Exception:
@@ -124,6 +163,15 @@ def system_one_decide(state, use, fragment, local_judgment, transport=None):
         return local("malformed-response")
     if response["model"] != "jev-1.13.0":
         return local("wrong-model")
+    if use in new_uses:
+        judgment = response["judgment"]
+        domain = (set(support_policy["eligible"]) | {"defer"} if use == "bounded-recovery"
+                  else {"supports", "partial", "insufficient", "contradictory"})
+        if (type(judgment) is not dict or set(judgment) != {"choice", "confidence"}
+                or type(judgment["choice"]) is not str or judgment["choice"] not in domain
+                or type(judgment["confidence"]) not in {int, float}
+                or not isfinite(judgment["confidence"]) or judgment["confidence"] != confidence):
+            return local("malformed-response")
     minimum = 0.6 if use == "resume-selection" else 0.8
     if confidence < minimum:
         return local("low-confidence")
