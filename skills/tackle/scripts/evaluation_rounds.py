@@ -336,9 +336,24 @@ def validate_spec(raw, cwd):
     return raw
 
 
+_URI_SAFE = frozenset(b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_.-~/")
+
+
+def _file_uri(path):
+    """Percent-encoded file URI of an absolute path, without Path.as_uri().
+
+    Python 3.14's Path.as_uri imports a network client module on first use; that pulls in ssl and
+    http.client, which a read-only replay must not need (and which break when sockets are blocked).
+    The POSIX result is byte-identical to the older as_uri output (same unreserved set, same encoding).
+    """
+    if os.name == "nt":
+        return path.as_uri()
+    return "file://" + "".join(chr(b) if b in _URI_SAFE else "%%%02X" % b for b in os.fsencode(path))
+
+
 def connect(db, readonly=False):
     if readonly:
-        uri = Path(db).resolve().as_uri() + "?mode=ro"
+        uri = _file_uri(Path(db).resolve()) + "?mode=ro"
         try:
             return sqlite3.connect(uri, uri=True, timeout=0)
         except sqlite3.Error as exc:

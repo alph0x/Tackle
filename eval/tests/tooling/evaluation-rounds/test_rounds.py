@@ -189,6 +189,34 @@ runpy.run_path(script, run_name="__main__")
 '''
 
 
+READ_ONLY_URI_BOOTSTRAP = r'''
+import pathlib, runpy, socket, sqlite3, sys
+script, database, expected = sys.argv[1:]
+def forbidden(*args, **kwargs):
+    raise AssertionError("read-only open touched the network stack or Path.as_uri")
+socket.socket = forbidden
+sys.modules["urllib.request"] = None
+pathlib.PurePath.as_uri = pathlib.Path.as_uri = forbidden
+real_connect = sqlite3.connect
+seen = []
+def spy(*args, **kwargs):
+    seen.append(args[0])
+    return real_connect(*args, **kwargs)
+sqlite3.connect = spy
+module = runpy.run_path(script, run_name="read_only_uri_probe")
+connection = module["connect"](pathlib.Path(database), readonly=True)
+assert connection.execute("SELECT v FROM t").fetchone() == (1,)
+try:
+    connection.execute("INSERT INTO t VALUES (2)")
+except sqlite3.OperationalError:
+    pass
+else:
+    raise AssertionError("read-only connection accepted a write")
+connection.close()
+assert seen == [expected + "?mode=ro"], seen
+'''
+
+
 RACE_BOOTSTRAP = r'''
 import pathlib, runpy, sys, time
 script, round_path, event, ready, gate = sys.argv[1:]
@@ -510,6 +538,20 @@ class RoundConsumerTests(unittest.TestCase):
         with sqlite3.connect((round_path / "round.sqlite").as_uri() + "?mode=ro",
                              uri=True) as connection:
             return connection.execute("SELECT COUNT(*) FROM events").fetchone()[0]
+
+    def test_read_only_open_builds_its_uri_without_path_as_uri_or_a_network_stack(self):
+        # Python 3.14's Path.as_uri imports urllib.request (ssl, http.client, sockets) on first use, which
+        # the pure replay forbids; the read-only URI must not depend on it, on any Python version.
+        with self.lab() as root:
+            database = root / "a b#c?d%e \u00e9" / "round.sqlite"
+            database.parent.mkdir()
+            connection = sqlite3.connect(database)
+            connection.execute("CREATE TABLE t (v INTEGER)")
+            connection.execute("INSERT INTO t VALUES (1)")
+            connection.commit()
+            connection.close()
+            self.run_child(root, [sys.executable, "-I", "-c", READ_ONLY_URI_BOOTSTRAP, str(SCRIPT),
+                                  str(database), database.resolve().as_uri()], (0,))
 
     def test_round_cli_replays_same_decision_and_budget_without_effects(self):
         # Original two-pair fixture and one-case valid alternative.

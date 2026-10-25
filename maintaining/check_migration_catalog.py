@@ -1278,7 +1278,7 @@ def validate(root):
         fail("catalog source mapping mismatch")
     readme = (root / "skills/tackle/scripts/README.md").read_text(encoding="utf-8")
     compact_hash = digest((root / "skills/tackle/scripts/migrate/compact.py").read_bytes())
-    archive_hash = "b354cca81a1d261beb7d2c972f0e9371b59cd04f12ee569df6e246ebe696222f"
+    archive_hash = "c103d8917aa252bae62ca2bb54c565ed155124e81522bbbfc6ffef99a34f4aad"
     compact_rows = re.findall(r"^\| \[migrate/compact\.py\]\(migrate/compact\.py\) \| `([0-9a-f]{64})` \|$", readme, re.M)
     archive_rows = re.findall(r"^\| \[workspace_archive\.py\]\(workspace_archive\.py\) \| `([0-9a-f]{64})` \|$", readme, re.M)
     if compact_rows != [compact_hash] or archive_rows != [archive_hash]:
