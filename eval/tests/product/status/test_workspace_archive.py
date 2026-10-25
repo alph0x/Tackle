@@ -2,8 +2,10 @@
 import base64
 from contextlib import contextmanager
 from datetime import datetime, timezone
+import errno
 import fcntl
 import hashlib
+import importlib.util
 import json
 import locale
 import os
@@ -16,6 +18,7 @@ import sys
 import tempfile
 import time
 import unittest
+from unittest.mock import patch
 import uuid
 
 ROOT = Path(__file__).resolve().parents[4]
@@ -767,6 +770,31 @@ class WorkspaceArchiveTests(unittest.TestCase):
             self.assertTrue(self.call(fresh, 'list_workspaces', state='all')['pending'])
             self.call(fresh, 'resolve', 'closed', refusal=True)
             self.assertEqual(inventory(fresh['repo']), unchanged)
+
+    def test_member_symlink_loop_is_the_same_refusal_on_every_python(self):
+        # Python before 3.13 raises RuntimeError for a symlink loop in resolve(strict=True); 3.13 and later
+        # raise OSError(ELOOP). Both must reach the member-link-conflict refusal; other errors keep their type.
+        spec = importlib.util.spec_from_file_location('workspace_archive_member_probe', MODULE)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        with tempfile.TemporaryDirectory(prefix='member loop ') as directory:
+            base = Path(directory).resolve()
+            (base / 'alias').symlink_to('alias')
+            with self.assertRaises(ValueError) as real_loop:
+                module._member_file(base, 'alias', None)
+            self.assertEqual(str(real_loop.exception), 'member-link-conflict')
+            for error in (RuntimeError('Symlink loop from ' + str(base / 'alias')),
+                          OSError(errno.ELOOP, os.strerror(errno.ELOOP))):
+                with self.subTest(error=type(error).__name__):
+                    with patch.object(Path, 'resolve', side_effect=error):
+                        with self.assertRaises(ValueError) as refused:
+                            module._member_file(base, 'alias', None)
+                    self.assertEqual(str(refused.exception), 'member-link-conflict')
+            with patch.object(Path, 'resolve', side_effect=OSError(errno.EACCES, 'fixture denial')):
+                with self.assertRaises(PermissionError):
+                    module._member_file(base, 'alias', None)
+            with self.assertRaises(FileNotFoundError):
+                module._member_file(base, 'absent', None)
 
     def test_oracles_reject_loss_and_allow_intact_alternative(self):
         with self.lab() as lab:

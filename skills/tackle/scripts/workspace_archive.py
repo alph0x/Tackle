@@ -4,6 +4,7 @@ This module intentionally exposes Python functions only.  It has no command
 line entry point and never infers a repository root or an authorization.
 """
 
+import errno
 import fcntl
 import hashlib
 import json
@@ -662,7 +663,10 @@ def _member_file(base, relative, expected):
         _fail("member-drift")
     try:
         resolved = (base / relative).resolve(strict=True)
-    except RuntimeError as error:
+    except (RuntimeError, OSError) as error:
+        # A symlink loop is RuntimeError before Python 3.13 and OSError(ELOOP) from 3.13 on.
+        if isinstance(error, OSError) and error.errno != errno.ELOOP:
+            raise
         raise ValueError("member-link-conflict") from error
     if not _inside(base.resolve(strict=True), resolved):
         _fail("member-escapes-workspace")

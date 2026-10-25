@@ -141,6 +141,14 @@ class JudgmentSupportTests(unittest.TestCase):
     def answer(self, value='yes'):
         return self.ns['record_consent'](self.workspace, value, 'Owner', '2026-10-22')
 
+    def sdk_absent(self):
+        # Same guard as test_system_one_integration: without the official SDK the adapter keeps the local
+        # fallback and the SDK-dependent assertions are not run, unless the scoped acceptance requires it.
+        if importlib.util.find_spec('typesafe_sdk') is not None:
+            return False
+        self.assertNotEqual(os.environ.get('TACKLE_TYPESAFE_SDK_REQUIRED'), '1', 'Scoped acceptance requires official SDK')
+        return True
+
     def call(self, use, policy, identity, *, workspace=None, client_factory=None, sensitivity='public',
              fragment='Public fixture context', configured=True):
         target = self.workspace if workspace is None else Path(workspace)
@@ -306,8 +314,13 @@ class JudgmentSupportTests(unittest.TestCase):
                     self.assertEqual(result['judgment'], local_failure)
 
         # The state adapter uses the official SDK serializer with an in-process transport.
-        if importlib.util.find_spec('typesafe_sdk') is None:
-            self.fail('environment: typesafe_sdk is unavailable for the required MockTransport qualification')
+        if self.sdk_absent():
+            self.answer('yes')
+            absent = self.call('evidence-signal', evidence_policy(), 'wire-public-identity',
+                               client_factory=fake_factory('supports'))
+            self.assertEqual((absent['source'], absent['reason']), ('local', 'sdk-unavailable'))
+            self.assertEqual(set(absent), RESULT_KEYS)
+            return
         import httpx2
         from typesafe_sdk import TypeSafeClient
         self.answer('yes')
@@ -428,6 +441,14 @@ class JudgmentSupportTests(unittest.TestCase):
         self.answer('yes')
         policy = evidence_policy()
         scope = budget_scope('budget-error-restart-01')
+        if self.sdk_absent():
+            constructed = []
+            absent = self.call('evidence-signal', policy, scope['identity'],
+                               client_factory=fake_factory('supports', before_construct=lambda kwargs: constructed.append(kwargs)))
+            self.assertEqual((absent['source'], absent['reason'], absent['judgment']),
+                             ('local', 'sdk-unavailable', local_for(policy)))
+            self.assertEqual(constructed, [])
+            return
         expected_directory = budget_directory(self.workspace, scope)
         expected_reservation = expected_directory / 'evidence-signal.reservation.json'
         expected_scope = scope_record(self.workspace, scope)
@@ -709,6 +730,12 @@ class JudgmentSupportTests(unittest.TestCase):
         for stdout, stderr, returncode in observations:
             self.assertEqual(returncode, 0, (stdout, stderr))
             self.assertTrue(stdout.strip())
+        if self.sdk_absent():
+            for stdout, stderr, returncode in observations:
+                absent = json.loads(stdout)
+                self.assertEqual((absent['source'], absent['reason']), ('local', 'sdk-unavailable'))
+            self.assertFalse(send_log.exists() or factory_log.exists())
+            return
         self.assertEqual(send_log.read_text(encoding='utf-8').splitlines(), ['bounded-recovery'])
         self.assertEqual(factory_log.read_text(encoding='utf-8').splitlines(), ['bounded-recovery'])
 
@@ -757,6 +784,20 @@ class JudgmentSupportTests(unittest.TestCase):
         self.answer('yes')
         policy = bounded_policy()
         attempted = []
+        if self.sdk_absent():
+            absent = self.call('evidence-signal', evidence_policy(), 'authority-evidence-01',
+                               client_factory=fake_factory('supports', confidence=0.99,
+                                                           before_construct=lambda kwargs: attempted.append(kwargs)))
+            self.assertEqual((absent['source'], absent['reason']), ('local', 'sdk-unavailable'))
+            self.assertEqual(attempted, [])
+            no_policy = self.ns['system_one_use'](
+                workspace=self.workspace, configured=True, asked=[], use='bounded-recovery',
+                fragment='Public fixture context', local_judgment={'choice': 'defer', 'confidence': None},
+                sensitivity='public', decide=self.decide,
+                client_factory=fake_factory('retry-after-correction', before_construct=lambda kwargs: attempted.append(kwargs)))
+            self.assertEqual(no_policy['source'], 'local')
+            self.assertEqual(attempted, [])
+            return
         # A high-confidence but ineligible recommendation falls back exactly to the planner's local value.
         ineligible = self.call('bounded-recovery', policy, 'authority-ineligible-01',
                                client_factory=fake_factory('rerun-read-only', confidence=0.99,

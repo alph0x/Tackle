@@ -7,7 +7,7 @@ a script adds or updates its row.
 
 | Script | sha256 |
 |---|---|
-| [evaluation_rounds.py](evaluation_rounds.py) | `7ed584365d3bee90b951c7f1453002ed8febef4074538cddb1bdd99c77231c35` |
+| [evaluation_rounds.py](evaluation_rounds.py) | `b8f68b367b91eb6cf27687a7680dac54a4d56fb6cb6e3ff93382bc66c771ef0e` |
 | [correction_lineage.py](correction_lineage.py) | `38ad0d5ecc95ee721d9c15ad338c750b1dea78e96df3c8abdda9d087771eea60` |
 | [adversary_checkpoints.py](adversary_checkpoints.py) | `8be44a5b646ad3aabf179bbf899f4e80c3d34382ce5b636c9eadb26e5d0a92dd` |
 | [plan_view.py](plan_view.py) | `b4f7d31b67212e1ad98430f1fe296110675b7e5d2d019f8df3083358dc8a4227` |
@@ -21,7 +21,7 @@ a script adds or updates its row.
 | [migrate/step_4_to_5.py](migrate/step_4_to_5.py) | `ae4dcf1ee639aa556fccf4ddbc1b70229b942d84e6a365c12009023af717501b` |
 | [migrate/step_pre3_to_3.py](migrate/step_pre3_to_3.py) | `b08e63d7182d5a51d30a1973ba3f098448a174e208e9739783688d7ca82ab4b3` |
 | [migrate/compact.py](migrate/compact.py) | `db31087b330fa77c93d8081009253fe5e4ab2342ab1bbe29eccf036d002677c5` |
-| [workspace_archive.py](workspace_archive.py) | `b354cca81a1d261beb7d2c972f0e9371b59cd04f12ee569df6e246ebe696222f` |
+| [workspace_archive.py](workspace_archive.py) | `c103d8917aa252bae62ca2bb54c565ed155124e81522bbbfc6ffef99a34f4aad` |
 | [capture.py](capture.py) | `5fd79dbbd5edd2efb308e22d9bb71e5007a80f425fde41aa5b297adc02cb755d` |
 | [evidence_capture.py](evidence_capture.py) | `f542532dc57a0e1dc7b101da8371822f66959683b2852e29b816000fef6e1ce0` |
 | [lint_runner.py](lint_runner.py) | `f63ff42f569fb189839d891a2ebd1a2de755b5dab22606ebb8b3dc03c90e3352` |
