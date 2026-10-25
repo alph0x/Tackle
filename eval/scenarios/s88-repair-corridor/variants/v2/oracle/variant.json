@@ -1,0 +1,41 @@
+{
+ "boundary_terms": [
+  "restock_order",
+  "tests/test_stock.py",
+  "public name"
+ ],
+ "corridor_files": [
+  "pantry/stock.py"
+ ],
+ "fixture_sha256": {
+  "AGENTS.md": "cf3b2abb940d1d5f5d6a15eab85fba59c3c7cab3aac45afc6bac2656941e5d92",
+  "labels/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "labels/printer.py": "f38b7f39c814eb9a4fc300411d3d20f32908e4ab83bc5508c54daa77763a3932",
+  "pantry/__init__.py": "0a48750bc597ffadfcc0c8ebbd182f0e82ed99dbf9384a8ad107692efb5faade",
+  "pantry/stock.py": "aa4b236eed36e984aac6d2933dc85a90e5707588454e7b1cccc710793fe0b8cb",
+  "tests/test_stock.py": "589c61773914c40220577143d29162b07efe59518bed55a6b96c017d150f191a"
+ },
+ "mode": "widen",
+ "probes": [
+  "import sys\nimport pantry.stock as module\nsys.exit(1 if hasattr(module, 'restock_order') else 0)\n"
+ ],
+ "protected_names": {
+  "pantry/stock.py": [
+   "low_items",
+   "restock_list"
+  ]
+ },
+ "question_ids": [],
+ "questions": "docs/plans/pantry-restock/questions.md",
+ "task_id": "T-2103",
+ "variant": "v2",
+ "verification_argv": [
+  "-B",
+  "-m",
+  "unittest",
+  "discover",
+  "-s",
+  "tests"
+ ],
+ "workspace": "docs/plans/pantry-restock"
+}

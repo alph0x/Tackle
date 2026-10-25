@@ -1,0 +1,30 @@
+{
+ "boundary_terms": [],
+ "corridor_files": [
+  "lanes/slots.py",
+  "lanes/overlap.py"
+ ],
+ "fixture_sha256": {
+  "AGENTS.md": "7de3f9f73453208608f2d9cd30f9e9a90926a3906d38a5542292de964b67620a",
+  "lanes/__init__.py": "04d35d8d6833e83f404d4d7e9ae404a021c490139e125da1ac856226f5855513",
+  "lanes/overlap.py": "6142c99272e6c07c6a0d8c7689c1f7a0d663a64716f17ca2730a4fc2f1ca14cb",
+  "lanes/slots.py": "9a0939af264116354e3fbc108b827d90394a3ec5040e3fcd531fc147855d6812",
+  "tests/test_lanes.py": "325664bcf7e1fbd8b032c4593021d2a91419e55a54a3f4c30836d4f207dcf0b6"
+ },
+ "mode": "plain",
+ "probes": [],
+ "protected_names": {},
+ "question_ids": [],
+ "questions": "docs/plans/lane-bookings/questions.md",
+ "task_id": "T-1003",
+ "variant": "v1",
+ "verification_argv": [
+  "-B",
+  "-m",
+  "unittest",
+  "discover",
+  "-s",
+  "tests"
+ ],
+ "workspace": "docs/plans/lane-bookings"
+}

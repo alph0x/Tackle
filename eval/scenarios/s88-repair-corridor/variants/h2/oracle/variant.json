@@ -1,0 +1,40 @@
+{
+ "boundary_terms": [
+  "table.py",
+  "fares board",
+  "tariff table"
+ ],
+ "corridor_files": [
+  "fares/price.py"
+ ],
+ "fixture_sha256": {
+  "AGENTS.md": "6bad46d445a39e9cf7d8d2654b8b6cc4c0e0bea0b7b46bc8bf9f6d9b1046454c",
+  "fares/__init__.py": "096c0d5523af68f0135d7f9d12d0a01a446501b7756a93232f29525c98f829ea",
+  "fares/price.py": "06fbbbe9eb88b6a90831168a22f530cfdb483882ea040c6dc230b611144eb35a",
+  "fares/table.py": "90baf126ab6e7a07fc5a64eb73ff0370748a9a739c51b0db468136360b3265ba",
+  "tests/test_fares.py": "47abf630dd15c59bfb0d324622f4803e66d45e934b6954b7380a0d36de7db64b"
+ },
+ "mode": "widen",
+ "probes": [
+  "import importlib\nimport sys\nfrom pathlib import Path\n\nPATH = Path('fares/table.py')\n\n\ndef follows(rates):\n    PATH.write_text('RATES = %r\\n' % (rates,), encoding='utf-8')\n    import fares.table\n    import fares.price\n    importlib.reload(fares.table)\n    importlib.reload(fares.price)\n    return all(abs(fares.price.fare('A', zone) - rate) < 1e-9 for zone, rate in rates.items())\n\n\nsys.exit(0 if follows({'A': 1.13, 'B': 2.29, 'C': 7.77}) and follows({'A': 1.70, 'B': 2.40, 'C': 3.20}) else 1)\n"
+ ],
+ "protected_names": {
+  "fares/price.py": [
+   "concession",
+   "fare"
+  ]
+ },
+ "question_ids": [],
+ "questions": "docs/plans/tram-fares/questions.md",
+ "task_id": "T-4303",
+ "variant": "h2",
+ "verification_argv": [
+  "-B",
+  "-m",
+  "unittest",
+  "discover",
+  "-s",
+  "tests"
+ ],
+ "workspace": "docs/plans/tram-fares"
+}

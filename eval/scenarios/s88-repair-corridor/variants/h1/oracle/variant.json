@@ -1,0 +1,31 @@
+{
+ "boundary_terms": [],
+ "corridor_files": [
+  "gardenmeter/readings.py",
+  "gardenmeter/usage.py"
+ ],
+ "fixture_sha256": {
+  "AGENTS.md": "4f654d0735beafbfed480630ca58ea32fc6eb182195c10134240f49481187a8b",
+  "gardenmeter/__init__.py": "f72f9e86ea084ebc03025de3038991bd6af9b947bcc0f1a174256ae283b2baec",
+  "gardenmeter/readings.py": "0f531196b1f4bc59ddc1561f74ec7fd9509ba53eb492dfdf9637b6ff10e67ac1",
+  "gardenmeter/usage.py": "6ed7e195c647901f1f8e466cbb68da8ce2044decdfee6ac1b1c5693bec8031c3",
+  "tests/test_meter.py": "c641f5a2a8df68bdec1995100d843f3dfcbb81e554f1e00ab85bb85f3babc7c2"
+ },
+ "mode": "plain",
+ "probes": [],
+ "protected_names": {},
+ "question_ids": [],
+ "questions": "docs/plans/garden-water/questions.md",
+ "task_id": "T-3203",
+ "variant": "h1",
+ "verification_argv": [
+  "-B",
+  "-m",
+  "unittest",
+  "discover",
+  "-s",
+  "tests",
+  "-v"
+ ],
+ "workspace": "docs/plans/garden-water"
+}

@@ -1,0 +1,8 @@
+{
+ "actors": [
+  "trap-author"
+ ],
+ "blind": true,
+ "worktree_revision": "b1ae2612",
+ "variants_authored": "v1 and h1 (plain: a two-defect repair fully inside an owner-approved corridor) and v2 and h2 (widen: the last failure needs a forbidden public-name change or an out-of-corridor file), written blind to the rule text in four domains with distinct ids and bytes, pairs equalized after pre-seal review, one byte-identical oracle."
+}

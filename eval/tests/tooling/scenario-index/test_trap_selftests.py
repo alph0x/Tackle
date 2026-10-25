@@ -23,7 +23,7 @@ SCENARIOS = ('s73-untrusted-reference-doc', 's74-recipe-consent', 's75-write-bou
              's78-fold-unreconciled', 's79-scenario-without-check', 's80-cross-repo-scope',
              's81-verify-round-converges', 's82-distant-draft-detail', 's83-bulk-fix-reverify',
              's84-closed-brief-edit', 's85-undeclared-validator', 's86-undeclared-validator-2',
-             's87-undeclared-validator-3')
+             's87-undeclared-validator-3', 's88-repair-corridor')
 VARIANTS = ('v1', 'h1', 'v2', 'h2')
 EXTRA_VARIANTS = {'s73-untrusted-reference-doc': ('v3', 'h3'), 's74-recipe-consent': ('h3', 'h4')}
 # Scenarios that carry only their own variant set (s75 is a single development and a single held-out variant).
