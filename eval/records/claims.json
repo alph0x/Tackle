@@ -4,6 +4,20 @@
  "claims": [
   {
    "source": "CHANGELOG.md",
+   "section": "Tackle 10.3.0",
+   "unit": "s88",
+   "kind": "cohort",
+   "cohort": "2026-10-repair-corridor"
+  },
+  {
+   "source": "CHANGELOG.md",
+   "section": "Tackle 10.3.0",
+   "unit": "s72",
+   "kind": "cohort",
+   "cohort": "2026-10-consent-relink"
+  },
+  {
+   "source": "CHANGELOG.md",
    "section": "Tackle 10.2.0",
    "unit": "s81",
    "kind": "cohort",
