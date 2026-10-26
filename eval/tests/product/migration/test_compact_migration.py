@@ -918,6 +918,44 @@ class CompactMigrationTests(unittest.TestCase):
             with archive.open('ab') as f: f.write(b'\nAdditional historical context.\n')
             self.run_child(['sh', '-c', command], repo, 0)
 
+    def test_absolute_evidence_is_read_only_under_the_working_directory_job_or_source(self):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location('compact_confinement', current_root(ROOT) / 'scripts/migrate/compact.py')
+        compact = importlib.util.module_from_spec(spec); spec.loader.exec_module(compact)
+        with tempfile.TemporaryDirectory(prefix='tackle-confine-') as temporary:
+            lab = Path(temporary).resolve()
+            work, job, source, outside = lab / 'work', lab / 'job', lab / 'source', lab / 'outside'
+            for directory in (work, job, source, outside): directory.mkdir()
+            state = dict(source=str(source), original_backup=str(job / 'original-backup'), phase='prepared')
+            files = {name: root / (name + '.json') for name, root in
+                     (('work', work), ('job', job), ('source', source), ('outside', outside))}
+            for name, path in files.items(): path.write_bytes(b'{"evidence": "%s"}\n' % name.encode())
+            previous = os.getcwd()
+            os.chdir(work)
+            try:
+                for name in ('work', 'job', 'source'):
+                    with self.subTest(admitted=name):
+                        ref = dict(path=str(files[name]), sha256=digest(files[name].read_bytes()))
+                        self.assertEqual(compact._evidence_ref(job, state, ref), ref)
+                # The right and the wrong hash give the same refusal, so no host file can be probed.
+                for sha in (digest(files['outside'].read_bytes()), '0' * 64):
+                    with self.subTest(refused=sha[:8]):
+                        with self.assertRaisesRegex(compact.MigrationError, '^external-evidence-outside-root$'):
+                            compact._evidence_ref(job, state, dict(path=str(files['outside']), sha256=sha))
+                # A sibling that only shares the job's name prefix, and an alias inside an admitted root, stay outside.
+                sibling = lab / 'job2'; sibling.mkdir(); (sibling / 'evidence.json').write_bytes(b'{}\n')
+                (work / 'alias.json').symlink_to(files['outside'])
+                for path in (sibling / 'evidence.json', work / 'alias.json'):
+                    with self.subTest(outside=path.name):
+                        with self.assertRaises(compact.MigrationError):
+                            compact._evidence_ref(job, state, dict(path=str(path), sha256=digest(path.read_bytes())))
+                for raw in (str(work / '..' / 'outside' / 'outside.json'), '../outside/outside.json'):
+                    with self.subTest(escape=raw):
+                        with self.assertRaises(compact.MigrationError):
+                            compact._evidence_path(job, state, raw)
+            finally:
+                os.chdir(previous)
+
 
 if __name__ == '__main__':
     unittest.main()
