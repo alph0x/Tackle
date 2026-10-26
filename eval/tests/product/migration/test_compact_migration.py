@@ -271,7 +271,7 @@ class CompactMigrationTests(unittest.TestCase):
                 path.write_bytes(value)
                 if path.name in ('T-' '01.md', 'T-' '02.md', 'T-' '01-report.md'):
                     path.rename(path.with_name(path.name.replace('T-' '01', 'T-0001').replace('T-' '02', 'T-0002')))
-        stamp = '10.1.0' if old else '10.2.0'
+        stamp = '10.1.0' if old else '10.3.0'
         (source / 'AGENTS.md').write_text('# Agents\n\n**Methodology: Tackle ' + stamp + '**\n')
         (source / '.context-lock').write_bytes(b'')
         (project / 'neighbor-sentinel').write_bytes(b'neighbor\n')
@@ -290,7 +290,7 @@ class CompactMigrationTests(unittest.TestCase):
         boundary = {'schema': 'tackle-migration-boundary/1', 'source_sha256': tree_sha(source),
                     'at_boundary': at_boundary, 'quiescence': quiescence,
                     'observer': 'fixture-controller', 'evidence': []}
-        value = dict(workspace=source.name, target='10.2.0',
+        value = dict(workspace=source.name, target='10.3.0',
                      next_wave=['{}-{:04d}'.format('T', 2)] if next_wave else [],
                      boundary=dict(at_boundary=at_boundary, source_receipt_sha256=digest(canonical(boundary))),
                      optional_requests=list(requests), date='2026-09-27', run_id='compact-fixture')
@@ -306,7 +306,7 @@ class CompactMigrationTests(unittest.TestCase):
         manifest = job.parent / (job.name + '-manifest.json')
         write_json(context_path, context)
         before = inventory(source)
-        self.cli(installed, 'diagnose', ['--workspace', source, '--target', '10.2.0',
+        self.cli(installed, 'diagnose', ['--workspace', source, '--target', '10.3.0',
                                        '--context', context_path, '--output', manifest], 0)
         self.assertEqual(inventory(source), before)
         result = read_json(manifest)
@@ -448,7 +448,7 @@ class CompactMigrationTests(unittest.TestCase):
                     if kind == 'order': mutated['rules'][4:6] = reversed(mutated['rules'][4:6])
                     write_json(catalog_path, mutated)
                     before = inventory(source)
-                    result = self.cli(installed, 'diagnose', ['--workspace', source, '--target', '10.2.0',
+                    result = self.cli(installed, 'diagnose', ['--workspace', source, '--target', '10.3.0',
                                       '--context', lab / 'job-context.json', '--output', lab / ('bad-' + kind + '.json')])
                     self.assertNotEqual(result[0]['exit'], 0)
                     self.assertEqual(inventory(source), before)
@@ -483,7 +483,7 @@ class CompactMigrationTests(unittest.TestCase):
             broken = installed / 'references/guides/run-card.md'
             broken.unlink()
             before = inventory(source)
-            result = self.cli(installed, 'diagnose', ['--workspace', source, '--target', '10.2.0',
+            result = self.cli(installed, 'diagnose', ['--workspace', source, '--target', '10.3.0',
                               '--context', lab / 'modern-context.json', '--output', lab / 'missing-resource.json'])
             self.assertNotEqual(result[0]['exit'], 0)
             self.assertEqual(inventory(source), before)
@@ -496,7 +496,7 @@ class CompactMigrationTests(unittest.TestCase):
             bad_before = inventory(bad_source)
             bad_plan, bad_candidate = self.prepared(installed, bad_source, lab / 'stamp-only-job')
             agents = bad_candidate / 'AGENTS.md'
-            agents.write_text(agents.read_text().replace('Tackle 10.1.0', 'Tackle 10.2.0'))
+            agents.write_text(agents.read_text().replace('Tackle 10.1.0', 'Tackle 10.3.0'))
             meta, out, err = self.run_child([sys.executable, '-I', str(installed / 'scripts/lint.py'),
                 '--row', '14', bad_candidate.name], lab / 'stamp-only-job/candidate-project')
             verdict = base.NAMESPACE['lint_verdict'](14,
@@ -590,7 +590,7 @@ class CompactMigrationTests(unittest.TestCase):
             alias.symlink_to(source, target_is_directory=True)
             context, _ = self.context(source)
             write_json(lab / 'paths-context.json', context)
-            self.cli(installed, 'diagnose', ['--workspace', alias, '--target', '10.2.0',
+            self.cli(installed, 'diagnose', ['--workspace', alias, '--target', '10.3.0',
                                            '--context', lab / 'paths-context.json', '--output', lab / 'alias.json'], 2)
             self.assertEqual(inventory(source), before)
             for conflict in ('collision', 'unclosed-fence', 'external-link'):
@@ -604,7 +604,7 @@ class CompactMigrationTests(unittest.TestCase):
                     snapshot = inventory(bad)
                     context, _ = self.context(bad)
                     context_path = lab / (conflict + '-context.json'); write_json(context_path, context)
-                    result = self.cli(installed, 'diagnose', ['--workspace', bad, '--target', '10.2.0',
+                    result = self.cli(installed, 'diagnose', ['--workspace', bad, '--target', '10.3.0',
                                     '--context', context_path, '--output', lab / (conflict + '-manifest.json')])
                     self.assertNotEqual(result[0]['exit'], 0)
                     self.assertEqual(inventory(bad), snapshot)

@@ -125,7 +125,7 @@ class ChecklistTests(unittest.TestCase):
                         shutil.copyfile(ROOT / 'maintaining' / name, root / 'maintaining' / name)
                     target = root / 'skills/tackle/references/guides/migration-catalog.json'
                     catalog = json.loads(target.read_bytes())
-                    self.assertEqual(catalog['target_methodology'], '10.2.0')
+                    self.assertEqual(catalog['target_methodology'], '10.3.0')
                     groups = [group for group in catalog['provenance']['groups']
                               if group['source'] == 'H' and group['heading'] == expected_heading]
                     self.assertEqual(len(groups), 1)

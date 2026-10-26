@@ -20,7 +20,7 @@ a script adds or updates its row.
 | [migrate/step_3_to_4.py](migrate/step_3_to_4.py) | `effc084a74cb31c1aea0983e89bc94e0a08a3bd26137ec87ae9fc94b9c2846f5` |
 | [migrate/step_4_to_5.py](migrate/step_4_to_5.py) | `ae4dcf1ee639aa556fccf4ddbc1b70229b942d84e6a365c12009023af717501b` |
 | [migrate/step_pre3_to_3.py](migrate/step_pre3_to_3.py) | `b08e63d7182d5a51d30a1973ba3f098448a174e208e9739783688d7ca82ab4b3` |
-| [migrate/compact.py](migrate/compact.py) | `c55c20ae6597017ef66118a814873e97e1e0a83a7e9c12299e9c72181616bbec` |
+| [migrate/compact.py](migrate/compact.py) | `16ed4b2f68aaf79cfee3ce0f29ea997ab14fdc0bf75dd8294c0ced4e11f866f3` |
 | [workspace_archive.py](workspace_archive.py) | `c103d8917aa252bae62ca2bb54c565ed155124e81522bbbfc6ffef99a34f4aad` |
 | [capture.py](capture.py) | `5fd79dbbd5edd2efb308e22d9bb71e5007a80f425fde41aa5b297adc02cb755d` |
 | [evidence_capture.py](evidence_capture.py) | `f542532dc57a0e1dc7b101da8371822f66959683b2852e29b816000fef6e1ce0` |
