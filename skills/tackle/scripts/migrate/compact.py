@@ -941,7 +941,10 @@ def _evidence_ref(job, state, reference):
 
 def _evidence_path(job, state, raw):
     path = Path(raw)
-    if not path.is_absolute(): return Path(job) / path
+    if not path.is_absolute():
+        _ref(job, raw)
+        return Path(job) / path
+    _absolute(raw, "external-evidence", exists=False)
     source = Path(state["source"])
     # The original identity moves at cutover; raw references keep their spelling.
     # Only the recorded original-backup carrier may resolve that old identity.
@@ -949,7 +952,11 @@ def _evidence_path(job, state, raw):
     if path.is_relative_to(source) and backup.exists() and state["phase"] in {
             "adopt-intent", "original-backed-up", "candidate-promoted", "adopted",
             "restore-intent", "adopted-backed-up", "restored"}:
-        return backup / path.relative_to(source)
+        path = backup / path.relative_to(source)
+    # A cited absolute path is read only under the working directory, the job,
+    # the source or its backup carrier, so a receipt cannot probe other host files.
+    if not any(path.is_relative_to(root) for root in (Path.cwd(), Path(job), source, backup)):
+        raise MigrationError("external-evidence-outside-root")
     return path
 
 def _external_receipt_context(target, value, job, state):

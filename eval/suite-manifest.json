@@ -334,7 +334,7 @@
         "test_compact_migration.py",
         "test_closed_report_receipts.py"
       ],
-      "tests": 188,
+      "tests": 189,
       "source": "eval/migration",
       "category": "product",
       "purpose": "Workspace schema migration, scripts and census refusal. Migration keeps historical record paths, makes citations follow their moved files, leaves links into other workspaces unchanged, reports what history still cites, and keeps the text after a legacy status glyph as a board note. The 10.1 to 10.2 checklist adopts closed-record hashes without a schema change. Compact current-target catalog with retained historical provenance, isolated copy preparation, native and external admission, physical adoption, contention, interrupted recovery and reversible restore; protected schema adapters remain unchanged. Closed-report receipt additions preserve prior bytes, admit only the specifically required missing Complete-report carrier, and reject conflicting values, unrelated edits and fenced or quoted substitutes; owner truth and semantic admission remain separate."
