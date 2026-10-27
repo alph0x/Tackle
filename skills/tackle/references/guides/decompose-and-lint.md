@@ -124,6 +124,8 @@ Fix internal detail, such as exact type, case or command names beyond the symbol
 
 Resolve an uncertain capability or interface with one bounded, authorized probe when its result changes implementation, and compile that fact into the consumer. Routine edits need no research task.
 
+An owner instruction can ask PLAN to prepare later tasks beyond the next wave. Examples are full briefs, prototypes or real-part rehearsals. Before that preparation, PLAN asks the owner, with the estimated cost and the horizon alternative. PLAN then follows the answer. A probe names the decision that it unlocks. It records an observed fact, not a repaired patch. A probe is not a correction-validation cycle. It stops at an answer or at an inconclusive result. An inconclusive implementation question becomes a RUN step of the consuming task, or a discovery task.
+
 ## Full execution preparation
 
 Before Ready, choose the bounded capture and closure path in [execution checks](full-checks.md): actual

@@ -820,7 +820,7 @@
       "rule_id": "R-PLAN-12",
       "statement": "Planning always runs on a more capable tier than the Executor's whenever more than one suitable tier binds; a one-tier harness records its limitation. These are role proposals, not claims that a host binding occurred.",
       "statement_sha256": "f2516914cd7def40bbf47bf3973d6b24cd128e5ac88a7d378b148c84cc53d2ff",
-      "home": "references/guides/decompose-and-lint.md:172",
+      "home": "references/guides/decompose-and-lint.md:174",
       "home_fragment": "Planning always runs on a more capable tier",
       "units": [],
       "mirrors": [],
@@ -4332,7 +4332,7 @@
       "rule_id": "R-PLAN-16",
       "statement": "Each subagent role targets the cheapest available model that fits its tier in the team table. Before the first dispatch, show the owner the concrete role-to-model table for every subagent role and get an explicit confirmation. A run intent is not a model confirmation. Any later model change for a role, an escalation included, needs a new confirmation before that dispatch. Without that confirmation, the affected task waits on the owner.",
       "statement_sha256": "9e1444771bd9b09f8349106d55d032baef3862449540e6d91dd19af142217542",
-      "home": "references/guides/decompose-and-lint.md:179",
+      "home": "references/guides/decompose-and-lint.md:181",
       "home_fragment": "Each subagent role targets the cheapest",
       "units": [],
       "mirrors": [],
@@ -4355,7 +4355,7 @@
       "rule_id": "R-PLAN-17",
       "statement": "When a task looks too hard for the cheapest bindable tier, strengthen its brief before any Tier deviation. Add the missing context, split the work into smaller steps, and give exact commands with their expected results. The planner, on a more capable tier, writes the brief so that the Executor makes no design decision. A brief that leaves one to the Executor is not ready. When an Executor cannot finish, the planner strengthens the brief first; an escalation is the exception. A Tier deviation is the last resort, and its `**Tier reason**` says why a stronger brief is not enough. A review role (lock or complete) runs one tier above the Executor whose task it reviews. When that tier does not bind, record the limitation. An audit runs at the Auditor's tier in the team table.",
       "statement_sha256": "5ee7a8f573a659ff497f3dca95293acb2c5b4a121321266cc4841a383194cc32",
-      "home": "references/guides/decompose-and-lint.md:185",
+      "home": "references/guides/decompose-and-lint.md:187",
       "home_fragment": "When a task looks too hard for the cheapest",
       "units": [],
       "mirrors": [],
@@ -4768,7 +4768,7 @@
         "references/guides/full-checks.md:130",
         "references/guides/evidence-capture.md:46",
         "references/guides/context-lifecycle.md:106",
-        "references/guides/decompose-and-lint.md:137",
+        "references/guides/decompose-and-lint.md:139",
         "references/guides/system-one.md:8"
       ],
       "class": "behavioral",
@@ -6452,6 +6452,52 @@
         "scenarios": [],
         "cohort_id": null,
         "as_of": "2026-10-25"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-43",
+      "statement": "Before PLAN prepares later tasks beyond the next wave on an owner instruction, it asks the owner with the estimated cost and the horizon alternative, then follows the answer.",
+      "statement_sha256": "c9cffd7fb2db781f116334b3f9ac2d69e203526797eeb0ab0e474922aba53b85",
+      "home": "references/guides/decompose-and-lint.md:127",
+      "home_fragment": "An owner instruction can ask PLAN to prepare",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.3.1",
+        "trigger": "A patch-release plan required prototypes for every task beyond the next wave, and correction cycles were spent iterating implementations inside PLAN before any RUN.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-27"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-44",
+      "statement": "A PLAN probe names the decision it unlocks, records an observed fact rather than a repaired patch, is not a correction-validation cycle, stops at an answer or an inconclusive result, and hands an inconclusive implementation question to a RUN step or a discovery task.",
+      "statement_sha256": "5749caabef06a621114bf7c60fd539cca3e8f08f017ce1e8292af1ef30632458",
+      "home": "references/guides/decompose-and-lint.md:127",
+      "home_fragment": "A probe names the decision that it unlocks",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.3.1",
+        "trigger": "A patch-release plan required prototypes for every task beyond the next wave, and correction cycles were spent iterating implementations inside PLAN before any RUN.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-27"
       },
       "historical": []
     }
