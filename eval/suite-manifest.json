@@ -80,9 +80,10 @@
     {
       "path": "eval/tests/product/run/evidence-capture",
       "files": [
+        "test_default_observation.py",
         "test_evidence_capture.py"
       ],
-      "tests": 8,
+      "tests": 20,
       "source": "eval/run/evidence-capture",
       "category": "product",
       "purpose": "Child execution, streams, timeouts and evidence capture."

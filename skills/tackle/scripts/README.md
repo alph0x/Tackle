@@ -23,7 +23,7 @@ a script adds or updates its row.
 | [migrate/compact.py](migrate/compact.py) | `16ed4b2f68aaf79cfee3ce0f29ea997ab14fdc0bf75dd8294c0ced4e11f866f3` |
 | [workspace_archive.py](workspace_archive.py) | `c103d8917aa252bae62ca2bb54c565ed155124e81522bbbfc6ffef99a34f4aad` |
 | [capture.py](capture.py) | `5fd79dbbd5edd2efb308e22d9bb71e5007a80f425fde41aa5b297adc02cb755d` |
-| [evidence_capture.py](evidence_capture.py) | `f542532dc57a0e1dc7b101da8371822f66959683b2852e29b816000fef6e1ce0` |
+| [evidence_capture.py](evidence_capture.py) | `a897f23a881a59bd173c74ed3c09393677efa24f57a17737302698c2f2eedd20` |
 | [lint_runner.py](lint_runner.py) | `f63ff42f569fb189839d891a2ebd1a2de755b5dab22606ebb8b3dc03c90e3352` |
 | [lint.py](lint.py) | `b2a06322d7903260bec87bdce5913e134642a2abf87c83d15c9994ba0a30f2cc` |
 | [context_bundle.py](context_bundle.py) | `5bed1907877c5bb016d8555969eef0c564f70b11aa7bf707849b3cf4b1c0d63f` |

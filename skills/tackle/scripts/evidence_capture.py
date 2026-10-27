@@ -11,6 +11,13 @@ argv = ["python3", "-m", "unittest", "discover", "-v"]
 inputs = ["module.py", "test_module.py", "SPEC.md"]
 artifacts = []
 timeout_seconds = 30
+configured_argv = argv
+if argv == ["python3", "-m", "unittest", "discover", "-v"]:
+    observer = ("import sys, unittest\n"
+                "suite = unittest.TestLoader().discover('.')\n"
+                "result = unittest.TextTestRunner(verbosity=2).run(suite)\n"
+                "sys.exit(0 if result.testsRun > 0 and result.wasSuccessful() else 1)\n")
+    argv = ["python3", "-I", "-c", observer]
 cwd = Path.cwd().resolve()
 if len(sys.argv) != 2:
     raise SystemExit("supply the existing authorized initiative workspace")
@@ -28,6 +35,8 @@ out = Path(tempfile.mkdtemp(prefix="validation-", dir=destination))
 record = {"argv": argv, "cwd": str(cwd), "capture_runtime": sys.version,
           "actor": "n/a", "model": "n/a", "effort": "n/a", "timeout_seconds": timeout_seconds,
           "inputs_before": before, "start": datetime.now(timezone.utc).isoformat()}
+if argv is not configured_argv:
+    record["configured_argv"] = configured_argv
 with (out / "start.json").open("x", encoding="utf-8") as f:
     json.dump(record, f, indent=2)
 code = None
