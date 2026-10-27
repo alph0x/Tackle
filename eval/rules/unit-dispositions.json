@@ -19895,6 +19895,15 @@
           "reason": "release version stamp bumped to 10.3.0"
         }
       ]
+    },
+    {
+      "path": "references/guides/evaluation-rounds.md",
+      "line": 5,
+      "unit_sha256": "0422dec8d4d46b6e14df6aae4f49fb194c40c70f99c5a3284db4d02cef077b99",
+      "disposition": "reworded",
+      "destination": "references/guides/evaluation-rounds.md",
+      "note": "The command is `python3 -I skills/tackle/scripts/evaluation_rounds.py`.",
+      "destination_unit_sha256": null
     }
   ]
 }

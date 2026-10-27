@@ -2,7 +2,7 @@
 
 This optional local tool seals one finite evaluation round, reserves each unit before its caller performs an effect, and computes or replays the result from retained public observations. It does not dispatch work, inspect opaque cases or answers, qualify an adapter, or establish independent evidence. Use it only when a prepared task has an explicit round protocol and script consent. Ordinary `verify` remains the readiness and finding workflow; this guide is an on-demand depth reference, not an automatic verification step.
 
-The command is `python3 skills/tackle/scripts/evaluation_rounds.py`. It uses Python 3.10+ and the standard library. The four operations are `seal --spec spec.json --round round-01`, `record --round round-01 --event event.json`, `compute --round round-01 --output result-01`, and `replay --round round-01 --against result-01/result.json --output replay-01`. Run them from the fixture cwd. A round destination and each result directory must be new, disjoint directories below that cwd. The tool refuses overwrites, symlinks, escapes, changed inputs, malformed evidence, and unsupported schema or rules.
+The command is `python3 -I skills/tackle/scripts/evaluation_rounds.py`. It uses Python 3.10+ and the standard library. The four operations are `seal --spec spec.json --round round-01`, `record --round round-01 --event event.json`, `compute --round round-01 --output result-01`, and `replay --round round-01 --against result-01/result.json --output replay-01`. Run them from the fixture cwd. A round destination and each result directory must be new, disjoint directories below that cwd. The tool refuses overwrites, symlinks, escapes, changed inputs, malformed evidence, and unsupported schema or rules.
 
 ## Finite sealed inputs
 
