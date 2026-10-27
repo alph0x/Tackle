@@ -103,9 +103,10 @@
         "test_discovery.py",
         "test_credential_guard.py",
         "test_selection.py",
-        "test_manifest_impact.py"
+        "test_manifest_impact.py",
+        "test_suite_index.py"
       ],
-      "tests": 42,
+      "tests": 45,
       "source": "eval/maintaining/suite-integrity",
       "category": "tooling",
       "purpose": "Complete discovery, native child outcomes, conservative selection, manifest impact classification and credential guards."

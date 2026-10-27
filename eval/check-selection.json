@@ -942,6 +942,17 @@
       ],
       "exclude": [],
       "reason": "The real compact CLI and shared admission helpers are consumed by compact migration and retained template migration expectations; do not omit either whole family."
+    },
+    {
+      "patterns": [
+        "eval/tests/README.md"
+      ],
+      "families": [
+        "eval/tests/tooling/maintaining/suite-integrity",
+        "eval/tests/tooling/rules"
+      ],
+      "exclude": [],
+      "reason": "The suite-index consistency consumer checks every registry row; the rules suite scans added index text for workspace IDs and the initiative slug."
     }
   ],
   "global_patterns": [
