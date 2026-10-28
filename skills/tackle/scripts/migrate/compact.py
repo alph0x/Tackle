@@ -130,7 +130,7 @@ def _absolute(value, label, *, exists=True, directory=None):
 
 def _validate_catalog(catalog):
     _exact_keys(catalog, TOP_KEYS, "catalog")
-    if catalog["schema"] != CATALOG_SCHEMA or catalog["revision"] != 1 or catalog["target_methodology"] != "10.3.0":
+    if catalog["schema"] != CATALOG_SCHEMA or catalog["revision"] != 2 or catalog["target_methodology"] != "10.3.0":
         raise MigrationError("unsupported-catalog")
     if catalog["supported_buckets"] != ["pre-3", "3", "4", "5", "lite"]:
         raise MigrationError("unsupported-catalog-buckets")

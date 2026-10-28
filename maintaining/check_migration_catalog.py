@@ -552,7 +552,7 @@ CURRENT_RECIPES = {'I-owner-archetypes': 'Before any separately owner-controlled
  'V-warn13': 'Expect lint row13 WARN lines for dated entries after the newest State snapshot and for undated '
              'session headings. Preserve those diagnostics without promoting them to mandatory failures, '
              'inventing dates, dropping entries or editing history to obtain silence.',
- 'V-current-lint': 'Run `scripts/lint.py <slug>` on the copy and expect 19 of 19 rows silent. Repair a '
+ 'V-current-lint': 'Run `python3 -I scripts/lint.py <slug>` on the copy and expect 19 of 19 rows silent. Repair a '
                    'finding from another row as its own guide states, and a closed brief only by erratum. '
                    'Retain documented non-gating WARN exceptions instead of treating this expected silent '
                    'control as permission to suppress warnings. Capture native raw bytes/exit and the '
@@ -629,7 +629,7 @@ CURRENT_RECIPES = {'I-owner-archetypes': 'Before any separately owner-controlled
                   'unchanged adopted workspace through its verified sibling stage. A completed repeat '
                   'validates its recorded physical/admission identity and changes no bytes. Last, set the '
                   '`**Methodology: Tackle 10.3.0**` line in the candidate AGENTS.md only after the baseline '
-                  'covers every Complete task. Then run `scripts/lint.py <slug>` again and expect 19 of 19 '
+                  'covers every Complete task. Then run `python3 -I scripts/lint.py <slug>` again and expect 19 of 19 '
                   'rows silent, retaining non-gating WARN exceptions. From now on row 14 requires that line '
                   'in each Complete report. The stamped candidate remains unadopted until separate verified '
                   'cutover; the source stamp is never silently changed. This target keeps '
@@ -1164,7 +1164,7 @@ def validate(root):
     cat = loads(cat_path.read_bytes())
     exact(cat, TOP, "catalog")
     if (cat["schema"] != "tackle-migration-catalog/1" or type(cat["revision"]) is not int
-            or cat["revision"] != 1 or cat["target_methodology"] != "10.3.0"):
+            or cat["revision"] != 2 or cat["target_methodology"] != "10.3.0"):
         fail("unsupported migration catalog target")
     if cat["supported_buckets"] != ["pre-3", "3", "4", "5", "lite"]:
         fail("supported bucket coverage mismatch")
