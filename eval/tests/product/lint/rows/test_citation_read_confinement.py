@@ -16,10 +16,16 @@ from eval.support.lint import literal_command, write_files  # noqa: E402
 
 LINT_SOURCE = (ROOT / 'skills/tackle/scripts/lint.py').read_text(encoding='utf-8')
 MARKER = 'OUTSIDE-MARKER'
+
+
+def task(number):
+    return 'T-' + str(number)
+
+
 BOARD_HEADER = ('Schema: tackle-workspace/5\n\n| Task | What | Brief | Depends on | Status | Verification |\n'
                 '|---|---|---|---|---|---|\n')
 PLAN = ('# Plan\n\n## 5. Task decomposition\n\n| Task | What |\n|---|---|\n'
-        '| T-1 | First |\n| T-2 | Second |\n')
+        f'| {task(1)} | First |\n| {task(2)} | Second |\n')
 SIBLING = ('# Workspace\n\n## Sibling workspaces\n\n| Sibling | Path | Relation |\n|---|---|---|\n'
            '| other | `docs/plans/other` | sibling |\n')
 
@@ -122,8 +128,8 @@ class CitationReadConfinementTests(unittest.TestCase):
         root, workspace, outside = make_tree(self)
         write_files(outside, {'brief.md': cite('x.md', 1, MARKER + '-TASK') + '\n',
                               'reference.md': cite('x.md', 1, MARKER + '-REFERENCE') + '\n'})
-        write_files(workspace, {'plan.md': '# Plan\n', 'tasks/T-2.md': '# Task T-2\n'})
-        (workspace / 'tasks/T-1.md').symlink_to(outside / 'brief.md')
+        write_files(workspace, {'plan.md': '# Plan\n', f'tasks/{task(2)}.md': f'# Task {task(2)}\n'})
+        (workspace / f'tasks/{task(1)}.md').symlink_to(outside / 'brief.md')
         (workspace / 'reference.md').symlink_to(outside / 'reference.md')
         result = run_row(4, root)
         self.assertNotIn(MARKER, result.stdout)
@@ -131,27 +137,27 @@ class CitationReadConfinementTests(unittest.TestCase):
 
     def test_row_two_traversal_brief_is_refused(self):
         root, workspace, outside = make_tree(self)
-        write_files(outside, {'T-1.md': '# Task T-1\n'})
-        rows = ['| T-1 | Work | tasks/../../../../../outside/T-1.md | none | Ready | n/a |\n',
-                '| T-2 | Work | tasks/T-2.md | none | Ready | n/a |\n']
-        write_files(workspace, row_two_files(rows, {'tasks/T-2.md': '# Task T-2\n'}))
+        write_files(outside, {f'{task(1)}.md': f'# Task {task(1)}\n'})
+        rows = [f'| {task(1)} | Work | tasks/../../../../../outside/{task(1)}.md | none | Ready | n/a |\n',
+                f'| {task(2)} | Work | tasks/{task(2)}.md | none | Ready | n/a |\n']
+        write_files(workspace, row_two_files(rows, {f'tasks/{task(2)}.md': f'# Task {task(2)}\n'}))
         result = run_row(2, root)
-        self.assertIn('missing brief: tasks/../../../../../outside/T-1.md', result.stdout)
+        self.assertIn(f'missing brief: tasks/../../../../../outside/{task(1)}.md', result.stdout)
 
     def test_row_two_symlinked_brief_is_refused(self):
         root, workspace, outside = make_tree(self)
-        write_files(outside, {'T-1.md': '# Task T-1\n', 'T-9.md': '# Task T-2\n'})
+        write_files(outside, {f'{task(1)}.md': f'# Task {task(1)}\n', f'{task(9)}.md': f'# Task {task(2)}\n'})
         os.mkfifo(outside / 'AGENTS.md')
-        rows = ['| T-1 | Work | tasks/T-1.md | none | Complete | reports/T-1-report.md |\n',
-                '| T-2 | Work | ../other/tasks/T-9.md | none | Ready | n/a |\n']
+        rows = [f'| {task(1)} | Work | tasks/{task(1)}.md | none | Complete | reports/{task(1)}-report.md |\n',
+                f'| {task(2)} | Work | ../other/tasks/{task(9)}.md | none | Ready | n/a |\n']
         write_files(workspace, row_two_files(rows, {'AGENTS.md': SIBLING}))
-        (workspace / 'tasks/T-1.md').symlink_to(outside / 'T-1.md')
+        (workspace / f'tasks/{task(1)}.md').symlink_to(outside / f'{task(1)}.md')
         other = root / 'repo/docs/plans/other/tasks'
         other.mkdir(parents=True)
-        (other / 'T-9.md').symlink_to(outside / 'T-9.md')
+        (other / f'{task(9)}.md').symlink_to(outside / f'{task(9)}.md')
         first = run_row(2, root)
-        self.assertIn('missing brief: tasks/T-1.md', first.stdout)
-        self.assertIn('missing brief: ../other/tasks/T-9.md', first.stdout)
+        self.assertIn(f'missing brief: tasks/{task(1)}.md', first.stdout)
+        self.assertIn(f'missing brief: ../other/tasks/{task(9)}.md', first.stdout)
         (workspace / 'AGENTS.md').unlink()
         (workspace / 'AGENTS.md').symlink_to(outside / 'AGENTS.md')
         observer = Observer(outside / 'AGENTS.md', b'')
@@ -164,14 +170,14 @@ class CitationReadConfinementTests(unittest.TestCase):
     def test_row_twelve_traversal_brief_is_never_opened(self):
         root, workspace, outside = make_tree(self)
         os.mkfifo(outside / 'brief.md')
-        observer = Observer(outside / 'brief.md', b'# Task T-1\n')
+        observer = Observer(outside / 'brief.md', ('# Task ' + task(1) + '\n').encode('utf-8'))
         self.addCleanup(observer.stop)
         write_files(outside, {'tier.md': f'**Tier**: {MARKER}\n'})
-        rows = ['| T-1 | Work | tasks/../../../../../outside/brief.md | none | Complete | reports/T-1-report.md |\n',
-                '| T-2 | Work | tasks/T-2.md | none | Ready | n/a |\n']
+        rows = [f'| {task(1)} | Work | tasks/../../../../../outside/brief.md | none | Complete | reports/{task(1)}-report.md |\n',
+                f'| {task(2)} | Work | tasks/{task(2)}.md | none | Ready | n/a |\n']
         write_files(workspace, {'plan.md': '# Plan\n', 'task-board.md': BOARD_HEADER + ''.join(rows),
-                                'tasks/T-2.md': '# Task T-2\n'})
-        (workspace / 'tasks/T-3.md').symlink_to(outside / 'tier.md')
+                                f'tasks/{task(2)}.md': f'# Task {task(2)}\n'})
+        (workspace / f'tasks/{task(3)}.md').symlink_to(outside / 'tier.md')
         observer.start()
         result = run_row(12, root)
         observer.stop()
@@ -182,25 +188,26 @@ class CitationReadConfinementTests(unittest.TestCase):
     def test_row_fourteen_unanchored_id_is_refused(self):
         root, workspace, outside = make_tree(self)
         write_files(outside, {'x-report.md': '**Brief sha256**: bad\n'})
-        row = '| T-1/../../../../../../outside/x | Work | tasks/T-1.md | none | Complete | reports/T-1-report.md |\n'
+        row = (f'| {task(1)}/../../../../../../outside/x | Work | tasks/{task(1)}.md | none | Complete | '
+               f'reports/{task(1)}-report.md |\n')
         write_files(workspace, {'task-board.md': BOARD_HEADER + row, 'history.md': 'History\n',
-                                'tasks/T-1.md': '# Task T-1\n'})
-        (workspace / 'reports/T-1').mkdir(parents=True)
+                                f'tasks/{task(1)}.md': f'# Task {task(1)}\n'})
+        (workspace / f'reports/{task(1)}').mkdir(parents=True)
         result = run_row(14, root)
-        self.assertIn('done task without closure report: T-1/../../../../../../outside/x', result.stdout)
+        self.assertIn(f'done task without closure report: {task(1)}/../../../../../../outside/x', result.stdout)
         self.assertNotIn('malformed brief hash', result.stdout)
 
     def test_row_fourteen_symlinked_brief_is_not_hashed(self):
         root, workspace, outside = make_tree(self)
-        write_files(outside, {'T-1.md': '# Task T-1\n'})
-        row = '| T-1 | Work | tasks/T-1.md | none | Complete | reports/T-1-report.md |\n'
+        write_files(outside, {f'{task(1)}.md': f'# Task {task(1)}\n'})
+        row = f'| {task(1)} | Work | tasks/{task(1)}.md | none | Complete | reports/{task(1)}-report.md |\n'
         write_files(workspace, {'task-board.md': BOARD_HEADER + row, 'history.md': 'History\n'})
         (workspace / 'tasks').mkdir()
-        (workspace / 'tasks/T-1.md').symlink_to(outside / 'T-1.md')
-        digest = sha256('# Task T-1\n')
-        write_files(workspace, {'reports/T-1-report.md': f'**Brief sha256**: {digest}\n'})
+        (workspace / f'tasks/{task(1)}.md').symlink_to(outside / f'{task(1)}.md')
+        digest = sha256(f'# Task {task(1)}\n')
+        write_files(workspace, {f'reports/{task(1)}-report.md': f'**Brief sha256**: {digest}\n'})
         result = run_row(14, root)
-        self.assertIn('closed brief changed: T-1', result.stdout)
+        self.assertIn(f'closed brief changed: {task(1)}', result.stdout)
 
     def test_repository_and_workspace_citations_still_resolve(self):
         root, workspace, outside = make_tree(self)
@@ -214,14 +221,14 @@ class CitationReadConfinementTests(unittest.TestCase):
 
     def test_regular_and_sibling_briefs_keep_working(self):
         root, workspace, outside = make_tree(self)
-        brief = '# Task T-1\n\n**Tier**: fast\n'
+        brief = f'# Task {task(1)}\n\n**Tier**: fast\n'
         other = root / 'repo/docs/plans/other/tasks'
         other.mkdir(parents=True)
-        write_files(other, {'T-9.md': '# Task T-2\n'})
-        rows = ['| T-1 | Work | tasks/T-1.md | none | Complete | reports/T-1-report.md |\n',
-                '| T-2 | Work | ../other/tasks/T-9.md | none | Ready | n/a |\n']
-        files = row_two_files(rows, {'tasks/T-1.md': brief, 'AGENTS.md': SIBLING,
-                                     'reports/T-1-report.md': f'**Brief sha256**: {sha256(brief)}\n'})
+        write_files(other, {f'{task(9)}.md': f'# Task {task(2)}\n'})
+        rows = [f'| {task(1)} | Work | tasks/{task(1)}.md | none | Complete | reports/{task(1)}-report.md |\n',
+                f'| {task(2)} | Work | ../other/tasks/{task(9)}.md | none | Ready | n/a |\n']
+        files = row_two_files(rows, {f'tasks/{task(1)}.md': brief, 'AGENTS.md': SIBLING,
+                                     f'reports/{task(1)}-report.md': f'**Brief sha256**: {sha256(brief)}\n'})
         write_files(workspace, files)
         two = run_row(2, root)
         for text in ('missing brief', 'outside the workspace', 'mismatched brief heading'):
