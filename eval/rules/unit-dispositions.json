@@ -19931,6 +19931,15 @@
       "destination": "skills/tackle/scripts/README.md",
       "note": "| [lint.py](lint.py) | `01e92ca0f3ac3c87a804fdbee46ead63e212bb8f067a2ac8dc0ba0934d4128d0` |",
       "destination_unit_sha256": null
+    },
+    {
+      "path": "skills/tackle/scripts/README.md",
+      "line": 23,
+      "unit_sha256": "9deccb59e649367c15dbea01bd40feac4782c7ba65bba7bd907eb0173d24522b",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "| [migrate/compact.py](migrate/compact.py) | `cf1de9c4004e3c3fbeb5eae963615133b75dc3e421df383aba9c46465617f2c3` |",
+      "destination_unit_sha256": null
     }
   ]
 }

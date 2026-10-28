@@ -61,6 +61,13 @@ def _sha(data):
     return hashlib.sha256(data).hexdigest()
 
 def _read_json(path):
+    try:
+        data = Path(path).read_bytes()
+    except OSError as exc:
+        raise MigrationError("invalid-json:" + str(exc)) from exc
+    return _json_bytes(data)
+
+def _json_bytes(data):
     def pairs(items):
         out = {}
         for key, value in items:
@@ -69,8 +76,8 @@ def _read_json(path):
             out[key] = value
         return out
     try:
-        return json.loads(Path(path).read_text(encoding="utf-8"), object_pairs_hook=pairs, parse_constant=lambda x: (_ for _ in ()).throw(MigrationError("nonfinite-json")))
-    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        return json.loads(data.decode("utf-8"), object_pairs_hook=pairs, parse_constant=lambda x: (_ for _ in ()).throw(MigrationError("nonfinite-json")))
+    except (UnicodeError, json.JSONDecodeError) as exc:
         raise MigrationError("invalid-json:" + str(exc)) from exc
 
 def _exact_keys(obj, keys, label):
@@ -911,6 +918,9 @@ def _cmd_prepare(args):
         return 0
 
 def _ref(job, relative):
+    return _ref_checked(job, relative)[0]
+
+def _ref_checked(job, relative):
     rel = PurePosixPath(relative) if type(relative) is str else PurePosixPath("/")
     path = Path(relative) if type(relative) is str else Path("/")
     if path.is_absolute() or not path.parts or rel.as_posix() != relative or any(part in {"", ".", ".."} for part in rel.parts):
@@ -922,42 +932,74 @@ def _ref(job, relative):
         if index < len(rel.parts) - 1 and (not target.exists() or not target.is_dir()):
             raise MigrationError("missing-job-evidence:" + rel.as_posix())
     if not target.is_file(): raise MigrationError("missing-job-evidence:" + rel.as_posix())
-    return {"path": path.as_posix(), "sha256": _sha(target.read_bytes())}
+    data = target.read_bytes()
+    return {"path": path.as_posix(), "sha256": _sha(data)}, data
 
 def _evidence_ref(job, state, reference):
+    return _evidence_checked(job, state, reference)[0]
+
+def _evidence_checked(job, state, reference):
+    """Return the admitted reference, its target path and the bytes that match its hash."""
     _exact_keys(reference, {"path", "sha256"}, "evidence-reference")
     _hex(reference["sha256"], "evidence-hash")
     raw = reference["path"]
     if type(raw) is not str or not raw: raise PendingError("invalid-evidence-path")
     if not Path(raw).is_absolute():
-        actual = _ref(job, raw)
+        actual, data = _ref_checked(job, raw)
+        target = Path(job) / raw
     else:
-        _absolute(raw, "external-evidence", exists=False)
         target = _evidence_path(job, state, raw)
         _absolute(str(target), "external-evidence", exists=True, directory=False)
-        actual = {"path": raw, "sha256": _sha(target.read_bytes())}
+        _refuse_hardlink(target)
+        data = target.read_bytes()
+        actual = {"path": raw, "sha256": _sha(data)}
     if actual != reference: raise PendingError("evidence-hash-mismatch")
-    return actual
+    return actual, target, data
+
+def _refuse_hardlink(path):
+    # A second name may lie outside every admitted root, so the file is refused before it is opened.
+    if path.stat().st_nlink > 1: raise MigrationError("hardlinked-external-evidence")
 
 def _evidence_path(job, state, raw):
     path = Path(raw)
     if not path.is_absolute():
         _ref(job, raw)
         return Path(job) / path
-    _absolute(raw, "external-evidence", exists=False)
     source = Path(state["source"])
     # The original identity moves at cutover; raw references keep their spelling.
     # Only the recorded original-backup carrier may resolve that old identity.
     backup = Path(state["original_backup"])
+    roots = (Path.cwd(), Path(job), source, backup)
+    # A filesystem root would admit every absolute path, so it is refused before any cited path is inspected.
+    if any(root.parent == root for root in roots): raise MigrationError("filesystem-root-authority")
+    _absolute(raw, "external-evidence", exists=False)
     if path.is_relative_to(source) and backup.exists() and state["phase"] in {
             "adopt-intent", "original-backed-up", "candidate-promoted", "adopted",
             "restore-intent", "adopted-backed-up", "restored"}:
         path = backup / path.relative_to(source)
     # A cited absolute path is read only under the working directory, the job,
     # the source or its backup carrier, so a receipt cannot probe other host files.
-    if not any(path.is_relative_to(root) for root in (Path.cwd(), Path(job), source, backup)):
+    if not any(path.is_relative_to(root) for root in roots):
         raise MigrationError("external-evidence-outside-root")
     return path
+
+def _admit_owner_paths(owner, roots):
+    """Refuse a recorded owner path outside the caller's roots before any of them is inspected."""
+    def recorded(name):
+        path = owner / name
+        if not os.path.lexists(path):
+            return None
+        _absolute(str(path), "external-review-owner-file", exists=True, directory=False)
+        try:
+            return _read_json(path)
+        except MigrationError:
+            return None
+    state, manifest = recorded("state.json"), recorded("manifest.json")
+    paths = [state.get(key) for key in ("source", "checkpoint", "candidate", "original_backup", "adopted_backup", "restore_stage")] if type(state) is dict else []
+    if type(manifest) is dict and type(manifest.get("source")) is dict: paths.append(manifest["source"].get("path"))
+    for value in paths:
+        if type(value) is str and Path(value).is_absolute() and not any(Path(value).is_relative_to(root) for root in roots):
+            raise MigrationError("external-review-owner-outside-root")
 
 def _external_receipt_context(target, value, job, state):
     if type(value) is not dict or value.get("schema") != "tackle-migration-review/1": return job, state
@@ -965,6 +1007,7 @@ def _external_receipt_context(target, value, job, state):
     if target.name != "semantic-review.json": raise PendingError("unbound-external-review-owner")
     owner = _absolute(str(target.parent), "external-review-job", exists=True, directory=True)
     if owner == Path(job): return job, state
+    _admit_owner_paths(owner, (Path.cwd(), Path(job), Path(state["source"]), Path(state["original_backup"])))
     owned = _load_state(owner)
     manifest = _manifest(owner / "manifest.json", allow_source_missing=True)
     if (owned["operation_id"] != manifest["operation_id"]
@@ -1005,15 +1048,15 @@ def _external_receipt_context(target, value, job, state):
     return owner, owned
 
 def _validate_reference_graph(job, state, reference, visited=None, depth=0):
+    """Walk the references under a hash-checked file and return the bytes that were checked."""
     visited = visited if visited is not None else set()
-    _evidence_ref(job, state, reference)
-    target = _evidence_path(job, state, reference["path"])
+    _, target, data = _evidence_checked(job, state, reference)
     key = (str(Path(job)), str(target), reference["sha256"])
-    if key in visited: return
+    if key in visited: return data
     if depth > 64 or len(visited) >= 4096: raise PendingError("evidence-reference-graph-limit")
     visited.add(key)
-    if target.suffix != ".json": return
-    value = _read_json(target)
+    if target.suffix != ".json": return data
+    value = _json_bytes(data)
     owner_job, owner_state = _external_receipt_context(target, value, job, state)
     def walk(node, nesting):
         if nesting > 64: raise PendingError("evidence-json-depth-limit")
@@ -1025,6 +1068,7 @@ def _validate_reference_graph(job, state, reference, visited=None, depth=0):
         elif type(node) is list:
             for child in node: walk(child, nesting + 1)
     walk(value, 0)
+    return data
 
 def _record_ref(job, state, relative):
     ref = _ref(job, relative)
@@ -1339,8 +1383,7 @@ def _native_results(job, state, capture, workspace, cwd, stage, expected_hash):
     results = []
     for check in capture["checks"]:
         _exact_keys(check, {"row", "result"}, "native-check")
-        _validate_reference_graph(job, state, check["result"])
-        result = _read_json(_evidence_path(job, state, check["result"]["path"]))
+        result = _json_bytes(_validate_reference_graph(job, state, check["result"]))
         number = check["row"]
         if (result["row"] != number or result["argv"] != [sys.executable, "-I", str(script), "--row", str(number), Path(workspace).name]
                 or result["cwd"] != str(cwd) or result["workspace"] != str(workspace)
@@ -1350,8 +1393,8 @@ def _native_results(job, state, capture, workspace, cwd, stage, expected_hash):
                 or type(result["exit"]) is not int or result["exit"] != result["child_exit"]
                 or result["workspace_sha256_before"] != expected_hash or result["workspace_sha256_after"] != expected_hash):
             raise PendingError("native-child-binding-conflict:" + stage + ":" + str(number))
-        stdout = _evidence_path(job, state, result["stdout"]["path"]).read_bytes()
-        stderr = _evidence_path(job, state, result["stderr"]["path"]).read_bytes()
+        stdout = _evidence_checked(job, state, result["stdout"])[2]
+        stderr = _evidence_checked(job, state, result["stderr"])[2]
         record = {key: result[key] for key in ("timeout", "launch_error", "signal", "inputs_stable", "artifacts_present")}
         record["child_exit"] = result["exit"]
         verdict = lint_verdict(number, record, stdout, stderr)
@@ -1480,8 +1523,7 @@ def _closed_erratum_authorized(job, state, manifest, expected, current, task, pa
     # The baseline is already present in the sealed pre-event history, and the
     # immutable checkpoint carries its exact actual pre-edit brief bytes.
     transition = _read_json(Path(job) / "receipts/transition.json")
-    _validate_reference_graph(job, state, transition["history_before"])
-    pre_event_history = _evidence_path(job, state, transition["history_before"]["path"]).read_bytes()
+    pre_event_history = _validate_reference_graph(job, state, transition["history_before"])
     if _history_brief_baselines({"history.md": pre_event_history,
                                  **({"history-archive.md": current["history-archive.md"]} if "history-archive.md" in current else {})}, task) != [baseline]:
         return False
