@@ -337,12 +337,13 @@
         "test_v101_v102_checklist.py",
         "test_compact_migration.py",
         "test_closed_report_receipts.py",
-        "test_owner_confinement.py"
+        "test_owner_confinement.py",
+        "test_content_symlinks.py"
       ],
-      "tests": 198,
+      "tests": 211,
       "source": "eval/migration",
       "category": "product",
-      "purpose": "Workspace schema migration, scripts and census refusal. Migration keeps historical record paths, makes citations follow their moved files, leaves links into other workspaces unchanged, reports what history still cites, and keeps the text after a legacy status glyph as a board note. The 10.1 to 10.2 checklist adopts closed-record hashes without a schema change. Compact current-target catalog with retained historical provenance, isolated copy preparation, native and external admission, physical adoption, contention, interrupted recovery and reversible restore; protected schema adapters remain unchanged. Closed-report receipt additions preserve prior bytes, admit only the specifically required missing Complete-report carrier, and reject conflicting values, unrelated edits and fenced or quoted substitutes; owner truth and semantic admission remain separate."
+      "purpose": "Workspace schema migration, scripts and census refusal. Migration keeps historical record paths, makes citations follow their moved files, leaves links into other workspaces unchanged, reports what history still cites, and keeps the text after a legacy status glyph as a board note. The 10.1 to 10.2 checklist adopts closed-record hashes without a schema change. Compact current-target catalog with retained historical provenance, isolated copy preparation, native and external admission, physical adoption, contention, interrupted recovery and reversible restore; protected schema adapters remain unchanged. Closed-report receipt additions preserve prior bytes, admit only the specifically required missing Complete-report carrier, and reject conflicting values, unrelated edits and fenced or quoted substitutes; owner truth and semantic admission remain separate. Typed nested evidence links survive the compact lifecycle, adapters and interrupted recovery without target reads or alias writes; root, control and required-regular checker inputs stay refused."
     },
     {
       "path": "eval/tests/tooling/maintaining/field-report",

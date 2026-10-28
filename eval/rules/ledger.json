@@ -6500,6 +6500,29 @@
         "as_of": "2026-10-27"
       },
       "historical": []
+    },
+    {
+      "rule_id": "R-MIGRATE-16",
+      "statement": "Nested retained symlink inventory entries record type symlink, mode, sha256 null and exact UTF-8 target text; regular-only inventories retain their existing representation and hashes.",
+      "statement_sha256": "e81cf2c04326c18e2f2f78389c71d1e2e30d574916e332d8e604f44d8ecec958",
+      "home": "references/guides/migrate.md:54",
+      "home_fragment": "Their inventory entries contain `type: symlink`",
+      "units": [],
+      "mirrors": [],
+      "class": "format",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.3.1",
+        "trigger": "Typed retained-content symlinks preserve migration tree identity without granting target-read authority.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-28"
+      },
+      "historical": []
     }
   ],
   "non_normative": [

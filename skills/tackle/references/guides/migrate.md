@@ -47,6 +47,16 @@ The context supplies the selected workspace basename, target, upcoming task IDs,
 
 All command paths are absolute; the installed route uses Python 3.10+ standard library and the copied installed artifact only. Commands return 0 when their own stage completes, 1 for pending, unknown, conflict or failed checks, and 2 for invalid input. They never install, download, archive a workspace, manufacture task status, copy consent, run a service, or perform a migration against an unselected source. The external checkpoint, preserved original backup, and explicit restore phase provide the rollback boundary. If the supported route is blocked or unsuitable, the owner may explicitly select a fresh workspace for remaining work and leave the old source unchanged; migration never chooses that alternative silently.
 
+### Content link compatibility
+
+The current placeholder and reference-staleness checkers read Markdown one directory below the workspace, outside the placeholder checker's explicit `legacy-*` snapshot exclusion. Those actual checker inputs retain the required-regular-file refusal: an uncited `raw/evidence.md` or `reference-docs/evidence.md` link is refused before native dispatch. A deeper dependency link such as `verification-records/task/baseline/node_modules/.bin/nanoid` remains inert retained content.
+
+Nested retained evidence can contain symbolic links. Their inventory entries contain `type: symlink`, mode, `sha256: null`, and the exact UTF-8 target text. Complete tree identity includes that entry type and text; the regular-file projection remains a byte map for the existing adapters. Relative/internal, absolute/external, broken, chained, circular and directory targets are all opaque: the migrator does not resolve or open them or traverse a directory through them. Regular files independently present in the workspace are still inventoried under their own paths and existing read authority; a link grants no read authority.
+
+Checkpoint, candidate and restoration copies retain links as links. Existing structural path mappings and legacy snapshots also carry the link entries, while their targets remain literal. Root-level links, control aliases and links needed as current regular checker inputs produce a path-specific refusal. A cited link is not silently treated as absent or read through its target. Unrepresentable UTF-8 paths/targets or a link mode the platform's no-follow interface cannot reproduce produce an explicit error, leaving the original unchanged. Logical path/type/target/mode identity is preserved; inode identity is not the persisted tree contract. Failed preparation can leave its private job evidence in place and does not authorize cleanup or adoption.
+
+Regular-only inventory entries and hashes keep their existing form. A pending job stays bound to its recorded installation and catalog; a changed installation reports drift rather than reinterpreting that job. Recovery uses the matching original installation or a separately prepared fresh diagnosis at a safe boundary. Independent semantic admission, source/candidate freeze and the adoption-boundary requirements retain their existing meaning.
+
 <a id="schema-keyed-migration"></a>
 ## Structure and current adoption
 

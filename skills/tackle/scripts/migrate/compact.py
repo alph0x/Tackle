@@ -18,6 +18,7 @@ import sys
 import tempfile
 import time
 import signal
+import unicodedata
 
 # ``python -I`` removes the script directory from sys.path.  The shipped adapters
 # are intentionally siblings and all must share this one schema module instance.
@@ -46,6 +47,11 @@ TOP_KEYS = {"schema", "revision", "target_methodology", "supported_buckets", "ru
 APPLIES = {"I": "always", "P": "active", "S": "structure", "A": "structure", "R": "active", "B": "next-wave", "M": "active", "E": "active", "J": "requested", "H": "active", "N": "multi-repo", "Q": "current-consumer", "W": "requested", "O": "requested", "V": "active", "Z": "active"}
 FAMILY_COUNTS = {"I": 8, "P": 17, "S": 7, "A": 16, "R": 7, "B": 38, "M": 11, "E": 31, "J": 3, "H": 6, "N": 1, "Q": 2, "W": 5, "O": 12, "V": 17, "Z": 39}
 CONTEXT_KEYS = {"workspace", "target", "next_wave", "boundary", "optional_requests", "date", "run_id"}
+_NOFOLLOW = getattr(os, "O_NOFOLLOW", 0)
+_DIRECTORY = getattr(os, "O_DIRECTORY", 0)
+# Lint row 4's citation grammar and the fenced history index, read for the link admission.
+_CITATION = re.compile(r'([A-Za-z0-9_/.-]+\.[a-z]+):[0-9]+(?:-[0-9]+)? — "')
+_JSON_FENCE = re.compile(r"^```json[ \t]*\n(.*?)^```", re.M | re.S)
 
 class MigrationError(ValueError):
     pass
@@ -61,8 +67,16 @@ def _sha(data):
     return hashlib.sha256(data).hexdigest()
 
 def _read_json(path):
+    """Read control JSON with no link anywhere in its path, not only in its final name."""
     try:
-        data = Path(path).read_bytes()
+        path = Path(path) if Path(path).is_absolute() else Path.cwd() / path
+        parent = _open_chain(path.parent)
+        try:
+            fd = os.open(path.name, os.O_RDONLY | _NOFOLLOW, dir_fd=parent)
+        finally:
+            os.close(parent)
+        with os.fdopen(fd, "rb") as stream:
+            data = stream.read()
     except OSError as exc:
         raise MigrationError("invalid-json:" + str(exc)) from exc
     return _json_bytes(data)
@@ -182,53 +196,189 @@ def _validate_catalog(catalog):
         raise MigrationError("catalog-family-coverage")
     return catalog
 
-def _tree(root, *, allow_root_missing=False):
-    root = Path(root)
-    if not root.exists():
+class _Tree:
+    """A workspace as typed entries, with the regular-file projection the adapters read."""
+    def __init__(self, files, inventory):
+        self.files = files
+        self.inventory = inventory
+
+def _fold(path):
+    """Case-fold and NFD-normalize a path, as a case-insensitive file system resolves it."""
+    return unicodedata.normalize("NFD", path).casefold()
+
+def _checked_utf8(value, rel):
+    try:
+        value.encode("utf-8")
+    except UnicodeError as exc:
+        raise MigrationError("unsupported-entry-encoding:" + rel.encode("utf-8", "backslashreplace").decode("ascii")) from exc
+    return value
+
+def _open_chain(path):
+    """Open every component of an absolute path as a directory, never following a link."""
+    fd = os.open("/", os.O_RDONLY | _DIRECTORY)
+    try:
+        for part in Path(path).parts[1:]:
+            child = os.open(part, os.O_RDONLY | _DIRECTORY | _NOFOLLOW | os.O_NONBLOCK, dir_fd=fd)
+            os.close(fd)
+            fd = child
+        return fd
+    except BaseException:
+        os.close(fd)
+        raise
+
+def _open_entry(dir_fd, name, expected, rel, extra):
+    """Open one scanned entry relative to its parent; a changed entry is refused, never followed."""
+    try:
+        child = os.open(name, os.O_RDONLY | _NOFOLLOW | os.O_NONBLOCK | extra, dir_fd=dir_fd)
+    except OSError as exc:
+        raise MigrationError("unsafe-path:" + rel) from exc
+    actual = os.fstat(child)
+    if (actual.st_dev, actual.st_ino, stat.S_IFMT(actual.st_mode)) != (expected.st_dev, expected.st_ino, stat.S_IFMT(expected.st_mode)):
+        os.close(child)
+        raise MigrationError("changed-entry:" + rel)
+    return child
+
+def _scan_dir(fd, prefix, files, inventory):
+    for name in sorted(os.listdir(fd)):
+        rel = _checked_utf8(prefix + name, prefix + name)
+        info = os.stat(name, dir_fd=fd, follow_symlinks=False)
+        mode = stat.S_IMODE(info.st_mode)
+        if stat.S_ISLNK(info.st_mode):
+            target = _checked_utf8(os.readlink(name, dir_fd=fd), rel)
+            inventory[rel] = {"type": "symlink", "mode": mode, "sha256": None, "target": target}
+        elif stat.S_ISDIR(info.st_mode):
+            child = _open_entry(fd, name, info, rel, _DIRECTORY)
+            try:
+                inventory[rel] = {"type": "directory", "mode": mode, "sha256": None}
+                _scan_dir(child, rel + "/", files, inventory)
+            finally:
+                os.close(child)
+        elif stat.S_ISREG(info.st_mode):
+            child = _open_entry(fd, name, info, rel, 0)
+            with os.fdopen(child, "rb") as stream:
+                data = stream.read()
+            files[rel] = data
+            inventory[rel] = {"type": "file", "mode": mode, "sha256": _sha(data)}
+        else:
+            raise MigrationError("unsupported-content-entry:" + rel)
+
+def _native_inputs(files, workspace):
+    """Workspace paths that lint rows 4 and 16 and the history reader open as regular files."""
+    found = {"history/index.md", "history/transaction.md"}
+
+    def add(raw):
+        parts = [part for part in raw.split("/") if part not in ("", ".")]
+        if not parts or raw.startswith("/") or ".." in parts:
+            return
+        found.add("/".join(parts))
+        if parts[:3] == ["docs", "plans", workspace] and len(parts) > 3:
+            found.add("/".join(parts[3:]))
+
+    cited = [files[name] for name in ("plan.md", "reference.md") if name in files]
+    cited += [data for name, data in files.items() if name.startswith("tasks/") and name.count("/") == 1 and name.endswith(".md")]
+    for data in cited:
+        for match in _CITATION.finditer(data.decode("utf-8", "replace")):
+            add(match[1])
+    if "resource-usage.md" in files:
+        for line in files["resource-usage.md"].decode("utf-8", "replace").splitlines():
+            line = line.lstrip()
+            cells = [cell.strip() for cell in line.split("|")]
+            if line.startswith("|") and len(cells) == 16:
+                for path in _event_sources(cells[14], cells[13]):
+                    add(path)
+    if "history/index.md" in files:
+        for path in _history_segments(files["history/index.md"].decode("utf-8", "replace")):
+            add(path)
+    try:
+        _, _, states = _board_observation(files)
+        for task, _status in states:
+            if task:
+                add("tasks/" + task + ".md")
+                add("tasks/" + task + "-brief.md")
+                add("tasks/" + task + "/brief.md")
+        for raw in _declared_briefs(files).values():
+            add(raw)
+    except (MigrationError, ValueError, KeyError, IndexError, UnicodeError):
+        pass
+    return found
+
+def _event_sources(source, verification):
+    """Paths that lint row 16 opens for one resource-usage row (lint.py:85)."""
+    found = []
+
+    def scan(src, ver):
+        if src == "n/a" and ver != "n/a":
+            src = ver if (".md" in ver or "/" in ver or ver.startswith("[")) else "history.md"
+        link = re.fullmatch(r"\[[^\]]+\]\(([^)]+)\)", src)
+        if link:
+            src = link[1]
+        src = src.split("#", 1)[0]
+        if re.fullmatch(r"[A-Za-z0-9._/-]+", src) and not src.startswith("/") and ".." not in src:
+            found.append(src)
+
+    scan(source, verification)
+    if source != "n/a" and (".md" in verification or verification.startswith("[")):
+        scan(verification, "n/a")
+    return found
+
+def _history_segments(text):
+    """Segment paths of the history index, whether the index is bare JSON or fenced."""
+    documents = []
+    for body in [text] + _JSON_FENCE.findall(text):
+        try:
+            documents.append(json.loads(body))
+        except ValueError:
+            pass
+    paths = []
+    for document in documents:
+        if type(document) is dict and type(document.get("segments")) is list:
+            for segment in document["segments"]:
+                if type(segment) is dict and type(segment.get("path")) is str:
+                    paths.append(segment["path"])
+    return paths
+
+def _refuse_required_links(links, files, workspace):
+    """A link at, or above, a path a native checker reads as a regular file is refused."""
+    folded = {_fold(rel): rel for rel in links}
+    for rel in links:
+        parts = rel.split("/")
+        if len(parts) == 2 and _fold(parts[1]).endswith(".md") and not schema.is_legacy_path(rel):
+            raise MigrationError("required-regular-link:" + rel)
+    for path in sorted(_native_inputs(files, workspace)):
+        parts = path.split("/")
+        for depth in range(1, len(parts) + 1):
+            hit = folded.get(_fold("/".join(parts[:depth])))
+            if hit is not None:
+                raise MigrationError("required-regular-link:" + hit)
+
+def _scan(root, *, allow_root_missing=False):
+    base = Path(root) if Path(root).is_absolute() else Path.cwd() / root
+    try:
+        fd = _open_chain(base)
+    except FileNotFoundError as exc:
         if allow_root_missing:
-            return {}
-        raise MigrationError("missing-workspace")
-    if root.is_symlink() or not root.is_dir():
-        raise MigrationError("unsafe-workspace-root")
-    files = {}
-    for base, dirs, names in os.walk(root, topdown=True, followlinks=False):
-        b = Path(base)
-        dirs.sort()
-        names.sort()
-        for name in list(dirs):
-            p = b / name
-            if p.is_symlink() or not p.is_dir():
-                raise MigrationError("unsafe-path:" + str(p))
-        for name in names:
-            p = b / name
-            if p.is_symlink() or not p.is_file():
-                raise MigrationError("unsafe-path:" + str(p))
-            rel = p.relative_to(root).as_posix()
-            files[rel] = p.read_bytes()
-    return files
+            return _Tree({}, {})
+        raise MigrationError("missing-workspace") from exc
+    except OSError as exc:
+        raise MigrationError("unsafe-workspace-root") from exc
+    files, inventory = {}, {}
+    try:
+        for name in os.listdir(fd):
+            if stat.S_ISLNK(os.stat(name, dir_fd=fd, follow_symlinks=False).st_mode):
+                raise MigrationError("root-link-refused:" + _checked_utf8(name, name))
+        _scan_dir(fd, "", files, inventory)
+    finally:
+        os.close(fd)
+    links = sorted(rel for rel, meta in inventory.items() if meta["type"] == "symlink")
+    if links:
+        _refuse_required_links(links, files, base.name)
+    return _Tree(files, inventory)
+
+def _tree(root, *, allow_root_missing=False):
+    return _scan(root, allow_root_missing=allow_root_missing)
 
 def _inventory(root):
-    root = Path(root)
-    entries = {}
-    if root.is_symlink() or not root.is_dir():
-        raise MigrationError("unsafe-inventory-root")
-    for base, dirs, names in os.walk(root, topdown=True, followlinks=False):
-        b = Path(base)
-        for name in sorted(dirs):
-            p = b / name
-            st = p.lstat()
-            if not stat.S_ISDIR(st.st_mode):
-                raise MigrationError("unsafe-inventory-path")
-            rel = p.relative_to(root).as_posix()
-            entries[rel] = {"type": "directory", "mode": stat.S_IMODE(st.st_mode), "sha256": None}
-        for name in sorted(names):
-            p = b / name
-            st = p.lstat()
-            if not stat.S_ISREG(st.st_mode):
-                raise MigrationError("unsafe-inventory-path")
-            rel = p.relative_to(root).as_posix()
-            entries[rel] = {"type": "file", "mode": stat.S_IMODE(st.st_mode), "sha256": _sha(p.read_bytes())}
-    return entries
+    return _scan(root).inventory
 
 def _inventory_sha(entries):
     return _sha(_canonical(entries))
@@ -239,10 +389,16 @@ def _validate_inventory(entries, label):
     for rel, meta in entries.items():
         if type(rel) is not str or not rel or "\\" in rel or PurePosixPath(rel).is_absolute() or PurePosixPath(rel).as_posix() != rel or any(p in {"", ".", ".."} for p in rel.split("/")):
             raise MigrationError("invalid-" + label + "-inventory-path")
-        _exact_keys(meta, {"type", "mode", "sha256"}, label + "-inventory-entry")
-        if meta["type"] not in {"file", "directory"} or type(meta["mode"]) is not int or not 0 <= meta["mode"] <= 0o7777:
+        if type(meta) is not dict or meta.get("type") not in {"file", "directory", "symlink"}:
+            raise MigrationError("invalid-" + label + "-inventory-entry")
+        _exact_keys(meta, {"type", "mode", "sha256", "target"} if meta["type"] == "symlink" else {"type", "mode", "sha256"}, label + "-inventory-entry")
+        if type(meta["mode"]) is not int or not 0 <= meta["mode"] <= 0o7777:
             raise MigrationError("invalid-" + label + "-inventory-entry")
         if meta["type"] == "file": _hex(meta["sha256"], label + "-inventory-hash")
+        elif meta["type"] == "symlink":
+            if meta["sha256"] is not None or type(meta["target"]) is not str:
+                raise MigrationError("invalid-" + label + "-symlink-entry")
+            _checked_utf8(meta["target"], rel)
         elif meta["sha256"] is not None: raise MigrationError("invalid-" + label + "-directory-hash")
     return entries
 
@@ -591,43 +747,118 @@ def _parent_lock(source):
     finally:
         fcntl.flock(fd, fcntl.LOCK_UN); os.close(fd)
 
+def _safe_relative(rel):
+    if (type(rel) is not str or not rel or "\\" in rel or PurePosixPath(rel).is_absolute()
+            or PurePosixPath(rel).as_posix() != rel or any(part in {"", ".", ".."} for part in rel.split("/"))):
+        raise MigrationError("unsafe-materialization-path:" + str(rel))
+
+def _materialize_plan(files, inventory):
+    """Validate every path, payload, link and ancestor before the first effect."""
+    kinds = {}
+    for rel, data in files.items():
+        _safe_relative(rel)
+        if type(data) is not bytes:
+            raise MigrationError("invalid-materialization-payload:" + rel)
+        kinds[rel] = "file"
+    for rel, meta in inventory.items():
+        _safe_relative(rel)
+        if type(meta) is not dict or meta.get("type") not in {"file", "directory", "symlink"}:
+            raise MigrationError("invalid-materialization-entry:" + rel)
+        if meta["type"] == "file":
+            if rel not in files or _sha(files[rel]) != meta.get("sha256"):
+                raise MigrationError("materialization-payload-mismatch:" + rel)
+        elif rel in files:
+            raise MigrationError("materialization-collision:" + rel)
+        if type(meta.get("mode")) is not int or not 0 <= meta["mode"] <= 0o7777:
+            raise MigrationError("invalid-materialization-entry:" + rel)
+        if meta["type"] == "symlink":
+            if type(meta.get("target")) is not str:
+                raise MigrationError("invalid-materialization-entry:" + rel)
+            _checked_utf8(meta["target"], rel)
+        kinds[rel] = meta["type"]
+    for rel, kind in kinds.items():
+        parts = rel.split("/")
+        for depth in range(1, len(parts)):
+            if kinds.get("/".join(parts[:depth])) in {"file", "symlink"}:
+                raise MigrationError("materialization-collision:" + rel)
+    for rel in list(kinds):
+        parts = rel.split("/")
+        for depth in range(1, len(parts)):
+            kinds.setdefault("/".join(parts[:depth]), "directory")
+    return kinds
+
+def _open_parent(root):
+    try:
+        return _open_chain(root.parent)
+    except FileNotFoundError as exc:
+        raise MigrationError("missing-materialization-parent:" + str(root)) from exc
+    except OSError as exc:
+        raise MigrationError("unsafe-materialization-parent:" + str(root)) from exc
+
+def _create_file(dir_fd, name, rel, data, mode):
+    fd = os.open(name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | _NOFOLLOW, 0o600, dir_fd=dir_fd)
+    with os.fdopen(fd, "wb") as stream:
+        stream.write(data)
+        stream.flush()
+        os.fsync(stream.fileno())
+        os.fchmod(stream.fileno(), mode)
+
+def _create_link(dir_fd, name, rel, target, mode):
+    os.symlink(target, name, dir_fd=dir_fd)
+    if stat.S_IMODE(os.stat(name, dir_fd=dir_fd, follow_symlinks=False).st_mode) == mode:
+        return
+    # Only a no-follow chmod is ever issued, so a changed mode cannot reach the target.
+    if os.chmod not in os.supports_follow_symlinks:
+        raise MigrationError("unsupported-link-mode:" + rel)
+    try:
+        os.chmod(name, mode, dir_fd=dir_fd, follow_symlinks=False)
+    except (NotImplementedError, OSError) as exc:
+        raise MigrationError("unsupported-link-mode:" + rel) from exc
+
 def _materialize(files, root, inventory=None):
-    root = Path(root)
-    root.mkdir(parents=True, exist_ok=False)
+    root = Path(root) if Path(root).is_absolute() else Path.cwd() / root
     inventory = inventory or {}
-    for rel, meta in sorted(inventory.items()):
-        if meta.get("type") == "directory":
-            p = root.joinpath(*PurePosixPath(rel).parts)
-            p.mkdir(parents=True, exist_ok=True)
-    for rel, data in sorted(files.items()):
-        p = root.joinpath(*PurePosixPath(rel).parts)
-        p.parent.mkdir(parents=True, exist_ok=True)
-        fd = os.open(p, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
-        try:
-            with os.fdopen(fd, "wb") as stream:
-                stream.write(data)
-                stream.flush()
-                os.fsync(stream.fileno())
-            mode = inventory.get(rel, {}).get("mode", 0o644)
-            os.chmod(p, mode)
-        except BaseException:
-            with contextlib.suppress(OSError): p.unlink()
-            raise
-    for rel, meta in sorted(inventory.items(), key=lambda item: item[0].count("/"), reverse=True):
-        if meta.get("type") == "directory":
-            os.chmod(root.joinpath(*PurePosixPath(rel).parts), meta["mode"])
-    _fsync_dir(root)
+    kinds = _materialize_plan(files, inventory)
+    parent = _open_parent(root)
+    try:
+        os.mkdir(root.name, 0o755, dir_fd=parent)
+        top = os.open(root.name, os.O_RDONLY | _DIRECTORY | _NOFOLLOW, dir_fd=parent)
+    finally:
+        os.close(parent)
+    opened = {"": top}
+    try:
+        for rel in sorted(kinds, key=lambda item: item.count("/")):
+            if kinds[rel] != "directory":
+                continue
+            head, _, name = rel.rpartition("/")
+            os.mkdir(name, 0o755, dir_fd=opened[head])
+            opened[rel] = os.open(name, os.O_RDONLY | _DIRECTORY | _NOFOLLOW, dir_fd=opened[head])
+        for rel in sorted(kinds):
+            if kinds[rel] == "directory":
+                continue
+            head, _, name = rel.rpartition("/")
+            meta = inventory.get(rel, {})
+            if kinds[rel] == "file":
+                _create_file(opened[head], name, rel, files[rel], meta.get("mode", 0o644))
+            else:
+                _create_link(opened[head], name, rel, meta["target"], meta["mode"])
+        for rel in sorted(inventory, key=lambda item: item.count("/"), reverse=True):
+            if inventory[rel]["type"] == "directory":
+                os.fchmod(opened[rel], inventory[rel]["mode"])
+        os.fsync(top)
+    finally:
+        for fd in opened.values():
+            os.close(fd)
 
 def _copy_bytes(source, dest):
-    files = _tree(source)
-    inventory = _inventory(source)
-    _materialize(files, dest, inventory)
-    if _inventory_sha(_inventory(dest)) != _inventory_sha(inventory):
+    tree = _tree(source)
+    _materialize(tree.files, dest, tree.inventory)
+    if _inventory_sha(_inventory(dest)) != _inventory_sha(tree.inventory):
         raise MigrationError("copy-inventory-mismatch")
-    return files
+    return tree.files
 
 def _project_directories(directories, files, bucket, id_map=None):
-    """Mirror this actual adoption's path map and legacy snapshot for directory metadata."""
+    """Mirror this actual adoption's path map and legacy snapshot for directory and link metadata."""
     prefix = "legacy-" + bucket
     if prefix in directories:
         raise MigrationError("snapshot-directory-collision:" + prefix)
@@ -814,10 +1045,10 @@ def _cmd_diagnose(args):
     context = _read_json(_absolute(args.context, "context", exists=True, directory=False))
     catalog_path = Path(__file__).resolve().parents[2] / "references" / "guides" / CATALOG_NAME
     catalog = _validate_catalog(_read_json(catalog_path))
-    files = _tree(root)
+    tree = _tree(root)
     if context.get("workspace") != root.name: raise MigrationError("workspace-context-mismatch")
-    plan = diagnose(files, context, catalog)
-    entries = _inventory(root)
+    plan = diagnose(tree.files, context, catalog)
+    entries = tree.inventory
     plan["source"]["path"] = str(root)
     plan["source"]["inventory"] = entries
     plan["source"]["sha256"] = _inventory_sha(entries)
@@ -885,24 +1116,24 @@ def _cmd_prepare(args):
     if manifest["tool_sha256"] != _sha(Path(__file__).read_bytes()) or manifest["install_sha256"] != installed:
         raise PendingError("install-drift")
     if _sha(_canonical(catalog)) != manifest["catalog_sha256"]: raise PendingError("catalog-drift")
-    _supported_methodology(_tree(src), catalog["target_methodology"])
     with _parent_lock(src), _context_lock(src):
-        entries = _inventory(src)
-        if _inventory_sha(entries) != manifest["source"]["sha256"] or _source_digest(_tree(src)) != manifest["source"]["files_sha256"]:
+        tree = _tree(src)
+        entries = tree.inventory
+        if _inventory_sha(entries) != manifest["source"]["sha256"] or _source_digest(tree.files) != manifest["source"]["files_sha256"]:
             raise PendingError("source-drift")
-        _supported_methodology(_tree(src), catalog["target_methodology"])
+        _supported_methodology(tree.files, catalog["target_methodology"])
         job.parent.stat()
         if job.exists() or job.is_symlink(): raise PendingError("job-already-exists")
         job.mkdir(mode=0o700)
         checkpoint = job / "checkpoint"
-        original = _tree(src)
+        original = tree.files
         _materialize(original, checkpoint, entries)
         source_project = job / "source-project" / "docs" / "plans" / src.name
         candidate = job / "candidate-project" / "docs" / "plans" / src.name
         source_project.parent.mkdir(parents=True)
         candidate.parent.mkdir(parents=True)
         _materialize(original, source_project, entries)
-        directories = {path: dict(meta) for path, meta in entries.items() if meta["type"] == "directory"}
+        directories = {path: dict(meta) for path, meta in entries.items() if meta["type"] != "file"}
         transformed = _adapter_chain(original, manifest["observed"]["methodology"], manifest["context"], directories=directories)
         transformed_inventory = _transformed_inventory(original, transformed, entries, directories)
         _materialize(transformed, candidate, transformed_inventory)
@@ -1248,12 +1479,12 @@ def _history_usage_prefix_findings(expected, current):
     return findings
 
 def _transformed_checkpoint(state, manifest):
-    return _adapter_chain(_tree(state["checkpoint"]), manifest["observed"]["methodology"], manifest["context"])
+    return _adapter_chain(_tree(state["checkpoint"]).files, manifest["observed"]["methodology"], manifest["context"])
 
 def _append_marker_and_stamp(candidate, state, manifest, catalog, job):
     candidate = Path(candidate)
     with _context_lock(candidate, required=True):
-        files = _tree(candidate)
+        files = _tree(candidate).files
         _supported_methodology(files, catalog["target_methodology"])
         expected = _transformed_checkpoint(state, manifest)
         prefix_findings = _history_usage_prefix_findings(expected, files)
@@ -1419,7 +1650,7 @@ def _capture_stage(job, state, workspace, stage, name):
     return _record_ref(job, state, "receipts/" + name)
 
 def _readiness(candidate, manifest, native):
-    files = _tree(candidate)
+    files = _tree(candidate).files
     bucket = schema.schema_of(files)
     failures, observations = [], []
     if bucket not in {"5", "lite"}: failures.append("current-structure-required")
@@ -1601,9 +1832,9 @@ def _closed_report_body_preserved(before, after, status):
 def _physical_findings(job, state, manifest, catalog):
     candidate = Path(state["candidate"])
     checkpoint = Path(state["checkpoint"])
-    original = _tree(checkpoint); current = _tree(candidate)
+    original = _tree(checkpoint).files; current = _tree(candidate).files
     source_inventory = _inventory(checkpoint)
-    directories = {path: dict(meta) for path, meta in source_inventory.items() if meta["type"] == "directory"}
+    directories = {path: dict(meta) for path, meta in source_inventory.items() if meta["type"] != "file"}
     expected = _adapter_chain(original, manifest["observed"]["methodology"], manifest["context"], directories=directories)
     failures = {family: [] for family in ("S", "A", "V", "Z")}
     _supported_methodology(original, catalog["target_methodology"])
@@ -1655,7 +1886,7 @@ def _physical_findings(job, state, manifest, catalog):
     current_inventory = _inventory(candidate)
     for path, meta in mapped_inventory.items():
         found = current_inventory.get(path)
-        if found is None or found["type"] != meta["type"] or found["mode"] != meta["mode"]:
+        if found is None or found["type"] != meta["type"] or found["mode"] != meta["mode"] or found.get("target") != meta.get("target"):
             failures["S"].append("preserved-type-or-mode-drift:" + path)
     _, quality, current_states = _board_observation(current)
     if old_states != current_states: failures["A"].append("migration-changed-task-state")
@@ -1727,7 +1958,7 @@ def _verify_locked(job, st):
     if not source_path.is_dir() or _inventory_sha(_inventory(source_path)) != st["source_sha256"]:
         raise PendingError("frozen-source-drift")
     candidate = Path(st["candidate"])
-    _supported_methodology(_tree(candidate), catalog["target_methodology"])
+    _supported_methodology(_tree(candidate).files, catalog["target_methodology"])
     if st["phase"] == "verified":
         if _inventory_sha(_inventory(candidate)) != st["candidate_sha256"]: raise PendingError("frozen-candidate-drift")
         _, pending = _semantic_review(job, st, manifest)
