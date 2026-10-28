@@ -197,9 +197,10 @@
         "test_ledger_and_ownership_rows.py",
         "test_closed_record_row.py",
         "test_closed_record_hardening.py",
-        "test_event_boundaries.py"
+        "test_event_boundaries.py",
+        "test_citation_read_confinement.py"
       ],
-      "tests": 184,
+      "tests": 195,
       "source": "eval/lint/rows",
       "category": "product",
       "purpose": "Canonical lint rows, formats, severities, AWK variants, lifecycle outcomes, clock coverage, Attempts evidence and the lint script that runs them. Rows 18 and 19 and the row 2 live-owner checks on planted defects, with rows 1-17 as the control arm. Row 14 closed-record hashes and errata. Row 7 closed-seal exemption, the row 14 protected baseline and the strict erratum line."
