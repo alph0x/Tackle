@@ -856,13 +856,14 @@
     },
     {
       "patterns": [
-        "eval/behavior/review_convergence/**"
+        "eval/behavior/review_convergence/**",
+        "eval/scenarios/s89-review-convergence/**"
       ],
       "families": [
         "eval/tests/tooling/behavior/review-convergence"
       ],
       "exclude": [],
-      "reason": "The frozen review-convergence judge, its decision rule, route observations and native oracle fixtures are exercised by the complete family."
+      "reason": "The frozen review-convergence judge, its decision rule, route observations, native oracle fixtures and the composite scenario oracle are exercised by the complete family."
     },
     {
       "patterns": [
