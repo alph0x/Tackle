@@ -1,0 +1,8 @@
+{
+  "actors": [
+    "trap-author"
+  ],
+  "blind": false,
+  "variants_authored": "v1 (development) and h1, h2, h3 (held-out) written as one composite: four unrelated domains with distinct ids and bytes, the same structure and one byte-identical oracle; the held-out variants are not shown to the author of the next task.",
+  "worktree_revision": "d9768b5b"
+}

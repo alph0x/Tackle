@@ -1,59 +1,70 @@
 {
-  "harness": "Claude Code, claude -p --model haiku, non-interactive, sandboxed Bash on macOS",
-  "status": "unavailable",
+  "harness": "Claude Code 2.1.309 via eval/behavior/harness/subscription_route.py, sandbox-exec, participant model claude-haiku-5-5",
+  "status": "available",
   "standard": "status is available only when no item in needed_for_episodes is unobserved; every unobserved item is listed under blocking",
   "needed_for_episodes": ["model_billed", "tokens", "background", "loopback", "temp", "repo_write", "nested_session", "input_size", "file_access"],
-  "blocking": [
-    "temp: the TMPDIR and git-temp commands required approval and were not executed",
-    "nested_session: only binaries were listed; no nested session was started",
-    "input_size: not probed"
-  ],
+  "blocking": [],
   "observations": {
     "model_billed": {
       "state": "observed",
-      "value": "claude-haiku-5-5",
-      "source": "launcher finish record of the capability probe (coordinator records, not shipped), sha256 9f2744cf1571f7d0826ffc4e6eeae6f4f73397485d4e33161ff3cd3f85fc9eca (models_billed)",
-      "note": "The launcher reports binding_ok true for this run, but the billed model is Haiku, not the sonnet reviewer binding; the reviewer binding is unconfirmed"
+      "value": "claude-sonnet-5-5 (probe session)",
+      "source": "launcher-captured coordinator record of the route probe (not shipped), result.json sha256 a0033cb8699398e9883ca1a218191834e5fe029db2ed0359e5e8f516cfc4ca95",
+      "note": "The episode route checks each session's init model against the configuration. The probe ran on claude-sonnet-5-5 because claude-haiku-5-5 declined every boundary attempt in an earlier probe (passed false, no refusal recorded), and the sandbox settings do not depend on the model."
     },
     "tokens": {
       "state": "observed",
       "value": {"inputTokens": 6, "outputTokens": 3183, "cacheReadInputTokens": 84851, "cacheCreationInputTokens": 48974, "costUSD": 0.01223541, "costBasis": "list"},
       "source": "launcher finish record of the capability probe (coordinator records, not shipped), sha256 9f2744cf1571f7d0826ffc4e6eeae6f4f73397485d4e33161ff3cd3f85fc9eca (model_usage, total_cost_usd)",
-      "note": "one model, one role session; the launcher reports list cost"
+      "note": "one role session on claude-haiku-5-5 (the participant model of the earlier launcher probe, not the sonnet probe above); the launcher reports list cost"
     },
     "background": {
       "state": "observed",
       "value": "exit 0, output bg-ok",
-      "basis": "model-reported exit from probe.json"
+      "basis": "model-reported exit from an earlier probe; not re-captured by the launcher probe"
     },
     "loopback": {
       "state": "observed",
       "value": "denied: PermissionError: [Errno 1] Operation not permitted, exit 1",
-      "basis": "model-reported exit from probe.json"
+      "basis": "model-reported exit from an earlier probe; not re-captured by the launcher probe"
     },
     "temp": {
-      "state": "unobserved",
-      "reason": "tmpdir and git-temp were not executed; Bash returned 'This command requires approval' before running"
+      "state": "observed",
+      "value": "temp write inside the run root allowed",
+      "source": "launcher-captured coordinator record of the route probe (not shipped), result.json sha256 a0033cb8699398e9883ca1a218191834e5fe029db2ed0359e5e8f516cfc4ca95"
     },
     "repo_write": {
       "state": "observed",
-      "value": "denied: touch in the repository root: Operation not permitted, exit 1",
-      "basis": "model-reported exit from probe.json"
+      "value": "outside write refused; config write refused; unsandboxed request refused",
+      "source": "launcher-captured coordinator record of the route probe (not shipped), result.json sha256 a0033cb8699398e9883ca1a218191834e5fe029db2ed0359e5e8f516cfc4ca95"
     },
     "nested_session": {
-      "state": "unobserved",
-      "binaries_listed": "claude and codex binaries listed, exit 0",
-      "reason": "listing binaries does not start a nested session"
+      "state": "not_applicable",
+      "reason": "the route runs one CLI session per prompt and starts no nested session"
     },
     "input_size": {
-      "state": "unobserved",
-      "reason": "not probed"
+      "state": "not_applicable",
+      "reason": "prompts are one sentence; the fixture is read from disk"
     },
     "file_access": {
       "state": "observed",
-      "value": "repo-read exit 0, output ---",
-      "basis": "model-reported exit from probe.json; read content not captured"
+      "value": "repository and workspace reads denied",
+      "source": "launcher-captured coordinator record of the route probe (not shipped), result.json sha256 a0033cb8699398e9883ca1a218191834e5fe029db2ed0359e5e8f516cfc4ca95"
+    },
+    "network": {
+      "state": "observed",
+      "value": "network denied",
+      "source": "launcher-captured coordinator record of the route probe (not shipped), result.json sha256 a0033cb8699398e9883ca1a218191834e5fe029db2ed0359e5e8f516cfc4ca95"
+    },
+    "token_visibility": {
+      "state": "observed",
+      "value": "token not visible to tools",
+      "source": "launcher-captured coordinator record of the route probe (not shipped), result.json sha256 a0033cb8699398e9883ca1a218191834e5fe029db2ed0359e5e8f516cfc4ca95"
+    },
+    "skill_loading": {
+      "state": "observed",
+      "value": "method arm loads the skill; control arm does not",
+      "source": "launcher-captured coordinator record of the route probe (not shipped), result.json sha256 a0033cb8699398e9883ca1a218191834e5fe029db2ed0359e5e8f516cfc4ca95"
     }
   },
-  "exit_basis": "Probe exits are model-reported: probe.json was written by the probing model, and no launcher captured them."
+  "exit_basis": "Launcher-captured by the route probe for temp, repo_write, file_access, network, token_visibility and skill_loading; model-reported (from an earlier probe, not re-captured) for background and loopback."
 }
