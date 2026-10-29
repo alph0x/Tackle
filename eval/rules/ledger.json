@@ -2377,8 +2377,8 @@
     },
     {
       "rule_id": "R-LEARN-04",
-      "statement": "Every retro metric is computed by its copy-paste recipe.",
-      "statement_sha256": "177faaeea3a80c629f006001d35e02cb18118a55235bac18b870e9b5a7ef2d09",
+      "statement": "Every retro metric is computed by its copy-paste recipe; unavailable values are explicitly n/a with located evidence gaps.",
+      "statement_sha256": "fa69eba5235504e754c31fe2a926dadd67a946e6d717c5d2640d05f37aac9ff3",
       "home": "references/guides/retro.md:11",
       "home_fragment": "Every metric carries a copy-paste recipe",
       "units": [],
@@ -5349,12 +5349,15 @@
     },
     {
       "rule_id": "R-MIGRATE-09",
-      "statement": "Use the updated `retro.tmpl.md` recipes: Attempts accepts both journal forms; Gate accuracy counts distinct sessions over the archive and current history and reports undated headings; Blocked durations excludes State snapshot lines.",
-      "statement_sha256": "9b9c2d5cbe11f501a6b2b0cd290ae16dfcbe2a570d8133dd00119ba6034c89e2",
+      "statement": "Use the updated `retro.tmpl.md` recipes: Attempts preserves both journal forms as mining candidates and supplements them with located structured correction candidates without inferring authoritative shared Attempts, with explicit metric n/a when reconciliation is needed, legacy-only none scoped to scanned history and missing usage identified as unavailable structured support; Gate accuracy counts distinct sessions over the archive and current history and reports undated headings; Blocked durations excludes State snapshot lines and empty 'Blocked on: nothing' entries.",
+      "statement_sha256": "61ecd41fa2e0bb2209593fdfc922ee22671939d076780e8c3098363f9f5bb184",
       "home": "references/guides/migration-catalog.json:941",
       "home_fragment": "Use current retro.tmpl.md recipes prospectively",
       "units": [],
-      "mirrors": [],
+      "mirrors": [
+        "references/retro.tmpl.md:13",
+        "references/retro.tmpl.md:14"
+      ],
       "class": "behavioral",
       "hot_path": false,
       "origin": {

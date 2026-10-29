@@ -364,12 +364,13 @@
         "test_confidence.py",
         "test_confidence_malformed.py",
         "test_coverage_table.py",
-        "test_text_and_ids.py"
+        "test_text_and_ids.py",
+        "test_correction_metrics.py"
       ],
-      "tests": 44,
+      "tests": 49,
       "source": "eval/lessons",
       "category": "product",
-      "purpose": "Learning confidence, coverage tables and retrospective identifiers."
+      "purpose": "Learning confidence, coverage tables and retrospective identifiers. Executed retro recipes expose located correction candidates and explicit unavailable metrics, and skip empty blockers."
     },
     {
       "path": "eval/tests/historical/verdicts/cost-and-fall-rate",

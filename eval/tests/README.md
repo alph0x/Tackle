@@ -11,7 +11,7 @@ consumer; dates and experiment identifiers belong to evidence provenance.
 | historical | [historical/verdicts/no-regression](historical/verdicts/no-regression/) | Non-regression verdicts, current-workspace comparisons and artifact ties. |
 | historical | [historical/verdicts/resume-comparison](historical/verdicts/resume-comparison/) | Resume comparison, ordered records, cost summaries and report-only guarantees. |
 | product | [product/install/inventory](product/install/inventory/) | Installed artifact inventory, links, root resolution and the absence of network clients, endpoints and home lookups. |
-| product | [product/lessons](product/lessons/) | Learning confidence, coverage tables and retrospective identifiers. |
+| product | [product/lessons](product/lessons/) | Learning confidence, coverage tables and retrospective identifiers. Executed retro recipes expose located correction candidates and explicit unavailable metrics, and skip empty blockers. |
 | product | [product/lint/rows](product/lint/rows/) | Canonical lint rows, formats, severities, AWK variants, lifecycle outcomes, clock coverage, Attempts evidence and the lint script that runs them. Rows 18 and 19 and the row 2 live-owner checks on planted defects, with rows 1-17 as the control arm. Row 14 closed-record hashes and errata. Row 7 closed-seal exemption, the row 14 protected baseline and the strict erratum line. |
 | product | [product/lint/task-contracts](product/lint/task-contracts/) | Task contracts, readiness and acceptance fields. |
 | product | [product/lint/task-identity](product/lint/task-identity/) | Task identity, scaffold paths and workspace naming. Lint row 2 resolves and refuses sibling workspace references as the plan view does. |
