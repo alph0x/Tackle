@@ -1,0 +1,19 @@
+{
+  "schema": "review-convergence-record/1",
+  "case": "unreachable_acceptance",
+  "task": {
+    "status": "In progress",
+    "revision": "rev-alpha"
+  },
+  "transcript_sha256": null,
+  "gate": {
+    "kind": "score_target",
+    "threshold": 0.9,
+    "sealed_output_max": 0.7,
+    "fail_closed": true
+  },
+  "lock": {
+    "verdict": "pass"
+  },
+  "decision_packet": null
+}

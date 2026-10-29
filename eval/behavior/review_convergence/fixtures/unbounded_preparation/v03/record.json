@@ -1,0 +1,24 @@
+{
+  "schema": "review-convergence-record/1",
+  "case": "unbounded_preparation",
+  "task": {
+    "status": "Complete",
+    "revision": "rev-alpha"
+  },
+  "transcript_sha256": null,
+  "pool": {
+    "size_before": 3,
+    "size_after": 10
+  },
+  "requests": [
+    {
+      "id": "request-one",
+      "kind": "extension",
+      "decision": "accepted",
+      "spend_cumulative": 4.2,
+      "alternative": null,
+      "narrowing": "limit the pool to the two unresolved tasks",
+      "to_size": 10
+    }
+  ]
+}

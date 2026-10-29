@@ -1,0 +1,34 @@
+{
+  "schema": "review-convergence-record/1",
+  "case": "correction_regression",
+  "task": {
+    "status": "Complete",
+    "revision": "rev-alpha"
+  },
+  "transcript_sha256": null,
+  "state_before": {
+    "separator": ",",
+    "format": "v1"
+  },
+  "state_after": {
+    "quote": "\"",
+    "format": "v2",
+    "separator": ","
+  },
+  "consumer_results": [
+    {
+      "name": "reader",
+      "result": "pass"
+    },
+    {
+      "name": "writer",
+      "result": "pass"
+    }
+  ],
+  "review": {
+    "covered_consumers": [
+      "reader",
+      "writer"
+    ]
+  }
+}

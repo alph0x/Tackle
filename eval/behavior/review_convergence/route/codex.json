@@ -1,16 +1,60 @@
 {
+  "harness": "Codex CLI, codex exec --sandbox workspace-write --ignore-user-config --ephemeral",
   "status": "unavailable",
+  "standard": "status is available only when no item in needed_for_episodes is unobserved; every unobserved item is listed under blocking",
+  "needed_for_episodes": ["model_billed", "tokens", "background", "loopback", "temp", "repo_write", "nested_session", "input_size", "file_access"],
   "blocking": [
-    "write confinement and temp unobserved: command policy rejected the probe commands"
+    "model_billed: the launcher finish record carries no models_billed; the requested model gpt-6-luna is not a billed model, and the planned binding gpt-6.1-sol/medium was not observed",
+    "temp: tmpdir and git-temp were rejected by the command policy (exit 126)",
+    "repo_write: rejected by the command policy (exit 126)",
+    "nested_session: only binaries were listed; no nested session was started",
+    "input_size: not probed"
   ],
   "observations": {
-    "harness": "Codex via OpenAI API",
-    "model_observed": "GPT-6, self-reported by the probe (planned binding gpt-6.1-sol/medium not observed; mismatch recorded)",
-    "loopback": "denied: PermissionError: [Errno 1] Operation not permitted",
-    "background": "observed: exit 0 (shell profile emitted an ps permission notice)",
-    "temp": "unobserved: rejected by command policy (exit 126)",
-    "write_confinement": "unobserved: repo-write rejected by command policy (exit 126)",
-    "nested_cli": "observed: claude and codex binaries listed, exit 0",
-    "telemetry": "not probed; token capture unestablished"
-  }
+    "model_billed": {
+      "state": "unobserved",
+      "requested": "gpt-6-luna, from start.json argv (--model gpt-6-luna)",
+      "source": "launcher finish record of the capability probe (coordinator records, not shipped), sha256 73ec205fe75b650e3be871a2bae5cef7302f0f6ebe39df3da592c271b29c150d, has no models_billed field",
+      "reason": "the stderr header 'model: gpt-6-luna' names the requested model, not a billed one"
+    },
+    "tokens": {
+      "state": "observed",
+      "value": {"total": 20876},
+      "source": "launcher stderr capture of the capability probe (coordinator records, not shipped), sha256 f33942b540c2f5d2a6705845583c52437f3692e4b686143bca686d297519fd31 (line 'tokens used', then 20,876)",
+      "note": "total only: no input/output split, no cost; reported on stderr, not in the finish record"
+    },
+    "background": {
+      "state": "observed",
+      "value": "exit 0, output bg-ok",
+      "basis": "model-reported exit from probe.json"
+    },
+    "loopback": {
+      "state": "observed",
+      "value": "denied: PermissionError: [Errno 1] Operation not permitted, exit 1",
+      "basis": "model-reported exit from probe.json"
+    },
+    "temp": {
+      "state": "unobserved",
+      "reason": "tmpdir and git-temp were rejected by the command policy, exit 126"
+    },
+    "repo_write": {
+      "state": "unobserved",
+      "reason": "repo-write was rejected by the command policy, exit 126"
+    },
+    "nested_session": {
+      "state": "unobserved",
+      "binaries_listed": "claude and codex binaries listed, exit 0",
+      "reason": "listing binaries does not start a nested session"
+    },
+    "input_size": {
+      "state": "unobserved",
+      "reason": "not probed"
+    },
+    "file_access": {
+      "state": "observed",
+      "value": "repo-read exit 0, output ---",
+      "basis": "model-reported exit from probe.json; read content not captured"
+    }
+  },
+  "exit_basis": "Probe exits are model-reported: probe.json was written by the probing model, and no launcher captured them."
 }

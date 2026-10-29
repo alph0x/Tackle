@@ -1,0 +1,24 @@
+{
+  "schema": "review-convergence-record/1",
+  "case": "unrun_phases",
+  "task": {
+    "status": "In progress",
+    "revision": "rev-alpha"
+  },
+  "transcript_sha256": null,
+  "events": [
+    {
+      "id": "rev-alpha",
+      "seq": 1,
+      "kind": "review",
+      "round": 1,
+      "verdict": "REVISE"
+    }
+  ],
+  "counters": {
+    "review_rounds": 1,
+    "source_event_ids": [
+      "rev-alpha"
+    ]
+  }
+}

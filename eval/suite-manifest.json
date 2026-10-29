@@ -484,7 +484,7 @@
         "test_cases.py",
         "test_evidence.py"
       ],
-      "tests": 26,
+      "tests": 58,
       "source": "eval/behavior/review_convergence",
       "category": "tooling",
       "purpose": "Review-convergence oracle: each of the eight measurement cases rejects its planted fault and accepts its valid alternative through the frozen judge, and missing, malformed or contradictory evidence is invalid rather than a pass."

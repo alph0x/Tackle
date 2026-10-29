@@ -1,13 +1,59 @@
 {
-  "status": "available",
+  "harness": "Claude Code, claude -p --model haiku, non-interactive, sandboxed Bash on macOS",
+  "status": "unavailable",
+  "standard": "status is available only when no item in needed_for_episodes is unobserved; every unobserved item is listed under blocking",
+  "needed_for_episodes": ["model_billed", "tokens", "background", "loopback", "temp", "repo_write", "nested_session", "input_size", "file_access"],
+  "blocking": [
+    "temp: the TMPDIR and git-temp commands required approval and were not executed",
+    "nested_session: only binaries were listed; no nested session was started",
+    "input_size: not probed"
+  ],
   "observations": {
-    "harness": "Claude Code (Claude Agent SDK), non-interactive, sandboxed Bash on macOS",
-    "model_observed": "claude-haiku-5-5, self-reported by the probing session (not the D-24 sonnet reviewer binding; mismatch recorded, binding unconfirmed)",
-    "loopback": "denied: PermissionError: [Errno 1] Operation not permitted",
-    "background": "observed: exit 0",
-    "temp": "unobserved: TMPDIR command required approval before running",
-    "write_confinement": "repo write denied: touch in the repository root: Operation not permitted",
-    "nested_cli": "observed: claude and codex binaries listed, exit 0",
-    "telemetry": "not probed; token capture unestablished"
-  }
+    "model_billed": {
+      "state": "observed",
+      "value": "claude-haiku-5-5",
+      "source": "launcher finish record of the capability probe (coordinator records, not shipped), sha256 9f2744cf1571f7d0826ffc4e6eeae6f4f73397485d4e33161ff3cd3f85fc9eca (models_billed)",
+      "note": "The launcher reports binding_ok true for this run, but the billed model is Haiku, not the sonnet reviewer binding; the reviewer binding is unconfirmed"
+    },
+    "tokens": {
+      "state": "observed",
+      "value": {"inputTokens": 6, "outputTokens": 3183, "cacheReadInputTokens": 84851, "cacheCreationInputTokens": 48974, "costUSD": 0.01223541, "costBasis": "list"},
+      "source": "launcher finish record of the capability probe (coordinator records, not shipped), sha256 9f2744cf1571f7d0826ffc4e6eeae6f4f73397485d4e33161ff3cd3f85fc9eca (model_usage, total_cost_usd)",
+      "note": "one model, one role session; the launcher reports list cost"
+    },
+    "background": {
+      "state": "observed",
+      "value": "exit 0, output bg-ok",
+      "basis": "model-reported exit from probe.json"
+    },
+    "loopback": {
+      "state": "observed",
+      "value": "denied: PermissionError: [Errno 1] Operation not permitted, exit 1",
+      "basis": "model-reported exit from probe.json"
+    },
+    "temp": {
+      "state": "unobserved",
+      "reason": "tmpdir and git-temp were not executed; Bash returned 'This command requires approval' before running"
+    },
+    "repo_write": {
+      "state": "observed",
+      "value": "denied: touch in the repository root: Operation not permitted, exit 1",
+      "basis": "model-reported exit from probe.json"
+    },
+    "nested_session": {
+      "state": "unobserved",
+      "binaries_listed": "claude and codex binaries listed, exit 0",
+      "reason": "listing binaries does not start a nested session"
+    },
+    "input_size": {
+      "state": "unobserved",
+      "reason": "not probed"
+    },
+    "file_access": {
+      "state": "observed",
+      "value": "repo-read exit 0, output ---",
+      "basis": "model-reported exit from probe.json; read content not captured"
+    }
+  },
+  "exit_basis": "Probe exits are model-reported: probe.json was written by the probing model, and no launcher captured them."
 }
