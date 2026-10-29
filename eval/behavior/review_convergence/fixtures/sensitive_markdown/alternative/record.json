@@ -1,0 +1,15 @@
+{
+  "schema": "review-convergence-record/1",
+  "case": "sensitive_markdown",
+  "task": {"status": "Complete", "revision": "r1"},
+  "change": {
+    "path": "docs/access.md",
+    "keys_before": {"approver": "admin", "copy": "Approvals are logged."},
+    "keys_after": {"approver": "admin", "copy": "Every approval is logged."}
+  },
+  "sensitive_keys": ["approver"],
+  "review": {"depth": "focused", "independent_checkpoint": false, "decision": "ACCEPT"},
+  "findings": [
+    {"id": "F-1", "kind": "optional", "subject": "copy:tone", "status": "open"}
+  ]
+}

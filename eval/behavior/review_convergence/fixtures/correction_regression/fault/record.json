@@ -1,0 +1,11 @@
+{
+  "schema": "review-convergence-record/1",
+  "case": "correction_regression",
+  "task": {"status": "Complete", "revision": "r2"},
+  "state": {"format": "v2", "separator": ";"},
+  "consumers": [
+    {"name": "reader", "requires": {"format": "v2"}, "result": "pass"},
+    {"name": "writer", "requires": {"format": "v2", "separator": ","}, "result": "fail"}
+  ],
+  "review": {"depth": "focused", "covered_consumers": ["reader"]}
+}

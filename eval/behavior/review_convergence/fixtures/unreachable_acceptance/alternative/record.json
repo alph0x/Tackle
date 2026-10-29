@@ -1,0 +1,8 @@
+{
+  "schema": "review-convergence-record/1",
+  "case": "unreachable_acceptance",
+  "task": {"status": "Complete", "revision": "r1"},
+  "gate": {"kind": "deterministic", "check": "fixture-digest-match", "fallback": {"disposition": "accept-with-declared-residual-risk", "owner_notified": true}},
+  "lock": {"verdict": "pass"},
+  "decision_packet": null
+}

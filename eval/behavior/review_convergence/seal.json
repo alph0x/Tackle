@@ -1,0 +1,27 @@
+{
+  "cases": {
+    "eval/behavior/review_convergence/fixtures/correction_regression/fault/record.json": "aa4e5183682a02da7dd2a84ec85646d6c66b8fac82a7f987a6110ea22a3e7551",
+    "eval/behavior/review_convergence/fixtures/correction_regression/alternative/record.json": "0f03a2618a50d0e88e6a9219de403057c7008fc474ca579b0306b26dac8845ef",
+    "eval/behavior/review_convergence/fixtures/counter_evidence/fault/record.json": "75cad40a111d2f88b8020fa74bc65d804b36f5cdb728415dbd758201c567b7b7",
+    "eval/behavior/review_convergence/fixtures/counter_evidence/alternative/record.json": "9e02231888d638ad09f6970e70e7d3b6be61a72613f58952baf8815df2f27772",
+    "eval/behavior/review_convergence/fixtures/repeated_finding/fault/record.json": "e7a245a5bad4fcfc6b40dc654eb32547d2bcf170a454e02f53aacb1812e7840d",
+    "eval/behavior/review_convergence/fixtures/repeated_finding/alternative/record.json": "1fe2181aadff901610cc47fdab7ceac29b79c996e305c6c495e0ed997b00b349",
+    "eval/behavior/review_convergence/fixtures/security_regression/fault/consumer.py": "27ea5b9a5a47a845bc9672b5c794ea5ff8ed3c42e30cfb4e796cb43dac0d4df8",
+    "eval/behavior/review_convergence/fixtures/security_regression/fault/record.json": "940d50f376010879d67ebcb4cdb776bb8a74c84b75ae8f074091b397bf041e63",
+    "eval/behavior/review_convergence/fixtures/security_regression/alternative/consumer.py": "9302ea1e137af71a3eab0a2a8b1a0902ff38bbdf97ddb5d7fd339d67b1b8be3f",
+    "eval/behavior/review_convergence/fixtures/security_regression/alternative/record.json": "d2147ff48b58293973e2cbf44a2cb5162d545ab75b422f8ad18cf94f0a2e318c",
+    "eval/behavior/review_convergence/fixtures/sensitive_markdown/fault/record.json": "e24ef3a3da6dca847ff7ed1052cb4438f0d0a44fff6486220e0136a2ccc7fdf5",
+    "eval/behavior/review_convergence/fixtures/sensitive_markdown/alternative/record.json": "9cd51e33cca0c261f9a1d66c7cd22099e68e6396bd8cc8cafdb0314f06c907ff",
+    "eval/behavior/review_convergence/fixtures/unbounded_preparation/fault/record.json": "455e67a2eb2db2e0064c1f4157992d1ef7a2f95e18d5ff9cf34ec1eaa4d24cde",
+    "eval/behavior/review_convergence/fixtures/unbounded_preparation/alternative/record.json": "d0da81709345d8ae1c8fd345d5c5784e40845ad836f78cb94c236cd9844fc072",
+    "eval/behavior/review_convergence/fixtures/unreachable_acceptance/fault/record.json": "df5a45de411b5f87cb9d52365a924ab5d926d09aea09f3a5ed5de8fb67b9eee8",
+    "eval/behavior/review_convergence/fixtures/unreachable_acceptance/alternative/record.json": "ff2bda1f77388a12a2c953ca66c565c02619d5b3e9e6eb02ec2133f69fdd39b6",
+    "eval/behavior/review_convergence/fixtures/unrun_phases/fault/record.json": "d1c25dd7d4339baf5122d334f815b1d9bf6105a5f7da9aec05c5fe4c3b0c4542",
+    "eval/behavior/review_convergence/fixtures/unrun_phases/alternative/record.json": "e84d34740a4add7d5dc82d57c7df5aab0ad8ac8673ccccad5984dbb573d2a9b6"
+  },
+  "scorer_sha256": "b89ce276c073015386d01cd519b63d1cc001f6f861dd2070f4ef86cc21281d34",
+  "decision_rule_sha256": "2ebf512478c7be09dd8e0aa81bd03540efb2607da0a1091864133dabc7342cd5",
+  "development_episodes": {
+    "not_run": "awaiting the owner's episode budget approval (D-26)"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "status": "unavailable",
+  "blocking": [
+    "write confinement and temp unobserved: command policy rejected the probe commands"
+  ],
+  "observations": {
+    "harness": "Codex via OpenAI API",
+    "model_observed": "GPT-6, self-reported by the probe (planned binding gpt-6.1-sol/medium not observed; mismatch recorded)",
+    "loopback": "denied: PermissionError: [Errno 1] Operation not permitted",
+    "background": "observed: exit 0 (shell profile emitted an ps permission notice)",
+    "temp": "unobserved: rejected by command policy (exit 126)",
+    "write_confinement": "unobserved: repo-write rejected by command policy (exit 126)",
+    "nested_cli": "observed: claude and codex binaries listed, exit 0",
+    "telemetry": "not probed; token capture unestablished"
+  }
+}

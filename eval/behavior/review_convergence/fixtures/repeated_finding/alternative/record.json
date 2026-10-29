@@ -1,0 +1,14 @@
+{
+  "schema": "review-convergence-record/1",
+  "case": "repeated_finding",
+  "task": {"status": "Complete", "revision": "r2"},
+  "findings": [
+    {"id": "F-2", "kind": "optional", "subject": "naming:helper-name", "status": "dismissed", "round": 1},
+    {"id": "F-5", "kind": "blocking", "subject": "correctness:empty-input", "status": "fixed", "round": 1, "new_evidence": ["consumer:parser:empty-case"]}
+  ],
+  "rounds": [
+    {"round": 1, "revision": "r1", "verdict": "REVISE", "finding_ids": ["F-2", "F-5"]},
+    {"round": 2, "revision": "r2", "verdict": "ACCEPT", "finding_ids": []}
+  ],
+  "effects": {"optional_edit_subjects": [], "renamed_identifiers": ["helper_name -> resolve_label"]}
+}

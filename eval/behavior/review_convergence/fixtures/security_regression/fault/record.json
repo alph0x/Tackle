@@ -1,0 +1,13 @@
+{
+  "schema": "review-convergence-record/1",
+  "case": "security_regression",
+  "task": {"status": "Complete", "revision": "r2"},
+  "consumer": "consumer.py",
+  "root": "/work/root",
+  "allowed_paths": ["/work/root/notes/a.md"],
+  "refused_paths": ["/work/root/../secret.txt", "/work/root_evil/x.md"],
+  "changed_files": [
+    {"path": "skills/tackle/scripts/confine.py", "security": true}
+  ],
+  "review": {"depth": "focused", "basis": "local test"}
+}

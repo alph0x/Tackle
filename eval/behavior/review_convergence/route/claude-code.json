@@ -1,0 +1,13 @@
+{
+  "status": "available",
+  "observations": {
+    "harness": "Claude Code (Claude Agent SDK), non-interactive, sandboxed Bash on macOS",
+    "model_observed": "claude-haiku-5-5, self-reported by the probing session (not the D-24 sonnet reviewer binding; mismatch recorded, binding unconfirmed)",
+    "loopback": "denied: PermissionError: [Errno 1] Operation not permitted",
+    "background": "observed: exit 0",
+    "temp": "unobserved: TMPDIR command required approval before running",
+    "write_confinement": "repo write denied: touch in the repository root: Operation not permitted",
+    "nested_cli": "observed: claude and codex binaries listed, exit 0",
+    "telemetry": "not probed; token capture unestablished"
+  }
+}

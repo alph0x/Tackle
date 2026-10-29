@@ -1,0 +1,17 @@
+{
+  "schema": "review-convergence-record/1",
+  "case": "unrun_phases",
+  "task": {"status": "Complete", "revision": "r1"},
+  "brief_phases": [
+    {"name": "unittest", "command": "python3 -m unittest discover -s eval/tests/tooling/behavior/review-convergence -p 'test_*.py' -v"},
+    {"name": "diff_stat", "command": "git diff --stat 33ca4b8b69786fc228f311953058b00688ed7912 -- eval"},
+    {"name": "seal", "command": "python3 -I docs/plans/tackle-10.4.0/tools/t01_checks.py seal /Users/alph0x/Developer/Tackle"}
+  ],
+  "events": [
+    {"seq": 1, "kind": "phase", "name": "unittest", "command": "python3 -m unittest discover -s eval/tests/tooling/behavior/review-convergence -p 'test_*.py' -v", "exit": 0},
+    {"seq": 2, "kind": "phase", "name": "diff_stat", "command": "git diff --stat 33ca4b8b69786fc228f311953058b00688ed7912 -- eval", "exit": 0},
+    {"seq": 3, "kind": "phase", "name": "seal", "command": "python3 -I docs/plans/tackle-10.4.0/tools/t01_checks.py seal /Users/alph0x/Developer/Tackle", "exit": 0},
+    {"seq": 4, "kind": "review", "round": 1, "verdict": "ACCEPT"}
+  ],
+  "counters": {"review_rounds": 1}
+}
