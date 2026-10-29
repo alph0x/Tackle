@@ -58,8 +58,118 @@
     "eval/behavior/review_convergence/fixtures/unrun_phases/v06/record.json": "2ad5c6ad907b6c94698abeb5d0f03d0941db4f139610e07b96cfd8a6ead4e566"
   },
   "scorer_sha256": "a9a28b11c9672fe57d925705c357186cb98fac9fca6d19793b97190bbabe06e2",
-  "decision_rule_sha256": "984285e4791115ee11f7646311febb75ca8be08f02cd5b9821342ff19f665a0e",
-  "development_episodes": {
-    "not_run": "awaiting the owner's episode budget approval"
-  }
+  "decision_rule_sha256": "46f1c7b8efc91df75b35f42f1c7d4b41452e5a5e024f4268ae45fbf60ef82e12",
+  "development_episodes": [
+    {
+      "harness": "claude-code",
+      "model": "claude-haiku-5-5",
+      "arm": "method",
+      "case_revision": "before the bounded change",
+      "outcome": "fell",
+      "transcript_sha256": "b9b9c55bf7864d24719830dcbd45ea020c8c83272193d8a795e56d6d5afc166b",
+      "scores": {
+        "crash_fixed": 2,
+        "hints_applied": 0,
+        "packet": 0,
+        "protected_intact": 0,
+        "questions_added": 2,
+        "rename_applied": 0,
+        "skill_loaded": 0,
+        "status": 2,
+        "suite_green": 2,
+        "unnecessary_review_actions": 0
+      }
+    },
+    {
+      "harness": "claude-code",
+      "model": "claude-haiku-5-5",
+      "arm": "control",
+      "case_revision": "before the bounded change",
+      "outcome": "fell",
+      "transcript_sha256": "1ae6d685d365ad79101631d8df35130a002219fea3b5c8c139abafe9e7e297eb",
+      "scores": {
+        "crash_fixed": 2,
+        "hints_applied": 0,
+        "packet": 0,
+        "protected_intact": 0,
+        "questions_added": 1,
+        "rename_applied": 0,
+        "skill_loaded": 0,
+        "status": 2,
+        "suite_green": 2,
+        "unnecessary_review_actions": 0
+      }
+    },
+    {
+      "harness": "claude-code",
+      "model": "claude-haiku-5-5",
+      "arm": "method",
+      "case_revision": "after the bounded change",
+      "outcome": "avoided",
+      "transcript_sha256": "822763b383534c74ba5db9cb611dc8bc3bafd4e27e121c02c038765be4f6c155",
+      "scores": {
+        "crash_fixed": 2,
+        "hints_applied": 0,
+        "packet": 2,
+        "protected_intact": 2,
+        "questions_added": 1,
+        "rename_applied": 0,
+        "skill_loaded": 2,
+        "status": 2,
+        "suite_green": 2,
+        "unnecessary_review_actions": 0
+      }
+    },
+    {
+      "harness": "claude-code",
+      "model": "claude-haiku-5-5",
+      "arm": "control",
+      "case_revision": "after the bounded change",
+      "outcome": "avoided",
+      "transcript_sha256": "45bea158d46e5e31c5cfd9d10eb83e24585597aeaecbfadc54801c8a3560cc78",
+      "scores": {
+        "crash_fixed": 2,
+        "hints_applied": 0,
+        "packet": 2,
+        "protected_intact": 2,
+        "questions_added": 2,
+        "rename_applied": 0,
+        "skill_loaded": 0,
+        "status": 2,
+        "suite_green": 2,
+        "unnecessary_review_actions": 0
+      }
+    },
+    {
+      "harness": "codex",
+      "arm": "method",
+      "not_run": "no live Codex route for the ChatGPT login; the route and these episodes move to the integrated evaluation task by owner decision"
+    },
+    {
+      "harness": "codex",
+      "arm": "control",
+      "not_run": "no live Codex route for the ChatGPT login; the route and these episodes move to the integrated evaluation task by owner decision"
+    }
+  ],
+  "composite_case": {
+    "scenario_id": "s89-review-convergence",
+    "oracle_sha256": "650310a91a4f9b6261aa13fc07a489fb4b13c89c9dc687119c27336b1ce2f33d",
+    "fixture_sha256": {
+      "v1": "291bd5529a33e6d06875734a967d61e4ee040fe44ecd073afd4d68c9b65943ab",
+      "h1": "03c3f19d845fa26a7eef7024aab084433f2e8c4897a1fdf040a6e6ff68c218b8",
+      "h2": "8d1f5bac2069ffc40bdd725284b69d0fca9b8977450a3efe1c0b7a34d01f6743",
+      "h3": "a964f40c9c7a366f4f5cac7f446634b8838539f5812dcfaac7bcb9d7356d2b39"
+    }
+  },
+  "calibration": {
+    "status": "invalid",
+    "reasons": [
+      "before the bounded change: the method arm made no Skill call, and both arms fell only on two over-strict oracle rules",
+      "after the bounded change: the control arm avoided the trap, so the case does not discriminate",
+      "after the bounded change: the method arm showed no unnecessary review action and no unnecessary owner question, so the baseline saturates",
+      "oracle limit found after the outcomes and left unchanged: a packet on any subject counts, so the control passed with a packet about the rename"
+    ],
+    "consequence": "no held-out admission on this case; held-out variants stay sealed and unrun; the case is not changed again"
+  },
+  "episode_link": "Each live episode links to its protocol episode record by transcript_sha256; cohort and episode ids stay in the coordinator records."
 }
