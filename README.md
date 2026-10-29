@@ -20,7 +20,7 @@ Tackle turns a goal into a plan stored in your repository. Each task carries the
 
 Use it for features, refactors, and investigations that span sessions or involve handoffs between agents or people.
 
-**Tackle 10.3.0** · Model-agnostic · Markdown and standard-library Python · MIT
+**Tackle 10.3.1** · Model-agnostic · Markdown and standard-library Python · MIT
 
 ## Why Tackle
 
@@ -84,10 +84,10 @@ For Cursor, use `~/.cursor/skills/tackle/`. Other agents use their own skill dir
 The install contains only `SKILL.md`, `references/` and `scripts/`, with 85 installation-relative files. Repository branding, development tools, and evaluation fixtures are not part of the installed skill.
 The checkout copy commands above copy those files into the selected directory and leave any other files already there.
 
-Local candidate installation is checked through the manual copy above and the cached `npx skills@1.7.0 add --skill tackle` channel (offline, single-agent, with `-a claude-code -y -g`), against the 85 expected files. The public GitHub routes, by tag and by the default source, have not been probed for 10.3.0. To pin a release, install by tag:
+Local candidate installation is checked through the manual copy above and the cached `npx skills@1.7.0 add --skill tackle` channel (offline, single-agent, with `-a claude-code -y -g`), against the 85 expected files. The public GitHub routes, by tag and by the default source, have not been probed for 10.3.1. To pin a release, install by tag:
 
 ```sh
-npx --yes skills@1.7.0 add 'https://github.com/alph0x/Tackle.git#v10.3.0' --skill tackle -a claude-code codex -y -g
+npx --yes skills@1.7.0 add 'https://github.com/alph0x/Tackle.git#v10.3.1' --skill tackle -a claude-code codex -y -g
 ```
 
 Restart your session after an update if your agent cannot reload skills.
@@ -266,7 +266,7 @@ Historical records retain their meanings: E1 for independent command verificatio
 
 Previously documented slash forms such as `/tackle-run` and `/tackle-verify` stay text aliases: when the host passes them as text they keep their intent boundaries, never grant broader permission, and register no separate picker entries ([invocation](skills/tackle/references/guides/invocation.md#text-aliases)). Retired 8.x action names map to their historical targets in [terminology.md](skills/tackle/references/terminology.md).
 
-The installed migration catalog targets Tackle 10.3.0 and diagnoses supported workspace structures before preparing one explicitly selected copy for review. Its source obligations and five former installed checklists remain in the repository's [`maintaining/migrations.md`](maintaining/migrations.md) as byte-preserved provenance; runtime migration reads only the installed artifact.
+The installed migration catalog targets Tackle 10.3.1 and diagnoses supported workspace structures before preparing one explicitly selected copy for review. Its source obligations and five former installed checklists remain in the repository's [`maintaining/migrations.md`](maintaining/migrations.md) as byte-preserved provenance; runtime migration reads only the installed artifact.
 
 </details>
 
