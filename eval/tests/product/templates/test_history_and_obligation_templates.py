@@ -447,7 +447,7 @@ class CountAgreementTests(unittest.TestCase):
         catalog = json.loads((GUIDES / 'migration-catalog.json').read_bytes())
         instructions = '\n'.join(item['text'] for rule in catalog['rules'] for item in rule['instructions'])
         self.assertEqual(stale.findall(instructions), [])
-        self.assertEqual(catalog['target_methodology'], '10.3.0')
+        self.assertEqual(catalog['target_methodology'], '10.3.1')
         archive = text(ROOT / 'maintaining/migrations.md')
         old = archive.split('## v8.4 → v9.0 checklist', 1)[1].split('\n## ', 1)[0]
         self.assertTrue(stale.findall(old))

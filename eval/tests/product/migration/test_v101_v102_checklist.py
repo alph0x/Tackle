@@ -123,7 +123,7 @@ class ChecklistText(unittest.TestCase):
                         shutil.copyfile(ROOT / 'maintaining' / name, root / 'maintaining' / name)
                     target = root / 'skills/tackle/references/guides/migration-catalog.json'
                     catalog = json.loads(target.read_bytes())
-                    self.assertEqual(catalog['target_methodology'], '10.3.0')
+                    self.assertEqual(catalog['target_methodology'], '10.3.1')
                     groups = [group for group in catalog['provenance']['groups']
                               if group['source'] == 'G' and group['heading'] == expected_heading]
                     self.assertEqual(len(groups), 1)
@@ -159,7 +159,7 @@ class ChecklistText(unittest.TestCase):
             self.assertIn(phrase, steps)
         items = numbered(self.text)
         self.assertGreaterEqual(len(items), 9)
-        self.assertIn('Methodology: Tackle 10.3.0', items[-1])
+        self.assertIn('Methodology: Tackle 10.3.1', items[-1])
         baseline = next(i for i, item in enumerate(items) if 'sha256sum' in item)
         self.assertLess(baseline, len(items) - 1)
 
@@ -247,7 +247,7 @@ class ChecklistText(unittest.TestCase):
 
     def test_the_last_step_stamps_then_lints_again(self):
         last = step(self.text, len(numbered(self.text)))
-        self.assertLess(last.index('Methodology: Tackle 10.3.0'), last.index('19 of 19'))
+        self.assertLess(last.index('Methodology: Tackle 10.3.1'), last.index('19 of 19'))
         self.assertIn('again', last)
 
     def test_each_step_is_a_short_sentence_group_without_workspace_ids(self):

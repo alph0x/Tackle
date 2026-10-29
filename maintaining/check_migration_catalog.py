@@ -628,7 +628,7 @@ CURRENT_RECIPES = {'I-owner-archetypes': 'Before any separately owner-controlled
                   'physical inventories; conflicts hold without overwrite or cleanup. Restore only an '
                   'unchanged adopted workspace through its verified sibling stage. A completed repeat '
                   'validates its recorded physical/admission identity and changes no bytes. Last, set the '
-                  '`**Methodology: Tackle 10.3.0**` line in the candidate AGENTS.md only after the baseline '
+                  '`**Methodology: Tackle 10.3.1**` line in the candidate AGENTS.md only after the baseline '
                   'covers every Complete task. Then run `python3 -I scripts/lint.py <slug>` again and expect 19 of 19 '
                   'rows silent, retaining non-gating WARN exceptions. From now on row 14 requires that line '
                   'in each Complete report. The stamped candidate remains unadopted until separate verified '
@@ -985,7 +985,7 @@ LITERAL_CONTRACTS = {'S-gates': ['Gate: Full', 'line 3', 'title on line 1', 'Gat
                    'attempt N:'],
  'J-consent': ['System One consent:', 'typesafe-ai', 'budget_scope'],
  'O-rounds-validator': ['Verify round cap: N', 'Acceptance validator:'],
- 'Z-final-stamp': ['**Methodology: Tackle 10.3.0**']}
+ 'Z-final-stamp': ['**Methodology: Tackle 10.3.1**']}
 
 
 def fail(message):
@@ -1152,7 +1152,7 @@ def validate(root):
     for relative in required_resources:
         regular_resource(root, relative)
     guide = (root / "skills/tackle/references/guides/migrate.md").read_text(encoding="utf-8")
-    for value in ("compact.py", "migration-catalog.json", "Tackle 10.3.0",
+    for value in ("compact.py", "migration-catalog.json", "Tackle 10.3.1",
                   '<a id="compact-migration"></a>', '<a id="schema-keyed-migration"></a>',
                   '<a id="forward-only"></a>', '<a id="migration-rollback"></a>'):
         if value not in guide:
@@ -1164,7 +1164,7 @@ def validate(root):
     cat = loads(cat_path.read_bytes())
     exact(cat, TOP, "catalog")
     if (cat["schema"] != "tackle-migration-catalog/1" or type(cat["revision"]) is not int
-            or cat["revision"] != 2 or cat["target_methodology"] != "10.3.0"):
+            or cat["revision"] != 3 or cat["target_methodology"] != "10.3.1"):
         fail("unsupported migration catalog target")
     if cat["supported_buckets"] != ["pre-3", "3", "4", "5", "lite"]:
         fail("supported bucket coverage mismatch")
