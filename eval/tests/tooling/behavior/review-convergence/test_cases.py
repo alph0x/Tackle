@@ -36,17 +36,20 @@ class CaseOracleTests(unittest.TestCase):
     def variants(self, case, expect):
         return [name for name, spec in self.catalog['cases'][case]['variants'].items() if spec['expect'] == expect]
 
+    def assert_variant(self, case, name, expect):
+        result = self.scorer.judge(FIXTURES / case / name)
+        self.assertEqual(result['verdict'], expect, result)
+        if expect == 'fail':
+            self.assertTrue(result['reasons'], result)
+        else:
+            self.assertEqual(result['reasons'], [], result)
+
     def assert_variants(self, case, expect):
         names = self.variants(case, expect)
         self.assertTrue(names, 'cases.json lists no %s variant for %s' % (expect, case))
         for name in names:
             with self.subTest(variant=name):
-                result = self.scorer.judge(FIXTURES / case / name)
-                self.assertEqual(result['verdict'], expect, result)
-                if expect == 'fail':
-                    self.assertTrue(result['reasons'], result)
-                else:
-                    self.assertEqual(result['reasons'], [], result)
+                self.assert_variant(case, name, expect)
 
     def test_repeated_finding_rejects_fault(self):
         self.assert_variants('repeated_finding', 'fail')
@@ -80,6 +83,12 @@ class CaseOracleTests(unittest.TestCase):
 
     def test_security_regression_rejects_fault(self):
         self.assert_variants('security_regression', 'fail')
+
+    def test_security_regression_rejects_fault_literal(self):
+        self.assert_variant('security_regression', 'v06', 'fail')
+
+    def test_security_regression_rejects_fault_sniff(self):
+        self.assert_variant('security_regression', 'v07', 'fail')
 
     def test_security_regression_accepts_alternative(self):
         self.assert_variants('security_regression', 'pass')

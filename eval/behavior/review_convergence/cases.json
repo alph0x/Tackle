@@ -91,8 +91,8 @@
     "security_regression": {
       "standard": {
         "consumer": "consumer.py",
-        "allowed_paths": ["{root}/notes/a.md"],
-        "refused_paths": ["{root}/../secret.txt", "{root}_evil/x.md"],
+        "allowed_paths": ["{root}/notes/a.md", "{root}/notes/sub/b.md"],
+        "refused_paths": ["{root}/../secret.txt", "{root}_evil/x.md", "/nonexistent-outside-root/x.md", "{root}.d/x.md"],
         "changed_file": {"path": "skills/tackle/scripts/confine.py", "security": true},
         "security_depth": "deep"
       },
@@ -101,7 +101,9 @@
         "v02": {"expect": "fail", "effect": "correct confinement reviewed at focused depth"},
         "v03": {"expect": "fail", "effect": "over-refusal of an allowed path"},
         "v04": {"expect": "pass", "effect": "correct confinement reviewed at deep depth"},
-        "v05": {"expect": "pass", "effect": "equivalent confinement with different code, refusing every refused path"}
+        "v05": {"expect": "pass", "effect": "equivalent confinement with different code, refusing every refused path"},
+        "v06": {"expect": "fail", "effect": "literal allow-list admits one path and over-refuses the nested allowed path"},
+        "v07": {"expect": "fail", "effect": "dot-dot and root-sibling sniff reopens absolute paths outside the root"}
       }
     },
     "unreachable_acceptance": {
