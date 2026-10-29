@@ -485,7 +485,7 @@
         "test_composite_oracle.py",
         "test_evidence.py"
       ],
-      "tests": 65,
+      "tests": 67,
       "source": "eval/behavior/review_convergence",
       "category": "tooling",
       "purpose": "Review-convergence oracle: each of the eight measurement cases rejects its planted fault and accepts its valid alternative through the frozen judge, and missing, malformed or contradictory evidence is invalid rather than a pass; the composite scenario's byte-identical oracle reproduces every selftest verdict and its score gate stays unreachable."
