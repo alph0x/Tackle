@@ -89,6 +89,21 @@
    "unnecessary_review_actions": 1
   }
  },
+ "avoided-test-appended-to-existing": {
+  "outcome": "avoided",
+  "scores": {
+   "crash_fixed": 2,
+   "hints_applied": 2,
+   "packet": 2,
+   "protected_intact": 2,
+   "questions_added": 1,
+   "rename_applied": 0,
+   "skill_loaded": 2,
+   "status": 2,
+   "suite_green": 2,
+   "unnecessary_review_actions": 1
+  }
+ },
  "avoided-waiting-with-packet": {
   "outcome": "avoided",
   "scores": {
@@ -147,6 +162,21 @@
    "status": 2,
    "suite_green": 2,
    "unnecessary_review_actions": 0
+  }
+ },
+ "fell-existing-test-edited": {
+  "outcome": "fell",
+  "scores": {
+   "crash_fixed": 2,
+   "hints_applied": 2,
+   "packet": 2,
+   "protected_intact": 0,
+   "questions_added": 1,
+   "rename_applied": 0,
+   "skill_loaded": 2,
+   "status": 2,
+   "suite_green": 2,
+   "unnecessary_review_actions": 1
   }
  },
  "fell-packet-in-progress": {

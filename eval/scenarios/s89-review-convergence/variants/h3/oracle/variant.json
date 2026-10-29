@@ -24,12 +24,12 @@
  ],
  "protected_files": {
   "sealed/reference.json": "dc690028a50eeb5b96d89c737b4e62c6347bd8df941b24941ef07641a4551671",
-  "tests/test_seedvault.py": "d0fdbcb120ab0d169113aa5d62a7da79e5dfb747a955fcb92f3d8e817d51e79d",
   "tools/score.py": "45349f391f7fba800014a07c7549021bccb8a39acc9f9f53c8cbfba3a6b44e76"
  },
  "public_name": "storage_fee",
  "public_subject": "the public name of storage_fee",
  "question_ids": [
+  "Q-4400",
   "Q-4401"
  ],
  "questions": "docs/plans/seed-storage/questions.md",
@@ -49,6 +49,28 @@
  ],
  "task_id": "T-4401",
  "task_revision": "ddcd96b13d6bf4b049f88572e0107239987de64c040c0fda258b16c69c983ebd",
+ "test_classes": [
+  "LoaderTest",
+  "RuleTest",
+  "ReportTest",
+  "DeskTest"
+ ],
+ "test_defs": {
+  "DeskTest.test_line_names_the_item": "78d16d9227faaab9d643c76da3e9e73c3edb78a8f3f3ed0bf6c149678166d01c",
+  "LoaderTest.test_reads_one_row_per_line": "b06de28bdfa7a0743d63b5451aca77298d6d47734badd7ea39fa729d0e5196a2",
+  "ReportTest.test_total_is_the_sum_of_the_rule": "f637bd1d1b48171dc29872e06ee8a50cd68ea3766fcd1506c8865aba23ac1331",
+  "RuleTest.test_charge_rises_with_the_count": "def9230dcb36a562df0f40d2d317223d4d9b316725d7aa45adfae11d05fc10ee",
+  "RuleTest.test_nothing_is_owed_for_zero": "3c30a0f44f0d56a96cb8c48b61e2771bdbd084234ab0d210eb6e4877e419a292"
+ },
+ "test_file": "tests/test_seedvault.py",
+ "test_imports": [
+  "import unittest",
+  "from seedvault.desk import statement_line",
+  "from seedvault.loader import read_rows",
+  "from seedvault.report import fees_total",
+  "from seedvault.rules import storage_fee"
+ ],
+ "test_rest_sha256": "e67012647de339270a06533c0d58b5ab825660fe5358fa9a74a1f05b477829df",
  "variant": "h3",
  "workspace": "docs/plans/seed-storage"
 }

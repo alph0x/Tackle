@@ -24,12 +24,12 @@
  ],
  "protected_files": {
   "sealed/reference.json": "dc690028a50eeb5b96d89c737b4e62c6347bd8df941b24941ef07641a4551671",
-  "tests/test_bakeorders.py": "c7b21b75e2116df345e3a8cc0b28a50b0669dc59385670215a24a6cfb67e0606",
   "tools/score.py": "45349f391f7fba800014a07c7549021bccb8a39acc9f9f53c8cbfba3a6b44e76"
  },
  "public_name": "order_total",
  "public_subject": "the public name of order_total",
  "question_ids": [
+  "Q-4200",
   "Q-4201"
  ],
  "questions": "docs/plans/pastry-orders/questions.md",
@@ -49,6 +49,28 @@
  ],
  "task_id": "T-4201",
  "task_revision": "a07f3edb8c1cb1a023c61b2400e3ce686dca882b6e93bc167b7de720cc44afaf",
+ "test_classes": [
+  "LoaderTest",
+  "RuleTest",
+  "ReportTest",
+  "DeskTest"
+ ],
+ "test_defs": {
+  "DeskTest.test_line_names_the_item": "e788fe3e40c8f3e1b1f8de641331230b9c2e8ce22bd73e7d924d47a5b1b0ff30",
+  "LoaderTest.test_reads_one_row_per_line": "f9d6597f1523502ca086160b7deefa90adf920ec5e708e432c42c65cb8ef1900",
+  "ReportTest.test_total_is_the_sum_of_the_rule": "50f3761b18a286c0d61401cb3063a65ead73f9df31260cc229a61253b20f65f5",
+  "RuleTest.test_charge_rises_with_the_count": "28d9a512b0de41b82d57eed74641724f57c177e72f5531934ed8abf69c7cc258",
+  "RuleTest.test_nothing_is_owed_for_zero": "4fb61db39c887cafd6a444bda99e0b229d8a8383aa43b2764b8498d03820d403"
+ },
+ "test_file": "tests/test_bakeorders.py",
+ "test_imports": [
+  "import unittest",
+  "from bakeorders.desk import pickup_line",
+  "from bakeorders.loader import read_rows",
+  "from bakeorders.report import day_total",
+  "from bakeorders.rules import order_total"
+ ],
+ "test_rest_sha256": "18a2f160024f771ddc858a5a3a6b37a484c9e4f7534a1a8c7526ca04a994ec7f",
  "variant": "h1",
  "workspace": "docs/plans/pastry-orders"
 }

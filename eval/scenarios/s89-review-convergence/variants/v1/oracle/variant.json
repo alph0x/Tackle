@@ -24,12 +24,12 @@
  ],
  "protected_files": {
   "sealed/reference.json": "dc690028a50eeb5b96d89c737b4e62c6347bd8df941b24941ef07641a4551671",
-  "tests/test_loanfines.py": "2d2feb8ae4da8f4330c82a2666e02242d091eb0baecb5b3909771b58219d9acf",
   "tools/score.py": "45349f391f7fba800014a07c7549021bccb8a39acc9f9f53c8cbfba3a6b44e76"
  },
  "public_name": "overdue_fine",
  "public_subject": "the public name of overdue_fine",
  "question_ids": [
+  "Q-4100",
   "Q-4101"
  ],
  "questions": "docs/plans/loan-fines/questions.md",
@@ -49,6 +49,28 @@
  ],
  "task_id": "T-4101",
  "task_revision": "56e4de03856bb75f46bd631fa35c578080d73f78754fbe4c69259f6e72cb34fe",
+ "test_classes": [
+  "LoaderTest",
+  "RuleTest",
+  "ReportTest",
+  "DeskTest"
+ ],
+ "test_defs": {
+  "DeskTest.test_line_names_the_item": "7b16775f45a7e98fb2027c5c5df7f6c60b10c5b7f1b1586a2d172b6fece571ec",
+  "LoaderTest.test_reads_one_row_per_line": "0872ca64b382c892f268759576180f233fd23436f8896fcb94cda39c4fd31b17",
+  "ReportTest.test_total_is_the_sum_of_the_rule": "3b9020621f058f387e1fd93bbd43c08f435f038f6cdbe50088e1297a2205890d",
+  "RuleTest.test_charge_rises_with_the_count": "cfdcf2079cb1c5d2b735c8b5cfbfc9960075cc7c2ef3f74246a39f24d73927c8",
+  "RuleTest.test_nothing_is_owed_for_zero": "08b08acf7bc60981cab7e9bb388f95ad0d569dcb162010be005a76aba80e6e91"
+ },
+ "test_file": "tests/test_loanfines.py",
+ "test_imports": [
+  "import unittest",
+  "from loanfines.desk import receipt_line",
+  "from loanfines.loader import read_rows",
+  "from loanfines.report import total_charge",
+  "from loanfines.rules import overdue_fine"
+ ],
+ "test_rest_sha256": "2db9fa9bf5f99db338fef1afe1caaa9cfb8b0859d2bb3dca60d8b82506e89737",
  "variant": "v1",
  "workspace": "docs/plans/loan-fines"
 }

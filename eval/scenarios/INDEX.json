@@ -3598,7 +3598,7 @@
           ],
           "fixture": "fixture",
           "stageable": true,
-          "fixture_sha256": "88802b6f042d05594bd01ca9d9b40c5f47f3025af0d01e4a66ab6c84a920c635",
+          "fixture_sha256": "291bd5529a33e6d06875734a967d61e4ee040fe44ecd073afd4d68c9b65943ab",
           "control_exposure": {
             "install": false,
             "fragments": []
@@ -3613,7 +3613,7 @@
           ],
           "fixture": "fixture",
           "stageable": true,
-          "fixture_sha256": "81938f0332b5d87a9177643ee7e75624a243c8c18ae5da0a6f19521cbc8be587",
+          "fixture_sha256": "03c3f19d845fa26a7eef7024aab084433f2e8c4897a1fdf040a6e6ff68c218b8",
           "control_exposure": {
             "install": false,
             "fragments": []
@@ -3628,7 +3628,7 @@
           ],
           "fixture": "fixture",
           "stageable": true,
-          "fixture_sha256": "b76fd642f3f3869a47886ac5d3022992419955b7bfca8e443db3a79816fbaaae",
+          "fixture_sha256": "8d1f5bac2069ffc40bdd725284b69d0fca9b8977450a3efe1c0b7a34d01f6743",
           "control_exposure": {
             "install": false,
             "fragments": []
@@ -3643,14 +3643,14 @@
           ],
           "fixture": "fixture",
           "stageable": true,
-          "fixture_sha256": "8152d85f402ccab87729e1db138669c52dffef1f74535d74b06101772a010813",
+          "fixture_sha256": "a964f40c9c7a366f4f5cac7f446634b8838539f5812dcfaac7bcb9d7356d2b39",
           "control_exposure": {
             "install": false,
             "fragments": []
           }
         }
       ],
-      "oracle_sha256": "4f1fd10dbcc7b77656d630d091c34d8ab6a6777f57711be60f7a171836d7e699"
+      "oracle_sha256": "650310a91a4f9b6261aa13fc07a489fb4b13c89c9dc687119c27336b1ce2f33d"
     }
   ]
 }
