@@ -1,0 +1,46 @@
+{
+  "schema": "review-convergence-record/1",
+  "case": "unrun_phases",
+  "task": {
+    "status": "Complete",
+    "revision": "rev-alpha"
+  },
+  "transcript_sha256": null,
+  "events": [
+    {
+      "id": "phase-one",
+      "seq": 1,
+      "kind": "phase",
+      "name": "unittest",
+      "command": "python3 -m unittest discover -s eval/tests/tooling/behavior/review-convergence -p 'test_*.py' -v",
+      "exit": 0
+    },
+    {
+      "id": "phase-two",
+      "seq": 2,
+      "kind": "phase",
+      "name": "diff_stat",
+      "command": "git diff --stat 33ca4b8b69786fc228f311953058b00688ed7912 -- eval",
+      "exit": 0
+    },
+    {
+      "id": "phase-three",
+      "seq": 3,
+      "kind": "phase",
+      "name": "seal",
+      "command": "python3 -I <checks-tool> seal <repo>",
+      "exit": 1
+    },
+    {
+      "id": "rev-alpha",
+      "seq": 4,
+      "kind": "review",
+      "round": 1,
+      "verdict": "ACCEPT"
+    }
+  ],
+  "counters": {
+    "review_rounds": 0,
+    "source_event_ids": []
+  }
+}

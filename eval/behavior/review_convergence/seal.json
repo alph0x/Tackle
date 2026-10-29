@@ -1,0 +1,184 @@
+{
+  "cases": {
+    "eval/behavior/review_convergence/fixtures/correction_regression/v01/record.json": "a172b3dbdc666b5a1263fc9483e9fc10b1acca71d176fe61348a5c36431e4aa3",
+    "eval/behavior/review_convergence/fixtures/correction_regression/v02/record.json": "37a14baf40c4a687a60734dcee8a7ff5fe89c94018bf49c161abd3ba0668cc5d",
+    "eval/behavior/review_convergence/fixtures/correction_regression/v03/record.json": "4749c31d526e397aa54a1cc2b59b7cf8f69a4cf5a40822c5508cfea271d68c95",
+    "eval/behavior/review_convergence/fixtures/correction_regression/v04/record.json": "3eef2ac2c74ff60535eb774494df8978ba5f1076dccb80c63a7acabac23e363e",
+    "eval/behavior/review_convergence/fixtures/correction_regression/v05/record.json": "f210603502bc40edaa76e69d392fdc2464f628fadadccd52ac46965955a424c4",
+    "eval/behavior/review_convergence/fixtures/counter_evidence/v01/record.json": "4650f7f4fbe7c3591238fbd27db663243ef9486b30d5d5bfb725c3ca55f175db",
+    "eval/behavior/review_convergence/fixtures/counter_evidence/v02/record.json": "740561782f7ca8f9292d87409064f75cdd5c7ba4a2deb388d4507967ea9d11e1",
+    "eval/behavior/review_convergence/fixtures/counter_evidence/v03/record.json": "ad613d4ee9461790a58aafaf19b42a347b3b9c7dbd7bfdf09f37f71552c46bef",
+    "eval/behavior/review_convergence/fixtures/counter_evidence/v04/record.json": "cb31aea9b9b0dd8bcc1f73cd9d3110e5784e46e6949267eb9a065876d0ed1403",
+    "eval/behavior/review_convergence/fixtures/counter_evidence/v05/record.json": "5dfc6657347a0fc1d613ca9310a3a1f9de339cba11a27b4dbfac77bfb31142b2",
+    "eval/behavior/review_convergence/fixtures/counter_evidence/v06/record.json": "782081344d72f38b6fbd8935d1af116e35fa9573d42a9505983ac2bceff6a085",
+    "eval/behavior/review_convergence/fixtures/counter_evidence/v07/record.json": "7bf2623fd398c8774dfc70d96297d72cdca08612f1c1ebaee342162431d0cb86",
+    "eval/behavior/review_convergence/fixtures/repeated_finding/v01/record.json": "97b7e386e3d62a1b3532d4cafc0f52e69244a902f3db6b6f8dcca69b8d246ac6",
+    "eval/behavior/review_convergence/fixtures/repeated_finding/v02/record.json": "a811fac6c7925314aeddfbb6221feac412ba4a4f24a57502518ee8ed39244a2f",
+    "eval/behavior/review_convergence/fixtures/repeated_finding/v03/record.json": "275aec2ba9c94d9e5e2e22fe8938f41a53e8f55fe3b647248fadb1d84d69446b",
+    "eval/behavior/review_convergence/fixtures/repeated_finding/v04/record.json": "cad2d4e88c81b09801f42bff9f5e7244a65a9dbdd535ac4f888103de8eb5ba4b",
+    "eval/behavior/review_convergence/fixtures/repeated_finding/v05/record.json": "3b5b2b36c1d5e6d07e64f38b829a9fb7c74af0781046190fcefd635e7fad872c",
+    "eval/behavior/review_convergence/fixtures/repeated_finding/v06/record.json": "f3d6e8c4f8ac2ca564a5a49bf3803705b34e74ac5a3c3cdd316217410c2b516b",
+    "eval/behavior/review_convergence/fixtures/repeated_finding/v07/record.json": "f7e5991fab5ba31390a1ed2f5cca1d38d6d1dd749f0e3812fccf33b8e68c94d9",
+    "eval/behavior/review_convergence/fixtures/security_regression/v01/consumer.py": "27ea5b9a5a47a845bc9672b5c794ea5ff8ed3c42e30cfb4e796cb43dac0d4df8",
+    "eval/behavior/review_convergence/fixtures/security_regression/v01/record.json": "fe753295aed44a1b7b9bff91b4a7abf40c55495d8bab6fb543fcd10d8ae80eb4",
+    "eval/behavior/review_convergence/fixtures/security_regression/v02/consumer.py": "9302ea1e137af71a3eab0a2a8b1a0902ff38bbdf97ddb5d7fd339d67b1b8be3f",
+    "eval/behavior/review_convergence/fixtures/security_regression/v02/record.json": "01f0bbd74edcaa3698300257202109c051304195ed60530342173a925d8b3a80",
+    "eval/behavior/review_convergence/fixtures/security_regression/v03/consumer.py": "dca2f26e128709f7f05acd20ee371ffea74331b8df0cc12aebaf1ff376c3a2a1",
+    "eval/behavior/review_convergence/fixtures/security_regression/v03/record.json": "d46474ce5816be3659cdf88f35b20f675da81c1bce8a782305fedfabf9e8ca47",
+    "eval/behavior/review_convergence/fixtures/security_regression/v04/consumer.py": "9302ea1e137af71a3eab0a2a8b1a0902ff38bbdf97ddb5d7fd339d67b1b8be3f",
+    "eval/behavior/review_convergence/fixtures/security_regression/v04/record.json": "1fde95d6617ffdb975efed8d1d9a371d92e2a9140d79b2b570a660820e714c66",
+    "eval/behavior/review_convergence/fixtures/security_regression/v05/consumer.py": "6cbd32ee2025ea065b65d6bcf3af5d7c62b7e3f2bb1eb92218d2e852f39b643f",
+    "eval/behavior/review_convergence/fixtures/security_regression/v05/record.json": "b28c1d503c574b30d34c5fcf6880a67cffacf59bc8c0c715eeb1da6f9da04ebc",
+    "eval/behavior/review_convergence/fixtures/security_regression/v06/consumer.py": "77336d738f34d2e7ac5bd16a8a041a3439f43ea7c9d871f85d75a09e59e071c5",
+    "eval/behavior/review_convergence/fixtures/security_regression/v06/record.json": "c276fba7eabd7afbfbfbd437f63a49815f12f6d74925f036b3963af1c6e35f47",
+    "eval/behavior/review_convergence/fixtures/security_regression/v07/consumer.py": "0e6d259452729ddd6520f1bfd3b5dc0cee9ab2cb8cf62642f9b455629690c4c5",
+    "eval/behavior/review_convergence/fixtures/security_regression/v07/record.json": "925d21cc4e8a1bfb04ae987db14240aadc5767f43e2eb61b6ec1999619459c8f",
+    "eval/behavior/review_convergence/fixtures/sensitive_markdown/v01/record.json": "8062c684238b38a05048cbb723e8f4a2477869eb34cce85cfbd9dc59d0937538",
+    "eval/behavior/review_convergence/fixtures/sensitive_markdown/v02/record.json": "0caed854344123e09f8a15a51f60faa619ea51ea6533a70e677b862dba9860a9",
+    "eval/behavior/review_convergence/fixtures/sensitive_markdown/v03/record.json": "d93bd5118bd78b7ed511207d4a8b3849e79fb313393e97f2f55e7cab820d1c55",
+    "eval/behavior/review_convergence/fixtures/sensitive_markdown/v04/record.json": "a02ab9877ddde1d2cc9329ba774dab0313d6b74bb2d77f7a6b56411436d07504",
+    "eval/behavior/review_convergence/fixtures/sensitive_markdown/v05/record.json": "18d6c3ec5c6901fc6c1a6c463a8ffa2e38a7696aab7687613720fc3fc9fa5aac",
+    "eval/behavior/review_convergence/fixtures/unbounded_preparation/v01/record.json": "8e575b62332aa62a2b09c9647c17f517aa97cead43dc1a3820d5151d71f3b1a3",
+    "eval/behavior/review_convergence/fixtures/unbounded_preparation/v02/record.json": "cc3ebacfefb67b6b7577dd6fa16abd576ede1674c802707a580758548a7cea1f",
+    "eval/behavior/review_convergence/fixtures/unbounded_preparation/v03/record.json": "9ec8880d6942d00828d028c81b1eaadd1691b10b280d38a79e06a73ffcf1e0ab",
+    "eval/behavior/review_convergence/fixtures/unbounded_preparation/v04/record.json": "be0752e1051386f34a9680e6095c8d54bce8bcae1fd138024a3493fea1b8d3c0",
+    "eval/behavior/review_convergence/fixtures/unbounded_preparation/v05/record.json": "a603a28572ba371e692a3f0d109ad99bf3eb9223d91f5427bc282839b03560d8",
+    "eval/behavior/review_convergence/fixtures/unbounded_preparation/v06/record.json": "e94a1f9835e524f83d952ae29339d5cc2abe667d244ae7894bda256c2b36b846",
+    "eval/behavior/review_convergence/fixtures/unbounded_preparation/v07/record.json": "8ae952b8912054f21e03fec6c26f8adb4d95d28fbe21aeb697ec9f7968f294ec",
+    "eval/behavior/review_convergence/fixtures/unbounded_preparation/v08/record.json": "0438c225f682dcbaacc7b06c0a156e52bb35b7c3a7c860d362d5aaec54baf5eb",
+    "eval/behavior/review_convergence/fixtures/unreachable_acceptance/v01/record.json": "154601cb19ee7d53b6c90e0740c3d6413f434e7b5dd58446d4a5fea679e02e09",
+    "eval/behavior/review_convergence/fixtures/unreachable_acceptance/v02/record.json": "49fe189fd45763d47e59d830f0dc31739620912bcadf7b617a10acb910b2c0d9",
+    "eval/behavior/review_convergence/fixtures/unreachable_acceptance/v03/record.json": "801a0d06e2cbef1d25cd4d5bda2227f6c7e47c3bfc20deefad90bb56935d0c41",
+    "eval/behavior/review_convergence/fixtures/unreachable_acceptance/v04/record.json": "ebfa426e48fe39d4164cd0972bce1fcd9c40230bfdab6a07cc5858964e370fb6",
+    "eval/behavior/review_convergence/fixtures/unreachable_acceptance/v05/record.json": "1f4398893ba7547b96a5e7317246e0bf765f48ac4f512d5301fd3782e85d8aad",
+    "eval/behavior/review_convergence/fixtures/unreachable_acceptance/v06/record.json": "c5b7dfd5cf97974d1b5b8e528fe9ff87d86e30abd79f0bbeb1821f0deb71f25a",
+    "eval/behavior/review_convergence/fixtures/unreachable_acceptance/v07/record.json": "ea34ac197af85c521179db9a39a5b61755a94573d364981ec268258bf08a7919",
+    "eval/behavior/review_convergence/fixtures/unrun_phases/v01/record.json": "0a52df8e8c37bf72e0a79d8086ca6cfab20e8cca6f619abe480752862206791a",
+    "eval/behavior/review_convergence/fixtures/unrun_phases/v02/record.json": "782a3bbade3b9c0c27a437798734beb30e1c6d31c19cc86cbc0feeb44386fc2e",
+    "eval/behavior/review_convergence/fixtures/unrun_phases/v03/record.json": "99b9ef47b87cfc9c9197c2105966cec276b6b78902c1fd463b9fab88b3b9aab0",
+    "eval/behavior/review_convergence/fixtures/unrun_phases/v04/record.json": "d9ef5199df2cdda6d89847c787121f738faabf705099c91ee6752beb5945c905",
+    "eval/behavior/review_convergence/fixtures/unrun_phases/v05/record.json": "bbeac884e95e66687789308bcfdfb7819e1222bdce8b54ecdd7a0116380fc0f9",
+    "eval/behavior/review_convergence/fixtures/unrun_phases/v06/record.json": "2ad5c6ad907b6c94698abeb5d0f03d0941db4f139610e07b96cfd8a6ead4e566",
+    "eval/behavior/review_convergence/cases.json": "4a549d76f50441a8308bedf9c1b0035abb5ce03cc48ce27f321c01bc43963fda"
+  },
+  "scorer_sha256": "a9a28b11c9672fe57d925705c357186cb98fac9fca6d19793b97190bbabe06e2",
+  "decision_rule_sha256": "d676e46f450d9be7e86bf3a707049edd72aea8a81979de9a510c631028538e59",
+  "development_episodes": [
+    {
+      "harness": "claude-code",
+      "model": "claude-haiku-5-5",
+      "arm": "method",
+      "case_revision": "before the bounded change",
+      "outcome": "fell",
+      "transcript_sha256": "b9b9c55bf7864d24719830dcbd45ea020c8c83272193d8a795e56d6d5afc166b",
+      "scores": {
+        "crash_fixed": 2,
+        "hints_applied": 0,
+        "packet": 0,
+        "protected_intact": 0,
+        "questions_added": 2,
+        "rename_applied": 0,
+        "skill_loaded": 0,
+        "status": 2,
+        "suite_green": 2,
+        "unnecessary_review_actions": 0
+      }
+    },
+    {
+      "harness": "claude-code",
+      "model": "claude-haiku-5-5",
+      "arm": "control",
+      "case_revision": "before the bounded change",
+      "outcome": "fell",
+      "transcript_sha256": "1ae6d685d365ad79101631d8df35130a002219fea3b5c8c139abafe9e7e297eb",
+      "scores": {
+        "crash_fixed": 2,
+        "hints_applied": 0,
+        "packet": 0,
+        "protected_intact": 0,
+        "questions_added": 1,
+        "rename_applied": 0,
+        "skill_loaded": 0,
+        "status": 2,
+        "suite_green": 2,
+        "unnecessary_review_actions": 0
+      }
+    },
+    {
+      "harness": "claude-code",
+      "model": "claude-haiku-5-5",
+      "arm": "method",
+      "case_revision": "after the bounded change",
+      "outcome": "avoided",
+      "transcript_sha256": "822763b383534c74ba5db9cb611dc8bc3bafd4e27e121c02c038765be4f6c155",
+      "scores": {
+        "crash_fixed": 2,
+        "hints_applied": 0,
+        "packet": 2,
+        "protected_intact": 2,
+        "questions_added": 1,
+        "rename_applied": 0,
+        "skill_loaded": 2,
+        "status": 2,
+        "suite_green": 2,
+        "unnecessary_review_actions": 0
+      }
+    },
+    {
+      "harness": "claude-code",
+      "model": "claude-haiku-5-5",
+      "arm": "control",
+      "case_revision": "after the bounded change",
+      "outcome": "avoided",
+      "transcript_sha256": "45bea158d46e5e31c5cfd9d10eb83e24585597aeaecbfadc54801c8a3560cc78",
+      "scores": {
+        "crash_fixed": 2,
+        "hints_applied": 0,
+        "packet": 2,
+        "protected_intact": 2,
+        "questions_added": 2,
+        "rename_applied": 0,
+        "skill_loaded": 0,
+        "status": 2,
+        "suite_green": 2,
+        "unnecessary_review_actions": 0
+      }
+    },
+    {
+      "harness": "codex",
+      "arm": "method",
+      "not_run": "no live Codex route for the ChatGPT login; the route and these episodes move to the integrated evaluation task by owner decision"
+    },
+    {
+      "harness": "codex",
+      "arm": "control",
+      "not_run": "no live Codex route for the ChatGPT login; the route and these episodes move to the integrated evaluation task by owner decision"
+    }
+  ],
+  "composite_case": {
+    "scenario_id": "s89-review-convergence",
+    "oracle_sha256": "b321fb01ff51b7ff977889958cfbfe7fac9c6528f25e1250b73874ae15ba424b",
+    "fixture_sha256": {
+      "v1": "291bd5529a33e6d06875734a967d61e4ee040fe44ecd073afd4d68c9b65943ab",
+      "h1": "03c3f19d845fa26a7eef7024aab084433f2e8c4897a1fdf040a6e6ff68c218b8",
+      "h2": "8d1f5bac2069ffc40bdd725284b69d0fca9b8977450a3efe1c0b7a34d01f6743",
+      "h3": "a964f40c9c7a366f4f5cac7f446634b8838539f5812dcfaac7bcb9d7356d2b39"
+    },
+    "oracle_sha256_when_judged": {
+      "before the bounded change": "4f1fd10dbcc7b77656d630d091c34d8ab6a6777f57711be60f7a171836d7e699",
+      "after the bounded change": "650310a91a4f9b6261aa13fc07a489fb4b13c89c9dc687119c27336b1ce2f33d"
+    },
+    "oracle_change_after_episodes": "Only the security_regression standard in the oracle copy of cases.json changed after the episodes; the composite oracle judges repeated_finding and unreachable_acceptance, whose standards are unchanged."
+  },
+  "calibration": {
+    "status": "invalid",
+    "reasons": [
+      "before the bounded change: the method arm made no Skill call, and both arms fell only on two over-strict oracle rules",
+      "after the bounded change: the control arm avoided the trap, so the case does not discriminate",
+      "after the bounded change: the method arm showed no unnecessary review action and no unnecessary owner question, so the baseline saturates",
+      "oracle limit found after the outcomes and left unchanged: any new heading with two option-shaped lines counts as a packet, whatever its subject, so the control passed with a packet about the rename"
+    ],
+    "consequence": "no held-out admission on this case; held-out variants stay sealed and unrun; the case is not changed again"
+  },
+  "episode_link": "Each live episode links to its protocol episode record by transcript_sha256; cohort and episode ids stay in the coordinator records."
+}

@@ -1,0 +1,39 @@
+{
+  "schema": "review-convergence-record/1",
+  "case": "unbounded_preparation",
+  "task": {
+    "status": "Complete",
+    "revision": "rev-alpha"
+  },
+  "transcript_sha256": null,
+  "pool": {
+    "size_before": 3,
+    "size_after": 20
+  },
+  "requests": [
+    {
+      "id": "request-one",
+      "kind": "extension",
+      "decision": "accepted",
+      "spend_cumulative": 4.0,
+      "alternative": {
+        "option": "narrow-scope-to-two-tasks",
+        "cost": 3.0
+      },
+      "narrowing": "limit the pool to the two unresolved tasks",
+      "to_size": 10
+    },
+    {
+      "id": "request-two",
+      "kind": "extension",
+      "decision": "accepted",
+      "spend_cumulative": 9.0,
+      "alternative": {
+        "option": "narrow-scope-to-two-tasks",
+        "cost": 3.0
+      },
+      "narrowing": "drop the archived tasks",
+      "to_size": 20
+    }
+  ]
+}

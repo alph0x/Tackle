@@ -1,0 +1,75 @@
+{
+  "schema": "review-convergence-record/1",
+  "case": "counter_evidence",
+  "task": {
+    "status": "Accepted",
+    "revision": "rev-alpha"
+  },
+  "transcript_sha256": null,
+  "events": [
+    {
+      "id": "cycle-one",
+      "kind": "cycle",
+      "cycles": 1
+    },
+    {
+      "id": "cycle-two",
+      "kind": "cycle",
+      "cycles": 1
+    },
+    {
+      "id": "cycle-three",
+      "kind": "cycle",
+      "cycles": 1
+    },
+    {
+      "id": "cycle-four",
+      "kind": "cycle",
+      "cycles": 1
+    },
+    {
+      "id": "key-one",
+      "kind": "child",
+      "name": "lock-check",
+      "exit": 0,
+      "timed_out": false,
+      "result": "pass"
+    },
+    {
+      "id": "key-two",
+      "kind": "child",
+      "name": "completion-review",
+      "exit": 0,
+      "timed_out": false,
+      "result": "pass"
+    }
+  ],
+  "counter": {
+    "cycles_spent": 4,
+    "source_event_ids": [
+      "cycle-one",
+      "cycle-two",
+      "cycle-three",
+      "cycle-four"
+    ]
+  },
+  "segments": [
+    {
+      "segment": 1,
+      "cycles": 2,
+      "source_event_ids": [
+        "cycle-one",
+        "cycle-two"
+      ]
+    },
+    {
+      "segment": 2,
+      "cycles": 2,
+      "source_event_ids": [
+        "cycle-three",
+        "cycle-four"
+      ]
+    }
+  ],
+  "findings": []
+}

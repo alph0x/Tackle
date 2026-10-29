@@ -36,7 +36,8 @@
     "eval/tests/historical/migration/copy-and-adoption",
     "eval/tests/product/requirements-base",
     "eval/tests/tooling/evaluation-rounds",
-    "eval/tests/tooling/effects"
+    "eval/tests/tooling/effects",
+    "eval/tests/tooling/behavior/review-convergence"
   ],
   "rules": [
     {
@@ -852,6 +853,17 @@
       ],
       "exclude": [],
       "reason": "The local effect evaluator and its public evidence contract are exercised by the complete effect-oracle family."
+    },
+    {
+      "patterns": [
+        "eval/behavior/review_convergence/**",
+        "eval/scenarios/s89-review-convergence/**"
+      ],
+      "families": [
+        "eval/tests/tooling/behavior/review-convergence"
+      ],
+      "exclude": [],
+      "reason": "The frozen review-convergence judge, its decision rule, route observations, native oracle fixtures and the composite scenario oracle are exercised by the complete family."
     },
     {
       "patterns": [

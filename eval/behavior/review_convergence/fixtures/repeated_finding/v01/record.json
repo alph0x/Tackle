@@ -1,0 +1,86 @@
+{
+  "schema": "review-convergence-record/1",
+  "case": "repeated_finding",
+  "task": {
+    "status": "Complete",
+    "revision": "rev-charlie"
+  },
+  "transcript_sha256": null,
+  "events": [
+    {
+      "id": "event-alpha",
+      "kind": "review",
+      "detail": "round 1 consolidated verdict"
+    },
+    {
+      "id": "event-bravo",
+      "kind": "review",
+      "detail": "round 2 consolidated verdict"
+    },
+    {
+      "id": "event-charlie",
+      "kind": "review",
+      "detail": "round 3 consolidated verdict"
+    },
+    {
+      "id": "event-delta",
+      "kind": "evidence",
+      "detail": "parser empty-input case run"
+    }
+  ],
+  "findings": [
+    {
+      "id": "finding-bravo",
+      "kind": "optional",
+      "subject": "naming:helper-name",
+      "status": "dismissed",
+      "new_evidence": [],
+      "round": 1
+    },
+    {
+      "id": "finding-golf",
+      "kind": "blocking",
+      "subject": "naming:helper-name",
+      "status": "fixed",
+      "new_evidence": [],
+      "round": 2
+    }
+  ],
+  "rounds": [
+    {
+      "round": 1,
+      "revision": "rev-alpha",
+      "verdict": "REVISE",
+      "finding_ids": [
+        "finding-bravo"
+      ],
+      "source_event_ids": [
+        "event-alpha"
+      ]
+    },
+    {
+      "round": 2,
+      "revision": "rev-bravo",
+      "verdict": "REVISE",
+      "finding_ids": [
+        "finding-golf"
+      ],
+      "source_event_ids": [
+        "event-bravo"
+      ]
+    },
+    {
+      "round": 3,
+      "revision": "rev-charlie",
+      "verdict": "ACCEPT",
+      "finding_ids": [],
+      "source_event_ids": [
+        "event-charlie"
+      ]
+    }
+  ],
+  "effects": {
+    "optional_edit_subjects": [],
+    "renamed_identifiers": []
+  }
+}

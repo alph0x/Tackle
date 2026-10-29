@@ -1,0 +1,70 @@
+{
+  "schema": "review-convergence-record/1",
+  "case": "counter_evidence",
+  "task": {
+    "status": "Accepted",
+    "revision": "rev-alpha"
+  },
+  "transcript_sha256": null,
+  "events": [
+    {
+      "id": "cycle-one",
+      "kind": "cycle",
+      "cycles": 1
+    },
+    {
+      "id": "cycle-two",
+      "kind": "cycle",
+      "cycles": 1
+    },
+    {
+      "id": "key-one",
+      "kind": "child",
+      "name": "lock-check",
+      "exit": 0,
+      "timed_out": false,
+      "result": "pass"
+    },
+    {
+      "id": "key-two",
+      "kind": "child",
+      "name": "completion-review",
+      "exit": 0,
+      "timed_out": false,
+      "result": "pass"
+    }
+  ],
+  "counter": {
+    "cycles_spent": 2,
+    "source_event_ids": [
+      "cycle-one",
+      "cycle-two"
+    ]
+  },
+  "segments": [
+    {
+      "segment": 1,
+      "cycles": 1,
+      "source_event_ids": [
+        "cycle-one"
+      ]
+    },
+    {
+      "segment": 2,
+      "cycles": 1,
+      "source_event_ids": [
+        "cycle-two"
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "finding-hotel",
+      "kind": "blocking",
+      "subject": "causal:lock-order",
+      "status": "open",
+      "new_evidence": [],
+      "causal": true
+    }
+  ]
+}

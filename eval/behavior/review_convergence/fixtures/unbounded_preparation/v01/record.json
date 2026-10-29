@@ -1,0 +1,14 @@
+{
+  "schema": "review-convergence-record/1",
+  "case": "unbounded_preparation",
+  "task": {
+    "status": "Complete",
+    "revision": "rev-alpha"
+  },
+  "transcript_sha256": null,
+  "pool": {
+    "size_before": 3,
+    "size_after": 500
+  },
+  "requests": []
+}

@@ -477,6 +477,18 @@
       "source": "eval/behavior/effects",
       "category": "tooling",
       "purpose": "Observed attempts, completed fixture effects, qualified scoped absence and unknown coverage through local wrappers, Git and inventory/traversal evidence, with protected evaluation and effect-free replay; no host-wide isolation claim."
+    },
+    {
+      "path": "eval/tests/tooling/behavior/review-convergence",
+      "files": [
+        "test_cases.py",
+        "test_composite_oracle.py",
+        "test_evidence.py"
+      ],
+      "tests": 67,
+      "source": "eval/behavior/review_convergence",
+      "category": "tooling",
+      "purpose": "Review-convergence oracle: each of the eight measurement cases rejects its planted fault and accepts its valid alternative through the frozen judge, and missing, malformed or contradictory evidence is invalid rather than a pass; the composite scenario's byte-identical oracle reproduces every selftest verdict and its score gate stays unreachable."
     }
   ]
 }

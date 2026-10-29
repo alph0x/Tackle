@@ -1,0 +1,78 @@
+{
+  "schema": "review-convergence-record/1",
+  "case": "repeated_finding",
+  "task": {
+    "status": "Complete",
+    "revision": "rev-bravo"
+  },
+  "transcript_sha256": null,
+  "events": [
+    {
+      "id": "event-alpha",
+      "kind": "review",
+      "detail": "round 1 consolidated verdict"
+    },
+    {
+      "id": "event-bravo",
+      "kind": "review",
+      "detail": "round 2 consolidated verdict"
+    },
+    {
+      "id": "event-charlie",
+      "kind": "review",
+      "detail": "round 3 consolidated verdict"
+    },
+    {
+      "id": "event-delta",
+      "kind": "evidence",
+      "detail": "parser empty-input case run"
+    }
+  ],
+  "findings": [
+    {
+      "id": "finding-bravo",
+      "kind": "optional",
+      "subject": "naming:helper-name",
+      "status": "dismissed",
+      "new_evidence": [],
+      "round": 1
+    },
+    {
+      "id": "finding-india",
+      "kind": "blocking",
+      "subject": "correctness:empty-input-guard",
+      "status": "fixed",
+      "new_evidence": [
+        "event-delta"
+      ],
+      "round": 1
+    }
+  ],
+  "rounds": [
+    {
+      "round": 1,
+      "revision": "rev-alpha",
+      "verdict": "REVISE",
+      "finding_ids": [
+        "finding-bravo",
+        "finding-india"
+      ],
+      "source_event_ids": [
+        "event-alpha"
+      ]
+    },
+    {
+      "round": 2,
+      "revision": "rev-bravo",
+      "verdict": "ACCEPT",
+      "finding_ids": [],
+      "source_event_ids": [
+        "event-bravo"
+      ]
+    }
+  ],
+  "effects": {
+    "optional_edit_subjects": [],
+    "renamed_identifiers": []
+  }
+}

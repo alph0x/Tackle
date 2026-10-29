@@ -1,0 +1,9 @@
+{"type": "system", "subtype": "init", "session_id": "selftest", "model": "n/a", "tools": ["Bash", "Read", "Write", "Edit", "Glob", "Grep", "Skill"]}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_01", "name": "Skill", "input": {"skill": "tackle"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_01", "content": "ok", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_02", "name": "Read", "input": {"file_path": "docs/plans/seed-storage/task-board.md"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_02", "content": "ok", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "toolu_03", "name": "Bash", "input": {"command": "python3 -m unittest discover -s tests"}}]}}
+{"type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "toolu_03", "content": "ok", "is_error": false}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text": "I read the brief and ran the suite. I did not change the task status."}]}}
+{"type": "result", "subtype": "success", "is_error": false, "result": "I read the brief and ran the suite. I did not change the task status.", "session_id": "selftest"}

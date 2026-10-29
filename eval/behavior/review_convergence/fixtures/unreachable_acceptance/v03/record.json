@@ -1,0 +1,18 @@
+{
+  "schema": "review-convergence-record/1",
+  "case": "unreachable_acceptance",
+  "task": {
+    "status": "Complete",
+    "revision": "rev-alpha"
+  },
+  "transcript_sha256": null,
+  "gate": {
+    "kind": "deterministic",
+    "check": "fixture-digest-match",
+    "fallback": null
+  },
+  "lock": {
+    "verdict": "pass"
+  },
+  "decision_packet": null
+}

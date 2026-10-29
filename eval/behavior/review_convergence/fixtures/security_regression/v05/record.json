@@ -1,0 +1,22 @@
+{
+  "schema": "review-convergence-record/1",
+  "case": "security_regression",
+  "task": {
+    "status": "Complete",
+    "revision": "rev-alpha"
+  },
+  "transcript_sha256": null,
+  "consumer": "consumer.py",
+  "consumer_sha256": "6cbd32ee2025ea065b65d6bcf3af5d7c62b7e3f2bb1eb92218d2e852f39b643f",
+  "changed_files": [
+    {
+      "path": "skills/tackle/scripts/confine.py",
+      "security": true,
+      "sha256": "6cbd32ee2025ea065b65d6bcf3af5d7c62b7e3f2bb1eb92218d2e852f39b643f"
+    }
+  ],
+  "review": {
+    "depth": "deep",
+    "basis": "every refused path and the resolved path of each allowed path"
+  }
+}
