@@ -220,12 +220,13 @@
         "test_multi_repo_templates.py",
         "test_brief_ledger_template.py",
         "test_executor_dispatch_contract.py",
-        "test_judgment_support.py"
+        "test_judgment_support.py",
+        "test_clock_oracle_section.py"
       ],
-      "tests": 137,
+      "tests": 142,
       "source": "eval/templates",
       "category": "product",
-      "purpose": "Template fields, observed model routing, capability recovery and compiled briefs. The executor-package and prepared-operation consumers verify declared context, actual read examples, replay and child-check propagation. The System One decision script covers original-use parity and bounded recovery/evidence policy; the state script covers consent, durable budget reservations, SDK serialization, fallbacks and bounded history/intake consumers."
+      "purpose": "Template fields, observed model routing, capability recovery and compiled briefs. The executor-package and prepared-operation consumers verify declared context, actual read examples, replay and child-check propagation. The System One decision script covers original-use parity and bounded recovery/evidence policy; the state script covers consent, durable budget reservations, SDK serialization, fallbacks and bounded history/intake consumers. The protected retro clock oracle follows the named Fixture recipe section, checked by running the protected method on edited copies."
     },
     {
       "path": "eval/tests/tooling/protocol-v2",
