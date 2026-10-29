@@ -5,7 +5,7 @@ description: "Use for durable planning and explicit task execution of multi-sess
 
 # Tackle
 
-**Tackle 10.3.0** is a model-agnostic planning and execution method. Install: `SKILL.md`, `references/` and `scripts/` (Markdown plus standard-library Python, no network). Release changes: changelog.
+**Tackle 10.3.1** is a model-agnostic planning and execution method. Install: `SKILL.md`, `references/` and `scripts/` (Markdown plus standard-library Python, no network). Release changes: changelog.
 
 ## Public surface
 
