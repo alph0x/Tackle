@@ -18,6 +18,7 @@
   deviation; omit only when Tier is omitted and Effort is the compiled default)
 - **Escalation**: (declared; omit when the task does not permit the one capped retry; the owner still confirms the escalated model)
 - **Budget**: {{resolved correction, round, timeout, or tool limits, when applicable}}.
+- **Role capabilities**: {{background processes, loopback, network, nested agents, input size and file access that the roles need; none when no role needs one}}.
 - **Corridor**: (repair tasks only: `files=<allowed paths>; invariants=<what must hold>; budget=<N full implement-validate-review-correct cycles>; review=<time reserved for the reviewer's conclusion>; verification=<simplest check that gives sufficient evidence>`; `;` separates the parts and a list inside a part is comma-separated; omit otherwise)
 - **Procedure revision**: {{pinned procedure/version; adopt changes only at a task boundary}}.
 - **Lineage**: {{ancestor task IDs and unresolved failure/cycle-pool references; none for unrelated new work}}.
@@ -37,6 +38,8 @@
 
 {{Absolute repository, checkout, workspace, records and per-command cwd; distinguish differing paths.
 Use declared paths, not shell defaults; never relocate records into source.}}
+
+Records root: {{absolute records root, outside the source tree}}
 
 Ground the current state with exact citations:
 
@@ -157,6 +160,11 @@ affected checks before proceeding.
 ```sh
 {{direct command or checked script; prerequisites, contract cases and native pass condition}}
 ```
+
+Reviewer runs first, in this order, and the verdict cites the record each command prints:
+
+1. `{{command that prints the coordinator's acceptance record facts}}`
+2. `{{command that prints the last line of the coverage and mutation records}}`
 
 ### Rollout and reversibility (only for a shipped path)
 

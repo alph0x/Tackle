@@ -6,6 +6,7 @@ required literal token, in the shipped guide and template text. Whether the word
 paraphrase of the owner's escalation policy is the fresh reviewer's job, not this file's; this file
 only checks that the required words are there.
 """
+import re
 import unittest
 from pathlib import Path
 import sys
@@ -287,6 +288,27 @@ class TaskTemplateFieldsTests(unittest.TestCase):
         escalation_at = after_effort.index('- **Escalation**:')
         budget_at = after_effort.index('- **Budget**:')
         self.assertTrue(tier_at < reason_at < escalation_at < budget_at)
+
+
+class RoleSessionRulesTests(unittest.TestCase):
+    HOST_NAMES = re.compile(r'\b(Claude|Codex|Cursor|OpenCode|OMP|AntiGravity|Gemini)\b', re.I)
+
+    def test_usage_guide_records_billed_models_per_role_session(self):
+        self.assertIn('The coordinator records the billed models of every role session, or `n/a` when the harness '
+                      'does not report them.', ' '.join(USAGE.split()))
+
+    def test_decompose_guide_probes_role_capabilities_before_lock(self):
+        text = ' '.join(DECOMPOSE.split())
+        self.assertIn("Before lock, the coordinator probes each declared role capability in the role's own sandbox, "
+                      'and a phase that needs a missing one moves to the coordinator.', text)
+
+    def test_role_session_rules_name_capabilities_not_hosts(self):
+        lines = [line for text in (USAGE, DECOMPOSE, TASK_TEMPLATE) for line in text.splitlines()
+                 if 'billed model' in line.lower() or 'role capabilit' in line.lower()]
+        self.assertTrue(lines)
+        for line in lines:
+            with self.subTest(line=line):
+                self.assertIsNone(self.HOST_NAMES.search(line))
 
 
 if __name__ == '__main__':

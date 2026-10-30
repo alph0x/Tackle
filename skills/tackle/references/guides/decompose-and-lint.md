@@ -178,6 +178,8 @@ occurred. Keep portable schema Effort tokens apart from actual host controls; un
 confirmed by the owner like any other material decision ([communication.md](communication.md)); the routine
 default needs no confirmation beyond the once-per-initiative role-to-model table.
 
+Before lock, the coordinator probes each declared role capability in the role's own sandbox, and a phase that needs a missing one moves to the coordinator.
+
 Each subagent role targets the cheapest available model that fits its tier in the team table.
 Before the first dispatch, show the owner the concrete role-to-model table for every subagent role and get
 an explicit confirmation. A run intent is not a model confirmation. Any later model change for a role, an

@@ -285,6 +285,15 @@ assertion cannot replace its code in the handoff.
 At closure, when the workspace has a map delta, offer to fold its `done` changes into the base, as the
 [architecture map guide](architecture-map.md#closure-fold) states, and fold only on the owner's yes.
 
+### Coordinator record reading
+
+Read verification records by their facts (exit, counts, hashes, named lines), not whole streams. Prefer a pinned generator script over hand patches for artifacts that later tasks consume.
+
+<a id="close-lint"></a>
+### Close lint
+
+Once a task closes and its board, history and usage writes are done, run the workspace lint. A finding is fixed or reported before the close is reported.
+
 ## Release gating
 
 An initiative a release names in scope stays subject to this global acceptance obligation until the

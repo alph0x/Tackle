@@ -28,7 +28,7 @@
         "test_adversary_checkpoints.py",
         "test_run.py"
       ],
-      "tests": 6,
+      "tests": 10,
       "source": "eval/run/card",
       "category": "product",
       "purpose": "Execution state transitions, template bindings and adversary-checkpoint records."
@@ -223,7 +223,7 @@
         "test_judgment_support.py",
         "test_clock_oracle_section.py"
       ],
-      "tests": 142,
+      "tests": 148,
       "source": "eval/templates",
       "category": "product",
       "purpose": "Template fields, observed model routing, capability recovery and compiled briefs. The executor-package and prepared-operation consumers verify declared context, actual read examples, replay and child-check propagation. The System One decision script covers original-use parity and bounded recovery/evidence policy; the state script covers consent, durable budget reservations, SDK serialization, fallbacks and bounded history/intake consumers. The protected retro clock oracle follows the named Fixture recipe section, checked by running the protected method on edited copies."
@@ -342,7 +342,7 @@
         "test_content_symlinks.py",
         "test_catalog_isolated_invocation.py"
       ],
-      "tests": 212,
+      "tests": 215,
       "source": "eval/migration",
       "category": "product",
       "purpose": "Workspace schema migration, scripts and census refusal. Migration keeps historical record paths, makes citations follow their moved files, leaves links into other workspaces unchanged, reports what history still cites, and keeps the text after a legacy status glyph as a board note. The 10.1 to 10.2 checklist adopts closed-record hashes without a schema change. Compact current-target catalog with retained historical provenance, isolated copy preparation, native and external admission, physical adoption, contention, interrupted recovery and reversible restore; protected schema adapters remain unchanged. Closed-report receipt additions preserve prior bytes, admit only the specifically required missing Complete-report carrier, and reject conflicting values, unrelated edits and fenced or quoted substitutes; owner truth and semantic admission remain separate. Typed nested evidence links survive the compact lifecycle, adapters and interrupted recovery without target reads or alias writes; root, control and required-regular checker inputs stay refused. The installed catalog runs both lint commands with an isolated interpreter that ignores ambient modules."

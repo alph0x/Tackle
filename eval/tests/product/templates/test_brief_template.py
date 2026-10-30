@@ -4,6 +4,7 @@ that shape (`fixtures/compiled-brief/`) keep an omitted requirement visible for 
 one's own acceptance command passes valid output and rejects invalid output.
 """
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -118,6 +119,24 @@ class BriefTemplateContractTests(unittest.TestCase):
         self.assertNotEqual(missing_json.returncode, 0)
         self.assertNotIn('PASS task', missing_json.stdout)
         self.assertEqual(run_generated_unit_tests().returncode, 0)
+
+    def test_template_has_reviewer_literal_first_block(self):
+        template = TEMPLATE.read_text()
+        acceptance = template.split('## Acceptance and recovery', 1)[1].split('### Rollout', 1)[0]
+        block = acceptance.split('Reviewer runs first', 1)[1]
+        numbered = [line for line in block.splitlines() if re.match(r'^\d+\. `.+`$', line)]
+        self.assertGreaterEqual(len(numbered), 2)
+        self.assertEqual([line.split('.', 1)[0] for line in numbered], [str(i) for i in range(1, len(numbered) + 1)])
+
+    def test_template_has_records_root_line(self):
+        execution = TEMPLATE.read_text().split('## Execution context', 1)[1].split('\n## ', 1)[0]
+        self.assertEqual(sum(1 for line in execution.splitlines() if line.startswith('Records root:')), 1)
+
+    def test_template_declares_role_capabilities(self):
+        fields = [line for line in TEMPLATE.read_text().splitlines() if line.startswith('- **Role capabilities**:')]
+        self.assertEqual(len(fields), 1)
+        for capability in ('background processes', 'loopback', 'network', 'nested agents', 'input size', 'file access'):
+            self.assertIn(capability, fields[0])
 
 
 if __name__ == '__main__':

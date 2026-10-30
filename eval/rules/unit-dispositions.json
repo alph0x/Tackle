@@ -6946,7 +6946,7 @@
       "unit_sha256": "aeadf58dbc5d9085fa8134b56dc9aaf9451a06b59d905427bb70ca874e654195",
       "disposition": "reworded",
       "destination": "references/guides/run-card.md",
-      "note": "Update the board with hash-before-write, then append one history line and the usage row, and rebuild an existing plan view.",
+      "note": "hash-before-write, then append one history line and the usage row, and rebuild an existing plan view.",
       "destination_unit_sha256": null
     },
     {
@@ -19938,7 +19938,7 @@
       "unit_sha256": "9deccb59e649367c15dbea01bd40feac4782c7ba65bba7bd907eb0173d24522b",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
-      "note": "| [migrate/compact.py](migrate/compact.py) | `158eb0fcfe4b59fa65191217276bd3744e7f4bedd24f920c54c58098446eb3f9` |",
+      "note": "| [migrate/compact.py](migrate/compact.py) | `62f0e53d5e6993eda62209f728fcbf7df5aff47830a39660401dba8884ee7cd3` |",
       "destination_unit_sha256": null
     },
     {
@@ -20081,6 +20081,33 @@
           "reason": "migration catalog target bumped to 10.3.1"
         }
       ]
+    },
+    {
+      "path": "references/guides/run-card.md",
+      "line": 52,
+      "unit_sha256": "a488fb7bc0192629c0bbf53ebeb2133ec7f2752a89f0bfede50f49298e5ffb1e",
+      "disposition": "reworded",
+      "destination": "references/guides/run-card.md",
+      "note": "Set a Complete task's `map-delta.json` changes to `done` before any view rebuild.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run-card.md",
+      "line": 52,
+      "unit_sha256": "2130bedc548b342bbe0ca66f3aa2bfda1a76e3e973a5514baeb4b623d33b9b06",
+      "disposition": "reworded",
+      "destination": "references/guides/run-card.md",
+      "note": "hash-before-write, then append one history line and the usage row, and rebuild an existing plan view.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "skills/tackle/scripts/README.md",
+      "line": 23,
+      "unit_sha256": "46e8079f4bcd8647db25e8c95559e63298389ed9e8a85381e6b88dd84419854b",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "| [migrate/compact.py](migrate/compact.py) | `62f0e53d5e6993eda62209f728fcbf7df5aff47830a39660401dba8884ee7cd3` |",
+      "destination_unit_sha256": null
     }
   ]
 }

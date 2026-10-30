@@ -945,7 +945,7 @@
       "rule_id": "R-RUN-05",
       "statement": "Reuse verified current state and sufficient existing checks; do not append equivalent assertions or unchanged closure reruns.",
       "statement_sha256": "d9beacfc73bfe0717bd839e70c569c8c6a2133391f0bbffcb8e6877522d2ff55",
-      "home": "references/guides/run.md:331",
+      "home": "references/guides/run.md:340",
       "home_fragment": "Reuse unchanged PLAN readiness checks",
       "units": [],
       "mirrors": [],
@@ -1269,7 +1269,7 @@
       "rule_id": "R-RUN-16",
       "statement": "A discovery task converges on consecutive dry rounds and deduplicates against everything seen.",
       "statement_sha256": "e92fe9a47b609bf869e0a2c1a84f588eabdc078572690e83e6002aa1691b4cb5",
-      "home": "references/task.tmpl.md:55",
+      "home": "references/task.tmpl.md:58",
       "home_fragment": "deduplicate against everything seen",
       "units": [],
       "mirrors": [
@@ -1311,7 +1311,7 @@
       "home_fragment": "Closure reports for done tasks",
       "units": [],
       "mirrors": [
-        "references/guides/run.md:298"
+        "references/guides/run.md:307"
       ],
       "class": "safety-invariant",
       "hot_path": false,
@@ -4332,7 +4332,7 @@
       "rule_id": "R-PLAN-16",
       "statement": "Each subagent role targets the cheapest available model that fits its tier in the team table. Before the first dispatch, show the owner the concrete role-to-model table for every subagent role and get an explicit confirmation. A run intent is not a model confirmation. Any later model change for a role, an escalation included, needs a new confirmation before that dispatch. Without that confirmation, the affected task waits on the owner.",
       "statement_sha256": "9e1444771bd9b09f8349106d55d032baef3862449540e6d91dd19af142217542",
-      "home": "references/guides/decompose-and-lint.md:181",
+      "home": "references/guides/decompose-and-lint.md:183",
       "home_fragment": "Each subagent role targets the cheapest",
       "units": [],
       "mirrors": [],
@@ -4355,7 +4355,7 @@
       "rule_id": "R-PLAN-17",
       "statement": "When a task looks too hard for the cheapest bindable tier, strengthen its brief before any Tier deviation. Add the missing context, split the work into smaller steps, and give exact commands with their expected results. The planner, on a more capable tier, writes the brief so that the Executor makes no design decision. A brief that leaves one to the Executor is not ready. When an Executor cannot finish, the planner strengthens the brief first; an escalation is the exception. A Tier deviation is the last resort, and its `**Tier reason**` says why a stronger brief is not enough. A review role (lock or complete) runs one tier above the Executor whose task it reviews. When that tier does not bind, record the limitation. An audit runs at the Auditor's tier in the team table.",
       "statement_sha256": "5ee7a8f573a659ff497f3dca95293acb2c5b4a121321266cc4841a383194cc32",
-      "home": "references/guides/decompose-and-lint.md:187",
+      "home": "references/guides/decompose-and-lint.md:189",
       "home_fragment": "When a task looks too hard for the cheapest",
       "units": [],
       "mirrors": [],
@@ -4429,7 +4429,7 @@
       "units": [],
       "mirrors": [
         "references/guides/plan-card.md:82",
-        "references/task.tmpl.md:101"
+        "references/task.tmpl.md:104"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -4548,7 +4548,7 @@
       "home_fragment": "Forbidden action classes the executor must not take",
       "units": [],
       "mirrors": [
-        "references/task.tmpl.md:27"
+        "references/task.tmpl.md:28"
       ],
       "class": "safety-invariant",
       "hot_path": false,
@@ -4615,7 +4615,7 @@
       "rule_id": "R-EVID-17",
       "statement": "On a host that keeps local session transcripts, the coordinator records each subagent's usage from its local transcript as one role-scoped sidecar record joined by the Run ID it assigned, counting each request once by its last event per message id; a subagent that served several Run IDs and the coordinator's own session go to session scope, never divided into roles; only numbers, ids, model names and times are copied.",
       "statement_sha256": "bafc66de2e4ab5c0eff13d6664bca66f20481bbeb36b3c618c98e3ee953e3aba",
-      "home": "references/guides/usage-observability.md:119",
+      "home": "references/guides/usage-observability.md:121",
       "home_fragment": "Keep only the last",
       "units": [],
       "mirrors": [],
@@ -5475,8 +5475,8 @@
       "home_fragment": "The symbol ledger of a brief that declares",
       "units": [],
       "mirrors": [
-        "references/task.tmpl.md:84",
-        "references/task.tmpl.md:87"
+        "references/task.tmpl.md:87",
+        "references/task.tmpl.md:90"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -5737,12 +5737,12 @@
       "rule_id": "R-RUN-33",
       "statement": "A brief whose task is Complete, Skipped or Unverifiable is a closed record: no agent edits it, a fix-applying agent included, until an active decision authorizes the edit, and after each authorized edit the Coordinator appends one `**Brief erratum**: D-xx \u00b7 sha256 <hash>` report line that names that decision and the edited brief's hash.",
       "statement_sha256": "33040197dc88d5c94be7b22578698e828a9eb68e50ed7f808c35b795537ea8c9",
-      "home": "references/guides/run.md:362",
+      "home": "references/guides/run.md:371",
       "home_fragment": "A brief whose task is Complete, Skipped or Unverifiable is",
       "units": [],
       "mirrors": [
         "references/guides/lint-spec.md:23",
-        "references/guides/run.md:349"
+        "references/guides/run.md:358"
       ],
       "class": "safety-invariant",
       "hot_path": false,
@@ -5765,11 +5765,11 @@
       "rule_id": "R-RUN-34",
       "statement": "At closure the Coordinator records the brief's sha256 on its own line in the task report and in the task's close entry of history.md; that recorded baseline is never edited or added again to match an edited brief, and lint row 14 reports a brief whose sha256 differs from the last erratum hash or, with none, from the recorded value.",
       "statement_sha256": "4699e955da026a1f8e54ed4868a94693b96e3b94209c7d4106d2245eecc7325f",
-      "home": "references/guides/run.md:354",
+      "home": "references/guides/run.md:363",
       "home_fragment": "At closure, the Coordinator records the brief's sha256",
       "units": [],
       "mirrors": [
-        "references/guides/run.md:341",
+        "references/guides/run.md:350",
         "references/guides/lint-spec.md:26",
         "references/guides/migration-catalog.json:352"
       ],
@@ -5875,7 +5875,7 @@
       "home_fragment": "Capture the role's observed finish clock",
       "units": [],
       "mirrors": [
-        "references/guides/run.md:299"
+        "references/guides/run.md:308"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -6392,7 +6392,7 @@
       "units": [],
       "mirrors": [
         "references/guides/run-card.md:41",
-        "references/task.tmpl.md:21",
+        "references/task.tmpl.md:22",
         "references/guides/communication.md:30"
       ],
       "class": "behavioral",
@@ -6524,6 +6524,190 @@
         "scenarios": [],
         "cohort_id": null,
         "as_of": "2026-10-28"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-42",
+      "statement": "Once a task closes and its board, history and usage writes are done, run the workspace lint. A finding is fixed or reported before the close is reported.",
+      "statement_sha256": "6f65ce31d8dbc15d03ff447dbbc0bf03248cac2a9931c44bcfa5c4c6e0ef2187",
+      "home": "references/guides/run.md:295",
+      "home_fragment": "Once a task closes and its board, history and usage",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.4.0",
+        "trigger": "10.4.0 review-protocol candidate: close lint, records by facts, reviewer-first block, role capabilities",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-29"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-43",
+      "statement": "Read verification records by their facts (exit, counts, hashes, named lines), not whole streams.",
+      "statement_sha256": "66e36680e4192bcb2c3d97bb282c550f4e67bf8e8e1c859b1a3e28f3b2db6028",
+      "home": "references/guides/run.md:290",
+      "home_fragment": "Read verification records by their facts",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.4.0",
+        "trigger": "10.4.0 review-protocol candidate: close lint, records by facts, reviewer-first block, role capabilities",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-29"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-44",
+      "statement": "Prefer a pinned generator script over hand patches for artifacts that later tasks consume.",
+      "statement_sha256": "41c6fa932124696d5eab0ae5934d540562b6b17ffa0c76b951869b7e0b3509e4",
+      "home": "references/guides/run.md:290",
+      "home_fragment": "Prefer a pinned generator script over hand patches",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.4.0",
+        "trigger": "10.4.0 review-protocol candidate: close lint, records by facts, reviewer-first block, role capabilities",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-29"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-45",
+      "statement": "Reviewer runs first, in this order, and the verdict cites the record each command prints:",
+      "statement_sha256": "7cff0878b0aeb8b82895cf3ce401552d42b2a9958709fb410f622a60f5c4537e",
+      "home": "references/task.tmpl.md:164",
+      "home_fragment": "Reviewer runs first, in this order, and the verdict cites",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.4.0",
+        "trigger": "10.4.0 review-protocol candidate: close lint, records by facts, reviewer-first block, role capabilities",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-29"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-RUN-46",
+      "statement": "Records root: {{absolute records root, outside the source tree}}",
+      "statement_sha256": "19cdf67ac68891764a2b3160aff6979e349ef704f22e640c9a07cf37460590b2",
+      "home": "references/task.tmpl.md:42",
+      "home_fragment": "Records root: {{absolute records root",
+      "units": [],
+      "mirrors": [],
+      "class": "format",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.4.0",
+        "trigger": "10.4.0 review-protocol candidate: close lint, records by facts, reviewer-first block, role capabilities",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-29"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-45",
+      "statement": "A brief declares a Role capabilities field naming the background processes, loopback, network, nested agents, input size and file access its roles need.",
+      "statement_sha256": "d0f527dc990e806f7413d859ec53766ce55aa2801db1c40f5456ab07c0d5021b",
+      "home": "references/task.tmpl.md:21",
+      "home_fragment": "- **Role capabilities**: {{background processes",
+      "units": [],
+      "mirrors": [],
+      "class": "format",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.4.0",
+        "trigger": "10.4.0 review-protocol candidate: close lint, records by facts, reviewer-first block, role capabilities",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-29"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-46",
+      "statement": "Before lock, the coordinator probes each declared role capability in the role's own sandbox, and a phase that needs a missing one moves to the coordinator.",
+      "statement_sha256": "c91a785cf6589a27ab4e151ef02f62258bc521172cb541ebea067b96f4fbc565",
+      "home": "references/guides/decompose-and-lint.md:181",
+      "home_fragment": "Before lock, the coordinator probes each declared role",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.4.0",
+        "trigger": "10.4.0 review-protocol candidate: close lint, records by facts, reviewer-first block, role capabilities",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-29"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATE-21",
+      "statement": "The coordinator records the billed models of every role session, or `n/a` when the harness does not report them.",
+      "statement_sha256": "c236c80bf5ab252f46c111478b460cd8588be9bb66d4963c877cfb0b8097fe8f",
+      "home": "references/guides/usage-observability.md:97",
+      "home_fragment": "The coordinator records the billed models of every role",
+      "units": [],
+      "mirrors": [],
+      "class": "format",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.4.0",
+        "trigger": "10.4.0 review-protocol candidate: close lint, records by facts, reviewer-first block, role capabilities",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-29"
       },
       "historical": []
     }
