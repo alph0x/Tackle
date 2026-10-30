@@ -1269,7 +1269,7 @@
       "rule_id": "R-RUN-16",
       "statement": "A discovery task converges on consecutive dry rounds and deduplicates against everything seen.",
       "statement_sha256": "e92fe9a47b609bf869e0a2c1a84f588eabdc078572690e83e6002aa1691b4cb5",
-      "home": "references/task.tmpl.md:58",
+      "home": "references/task.tmpl.md:57",
       "home_fragment": "deduplicate against everything seen",
       "units": [],
       "mirrors": [
@@ -4548,7 +4548,7 @@
       "home_fragment": "Forbidden action classes the executor must not take",
       "units": [],
       "mirrors": [
-        "references/task.tmpl.md:28"
+        "references/task.tmpl.md:29"
       ],
       "class": "safety-invariant",
       "hot_path": false,
@@ -5476,7 +5476,7 @@
       "units": [],
       "mirrors": [
         "references/task.tmpl.md:87",
-        "references/task.tmpl.md:90"
+        "references/task.tmpl.md:89"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -6529,10 +6529,10 @@
     },
     {
       "rule_id": "R-RUN-42",
-      "statement": "Once a task closes and its board, history and usage writes are done, run the workspace lint. A finding is fixed or reported before the close is reported.",
-      "statement_sha256": "6f65ce31d8dbc15d03ff447dbbc0bf03248cac2a9931c44bcfa5c4c6e0ef2187",
+      "statement": "After a task's board, history and usage writes, run the workspace lint; fix or report findings before the close is reported.",
+      "statement_sha256": "73572308f2228f3a558ed0addf6956fcea7e439a96689648acdc973dd75eab2a",
       "home": "references/guides/run.md:295",
-      "home_fragment": "Once a task closes and its board, history and usage",
+      "home_fragment": "After a task's board, history and usage writes",
       "units": [],
       "mirrors": [],
       "class": "behavioral",
@@ -6598,10 +6598,10 @@
     },
     {
       "rule_id": "R-RUN-45",
-      "statement": "Reviewer runs first, in this order, and the verdict cites the record each command prints:",
-      "statement_sha256": "7cff0878b0aeb8b82895cf3ce401552d42b2a9958709fb410f622a60f5c4537e",
-      "home": "references/task.tmpl.md:164",
-      "home_fragment": "Reviewer runs first, in this order, and the verdict cites",
+      "statement": "Reviewer runs first; the verdict cites each record printed:",
+      "statement_sha256": "c0da67b595fa0d32790d7a362a28bf90301f0c0c42d00cf45af6abfb80e50741",
+      "home": "references/task.tmpl.md:162",
+      "home_fragment": "Reviewer runs first; the verdict cites each record printed:",
       "units": [],
       "mirrors": [],
       "class": "behavioral",
@@ -6621,10 +6621,10 @@
     },
     {
       "rule_id": "R-RUN-46",
-      "statement": "Records root: {{absolute records root, outside the source tree}}",
-      "statement_sha256": "19cdf67ac68891764a2b3160aff6979e349ef704f22e640c9a07cf37460590b2",
+      "statement": "Records root: {{absolute path, outside source}}",
+      "statement_sha256": "c4cd5bd9260ed18966ccdd31d0dd43a16a63ebdfad1cff50bd76661259a983e9",
       "home": "references/task.tmpl.md:42",
-      "home_fragment": "Records root: {{absolute records root",
+      "home_fragment": "Records root: {{absolute path, outside source}}",
       "units": [],
       "mirrors": [],
       "class": "format",
@@ -6644,8 +6644,8 @@
     },
     {
       "rule_id": "R-PLAN-45",
-      "statement": "A brief declares a Role capabilities field naming the background processes, loopback, network, nested agents, input size and file access its roles need.",
-      "statement_sha256": "d0f527dc990e806f7413d859ec53766ce55aa2801db1c40f5456ab07c0d5021b",
+      "statement": "A brief declares a Role capabilities field naming the background processes, loopback, network, nested agents, input size and file access its roles need, or none.",
+      "statement_sha256": "e163db36d52fc8a3e94b49645a029e68d95f8f8e8517b2292614f5167bce0ffa",
       "home": "references/task.tmpl.md:21",
       "home_fragment": "- **Role capabilities**: {{background processes",
       "units": [],

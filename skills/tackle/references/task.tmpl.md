@@ -6,24 +6,24 @@
 
 ## Purpose and scope
 
-- **Depends on**: {{none / T-0X — name the concrete artifact consumed}}.
+- **Depends on**: {{none / T-NN — name the artifact consumed}}.
 - **Traces to**: {{spec, ticket, or constitution anchor}}.
 - **Detail**: {{full or interface; bare token without trailing punctuation}}
-- **Write scope**: {{complete file and directory write set; flag shipped paths}}.
+- **Write scope**: {{complete write set; flag shipped paths}}.
 - **Repository**: {{repository id from the workspace Repositories table; omit this field in a single-repository workspace}}.
 - **Autonomy**: {{resolved concrete value; production paths cap at L2}}.
 - **Effort**: {{low / medium / high / max; bare token without trailing punctuation}}
 - **Tier**: (fast / standard / frontier; omit the whole field when the map cannot propose one)
 - **Tier reason**: ("default" for the compiled default; the reason otherwise, for a Tier or Effort
   deviation; omit only when Tier is omitted and Effort is the compiled default)
-- **Escalation**: (declared; omit when the task does not permit the one capped retry; the owner still confirms the escalated model)
+- **Escalation**: (declared; omit when the task permits no capped retry; the owner still confirms the escalated model)
 - **Budget**: {{resolved correction, round, timeout, or tool limits, when applicable}}.
-- **Role capabilities**: {{background processes, loopback, network, nested agents, input size and file access that the roles need; none when no role needs one}}.
+- **Role capabilities**: {{background processes, loopback, network, nested agents, input size, file access; or none}}.
 - **Corridor**: (repair tasks only: `files=<allowed paths>; invariants=<what must hold>; budget=<N full implement-validate-review-correct cycles>; review=<time reserved for the reviewer's conclusion>; verification=<simplest check that gives sufficient evidence>`; `;` separates the parts and a list inside a part is comma-separated; omit otherwise)
 - **Procedure revision**: {{pinned procedure/version; adopt changes only at a task boundary}}.
 - **Lineage**: {{ancestor task IDs and unresolved failure/cycle-pool references; none for unrelated new work}}.
-- **Inputs**: {{resolved source, config, dependency, and contract revisions/hashes; values are
-  compiled here so the worker does not need a plan lookup}}.
+- **Inputs**: {{resolved source, config, dependency, and contract revisions/hashes; compiled
+  here so the worker needs no plan lookup}}.
 - **Goal**: {{one observable, coherent change with a single acceptance check.}}
 - **Non-goals**: {{explicit exclusions and preserved behavior}}.
 - **Forbidden actions**: {{action classes the executor must not take; each allowed only by the write scope or an explicit owner decision}}.
@@ -32,27 +32,26 @@
 - **Metric**: {{measured quantity and its protected evaluator; experiment only, omit otherwise}}.
 - **Threshold**: {{value Metric must reach to keep a change; experiment only, omit otherwise}}.
 - **Acceptance owner**: {{owner of the required checks/review; existing authorization suffices.
-  Request separate approval only for an action outside scope; omit when already assigned}}.
+  Request separate approval only for out-of-scope actions; omit when already assigned}}.
 
 ## Execution context
 
 {{Absolute repository, checkout, workspace, records and per-command cwd; distinguish differing paths.
 Use declared paths, not shell defaults; never relocate records into source.}}
 
-Records root: {{absolute records root, outside the source tree}}
+Records root: {{absolute path, outside source}}
 
 Ground the current state with exact citations:
 
 - `{{path/File.ext:NN}} — "{{literal fragment}}"` — {{what it proves}}.
-  <!-- The fragment is verbatim text from line NN (or range NN-MM), ≤60 chars, no double quotes,
-       and unique in the file; cite a first-line anchor when the rule is defined there. -->
-- {{additional citation or input surface, if needed}}.
+  <!-- Fragment: verbatim from line NN (or NN-MM), ≤60 chars, no double quotes, unique in the file;
+       cite a first-line anchor when the rule is defined there. -->
+- {{additional citation or input, if needed}}.
 
 This file includes all worker obligations. `plan.md`, `task-board.md`, `AGENTS.md`, conversation
 history and other plan-local files are not prerequisites.
 
-The compiler substitutes concrete autonomy and effort tokens before handoff (for example,
-`- **Autonomy**: L2` and `- **Effort**: high`); an unresolved `inherit` token is no valid worker input.
+The compiler substitutes concrete autonomy and effort tokens before handoff; an unresolved `inherit` token is invalid worker input.
 
 For a discovery Task, declare a finite `Rounds:` budget and finish only after the stated
 consecutive rounds converge with no new findings; deduplicate against everything seen. For an
@@ -60,20 +59,20 @@ experiment, declare `Metric:`, `Threshold:` and `Rounds:` plus an attempt journa
 result and keep/rollback decision; keep a change only when the metric improves, and protect the evaluator
 from the Task's Write scope. Budget exhaustion blocks the Task with an escalation packet. Findings beyond
 scope become a separately authorized Task or seed. A touched shipped path declares its rollback/coexistence
-and flag-off or parity check in the optional Rollout section below; unflagged Markdown may use a documented
+and flag-off or parity check in the optional Rollout section; unflagged Markdown may use a documented
 revert without an invented feature flag.
 
 ## Contract and cases
 
 ### Shared clauses (compiled)
 
-Record each selected clause's id, revision and hash at compile time. Inline only the clauses that apply;
+Record each selected clause's id, revision and hash at compile time. Inline only applicable clauses;
 never copy a whole guide or edit a compiled clause independently.
 
 - **{{clause id}} · {{revision}} · sha256 `{{hash of the exact clause bytes}}`**: {{the
   canonical clause, copied byte-for-byte from its authoritative contract}}.
 
-The compiler hashes the exact UTF-8 clause bytes after selecting them, records the source path and hash
+The compiler hashes the exact UTF-8 clause bytes, records the source path and hash
 beside the Task, and checks the digest before execution. A clause's bytes run from its
 `## <id> · <title>` heading through the line before the next `## ` heading or `<a id=` line, each
 line ending in one newline; the seal check in `guides/verify.md` step 8 recomputes them. The compiler
@@ -105,17 +104,17 @@ and exits apply only when specified; otherwise valid semantic equivalents are ac
 A case may also be a scenario: `#### Scenario: <name>`, then `- WHEN`, `- THEN` and `- Check:` lines; `- GIVEN` and `- AND` are optional. The Check names a command with its pass condition, or `review: <rubric> by <reviewer role>`. A scenario without a Check is not ready. `TBD`, a cross-reference or prose is not a Check.
 
 State exact output requirements apart from valid semantic alternatives. Include at least one valid
-alternative where formatting is intentionally irrelevant, and a negative case exposing an implementation
+alternative where formatting is irrelevant, and a negative case exposing an implementation
 that satisfies only a keyword or count check.
 
 Distinguish adversarial but valid domain values from invalid inputs. At format/unit boundaries, derive
 cases from the consumer: escaping/round trips for strings, signs/precision for numbers. Nominal examples do
-not exhaust the declared domain; unspecified invalid-input policy is not invented. Expected values come
+not exhaust the declared domain. Expected values come
 from the contract, before reading candidate output.
 
 ## Approach
 
-1. {{grounded implementation step and conditional alternative}}.
+1. {{grounded step and conditional alternative}}.
 2. {{integration step; preserve protected inputs and expectations}}.
 3. Use the check selected in PLAN over the complete case matrix. Prefer E2E through the real
    consumer as the sole new test; a feasible complex flow requires it. Record its failing red
@@ -141,15 +140,14 @@ silently rewrite protected expectations.
 
 The acceptance check is one copy-pasteable command from the declared cwd, covering the contract cases and
 propagating every required failure. An ordinary test suite uses its native result and exit, never wrapped
-just to manufacture a count or PASS. Exact counts, content and literal PASS are required only when the
-consumer contract requires them; emit PASS only after all required checks. Validate any new validator and
+to manufacture a count or PASS. Exact counts, content and literal PASS are required only by the
+consumer contract; emit PASS only after all required checks. Validate any new validator and
 contract boundary on disposable positive and negative fixtures: valid semantic alternatives are accepted;
 invalid verification records or results and faulty implementations on valid domain inputs are rejected.
 Unspecified out-of-domain inputs need no invented rejection. Use the specified result/exit. Validators read
 evidence and never repair product outputs. Wrappers record wrapper exit, child exit, timeout, signal and
 stdout independently; wrapper success cannot hide a child failure. Before running a compound check, save its
-complete script and hash it with its inputs so its portable evidence retains the executed logic, not a prose
-command label. For E2E, retain a replay artifact containing this command/script, accessible fixtures, expected
+complete script and hash it with its inputs so its evidence retains the executed logic, not a prose label. For E2E, retain a replay artifact containing this command/script, accessible fixtures, expected
 and observed results, runtime, environment, raw child result, and input/output hashes. Its replay uses a
 disposable copy or fresh destination without overwriting the original raw record.
 
@@ -161,10 +159,10 @@ affected checks before proceeding.
 {{direct command or checked script; prerequisites, contract cases and native pass condition}}
 ```
 
-Reviewer runs first, in this order, and the verdict cites the record each command prints:
+Reviewer runs first; the verdict cites each record printed:
 
-1. `{{command that prints the coordinator's acceptance record facts}}`
-2. `{{command that prints the last line of the coverage and mutation records}}`
+1. `{{acceptance record facts command}}`
+2. `{{coverage and mutation last-line command}}`
 
 ### Rollout and reversibility (only for a shipped path)
 
@@ -175,15 +173,14 @@ Omit this section when the Write scope has no shipped path.}}
 - **Related regression check**: {{affected suite/build/lint and protected-source check}}.
 - **Quality axes**: {{only axes fired by Write scope; each is a runnable fragment or review gate}}.
 - **Verification ownership**: {{report writer for raw commands/artifacts; independent reviewer for
-  semantic verdict; coordinator for board/sign-off where the workspace uses those roles}}.
+  semantic verdict; coordinator for board/sign-off where used}}.
 - **Review**: apply the Task's risk-appropriate semantic rubric independently from mechanical execution.
-  With no honest executable check (for example, research, design or Markdown judgment), use a REVIEW gate
+  With no honest executable check, use a REVIEW gate
   with the artifact, completed rubric, named reviewer, observed verdict and unresolved findings. Never
   substitute file existence, keywords or counts. If required review capability or isolation is unavailable,
   mark that evidence obligation blocked rather than assigning a grade.
-- **Recovery**: follow the declared bounded correction budget, or the declared corridor's total budget. When it is exhausted or yields repeated
-  no-progress observations, stop and report expected/observed behavior, reproducer, affected consumers,
-  attempts and the smallest unresolved decision. [Recovery](guides/run.md#correction-recovery).
+- **Recovery**: follow the declared bounded correction budget, or the corridor's total budget. When it is exhausted or yields repeated
+  no-progress observations, stop and report as the Intent gate requires. [Recovery](guides/run.md#correction-recovery).
 
 ### Definition of ready
 

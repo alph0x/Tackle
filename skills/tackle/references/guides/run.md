@@ -87,7 +87,7 @@ the task with evidence and return to the planner or owner instead, never skippin
 past that one escalation, and never above the topmost tier (`frontier` has none). It is never available to
 an evaluation control arm, which dispatches no command. The correction spends exactly one task-pool cycle,
 always, including on the task's first validation. The failed role's finish row records `Attempts` +1; the
-retried role starts its own new Run ID with its own start/finish pair, plus one `history.md` line.
+retried role starts its own Run ID with its own start/finish pair, plus one `history.md` line.
 
 <a id="failure-classification-and-correction"></a>
 ## Failure classification and escalation packet
@@ -292,7 +292,7 @@ Read verification records by their facts (exit, counts, hashes, named lines), no
 <a id="close-lint"></a>
 ### Close lint
 
-Once a task closes and its board, history and usage writes are done, run the workspace lint. A finding is fixed or reported before the close is reported.
+After a task's board, history and usage writes, run the workspace lint; fix or report findings before the close is reported.
 
 ## Release gating
 
