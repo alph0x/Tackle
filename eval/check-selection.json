@@ -37,7 +37,9 @@
     "eval/tests/product/requirements-base",
     "eval/tests/tooling/evaluation-rounds",
     "eval/tests/tooling/effects",
-    "eval/tests/tooling/behavior/review-convergence"
+    "eval/tests/tooling/behavior/review-convergence",
+    "eval/tests/tooling/maintaining/ci-mechanical",
+    "eval/tests/tooling/maintaining/record-rows"
   ],
   "rules": [
     {
@@ -965,6 +967,35 @@
       ],
       "exclude": [],
       "reason": "The suite-index consistency consumer checks every registry row; the rules suite scans added index text for workspace IDs and the initiative slug."
+    },
+    {
+      "patterns": [
+        "maintaining/ci_mechanical.py"
+      ],
+      "families": [
+        "eval/tests/tooling/maintaining/ci-mechanical"
+      ],
+      "exclude": [],
+      "reason": "Mechanical workflow block execution and failure attribution on synthetic repositories."
+    },
+    {
+      "patterns": [
+        "maintaining/record_rows.py",
+        "skills/tackle/scripts/lint.py",
+        "eval/tests/product/lint/rows/test_lint_rows.py",
+        "eval/lint/rows/fixtures/pass-full/**",
+        "eval/tests/tooling/maintaining/record-rows/test_record_rows.py",
+        "maintaining/install_root.py",
+        "eval/support/lint.py",
+        "skills/tackle/SKILL.md",
+        "skills/tackle/references/task.tmpl.md",
+        "skills/tackle/scripts/**"
+      ],
+      "families": [
+        "eval/tests/tooling/maintaining/record-rows"
+      ],
+      "exclude": [],
+      "reason": "Record generation and evidence refusal through workspace lint rows; also covers the lint script and the pass-full fixture the test consumes."
     }
   ],
   "global_patterns": [

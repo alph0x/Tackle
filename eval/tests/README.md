@@ -36,6 +36,8 @@ consumer; dates and experiment identifiers belong to evidence provenance.
 | tooling | [tooling/evaluation-rounds](tooling/evaluation-rounds/) | Finite round sealing, append-only event receipts, paired decisions and durable budgets through the shipped CLI, including interruption, concurrent recording and effect-free replay on disposable public fixtures. Replacement of a stopped round by a child round, extended only through an owner extension receipt. |
 | tooling | [tooling/install/reading-budget](tooling/install/reading-budget/) | Reading costs, load chains and duplication floors. |
 | tooling | [tooling/maintaining/field-report](tooling/maintaining/field-report/) | Field-report aggregation, scope and malformed-input refusal. Reserved archive storage and normalized aliases are excluded by actual field-report and extracted maintainer discovery while ordinary hidden and option-shaped workspace names remain valid. |
+| tooling | [tooling/maintaining/ci-mechanical](tooling/maintaining/ci-mechanical/) | Mechanical workflow block execution and failure attribution on synthetic repositories. |
+| tooling | [tooling/maintaining/record-rows](tooling/maintaining/record-rows/) | Record generation and evidence refusal through workspace lint rows. |
 | tooling | [tooling/maintaining/suite-integrity](tooling/maintaining/suite-integrity/) | Complete discovery, native child outcomes, conservative selection, manifest impact classification and credential guards. |
 | tooling | [tooling/protocol-v2](tooling/protocol-v2/) | Evaluation protocol records and numerical verdict oracles. |
 | tooling | [tooling/records](tooling/records/) | Record currency, pinned claims and publication sanitization. |

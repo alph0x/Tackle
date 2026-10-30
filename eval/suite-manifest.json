@@ -489,6 +489,26 @@
       "source": "eval/behavior/review_convergence",
       "category": "tooling",
       "purpose": "Review-convergence oracle: each of the eight measurement cases rejects its planted fault and accepts its valid alternative through the frozen judge, and missing, malformed or contradictory evidence is invalid rather than a pass; the composite scenario's byte-identical oracle reproduces every selftest verdict and its score gate stays unreachable."
+    },
+    {
+      "path": "eval/tests/tooling/maintaining/ci-mechanical",
+      "files": [
+        "test_ci_mechanical.py"
+      ],
+      "tests": 2,
+      "source": "maintaining/ci_mechanical.py",
+      "category": "tooling",
+      "purpose": "Mechanical workflow block execution and failure attribution on synthetic repositories."
+    },
+    {
+      "path": "eval/tests/tooling/maintaining/record-rows",
+      "files": [
+        "test_record_rows.py"
+      ],
+      "tests": 2,
+      "source": "maintaining/record_rows.py",
+      "category": "tooling",
+      "purpose": "Record generation and evidence refusal through workspace lint rows."
     }
   ]
 }

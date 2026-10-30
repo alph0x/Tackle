@@ -92,9 +92,9 @@ class SelectionTests(unittest.TestCase):
                 'eval/install/inventory', 'eval/cohorts/2026-09-candidate', 'eval/cohorts/2026-09-resume',
                 'eval/cohorts/2026-09-second-candidate', 'eval/cohorts/2026-09-third-candidate'],
             'eval/support/lint.py': ['eval/lint/rows', 'eval/lint/task-contracts', 'eval/lint/task-identity',
-                'eval/maintaining/suite-integrity', 'eval/run/execution', 'eval/templates', 'eval/validation-integrity'],
+                'eval/maintaining/suite-integrity', 'eval/run/execution', 'eval/templates', 'eval/validation-integrity', 'maintaining/record_rows.py'],
             'skills/tackle/references/task.tmpl.md': ['eval/lint/task-identity', 'eval/lint/rows',
-                'eval/templates', 'eval/rules', 'eval/install/inventory', 'eval/install/reading-budget']}
+                'eval/templates', 'eval/rules', 'eval/install/inventory', 'eval/install/reading-budget', 'maintaining/record_rows.py']}
         for path, expected in cases.items():
             with self.subTest(path=path):
                 plan = runner.plan(ROOT, manifest, changed=[path])
