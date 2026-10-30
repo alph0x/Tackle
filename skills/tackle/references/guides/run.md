@@ -87,7 +87,7 @@ the task with evidence and return to the planner or owner instead, never skippin
 past that one escalation, and never above the topmost tier (`frontier` has none). It is never available to
 an evaluation control arm, which dispatches no command. The correction spends exactly one task-pool cycle,
 always, including on the task's first validation. The failed role's finish row records `Attempts` +1; the
-retried role starts its own new Run ID with its own start/finish pair, plus one `history.md` line.
+retried role starts its own Run ID with its own start/finish pair, plus one `history.md` line.
 
 <a id="failure-classification-and-correction"></a>
 ## Failure classification and escalation packet
@@ -284,6 +284,15 @@ complete script before execution and include it in input fingerprints; a label d
 assertion cannot replace its code in the handoff.
 At closure, when the workspace has a map delta, offer to fold its `done` changes into the base, as the
 [architecture map guide](architecture-map.md#closure-fold) states, and fold only on the owner's yes.
+
+### Coordinator record reading
+
+Read verification records by their facts (exit, counts, hashes, named lines), not whole streams. Prefer a pinned generator script over hand patches for artifacts that later tasks consume.
+
+<a id="close-lint"></a>
+### Close lint
+
+After a task's board, history and usage writes, run the workspace lint; fix or report findings before the close is reported.
 
 ## Release gating
 

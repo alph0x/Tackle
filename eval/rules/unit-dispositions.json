@@ -6087,7 +6087,7 @@
       "disposition": "merged",
       "destination": "references/task.tmpl.md",
       "note": null,
-      "destination_unit_sha256": "a35fa704d1d40a2cbcf345d25e6ba4a070f3b84b81f5e3e166438cffd18704ea"
+      "destination_unit_sha256": "aa8492db537e242041dc8abe3e87ed0a68887126bbbb775f5c2bfd2b68c981f4"
     },
     {
       "path": "references/point.tmpl.md",
@@ -6141,7 +6141,7 @@
       "disposition": "merged",
       "destination": "references/task.tmpl.md",
       "note": null,
-      "destination_unit_sha256": "72ed11faed61cb179b2a82aabdc833d0836c6691c7551f6032a6b22a81f014bc"
+      "destination_unit_sha256": "acb44626d3a1b73d8f6275a77ccc75a069a47092595cca95db6aa3c02aa415e4"
     },
     {
       "path": "references/point.tmpl.md",
@@ -6222,7 +6222,7 @@
       "disposition": "merged",
       "destination": "references/task.tmpl.md",
       "note": null,
-      "destination_unit_sha256": "9874e14fa79885fb0d51b01d9879d15568e5635101f9ac6f8e5ab1985c6de314"
+      "destination_unit_sha256": "d6ee807191d849ba90c01e335a4df6bfa525c59139473bc69e0e3252587287a2"
     },
     {
       "path": "references/point.tmpl.md",
@@ -6285,7 +6285,7 @@
       "disposition": "merged",
       "destination": "references/task.tmpl.md",
       "note": null,
-      "destination_unit_sha256": "b2dc365f364dfd1f0f849596b5dd8279a139a2a76d128e74f6a62cd9827f1d78"
+      "destination_unit_sha256": "ea5eab54d02af26eee10d66f0ba86dd0b58d23092083b7bd400484977599ff3e"
     },
     {
       "path": "references/terminology.md",
@@ -6946,7 +6946,7 @@
       "unit_sha256": "aeadf58dbc5d9085fa8134b56dc9aaf9451a06b59d905427bb70ca874e654195",
       "disposition": "reworded",
       "destination": "references/guides/run-card.md",
-      "note": "Update the board with hash-before-write, then append one history line and the usage row, and rebuild an existing plan view.",
+      "note": "hash-before-write, then append one history line and the usage row, and rebuild an existing plan view.",
       "destination_unit_sha256": null
     },
     {
@@ -7210,7 +7210,8 @@
       "unit_sha256": "c65c675f7781123025544ce860aaf6e0416cf3b538708ce51cda91d9f1514076",
       "disposition": "reworded",
       "destination": "references/task.tmpl.md",
-      "note": "**Escalation**: (declared; omit when the task does not permit the one capped retry; the owner still confirms the escalated model)",
+      "note": "**Escalation**: (declared; omit when the task permits no capped retry; the owner still confirms the escalated model)",
+      "dropped": [{"token": "1", "reason": "'one' restated as 'no': the same single-retry condition"}, {"token": "not", "reason": "negation moved into 'no': the same condition"}],
       "destination_unit_sha256": null
     },
     {
@@ -11939,7 +11940,8 @@
       "unit_sha256": "548a46fa748cedf07359ff79bb57acb502cd163118f6dedd292fd972277b1d9d",
       "disposition": "reworded",
       "destination": "references/task.tmpl.md",
-      "note": "The compiler substitutes concrete autonomy and effort tokens before handoff (for example, `- **Autonomy**: L2` and `- **Effort**: high`); an unresolved `inherit` token is no valid worker input.",
+      "note": "The compiler substitutes concrete autonomy and effort tokens before handoff; an unresolved `inherit` token is invalid worker input.",
+      "dropped": [{"token": "no", "reason": "'no valid' restated as 'invalid': the same meaning"}],
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -11972,7 +11974,7 @@
       "unit_sha256": "9abd0275ae1284848296231689fa0e933bc57231e800c9bc9bdf0cf732de3d0e",
       "disposition": "reworded",
       "destination": "references/task.tmpl.md",
-      "note": "A touched shipped path declares its rollback/coexistence and flag-off or parity check in the optional Rollout section below; unflagged Markdown may use a documented revert without an invented feature flag.",
+      "note": "A touched shipped path declares its rollback/coexistence and flag-off or parity check in the optional Rollout section; unflagged Markdown may use a documented revert without an invented feature flag.",
       "destination_unit_sha256": null
     },
     {
@@ -11987,17 +11989,12 @@
     {
       "path": "references/task.tmpl.md",
       "line": 62,
-      "unit_sha256": "80e9de8143bb0e8dc108515adee1e336dbcdc65517096ef145488ae34e9d251a",
+      "unit_sha256": "523011d3e35ef9bf2b28891345d8d5768912db4cf9acd11fe9b9f8d756f5a4be",
       "disposition": "reworded",
       "destination": "references/task.tmpl.md",
-      "note": "Inline only the clauses that apply; never copy a whole guide or edit a compiled clause independently.",
+      "note": "Inline only applicable clauses; never copy a whole guide or edit a compiled clause independently.",
       "destination_unit_sha256": null,
-      "dropped": [
-        {
-          "token": "not",
-          "reason": "negation restated as never or no, same prohibition"
-        }
-      ]
+      "dropped": [{"token": "not", "reason": "negation restated as never or no, same prohibition"}]
     },
     {
       "path": "references/task.tmpl.md",
@@ -12032,7 +12029,7 @@
       "unit_sha256": "fe57bb1e0b528ed1086b486953dec52f656fcad2294e76102fde051773b705c6",
       "disposition": "reworded",
       "destination": "references/task.tmpl.md",
-      "note": "Include at least one valid alternative where formatting is intentionally irrelevant, and a negative case exposing an implementation that satisfies only a keyword or count check.",
+      "note": "Include at least one valid alternative where formatting is irrelevant, and a negative case exposing an implementation that satisfies only a keyword or count check.",
       "destination_unit_sha256": null
     },
     {
@@ -12062,25 +12059,10 @@
     {
       "path": "references/task.tmpl.md",
       "line": 133,
-      "unit_sha256": "89eebbd44b4626a88505511c54d6415b5ce2b545cae444de1f7e5d5286b973df",
+      "unit_sha256": "fd7cd271e5db30d1daaefaae761bdf18f5b44a98d5674539ce958e55d366e13d",
       "disposition": "reworded",
       "destination": "references/task.tmpl.md",
-      "note": "An ordinary test suite uses its native result and exit, never wrapped just to manufacture a count or PASS.",
-      "destination_unit_sha256": null,
-      "dropped": [
-        {
-          "token": "not",
-          "reason": "negation restated as never or no, same prohibition"
-        }
-      ]
-    },
-    {
-      "path": "references/task.tmpl.md",
-      "line": 147,
-      "unit_sha256": "36f15ce60cee3948748d8ea22f9774af4a80003e5b1e89066f4fb7093e2a8a72",
-      "disposition": "reworded",
-      "destination": "references/task.tmpl.md",
-      "note": "Once this heading is sealed at Ready, a protected acceptance edit requires a prior superseding `D-yy` decision; update the marker to `SEALED: D-yy supersedes D-xx`, regenerate compiled clauses and rerun the affected checks before proceeding.",
+      "note": "An ordinary test suite uses its native result and exit, never wrapped to manufacture a count or PASS.",
       "destination_unit_sha256": null
     },
     {
@@ -12107,7 +12089,7 @@
       "unit_sha256": "749095ef4b66a13f7b407abb4fb3ef338293f98eaf959a13b71a3c5302270c07",
       "disposition": "reworded",
       "destination": "references/task.tmpl.md",
-      "note": "With no honest executable check (for example, research, design or Markdown judgment), use a REVIEW gate with the artifact, completed rubric, named reviewer, observed verdict and unresolved findings.",
+      "note": "With no honest executable check, use a REVIEW gate with the artifact, completed rubric, named reviewer, observed verdict and unresolved findings.",
       "destination_unit_sha256": null
     },
     {
@@ -12125,7 +12107,7 @@
       "unit_sha256": "0434d8a417e2116dda1511b62eef39bc4b285bf93a857b5f42a7cd5128732bbf",
       "disposition": "reworded",
       "destination": "references/task.tmpl.md",
-      "note": "When it is exhausted or yields repeated no-progress observations, stop and report expected/observed behavior, reproducer, affected consumers, attempts and the smallest unresolved decision.",
+      "note": "When it is exhausted or yields repeated no-progress observations, stop and report as the Intent gate requires.",
       "destination_unit_sha256": null
     },
     {
@@ -19779,7 +19761,7 @@
       "unit_sha256": "2c9ef3bad0b35a1282b52fd353cc3695546a955448fbfddcfb1553a8627cc92b",
       "disposition": "reworded",
       "destination": "references/task.tmpl.md",
-      "note": "When it is exhausted or yields repeated no-progress observations, stop and report expected/observed behavior, reproducer, affected consumers, attempts and the smallest unresolved decision.",
+      "note": "When it is exhausted or yields repeated no-progress observations, stop and report as the Intent gate requires.",
       "destination_unit_sha256": null
     },
     {
@@ -19812,10 +19794,10 @@
     {
       "path": "references/task.tmpl.md",
       "line": 171,
-      "unit_sha256": "028085059d8f83123f3d99645a66ce99967aff8f823b77a4321464a06e97dd06",
+      "unit_sha256": "b2dc365f364dfd1f0f849596b5dd8279a139a2a76d128e74f6a62cd9827f1d78",
       "disposition": "reworded",
       "destination": "references/task.tmpl.md",
-      "note": "**Recovery**: follow the declared bounded correction budget, or the declared corridor's total budget.",
+      "note": "**Recovery**: follow the declared bounded correction budget, or the corridor's total budget.",
       "destination_unit_sha256": null
     },
     {
@@ -19938,7 +19920,7 @@
       "unit_sha256": "9deccb59e649367c15dbea01bd40feac4782c7ba65bba7bd907eb0173d24522b",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
-      "note": "| [migrate/compact.py](migrate/compact.py) | `158eb0fcfe4b59fa65191217276bd3744e7f4bedd24f920c54c58098446eb3f9` |",
+      "note": "| [migrate/compact.py](migrate/compact.py) | `62f0e53d5e6993eda62209f728fcbf7df5aff47830a39660401dba8884ee7cd3` |",
       "destination_unit_sha256": null
     },
     {
@@ -20081,6 +20063,198 @@
           "reason": "migration catalog target bumped to 10.3.1"
         }
       ]
+    },
+    {
+      "path": "references/guides/run-card.md",
+      "line": 52,
+      "unit_sha256": "a488fb7bc0192629c0bbf53ebeb2133ec7f2752a89f0bfede50f49298e5ffb1e",
+      "disposition": "reworded",
+      "destination": "references/guides/run-card.md",
+      "note": "Set a Complete task's `map-delta.json` changes to `done` before any view rebuild.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run-card.md",
+      "line": 52,
+      "unit_sha256": "2130bedc548b342bbe0ca66f3aa2bfda1a76e3e973a5514baeb4b623d33b9b06",
+      "disposition": "reworded",
+      "destination": "references/guides/run-card.md",
+      "note": "hash-before-write, then append one history line and the usage row, and rebuild an existing plan view.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "skills/tackle/scripts/README.md",
+      "line": 23,
+      "unit_sha256": "46e8079f4bcd8647db25e8c95559e63298389ed9e8a85381e6b88dd84419854b",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "| [migrate/compact.py](migrate/compact.py) | `62f0e53d5e6993eda62209f728fcbf7df5aff47830a39660401dba8884ee7cd3` |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/task.tmpl.md",
+      "line": 9,
+      "unit_sha256": "a35fa704d1d40a2cbcf345d25e6ba4a070f3b84b81f5e3e166438cffd18704ea",
+      "disposition": "reworded",
+      "destination": "references/task.tmpl.md",
+      "note": "**Depends on**: {{none / T-NN — name the artifact consumed}}.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/task.tmpl.md",
+      "line": 12,
+      "unit_sha256": "78603cfe63c5243cb5a65d53a156dca7e28a7c50477c6bbaa478a6eec9366109",
+      "disposition": "reworded",
+      "destination": "references/task.tmpl.md",
+      "note": "**Write scope**: {{complete write set; flag shipped paths}}.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/task.tmpl.md",
+      "line": 19,
+      "unit_sha256": "22edd9c84971b52d7192715acf4ced1cd418c32195b44fb1e2e25d4b1c553ec1",
+      "disposition": "reworded",
+      "destination": "references/task.tmpl.md",
+      "note": "**Escalation**: (declared; omit when the task permits no capped retry; the owner still confirms the escalated model)",
+      "dropped": [{"token": "1", "reason": "'one' restated as 'no': the same single-retry condition"}, {"token": "not", "reason": "negation moved into 'no': the same condition"}],
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/task.tmpl.md",
+      "line": 24,
+      "unit_sha256": "fa40e7f47516e8c3ea82320cbb3b6e76b02c34d0694fdc0690b58e716e0be511",
+      "disposition": "reworded",
+      "destination": "references/task.tmpl.md",
+      "note": "**Inputs**: {{resolved source, config, dependency, and contract revisions/hashes; compiled here so the worker needs no plan lookup}}.",
+      "dropped": [{"token": "not", "reason": "'does not need' restated as 'needs no': the same meaning"}],
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/task.tmpl.md",
+      "line": 34,
+      "unit_sha256": "800406ecec3d16e0e2804ae1f3fd2c44700118f21fe7857d0372330046c9adc1",
+      "disposition": "reworded",
+      "destination": "references/task.tmpl.md",
+      "note": "Request separate approval only for out-of-scope actions; omit when already assigned}}.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/task.tmpl.md",
+      "line": 46,
+      "unit_sha256": "72ed11faed61cb179b2a82aabdc833d0836c6691c7551f6032a6b22a81f014bc",
+      "disposition": "reworded",
+      "destination": "references/task.tmpl.md",
+      "note": "{{additional citation or input, if needed}}.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/task.tmpl.md",
+      "line": 51,
+      "unit_sha256": "65856bba54dbae6f8632b44d65f8e7c0702d30026baa06c1645991c60095a826",
+      "disposition": "reworded",
+      "destination": "references/task.tmpl.md",
+      "note": "The compiler substitutes concrete autonomy and effort tokens before handoff; an unresolved `inherit` token is invalid worker input.",
+      "dropped": [{"token": "no", "reason": "'no valid' restated as 'invalid': the same meaning"}],
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/task.tmpl.md",
+      "line": 59,
+      "unit_sha256": "4f5fe9038bad98d91ef740613bae9879ff72aaba9eb566d020133007429c9d9d",
+      "disposition": "reworded",
+      "destination": "references/task.tmpl.md",
+      "note": "A touched shipped path declares its rollback/coexistence and flag-off or parity check in the optional Rollout section; unflagged Markdown may use a documented revert without an invented feature flag.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/task.tmpl.md",
+      "line": 73,
+      "unit_sha256": "8d47c60125e6a69c81d0eb7efe5e428b4a22717fe543395d45f19d9b58a7022d",
+      "disposition": "reworded",
+      "destination": "references/task.tmpl.md",
+      "note": "The compiler hashes the exact UTF-8 clause bytes, records the source path and hash beside the Task, and checks the digest before execution.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/task.tmpl.md",
+      "line": 104,
+      "unit_sha256": "f803c7d396631a99917779708caf57c4665481ec6bb70a8bb4390549714d2af4",
+      "disposition": "reworded",
+      "destination": "references/task.tmpl.md",
+      "note": "Include at least one valid alternative where formatting is irrelevant, and a negative case exposing an implementation that satisfies only a keyword or count check.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/task.tmpl.md",
+      "line": 147,
+      "unit_sha256": "4f1099b3ce690cfa30dd939c76d71eb7535dc2156e0c70655b68269d369065e4",
+      "disposition": "reworded",
+      "destination": "references/task.tmpl.md",
+      "note": "Before running a compound check, save its complete script and hash it with its inputs so its evidence retains the executed logic, not a prose label.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/task.tmpl.md",
+      "line": 169,
+      "unit_sha256": "00d29e83fcd98fbf0bbeec69835e7250c820a9cb90decf2c40b88f8d0ee801b2",
+      "disposition": "reworded",
+      "destination": "references/task.tmpl.md",
+      "note": "**Verification ownership**: {{report writer for raw commands/artifacts; independent reviewer for semantic verdict; coordinator for board/sign-off where used}}.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/task.tmpl.md",
+      "line": 172,
+      "unit_sha256": "fff4bb28b0106032417615fcd9518016a87ef85da726b03982a9af3c0258f381",
+      "disposition": "reworded",
+      "destination": "references/task.tmpl.md",
+      "note": "With no honest executable check, use a REVIEW gate with the artifact, completed rubric, named reviewer, observed verdict and unresolved findings.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/task.tmpl.md",
+      "line": 176,
+      "unit_sha256": "8480c9ecac4c9571d4ca50b1d8f2d16513ec091d9aa94dbf138faebcaf4cc649",
+      "disposition": "reworded",
+      "destination": "references/task.tmpl.md",
+      "note": "When it is exhausted or yields repeated no-progress observations, stop and report as the Intent gate requires.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 89,
+      "unit_sha256": "bca8cb9f2f20f5b81b941a8ff74a22766ea35971b36ff98436c2527a4a22fdb5",
+      "disposition": "reworded",
+      "destination": "references/guides/run.md",
+      "note": "The failed role's finish row records `Attempts` +1; the retried role starts its own Run ID with its own start/finish pair, plus one `history.md` line.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/task.tmpl.md",
+      "line": 109,
+      "unit_sha256": "04d83e3526ef9a1e97a5194959fe93d18604b41e4681c13253c528a22a318303",
+      "disposition": "reworded",
+      "destination": "references/task.tmpl.md",
+      "note": "Nominal examples do not exhaust the declared domain.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/task.tmpl.md",
+      "line": 141,
+      "unit_sha256": "1ca483f6ab92dff87043527dcdf0b5e6d088efacf4644e517d019fc7759a48e3",
+      "disposition": "reworded",
+      "destination": "references/task.tmpl.md",
+      "note": "Exact counts, content and literal PASS are required only by the consumer contract; emit PASS only after all required checks.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/task.tmpl.md",
+      "line": 115,
+      "unit_sha256": "9874e14fa79885fb0d51b01d9879d15568e5635101f9ac6f8e5ab1985c6de314",
+      "disposition": "reworded",
+      "destination": "references/task.tmpl.md",
+      "note": "{{grounded step and conditional alternative}}.",
+      "destination_unit_sha256": null
     }
   ]
 }

@@ -52,6 +52,27 @@ class RunProtocol(unittest.TestCase):
         self.assertIn("On a workspace that reads `migrate first`, the handoff writes nothing", status)
         self.assertIn("a bucket other than `5`, or a Focused plan on older paths, reads `migrate first`", status)
 
+    def test_close_lint_step_is_linked_from_card_step_eight(self):
+        card = (INSTALL / "references/guides/run-card.md").read_text()
+        step = card.split("8. **Close.**", 1)[1].split("\n9. ", 1)[0]
+        self.assertIn("[Update the board](run.md#close-lint)", step)
+        self.assertIn('<a id="close-lint"></a>', (INSTALL / "references/guides/run.md").read_text())
+
+    def test_close_lint_step_orders_lint_after_board_history_and_usage(self):
+        run = (INSTALL / "references/guides/run.md").read_text()
+        section = run.split("### Close lint", 1)[1].split("\n## ", 1)[0]
+        order = [section.index(word) for word in ("board", "history", "usage", "lint")]
+        self.assertEqual(order, sorted(order))
+        self.assertIn("before the close is reported", section)
+
+    def test_run_guide_reads_records_by_facts(self):
+        run = " ".join((INSTALL / "references/guides/run.md").read_text().split())
+        self.assertIn("Read verification records by their facts (exit, counts, hashes, named lines), not whole streams.", run)
+
+    def test_run_guide_prefers_pinned_generators_for_crossing_parts(self):
+        run = " ".join((INSTALL / "references/guides/run.md").read_text().split())
+        self.assertIn("Prefer a pinned generator script over hand patches for artifacts that later tasks consume.", run)
+
 
 if __name__ == "__main__":
     unittest.main()

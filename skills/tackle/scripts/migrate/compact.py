@@ -1438,6 +1438,16 @@ def _check_native(install, cwd, workspace_name, job, stage, workspace, source_ha
         checks.append({"row": row, "result": result_ref})
     return checks
 
+def _newest_snapshot(lines):
+    starts = [index for index, line in enumerate(lines) if line.startswith("### State snapshot")]
+    if not starts: return None
+    start = starts[-1]
+    stop = next((index for index in range(start + 1, len(lines)) if re.match(r"^#{1,6} ", lines[index])), len(lines))
+    body = lines[start + 1:stop]
+    while body and not body[0].strip(): body.pop(0)
+    while body and not body[-1].strip(): body.pop()
+    return [lines[start]] + body
+
 def _dated_history(data, date, operation_id, source_hash, target, revision):
     try:
         text = data.decode("utf-8")
@@ -1455,11 +1465,13 @@ def _dated_history(data, date, operation_id, source_hash, target, revision):
             dates.append(match[1])
         real.append(line)
     if dates != sorted(dates): raise PendingError("history-date-order-conflict")
-    event = ("\n## " + date + " · Compact migration candidate\n\n- Prepared candidate: operation "
-             + operation_id + "; source sha256 " + source_hash + "; target Tackle " + target
-             + "; catalog revision " + str(revision) + ".\n").encode("utf-8")
+    payload = ("- Prepared candidate: operation " + operation_id + "; source sha256 " + source_hash
+               + "; target Tackle " + target + "; catalog revision " + str(revision) + ".")
+    entry = "\n## " + date + " · Compact migration candidate\n\n" + payload + "\n"
+    snapshot = _newest_snapshot(lines)
+    if snapshot: entry += "\n" + "\n".join(snapshot) + "\n"
+    event = entry.encode("utf-8")
     heading = "## " + date + " · Compact migration candidate"
-    payload = event.decode("utf-8").splitlines()[-1]
     occurrences = sum(1 for index, line in enumerate(real) if line == heading
                       and real[index + 1:index + 3] == ["", payload])
     operation_lines = [line for line in real if line.startswith("- Prepared candidate: operation " + operation_id + ";")]

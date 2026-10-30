@@ -78,6 +78,25 @@ def source_id(item):
     return json.dumps([item['source'], item['heading'], item['index']], ensure_ascii=False, separators=(',', ':'))
 
 
+ENTRY = '## 2026-09-27 · Compact migration candidate'
+SNAPSHOT = """
+### State snapshot (record current state when appending; never edit an older snapshot)
+- Task state: ready for the next task.
+- In flight: none.
+- Blocked on: none.
+- Resume from: the next task in the board.
+
+- Checkpoint: fixture checkpoint.
+- Active obligations: none
+"""
+
+
+def newest_snapshot(text):
+    tail = text.rsplit('### State snapshot', 1)[1].split('\n', 1)[1]
+    stop = re.search(r'^#{1,6} ', tail, re.M)
+    return (tail[:stop.start()] if stop else tail).strip()
+
+
 PURE = r'''
 import importlib.util,json,sys,os
 from pathlib import Path
@@ -955,6 +974,56 @@ class CompactMigrationTests(unittest.TestCase):
                             compact._evidence_path(job, state, raw)
             finally:
                 os.chdir(previous)
+
+    def snapshot_fixture(self, lab, name):
+        project, source = self.fixture(lab, name)
+        history = source / 'history.md'
+        history.write_text(history.read_text() + SNAPSHOT)
+        return project, source
+
+    def test_snapshot_bearing_candidate_leaves_row_13_silent(self):
+        with self.lab() as lab:
+            installed = self.install(lab)
+            project, source = self.snapshot_fixture(lab, 'source')
+            job = lab / 'job'
+            plan, candidate = self.prepared(installed, source, job)
+            self.cli(installed, 'verify', ['--job', job], 1)
+            history = (candidate / 'history.md').read_text()
+            self.assertEqual(history.count(ENTRY), 1)
+            self.assertIn('### State snapshot', history.rsplit(ENTRY, 1)[1])
+            self.assertEqual(newest_snapshot(history), newest_snapshot((source / 'history.md').read_text()))
+            meta, out, err = self.run_child([sys.executable, '-I', str(installed / 'scripts/lint.py'),
+                '--row', '13', candidate.name], job / 'candidate-project')
+            self.assertEqual((meta['exit'], out, err), (0, b'', b''))
+
+    def test_candidate_without_snapshot_keeps_entry_bytes(self):
+        with self.lab() as lab:
+            installed = self.install(lab)
+            project, source = self.fixture(lab)
+            job = lab / 'job'
+            plan, candidate = self.prepared(installed, source, job)
+            self.cli(installed, 'verify', ['--job', job], 1)
+            catalog = read_json(installed / 'references/guides/migration-catalog.json')
+            state = read_json(job / 'state.json')
+            event = ('\n' + ENTRY + '\n\n- Prepared candidate: operation ' + state['operation_id']
+                     + '; source sha256 ' + state['source_sha256'] + '; target Tackle '
+                     + catalog['target_methodology'] + '; catalog revision ' + str(catalog['revision']) + '.\n')
+            history = (candidate / 'history.md').read_text()
+            self.assertTrue(history.endswith(event))
+            self.assertNotIn('### State snapshot', history)
+
+    def test_snapshot_entry_is_idempotent_for_the_same_operation(self):
+        with self.lab() as lab:
+            installed = self.install(lab)
+            project, source = self.snapshot_fixture(lab, 'source')
+            job = lab / 'job'
+            plan, candidate = self.prepared(installed, source, job)
+            self.cli(installed, 'verify', ['--job', job], 1)
+            first = (candidate / 'history.md').read_bytes()
+            self.assertEqual(first.decode().count(ENTRY), 1)
+            self.assertIn('### State snapshot', first.decode().rsplit(ENTRY, 1)[1])
+            self.cli(installed, 'verify', ['--job', job], 1)
+            self.assertEqual((candidate / 'history.md').read_bytes(), first)
 
 
 if __name__ == '__main__':

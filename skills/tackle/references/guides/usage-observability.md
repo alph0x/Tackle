@@ -94,6 +94,8 @@ acceptable; timestamp proximity is not exact correlation. Compare only the same 
 scope, collector semantics and pricing basis; subscription cost, API cost and API-equivalent
 estimates are separate bases.
 
+The coordinator records the billed models of every role session, or `n/a` when the harness does not report them.
+
 ## Coverage and dependency boundary
 
 Retro computes `measured/eligible` plus a percentage per metric and comparable cohort. No eligible
