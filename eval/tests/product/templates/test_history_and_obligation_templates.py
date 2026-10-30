@@ -27,6 +27,10 @@ REF = INSTALL / 'references'
 GUIDES = REF / 'guides'
 
 
+def skill_stamp():
+    return re.search(r'^\*\*Tackle ([^*]+)\*\*', (ROOT / 'skills/tackle/SKILL.md').read_text(), re.M).group(1)
+
+
 def text(path):
     return Path(path).read_text(encoding='utf-8')
 
@@ -447,7 +451,7 @@ class CountAgreementTests(unittest.TestCase):
         catalog = json.loads((GUIDES / 'migration-catalog.json').read_bytes())
         instructions = '\n'.join(item['text'] for rule in catalog['rules'] for item in rule['instructions'])
         self.assertEqual(stale.findall(instructions), [])
-        self.assertEqual(catalog['target_methodology'], '10.3.1')
+        self.assertEqual(catalog['target_methodology'], skill_stamp())
         archive = text(ROOT / 'maintaining/migrations.md')
         old = archive.split('## v8.4 → v9.0 checklist', 1)[1].split('\n## ', 1)[0]
         self.assertTrue(stale.findall(old))

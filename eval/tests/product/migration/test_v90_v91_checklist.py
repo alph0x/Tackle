@@ -27,6 +27,10 @@ SLUG = 'demo'
 WS = 'docs/plans/' + SLUG
 
 
+def skill_stamp():
+    return re.search(r'^\*\*Tackle ([^*]+)\*\*', (ROOT / 'skills/tackle/SKILL.md').read_text(), re.M).group(1)
+
+
 def lint_recipe():
     """The shipped canonical_rows and lint_verdict, imported from scripts/lint_runner.py."""
     spec = importlib.util.spec_from_file_location('migration_lint_recipe', REFERENCES.parent / 'scripts/lint_runner.py')
@@ -125,7 +129,7 @@ class ChecklistTests(unittest.TestCase):
                         shutil.copyfile(ROOT / 'maintaining' / name, root / 'maintaining' / name)
                     target = root / 'skills/tackle/references/guides/migration-catalog.json'
                     catalog = json.loads(target.read_bytes())
-                    self.assertEqual(catalog['target_methodology'], '10.3.1')
+                    self.assertEqual(catalog['target_methodology'], skill_stamp())
                     groups = [group for group in catalog['provenance']['groups']
                               if group['source'] == 'H' and group['heading'] == expected_heading]
                     self.assertEqual(len(groups), 1)

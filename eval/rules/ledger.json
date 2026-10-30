@@ -6710,6 +6710,52 @@
         "as_of": "2026-10-29"
       },
       "historical": []
+    },
+    {
+      "rule_id": "R-REL-21",
+      "statement": "At every task close, run `python3 -I -B maintaining/ci_mechanical.py --repo .`.",
+      "statement_sha256": "c9c150d7de2731ce13a5ee9d0133429cbd4f3d9f2865348b4b8fa19179bed38d",
+      "home": "MAINTAINING.md:169",
+      "home_fragment": "At every task close, run `python3 -I -B maintainin",
+      "units": [],
+      "mirrors": [],
+      "class": "maintainer",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.4.0",
+        "trigger": "task close maintainer checks",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-30"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-REL-22",
+      "statement": "Write record rows with `maintaining/record_rows.py`.",
+      "statement_sha256": "608fad064e2d448e4231464700bd5cd8fa783b2d9ab8f4b055c1189cf65e3032",
+      "home": "MAINTAINING.md:170",
+      "home_fragment": "Write record rows with `maintaining/record_rows.py",
+      "units": [],
+      "mirrors": [],
+      "class": "maintainer",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.4.0",
+        "trigger": "task close maintainer checks",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-30"
+      },
+      "historical": []
     }
   ],
   "non_normative": [

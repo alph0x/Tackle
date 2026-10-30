@@ -163,3 +163,8 @@ results; the release sweep closes with exactly:
 
 - **M** = 9 self-lint gates + 1 catalog + the number of distinct workspaces in the union of active and explicitly selected workspaces. Count a workspace once even if it belongs to both sets. Every discovered workspace is still linted for diagnostic visibility.
 - **N** = gates and union workspaces whose mandatory rows and done-signals pass; selected workspaces also require current global acceptance. Workspaces that are neither active nor selected report `WARN` on failure and never enter N/M. Warn-severity rows are reported but do not fail a workspace's sweep gate. A selected workspace's mandatory failure blocks the tag regardless of its board status.
+
+## Task close checks
+
+At every task close, run `python3 -I -B maintaining/ci_mechanical.py --repo .`.
+Write record rows with `maintaining/record_rows.py`.
