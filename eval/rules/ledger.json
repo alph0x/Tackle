@@ -6756,6 +6756,144 @@
         "as_of": "2026-10-30"
       },
       "historical": []
+    },
+    {
+      "rule_id": "R-REL-23",
+      "statement": "Use the standing tools under `maintaining/release/`, driven by a per-release `tackle-release/1` configuration kept in the release workspace.",
+      "statement_sha256": "ce8f25953f164cfff7af495ac62f337cce34ffe87db62dd43abf90fed2f359a6",
+      "home": "MAINTAINING.md:174",
+      "home_fragment": "Use the standing tools under `maintaining/release/",
+      "units": [],
+      "mirrors": [],
+      "class": "maintainer",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.4.0",
+        "trigger": "standing release procedure",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-30"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-REL-24",
+      "statement": "Rehearse the release on a disposable clone.",
+      "statement_sha256": "fa2a3a86d38f787c647e9ee7fc21621e97663907cdd3d9e648e87339be276338",
+      "home": "MAINTAINING.md:175",
+      "home_fragment": "Rehearse the release on a disposable clone.",
+      "units": [],
+      "mirrors": [],
+      "class": "maintainer",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.4.0",
+        "trigger": "standing release procedure",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-30"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-REL-25",
+      "statement": "Obtain one independent completion review of the candidate.",
+      "statement_sha256": "93359c153da2c47a69094967d54d12b1ad0a87ce8810ceedad80d22513f753d9",
+      "home": "MAINTAINING.md:176",
+      "home_fragment": "Obtain one independent completion review of the ca",
+      "units": [],
+      "mirrors": [],
+      "class": "maintainer",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.4.0",
+        "trigger": "standing release procedure",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-30"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-REL-26",
+      "statement": "Lock a release tool only when that tool changed.",
+      "statement_sha256": "d8e76ddf42cebd4d3e4355e2ebfe610310fb8ca26a068db6719049056c6f02a6",
+      "home": "MAINTAINING.md:177",
+      "home_fragment": "Lock a release tool only when that tool changed.",
+      "units": [],
+      "mirrors": [],
+      "class": "maintainer",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.4.0",
+        "trigger": "standing release procedure",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-30"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-REL-27",
+      "statement": "Use a reduced recut of notes, catalog with currency, committed text, final registries on the exact new candidate, and one delta review only when the changed prose is consumed solely by the notes, currency and committed-text checks and every omitted phase\u2019s inputs are unchanged; otherwise rerun every affected phase, with final registries always on the exact new candidate.",
+      "statement_sha256": "4c0e8cf11dd9f161c9317a1c8b972f0e5d049819675162d0b23c8cb214c6d2c9",
+      "home": "MAINTAINING.md:178",
+      "home_fragment": "Use a reduced recut of notes, catalog with currenc",
+      "units": [],
+      "mirrors": [],
+      "class": "maintainer",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.4.0",
+        "trigger": "standing release procedure",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-30"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-REL-28",
+      "statement": "Retain install evidence as an inventory of installed files with sizes and hashes, and remove the whole owned sandbox.",
+      "statement_sha256": "6dcb90f590feeb6e1ccdab13fcd0c172b5850708ad19f47c9a859b9137a5cd17",
+      "home": "MAINTAINING.md:179",
+      "home_fragment": "Retain install evidence as an inventory of install",
+      "units": [],
+      "mirrors": [],
+      "class": "maintainer",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.4.0",
+        "trigger": "standing release procedure",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-10-30"
+      },
+      "historical": []
     }
   ],
   "non_normative": [

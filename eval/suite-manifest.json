@@ -495,7 +495,7 @@
       "files": [
         "test_ci_mechanical.py"
       ],
-      "tests": 2,
+      "tests": 3,
       "source": "maintaining/ci_mechanical.py",
       "category": "tooling",
       "purpose": "Mechanical workflow block execution and failure attribution on synthetic repositories."
@@ -509,6 +509,17 @@
       "source": "maintaining/record_rows.py",
       "category": "tooling",
       "purpose": "Record generation and evidence refusal through workspace lint rows."
+    },
+    {
+      "path": "eval/tests/tooling/maintaining/release",
+      "files": [
+        "test_release_config.py",
+        "test_install_inventory.py"
+      ],
+      "tests": 6,
+      "source": "maintaining/release/config.py",
+      "category": "tooling",
+      "purpose": "Release configuration validation and install inventory and sandbox cleanup on synthetic trees."
     }
   ]
 }

@@ -168,3 +168,12 @@ results; the release sweep closes with exactly:
 
 At every task close, run `python3 -I -B maintaining/ci_mechanical.py --repo .`.
 Write record rows with `maintaining/record_rows.py`.
+
+## Release procedure
+
+Use the standing tools under `maintaining/release/`, driven by a per-release `tackle-release/1` configuration kept in the release workspace.
+Rehearse the release on a disposable clone.
+Obtain one independent completion review of the candidate.
+Lock a release tool only when that tool changed.
+Use a reduced recut of notes, catalog with currency, committed text, final registries on the exact new candidate, and one delta review only when the changed prose is consumed solely by the notes, currency and committed-text checks and every omitted phase’s inputs are unchanged; otherwise rerun every affected phase, with final registries always on the exact new candidate.
+Retain install evidence as an inventory of installed files with sizes and hashes, and remove the whole owned sandbox.

@@ -56,8 +56,9 @@ def main():
                                 env=env, stderr=subprocess.PIPE)
         last_command = b''
         for line in result.stderr.splitlines(keepends=True):
-            if line.startswith(TRACE):
-                last_command = line[len(TRACE):].rstrip(b'\r\n')
+            trace = re.match(rb'^_*' + re.escape(TRACE), line)
+            if trace:
+                last_command = line[trace.end():].rstrip(b'\r\n')
             else:
                 sys.stderr.buffer.write(line)
         if result.returncode:
