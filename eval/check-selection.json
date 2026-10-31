@@ -39,7 +39,8 @@
     "eval/tests/tooling/effects",
     "eval/tests/tooling/behavior/review-convergence",
     "eval/tests/tooling/maintaining/ci-mechanical",
-    "eval/tests/tooling/maintaining/record-rows"
+    "eval/tests/tooling/maintaining/record-rows",
+    "eval/tests/tooling/maintaining/release"
   ],
   "rules": [
     {
@@ -996,6 +997,17 @@
       ],
       "exclude": [],
       "reason": "Record generation and evidence refusal through workspace lint rows; also covers the lint script and the pass-full fixture the test consumes."
+    },
+    {
+      "patterns": [
+        "maintaining/release/**",
+        "eval/tests/tooling/maintaining/release/**"
+      ],
+      "families": [
+        "eval/tests/tooling/maintaining/release"
+      ],
+      "exclude": [],
+      "reason": "Release configuration, command entry point, support and install inventory tests consume these sources."
     }
   ],
   "global_patterns": [

@@ -37,6 +37,7 @@ consumer; dates and experiment identifiers belong to evidence provenance.
 | tooling | [tooling/install/reading-budget](tooling/install/reading-budget/) | Reading costs, load chains and duplication floors. |
 | tooling | [tooling/maintaining/field-report](tooling/maintaining/field-report/) | Field-report aggregation, scope and malformed-input refusal. Reserved archive storage and normalized aliases are excluded by actual field-report and extracted maintainer discovery while ordinary hidden and option-shaped workspace names remain valid. |
 | tooling | [tooling/maintaining/ci-mechanical](tooling/maintaining/ci-mechanical/) | Mechanical workflow block execution and failure attribution on synthetic repositories. |
+| tooling | [tooling/maintaining/release](tooling/maintaining/release/) | Release configuration validation and install inventory and sandbox cleanup on synthetic trees. |
 | tooling | [tooling/maintaining/record-rows](tooling/maintaining/record-rows/) | Record generation and evidence refusal through workspace lint rows. |
 | tooling | [tooling/maintaining/suite-integrity](tooling/maintaining/suite-integrity/) | Complete discovery, native child outcomes, conservative selection, manifest impact classification and credential guards. |
 | tooling | [tooling/protocol-v2](tooling/protocol-v2/) | Evaluation protocol records and numerical verdict oracles. |

@@ -53,3 +53,15 @@ class MechanicalChecks(unittest.TestCase):
 
     def test_missing_step_fails(self):
         self.assertNotEqual(self.run_fixture('steps:\n  - name: Other\n    run: echo ok\n').returncode, 0)
+
+    def test_nested_trace_is_filtered_and_failure_named(self):
+        prefix = 'steps:\n  - name: Run the documented mechanical release checks\n    run: |\n'
+        for body, status in [('value=$(printf ok)\nprintf "%s\\n" "$value"\n', 0),
+                             ('value=$(printf ok)\nfalse\n', 1)]:
+            with self.subTest(status=status):
+                workflow = prefix + ''.join('      ' + line + '\n' for line in body.splitlines())
+                result = self.run_fixture(workflow)
+                self.assertEqual(result.returncode, status)
+                self.assertNotIn('__ci_mechanical_trace__', result.stdout + result.stderr)
+                if status:
+                    self.assertIn('at: false', result.stderr)
