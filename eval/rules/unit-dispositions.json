@@ -7591,7 +7591,7 @@
       "unit_sha256": "aaf35bbbd4225f125291dee02dbe34d5d0ca595aa494afae739b0402e1e18c66",
       "disposition": "reworded",
       "destination": "SKILL.md",
-      "note": "**Tackle 10.3.1** is a model-agnostic planning and execution method.",
+      "note": "**Tackle 10.4.0** is a model-agnostic planning and execution method.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -7610,7 +7610,7 @@
       "unit_sha256": "f1cc43ab2f94087d243f10bd5d65ad3bf5159204f6fb3d110bfb5b3eb54036a7",
       "disposition": "reworded",
       "destination": "references/AGENTS.tmpl.md",
-      "note": "**Methodology: Tackle 10.3.1**",
+      "note": "**Methodology: Tackle 10.4.0**",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -9628,7 +9628,7 @@
       "unit_sha256": "e9a9512d5a13e4376aa551a7ee3b7b522b6ba0a4217c72dcb25b90ae20d83714",
       "disposition": "reworded",
       "destination": "SKILL.md",
-      "note": "**Tackle 10.3.1** is a model-agnostic planning and execution method.",
+      "note": "**Tackle 10.4.0** is a model-agnostic planning and execution method.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -9643,7 +9643,7 @@
       "unit_sha256": "53452d01b6e4408fe6277a97c52d32cca2876996a890d66a9bcbb6c9e9386fe7",
       "disposition": "reworded",
       "destination": "references/AGENTS.tmpl.md",
-      "note": "**Methodology: Tackle 10.3.1** <!-- A future version reads this to decide whether to migrate. -->",
+      "note": "**Methodology: Tackle 10.4.0** <!-- A future version reads this to decide whether to migrate. -->",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -17004,7 +17004,7 @@
       "unit_sha256": "e3c6960f34d37cbf7b81664620943dc235d16a5fef4d4137087d3f1404f4093b",
       "disposition": "reworded",
       "destination": "SKILL.md",
-      "note": "**Tackle 10.3.1** is a model-agnostic planning and execution method.",
+      "note": "**Tackle 10.4.0** is a model-agnostic planning and execution method.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -17060,7 +17060,7 @@
       "unit_sha256": "2a10f42dd013c833ddc1d6f7ec2a1d4a1a0130ac962fd4318d50faacd709e3e7",
       "disposition": "reworded",
       "destination": "references/AGENTS.tmpl.md",
-      "note": "**Methodology: Tackle 10.3.1** <!-- A future version reads this to decide whether to migrate. -->",
+      "note": "**Methodology: Tackle 10.4.0** <!-- A future version reads this to decide whether to migrate. -->",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -17172,7 +17172,7 @@
       "unit_sha256": "e6fdbe7ab537e8b2e9dc96f43015487c28b7011bde64804d1735f9eea0a08832",
       "disposition": "reworded",
       "destination": "SKILL.md",
-      "note": "**Tackle 10.3.1** is a model-agnostic planning and execution method.",
+      "note": "**Tackle 10.4.0** is a model-agnostic planning and execution method.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -17191,7 +17191,7 @@
       "unit_sha256": "9ca5dc313b649c12b17ed43db2de94e1755a059a254840ec570b1a800ef25095",
       "disposition": "reworded",
       "destination": "references/AGENTS.tmpl.md",
-      "note": "**Methodology: Tackle 10.3.1** <!-- A future version reads this to decide whether to migrate. -->",
+      "note": "**Methodology: Tackle 10.4.0** <!-- A future version reads this to decide whether to migrate. -->",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -17210,7 +17210,7 @@
       "unit_sha256": "4908bdd887c8458721a6a2bc05395449ce45da9f44aa784174e5daa42199a5de",
       "disposition": "reworded",
       "destination": "references/README.tmpl.md",
-      "note": "> **Methodology: Tackle 10.3.1.** See `AGENTS.md` for the workspace contract.",
+      "note": "> **Methodology: Tackle 10.4.0.** See `AGENTS.md` for the workspace contract.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -17604,7 +17604,7 @@
       "unit_sha256": "49f69e79dd2d0afb17aeec44c6e5d9628663d449015df96d40c0eae79fe3d046",
       "disposition": "reworded",
       "destination": "SKILL.md",
-      "note": "**Tackle 10.3.1** is a model-agnostic planning and execution method.",
+      "note": "**Tackle 10.4.0** is a model-agnostic planning and execution method.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -17619,7 +17619,7 @@
       "unit_sha256": "5f79565715dac771f0d67af6302b54876022f7ab3c717ba6e5f753694efb57be",
       "disposition": "reworded",
       "destination": "references/AGENTS.tmpl.md",
-      "note": "**Methodology: Tackle 10.3.1** <!-- A future version reads this to decide whether to migrate. -->",
+      "note": "**Methodology: Tackle 10.4.0** <!-- A future version reads this to decide whether to migrate. -->",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -17634,7 +17634,7 @@
       "unit_sha256": "2d78760b8585c154abecf53aac009b94fcdd4dae1d437ae48c914979a96ab790",
       "disposition": "reworded",
       "destination": "references/README.tmpl.md",
-      "note": "> **Methodology: Tackle 10.3.1.** See `AGENTS.md` for the workspace contract.",
+      "note": "> **Methodology: Tackle 10.4.0.** See `AGENTS.md` for the workspace contract.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -19852,7 +19852,7 @@
       "unit_sha256": "d530f748c658cde9b13a8b60aee622f0a1c52250b89328ff6c43d61739685f1d",
       "disposition": "reworded",
       "destination": "SKILL.md",
-      "note": "**Tackle 10.3.1** is a model-agnostic planning and execution method.",
+      "note": "**Tackle 10.4.0** is a model-agnostic planning and execution method.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -19867,7 +19867,7 @@
       "unit_sha256": "bc890db92f09c7834178a9d154a4d31fca91f204ceb49b2d83fea205a8b64aa0",
       "disposition": "reworded",
       "destination": "references/AGENTS.tmpl.md",
-      "note": "**Methodology: Tackle 10.3.1** <!-- A future version reads this to decide whether to migrate. -->",
+      "note": "**Methodology: Tackle 10.4.0** <!-- A future version reads this to decide whether to migrate. -->",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -19882,7 +19882,7 @@
       "unit_sha256": "7edb02df011d8789eb6ea290556dc22a270e74722176d809ae9845bd25bdb7f1",
       "disposition": "reworded",
       "destination": "references/README.tmpl.md",
-      "note": "> **Methodology: Tackle 10.3.1.** See `AGENTS.md` for the workspace contract.",
+      "note": "> **Methodology: Tackle 10.4.0.** See `AGENTS.md` for the workspace contract.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -19978,7 +19978,7 @@
       "unit_sha256": "a60173494539d6fc761c64f632e977e76fd717b18ae01eb4bd991e9b0dde095c",
       "disposition": "reworded",
       "destination": "SKILL.md",
-      "note": "**Tackle 10.3.1** is a model-agnostic planning and execution method.",
+      "note": "**Tackle 10.4.0** is a model-agnostic planning and execution method.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -19993,7 +19993,7 @@
       "unit_sha256": "5cc0730e9af3796e59814225d1c43e637cc9f843d4580bcd3b6629258617bc87",
       "disposition": "reworded",
       "destination": "references/AGENTS.tmpl.md",
-      "note": "**Methodology: Tackle 10.3.1** <!-- A future version reads this to decide whether to migrate. -->",
+      "note": "**Methodology: Tackle 10.4.0** <!-- A future version reads this to decide whether to migrate. -->",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -20008,7 +20008,7 @@
       "unit_sha256": "27ddffcad8f839aa20ece475d8cff17298985e29cca06adb62850eba8645f7db",
       "disposition": "reworded",
       "destination": "references/README.tmpl.md",
-      "note": "> **Methodology: Tackle 10.3.1.** See `AGENTS.md` for the workspace contract.",
+      "note": "> **Methodology: Tackle 10.4.0.** See `AGENTS.md` for the workspace contract.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -20287,6 +20287,63 @@
       "destination": "references/task.tmpl.md",
       "note": "{{grounded step and conditional alternative}}.",
       "destination_unit_sha256": null
+    },
+    {
+      "path": "SKILL.md",
+      "line": 4,
+      "unit_sha256": "3e8b47cf4b50028a7afbc56b813987453d857c4023441410c0703011994892d3",
+      "disposition": "reworded",
+      "destination": "SKILL.md",
+      "note": "**Tackle 10.4.0** is a model-agnostic planning and execution method.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "1",
+          "reason": "release version stamp bumped to 10.4.0"
+        },
+        {
+          "token": "10.3",
+          "reason": "release version stamp bumped to 10.4.0"
+        }
+      ]
+    },
+    {
+      "path": "references/AGENTS.tmpl.md",
+      "line": 3,
+      "unit_sha256": "82585494fc93ac06726e6484be8e1bebbdae57ad382ec2f0c5494099e6423fc0",
+      "disposition": "reworded",
+      "destination": "references/AGENTS.tmpl.md",
+      "note": "**Methodology: Tackle 10.4.0** <!-- A future version reads this to decide whether to migrate. -->",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "1",
+          "reason": "release version stamp bumped to 10.4.0"
+        },
+        {
+          "token": "10.3",
+          "reason": "release version stamp bumped to 10.4.0"
+        }
+      ]
+    },
+    {
+      "path": "references/README.tmpl.md",
+      "line": 3,
+      "unit_sha256": "fdb852da60a2dd80e48e847945269f4dbad0bed2801c058cd80d738ac4230a91",
+      "disposition": "reworded",
+      "destination": "references/README.tmpl.md",
+      "note": "> **Methodology: Tackle 10.4.0.** See `AGENTS.md` for the workspace contract.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "1",
+          "reason": "release version stamp bumped to 10.4.0"
+        },
+        {
+          "token": "10.3",
+          "reason": "release version stamp bumped to 10.4.0"
+        }
+      ]
     }
   ]
 }

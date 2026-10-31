@@ -1,6 +1,6 @@
 # AGENTS — workspace `docs/plans/{{slug}}/`
 
-**Methodology: Tackle 10.3.1** <!-- A future version reads this to decide whether to migrate. -->
+**Methodology: Tackle 10.4.0** <!-- A future version reads this to decide whether to migrate. -->
 
 Conventions for any agent or person picking up this plan, in any tool. The workspace inherits the
 repository contract where one exists.
