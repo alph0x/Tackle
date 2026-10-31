@@ -7211,7 +7211,16 @@
       "disposition": "reworded",
       "destination": "references/task.tmpl.md",
       "note": "**Escalation**: (declared; omit when the task permits no capped retry; the owner still confirms the escalated model)",
-      "dropped": [{"token": "1", "reason": "'one' restated as 'no': the same single-retry condition"}, {"token": "not", "reason": "negation moved into 'no': the same condition"}],
+      "dropped": [
+        {
+          "token": "1",
+          "reason": "'one' restated as 'no': the same single-retry condition"
+        },
+        {
+          "token": "not",
+          "reason": "negation moved into 'no': the same condition"
+        }
+      ],
       "destination_unit_sha256": null
     },
     {
@@ -11941,14 +11950,13 @@
       "disposition": "reworded",
       "destination": "references/task.tmpl.md",
       "note": "The compiler substitutes concrete autonomy and effort tokens before handoff; an unresolved `inherit` token is invalid worker input.",
-      "dropped": [{"token": "no", "reason": "'no valid' restated as 'invalid': the same meaning"}],
-      "destination_unit_sha256": null,
       "dropped": [
         {
           "token": "not",
           "reason": "negation restated as never or no, same prohibition"
         }
-      ]
+      ],
+      "destination_unit_sha256": null
     },
     {
       "path": "references/task.tmpl.md",
@@ -11994,7 +12002,12 @@
       "destination": "references/task.tmpl.md",
       "note": "Inline only applicable clauses; never copy a whole guide or edit a compiled clause independently.",
       "destination_unit_sha256": null,
-      "dropped": [{"token": "not", "reason": "negation restated as never or no, same prohibition"}]
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "negation restated as never or no, same prohibition"
+        }
+      ]
     },
     {
       "path": "references/task.tmpl.md",
@@ -20097,7 +20110,7 @@
       "unit_sha256": "a35fa704d1d40a2cbcf345d25e6ba4a070f3b84b81f5e3e166438cffd18704ea",
       "disposition": "reworded",
       "destination": "references/task.tmpl.md",
-      "note": "**Depends on**: {{none / T-NN — name the artifact consumed}}.",
+      "note": "**Depends on**: {{none / T-NN \u2014 name the artifact consumed}}.",
       "destination_unit_sha256": null
     },
     {
@@ -20116,7 +20129,16 @@
       "disposition": "reworded",
       "destination": "references/task.tmpl.md",
       "note": "**Escalation**: (declared; omit when the task permits no capped retry; the owner still confirms the escalated model)",
-      "dropped": [{"token": "1", "reason": "'one' restated as 'no': the same single-retry condition"}, {"token": "not", "reason": "negation moved into 'no': the same condition"}],
+      "dropped": [
+        {
+          "token": "1",
+          "reason": "'one' restated as 'no': the same single-retry condition"
+        },
+        {
+          "token": "not",
+          "reason": "negation moved into 'no': the same condition"
+        }
+      ],
       "destination_unit_sha256": null
     },
     {
@@ -20126,7 +20148,12 @@
       "disposition": "reworded",
       "destination": "references/task.tmpl.md",
       "note": "**Inputs**: {{resolved source, config, dependency, and contract revisions/hashes; compiled here so the worker needs no plan lookup}}.",
-      "dropped": [{"token": "not", "reason": "'does not need' restated as 'needs no': the same meaning"}],
+      "dropped": [
+        {
+          "token": "not",
+          "reason": "'does not need' restated as 'needs no': the same meaning"
+        }
+      ],
       "destination_unit_sha256": null
     },
     {
@@ -20154,7 +20181,12 @@
       "disposition": "reworded",
       "destination": "references/task.tmpl.md",
       "note": "The compiler substitutes concrete autonomy and effort tokens before handoff; an unresolved `inherit` token is invalid worker input.",
-      "dropped": [{"token": "no", "reason": "'no valid' restated as 'invalid': the same meaning"}],
+      "dropped": [
+        {
+          "token": "no",
+          "reason": "'no valid' restated as 'invalid': the same meaning"
+        }
+      ],
       "destination_unit_sha256": null
     },
     {
