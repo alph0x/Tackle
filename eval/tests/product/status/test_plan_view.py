@@ -88,6 +88,7 @@ def workspace_files(deps_of_last=None):
                                   '|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n'
                                   + usage_row('run/a', 'start', first_task, 'executor') + usage_row('run/a', 'finish', first_task, 'executor')
                                   + usage_row('run/b', 'start', second_task, 'executor')}
+    files.update({'view/summary.json': '{}', 'view/export-summary.json': '{}'})
     for task, traces in briefs.items():
         files['tasks/%s.md' % task] = '# Task\n\n- **Traces to**: %s\n- **Goal**: demo.\n' % traces
     return files
@@ -95,6 +96,10 @@ def workspace_files(deps_of_last=None):
 
 def run_recipe(tmp, files, case):
     workspace = Path(tmp) / case
+    files = dict(files)
+    if not re.search(r'^Gate:\s*Lite\b', files.get('plan.md', ''), re.M):
+        files.setdefault('view/summary.json', files.get('summary.json', '{}'))
+        files.setdefault('view/export-summary.json', files.get('export-summary.json', '{}'))
     for name, text in files.items():
         path = workspace / name
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -168,6 +173,7 @@ BOARD_HEAD = ('# Board\n\nStates: %s.\n\n| Task | What | Brief | Depends on | St
 def small_files(plan, rows, extra_board=''):
     first, second = task_id(1), task_id(2)
     files = {'plan.md': plan, 'task-board.md': BOARD_HEAD + ''.join(rows) + extra_board}
+    files.update({'view/summary.json': '{}', 'view/export-summary.json': '{}'})
     for task in (first, second):
         files['tasks/%s.md' % task] = '# Task\n\n- **Traces to**: %s\n' % req_id(1)
     return files

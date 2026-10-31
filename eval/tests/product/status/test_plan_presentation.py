@@ -6,11 +6,14 @@ measure native UI interaction or aesthetic acceptance.
 import html
 import json
 import re
+import subprocess
+import sys
 import tempfile
 import unittest
 from html.parser import HTMLParser
+from pathlib import Path
 
-from eval.tests.product.status.test_plan_view import decision_id, lite_plan, req_id, run_recipe, task_id, workspace_files
+from eval.tests.product.status.test_plan_view import TEMPLATE, decision_id, lite_plan, req_id, run_recipe, task_id, workspace_files
 
 
 def island(page):
@@ -98,11 +101,16 @@ class PlanPresentationTests(unittest.TestCase):
         self.assertIn('id="decisions"', page)
         self.assertEqual(SectionVisibility(page).sections, {'requirements': True, 'decisions': True})
 
-    def test_optional_summary_absence_preserves_full_and_truthful_lite_views(self):
-        full = self.render(workspace_files(), 'without-summary')
-        self.assertEqual(len(island(full)['tasks']), 3)
-        self.assertIn('id="requirement-%s"' % req_id(1), full)
-        self.assertIn('id="decision-record-%s"' % decision_id(1), full)
+    def test_missing_summary_refuses_full_and_preserves_truthful_lite_view(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            result, output = run_recipe(tmp, workspace_files(), 'without-summary')
+            self.assertEqual(result.returncode, 0, result.stderr)
+            (output.parent / 'view/summary.json').unlink()
+            script = Path(tmp) / 'without-summary-view.py'
+            result = subprocess.run([sys.executable, '-I', str(script), '--template', str(TEMPLATE),
+                                     str(output.parent), str(output)], capture_output=True, text=True)
+            self.assertEqual(result.returncode, 1)
+            self.assertEqual(result.stderr, 'view incomplete: missing curated summary view/summary.json\n')
         lite = self.render({'plan.md': lite_plan()}, 'focused-without-summary')
         self.assertTrue(island(lite)['focused'])
         self.assertEqual(island(lite)['tasks'], [])
@@ -119,12 +127,12 @@ class PlanPresentationTests(unittest.TestCase):
         summary['outcomes'][0]['text'] = payload
         summary['tasks'][task_id(1)] = payload
         summary['decisions'][0]['text'] = payload
-        files['summary.json'] = json.dumps(summary)
+        files['view/summary.json'] = json.dumps(summary)
         page = self.render(files, 'escaped')
         self.assertNotIn(payload, page)
         self.assertIn(html.escape(payload, quote=True), page)
         self.assertEqual(len(island(page)['tasks']), 3)
-        files['summary.json'] = json.dumps({'outcomes': 'wrong type', 'tasks': [], 'next': None, 'you': 1, 'decisions': [None]})
+        files['view/summary.json'] = json.dumps({'outcomes': 'wrong type', 'tasks': [], 'next': None, 'you': 1, 'decisions': [None]})
         fallback = self.render(files, 'invalid-optional')
         self.assertEqual(len(island(fallback)['tasks']), 3)
         self.assertIn('id="requirements"', fallback)

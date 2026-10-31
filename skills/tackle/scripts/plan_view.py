@@ -2932,6 +2932,13 @@ def main():
     template = blocks[0]
     if args.page:
         return page_mode(args, template)
+    plan = read(ws, 'plan.md')
+    focused = bool(re.search(r'^Gate:\s*Lite\b', plan, re.M))
+    if not args.initiative and not focused:
+        missing = [name for name in ('view/summary.json', 'view/export-summary.json') if not (ws / name).is_file()]
+        if missing:
+            print('view incomplete: missing curated summary ' + ', '.join(missing), file=sys.stderr)
+            return 1
     members = initiative_members(ws) if args.initiative else []
     if args.initiative:
         record = initiative_digests(members, args.template, args.map_base, args.map_scope)
@@ -2942,10 +2949,8 @@ def main():
             print(line, file=sys.stderr)
         return check_view(record, args.output)
     problems = []
-    plan = read(ws, 'plan.md')
     if not plan:
         problems.append('plan.md is missing or empty')
-    focused = bool(re.search(r'^Gate:\s*Lite\b', plan, re.M))
     lang = language(plan)
     ui = UI[lang]
     export_ui = EXPORT_UI[lang]

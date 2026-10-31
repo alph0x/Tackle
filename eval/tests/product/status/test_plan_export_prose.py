@@ -204,12 +204,17 @@ class ExecutivePayloadTests(unittest.TestCase):
                 self.assertBuilt(result)
                 self.assertEqual(prose_lines(result), [])
 
-    def test_a_root_only_export_summary_prints_its_note(self):
+    def test_a_root_only_export_summary_is_refused(self):
         with tempfile.TemporaryDirectory() as tmp:
-            result, _ = build(tmp, 'root-only', extra={
+            result, out = build(tmp, 'root-only', extra={
                 'export-summary.json': json.dumps(summary(context='Read T-0035 first'))})
             self.assertBuilt(result)
-            self.assertEqual(prose_lines(result), [PREFIX + 'context contains a Tackle id: T-0035'])
+            (out.parent / 'view/export-summary.json').unlink()
+            script = Path(tmp) / 'root-only-view.py'
+            result = subprocess.run([sys.executable, '-I', str(script), '--template', str(TEMPLATE),
+                                     str(out.parent), str(out)], capture_output=True, text=True)
+            self.assertEqual(result.returncode, 1)
+            self.assertEqual(result.stderr, 'view incomplete: missing curated summary view/export-summary.json\n')
 
 
 class ExecutiveProseRuleTests(unittest.TestCase):

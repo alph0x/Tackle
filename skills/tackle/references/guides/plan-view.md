@@ -71,6 +71,8 @@ prints `view stale:` with the changed inputs and exits 1. A page without digests
 
 ## Pre-flight
 
+A Full plan view build or check refuses with `view incomplete: missing curated summary` and names each missing `view/summary.json` or `view/export-summary.json`, exits 1 and writes nothing.
+
 The script refuses to write when the sources disagree, printing one `refused:` line for each problem:
 
 - a board with no task rows, or a duplicate task id;
@@ -131,8 +133,8 @@ plan, its scope and build time and includes context for a reader unfamiliar with
   task board, measured result or completion percentage.
 - Both combines the plan and progress in one presentation with one shared context and header.
 
-Optional `view/export-summary.json` supplies typed reader-facing narrative. Status aggregates always come
-from the current board. Without curation, the report uses a concise source-derived context and truthful
+For a Full plan, `view/export-summary.json` supplies typed reader-facing narrative; for a Focused plan, it is optional. Status aggregates always come
+from the current board. Without curation, a Focused report uses a concise source-derived context and truthful
 fallback. For a Full plan, a curated summary records the board it describes: `as_of` and `board_states` in `view/summary.json`, and
 `authority.as_of` and `authority.canonical_states` in `view/export-summary.json`. When the current task states
 differ, its status prose (now, next, you; achievements, open work, dependency, next steps, evidence) is set

@@ -53,6 +53,7 @@ def build(tmp, second_deps='T-0001, T-0007 [api]', agents=AGENTS_HEAD + DECLARED
     alpha_board = HEAD + ALPHA_ROWS % second_deps + extra_alpha
     write_files(alpha, {'plan.md': PLAN, 'task-board.md': alpha_board, 'AGENTS.md': agents,
                         'tasks/T-0001-first.md': BRIEF % 'T-0001', 'tasks/T-0002-second.md': BRIEF % 'T-0002'})
+    write_files(alpha, {'view/summary.json': '{}', 'view/export-summary.json': '{}'})
     if beta is not None:
         write_files(beta_dir, {'task-board.md': beta, 'tasks/T-0007-client.md': BRIEF % 'T-0007',
                                'tasks/T-0008-server.md': BRIEF % 'T-0008', 'tasks/T-0009-docs.md': BRIEF % 'T-0009'})

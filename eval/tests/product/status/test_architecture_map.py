@@ -113,6 +113,9 @@ def lay_out_sources(root, skip=('tools/removed.py',)):
 def workspace(root, delta, plan_text=None, running=False):
     ws = root / 'docs/plans/demo'
     (ws / 'tasks').mkdir(parents=True)
+    (ws / 'view').mkdir()
+    for name in ('summary.json', 'export-summary.json'):
+        (ws / 'view' / name).write_text('{}', encoding='utf-8')
     first, second = task_id(1), task_id(2)
     (ws / 'task-board.md').write_text(
         '# Board\n\nStates: %s.\n\n| Task | What | Brief | Depends on | Status | Verification |\n|---|---|---|---|---|---|\n'

@@ -10,6 +10,7 @@ current, a check that writes, and a waiting section that drops or invents items.
 Consumer: the coordinator's rebuild rule and the PLAN handoff in the plan-view and PLAN card guides.
 The agent's timing of these runs is outside this oracle.
 """
+import hashlib
 import html
 import json
 import re
@@ -103,6 +104,68 @@ def copied_template(tmp):
     return folder / base.TEMPLATE.name
 
 
+class SummaryCompletenessTests(unittest.TestCase):
+    def test_full_missing_summaries_refuses_build_and_check_without_writes(self):
+        names = ('view/summary.json', 'view/export-summary.json')
+        for missing in (names, names[:1], names[1:]):
+            with self.subTest(missing=missing), tempfile.TemporaryDirectory() as tmp:
+                fixture = Fixture(tmp)
+                for name in names:
+                    path = fixture.ws / name
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    path.write_text('{}', encoding='utf-8')
+                fixture.build()
+                for name in missing:
+                    (fixture.ws / name).unlink()
+                before = snapshot(tmp)
+                expected = 'view incomplete: missing curated summary ' + ', '.join(missing) + '\n'
+                for extra in ((), ('--check',)):
+                    result = call(tmp, fixture.args(extra))
+                    self.assertEqual((result.returncode, result.stdout, result.stderr), (1, '', expected))
+                    self.assertEqual(snapshot(tmp), before)
+                fixture.page.unlink()
+                before = snapshot(tmp)
+                result = call(tmp, fixture.args())
+                self.assertEqual((result.returncode, result.stdout, result.stderr), (1, '', expected))
+                self.assertEqual(snapshot(tmp), before)
+
+    def test_full_with_both_summaries_builds_and_checks(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Fixture(tmp)
+            write_files(fixture.ws, {'view/summary.json': '{}', 'view/export-summary.json': '{}'})
+            fixture.build()
+            result = fixture.check()
+            self.assertEqual((result.returncode, result.stdout.strip()), (0, 'view current'))
+
+    def test_focused_without_summaries_builds(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Fixture(tmp, {'plan.md': base.lite_plan()})
+            fixture.build()
+            self.assertEqual(fixture.check().returncode, 0)
+
+    def test_page_and_initiative_do_not_refuse_missing_summaries(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Fixture(tmp)
+            write_files(fixture.ws, {'view/summary.json': '{}', 'view/export-summary.json': '{}'})
+            fixture.build()
+            (fixture.ws / 'view/summary.json').unlink()
+            (fixture.ws / 'view/export-summary.json').unlink()
+            fragment = Path(tmp) / 'fragment.html'
+            fragment.write_text('<h1>Page</h1>', encoding='utf-8')
+            page_args = ['--template', fixture.template, '--page', fragment, fixture.ws, fixture.ws / 'aux.html']
+            page = call(tmp, page_args)
+            self.assertEqual(page.returncode, 0, page.stdout + page.stderr)
+            self.assertEqual(call(tmp, ['--check'] + page_args).returncode, 0)
+            import test_plan_siblings as siblings
+            alpha, _ = siblings.build(tmp)
+            (alpha / 'view/summary.json').unlink()
+            (alpha / 'view/export-summary.json').unlink()
+            result, output = siblings.run(tmp, alpha, options=('--initiative',))
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            check, _ = siblings.run(tmp, alpha, options=('--initiative', '--check'), output=output)
+            self.assertEqual(check.returncode, 0, check.stdout + check.stderr)
+
+
 class InputDigestTests(unittest.TestCase):
     def test_a_fresh_build_records_every_input_and_checks_current(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -114,8 +177,10 @@ class InputDigestTests(unittest.TestCase):
             self.assertEqual(names, sorted(names), 'entries are not sorted by name')
             for name in WORKSPACE_INPUTS + ROLES + tuple('tasks/%s.md' % base.task_id(n) for n in (1, 2, 3)):
                 self.assertIn(name, meta['inputs'])
-            for name in ('questions.md', 'readiness.md', 'map-delta.json', 'view/summary.json', 'summary.json', 'map base'):
+            for name in ('questions.md', 'readiness.md', 'map-delta.json', 'summary.json', 'map base'):
                 self.assertEqual(meta['inputs'][name], 'absent', name)
+            for name in ('view/summary.json', 'view/export-summary.json'):
+                self.assertEqual(meta['inputs'][name], hashlib.sha256((fixture.ws / name).read_bytes()).hexdigest())
             self.assertRegex(meta['inputs']['plan.md'], r'^[0-9a-f]{64}$')
             self.assertRegex(meta['digest'], r'^[0-9a-f]{64}$')
             self.assertEqual((meta['map'], meta['map_scope']), ('default', 'all'))

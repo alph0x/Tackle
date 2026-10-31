@@ -2,6 +2,33 @@
   "schema": "tackle-unit-dispositions/1",
   "records": [
     {
+      "path": "skills/tackle/scripts/README.md",
+      "line": 13,
+      "unit_sha256": "4ae1c1528d91dbdec8bff2a9e54b0e6db369c40554569cefc5e493e934a390bb",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "| [plan_view.py](plan_view.py) | `0c251cc55fb3c749a33030a77527a0bb23f26d7f762257199dfde94ee68e026c` |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 134,
+      "unit_sha256": "98e1468d6ebf073531b030d889d0f6de1aca43cb13014ced09d9af0adbc9bcb0",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "For a Full plan, `view/export-summary.json` supplies typed reader-facing narrative; for a Focused plan, it is optional.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/plan-view.md",
+      "line": 135,
+      "unit_sha256": "c675b1eff643a70b2ed4b2d7cabc0b6f005becf0749498897871ae07c042f8c7",
+      "disposition": "reworded",
+      "destination": "references/guides/plan-view.md",
+      "note": "Without curation, a Focused report uses a concise source-derived context and truthful fallback.",
+      "destination_unit_sha256": null
+    },
+    {
       "path": "references/archetypes/README.md",
       "line": 19,
       "unit_sha256": "5e1289cb650e543b853b472351c8fc6cbd4f28debffb6cc7d52fb74f2bae4dd6",
@@ -7564,7 +7591,7 @@
       "unit_sha256": "9e613e19bd277ed06fb0a059d8de02ec311f0224352a897c71d1067a4b923fdd",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
-      "note": "| [plan_view.py](plan_view.py) | `b4f7d31b67212e1ad98430f1fe296110675b7e5d2d019f8df3083358dc8a4227` |",
+      "note": "| [plan_view.py](plan_view.py) | `0c251cc55fb3c749a33030a77527a0bb23f26d7f762257199dfde94ee68e026c` |",
       "destination_unit_sha256": null
     },
     {
@@ -7573,7 +7600,7 @@
       "unit_sha256": "9e613e19bd277ed06fb0a059d8de02ec311f0224352a897c71d1067a4b923fdd",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
-      "note": "| [plan_view.py](plan_view.py) | `b4f7d31b67212e1ad98430f1fe296110675b7e5d2d019f8df3083358dc8a4227` |",
+      "note": "| [plan_view.py](plan_view.py) | `0c251cc55fb3c749a33030a77527a0bb23f26d7f762257199dfde94ee68e026c` |",
       "destination_unit_sha256": null
     },
     {
@@ -8167,7 +8194,7 @@
       "unit_sha256": "bd7f82ae26ce4e28dede9619e771b7223aee8dcda797d8d0724083b9669e0eb9",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
-      "note": "| [plan_view.py](plan_view.py) | `b4f7d31b67212e1ad98430f1fe296110675b7e5d2d019f8df3083358dc8a4227` |",
+      "note": "| [plan_view.py](plan_view.py) | `0c251cc55fb3c749a33030a77527a0bb23f26d7f762257199dfde94ee68e026c` |",
       "destination_unit_sha256": null
     },
     {
@@ -17106,7 +17133,7 @@
       "unit_sha256": "95d363aac83458119dcf8eb90ddc50280ec71cf33794259f79822261dd541331",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
-      "note": "| [plan_view.py](plan_view.py) | `b4f7d31b67212e1ad98430f1fe296110675b7e5d2d019f8df3083358dc8a4227` |",
+      "note": "| [plan_view.py](plan_view.py) | `0c251cc55fb3c749a33030a77527a0bb23f26d7f762257199dfde94ee68e026c` |",
       "destination_unit_sha256": null
     },
     {
