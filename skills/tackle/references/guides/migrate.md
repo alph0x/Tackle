@@ -25,14 +25,14 @@ Use the [compact migration route](#compact-migration) as the installed bridge; t
 <a id="compact-migration"></a>
 ## Compact migration route
 
-The installed catalog is the sole active route from supported workspace structure to Tackle 10.3.1. Read the workspace structure and its `Methodology:` stamp as separate facts: structure selects only the exact existing adapter, while the stamp records methodology and never proves adoption. The closed, installed-only catalog retains every historical obligation and its source provenance at [migration-catalog.json](migration-catalog.json).
+The installed catalog is the sole active route from supported workspace structure to Tackle 10.4.0. Read the workspace structure and its `Methodology:` stamp as separate facts: structure selects only the exact existing adapter, while the stamp records methodology and never proves adoption. The closed, installed-only catalog retains every historical obligation and its source provenance at [migration-catalog.json](migration-catalog.json).
 
 Use the five-command interface in order: `diagnose`, `prepare`, `verify`, `adopt`, and `restore`. Running the migration script requires the owner's explicit migration request under the [script consent](../../scripts/README.md#consent); an equivalent harness route may perform the same bounded operation. `diagnose` reads one explicitly selected absolute workspace and produces a complete observation manifest; pending or unknown facts remain visible. `prepare` requires a fresh external job directory on the same filesystem, records an immutable checkpoint, and creates the candidate using the existing schema adapters. Resolve listed owner decisions and semantic work in the copy. The original remains authoritative while the candidate is being prepared.
 
 The CLI takes absolute paths for workspace, context, output, manifest, and job:
 
 ```text
-python3 -I -B <installed-scripts>/migrate/compact.py diagnose --workspace <ABS_SOURCE> --target 10.3.1 --context <ABS_CONTEXT_JSON> --output <ABS_NEW_MANIFEST>
+python3 -I -B <installed-scripts>/migrate/compact.py diagnose --workspace <ABS_SOURCE> --target 10.4.0 --context <ABS_CONTEXT_JSON> --output <ABS_NEW_MANIFEST>
 python3 -I -B <installed-scripts>/migrate/compact.py prepare --manifest <ABS_MANIFEST> --job <ABS_JOB>
 python3 -I -B <installed-scripts>/migrate/compact.py verify --job <ABS_JOB>
 python3 -I -B <installed-scripts>/migrate/compact.py adopt --job <ABS_JOB>

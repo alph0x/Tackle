@@ -6,7 +6,7 @@ It does not ship with the installed skill (`SKILL.md`, `references/` and `script
 
 ## Migration bridge
 
-The installed migration catalog is the current route from supported workspace structures to 10.3.1.
+The installed migration catalog is the current route from supported workspace structures to 10.4.0.
 The repository checker validates its retained source provenance; it is not part of the installed artifact.
 
 ## Release sweep

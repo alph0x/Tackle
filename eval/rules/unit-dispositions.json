@@ -11573,7 +11573,7 @@
       "unit_sha256": "f857e7a32c0dc8713826f78ae226dced9b771261171a087d19e0130a1fd69876",
       "disposition": "reworded",
       "destination": "references/guides/migration-catalog.json",
-      "note": "After all required baselines and ordered actions, retain source/candidate/install/catalog/context identities and actual pre-stamp checks. Append exactly once the candidate-only preparation event to its existing root history carrier, preserving the entire old byte prefix and any separate structural-adoption entry. Append the exact UTF-8 preparation suffix with one leading LF and final LF. `\\n## {date} \u00b7 Compact migration candidate\\n\\n- Prepared candidate: operation {operation_id}; source sha256 {source_sha256}; target Tackle {target_methodology}; catalog revision {revision}.\\n`. The displayed \\n denotes an actual LF. Use the validated context date, manifest-bound 64-hex operation_id/source_sha256, and validated pinned catalog semver target_methodology/positive integer revision, not caller text. It records candidate preparation only, never adoption, Ready or acceptance; a quoted/fenced occurrence is not the event. Validate actual unfenced Full dates in nondecreasing order and reconcile only exact pre-append identity or expected suffix/postinventory; missing/ambiguous history is pending and Lite gains no Full carrier. Then deliberately stamp the candidate, run distinct post-stamp checks and freeze it. Adopt only the validated copy at an evidenced task boundary with independent semantic/boundary admission, rechecked original/candidate/install/catalog/evidence hashes and actual cooperating locks before durable same-filesystem rename. Preserve checkpoint/original backup, record exact mappings/checks/revisions/rollback result, and reconcile interruptions only from matching physical inventories; conflicts hold without overwrite or cleanup. Restore only an unchanged adopted workspace through its verified sibling stage. A completed repeat validates its recorded physical/admission identity and changes no bytes. Last, set the `**Methodology: Tackle 10.3.1**` line in the candidate AGENTS.md only after the baseline covers every Complete task. Then run `python3 -I scripts/lint.py <slug>` again and expect 19 of 19 rows silent, retaining non-gating WARN exceptions. From now on row 14 requires that line in each Complete report. The stamped candidate remains unadopted until separate verified cutover; the source stamp is never silently changed. This target keeps `tackle-workspace/5` and adds no required workspace field; supported structural adapters act only on actual older source structure, not on an old stamp alone.",
+      "note": "After all required baselines and ordered actions, retain source/candidate/install/catalog/context identities and actual pre-stamp checks. Append exactly once the candidate-only preparation event to its existing root history carrier, preserving the entire old byte prefix and any separate structural-adoption entry. Append the exact UTF-8 preparation suffix with one leading LF and final LF. `\\n## {date} \u00b7 Compact migration candidate\\n\\n- Prepared candidate: operation {operation_id}; source sha256 {source_sha256}; target Tackle {target_methodology}; catalog revision {revision}.\\n`. The displayed \\n denotes an actual LF. Use the validated context date, manifest-bound 64-hex operation_id/source_sha256, and validated pinned catalog semver target_methodology/positive integer revision, not caller text. It records candidate preparation only, never adoption, Ready or acceptance; a quoted/fenced occurrence is not the event. Validate actual unfenced Full dates in nondecreasing order and reconcile only exact pre-append identity or expected suffix/postinventory; missing/ambiguous history is pending and Lite gains no Full carrier. Then deliberately stamp the candidate, run distinct post-stamp checks and freeze it. Adopt only the validated copy at an evidenced task boundary with independent semantic/boundary admission, rechecked original/candidate/install/catalog/evidence hashes and actual cooperating locks before durable same-filesystem rename. Preserve checkpoint/original backup, record exact mappings/checks/revisions/rollback result, and reconcile interruptions only from matching physical inventories; conflicts hold without overwrite or cleanup. Restore only an unchanged adopted workspace through its verified sibling stage. A completed repeat validates its recorded physical/admission identity and changes no bytes. Last, set the `**Methodology: Tackle 10.4.0**` line in the candidate AGENTS.md only after the baseline covers every Complete task. Then run `python3 -I scripts/lint.py <slug>` again and expect 19 of 19 rows silent, retaining non-gating WARN exceptions. From now on row 14 requires that line in each Complete report. The stamped candidate remains unadopted until separate verified cutover; the source stamp is never silently changed. This target keeps `tackle-workspace/5` and adds no required workspace field; supported structural adapters act only on actual older source structure, not on an old stamp alone.",
       "destination_unit_sha256": null
     },
     {
@@ -11618,7 +11618,7 @@
       "unit_sha256": "69b2523a9f8145aca6217126e8a9cca73f50cccdfff0234cf9aadbacd384a129",
       "disposition": "reworded",
       "destination": "references/guides/migration-catalog.json",
-      "note": "After all required baselines and ordered actions, retain source/candidate/install/catalog/context identities and actual pre-stamp checks. Append exactly once the candidate-only preparation event to its existing root history carrier, preserving the entire old byte prefix and any separate structural-adoption entry. Append the exact UTF-8 preparation suffix with one leading LF and final LF. `\\n## {date} \u00b7 Compact migration candidate\\n\\n- Prepared candidate: operation {operation_id}; source sha256 {source_sha256}; target Tackle {target_methodology}; catalog revision {revision}.\\n`. The displayed \\n denotes an actual LF. Use the validated context date, manifest-bound 64-hex operation_id/source_sha256, and validated pinned catalog semver target_methodology/positive integer revision, not caller text. It records candidate preparation only, never adoption, Ready or acceptance; a quoted/fenced occurrence is not the event. Validate actual unfenced Full dates in nondecreasing order and reconcile only exact pre-append identity or expected suffix/postinventory; missing/ambiguous history is pending and Lite gains no Full carrier. Then deliberately stamp the candidate, run distinct post-stamp checks and freeze it. Adopt only the validated copy at an evidenced task boundary with independent semantic/boundary admission, rechecked original/candidate/install/catalog/evidence hashes and actual cooperating locks before durable same-filesystem rename. Preserve checkpoint/original backup, record exact mappings/checks/revisions/rollback result, and reconcile interruptions only from matching physical inventories; conflicts hold without overwrite or cleanup. Restore only an unchanged adopted workspace through its verified sibling stage. A completed repeat validates its recorded physical/admission identity and changes no bytes. Last, set the `**Methodology: Tackle 10.3.1**` line in the candidate AGENTS.md only after the baseline covers every Complete task. Then run `python3 -I scripts/lint.py <slug>` again and expect 19 of 19 rows silent, retaining non-gating WARN exceptions. From now on row 14 requires that line in each Complete report. The stamped candidate remains unadopted until separate verified cutover; the source stamp is never silently changed. This target keeps `tackle-workspace/5` and adds no required workspace field; supported structural adapters act only on actual older source structure, not on an old stamp alone.",
+      "note": "After all required baselines and ordered actions, retain source/candidate/install/catalog/context identities and actual pre-stamp checks. Append exactly once the candidate-only preparation event to its existing root history carrier, preserving the entire old byte prefix and any separate structural-adoption entry. Append the exact UTF-8 preparation suffix with one leading LF and final LF. `\\n## {date} \u00b7 Compact migration candidate\\n\\n- Prepared candidate: operation {operation_id}; source sha256 {source_sha256}; target Tackle {target_methodology}; catalog revision {revision}.\\n`. The displayed \\n denotes an actual LF. Use the validated context date, manifest-bound 64-hex operation_id/source_sha256, and validated pinned catalog semver target_methodology/positive integer revision, not caller text. It records candidate preparation only, never adoption, Ready or acceptance; a quoted/fenced occurrence is not the event. Validate actual unfenced Full dates in nondecreasing order and reconcile only exact pre-append identity or expected suffix/postinventory; missing/ambiguous history is pending and Lite gains no Full carrier. Then deliberately stamp the candidate, run distinct post-stamp checks and freeze it. Adopt only the validated copy at an evidenced task boundary with independent semantic/boundary admission, rechecked original/candidate/install/catalog/evidence hashes and actual cooperating locks before durable same-filesystem rename. Preserve checkpoint/original backup, record exact mappings/checks/revisions/rollback result, and reconcile interruptions only from matching physical inventories; conflicts hold without overwrite or cleanup. Restore only an unchanged adopted workspace through its verified sibling stage. A completed repeat validates its recorded physical/admission identity and changes no bytes. Last, set the `**Methodology: Tackle 10.4.0**` line in the candidate AGENTS.md only after the baseline covers every Complete task. Then run `python3 -I scripts/lint.py <slug>` again and expect 19 of 19 rows silent, retaining non-gating WARN exceptions. From now on row 14 requires that line in each Complete report. The stamped candidate remains unadopted until separate verified cutover; the source stamp is never silently changed. This target keeps `tackle-workspace/5` and adds no required workspace field; supported structural adapters act only on actual older source structure, not on an old stamp alone.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -17942,7 +17942,7 @@
       "unit_sha256": "69009c8847a4585ff9de3a94a3356d3dd127d3be1d9590c71e939499896f7d54",
       "disposition": "reworded",
       "destination": "MAINTAINING.md",
-      "note": "The installed migration catalog is the current route from supported workspace structures to 10.3.1. The repository checker validates its retained source provenance; it is not part of the installed artifact.",
+      "note": "The installed migration catalog is the current route from supported workspace structures to 10.4.0. The repository checker validates its retained source provenance; it is not part of the installed artifact.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -17957,7 +17957,7 @@
       "unit_sha256": "9a40955b6121b21c83f0fa60bfd305efe99a00ef5581549735e855619ddc0ce0",
       "disposition": "reworded",
       "destination": "MAINTAINING.md",
-      "note": "The installed migration catalog is the current route from supported workspace structures to 10.3.1. The repository checker validates its retained source provenance; it is not part of the installed artifact.",
+      "note": "The installed migration catalog is the current route from supported workspace structures to 10.4.0. The repository checker validates its retained source provenance; it is not part of the installed artifact.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -18520,7 +18520,7 @@
       "unit_sha256": "89c02958844c4c13397405151c22792a941924cf58013022411930b1539db431",
       "disposition": "reworded",
       "destination": "references/guides/migrate.md",
-      "note": "The installed catalog is the sole active route from supported workspace structure to Tackle 10.3.1. Read the workspace structure and its `Methodology:` stamp as separate facts: structure selects only the exact existing adapter, while the stamp records methodology and never proves adoption. The closed, installed-only catalog retains every historical obligation and its source provenance at [migration-catalog.json](migration-catalog.json).",
+      "note": "The installed catalog is the sole active route from supported workspace structure to Tackle 10.4.0. Read the workspace structure and its `Methodology:` stamp as separate facts: structure selects only the exact existing adapter, while the stamp records methodology and never proves adoption. The closed, installed-only catalog retains every historical obligation and its source provenance at [migration-catalog.json](migration-catalog.json).",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -18590,7 +18590,7 @@
       "unit_sha256": "9c1baa41a93e63dbc8001d3e52e740f1bca9cc674423cb7f5c884fd5484ff191",
       "disposition": "reworded",
       "destination": "references/guides/migrate.md",
-      "note": "The installed catalog is the sole active route from supported workspace structure to Tackle 10.3.1. Read the workspace structure and its `Methodology:` stamp as separate facts: structure selects only the exact existing adapter, while the stamp records methodology and never proves adoption. The closed, installed-only catalog retains every historical obligation and its source provenance at [migration-catalog.json](migration-catalog.json).",
+      "note": "The installed catalog is the sole active route from supported workspace structure to Tackle 10.4.0. Read the workspace structure and its `Methodology:` stamp as separate facts: structure selects only the exact existing adapter, while the stamp records methodology and never proves adoption. The closed, installed-only catalog retains every historical obligation and its source provenance at [migration-catalog.json](migration-catalog.json).",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -18707,7 +18707,7 @@
       "unit_sha256": "1afe400a01c9c26e1f6fc82b2e5dfd1eb9d3e97a1b2e128f09943f1b1a7939d7",
       "disposition": "reworded",
       "destination": "references/guides/migrate.md",
-      "note": "The installed catalog is the sole active route from supported workspace structure to Tackle 10.3.1. Read the workspace structure and its `Methodology:` stamp as separate facts: structure selects only the exact existing adapter, while the stamp records methodology and never proves adoption. The closed, installed-only catalog retains every historical obligation and its source provenance at [migration-catalog.json](migration-catalog.json).",
+      "note": "The installed catalog is the sole active route from supported workspace structure to Tackle 10.4.0. Read the workspace structure and its `Methodology:` stamp as separate facts: structure selects only the exact existing adapter, while the stamp records methodology and never proves adoption. The closed, installed-only catalog retains every historical obligation and its source provenance at [migration-catalog.json](migration-catalog.json).",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -18741,7 +18741,7 @@
       "unit_sha256": "fcd5af91960b27a75ea32313b124031260748e12033a5968658a2ea60a98ac50",
       "disposition": "reworded",
       "destination": "references/guides/migrate.md",
-      "note": "The installed catalog is the sole active route from supported workspace structure to Tackle 10.3.1. Read the workspace structure and its `Methodology:` stamp as separate facts: structure selects only the exact existing adapter, while the stamp records methodology and never proves adoption. The closed, installed-only catalog retains every historical obligation and its source provenance at [migration-catalog.json](migration-catalog.json).",
+      "note": "The installed catalog is the sole active route from supported workspace structure to Tackle 10.4.0. Read the workspace structure and its `Methodology:` stamp as separate facts: structure selects only the exact existing adapter, while the stamp records methodology and never proves adoption. The closed, installed-only catalog retains every historical obligation and its source provenance at [migration-catalog.json](migration-catalog.json).",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -19114,7 +19114,7 @@
       "unit_sha256": "484d1adffc4f554ddc54c32de90661f2346201de6daec0628ae11ab7d0ba069e",
       "disposition": "reworded",
       "destination": "references/guides/migration-catalog.json",
-      "note": "After all required baselines and ordered actions, retain source/candidate/install/catalog/context identities and actual pre-stamp checks. Append exactly once the candidate-only preparation event to its existing root history carrier, preserving the entire old byte prefix and any separate structural-adoption entry. Append the exact UTF-8 preparation suffix with one leading LF and final LF. `\\n## {date} \u00b7 Compact migration candidate\\n\\n- Prepared candidate: operation {operation_id}; source sha256 {source_sha256}; target Tackle {target_methodology}; catalog revision {revision}.\\n`. The displayed \\n denotes an actual LF. Use the validated context date, manifest-bound 64-hex operation_id/source_sha256, and validated pinned catalog semver target_methodology/positive integer revision, not caller text. It records candidate preparation only, never adoption, Ready or acceptance; a quoted/fenced occurrence is not the event. Validate actual unfenced Full dates in nondecreasing order and reconcile only exact pre-append identity or expected suffix/postinventory; missing/ambiguous history is pending and Lite gains no Full carrier. Then deliberately stamp the candidate, run distinct post-stamp checks and freeze it. Adopt only the validated copy at an evidenced task boundary with independent semantic/boundary admission, rechecked original/candidate/install/catalog/evidence hashes and actual cooperating locks before durable same-filesystem rename. Preserve checkpoint/original backup, record exact mappings/checks/revisions/rollback result, and reconcile interruptions only from matching physical inventories; conflicts hold without overwrite or cleanup. Restore only an unchanged adopted workspace through its verified sibling stage. A completed repeat validates its recorded physical/admission identity and changes no bytes. Last, set the `**Methodology: Tackle 10.3.1**` line in the candidate AGENTS.md only after the baseline covers every Complete task. Then run `python3 -I scripts/lint.py <slug>` again and expect 19 of 19 rows silent, retaining non-gating WARN exceptions. From now on row 14 requires that line in each Complete report. The stamped candidate remains unadopted until separate verified cutover; the source stamp is never silently changed. This target keeps `tackle-workspace/5` and adds no required workspace field; supported structural adapters act only on actual older source structure, not on an old stamp alone.",
+      "note": "After all required baselines and ordered actions, retain source/candidate/install/catalog/context identities and actual pre-stamp checks. Append exactly once the candidate-only preparation event to its existing root history carrier, preserving the entire old byte prefix and any separate structural-adoption entry. Append the exact UTF-8 preparation suffix with one leading LF and final LF. `\\n## {date} \u00b7 Compact migration candidate\\n\\n- Prepared candidate: operation {operation_id}; source sha256 {source_sha256}; target Tackle {target_methodology}; catalog revision {revision}.\\n`. The displayed \\n denotes an actual LF. Use the validated context date, manifest-bound 64-hex operation_id/source_sha256, and validated pinned catalog semver target_methodology/positive integer revision, not caller text. It records candidate preparation only, never adoption, Ready or acceptance; a quoted/fenced occurrence is not the event. Validate actual unfenced Full dates in nondecreasing order and reconcile only exact pre-append identity or expected suffix/postinventory; missing/ambiguous history is pending and Lite gains no Full carrier. Then deliberately stamp the candidate, run distinct post-stamp checks and freeze it. Adopt only the validated copy at an evidenced task boundary with independent semantic/boundary admission, rechecked original/candidate/install/catalog/evidence hashes and actual cooperating locks before durable same-filesystem rename. Preserve checkpoint/original backup, record exact mappings/checks/revisions/rollback result, and reconcile interruptions only from matching physical inventories; conflicts hold without overwrite or cleanup. Restore only an unchanged adopted workspace through its verified sibling stage. A completed repeat validates its recorded physical/admission identity and changes no bytes. Last, set the `**Methodology: Tackle 10.4.0**` line in the candidate AGENTS.md only after the baseline covers every Complete task. Then run `python3 -I scripts/lint.py <slug>` again and expect 19 of 19 rows silent, retaining non-gating WARN exceptions. From now on row 14 requires that line in each Complete report. The stamped candidate remains unadopted until separate verified cutover; the source stamp is never silently changed. This target keeps `tackle-workspace/5` and adds no required workspace field; supported structural adapters act only on actual older source structure, not on an old stamp alone.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -19133,7 +19133,7 @@
       "unit_sha256": "5519e4102233b606c1cdca3f4fabf83b31233a7e0604d50597d9c36fc98092e6",
       "disposition": "reworded",
       "destination": "references/guides/migration-catalog.json",
-      "note": "After all required baselines and ordered actions, retain source/candidate/install/catalog/context identities and actual pre-stamp checks. Append exactly once the candidate-only preparation event to its existing root history carrier, preserving the entire old byte prefix and any separate structural-adoption entry. Append the exact UTF-8 preparation suffix with one leading LF and final LF. `\\n## {date} \u00b7 Compact migration candidate\\n\\n- Prepared candidate: operation {operation_id}; source sha256 {source_sha256}; target Tackle {target_methodology}; catalog revision {revision}.\\n`. The displayed \\n denotes an actual LF. Use the validated context date, manifest-bound 64-hex operation_id/source_sha256, and validated pinned catalog semver target_methodology/positive integer revision, not caller text. It records candidate preparation only, never adoption, Ready or acceptance; a quoted/fenced occurrence is not the event. Validate actual unfenced Full dates in nondecreasing order and reconcile only exact pre-append identity or expected suffix/postinventory; missing/ambiguous history is pending and Lite gains no Full carrier. Then deliberately stamp the candidate, run distinct post-stamp checks and freeze it. Adopt only the validated copy at an evidenced task boundary with independent semantic/boundary admission, rechecked original/candidate/install/catalog/evidence hashes and actual cooperating locks before durable same-filesystem rename. Preserve checkpoint/original backup, record exact mappings/checks/revisions/rollback result, and reconcile interruptions only from matching physical inventories; conflicts hold without overwrite or cleanup. Restore only an unchanged adopted workspace through its verified sibling stage. A completed repeat validates its recorded physical/admission identity and changes no bytes. Last, set the `**Methodology: Tackle 10.3.1**` line in the candidate AGENTS.md only after the baseline covers every Complete task. Then run `python3 -I scripts/lint.py <slug>` again and expect 19 of 19 rows silent, retaining non-gating WARN exceptions. From now on row 14 requires that line in each Complete report. The stamped candidate remains unadopted until separate verified cutover; the source stamp is never silently changed. This target keeps `tackle-workspace/5` and adds no required workspace field; supported structural adapters act only on actual older source structure, not on an old stamp alone.",
+      "note": "After all required baselines and ordered actions, retain source/candidate/install/catalog/context identities and actual pre-stamp checks. Append exactly once the candidate-only preparation event to its existing root history carrier, preserving the entire old byte prefix and any separate structural-adoption entry. Append the exact UTF-8 preparation suffix with one leading LF and final LF. `\\n## {date} \u00b7 Compact migration candidate\\n\\n- Prepared candidate: operation {operation_id}; source sha256 {source_sha256}; target Tackle {target_methodology}; catalog revision {revision}.\\n`. The displayed \\n denotes an actual LF. Use the validated context date, manifest-bound 64-hex operation_id/source_sha256, and validated pinned catalog semver target_methodology/positive integer revision, not caller text. It records candidate preparation only, never adoption, Ready or acceptance; a quoted/fenced occurrence is not the event. Validate actual unfenced Full dates in nondecreasing order and reconcile only exact pre-append identity or expected suffix/postinventory; missing/ambiguous history is pending and Lite gains no Full carrier. Then deliberately stamp the candidate, run distinct post-stamp checks and freeze it. Adopt only the validated copy at an evidenced task boundary with independent semantic/boundary admission, rechecked original/candidate/install/catalog/evidence hashes and actual cooperating locks before durable same-filesystem rename. Preserve checkpoint/original backup, record exact mappings/checks/revisions/rollback result, and reconcile interruptions only from matching physical inventories; conflicts hold without overwrite or cleanup. Restore only an unchanged adopted workspace through its verified sibling stage. A completed repeat validates its recorded physical/admission identity and changes no bytes. Last, set the `**Methodology: Tackle 10.4.0**` line in the candidate AGENTS.md only after the baseline covers every Complete task. Then run `python3 -I scripts/lint.py <slug>` again and expect 19 of 19 rows silent, retaining non-gating WARN exceptions. From now on row 14 requires that line in each Complete report. The stamped candidate remains unadopted until separate verified cutover; the source stamp is never silently changed. This target keeps `tackle-workspace/5` and adds no required workspace field; supported structural adapters act only on actual older source structure, not on an old stamp alone.",
       "destination_unit_sha256": null
     },
     {
@@ -19933,7 +19933,7 @@
       "unit_sha256": "9deccb59e649367c15dbea01bd40feac4782c7ba65bba7bd907eb0173d24522b",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
-      "note": "| [migrate/compact.py](migrate/compact.py) | `62f0e53d5e6993eda62209f728fcbf7df5aff47830a39660401dba8884ee7cd3` |",
+      "note": "| [migrate/compact.py](migrate/compact.py) | `d37db8798f1bca9a5ab613f4867b1d88aa9cbf7cd4fee243f3fc433068ec016c` |",
       "destination_unit_sha256": null
     },
     {
@@ -20023,7 +20023,7 @@
       "unit_sha256": "cf1414f860581f30704d0b16015a1f283dbf6cdb681f730c2b79bac54f0c1be2",
       "disposition": "reworded",
       "destination": "references/guides/migrate.md",
-      "note": "The installed catalog is the sole active route from supported workspace structure to Tackle 10.3.1.",
+      "note": "The installed catalog is the sole active route from supported workspace structure to Tackle 10.4.0.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -20038,7 +20038,7 @@
       "unit_sha256": "3514bd8498436525d27d27c4b1c1bfd2e4c6a6aabe2ee827f4532a9af6968064",
       "disposition": "reworded",
       "destination": "references/guides/migrate.md",
-      "note": "```text python3 -I -B <installed-scripts>/migrate/compact.py diagnose --workspace <ABS_SOURCE> --target 10.3.1 --context <ABS_CONTEXT_JSON> --output <ABS_NEW_MANIFEST> python3 -I -B <installed-scripts>/migrate/compact.py prepare --manifest <ABS_MANIFEST> --job <ABS_JOB> python3 -I -B <installed-scripts>/migrate/compact.py verify --job <ABS_JOB> python3 -I -B <installed-scripts>/migrate/compact.py adopt --job <ABS_JOB> python3 -I -B <installed-scripts>/migrate/compact.py restore --job <ABS_JOB> ```",
+      "note": "```text python3 -I -B <installed-scripts>/migrate/compact.py diagnose --workspace <ABS_SOURCE> --target 10.4.0 --context <ABS_CONTEXT_JSON> --output <ABS_NEW_MANIFEST> python3 -I -B <installed-scripts>/migrate/compact.py prepare --manifest <ABS_MANIFEST> --job <ABS_JOB> python3 -I -B <installed-scripts>/migrate/compact.py verify --job <ABS_JOB> python3 -I -B <installed-scripts>/migrate/compact.py adopt --job <ABS_JOB> python3 -I -B <installed-scripts>/migrate/compact.py restore --job <ABS_JOB> ```",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -20053,7 +20053,7 @@
       "unit_sha256": "e0ce8695e4d6526cc7f25e005771937d0de2fdf3f069ff97d0358fcae60f1184",
       "disposition": "reworded",
       "destination": "references/guides/migration-catalog.json",
-      "note": "Last, set the `**Methodology: Tackle 10.3.1**` line in the candidate AGENTS.md only after the baseline covers every Complete task.",
+      "note": "Last, set the `**Methodology: Tackle 10.4.0**` line in the candidate AGENTS.md only after the baseline covers every Complete task.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -20068,7 +20068,7 @@
       "unit_sha256": "a469005aa7c118129bce754bcc07575bd48c7cdced271188c6d8d2ad14b53ceb",
       "disposition": "reworded",
       "destination": "MAINTAINING.md",
-      "note": "The installed migration catalog is the current route from supported workspace structures to 10.3.1.",
+      "note": "The installed migration catalog is the current route from supported workspace structures to 10.4.0.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -20101,7 +20101,7 @@
       "unit_sha256": "46e8079f4bcd8647db25e8c95559e63298389ed9e8a85381e6b88dd84419854b",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
-      "note": "| [migrate/compact.py](migrate/compact.py) | `62f0e53d5e6993eda62209f728fcbf7df5aff47830a39660401dba8884ee7cd3` |",
+      "note": "| [migrate/compact.py](migrate/compact.py) | `d37db8798f1bca9a5ab613f4867b1d88aa9cbf7cd4fee243f3fc433068ec016c` |",
       "destination_unit_sha256": null
     },
     {
@@ -20342,6 +20342,82 @@
         {
           "token": "10.3",
           "reason": "release version stamp bumped to 10.4.0"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 28,
+      "unit_sha256": "2a61fd74ed497bca85b57c4cf54cecdf6e105c5a84cdd35bf84a148ce5616740",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "The installed catalog is the sole active route from supported workspace structure to Tackle 10.4.0.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "1",
+          "reason": "migration catalog target bumped to 10.4.0"
+        },
+        {
+          "token": "10.3",
+          "reason": "migration catalog target bumped to 10.4.0"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/migrate.md",
+      "line": 34,
+      "unit_sha256": "d7e4bc067849deac65a4ef6c847695d863c6bd2ca8825f8e53c7ec7e0c7ab82f",
+      "disposition": "reworded",
+      "destination": "references/guides/migrate.md",
+      "note": "```text python3 -I -B <installed-scripts>/migrate/compact.py diagnose --workspace <ABS_SOURCE> --target 10.4.0 --context <ABS_CONTEXT_JSON> --output <ABS_NEW_MANIFEST> python3 -I -B <installed-scripts>/migrate/compact.py prepare --manifest <ABS_MANIFEST> --job <ABS_JOB> python3 -I -B <installed-scripts>/migrate/compact.py verify --job <ABS_JOB> python3 -I -B <installed-scripts>/migrate/compact.py adopt --job <ABS_JOB> python3 -I -B <installed-scripts>/migrate/compact.py restore --job <ABS_JOB> ```",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "1",
+          "reason": "migration catalog target bumped to 10.4.0"
+        },
+        {
+          "token": "10.3",
+          "reason": "migration catalog target bumped to 10.4.0"
+        }
+      ]
+    },
+    {
+      "path": "references/guides/migration-catalog.json",
+      "line": 1,
+      "unit_sha256": "5bb6d2b4f9ef060ab89171f57f03e6419a967966e3e06803b5286f19c3d50254",
+      "disposition": "reworded",
+      "destination": "references/guides/migration-catalog.json",
+      "note": "Last, set the `**Methodology: Tackle 10.4.0**` line in the candidate AGENTS.md only after the baseline covers every Complete task.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "1",
+          "reason": "migration catalog target bumped to 10.4.0"
+        },
+        {
+          "token": "10.3",
+          "reason": "migration catalog target bumped to 10.4.0"
+        }
+      ]
+    },
+    {
+      "path": "MAINTAINING.md",
+      "line": 9,
+      "unit_sha256": "98914b989c9d8a80005ae8cfd054bf23d0d6ffb5779e5dae880bf80d906380a0",
+      "disposition": "reworded",
+      "destination": "MAINTAINING.md",
+      "note": "The installed migration catalog is the current route from supported workspace structures to 10.4.0.",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "1",
+          "reason": "migration catalog target bumped to 10.4.0"
+        },
+        {
+          "token": "10.3",
+          "reason": "migration catalog target bumped to 10.4.0"
         }
       ]
     }
