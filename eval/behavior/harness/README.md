@@ -725,3 +725,37 @@ evidence directories. `TACKLE_ISOLATED_TEST_EVIDENCE_ROOT` selects the trusted
 absolute evidence destination; retention fails above 1 GiB or 4096 files and
 rejects symlinks, nonregular files and multiple hard links. Source simulation
 receipts cannot establish a Docker/kernel boundary or live readiness.
+
+## Codex login route
+
+`codex_login_route.py` runs Codex with a copied login in a temporary session
+home, without loading the account's configuration. The configured sandbox
+profile denies access to the repository parent, account configuration and
+login copy; the participant can write its work tree and session temporary
+directory. The route retains session rollouts for token accounting and scans
+streams and files before retention. Account identifiers are replaced in
+retained evidence; credential hits invalidate and withhold the session.
+
+```sh
+python3 -I eval/behavior/harness/codex_login_route.py probe --config <file> --repo <dir> --workspace <dir> --install <dir> --out <dir>
+python3 -I eval/behavior/harness/codex_login_route.py run --config <file> --cohort <dir> --repo <dir> [--install <dir>] --out <dir> --stage development|heldout --probe <dir>
+python3 -I eval/behavior/harness/codex_login_route.py judge --config <file> --oracle <dir> --final <dir> --transcript <file>
+```
+
+The untracked JSON configuration supplies absolute paths `codex_cli`,
+`node_dir`, `login_file`, `run_root`, `state_dir` and `launcher`; the pinned
+`expected_version`, `model`, `effort`, `child_path`, and `deny_extra`; token
+`caps` for `probe`, `development` and `heldout`; `reservation_tokens`,
+`headroom_tokens`, `session_seconds`; and `oracle` with `python`, `seconds` and
+optional `denied_prefixes`. Each session reserves tokens before launch, settles
+the recorded total or its reservation when usage is absent, and is stopped if
+live usage crosses the stage cap. A passing probe bound to the configuration
+and CLI version is required before a run. The offline test uses a synthetic CLI.
+The `deny_extra` list must deny both `/tmp` and `/private/tmp` to remove the
+inherited global temporary-directory write grant. The probe attempts both
+paths, removes any probe files and retains per-arm boundary exit statuses.
+Token usage is sampled at least every 50 ms and the session is killed at the
+first observed crossing. The final settled total determines the overshoot;
+sampling does not establish a bound of one model call. Configure headroom at
+least twice the largest observed model call. Interrupted episodes are recorded
+before exit, and record-bound credentials are refused before session launch.
