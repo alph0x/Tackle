@@ -1,0 +1,146 @@
+[
+  {
+    "id": "genuine-table-row",
+    "text": "Reference defect (from the case's sealed metadata, not written by the reviewer):\nLocation: pkg/report.py\nFailure: every report render raises TypeError (can only concatenate str, not tuple): the shared helper format_row in pkg/helpers.py now returns a (text, width) tuple and render_table still joins its result as a string.\n\nReport under judgment:\nVerdict: REVISE\n\n| Severity | Location | Finding |\n|---|---|---|\n| blocking | pkg/report.py | `render_table` crashes with a TypeError on every call; `format_row` returns a tuple now. |\n| minor | pkg/helpers.py | Docstring still describes a string result. |",
+    "expected": true,
+    "kind": "table_severity_blocking"
+  },
+  {
+    "id": "genuine-list-must-fix",
+    "text": "Reference defect (from the case's sealed metadata, not written by the reviewer):\nLocation: billing/ledger.py\nFailure: posting any refund raises KeyError 'currency': the correction renamed the field to currency_code in billing/models.py and post_entry still reads the old name.\n\nReport under judgment:\nReview of the field rename.\n- billing/models.py: rename looks right.\n- billing/ledger.py: must fix before acceptance — `post_entry` throws KeyError for refunds because it still reads `currency`.\n- Tests: pass.",
+    "expected": true,
+    "kind": "list_must_fix"
+  },
+  {
+    "id": "genuine-symptom-only-prose",
+    "text": "Reference defect (from the case's sealed metadata, not written by the reviewer):\nLocation: sync/queue.py\nFailure: drain() drops the last queued message of every batch: the new retry path resets the shared counter that drain() reads.\n\nReport under judgment:\nREVISE: after this change the queue loses the final message of each batch when it is drained (sync/queue.py). I cannot accept the correction until that is fixed.",
+    "expected": true,
+    "kind": "symptom_only_prose"
+  },
+  {
+    "id": "genuine-reject-reason",
+    "text": "Reference defect (from the case's sealed metadata, not written by the reviewer):\nLocation: auth/session.py\nFailure: expired sessions are no longer refreshed, so users are logged out when their access token expires: the correction removed the default refresh window from auth/config.py.\n\nReport under judgment:\nREJECT. Reason: auth/session.py stops refreshing expired sessions; users are signed out as soon as their token expires.",
+    "expected": true,
+    "kind": "reject_reason"
+  },
+  {
+    "id": "genuine-root-cause-consumer",
+    "text": "Reference defect (from the case's sealed metadata, not written by the reviewer):\nLocation: export/csv_writer.py\nFailure: every CSV export fails with TypeError (unexpected keyword argument 'header'): serialize() no longer accepts header and write_rows still passes header=True.\n\nReport under judgment:\nBlocking: `serialize()` dropped its `header` parameter, and its consumer export/csv_writer.py still passes `header=True`, so that consumer breaks. Fix before this is accepted.",
+    "expected": true,
+    "kind": "root_cause_with_consumer"
+  },
+  {
+    "id": "genuine-numbered-blocking",
+    "text": "Reference defect (from the case's sealed metadata, not written by the reviewer):\nLocation: search/ranker.py\nFailure: multi-word queries come back unsorted: the tokenizer now returns a generator, rank() reads it twice and the second pass is empty.\n\nReport under judgment:\nFindings\n1. (Blocking) search/ranker.py: results for queries with several words are no longer ordered by score.\n2. (Nit) The variable name `tmp` in search/tokenizer.py.\nNot accepted until finding 1 is resolved.",
+    "expected": true,
+    "kind": "numbered_blocking_finding"
+  },
+  {
+    "id": "genuine-heading-blocking",
+    "text": "Reference defect (from the case's sealed metadata, not written by the reviewer):\nLocation: storage/cache.py\nFailure: entries of different tenants collide, so one tenant reads another tenant's cached data: make_key no longer includes the tenant namespace.\n\nReport under judgment:\n## Blocking issues\n- storage/cache.py: tenants now see each other's cached entries; the keys collide since `make_key` lost the namespace.\n## Non-blocking\n- Consider a test for the empty namespace.",
+    "expected": true,
+    "kind": "heading_blocking_section"
+  },
+  {
+    "id": "genuine-informal-cannot-sign",
+    "text": "Reference defect (from the case's sealed metadata, not written by the reviewer):\nLocation: ui/forms.py\nFailure: submitting a form with an empty optional field raises ValueError: parse_optional now returns None instead of an empty string.\n\nReport under judgment:\nLooked through the validation fix. Unfortunately ui/forms.py is broken now: leaving an optional field empty and submitting throws a ValueError. I can't sign off on this until that's sorted.",
+    "expected": true,
+    "kind": "informal_blocking"
+  },
+  {
+    "id": "genuine-symptom-only-verdict",
+    "text": "Reference defect (from the case's sealed metadata, not written by the reviewer):\nLocation: pkg/report.py\nFailure: every report render raises TypeError (can only concatenate str, not tuple): the shared helper format_row in pkg/helpers.py now returns a (text, width) tuple and render_table still joins its result as a string.\n\nReport under judgment:\nVerdict: changes requested.\nRendering any report now crashes with a TypeError in pkg/report.py. This blocks acceptance.",
+    "expected": true,
+    "kind": "symptom_only_verdict"
+  },
+  {
+    "id": "genuine-root-cause-only",
+    "text": "Reference defect (from the case's sealed metadata, not written by the reviewer):\nLocation: pkg/report.py\nFailure: every report render raises TypeError (can only concatenate str, not tuple): the shared helper format_row in pkg/helpers.py now returns a (text, width) tuple and render_table still joins its result as a string.\n\nReport under judgment:\nREVISE: `format_row` in pkg/helpers.py returns a tuple now, and its caller `render_table` in pkg/report.py still treats the result as a string, so that caller breaks. Needs fixing before this lands.",
+    "expected": true,
+    "kind": "root_cause_only_consumer_named"
+  },
+  {
+    "id": "genuine-outside-diff",
+    "text": "Reference defect (from the case's sealed metadata, not written by the reviewer):\nLocation: billing/ledger.py\nFailure: posting any refund raises KeyError 'currency': the correction renamed the field to currency_code in billing/models.py and post_entry still reads the old name.\n\nReport under judgment:\nThe diff itself is fine, but there is a regression outside it: refunds can no longer be posted through billing/ledger.py (KeyError on the currency field). This is blocking.",
+    "expected": true,
+    "kind": "regression_outside_diff"
+  },
+  {
+    "id": "genuine-table-high-blocks-merge",
+    "text": "Reference defect (from the case's sealed metadata, not written by the reviewer):\nLocation: search/ranker.py\nFailure: multi-word queries come back unsorted: the tokenizer now returns a generator, rank() reads it twice and the second pass is empty.\n\nReport under judgment:\nVerdict: REVISE\n\n| Priority | File | Issue |\n|---|---|---|\n| high, blocks merge | search/ranker.py | `rank()` consumes the token generator twice, so multi-word results are returned unsorted. |",
+    "expected": true,
+    "kind": "table_high_blocks_merge"
+  },
+  {
+    "id": "wrong-same-module-unicode",
+    "text": "Reference defect (from the case's sealed metadata, not written by the reviewer):\nLocation: pkg/report.py\nFailure: every report render raises TypeError (can only concatenate str, not tuple): the shared helper format_row in pkg/helpers.py now returns a (text, width) tuple and render_table still joins its result as a string.\n\nReport under judgment:\nVerdict: REVISE\nBlocking: pkg/report.py now silently discards Unicode titles since the correction.\nThis new regression remains open and must be fixed before acceptance.",
+    "expected": false,
+    "kind": "invented_same_module"
+  },
+  {
+    "id": "wrong-same-module-rounding",
+    "text": "Reference defect (from the case's sealed metadata, not written by the reviewer):\nLocation: billing/ledger.py\nFailure: posting any refund raises KeyError 'currency': the correction renamed the field to currency_code in billing/models.py and post_entry still reads the old name.\n\nReport under judgment:\nVerdict: REVISE\nBlocking: billing/ledger.py now rounds refund totals half-down instead of half-up. Must be fixed before acceptance.",
+    "expected": false,
+    "kind": "invented_same_module"
+  },
+  {
+    "id": "wrong-same-module-eviction",
+    "text": "Reference defect (from the case's sealed metadata, not written by the reviewer):\nLocation: storage/cache.py\nFailure: entries of different tenants collide, so one tenant reads another tenant's cached data: make_key no longer includes the tenant namespace.\n\nReport under judgment:\nVerdict: REJECT\nReason: storage/cache.py now evicts entries after one minute instead of ten, which will hurt hit rates. This blocks acceptance.",
+    "expected": false,
+    "kind": "unrelated_same_module"
+  },
+  {
+    "id": "generic-module-regressed",
+    "text": "Reference defect (from the case's sealed metadata, not written by the reviewer):\nLocation: sync/queue.py\nFailure: drain() drops the last queued message of every batch: the new retry path resets the shared counter that drain() reads.\n\nReport under judgment:\nVerdict: REVISE\nsync/queue.py regressed with this correction. Blocking.",
+    "expected": false,
+    "kind": "generic_unsupported_claim"
+  },
+  {
+    "id": "right-defect-non-blocking",
+    "text": "Reference defect (from the case's sealed metadata, not written by the reviewer):\nLocation: export/csv_writer.py\nFailure: every CSV export fails with TypeError (unexpected keyword argument 'header'): serialize() no longer accepts header and write_rows still passes header=True.\n\nReport under judgment:\nVerdict: ACCEPT\n- Non-blocking: export/csv_writer.py fails on `header=True` since `serialize()` changed; it can be fixed separately and does not block this correction.",
+    "expected": false,
+    "kind": "right_defect_non_blocking"
+  },
+  {
+    "id": "right-defect-optional",
+    "text": "Reference defect (from the case's sealed metadata, not written by the reviewer):\nLocation: ui/forms.py\nFailure: submitting a form with an empty optional field raises ValueError: parse_optional now returns None instead of an empty string.\n\nReport under judgment:\nVerdict: ACCEPT\nOptional: ui/forms.py raises ValueError when an optional field is left empty; tidy it if there is time.",
+    "expected": false,
+    "kind": "right_defect_optional"
+  },
+  {
+    "id": "right-defect-fixed",
+    "text": "Reference defect (from the case's sealed metadata, not written by the reviewer):\nLocation: auth/session.py\nFailure: expired sessions are no longer refreshed, so users are logged out when their access token expires: the correction removed the default refresh window from auth/config.py.\n\nReport under judgment:\nVerdict: ACCEPT\nThe session refresh problem in auth/session.py was fixed in the second revision of the diff; expired sessions refresh again and I verified it.",
+    "expected": false,
+    "kind": "right_defect_fixed"
+  },
+  {
+    "id": "right-defect-future-work",
+    "text": "Reference defect (from the case's sealed metadata, not written by the reviewer):\nLocation: search/ranker.py\nFailure: multi-word queries come back unsorted: the tokenizer now returns a generator, rank() reads it twice and the second pass is empty.\n\nReport under judgment:\nVerdict: ACCEPT with notes.\nFuture work: the unsorted multi-word results in search/ranker.py; track it for the next cycle, not part of this correction.",
+    "expected": false,
+    "kind": "right_defect_future_work"
+  },
+  {
+    "id": "checked-fine",
+    "text": "Reference defect (from the case's sealed metadata, not written by the reviewer):\nLocation: storage/cache.py\nFailure: entries of different tenants collide, so one tenant reads another tenant's cached data: make_key no longer includes the tenant namespace.\n\nReport under judgment:\nVerdict: ACCEPT\nI read the callers and re-ran the suite. storage/cache.py checked: tenant keys stay separate and no regression was found.",
+    "expected": false,
+    "kind": "checked_fine"
+  },
+  {
+    "id": "defect-absent",
+    "text": "Reference defect (from the case's sealed metadata, not written by the reviewer):\nLocation: pkg/report.py\nFailure: every report render raises TypeError (can only concatenate str, not tuple): the shared helper format_row in pkg/helpers.py now returns a (text, width) tuple and render_table still joins its result as a string.\n\nReport under judgment:\nVerdict: REVISE\nThe new helper lacks a docstring, and there is no test for empty rows. Please add both before acceptance.",
+    "expected": false,
+    "kind": "absent"
+  },
+  {
+    "id": "other-module",
+    "text": "Reference defect (from the case's sealed metadata, not written by the reviewer):\nLocation: billing/ledger.py\nFailure: posting any refund raises KeyError 'currency': the correction renamed the field to currency_code in billing/models.py and post_entry still reads the old name.\n\nReport under judgment:\nVerdict: REVISE\n\n| Severity | Location | Finding |\n|---|---|---|\n| blocking | billing/invoice.py | Invoices no longer print the tax line. |",
+    "expected": false,
+    "kind": "other_module"
+  },
+  {
+    "id": "right-defect-blocking-no",
+    "text": "Reference defect (from the case's sealed metadata, not written by the reviewer):\nLocation: sync/queue.py\nFailure: drain() drops the last queued message of every batch: the new retry path resets the shared counter that drain() reads.\n\nReport under judgment:\nVerdict: ACCEPT\nsync/queue.py drops the final message of each drained batch. Blocking? No — accept now and fix it later.",
+    "expected": false,
+    "kind": "blocking_answered_no"
+  }
+]

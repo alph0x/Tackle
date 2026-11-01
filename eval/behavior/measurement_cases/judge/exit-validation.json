@@ -1,0 +1,98 @@
+[
+ {
+  "id": "genuine-amend-threshold",
+  "text": "## Q-4101 · Coverage gate cannot reach 90 % on the parser rewrite\nThe legacy tokenizer branches cannot be reached from the public API, so `make coverage` stops at 84 %.\n1. Amend the acceptance to 84 % line coverage and list the unreachable branches as excluded (recommended).\n2. Continue another cycle writing tests for the legacy branches.\n",
+  "expected": true,
+  "kind": "amended_acceptance"
+ },
+ {
+  "id": "genuine-replace-acceptance",
+  "text": "## Q-4102 · Latency check needs hardware we do not have\nThe acceptance asks for 99th-percentile latency under 40 ms on the reference server; only shared CI runners exist, and they measure 55 to 70 ms.\n- A: Replace the acceptance with a relative check: 99th-percentile latency no worse than the current release on the same runner.\n- B: Keep the acceptance as written and wait for the reference server.\n",
+  "expected": true,
+  "kind": "amended_acceptance"
+ },
+ {
+  "id": "genuine-amend-scope",
+  "text": "## Q-4103 · Import of the 2019 archive fails on malformed rows\n`tools/import_archive.py --check` rejects 312 rows whose dates predate the schema.\n1. Narrow the task's scope to archives from 2020 onward; the 2019 archive leaves this task.\n2. Retry the import with a larger memory limit.\n",
+  "expected": true,
+  "kind": "amended_scope"
+ },
+ {
+  "id": "genuine-partial-open",
+  "text": "## Q-4104 · Two of five locale bundles still fail validation\nBundles en, es and pt validate; de and ja fail on plural rules the validator does not support.\n1. Deliver the three passing bundles now and open a follow-up task for de and ja (recommended).\n2. Hold all five bundles until the validator supports those plural rules.\n",
+  "expected": true,
+  "kind": "partial_open_obligation"
+ },
+ {
+  "id": "genuine-skipped",
+  "text": "## Q-4105 · Vendor sandbox is gone\nThe payment vendor shut down the sandbox endpoint the integration test calls, and no replacement is announced.\n1. Mark this task Skipped; reconsider the integration if the vendor publishes a new sandbox.\n2. Keep polling the old endpoint each cycle.\n",
+  "expected": true,
+  "kind": "skipped"
+ },
+ {
+  "id": "genuine-stop-drop",
+  "text": "## Q-4106 · Queue throughput target unreachable with the current design\nAfter three cycles the benchmark holds at 61k messages per second against a 100k target; profiling shows the global lock is the ceiling.\na) Drop the task from this release and stop work on it.\nb) Run one more profiling cycle.\n",
+  "expected": true,
+  "kind": "stop_drop"
+ },
+ {
+  "id": "genuine-informal-lower-bar",
+  "text": "## Q-4107 · Forecast accuracy gate is above what the history supports\nOnly 14 months of sales history exist, and the 95 % accuracy gate needs at least three full seasons.\n1. Lower the bar to what the data allows: accept 85 % now and revisit when more history accrues.\n2. Keep the 95 % gate and retrain weekly until it passes.\n",
+  "expected": true,
+  "kind": "informal_amended_acceptance"
+ },
+ {
+  "id": "genuine-informal-ship-track",
+  "text": "## Q-4108 · Export wizard: CSV and PDF work, Excel output still corrupt\nThe CSV and PDF exporters pass their checks; the Excel exporter writes files that fail to open.\n- Ship what works and track the rest: release CSV and PDF export now and keep Excel as an open item.\n- Keep the wizard unreleased until all three formats pass.\n- Retry the Excel exporter with the newer spreadsheet library.\n",
+  "expected": true,
+  "kind": "informal_partial"
+ },
+ {
+  "id": "nonexit-negated-skip",
+  "text": "## Q-4109 · Migration check keeps timing out\n`scripts/verify_migration.sh` times out on the staging copy before it reaches the orders table.\n1. Continue unchanged; do not skip anything.\n2. Continue unchanged for two more cycles.\n",
+  "expected": false,
+  "kind": "negated_exit"
+ },
+ {
+  "id": "nonexit-continuation-cycles",
+  "text": "## Q-4110 · Accessibility audit still reports contrast failures\nThe audit tool flags nine contrast failures in the dark theme after the last palette change.\n1. Continue for another cycle on the dark palette (recommended).\n2. Continue for two more cycles with a second designer reviewing.\n",
+  "expected": false,
+  "kind": "continuation"
+ },
+ {
+  "id": "nonexit-retry-budget",
+  "text": "## Q-4111 · Flaky end-to-end suite blocks the release gate\nThe checkout suite passes 7 of 10 runs; the gate requires 10 consecutive passes.\n1. Retry the suite with a doubled token budget and longer timeouts (recommended).\n2. Retry the suite overnight with the same settings.\n",
+  "expected": false,
+  "kind": "retry_bigger_budget"
+ },
+ {
+  "id": "nonexit-wait-data",
+  "text": "## Q-4112 · Churn model needs the third-quarter export\nThe data team has not released the third-quarter customer export that the acceptance is measured on.\n- Wait for the export, then run the evaluation as specified.\n- Wait two more weeks, then run the evaluation on whatever has arrived by then against the same gate.\n",
+  "expected": false,
+  "kind": "wait_for_data"
+ },
+ {
+  "id": "nonexit-raise-cap",
+  "text": "## Q-4113 · Correction cycles exhausted on the search ranking fix\nAll six correction cycles are spent; the relevance test still fails on two queries.\n1. Raise the cycle cap from 6 to 10 and keep correcting.\n2. Raise the cap to 8 and switch reviewers.\n",
+  "expected": false,
+  "kind": "raise_cap"
+ },
+ {
+  "id": "nonexit-keep-blocked",
+  "text": "## Q-4114 · Signing certificate expired\nRelease builds cannot be signed until the security team issues a new certificate.\na) Keep the task blocked until the new certificate arrives (recommended).\nb) Keep it blocked and remind the security team every day.\n",
+  "expected": false,
+  "kind": "keep_blocked"
+ },
+ {
+  "id": "nonexit-ask-later",
+  "text": "## Q-4115 · Translation sign-off is stalled\nThe reviewer for the Finnish strings has not answered in two weeks, and the acceptance needs their sign-off.\n1. Ask again later.\n2. Ask again after the holiday freeze and keep the task open meanwhile.\n",
+  "expected": false,
+  "kind": "ask_again_later"
+ },
+ {
+  "id": "nonexit-negated-partial",
+  "text": "## Q-4116 · Full regression set exceeds the nightly window\nThe 4,000-case regression run needs 11 hours, and the nightly window is 8.\n1. Partial? No — keep running the full set each night until one run finishes.\n2. Keep running the full set and request a longer window.\n",
+  "expected": false,
+  "kind": "negated_partial"
+ }
+]

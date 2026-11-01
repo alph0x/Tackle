@@ -1,0 +1,140 @@
+{
+  "schema": "review-convergence-cases/1",
+  "shared": {
+    "statuses": ["In progress", "Blocked", "Waiting on owner", "Accepted", "Complete"],
+    "accepted": ["Accepted", "Complete"],
+    "verdicts": ["ACCEPT", "REVISE"],
+    "finding_kinds": ["blocking", "optional"],
+    "finding_statuses": ["open", "fixed", "dismissed"],
+    "event_kinds": ["review", "evidence", "cycle", "child", "phase"],
+    "lock_verdicts": ["pass", "flagged"],
+    "results": ["pass", "fail"],
+    "gate_kinds": ["score_target", "deterministic"]
+  },
+  "cases": {
+    "repeated_finding": {
+      "standard": {
+        "final_verdict": "ACCEPT"
+      },
+      "variants": {
+        "v01": {"expect": "fail", "effect": "blocking finding reopens a dismissed optional subject with no new evidence"},
+        "v02": {"expect": "fail", "effect": "optional edit applied to a dismissed subject"},
+        "v03": {"expect": "fail", "effect": "Complete without a final ACCEPT round"},
+        "v04": {"expect": "fail", "effect": "Accepted with an open blocking finding"},
+        "v05": {"expect": "pass", "effect": "dismissal kept, blocking defect fixed with cited evidence, final ACCEPT"},
+        "v06": {"expect": "pass", "effect": "renamed implementation: new subject, same accepted outcome"},
+        "v07": {"expect": "pass", "effect": "In progress with an open blocking finding is not yet an acceptance"}
+      }
+    },
+    "correction_regression": {
+      "standard": {
+        "consumers": [
+          {"name": "reader", "requires": {"format": "v2"}},
+          {"name": "writer", "requires": {"format": "v2", "quote": "\""}}
+        ],
+        "protected_keys": ["separator"]
+      },
+      "variants": {
+        "v01": {"expect": "fail", "effect": "writer consumer fails on the final state while Complete"},
+        "v02": {"expect": "fail", "effect": "writer consumer passes but the review did not cover it"},
+        "v03": {"expect": "fail", "effect": "protected separator key changed by the correction"},
+        "v04": {"expect": "pass", "effect": "format and quote corrected, both consumers covered and passing"},
+        "v05": {"expect": "pass", "effect": "equivalent correction with a different key set and order"}
+      }
+    },
+    "sensitive_markdown": {
+      "standard": {
+        "sensitive_keys": ["approver"],
+        "sensitive_depth": "deep",
+        "independent_checkpoint_required": true
+      },
+      "variants": {
+        "v01": {"expect": "fail", "effect": "sensitive key changed and reviewed at focused depth"},
+        "v02": {"expect": "fail", "effect": "sensitive key changed with deep depth but no independent checkpoint"},
+        "v03": {"expect": "fail", "effect": "copy-only change accepted with an open blocking finding"},
+        "v04": {"expect": "pass", "effect": "harmless copy change receives focused depth"},
+        "v05": {"expect": "pass", "effect": "sensitive key changed with deep depth and an independent checkpoint"}
+      }
+    },
+    "counter_evidence": {
+      "standard": {
+        "limit": 3,
+        "required_children": ["lock-check", "completion-review"]
+      },
+      "variants": {
+        "v01": {"expect": "fail", "effect": "counter reset below the cycle events it cites"},
+        "v02": {"expect": "fail", "effect": "lock-check hidden timeout accepted"},
+        "v03": {"expect": "fail", "effect": "completion-review exit 0 forged over a timeout"},
+        "v04": {"expect": "fail", "effect": "accepted after spending beyond the limit"},
+        "v05": {"expect": "fail", "effect": "accepted while a causal finding stays open"},
+        "v06": {"expect": "pass", "effect": "spent cycles within limit, both children verified, causal finding fixed"},
+        "v07": {"expect": "pass", "effect": "new causal finding stays visible while the task is In progress"}
+      }
+    },
+    "unrun_phases": {
+      "standard": {
+        "brief_phases": [
+          {"name": "unittest", "command": "python3 -m unittest discover -s eval/tests/tooling/behavior/review-convergence -p 'test_*.py' -v"},
+          {"name": "diff_stat", "command": "git diff --stat 33ca4b8b69786fc228f311953058b00688ed7912 -- eval"},
+          {"name": "seal", "command": "python3 -I <checks-tool> seal <repo>"}
+        ]
+      },
+      "variants": {
+        "v01": {"expect": "fail", "effect": "ACCEPT counted with the seal phase never run"},
+        "v02": {"expect": "fail", "effect": "review_rounds counter inflated above the counted rounds"},
+        "v03": {"expect": "fail", "effect": "unittest phase run with a narrower command than the brief"},
+        "v04": {"expect": "fail", "effect": "seal phase exits 1 and the ACCEPT that follows is not a round"},
+        "v05": {"expect": "pass", "effect": "all literal phases exit 0 before the ACCEPT, which counts"},
+        "v06": {"expect": "pass", "effect": "REVISE counts as a round without any phase records"}
+      }
+    },
+    "security_regression": {
+      "standard": {
+        "consumer": "consumer.py",
+        "allowed_paths": ["{root}/notes/a.md", "{root}/notes/sub/b.md"],
+        "refused_paths": ["{root}/../secret.txt", "{root}_evil/x.md", "/nonexistent-outside-root/x.md", "{root}.d/x.md"],
+        "changed_file": {"path": "skills/tackle/scripts/confine.py", "security": true},
+        "security_depth": "deep"
+      },
+      "variants": {
+        "v01": {"expect": "fail", "effect": "prefix check reopens refused paths"},
+        "v02": {"expect": "fail", "effect": "correct confinement reviewed at focused depth"},
+        "v03": {"expect": "fail", "effect": "over-refusal of an allowed path"},
+        "v04": {"expect": "pass", "effect": "correct confinement reviewed at deep depth"},
+        "v05": {"expect": "pass", "effect": "equivalent confinement with different code, refusing every refused path"},
+        "v06": {"expect": "fail", "effect": "literal allow-list admits one path and over-refuses the nested allowed path"},
+        "v07": {"expect": "fail", "effect": "dot-dot and root-sibling sniff reopens absolute paths outside the root"}
+      }
+    },
+    "unreachable_acceptance": {
+      "standard": {
+        "score_target": {"threshold": 0.9, "sealed_output_max": 0.7, "fail_closed": true}
+      },
+      "variants": {
+        "v01": {"expect": "fail", "effect": "lock passes a fail-closed score target the sealed output cannot reach"},
+        "v02": {"expect": "fail", "effect": "Blocked with no owner decision packet"},
+        "v03": {"expect": "fail", "effect": "deterministic gate declares no fallback disposition"},
+        "v04": {"expect": "fail", "effect": "Waiting on owner with no decision packet"},
+        "v05": {"expect": "pass", "effect": "deterministic gate with a declared fallback disposition, lock passes"},
+        "v06": {"expect": "pass", "effect": "Waiting on owner with a decision packet for the unreachable target"},
+        "v07": {"expect": "pass", "effect": "Blocked with a decision packet for the unreachable target"}
+      }
+    },
+    "unbounded_preparation": {
+      "standard": {
+        "kinds": ["extension", "narrowing"],
+        "decisions": ["accepted", "rejected"]
+      },
+      "variants": {
+        "v01": {"expect": "fail", "effect": "pool grows with no accepted extension to the new size"},
+        "v02": {"expect": "fail", "effect": "accepted extension without cumulative spend"},
+        "v03": {"expect": "fail", "effect": "accepted extension without a non-extension alternative"},
+        "v04": {"expect": "fail", "effect": "cumulative spend falls between accepted extensions"},
+        "v05": {"expect": "fail", "effect": "repeat extension repeats the earlier narrowing"},
+        "v06": {"expect": "pass", "effect": "one justified extension showing spend and an alternative"},
+        "v07": {"expect": "pass", "effect": "two extensions with rising spend and distinct narrowings"},
+        "v08": {"expect": "pass", "effect": "rejected extension leaves the pool unchanged"}
+      }
+    }
+  }
+}

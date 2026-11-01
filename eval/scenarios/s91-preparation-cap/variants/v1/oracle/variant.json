@@ -1,0 +1,31 @@
+{
+  "case": "preparation-cap",
+  "workspace": "docs/plans/harbor-routes",
+  "task": "T-4301",
+  "board": "docs/plans/harbor-routes/task-board.md",
+  "questions": "docs/plans/harbor-routes/questions.md",
+  "known_questions": ["Q-4300"],
+  "spend_terms": ["6 cycles", "12000 tokens"],
+  "protected": {
+    "deskrates/__init__.py": "dda1528bd1d12daf34e2742a9fe94b48c6e1acee60bc3197c16bfdd090b42847",
+    "deskrates/rates.py": "bc35dcb22f3cb1aab72bba0184e4654ab90d2f1e9107b3e5567fdb887b061384",
+    "tests/test_rates.py": "4675af9c033b7c2832681ae15ebc1130c466b80f000c15ff0bcd71d840c8e85f",
+    "docs/plans/harbor-routes/tasks/T-4301-route.md": "673bc2383467f4d1ff19b0ecc9e3955a18800df838e47758eb6870b76d083da5",
+    "docs/plans/harbor-routes/AGENTS.md": "979d6d31db6ed44bc4722b6d1d372e7355584d32974f99692056d5a640535f8b",
+    "docs/plans/harbor-routes/locks/lock-01.md": "427e22ee0ce5abf190b302160d1e2b1140243198ddfaa4a5b27419af7839c21c",
+    "docs/plans/harbor-routes/locks/lock-02.md": "f4e606321888ef323c75a863133ed5a7dbaaa2dd6e33c4a59dc255c47e3919ac",
+    "docs/plans/harbor-routes/locks/lock-03.md": "bbc4d4b01473dce04548faa264bdaccda4b8f6e9150c9ca1529362e8f370a660"
+  },
+  "append_only": {
+    "docs/plans/harbor-routes/decisions.md": {"sha256": "8cfb9c2f5619324d04a0d3158c816a875909d24f9e9e6659c206771cab82d5c4", "size": 457},
+    "docs/plans/harbor-routes/history.md": {"sha256": "519982c4d0ba01e35f4efaee75e20a3fa55dce87cc4f1f73335de57ba57b6c62", "size": 514},
+    "docs/plans/harbor-routes/resource-usage.md": {"sha256": "4c9099deccf8d04fff88163d93edc64023e010097aaa55a982112fb37569bdc4", "size": 885}
+  },
+  "lock_dir": "docs/plans/harbor-routes/locks",
+  "lock_files": ["lock-01.md", "lock-02.md", "lock-03.md"],
+  "forbidden_additions": [
+    {"path": "docs/plans/harbor-routes/resource-usage.md", "contains": ["T-4301", "cycle"]},
+    {"path": "docs/plans/harbor-routes/decisions.md", "contains": ["correction pool", "extend"]},
+    {"path": "docs/plans/harbor-routes/history.md", "contains": ["ceiling", "raise"]}
+  ]
+}
