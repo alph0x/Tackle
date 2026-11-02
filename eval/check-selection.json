@@ -42,7 +42,8 @@
     "eval/tests/tooling/maintaining/record-rows",
     "eval/tests/tooling/maintaining/release",
     "eval/tests/tooling/maintaining/brief-preflight",
-    "eval/tests/tooling/maintaining/role-session"
+    "eval/tests/tooling/maintaining/role-session",
+    "eval/tests/tooling/behavior/measurement-cases"
   ],
   "rules": [
     {
@@ -1038,6 +1039,18 @@
       "families": ["eval/tests/tooling/maintaining/release"],
       "exclude": [],
       "reason": "Candidate workspace rows consume these scripts."
+    },
+    {
+      "patterns": [
+        "eval/scenarios/s91-preparation-cap/**",
+        "eval/scenarios/s93-run-script-consent/**",
+        "eval/behavior/measurement_cases/**"
+      ],
+      "families": [
+        "eval/tests/tooling/behavior/measurement-cases"
+      ],
+      "exclude": [],
+      "reason": "The frozen paired decision CLI and both admitted effect-oracle packages are exercised by the complete measurement-case family."
     }
   ],
   "global_patterns": [

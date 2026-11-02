@@ -540,6 +540,17 @@
       "source": "maintaining/role_session_check.py",
       "category": "tooling",
       "purpose": "Role transcript identity, forwarding and confinement checks."
+    },
+    {
+      "path": "eval/tests/tooling/behavior/measurement-cases",
+      "files": [
+        "test_cases.py",
+        "test_rule.py"
+      ],
+      "tests": 9,
+      "source": "eval/behavior/measurement_cases",
+      "category": "tooling",
+      "purpose": "Sequential paired decisions, curtailment and malformed-prefix rejection; preparation and script-consent effect oracles reject planted faults, accept valid alternatives, preserve final trees and extract semantic questions."
     }
   ]
 }
