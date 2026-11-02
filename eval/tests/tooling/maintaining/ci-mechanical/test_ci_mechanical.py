@@ -65,3 +65,14 @@ class MechanicalChecks(unittest.TestCase):
                 self.assertNotIn('__ci_mechanical_trace__', result.stdout + result.stderr)
                 if status:
                     self.assertIn('at: false', result.stderr)
+
+    def test_relative_repo_matches_absolute(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp) / 'repo'
+            ci = root / '.github/workflows/ci.yml'
+            ci.parent.mkdir(parents=True)
+            ci.write_text('steps:\n  - name: Run the documented mechanical release checks\n    run: |\n      exit 7\n')
+            command = ['python3', '-I', '-B', str(SCRIPT), '--repo']
+            absolute = subprocess.run(command + [str(root)], cwd=temp, capture_output=True)
+            relative = subprocess.run(command + ['repo'], cwd=temp, capture_output=True)
+            self.assertEqual((absolute.returncode, absolute.stderr), (relative.returncode, relative.stderr))

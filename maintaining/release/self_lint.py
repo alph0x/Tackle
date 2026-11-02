@@ -9,6 +9,7 @@ parser=argparse.ArgumentParser()
 parser.add_argument('--config',required=True)
 for name in ('repo','workspace','candidate','records','version','interpreter'):parser.add_argument('--'+name,required=True)
 args=parser.parse_args();
+support.absolute(args, ('config', 'repo', 'workspace', 'records', 'interpreter'))
 _config_spec=importlib.util.spec_from_file_location('release_config',Path(__file__).with_name('config.py'));config=importlib.util.module_from_spec(_config_spec);_config_spec.loader.exec_module(config);cfg=config.load(args.config)
 if args.version != cfg['version'] or Path(args.workspace).resolve() != Path(cfg['workspace']).resolve():raise SystemExit('configuration version or workspace mismatch')
 if Path(args.interpreter).resolve() != Path(cfg['runtimes']['py310']['path']).resolve() or not config.runtime_ok(cfg,'py310',support.probe(args.interpreter)['version']):raise SystemExit('runtime mismatch')

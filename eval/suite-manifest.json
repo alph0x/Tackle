@@ -288,12 +288,13 @@
         "test_controlled_route.py",
         "test_neutral_probe.py",
         "test_install_scripts.py",
-        "test_codex_login_route.py"
+        "test_codex_login_route.py",
+        "test_native_session_usage.py"
       ],
-      "tests": 493,
+      "tests": 503,
       "source": "eval/behavior/harness",
       "category": "tooling",
-      "purpose": "Agent adapters, usage parsing, broker isolation, harness commands, the subscription route (isolation, judging, records, loopback request parsing and interruption cleanup) and the JEV secondary signal (calibration, sidecar, key containment). GPT synthetic route boundaries, retention, complete tool provenance, request caps, protected loopback observations, protocol recovery, read-only ledger preflight, incomplete-worker refusal and call/result judgment. Controlled offline request history, durable synthetic admission, fixed worker effects, exact stream/source mapping, offline supervisor completion, public reader compatibility and fail-closed live capability refusal. Isolated tool component planning, descriptor file effects and finite nonexecuting engine simulation; independent host lifecycle, strict tool and primitive continuity, stream/retention bounds, monotonic deadlines and exact-owned cleanup. Source checks leave native isolation, process census, network topology and live readiness unestablished. Single-tool source-simulation integration through the direct Responses opt-in API, preserving original input bytes and defaults, binding the observed component invocation and exact host observation, projecting typed results, and retaining opaque claims, counts, logical deadlines and original watchdog evidence; no live readiness. Neutral single-attempt component qualification: descriptor-only retained-session status, persistent request fence/deadline, stateless public wire and bounded SSE terminal consumer. Synthetic auth/transports only; no included-plan entitlement or live activation proof. Install tree reading, staging and digests: scripts/ read, staged and digested when present, earlier release digests unchanged, symlinked scripts/ refused."
+      "purpose": "Agent adapters, usage parsing, broker isolation, harness commands, the subscription route (isolation, judging, records, loopback request parsing and interruption cleanup) and the JEV secondary signal (calibration, sidecar, key containment). GPT synthetic route boundaries, retention, complete tool provenance, request caps, protected loopback observations, protocol recovery, read-only ledger preflight, incomplete-worker refusal and call/result judgment. Controlled offline request history, durable synthetic admission, fixed worker effects, exact stream/source mapping, offline supervisor completion, public reader compatibility and fail-closed live capability refusal. Isolated tool component planning, descriptor file effects and finite nonexecuting engine simulation; independent host lifecycle, strict tool and primitive continuity, stream/retention bounds, monotonic deadlines and exact-owned cleanup. Source checks leave native isolation, process census, network topology and live readiness unestablished. Single-tool source-simulation integration through the direct Responses opt-in API, preserving original input bytes and defaults, binding the observed component invocation and exact host observation, projecting typed results, and retaining opaque claims, counts, logical deadlines and original watchdog evidence; no live readiness. Neutral single-attempt component qualification: descriptor-only retained-session status, persistent request fence/deadline, stateless public wire and bounded SSE terminal consumer. Synthetic auth/transports only; no included-plan entitlement or live activation proof. Install tree reading, staging and digests: scripts/ read, staged and digested when present, earlier release digests unchanged, symlinked scripts/ refused. Codex native cumulative accounting groups identities for final and incremental cap monitoring."
     },
     {
       "path": "eval/tests/product/install/inventory",
@@ -355,7 +356,7 @@
         "test_unclosed_fence.py",
         "test_archive_discovery.py"
       ],
-      "tests": 29,
+      "tests": 30,
       "source": "eval/maintaining/field-report",
       "category": "tooling",
       "purpose": "Field-report aggregation, scope and malformed-input refusal. Reserved archive storage and normalized aliases are excluded by actual field-report and extracted maintainer discovery while ordinary hidden and option-shaped workspace names remain valid."
@@ -496,7 +497,7 @@
       "files": [
         "test_ci_mechanical.py"
       ],
-      "tests": 3,
+      "tests": 4,
       "source": "maintaining/ci_mechanical.py",
       "category": "tooling",
       "purpose": "Mechanical workflow block execution and failure attribution on synthetic repositories."
@@ -515,12 +516,30 @@
       "path": "eval/tests/tooling/maintaining/release",
       "files": [
         "test_release_config.py",
-        "test_install_inventory.py"
+        "test_install_inventory.py",
+        "test_absolute_paths.py",
+        "test_candidate_rows.py"
       ],
-      "tests": 6,
+      "tests": 19,
       "source": "maintaining/release/config.py",
       "category": "tooling",
-      "purpose": "Release configuration validation and install inventory and sandbox cleanup on synthetic trees."
+      "purpose": "Release configuration validation and install inventory and sandbox cleanup on synthetic trees. Entry paths and candidate workspace rows."
+    },
+    {
+      "path": "eval/tests/tooling/maintaining/brief-preflight",
+      "files": ["test_brief_preflight.py"],
+      "tests": 15,
+      "source": "maintaining/brief_preflight.py",
+      "category": "tooling",
+      "purpose": "Brief preflight command forms and worktree hygiene."
+    },
+    {
+      "path": "eval/tests/tooling/maintaining/role-session",
+      "files": ["test_role_session_check.py"],
+      "tests": 12,
+      "source": "maintaining/role_session_check.py",
+      "category": "tooling",
+      "purpose": "Role transcript identity, forwarding and confinement checks."
     }
   ]
 }

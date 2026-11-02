@@ -177,3 +177,11 @@ Obtain one independent completion review of the candidate.
 Lock a release tool only when that tool changed.
 Use a reduced recut of notes, catalog with currency, committed text, final registries on the exact new candidate, and one delta review only when the changed prose is consumed solely by the notes, currency and committed-text checks and every omitted phase’s inputs are unchanged; otherwise rerun every affected phase, with final registries always on the exact new candidate.
 Retain install evidence as an inventory of installed files with sizes and hashes, and remove the whole owned sandbox.
+Immediately before the first publication command, after the last workspace record is written, run the workspace lint rows against the candidate tree with the `candidate-rows` phase of `maintaining/release/steps.py`; a gating workspace that fails a mandatory row blocks publication.
+The tools under `maintaining/release/`, `maintaining/ci_mechanical.py`, `maintaining/field_report.py`, `maintaining/brief_preflight.py` and `maintaining/role_session_check.py` make each path argument absolute against the caller's working directory before any other use, and a release configuration names each of its paths absolutely.
+
+## Brief and role-session checks
+
+Before dispatching a task, run `python3 -I -B maintaining/brief_preflight.py scope` on its brief and `worktree` on the executor's checkout, which is created with git's own `worktree add`, never a wrapper that copies ignored content; resolve every finding first.
+Before staging a task's tree, run `python3 -I -B maintaining/brief_preflight.py committed` on it.
+Accept a role session's verdict or report only when `python3 -I -B maintaining/role_session_check.py` exits 0 on its transcript.

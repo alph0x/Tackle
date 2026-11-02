@@ -45,8 +45,14 @@ def block(workflow):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--repo', required=True, type=Path)
+    def path_argument(value):
+        if not value:
+            raise argparse.ArgumentTypeError('empty path argument: --repo')
+        return Path(value)
+    parser.add_argument('--repo', required=True, type=path_argument)
     args = parser.parse_args()
+    if not args.repo.is_absolute():
+        args.repo = Path(os.path.abspath(args.repo))
     try:
         lines = block((args.repo / '.github/workflows/ci.yml').read_text(encoding='utf-8'))
         script = 'set -eu\n' + '\n'.join(lines) + '\n'

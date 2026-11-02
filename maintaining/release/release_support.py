@@ -1,6 +1,19 @@
 """Owned local release processes and explicit candidate/runtime bindings."""
 from pathlib import Path
-import datetime,hashlib,json,os,signal,subprocess,time
+import datetime,hashlib,json,os,signal,subprocess,sys,time
+
+def absolute(args, names):
+    def convert(value, name):
+        if value is None:
+            return None
+        if isinstance(value, list):
+            return [convert(item, name) for item in value]
+        if not value:
+            print('empty path argument: --' + name.replace('_', '-'), file=sys.stderr)
+            raise SystemExit(2)
+        return value if os.path.isabs(value) else os.path.abspath(value)
+    for name in names:
+        setattr(args, name, convert(getattr(args, name), name))
 
 def now():return datetime.datetime.now(datetime.timezone.utc).isoformat()
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()

@@ -6894,6 +6894,76 @@
         "as_of": "2026-10-30"
       },
       "historical": []
+    },
+    {
+      "rule_id": "R-REL-29",
+      "statement": "Immediately before the first publication command, after the last workspace record is written, run the workspace lint rows against the candidate tree with the `candidate-rows` phase of `maintaining/release/steps.py`; a gating workspace that fails a mandatory row blocks publication.",
+      "statement_sha256": "0bca8e23ac1e8300daa383ccb851b7b12acdf82e0c1fe0f1c9aeaf9c06d98ea1",
+      "home": "MAINTAINING.md:180",
+      "home_fragment": "Immediately before the first publication command",
+      "units": [],
+      "mirrors": [],
+      "class": "maintainer",
+      "hot_path": false,
+      "origin": {"added_in": "10.5.0", "trigger": "candidate workspace verification", "discovered_by": []},
+      "evidence": {"status": "untested", "scenarios": [], "cohort_id": null, "as_of": "2026-10-30"},
+      "historical": []
+    },
+    {
+      "rule_id": "R-REL-30",
+      "statement": "The tools under `maintaining/release/`, `maintaining/ci_mechanical.py`, `maintaining/field_report.py`, `maintaining/brief_preflight.py` and `maintaining/role_session_check.py` make each path argument absolute against the caller's working directory before any other use, and a release configuration names each of its paths absolutely.",
+      "statement_sha256": "50f667d774deb630e462db48fe424ff5cbd9a3982a33964f9478af7a4a0b92a4",
+      "home": "MAINTAINING.md:181",
+      "home_fragment": "The tools under `maintaining/release/`",
+      "units": [],
+      "mirrors": [],
+      "class": "maintainer",
+      "hot_path": false,
+      "origin": {"added_in": "10.5.0", "trigger": "maintainer path handling", "discovered_by": []},
+      "evidence": {"status": "untested", "scenarios": [], "cohort_id": null, "as_of": "2026-10-30"},
+      "historical": []
+    },
+    {
+      "rule_id": "R-REL-31",
+      "statement": "Before dispatching a task, run `python3 -I -B maintaining/brief_preflight.py scope` on its brief and `worktree` on the executor's checkout, which is created with git's own `worktree add`, never a wrapper that copies ignored content; resolve every finding first.",
+      "statement_sha256": "1212e5a733c7fff03f658ac7a3a4ff66c34bfa8c4e11d81609f7d2b22cee8334",
+      "home": "MAINTAINING.md:185",
+      "home_fragment": "Before dispatching a task",
+      "units": [],
+      "mirrors": [],
+      "class": "maintainer",
+      "hot_path": false,
+      "origin": {"added_in": "10.5.0", "trigger": "brief and worktree preflight", "discovered_by": []},
+      "evidence": {"status": "untested", "scenarios": [], "cohort_id": null, "as_of": "2026-10-30"},
+      "historical": []
+    },
+    {
+      "rule_id": "R-REL-32",
+      "statement": "Before staging a task's tree, run `python3 -I -B maintaining/brief_preflight.py committed` on it.",
+      "statement_sha256": "bda54db03c320893b7697653337a824cbb93d1421f5bc8784349f5e1c6a9b180",
+      "home": "MAINTAINING.md:186",
+      "home_fragment": "Before staging a task's tree",
+      "units": [],
+      "mirrors": [],
+      "class": "maintainer",
+      "hot_path": false,
+      "origin": {"added_in": "10.5.0", "trigger": "committed text preflight", "discovered_by": []},
+      "evidence": {"status": "untested", "scenarios": [], "cohort_id": null, "as_of": "2026-10-30"},
+      "historical": []
+    },
+    {
+      "rule_id": "R-REL-33",
+      "statement": "Accept a role session's verdict or report only when `python3 -I -B maintaining/role_session_check.py` exits 0 on its transcript.",
+      "statement_sha256": "1c4b9c435a27d70c8ec2de7e7fd6cf0a8fc1ca5128facaa34853ec10dbf9fe59",
+      "home": "MAINTAINING.md:187",
+      "home_fragment": "Accept a role session's verdict or report",
+      "units": [],
+      "mirrors": [],
+      "class": "maintainer",
+      "hot_path": false,
+      "origin": {"added_in": "10.5.0", "trigger": "role transcript acceptance", "discovered_by": []},
+      "evidence": {"status": "untested", "scenarios": [], "cohort_id": null, "as_of": "2026-10-30"},
+      "historical": []
     }
   ],
   "non_normative": [

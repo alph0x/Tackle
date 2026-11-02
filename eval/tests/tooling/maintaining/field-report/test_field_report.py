@@ -73,6 +73,25 @@ class WorkspaceFieldTests(unittest.TestCase):
         self.assertTrue(md_path.is_file())
         return json.loads(json_path.read_text(encoding='utf-8')), md_path.read_text(encoding='utf-8')
 
+    def test_relative_paths_match_absolute(self):
+        cwd = Path(os.path.realpath(self.out))
+        plans_path = Path(os.path.realpath(FIXTURES))
+        repo_path = Path(os.path.realpath(ROOT))
+        plans = os.path.relpath(plans_path, cwd)
+        repo = os.path.relpath(repo_path, cwd)
+        command = [sys.executable, str(SCRIPT), '--since', 'HEAD', '--until', 'HEAD']
+        relative = subprocess.run(command + ['--plans', plans, '--repo', repo, '--json', 'relative.json', '--markdown', 'relative.md'], cwd=cwd, capture_output=True, text=True)
+        absolute = subprocess.run(command + ['--plans', str(plans_path), '--repo', str(repo_path), '--json', str(cwd / 'absolute.json'), '--markdown', str(cwd / 'absolute.md')], cwd=cwd, capture_output=True, text=True)
+        self.assertEqual((relative.returncode, absolute.returncode), (0, 0), relative.stderr + absolute.stderr)
+        self.assertEqual(json.loads((self.out / 'relative.json').read_text()), json.loads((self.out / 'absolute.json').read_text()))
+        self.assertEqual((self.out / 'relative.md').read_text(), (self.out / 'absolute.md').read_text())
+        spelling = str(repo_path.parent / '..' / repo_path.parent.name / repo_path.name)
+        preserved = subprocess.run(command + ['--plans', str(plans_path), '--repo', spelling,
+                                   '--json', str(cwd / 'spelling.json'), '--markdown', str(cwd / 'spelling.md')],
+                                   cwd=cwd, capture_output=True, text=True)
+        self.assertEqual(preserved.returncode, 0, preserved.stderr)
+        self.assertEqual(json.loads((cwd / 'spelling.json').read_text())['repo']['path'], spelling)
+
     # ---- C1: board states, every bucket, legacy emoji and words, ragged/unmapped rows ----
 
     def test_c1_pre3_bucket_and_every_legacy_state(self):
