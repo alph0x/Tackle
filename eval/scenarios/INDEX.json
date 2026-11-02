@@ -3666,11 +3666,11 @@
           "prompts": ["sessions/01.md", "sessions/02.md"],
           "fixture": "fixture",
           "stageable": true,
-          "fixture_sha256": "aae51a9965d5e516240618f81bd05ae35c6379b7edc78edf06b16686d2841726",
+          "fixture_sha256": "10e678488cf6bde3796772415e8cc5cbfa9cdfd0ce85522ad26a71355c9c4cf7",
           "control_exposure": {"install": false, "fragments": []}
         }
       ],
-      "oracle_sha256": "b4572bf9b8cd4023c85452e647313ce957822eed6901c50b1f87e2a14685af48"
+      "oracle_sha256": "7b7cb531921a3ec2626cb1c11da1a80ed79aeccbc32877a1774aac2cce8182e7"
     },
     {
       "scenario_id": "s91-preparation-cap",

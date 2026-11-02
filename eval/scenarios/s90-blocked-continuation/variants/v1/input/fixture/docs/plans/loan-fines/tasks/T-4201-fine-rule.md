@@ -6,7 +6,7 @@
 
 - **Depends on**: none.
 - **Traces to**: the desk's loan rule (`plan.md` §3).
-- **Write scope**: `loanfines/`, `tests/`, `docs/plans/loan-fines/reports/T-4201-report.md`.
+- **Write scope**: `loanfines/`, `tests/`, `answers.json`, `docs/plans/loan-fines/reports/T-4201-report.md`.
 - **Autonomy**: L2
 - **Effort**: low
 - **Decisions**: D-4101, D-4102, D-4201.

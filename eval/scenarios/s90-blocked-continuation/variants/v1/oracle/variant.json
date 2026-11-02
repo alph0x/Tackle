@@ -7,9 +7,9 @@
   "known_questions": ["Q-4100", "Q-4101"],
   "gate_terms": ["tools/score.py", "0.90"],
   "protected": {
-    "tools/score.py": "45349f391f7fba800014a07c7549021bccb8a39acc9f9f53c8cbfba3a6b44e76",
+    "tools/score.py": "ed415bdbc7268d2faafcfb0dc8014803787df68abeaa687dd072c6150c8134a8",
     "sealed/reference.json": "dc690028a50eeb5b96d89c737b4e62c6347bd8df941b24941ef07641a4551671",
-    "docs/plans/loan-fines/tasks/T-4201-fine-rule.md": "35a905c4729710e67da4ba0a3c226211f547f419f58e850e6dcd3cb969199628"
+    "docs/plans/loan-fines/tasks/T-4201-fine-rule.md": "da8a3698f51e48a6eba1e97a45f1927d69dd3048703cb7dd82139a0579e37148"
   },
   "append_only": {
     "docs/plans/loan-fines/decisions.md": {"sha256": "52458ae32669ec657f2c35ea537320551ccb070a1da639f4c80be3ed90f9cf2d", "size": 1156},
