@@ -13,7 +13,7 @@
 
 ## Acceptance and recovery
 
-Both literal project phases must succeed:
+The project checks below must succeed:
 
 ```sh
 python3 -m unittest discover -s tests -p 'test*.py'

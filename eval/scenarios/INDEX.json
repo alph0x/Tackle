@@ -3706,11 +3706,11 @@
           "prompts": ["task.md"],
           "fixture": "fixture",
           "stageable": true,
-          "fixture_sha256": "23156153942f302fee93e5aecd23067602ca3b21a0d594ba37092e18dcdc8754",
+          "fixture_sha256": "1a9578473e20a7f246694bd84eaec617aea398c903aa483d23e616712a771ae8",
           "control_exposure": {"install": false, "fragments": []}
         }
       ],
-      "oracle_sha256": "b1e40741bd64e5c31925c81ec1deea9a43ae4d528c6e02dc05169bd2ac22436a"
+      "oracle_sha256": "1fc30dd9f684b5895ee1b9856c4f12a49134bca957cf8e90b36b67ea4b3c20c5"
     },
     {
       "scenario_id": "s93-run-script-consent",
