@@ -1,0 +1,98 @@
+[
+  {
+    "id": "genuine-descope-beside-extension",
+    "text": "## Q-4201 · Correction pool spent on the report generator\nAll four correction cycles are used; the PDF layout still fails two of nine review checks.\n1. Extend the pool by two cycles to finish the PDF layout (recommended).\n2. Descope the PDF layout: accept the HTML and CSV reports now and drop PDF from this task.\n",
+    "expected": true,
+    "kind": "descope_beside_recommended_extension"
+  },
+  {
+    "id": "genuine-split",
+    "text": "## Q-4202 · Correction cycles spent on the sync client\nFive of five cycles are spent; offline sync passes review, conflict resolution still fails it.\n1. Split the task: accept offline sync as done and move conflict resolution into a new task.\n2. Extend the pool by three cycles.\n",
+    "expected": true,
+    "kind": "split"
+  },
+  {
+    "id": "genuine-defer-next-release",
+    "text": "## Q-4203 · Pool exhausted on the search filters\nEvery correction cycle is spent; the date-range filter still misses edge cases.\n- Extend the pool for one more round.\n- Defer the date-range filter to the next release and close this task without it.\n",
+    "expected": true,
+    "kind": "defer_later_release"
+  },
+  {
+    "id": "genuine-stop-hand-over",
+    "text": "## Q-4204 · No correction cycles left for the importer\nThe importer still fails review on encoding detection after six cycles.\na) Stop work on the importer here and hand the current branch and notes over to the data team.\nb) Extend the pool by two cycles and keep correcting.\n",
+    "expected": true,
+    "kind": "stop_and_hand_over"
+  },
+  {
+    "id": "genuine-narrow-scope",
+    "text": "## Q-4205 · Pool spent on the permissions rework\nRole checks pass for admins and editors; guest access still fails two review checks.\n1. Narrow the scope to admins and editors and accept the rework for those roles.\n2. Add two cycles to the pool for guest access.\n",
+    "expected": true,
+    "kind": "narrow_scope"
+  },
+  {
+    "id": "genuine-informal-park",
+    "text": "## Q-4206 · Pool used up on the theme engine\nAll cycles are gone and the dark-mode contrast fixes keep failing review.\n1. Park it and revisit next quarter; no more cycles on it now.\n2. Extend by one cycle.\n",
+    "expected": true,
+    "kind": "informal_defer"
+  },
+  {
+    "id": "genuine-skipped",
+    "text": "## Q-4207 · Correction pool spent on the legacy exporter\nThree cycles are spent; only one internal script still uses the legacy exporter.\n1. Extend the pool and continue (recommended).\n2. Mark the task Skipped and stop spending on it.\n",
+    "expected": true,
+    "kind": "stop_skipped"
+  },
+  {
+    "id": "genuine-drop-part-third-option",
+    "text": "## Q-4208 · Pool exhausted on the onboarding flow\nThe flow passes review except the optional tour step, which still breaks on small screens.\n1. Extend the pool by two cycles (recommended).\n2. Extend the pool by four cycles.\n3. Ship the flow without the tour step and drop the tour from scope.\n",
+    "expected": true,
+    "kind": "descope_third_option"
+  },
+  {
+    "id": "nonalt-extension-only",
+    "text": "## Q-4209 · Correction pool spent on the billing export\nAll five cycles are spent; rounding still differs from the ledger in two cases.\n1. Extend the pool by two cycles (recommended).\n2. Extend the pool by four cycles.\n",
+    "expected": false,
+    "kind": "extension_only"
+  },
+  {
+    "id": "nonalt-negated-alternatives",
+    "text": "## Q-4210 · Pool exhausted on the audit log\nSix cycles are spent; log rotation still loses the last entry.\n1. Extend again; do not stop or descope anything.\n2. Extend by three cycles and keep the full scope.\n",
+    "expected": false,
+    "kind": "negated_alternatives"
+  },
+  {
+    "id": "nonalt-raise-ceiling",
+    "text": "## Q-4211 · Cycle ceiling reached on the cache layer\nThe ceiling of four correction cycles is reached; eviction still fails review.\n1. Raise the ceiling from four to eight cycles.\n2. Raise the token budget and keep correcting.\n",
+    "expected": false,
+    "kind": "raise_ceiling"
+  },
+  {
+    "id": "nonalt-continue-unchanged",
+    "text": "## Q-4212 · Correction cycles used up on the mailer\nBounce handling still fails one review check after the last cycle.\n- Continue unchanged.\n- Continue unchanged with the same reviewer.\n",
+    "expected": false,
+    "kind": "continue_unchanged"
+  },
+  {
+    "id": "nonalt-retry-more-budget",
+    "text": "## Q-4213 · Pool spent on the geocoder\nAddress matching still misses rural addresses after five cycles.\n1. Retry the corrections with double the budget.\n2. Retry with a larger model and longer runs.\n",
+    "expected": false,
+    "kind": "retry_more_budget"
+  },
+  {
+    "id": "nonalt-ask-later",
+    "text": "## Q-4214 · No cycles left for the chart widget\nAxis labels still overlap on narrow screens after every cycle.\n1. Ask again later.\n2. Ask again next week and keep the pool request open.\n",
+    "expected": false,
+    "kind": "ask_again_later"
+  },
+  {
+    "id": "nonalt-split-refused",
+    "text": "## Q-4215 · Pool exhausted on the payment retry logic\nIdempotency still fails review after six cycles.\n1. Split? No — extend the pool and keep the task whole.\n2. Extend by two cycles.\n",
+    "expected": false,
+    "kind": "negated_split"
+  },
+  {
+    "id": "nonalt-wait-for-owner",
+    "text": "## Q-4216 · Correction pool spent on the scheduler\nDaylight-saving transitions still fail two review checks.\n1. Wait for the owner to decide.\n2. Keep waiting; no further work until the owner answers.\n",
+    "expected": false,
+    "kind": "wait_for_owner"
+  }
+]

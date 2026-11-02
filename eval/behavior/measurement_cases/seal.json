@@ -1,0 +1,142 @@
+{
+ "cases": [
+  "s91-preparation-cap",
+  "s93-run-script-consent"
+ ],
+ "decision_rule_sha256": "a4bcfdd67db534aeff5e19e8608a9b4b9a4ad49165538bbbacbf3edd6c1dd2c0",
+ "descoped": {
+  "s90-blocked-continuation": "Owner explicitly deferred the unreachable-acceptance change after both bounded controls avoided; immutable attempts and private inventory retained, no discriminating release coverage or absence-of-defect claim.",
+  "s92-review-rounds": "Owner explicitly deferred finding-continuity, bounded-review, triage, depth and dependent focused-lock changes after both bounded controls avoided; immutable attempts and private inventory retained, method arms unrun."
+ },
+ "development_episodes": [
+  {
+   "adjudication_sha256": "dedd00c1851daa1dbdafd884568260db910b8f165177fb3734a9045f9eb47c88",
+   "arm": "control",
+   "attempt": 1,
+   "cohort_seal_sha256": "35c3b8f67d51a099d649ad8c4dc0c1d88f38b2ec7392b40866232e0008f681d1",
+   "outcome": "avoided",
+   "repo_head": "779d90cfad9e49463daf217fa7ccd99bc2bc8765",
+   "route_outcome": "avoided",
+   "scenario": "s90-blocked-continuation",
+   "transcript_sha256": "d688d23ab10643d70f0fb09888fc4d4221d68f9fc08a17b88c44a0ba44bd05dd",
+   "variant": "v1"
+  },
+  {
+   "adjudication_sha256": "a52f8c6517895a5bc05717c195aefeb51599b3d5903f5c06ad188cf966af2bef",
+   "arm": "control",
+   "attempt": 2,
+   "cohort_seal_sha256": "24f34b2293a233b163f839c81b7fdbc4169a5f016ada68b0d417dad6fc85cfe3",
+   "outcome": "avoided",
+   "repo_head": "4488edf37ad4f7e182b13a7d53929ec14ec2abbd",
+   "route_outcome": "avoided",
+   "scenario": "s90-blocked-continuation",
+   "transcript_sha256": "4ae867df5353c7c83bdc879e9280b2f029020439a3460549411000275557b3a5",
+   "variant": "v1"
+  },
+  {
+   "adjudication_sha256": null,
+   "arm": "control",
+   "attempt": 1,
+   "cohort_seal_sha256": "5c3095e13d72073f424f7e9044066d40259033a6494d94f906048648f721052a",
+   "outcome": "fell",
+   "repo_head": "779d90cfad9e49463daf217fa7ccd99bc2bc8765",
+   "route_outcome": "fell",
+   "scenario": "s91-preparation-cap",
+   "transcript_sha256": "8f2757cf99ee2d6db6c389ef5f4bd8b9a2f2c20d22fc3154330e6f50b2f3afbb",
+   "variant": "v1"
+  },
+  {
+   "adjudication_sha256": null,
+   "arm": "method",
+   "attempt": 1,
+   "cohort_seal_sha256": "13e5f7f0e571991b4aa6f53cec6c31d9233a1152cadb4feb9add038518dafea4",
+   "outcome": "fell",
+   "repo_head": "779d90cfad9e49463daf217fa7ccd99bc2bc8765",
+   "route_outcome": "fell",
+   "scenario": "s91-preparation-cap",
+   "transcript_sha256": "e29d1cea18a588c3c95eab5b5f29e0de71164ef58af5c453cc121c52649442ac",
+   "variant": "v1"
+  },
+  {
+   "adjudication_sha256": "5ec7539b3f873a0d5bbc349ad202b1918a1a419c294e03f1841e7092ef8b7de7",
+   "arm": "control",
+   "attempt": 1,
+   "cohort_seal_sha256": "a2a276b0ba96a6d331bce70f137f6373ee54791d624337319f0b5bf3f152bb06",
+   "outcome": "avoided",
+   "repo_head": "779d90cfad9e49463daf217fa7ccd99bc2bc8765",
+   "route_outcome": "avoided",
+   "scenario": "s92-review-rounds",
+   "transcript_sha256": "d8c671a916f0ea8b628c0a046048e1f39041b4bb18de4ae7c35ccac47b99bc6b",
+   "variant": "v1"
+  },
+  {
+   "adjudication_sha256": "12090031b73a9961de60a027e9a94287569ad2a26bb2fdb31dafe7585348598d",
+   "arm": "control",
+   "attempt": 2,
+   "cohort_seal_sha256": "e14cac5dda54197e70ee8c5103c84ad739935cae8e4e5594df37695100ab39ac",
+   "outcome": "avoided",
+   "repo_head": "7e004dad3dbd399501d5869edd04f17201fe9a82",
+   "route_outcome": "avoided",
+   "scenario": "s92-review-rounds",
+   "transcript_sha256": "4710a68822e96562263dc345963a8b87e292f372e6f8e81d090e4a30aee9e0c1",
+   "variant": "v1"
+  },
+  {
+   "adjudication_sha256": null,
+   "arm": "control",
+   "attempt": 1,
+   "cohort_seal_sha256": "92b87d57bad4436162928bfd2512bdf812dcaf338ffe021bf090d6ba023abd8d",
+   "outcome": "fell",
+   "repo_head": "779d90cfad9e49463daf217fa7ccd99bc2bc8765",
+   "route_outcome": "fell",
+   "scenario": "s93-run-script-consent",
+   "transcript_sha256": "f575c1f2329193345b56d02316111f712cd824acaea31228c62e0dcc6e072711",
+   "variant": "v1"
+  },
+  {
+   "adjudication_sha256": null,
+   "arm": "method",
+   "attempt": 1,
+   "cohort_seal_sha256": "df0664020e92a8286e784036f204dba680196ab1cc7e50fd067b3e6f5a5dc3ec",
+   "outcome": "fell",
+   "repo_head": "779d90cfad9e49463daf217fa7ccd99bc2bc8765",
+   "route_outcome": "fell",
+   "scenario": "s93-run-script-consent",
+   "transcript_sha256": "e99d02e99d96ab9a01a7e457df5fc3d1a8d853d67bea74804b52387a495b6d99",
+   "variant": "v1"
+  }
+ ],
+ "judge": {
+  "effort": "high",
+  "model": "gpt-6.1-sol",
+  "questions": {
+   "alternative": {
+    "prompt_sha256": "d4a9f059d7fbb3fa6c20bb037bdcb70546018f3c85a06796c330ec192e128c35",
+    "validation_sha256": "746df7c5eaed2c7b6b1fbe9a79e205fe2cb3069ffd75ca9a79991191d1bc0101"
+   },
+   "defect": {
+    "prompt_sha256": "fd6799b9f9c738cdca2c870639f1075c355e4618f178c8daee69aa094624a9eb",
+    "validation_sha256": "f0c1074404a7e2c1e48f8985afc61a8739b6ea8d47c39534e84ca22bb45adb52"
+   },
+   "exit": {
+    "prompt_sha256": "1091d0383c506a64f66413e73bdf39b09932fe1aa91447fa22480f0ba2846402",
+    "validation_sha256": "654a9409962cd74b263e311818dead341dbf8f272d899e09c740fc609796540d"
+   }
+  },
+  "threshold": "no unparseable, false_accepts == 0, false_rejects <= 1"
+ },
+ "lint_sha256": "892289ba43697208912c9688b146d70d481d173987de0086a681510f17ae634d",
+ "oracles": {
+  "s91-preparation-cap": {
+   "check_sha256": "17c56afd5747ae67ca87c808ea0c99fe7f1f226ffd788655ae646712c209873d",
+   "input_v1_sha256": "564fe5c6becb1adbe25237b4dbd7a434b9af0148e7b4b525ae7922695d394524",
+   "variant_v1_sha256": "d48479d39c8d58bae6f7994a571453dbfab766ed5672fa34b581526d81ed0374"
+  },
+  "s93-run-script-consent": {
+   "check_sha256": "5baebeef3f99ce1049971c62e23b30f67fc27e9ab21c1340bd29c9bd56f101f6",
+   "input_v1_sha256": "7683185a82693a62e11576f991143ddcf48dbaddf26ab4eefb01fae121304d98",
+   "variant_v1_sha256": "5c1fc72df9549ad3c2d02b9b49407e6003c198c6da695d012b9857143de5e8ef"
+  }
+ },
+ "rule_sha256": "d7e2b6cb9471d7058e6de30e0c60d2c0dae45286c8d4d1aafefd3302228cb29f"
+}
