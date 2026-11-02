@@ -8,8 +8,8 @@ that runs is pinned to its digest row in scripts/README.md, so the row 2 sibling
 review found missing is the reviewed code, and every AGENTS.md sibling declaration is scanned and recorded with the
 same pattern.
 
-Arguments: --repo --workspace --candidate --records --version
-  Discovery is rooted at the explicit workspace repository; no fixed slug defaults.
+Arguments: --config --repo --workspace --candidate --records --version --rows-tree
+  Discovery is rooted at the explicit workspace repository; rows use the main or candidate tree.
 Writes <records dir>/workspace-sweep/<slug>/NN.stdout|NN.stderr per row, results.json per workspace and overall;
 exit 1 when a gating workspace fails a mandatory row, 2 when the sweep itself cannot run.
 """
@@ -29,11 +29,14 @@ import sys
 
 
 import argparse
+import atexit, io, os, shutil, tarfile, tempfile
 parser=argparse.ArgumentParser()
 parser.add_argument('--config',required=True)
 for name in ('repo','workspace','candidate','records','version'):parser.add_argument('--'+name,required=True)
+parser.add_argument('--rows-tree', choices=('main', 'candidate'), required=True)
 
 args=parser.parse_args()
+support.absolute(args, ('config', 'repo', 'workspace', 'records'))
 
 _config_spec=importlib.util.spec_from_file_location('release_config',Path(__file__).with_name('config.py'));config=importlib.util.module_from_spec(_config_spec);_config_spec.loader.exec_module(config);cfg=config.load(args.config)
 if args.version != cfg['version'] or Path(args.workspace).resolve() != Path(cfg['workspace']).resolve():raise SystemExit('configuration version or workspace mismatch')
@@ -74,6 +77,65 @@ if SELECTED not in [p.name for p in paths]:
 for p in paths:
     if p.resolve(strict=True).parent != (MAIN / 'docs/plans').resolve():
         raise SystemExit('discovered path outside docs/plans: %s' % p)
+ROW_ROOT = MAIN
+if args.rows_tree == 'candidate':
+    overlay = None
+    try:
+        overlay = Path(tempfile.mkdtemp(prefix='tackle-candidate-rows-'))
+        atexit.register(shutil.rmtree, overlay, ignore_errors=True)
+        resolved = overlay.resolve()
+        if resolved.is_relative_to(MAIN.resolve()) or resolved.is_relative_to(RELEASE.resolve()):
+            raise ValueError('temporary directory inside a checkout')
+        raw = subprocess.check_output(['git', '-C', str(RELEASE), 'archive', '--format=tar', args.candidate])
+        with tarfile.open(fileobj=io.BytesIO(raw), mode='r:') as archive_file:
+            members = archive_file.getmembers()
+            links = {Path(m.name) for m in members if m.issym()}
+            if Path('docs') in links:
+                raise ValueError('archive docs directory is a symlink')
+            for member in members:
+                name = Path(member.name)
+                if name.is_absolute() or '..' in name.parts or name.parts[:2] == ('docs', 'plans'):
+                    raise ValueError('unsafe archive path: ' + member.name)
+                if not (member.isfile() or member.isdir() or member.issym()):
+                    raise ValueError('unsupported archive member: ' + member.name)
+                if any(parent in links for parent in name.parents):
+                    raise ValueError('archive member below symlink: ' + member.name)
+            for member in members:
+                target = overlay / member.name
+                if member.isdir():
+                    target.mkdir(parents=True, exist_ok=True)
+                    os.chmod(target, member.mode & 0o777)
+                elif member.issym():
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    os.symlink(member.linkname, target)
+                else:
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    with archive_file.extractfile(member) as source, target.open('xb') as destination:
+                        shutil.copyfileobj(source, destination)
+                    os.chmod(target, member.mode & 0o777)
+        plans = overlay / 'docs' / 'plans'
+        plans.mkdir(parents=True, exist_ok=True)
+        def copy_entries(source, destination, top=False):
+            for entry in os.scandir(source):
+                if entry.name == 'heldout' or (top and entry.name.startswith('.')):
+                    continue
+                target = destination / entry.name
+                if entry.is_symlink():
+                    os.symlink(os.readlink(entry.path), target)
+                elif entry.is_dir(follow_symlinks=False):
+                    target.mkdir()
+                    copy_entries(entry.path, target)
+                elif entry.is_file(follow_symlinks=False):
+                    os.link(entry.path, target)
+                else:
+                    raise ValueError('unsupported workspace entry: ' + entry.path)
+        copy_entries(MAIN / 'docs' / 'plans', plans, True)
+        ROW_ROOT = overlay
+    except Exception as error:
+        if overlay is not None:
+            shutil.rmtree(overlay, ignore_errors=True)
+        print('candidate overlay: %s' % error, file=sys.stderr)
+        raise SystemExit(2)
 OUT = RECORDS / 'workspace-sweep'
 OUT.mkdir(parents=True, exist_ok=False)
 
@@ -116,7 +178,7 @@ def run(workspace):
     active = board_active(workspace)
     selected = slug == SELECTED
     base = dict(workspace=slug, active=active, selected=selected, gating=active or selected,
-                script_sha256=digest, siblings=siblings(workspace))
+                script_sha256=digest, siblings=siblings(workspace), rows_tree=args.rows_tree, candidate=args.candidate)
     if not slug_ok.match(slug):
         data = dict(base, rows=[], skipped='slug fails the lint script SLUG pattern; no command was built',
                     mandatory_pass=not base['gating'])
@@ -126,7 +188,7 @@ def run(workspace):
     rows = []
     for number in ROWS:
         command = lint['program'](number, slug)
-        observation=support.capture('%02d'%number,[b'/bin/sh',b'-c',command],MAIN,record,timeout=300)
+        observation=support.capture('%02d'%number,[b'/bin/sh',b'-c',command],ROW_ROOT,record,timeout=300)
         from types import SimpleNamespace
         result=SimpleNamespace(returncode=observation['exit'],stdout=(record/('%02d.stdout'%number)).read_bytes(),stderr=(record/('%02d.stderr'%number)).read_bytes())
         rows.append(dict(row=number, exit=result.returncode,

@@ -40,7 +40,9 @@
     "eval/tests/tooling/behavior/review-convergence",
     "eval/tests/tooling/maintaining/ci-mechanical",
     "eval/tests/tooling/maintaining/record-rows",
-    "eval/tests/tooling/maintaining/release"
+    "eval/tests/tooling/maintaining/release",
+    "eval/tests/tooling/maintaining/brief-preflight",
+    "eval/tests/tooling/maintaining/role-session"
   ],
   "rules": [
     {
@@ -1018,6 +1020,24 @@
       ],
       "exclude": [],
       "reason": "Release configuration, command entry point, support and install inventory tests consume these sources."
+    },
+    {
+      "patterns": ["maintaining/brief_preflight.py", "eval/check_selection.py", "eval/rules/committed_text.py", "skills/tackle/references/guides/verify.md"],
+      "families": ["eval/tests/tooling/maintaining/brief-preflight"],
+      "exclude": [],
+      "reason": "Preflight reads selection, committed-text and seal inputs."
+    },
+    {
+      "patterns": ["maintaining/role_session_check.py"],
+      "families": ["eval/tests/tooling/maintaining/role-session"],
+      "exclude": [],
+      "reason": "Role transcript checking."
+    },
+    {
+      "patterns": ["skills/tackle/scripts/lint.py", "skills/tackle/scripts/workspace_archive.py", "skills/tackle/scripts/README.md"],
+      "families": ["eval/tests/tooling/maintaining/release"],
+      "exclude": [],
+      "reason": "Candidate workspace rows consume these scripts."
     }
   ],
   "global_patterns": [

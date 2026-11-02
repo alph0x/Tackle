@@ -1,10 +1,13 @@
 """Existing strict committed-text consumer over a temporary index, including untracked files."""
 from pathlib import Path
 import argparse,dataclasses,hashlib,importlib.util,json,os,subprocess,tempfile
+_support_spec=importlib.util.spec_from_file_location('release_support',Path(__file__).with_name('release_support.py'))
+support=importlib.util.module_from_spec(_support_spec);_support_spec.loader.exec_module(support)
 parser=argparse.ArgumentParser()
 parser.add_argument('--config',required=True)
 for name in ('repo','candidate','base','initiative','records'):parser.add_argument('--'+name,required=True)
 args=parser.parse_args();
+support.absolute(args, ('config', 'repo', 'records'))
 _config_spec=importlib.util.spec_from_file_location('release_config',Path(__file__).with_name('config.py'));config=importlib.util.module_from_spec(_config_spec);_config_spec.loader.exec_module(config);cfg=config.load(args.config)
 if args.base != 'v'+cfg['from_version'] or args.initiative != cfg['initiative']:raise SystemExit('configuration base or initiative mismatch')
 root=Path(args.repo).resolve(strict=True);out=Path(args.records).resolve();out.mkdir(parents=True,exist_ok=False)

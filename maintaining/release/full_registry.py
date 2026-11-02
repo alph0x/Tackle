@@ -11,6 +11,7 @@ parser.add_argument('--config',required=True)
 for name in ('repo','workspace','candidate','records','version','interpreter','label'):parser.add_argument('--'+name,required=True)
 parser.add_argument('--changed',action='append',default=[])
 args=parser.parse_args();
+support.absolute(args, ('config', 'repo', 'workspace', 'records', 'interpreter'))
 _config_spec=importlib.util.spec_from_file_location('release_config',Path(__file__).with_name('config.py'));config=importlib.util.module_from_spec(_config_spec);_config_spec.loader.exec_module(config);cfg=config.load(args.config)
 if args.version != cfg['version'] or Path(args.workspace).resolve() != Path(cfg['workspace']).resolve():raise SystemExit('configuration version or workspace mismatch')
 root=support.require_candidate(args.repo,args.candidate);workspace=Path(args.workspace).resolve(strict=True)

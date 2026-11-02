@@ -97,7 +97,7 @@ def main():
     ap.add_argument('--attempt', type=int, default=0)
     ap.add_argument('--role', choices=['reviewer'])
     a = ap.parse_args()
-    a.config = str(pathlib.Path(a.config).resolve())
+    support.absolute(a, ('config', 'repo', 'records'))
     cfg = config.load(a.config)
     global WS, MAIN, BRANCH, PY310, PY314, PARTS, ORDER
     WS = pathlib.Path(cfg['workspace'])
@@ -193,7 +193,18 @@ def main():
     elif ph == 'catalog':
         tool(p, 'catalog', 'catalog_checks.py', ws, ver, ['--interpreter', PY310])
     elif ph == 'workspace-rows':
-        tool(p, 'workspace-rows', 'workspace_sweep.py', ws, ver, [])
+        tool(p, 'workspace-rows', 'workspace_sweep.py', ws, ver, ['--rows-tree', 'main'])
+    elif ph == 'candidate-rows':
+        tool(p, 'candidate-rows', 'workspace_sweep.py', ws, ver, ['--rows-tree', 'candidate'])
+        result_path = p.out / 'candidate-rows' / 'workspace-sweep' / 'results.json'
+        rows = json.loads(result_path.read_text()) if result_path.exists() else []
+        trees = sorted({w['rows_tree'] for w in rows})
+        gating = [w for w in rows if w.get('gating')]
+        names = [w['workspace'] for w in gating]
+        p.fact('rows judged on the candidate tree', trees, bool(rows) and trees == ['candidate'])
+        p.fact('gating workspaces', names, names == cfg['gating_workspaces'])
+        p.fact('mandatory rows of gating workspaces', {w['workspace']: w.get('mandatory_pass') for w in gating},
+               bool(gating) and all(w.get('mandatory_pass') for w in gating))
     elif ph == 'sweep':
         # MAINTAINING release sweep step 6: M = nine self-lint gates + one catalog gate + each gating workspace.
         c = candidate(a)

@@ -26,6 +26,7 @@ state map):
 """
 import argparse
 import json
+import os
 import re
 import subprocess
 import sys
@@ -623,6 +624,13 @@ def main(argv):
     parser.add_argument('--markdown', required=True)
     try:
         args = parser.parse_args(argv)
+        for name in ('plans', 'repo', 'json', 'markdown'):
+            value = getattr(args, name)
+            if not value:
+                print('empty path argument: --' + name, file=sys.stderr)
+                return 2
+            if not os.path.isabs(value):
+                setattr(args, name, os.path.abspath(value))
     except SystemExit as exc:
         return exc.code if isinstance(exc.code, int) else 2
 

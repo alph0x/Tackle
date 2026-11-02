@@ -40,6 +40,15 @@ def load(path):
                'claims': sequence(claim), 'parts': sequence(string), 'install_count': integer,
                'expected_ledger_gate': string, 'expected_sweep': string,
                'gating_workspaces': sequence(string)}, 'config')
+    for key, value in (
+        ('workspace', data['workspace']),
+        ('changelog.path', data['changelog']['path']),
+        ('record.path', data['record']['path']),
+        ('runtimes.py310.path', data['runtimes']['py310']['path']),
+        ('runtimes.py314.path', data['runtimes']['py314']['path']),
+    ):
+        if not Path(value).is_absolute():
+            raise ValueError(f'config.{key}: expected absolute path')
     if data['schema'] != 'tackle-release/1':
         raise ValueError('config.schema: expected tackle-release/1')
     valid = ['format', 'stamp', 'changelog', 'migrate', 'readme']
