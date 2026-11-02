@@ -181,19 +181,62 @@ def events(data):
             yield value
 
 
+class UsageAccumulator:
+    """Track cumulative snapshots by native identity, including incomplete streams."""
+    def __init__(self):
+        self.streams = {}
+        self.anonymous = {}
+        self.native = False
+
+    def consume(self, data, source, identity=None):
+        for event in events(data):
+            payload = event.get('payload')
+            if event.get('type') == 'session_meta' and isinstance(payload, dict):
+                value = payload.get('id')
+                if isinstance(value, str) and value:
+                    identity = value
+                    self.native = True
+                    self.streams.setdefault(identity, None)
+                continue
+            if event.get('type') != 'event_msg' or not isinstance(payload, dict) or payload.get('type') != 'token_count':
+                continue
+            if identity is None:
+                self.anonymous.setdefault(source, None)
+            info = payload.get('info')
+            usage = info.get('total_token_usage') if isinstance(info, dict) else None
+            if isinstance(usage, dict) and type(usage.get('total_tokens')) is int and usage['total_tokens'] >= 0:
+                if identity is None:
+                    self.anonymous[source] = usage
+                else:
+                    previous = self.streams.get(identity)
+                    if previous is None or usage['total_tokens'] >= previous['total_tokens']:
+                        self.streams[identity] = usage
+        return identity
+
+    def lower_bound(self):
+        """Known spend without treating an incomplete aggregate as measured."""
+        native = sum(value['total_tokens'] for value in self.streams.values() if value is not None)
+        anonymous = max((value['total_tokens'] for value in self.anonymous.values() if value is not None), default=0)
+        return max(native, anonymous)
+
+    def result(self):
+        if (self.native and self.anonymous) or len(self.anonymous) > 1:
+            return None
+        values = list(self.streams.values()) + list(self.anonymous.values())
+        if not values or any(value is None for value in values):
+            return None
+        result = {}
+        for key in ('total_tokens', 'input_tokens', 'cached_input_tokens', 'output_tokens'):
+            parts = [value.get(key) for value in values]
+            if all(type(part) is int and part >= 0 for part in parts):
+                result[key] = sum(parts)
+        return result if 'total_tokens' in result else None
+
+
 def token_usage(data):
-    result = None
-    for event in events(data):
-        payload = event.get('payload')
-        if event.get('type') != 'event_msg' or not isinstance(payload, dict) or payload.get('type') != 'token_count':
-            continue
-        info = payload.get('info')
-        if not isinstance(info, dict) or not isinstance(info.get('total_token_usage'), dict):
-            continue
-        usage = info['total_token_usage']
-        if type(usage.get('total_tokens')) is int and usage['total_tokens'] >= 0:
-            result = usage
-    return result
+    accumulator = UsageAccumulator()
+    accumulator.consume(data, source=0)
+    return accumulator.result()
 
 
 def turns(data):
@@ -209,14 +252,26 @@ def turns(data):
     return total if found else NA
 
 
-def rollout_bytes(home, before=()):
+def rollout_parts(home, before=()):
     pieces = []
     sessions = home / 'sessions'
     if sessions.exists():
         for file in sorted(sessions.rglob('*.jsonl')):
             if file not in before and file.is_file() and not file.is_symlink():
                 pieces.append(file.read_bytes())
-    return b'\n'.join(pieces)
+    return pieces
+
+
+def rollout_bytes(home, before=()):
+    return b'\n'.join(rollout_parts(home, before))
+
+
+def rollout_map(parts):
+    records, offset = [], 0
+    for piece in parts:
+        records.append({'start': offset, 'end': offset + len(piece), 'sha256': digest(piece)})
+        offset += len(piece) + 1
+    return records
 
 
 class RolloutTail:
@@ -225,27 +280,28 @@ class RolloutTail:
         self.directory = home / 'sessions'
         self.before = before
         self.files = {}
-        self.latest = None
+        self.accumulator = UsageAccumulator()
+        self.known_lower_bound = 0
 
     def read(self):
         if not self.directory.exists():
-            return self.latest
+            return self.accumulator.result()
         for path in sorted(self.directory.rglob('*.jsonl')):
             if path in self.before or path.is_symlink() or not path.is_file():
                 continue
-            offset, partial = self.files.get(path, (0, b''))
+            offset, partial, identity = self.files.get(path, (0, b'', None))
             with path.open('rb') as handle:
                 if handle.seek(0, os.SEEK_END) < offset:
-                    offset, partial = 0, b''
+                    offset, partial, identity = 0, b'', None
                 handle.seek(offset)
                 added = handle.read()
                 offset = handle.tell()
             lines = (partial + added).split(b'\n')
-            self.files[path] = (offset, lines.pop())
-            found = token_usage(b'\n'.join(lines))
-            if found is not None:
-                self.latest = found
-        return self.latest
+            partial = lines.pop()
+            identity = self.accumulator.consume(b'\n'.join(lines), source=path, identity=identity)
+            self.files[path] = (offset, partial, identity)
+        self.known_lower_bound = max(self.known_lower_bound, self.accumulator.lower_bound())
+        return self.accumulator.result()
 
 
 def skill_listed(data, home):
@@ -349,14 +405,21 @@ def launch(cfg, repo, root, prompt, ledger, login_data, needles, account, active
     if used is None:
         return {'state':'incomplete', 'reason':'cap', 'overshoot_tokens':0, 'tokens':NA, 'turn_completed_tokens':NA, 'stdout':b'', 'stderr':b'', 'rollout':b'', 'account_replaced':False, 'listed':False, 'usage':None, 'launched':False}
     monitor = RolloutTail(home, before)
+    if active is not None:
+        active['monitor'] = monitor
     auth.write_bytes(login_data)
     auth.chmod(0o600)
     env = {'PATH':cfg.child_path, 'HOME':str(root / 'home'), 'CODEX_HOME':str(home), 'TMPDIR':str(root / 'tmp'), 'LANG':'en_US.UTF-8', 'TERM':'dumb'}
     state, reason, overshoot = 'ok', None, 0
     child = None
+    class Cancelled(Exception):
+        pass
+
     start = time.monotonic()
     try:
         with stdout_path.open('wb') as stdout, stderr_path.open('wb') as stderr:
+            if active is not None and active.get('cancelled'):
+                raise Cancelled()
             if active is not None:
                 active['started'] = True
             child = subprocess.Popen(argv_for(cfg, repo, root), cwd=root / 'work', env=env, stdin=subprocess.PIPE, stdout=stdout, stderr=stderr, start_new_session=True)
@@ -364,8 +427,12 @@ def launch(cfg, repo, root, prompt, ledger, login_data, needles, account, active
                 child.stdin.write(prompt.encode())
                 child.stdin.close()
                 while child.poll() is None:
-                    usage = monitor.read()
-                    count = usage['total_tokens'] if usage else 0
+                    if active is not None and active.get('cancelled'):
+                        state, reason = 'incomplete', 'interrupted'
+                        stop_group(child)
+                        break
+                    monitor.read()
+                    count = monitor.known_lower_bound
                     if used + count > cfg.caps[ledger.stage]:
                         state, reason, overshoot = 'incomplete', 'cap', used + count - cfg.caps[ledger.stage]
                         stop_group(child)
@@ -381,6 +448,8 @@ def launch(cfg, repo, root, prompt, ledger, login_data, needles, account, active
                 stop_group(child)
             if state == 'ok' and child.returncode != 0:
                 state, reason = 'invalid', 'exit'
+    except Cancelled:
+        state, reason = 'incomplete', 'interrupted'
     except (KeyboardInterrupt, SystemExit):
         state, reason = 'incomplete', 'interrupted'
         defer_interrupts()
@@ -394,35 +463,47 @@ def launch(cfg, repo, root, prompt, ledger, login_data, needles, account, active
     def collect():
         raw_out = stdout_path.read_bytes() if stdout_path.exists() else b''
         raw_err = stderr_path.read_bytes() if stderr_path.exists() else b''
-        rollout = rollout_bytes(home, before)
-        usage = token_usage(rollout)
+        pieces = rollout_parts(home, before)
+        rollout = b'\n'.join(pieces)
+        accumulator = UsageAccumulator()
+        for source, piece in enumerate(pieces):
+            accumulator.consume(piece, source=source)
+        usage = accumulator.result()
         total = usage['total_tokens'] if usage else NA
-        ledger.settle(total)
+        known = max(monitor.known_lower_bound, accumulator.lower_bound())
+        settlement = max(total, known) if type(total) is int else max(cfg.reservation_tokens, known)
+        ledger.settle(settlement)
         listed = skill_listed(rollout, home)
         try:
             hit = any(has_secret(data, needles) for data in (raw_out, raw_err, rollout)) or scan_tree(root, auth, needles)
         except OSError:
             hit = True
         cleaned, replaced = [], False
-        for data in (raw_out, raw_err, rollout):
+        for data in (raw_out, raw_err):
             value, changed = clean_bytes(data, account)
             cleaned.append(value)
             replaced |= changed
-        return raw_out, usage, total, listed, hit, cleaned, replaced
+        clean_parts = []
+        for piece in pieces:
+            value, changed = clean_bytes(piece, account)
+            clean_parts.append(value)
+            replaced |= changed
+        cleaned.append(b'\n'.join(clean_parts))
+        return raw_out, usage, total, known, listed, hit, cleaned, replaced, rollout_map(clean_parts)
 
     try:
-        raw_out, usage, total, listed, hit, cleaned, replaced = collect()
+        raw_out, usage, total, known, listed, hit, cleaned, replaced, file_map = collect()
     except (KeyboardInterrupt, SystemExit):
         state, reason = 'incomplete', 'interrupted'
         defer_interrupts()
-        raw_out, usage, total, listed, hit, cleaned, replaced = collect()
-    if type(total) is int and used + total > cfg.caps[ledger.stage]:
-        overshoot = used + total - cfg.caps[ledger.stage]
+        raw_out, usage, total, known, listed, hit, cleaned, replaced, file_map = collect()
+    if used + known > cfg.caps[ledger.stage]:
+        overshoot = used + known - cfg.caps[ledger.stage]
         if reason != 'interrupted':
             state, reason = 'incomplete', 'cap'
     if hit:
         state, reason = 'invalid', 'credential'
-    result = {'state':state, 'reason':reason, 'overshoot_tokens':overshoot, 'tokens':total, 'turn_completed_tokens':turns(raw_out), 'stdout':cleaned[0], 'stderr':cleaned[1], 'rollout':cleaned[2], 'account_replaced':replaced, 'listed':listed, 'usage':usage, 'launched':True, 'claim_index':claim_index}
+    result = {'state':state, 'reason':reason, 'overshoot_tokens':overshoot, 'tokens':total, 'turn_completed_tokens':turns(raw_out), 'stdout':cleaned[0], 'stderr':cleaned[1], 'rollout':cleaned[2], 'rollout_files':file_map, 'account_replaced':replaced, 'listed':listed, 'usage':usage, 'launched':True, 'claim_index':claim_index}
     if active is not None:
         active['result'] = result
     try:
@@ -462,7 +543,10 @@ def retain_session(directory, result):
 
 
 def session_summary(result):
-    return {key:result[key] for key in ('state','reason','overshoot_tokens')}
+    summary = {key:result[key] for key in ('state','reason','overshoot_tokens')}
+    if 'rollout_files' in result:
+        summary['rollout_files'] = result['rollout_files']
+    return summary
 
 
 def probe_script(root, repo_file, workspace_file, outside, global_paths):
@@ -646,15 +730,21 @@ def record_interrupted(cfg, cohort, entry, position, directory, root, ledger, se
     if index is not None and index < len(ledger.rows) and not any(s.get('claim_index') == index for s in sessions):
         result = active.get('result')
         if result is None:
-            rollout = rollout_bytes(active['home'], active['before'])
-            usage = token_usage(rollout)
+            pieces = rollout_parts(active['home'], active['before'])
+            accumulator = UsageAccumulator()
+            for source, piece in enumerate(pieces):
+                accumulator.consume(piece, source=source)
+            usage = accumulator.result()
             total = usage['total_tokens'] if usage else NA
+            monitor = active.get('monitor')
+            known = max(accumulator.lower_bound(), monitor.known_lower_bound if monitor else 0)
             if not ledger.rows[index].get('settled'):
-                ledger.settle(total)
+                settlement = max(total, known) if type(total) is int else max(cfg.reservation_tokens, known)
+                ledger.settle(settlement)
             path = active['stdout_path']
             raw = path.read_bytes() if active.get('started') and path.exists() else b''
             raw, replaced = clean_bytes(raw, account)
-            excess = max(0, active['used'] + total - cfg.caps[ledger.stage]) if type(total) is int else 0
+            excess = max(0, active['used'] + known - cfg.caps[ledger.stage])
             try:
                 credential = scan_tree(root, active['auth'], needles)
             except OSError:

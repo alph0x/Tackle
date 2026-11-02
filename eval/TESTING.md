@@ -39,6 +39,24 @@ python3 eval/run_suites.py --changed eval/support/lint.py --output /tmp/tackle-a
 python3 eval/run_suites.py --phase integration --output /tmp/tackle-integration
 ```
 
+The Codex route groups cumulative native usage by session identity, including
+parent and worker streams, both at settlement and during incremental cap
+monitoring. When another stream is unmeasured, known usage remains a cap and
+settlement lower bound while the complete aggregate stays unknown. The functional
+regression exercises actual launches with a synthetic CLI as well as partial
+lines, duplicates and unknown usage.
+Retained session metadata records each cleaned physical rollout's byte range
+and digest; downstream consumers validate the complete map before resetting
+identity at file boundaries. Historical sessions without a map remain readable.
+Multiple anonymous physical files remain an unknown aggregate; a single
+anonymous file retains its cumulative latest-snapshot behavior.
+
+Run the regression from the repository root:
+
+```sh
+python3 -I -B -m unittest discover -s eval/tests/tooling/behavior/harness -p 'test_native_session_usage.py'
+```
+
 Supply both old and new paths for a rename, and the complete set of additions,
 modifications and deletions. The runner does not infer an unstaged diff or run a
 single method. Changing a registered test selects its whole family and discovery
