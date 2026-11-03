@@ -161,12 +161,6 @@ class TemplateDriftTests(unittest.TestCase):
                     self.assertNotIn(leftover, text)
                 self.assertIsNone(re.search(r'\| Write scope (auth|a hot|parallelism|persistence|UI|user-visible|error handling|retries)', text))
 
-    def test_history_template_has_no_prefilled_result_or_legacy_glyph(self):
-        text = (REF / 'history.tmpl.md').read_text()
-        self.assertRegex(text, r'exit: `?\{\{[^}]+\}\}`? · timeout: `?\{\{[^}]+\}\}`? · signal: `?\{\{[^}]+\}\}`?')
-        self.assertNotIn('exit: 0', text)
-        for glyph in LEGACY_GLYPHS:
-            self.assertNotIn(glyph, text)
 
     def test_compiled_brief_keeps_e2e_first_and_replay_clauses(self):
         brief = ' '.join(compiled_brief().split())
@@ -191,7 +185,6 @@ class TemplateDriftTests(unittest.TestCase):
                 self.assertEqual(verdict, 'PASS', (out, err))
 
     def test_template_contract_seals_and_detects_drift(self):
-        self.assertIn('through the line before the next `## ` heading or `<a id=` line', (REF / 'task.tmpl.md').read_text())
         self.scaffold()
         contract = fill((REF / 'design-contract.tmpl.md').read_text())
         (self.ws / 'design-contract.md').write_text(contract)

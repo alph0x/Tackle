@@ -46,7 +46,7 @@ counters, interrupted runs, integration evidence and deliverable acceptance.
 - {{D-0x: one-liner — full entry recorded in `decisions.md`}}
 
 ### Blockers / open questions
-- {{see `questions.md`: Q-01, ...}}
+- {{see `questions.md`: Q-0x, ...}}
 <!-- Record failed correction events with record.py; if scripts cannot run, write the journal and escalation packet manually. -->
 
 

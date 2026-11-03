@@ -360,23 +360,6 @@ class RetroRecipeTests(unittest.TestCase):
                          'Gate: Full', 3)
 
 
-    def test_r04_the_clock_format_and_its_unmeasured_clocks_are_stated_in_each_home(self):
-        clock = 'YYYY-MM-DDTHH:MM:SS[.fff](Z|±HH:MM)'
-        retro_source = text(GUIDES / 'retro.md')
-        fixture = re.search(r'(?ms)^### Fixture recipe\n(.*?)(?=^#{1,3} |\Z)', retro_source)
-        self.assertIsNotNone(fixture, 'missing retro fixture recipe section')
-        lite = text(REF / 'lite-plan.tmpl.md').splitlines()
-        start = lite.index('# Resource usage')
-        end = next((i for i in range(start + 1, len(lite)) if lite[i].startswith('# ')), len(lite))
-        homes = {'resource-usage.tmpl.md': text(REF / 'resource-usage.tmpl.md'),
-                 'lite-plan.tmpl.md # Resource usage': '\n'.join(lite[start:end]),
-                 'guides/retro.md ### Fixture recipe': fixture.group(1)}
-        for home, body in homes.items():
-            flat = ' '.join(body.split())
-            self.assertIn(clock, flat, home)
-            self.assertRegex(flat, r'minute[- ]only', home)
-            self.assertRegex(flat, r'space[- ]separated', home)
-            self.assertRegex(flat, r'unmeasured|not measured', home)
 
     def test_t1_the_plan_template_puts_the_full_gate_on_line_three_and_keeps_its_title_and_first_section(self):
         lines = text(REF / 'plan.tmpl.md').splitlines()

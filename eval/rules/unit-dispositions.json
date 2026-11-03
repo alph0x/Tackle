@@ -20816,6 +20816,21 @@
       "destination": "skills/tackle/scripts/README.md",
       "note": "The repository's full test registry runs on Python 3.10 and on the current Python; the record writer's Python 3.9 invocation is checked separately.",
       "destination_unit_sha256": null
+    },
+    {
+      "path": "references/history.tmpl.md",
+      "line": 59,
+      "unit_sha256": "43d6072e1bf81766aa614d932c4e4bc83b91c2fe9f6c85129542ec46867a6a8f",
+      "disposition": "reworded",
+      "destination": "references/history.tmpl.md",
+      "note": "{{see `questions.md`: Q-0x, ...}}",
+      "destination_unit_sha256": null,
+      "dropped": [
+        {
+          "token": "01",
+          "reason": "The concrete example ordinal becomes a symbolic template placeholder. The instruction to cite the applicable questions remains; no numeric limit or substantive requirement changes."
+        }
+      ]
     }
   ]
 }
