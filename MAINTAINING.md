@@ -174,6 +174,20 @@ Write records with `python3 -I skills/tackle/scripts/record.py --workspace PATH 
 Use the standing tools under `maintaining/release/`, driven by a per-release `tackle-release/1` configuration kept in the release workspace.
 Rehearse the release on a disposable clone.
 Obtain one independent completion review of the candidate.
+
+When no task integrates shared paths, name and independently check each unique integration-review
+obligation in that release completion review:
+
+- **Ledger accounting** against the release base: `eval/rules/check_ledger.py`, with the actual release cohort.
+- **Unit accounting** against the release base: `eval/rules/check_unit_diff.py`.
+- **Claim boundaries**: `eval/records/check_currency.py` plus independent review of what the actual records support.
+- **Outstanding-obligation discharge**: read the canonical board, Complete receipts, cited records,
+  history/archive, decisions and questions; statuses or structural consistency alone do not prove discharge.
+
+Every brief keeps an independent lock and independent review of new code, tools, claims, normative or
+safety effects. Shared-path integrations retain their integration review; no merged-tree or
+crossing-consumer check is waived.
+
 Lock a release tool only when that tool changed.
 Use a reduced recut of notes, catalog with currency, committed text, final registries on the exact new candidate, and one delta review only when the changed prose is consumed solely by the notes, currency and committed-text checks and every omitted phase’s inputs are unchanged; otherwise rerun every affected phase, with final registries always on the exact new candidate.
 Retain install evidence as an inventory of installed files with sizes and hashes, and remove the whole owned sandbox.

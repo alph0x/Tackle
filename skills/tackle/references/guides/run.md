@@ -263,6 +263,12 @@ only the dependent checks; re-ground and revalidate them before continuing. An u
 preserves unaffected history and invalidates the changed consumers and crossing artifacts. The integration check must include semantic consumers that a Write scope-only
 intersection cannot see.
 
+Review placement never waives merged-tree or crossing-artifact checks. When no task integrates shared
+paths, name and independently check the integration review's unique release-base ledger and unit
+accounting, claim boundaries and outstanding-obligation discharge in the release's independent completion
+review. Every independent brief lock and review remains; shared-path integrations keep their integration
+review.
+
 At serialization or unit boundaries, global checks include applicable valid adversarial inputs from
 the declared domain and the actual consumer parser/round trip; nominal sample output alone does not
 prove preservation of arbitrary allowed strings or numeric values. Before implementation, record
