@@ -29,7 +29,7 @@ import sys
 
 
 import argparse
-import atexit, io, os, shutil, tarfile, tempfile
+import atexit, io, os, shutil, stat, tarfile, tempfile
 parser=argparse.ArgumentParser()
 parser.add_argument('--config',required=True)
 for name in ('repo','workspace','candidate','records','version'):parser.add_argument('--'+name,required=True)
@@ -127,6 +127,9 @@ if args.rows_tree == 'candidate':
                     copy_entries(entry.path, target)
                 elif entry.is_file(follow_symlinks=False):
                     os.link(entry.path, target)
+                elif stat.S_ISFIFO(os.lstat(entry.path).st_mode):
+                    os.mkfifo(target)
+                    os.chmod(target, stat.S_IMODE(os.lstat(entry.path).st_mode))
                 else:
                     raise ValueError('unsupported workspace entry: ' + entry.path)
         copy_entries(MAIN / 'docs' / 'plans', plans, True)

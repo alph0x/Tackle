@@ -3,6 +3,8 @@ import json
 import os
 from pathlib import Path
 import shutil
+import socket
+import stat
 import subprocess
 import sys
 import tempfile
@@ -185,3 +187,43 @@ runpy.run_path(sys.argv[0], run_name='__main__')
                                {'SOURCE_WORKSPACE': str(self.workspace), 'OBSERVATION': str(observation)})
         self.assertIn(result.returncode, (0, 1), result.stderr)
         self.assertEqual(json.loads(observation.read_text()), {'linked': True, 'symlink': 'history.md', 'excluded': True})
+
+    def test_overlay_reproduces_fifo(self):
+        fifo = self.workspace / 'verification-records/RUN-1/pipe'
+        fifo.parent.mkdir(parents=True)
+        os.mkfifo(fifo)
+        os.chmod(fifo, 0o600)
+        observation = self.root / 'fifo.json'
+        bootstrap = """
+import json, os, pathlib, runpy, shutil, stat, sys
+old = shutil.rmtree
+def inspect(path, **kw):
+    copy = pathlib.Path(path) / 'docs/plans/example/verification-records/RUN-1/pipe'
+    mode = os.lstat(copy).st_mode
+    pathlib.Path(os.environ['OBSERVATION']).write_text(json.dumps({'fifo': stat.S_ISFIFO(mode), 'mode': stat.S_IMODE(mode)}))
+    old(path, **kw)
+shutil.rmtree = inspect
+sys.argv = sys.argv[1:]
+runpy.run_path(sys.argv[0], run_name='__main__')
+"""
+        result, records = self.sweep('candidate', 'fifo-records', bootstrap, {'OBSERVATION': str(observation)})
+        self.assertIn(result.returncode, (0, 1), result.stderr)
+        self.assertEqual(json.loads(observation.read_text()), {'fifo': True, 'mode': 0o600})
+        row = json.loads((records / 'workspace-sweep/results.json').read_text())[0]
+        self.assertEqual(row['rows_tree'], 'candidate')
+        self.assertEqual(len(row['rows']), 19)
+        self.assertTrue(stat.S_ISFIFO(os.lstat(fifo).st_mode))
+
+    def test_overlay_refuses_other_special_entries(self):
+        here = os.getcwd()
+        os.chdir(self.workspace)
+        try:
+            server = socket.socket(socket.AF_UNIX)
+            server.bind('sock')
+        finally:
+            os.chdir(here)
+        self.addCleanup(server.close)
+        result, records = self.sweep('candidate', 'socket-records')
+        self.assertEqual(result.returncode, 2, result.stderr)
+        self.assertIn('unsupported workspace entry', result.stderr)
+        self.assertFalse((records / 'workspace-sweep').exists())
