@@ -4,6 +4,20 @@
  "claims": [
   {
    "source": "CHANGELOG.md",
+   "section": "Tackle 10.5.0",
+   "unit": "s91",
+   "kind": "mention",
+   "reason": "Names an admitted maintainer case and its frozen evaluator; no held-out result or behavioral improvement is claimed."
+  },
+  {
+   "source": "CHANGELOG.md",
+   "section": "Tackle 10.5.0",
+   "unit": "s93",
+   "kind": "mention",
+   "reason": "Names an admitted maintainer case and its frozen evaluator; no held-out result or behavioral improvement is claimed."
+  },
+  {
+   "source": "CHANGELOG.md",
    "section": "Tackle 10.4.0",
    "unit": "s89",
    "kind": "mention",
