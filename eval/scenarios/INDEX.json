@@ -3690,7 +3690,7 @@
           "control_exposure": {"install": false, "fragments": []}
         }
       ],
-      "oracle_sha256": "33ec65ae93c64c52607b750ad118aa0798311265451fa27d86f7cd790d554308"
+      "oracle_sha256": "6828246b950938b3ef6e497580818371e8682475e20370f3c2a79d1d5370ac7c"
     }
   ]
 }

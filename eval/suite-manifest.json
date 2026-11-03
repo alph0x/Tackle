@@ -516,12 +516,13 @@
         "test_release_config.py",
         "test_install_inventory.py",
         "test_absolute_paths.py",
-        "test_candidate_rows.py"
+        "test_candidate_rows.py",
+        "test_part_preflight.py"
       ],
-      "tests": 19,
+      "tests": 21,
       "source": "maintaining/release/config.py",
       "category": "tooling",
-      "purpose": "Release configuration validation and install inventory and sandbox cleanup on synthetic trees. Entry paths and candidate workspace rows."
+      "purpose": "Release configuration validation and install inventory and sandbox cleanup on synthetic trees. Entry paths, candidate workspace rows, and the committed-text preflight that gates staging of each release part."
     },
     {
       "path": "eval/tests/tooling/maintaining/brief-preflight",
