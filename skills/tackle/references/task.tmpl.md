@@ -66,11 +66,17 @@ revert without an invented feature flag.
 
 ### Shared clauses (compiled)
 
-Compile applicable clauses with `record.py`; without scripts, record their canonical bullets and verbatim blocks manually.
+Record each selected clause's id, revision and hash at compile time. Inline only applicable clauses;
+never copy a whole guide or edit a compiled clause independently.
 
 - **{{clause id}} · {{revision}} · sha256 `{{hash of the exact clause bytes}}`**: {{the
   canonical clause, copied byte-for-byte from its authoritative contract}}.
 
+The compiler hashes the exact UTF-8 clause bytes, records the source path and hash
+beside the Task, and checks the digest before execution. A clause's bytes run from its
+`## <id> · <title>` heading through the line before the next `## ` heading or `<a id=` line, each
+line ending in one newline; the seal check in `guides/verify.md` step 8 recomputes them. The compiler
+supersedes and regenerates a changed authoritative clause; a worker never repairs a hash or clause locally.
 The shared contract should cover observable purpose and stable requirement ids, grounded inputs and write
 limits, interfaces/errors/invariants/dependencies, normal and boundary cases, mandatory constraints and local
 freedoms, target/related regression checks, and drift/blocking behavior. Exact bytes, order, paths, stdio
@@ -144,8 +150,6 @@ stdout independently; wrapper success cannot hide a child failure. Before runnin
 complete script and hash it with its inputs so its evidence retains the executed logic, not a prose label. For E2E, retain a replay artifact containing this command/script, accessible fixtures, expected
 and observed results, runtime, environment, raw child result, and input/output hashes. Its replay uses a
 disposable copy or fresh destination without overwriting the original raw record.
-
-Retain the pre-lock command/check rehearsal, named fault results and complete before/after tree identities.
 
 Once this heading is sealed at Ready, a protected acceptance edit requires a prior superseding `D-yy`
 decision; update the marker to `SEALED: D-yy supersedes D-xx`, regenerate compiled clauses and rerun the
