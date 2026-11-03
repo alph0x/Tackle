@@ -81,10 +81,10 @@ cp -R skills/tackle/scripts ~/.claude/skills/tackle/
 
 For Cursor, use `~/.cursor/skills/tackle/`. Other agents use their own skill directory. Tackle follows the [Agent Skills](https://github.com/anthropics/skills) format.
 
-The install contains only `SKILL.md`, `references/` and `scripts/`, with 85 installation-relative files. Repository branding, development tools, and evaluation fixtures are not part of the installed skill.
+The install contains only `SKILL.md`, `references/` and `scripts/`, with 86 installation-relative files. Repository branding, development tools, and evaluation fixtures are not part of the installed skill.
 The checkout copy commands above copy those files into the selected directory and leave any other files already there.
 
-Local candidate installation is checked through the manual copy above and the cached `npx skills@1.7.0 add --skill tackle` channel (offline, single-agent, with `-a claude-code -y -g`), against the 85 expected files. The public GitHub routes, by tag and by the default source, have not been probed for 10.4.0. To pin a release, install by tag:
+Local candidate installation is checked through the manual copy above and the cached `npx skills@1.7.0 add --skill tackle` channel (offline, single-agent, with `-a claude-code -y -g`), against the 86 expected files. The public GitHub routes, by tag and by the default source, have not been probed for 10.4.0. To pin a release, install by tag:
 
 ```sh
 npx --yes skills@1.7.0 add 'https://github.com/alph0x/Tackle.git#v10.4.0' --skill tackle -a claude-code codex -y -g
@@ -148,6 +148,7 @@ The [`scripts/`](skills/tackle/scripts/README.md) folder holds the programs the 
 | Captured lint-row runner (needs its own authorization, not covered by the lint grant) | `lint_runner.py` |
 | Check and evidence capture | `capture.py`, `evidence_capture.py` |
 | Records and context bundle | `record_store.py`, `context_bundle.py` |
+| Optional six-form record writer (requires explicit script or documented-feature authorization) | `record.py` |
 | Task consistency, corrections and adversary checkpoints | `decompose_check.py`, `correction_lineage.py`, `adversary_checkpoints.py` |
 | Migration | `migrate/` |
 | Requirements base | `requirements_base.py` |
