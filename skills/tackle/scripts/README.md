@@ -16,6 +16,7 @@ a script adds or updates its row.
 | [system_one_decide.py](system_one_decide.py) | `3307da7275085ac410423f24736a27e62edf28a58017a5ff22588784b4569f84` |
 | [system_one_state.py](system_one_state.py) | `8c2fe8ec5e06ec50c50573f03237ab403508ec61375266cb7931b852b8cc7a3e` |
 | [codex_usage.py](codex_usage.py) | `2fca95fcb854a8157a1b12770ff590bf776fce2f1e4307de12161ad5f83255aa` |
+| [record.py](record.py) | `39b49dc2a62db9a867a43eb3ccf54a56cb34aa304ecbbfe853caeb80425f9b05` |
 | [migrate/schema.py](migrate/schema.py) | `6e7c3d3de8ca67089f0a5f395ebb14bb00e581fadaf4d1e9272707666a0d4809` |
 | [migrate/step_3_to_4.py](migrate/step_3_to_4.py) | `effc084a74cb31c1aea0983e89bc94e0a08a3bd26137ec87ae9fc94b9c2846f5` |
 | [migrate/step_4_to_5.py](migrate/step_4_to_5.py) | `ae4dcf1ee639aa556fccf4ddbc1b70229b942d84e6a365c12009023af717501b` |
@@ -41,23 +42,34 @@ documented one-line check command, such as a retro metric command, is not a scri
 Running or importing a script needs the owner's explicit authorization, under the shared
 [decision and communication policy](../references/guides/communication.md). Prefer an equivalent
 harness capability when one exists. A prior general request to plan or run does not count unless it
-names the script use, except for `lint.py` below.
+names the script use, except for the plan/run uses below.
 
-An explicit Tackle plan or run request authorizes [lint.py](lint.py), which runs the lint rows, for
-that request and authorizes no other script. An explicit owner request for a feature whose documented
-procedure is a script authorizes that script for that request, such as the plan view, a migration, or a
-System One use that the workspace recorded `yes` for. Otherwise a general request to plan or run
-authorizes no script. A script being part of the install authorizes nothing.
+An explicit Tackle plan or run request authorizes [lint.py](lint.py) to run lint rows and
+[record.py](record.py) to write the six workspace forms in the
+[record format home](../references/guides/usage-observability.md#record-writing-and-manual-fallback).
+It authorizes no other script. An explicit owner request for a feature whose documented procedure is
+a script authorizes that script for that request, such as the plan view, a migration, or a System One
+use that the workspace recorded `yes` for. Otherwise a general request to plan or run authorizes no
+script. A script being part of the install authorizes nothing.
 
 Declining is a normal outcome. The affected record is reported unavailable or produced by another
 permitted route, such as an equivalent harness capability or the project's own tools; it is never faked.
 
 ## Python version
 
-The scripts need Python 3.10 or later and the standard library only. The repository's full test
-registry runs on Python 3.10 and on the current Python; 3.10 is the oldest version it is checked on.
+Except for the standalone record writer, the scripts need Python 3.10 or later and the standard library
+only. `record.py` supports Python 3.9 or later with isolated `python3 -I`; it imports no other shipped
+script. The repository's full test registry runs on Python 3.10 and on the current Python; the record
+writer's Python 3.9 invocation is checked separately.
+
+The record writer requires POSIX locking and descriptor-relative no-follow filesystem operations.
+Its workspace path is existing, absolute and physical: no component may be a symlink (including
+macOS `/tmp` aliases). When these operations are unavailable, including native Windows, use the
+[manual record fallback](../references/guides/usage-observability.md#record-writing-and-manual-fallback).
 
 ## Windows
+
+For scripts other than `record.py`:
 
 On Windows, run a script with `py -3` (or `python`) in place of `python3`, for example
 `py -3 -I <skill>/scripts/plan_view.py ...`. The lint rows, which `lint.py` runs with `sh`, and the

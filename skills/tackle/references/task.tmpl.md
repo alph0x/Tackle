@@ -66,17 +66,11 @@ revert without an invented feature flag.
 
 ### Shared clauses (compiled)
 
-Record each selected clause's id, revision and hash at compile time. Inline only applicable clauses;
-never copy a whole guide or edit a compiled clause independently.
+Compile applicable clauses with `record.py`; without scripts, record their canonical bullets and verbatim blocks manually.
 
 - **{{clause id}} · {{revision}} · sha256 `{{hash of the exact clause bytes}}`**: {{the
   canonical clause, copied byte-for-byte from its authoritative contract}}.
 
-The compiler hashes the exact UTF-8 clause bytes, records the source path and hash
-beside the Task, and checks the digest before execution. A clause's bytes run from its
-`## <id> · <title>` heading through the line before the next `## ` heading or `<a id=` line, each
-line ending in one newline; the seal check in `guides/verify.md` step 8 recomputes them. The compiler
-supersedes and regenerates a changed authoritative clause; a worker never repairs a hash or clause locally.
 The shared contract should cover observable purpose and stable requirement ids, grounded inputs and write
 limits, interfaces/errors/invariants/dependencies, normal and boundary cases, mandatory constraints and local
 freedoms, target/related regression checks, and drift/blocking behavior. Exact bytes, order, paths, stdio

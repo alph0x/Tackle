@@ -165,3 +165,170 @@ if validate_role_record "$negative"; then echo "invalid role record accepted"; e
 
 The validator must reject the object; a session/account object may use `run_id: n/a`. Absence of a
 sidecar is valid and never a task-level failure.
+
+`At` is a clock in the form `YYYY-MM-DDTHH:MM:SS[.fff](Z|±HH:MM)`; minute-only and space-separated clocks are unmeasured.
+
+## Record writing and manual fallback
+
+For an explicit plan or run request, record lifecycle, correction events, closure receipts,
+history and snapshots, telemetry, and compiled clauses with `record.py` using
+`python3 -I skills/tackle/scripts/record.py --workspace PATH --spec RELATIVE_JSON`.
+The spec is workspace-relative JSON with schema `tackle-record/1`, a `kind` and `data`;
+the six kinds are `lifecycle`, `correction`, `closure`, `history`, `telemetry` and
+`compile-clause`. Supply observed facts rather than inferred values. If scripts cannot run,
+write the six forms manually as described here, preserving evidence and the normal checks.
+
+`PATH` is an existing absolute physical workspace path; the writer refuses symlink components.
+It requires POSIX locking and descriptor-relative no-follow operations. If those are unavailable,
+including native Windows, use the manual forms in this guide rather than weakening path checks.
+
+The closed envelope has exactly `schema`, `kind` and `data` fields; its schema is `tackle-record/1`.
+The data fields are:
+
+- `lifecycle`: required `run_id`, `event`, `task`, `role`; optional `harness`, `tier`, `model`,
+  `effort`, `at`, `attempts`, `rework`, `verification`, `source`, `outcome`; `absence` may contain
+  `event_id` and an actual `observed` absence for zero. A finish may include `telemetry` with the
+  envelope fields below, exactly matching the role and run.
+- `correction`: `event_id`, `task`, `run_id`, `failure_id`, `observed_failure`, `correction`,
+  `validation_command`, `result`.
+  `Cycle count: 1` is the correction event's local increment; lifecycle Attempts carries the shared cumulative count.
+- `closure`: `task`, `remains` (`none` or a nonempty list of existing `O-NN` ids), and optional
+  active decision `erratum`.
+- `history`: dated unique `heading`; string lists `did`, `decisions`, `blockers`, `next`;
+  `state` with `task_state`, `in_flight`, `blocked_on`, `resume_from`, `checkpoint`.
+- `telemetry`: `captured_at`, `collector`, `source`, `scope`, `scope_id`, `run_id`, `metrics`,
+  `provenance`; use the optional-sidecar contract above.
+- `compile-clause`: `clause_id` and existing workspace-relative `brief`.
+
+The tool writes workspace records and prints paths and digests; it does not establish the truth of
+the supplied facts. Unknown data stays `n/a`, never an invented zero, model, terminal time or cost.
+For a tool-written lifecycle row, positive Attempts Source starts with a correction-event reference;
+Verification is a reference, not acceptance prose. A finish without telemetry records availability with empty metrics and
+explicit `n/a` collector and provenance; captured time is not the role's finish time.
+
+## Correction journal
+
+Each failed implementation correction appends an attempt-journal entry, naming the observed failure,
+correction, validation command, result and cycle count, before another attempt, and re-reads the earlier
+entries. A correction changing a contract or acceptance requires the authorized superseding decision
+first, then re-grounding and revalidation. Each attempt-journal line takes the form `correction cycle N of 3: <failure> → <correction>; <validation command>: <result>`.
+The three-cycle ceiling is the default; new records use `N of M` after an explicitly approved extension,
+while historical `N of 3` entries remain exact. Historic `attempt N:` records remain history.
+The structured correction event records Run ID and Failure ID first, then task, observed failure,
+correction, validation command and result under its event ID; it does not invalidate other task-linked evidence forms.
+
+## Closure and report records
+
+The local report contains, in order: authorization and preflight; implementation and target
+observation; surrounding and integration observations; correction journal and any failure packet;
+deliverable acceptance; independent semantic review when required; final status and unresolved risk,
+closed by the receipt. Each observation links to its immutable raw record. Raw records are
+append-never/overwrite-never artifacts named with a unique Run, Task, validation ordinal and observed
+timestamp. Record unknown telemetry as `n/a`; never infer duration, tokens, cost, actor,
+independence or success.
+
+The receipt ends with one `**Remains**:` line, on its own line outside any code fence: `none`, or the
+`O-NN` ids the task leaves `Open`, comma-separated. Each id is also a row of the board's obligations
+table and is named in the newest State snapshot; lint row 17 reads this line. A report ends like this:
+
+```text
+Final status: Complete. Next owner: the coordinator.
+**Remains**: O-02
+```
+
+At closure, the Coordinator records the brief's sha256 in the report, on its own line outside any code fence, right before the final status line:
+
+```text
+**Brief sha256**: <64 lowercase hex digits of the brief file's bytes>
+```
+
+The Coordinator also appends one line, `Brief sha256 T-NN: <the same hash>`, to that task's close entry in `history.md`, outside any code fence. History only grows, so the first such line is the protected baseline: never add a second one. To repair a wrong first value, set the report's `**Brief sha256**` line to that value, then record an erratum decision and an erratum line with the true hash.
+
+A brief whose task is Complete, Skipped or Unverifiable is a closed record. No agent edits it, fix agents included, until an erratum is recorded. An erratum is an active decision that authorizes the edit. After each authorized edit, the Coordinator appends one line to the report:
+
+```text
+**Brief erratum**: D-xx · sha256 <64 lowercase hex digits after the edit>
+```
+
+Lint row 14 compares the brief with the last erratum's hash, or with the `**Brief sha256**` value when there is none, and compares that value with the first history line of the task. It prints `rewritten brief hash` when the report's baseline differs from that history line or is missing, and then uses the history line as the expected hash. It requires the hash line only in a workspace stamped 10.2.0 or later, and a closure without a history line stays silent.
+
+## History and snapshot records
+
+**Append-only** history, oldest first (newest at the bottom). One terse entry per session:
+`## YYYY-MM-DD · session N · <title>` with **Did / Decisions / Blockers / Next** and, at the end of the
+**newest** entry, a **State snapshot** sufficient to resume without re-reading history. Never rewrite old
+entries. Each entry carries what a later session needs to resume, preserving material constraints and record references, and leads with the compact block — tasks touched, decisions by D-id, status deltas, verification commands + pass/fail. Reasoning and narrative route to `decisions.md` / `reference-docs/`; the history indexes them, it never re-narrates.
+Never log secrets. **The task board `task-board.md` is canonical current state; this file preserves original history.**
+
+Failed attempts: one journal line per attempt, each with its verification block:
+`correction cycle N of 3: <failure> → <correction>; <validation command>: <result>`.
+New records after an approved extension use the approved total ceiling (`correction cycle N of M`);
+historical entries retain their original `N of 3` wording. On budget exhaustion or no-progress
+(two consecutive attempts with identical evidence output), the task becomes Blocked and the entry
+carries an escalation packet: task, Attempts N (budget M), reason budget or no-progress, attempt journal
+with verification blocks (last attempt at minimum), current best failure hypothesis, and the smallest
+unblocking question linked to Q-xx (user-owned if applicable).
+
+The newest State snapshot records Task state, In flight, Blocked on, Resume from and Checkpoint, and
+Active obligations: every `Open` `O-NN` id from the board on one comma-separated line, `none` when
+empty, followed by applicable old decisions, blockers, failure lineage and spent cycles. Never edit
+an older snapshot. A resumed session appends a uniquely labelled continuation, never a duplicate
+session heading. Write changed events once with stable references; do not append repeated transcripts.
+
+**Verification entries** — every "acceptance check passed/failed" claim carries:
+
+This block is a summary/index, never raw capture: link the exact captured command and complete
+stdout/stderr/process result, never reconstructed from prose. One observation serves all covered checks.
+Timestamps and model/effort come from actual observations or are `n/a`. Coordinated work uses this template;
+Focused work uses its self-contained plan/history/resource-usage procedure; Direct work keeps a check summary
+without instantiating it.
+
+````
+**Verification record** — `the literal command`
+```
+trimmed stdout/stderr (≤ 10 lines, keep counts and exit line)
+```
+cwd: `{{absolute cwd}}` · runtime: `{{tool/runtime or n/a}}`
+start: `{{UTC timestamp or n/a}}` · end: `{{UTC timestamp or n/a}}`
+exit: `{{exit code}}` · timeout: `{{true/false}}` · signal: `{{signal or n/a}}`
+revisions: input/code/config/dependency/contract `{{fingerprints or n/a}}`
+raw: `{{immutable raw check record path}}`
+````
+
+No verification block ⇒ the claim is an assertion, and the task may not become Complete. Keep one immutable
+raw check record per validation; unknown telemetry stays `n/a`.
+
+## Compiled clause records
+
+Record each selected clause's id, revision and hash at compile time. Inline only applicable clauses;
+never copy a whole guide or edit a compiled clause independently.
+
+- **{{clause id}} · {{revision}} · sha256 `{{hash of the exact clause bytes}}`**: {{the
+  canonical clause, copied byte-for-byte from its authoritative contract}}.
+
+The compiler hashes the exact UTF-8 clause bytes, records the source path and hash
+beside the Task, and checks the digest before execution. A clause's bytes run from its
+`## <id> · <title>` heading through the line before the next `## ` heading or `<a id=` line, each
+line ending in one newline; the seal check in `guides/verify.md` step 8 recomputes them. The compiler
+supersedes and regenerates a changed authoritative clause; a worker never repairs a hash or clause locally.
+
+
+## Template lifecycle details
+
+`Event` is `start`, `finish` or `observe-incomplete`: append `start` before substantive work and one terminal
+`finish` at role close; for a role that ends abruptly, append `observe-incomplete` when observed, never inventing
+an end time or duration. `Run ID` defaults to `<YYYY-MM-DD-sN>/<task>/<role>/<ordinal>`, unique within the
+workspace. Unavailable Harness, Model, Effort, Attempts, Rework and Verification values are `n/a`, never
+estimated. Attempts and rework retain the shared Run counters across actors and resumptions; they never reset
+for a new role or session. Lifecycle recording is informative and never gates task closure. Outcome is
+`running` for start, `success`/`failed`/`blocked`/`aborted` for finish and `incomplete` for observe-incomplete.
+Product acceptance prose stays in Verification/Source, even when the role finishes successfully. A positive
+Attempts count needs a relative trace reference or stable event identifier for task-matched failed correction
+validation or one declared authorized escalation; count labels, initial checks, dispatches and repeated tests
+alone do not support it. Preserve distinct cycles across actors, counting a duplicate event only once. `0`
+requires observed absence with its source; use `n/a` when support is unknown.
+
+The report ends with a receipt: what is complete, what remains (the `**Remains**:` line), and who owns the next step.
+
+Capture the role's observed finish clock as `finishAt`; include Run ID, or `n/a` with reason for unavailable fields.
+

@@ -4232,7 +4232,7 @@
       "line": 255,
       "unit_sha256": "ab2d79652f006f44ebb7387430aad316563c3541d3c0b1e34bd91c4a51400135",
       "disposition": "reworded",
-      "destination": "references/guides/run.md",
+      "destination": "references/guides/usage-observability.md",
       "note": "The local report contains, in order: authorization and preflight; implementation and target observation; surrounding and integration observations; correction journal and any failure packet; deliverable acceptance; independent semantic review when required; final status and unresolved risk, closed by the receipt.",
       "destination_unit_sha256": null
     },
@@ -6837,7 +6837,7 @@
       "line": 40,
       "unit_sha256": "d38f3f48461bd3ad0325cc25fc3ec585f47ba32c496cd96c69c30c9cdeeb3c1d",
       "disposition": "reworded",
-      "destination": "references/guides/run-card.md",
+      "destination": "references/guides/usage-observability.md",
       "note": "The report ends with a receipt: what is complete, what remains (the `**Remains**:` line), and who owns the next step.",
       "destination_unit_sha256": null
     },
@@ -6943,7 +6943,7 @@
       "unit_sha256": "b10dbf2279fbd472780f8c8622b9abdb6f18dc6f9ec8d4ec38da87030f570fc1",
       "disposition": "reworded",
       "destination": "SKILL.md",
-      "note": "Migrate only selected active workspaces on a disposable copy first, preserve history and correction\nlineage, and adopt at an explicit task boundary. Ordinary invocation performs no network access or\ninstallation mutation; an optional [Judgement Layer](references/guides/system-one.md) goes through the host's `typesafe-ai` skill, only with the workspace's recorded consent. Running or importing a [script](scripts/README.md#consent) from `scripts/` needs the owner's explicit authorization (an explicit plan or run request authorizes `scripts/lint.py` for it); prefer an equivalent harness capability. Same-release adoption of the selected active copy is held when a required lifecycle row fails; closed records and neighboring workspaces remain untouched.",
+      "note": "Migrate only selected active workspaces on a disposable copy first, preserve history and correction\nlineage, and adopt at an explicit task boundary. Ordinary invocation performs no network access or\ninstallation mutation; an optional [Judgement Layer](references/guides/system-one.md) goes through the host's `typesafe-ai` skill, only with the workspace's recorded consent. Running or importing a [script](scripts/README.md#consent) from `scripts/` needs explicit owner authorization (an explicit plan/run request authorizes `scripts/lint.py` and `scripts/record.py` for it); prefer an equivalent harness capability. Same-release adoption of the selected active copy is held when a required lifecycle row fails; closed records and neighboring workspaces remain untouched.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -8221,7 +8221,7 @@
       "unit_sha256": "4f680c1fb632efc2af550c2400f929b6a62d00e6dd809949e3d7f592cca23ee6",
       "disposition": "reworded",
       "destination": "SKILL.md",
-      "note": "Migrate only selected active workspaces on a disposable copy first, preserve history and correction\nlineage, and adopt at an explicit task boundary. Ordinary invocation performs no network access or\ninstallation mutation; an optional [Judgement Layer](references/guides/system-one.md) goes through the host's `typesafe-ai` skill, only with the workspace's recorded consent. Running or importing a [script](scripts/README.md#consent) from `scripts/` needs the owner's explicit authorization (an explicit plan or run request authorizes `scripts/lint.py` for it); prefer an equivalent harness capability. Same-release adoption of the selected active copy is held when a required lifecycle row fails; closed records and neighboring workspaces remain untouched.",
+      "note": "Migrate only selected active workspaces on a disposable copy first, preserve history and correction\nlineage, and adopt at an explicit task boundary. Ordinary invocation performs no network access or\ninstallation mutation; an optional [Judgement Layer](references/guides/system-one.md) goes through the host's `typesafe-ai` skill, only with the workspace's recorded consent. Running or importing a [script](scripts/README.md#consent) from `scripts/` needs explicit owner authorization (an explicit plan/run request authorizes `scripts/lint.py` and `scripts/record.py` for it); prefer an equivalent harness capability. Same-release adoption of the selected active copy is held when a required lifecycle row fails; closed records and neighboring workspaces remain untouched.",
       "destination_unit_sha256": null,
       "dropped": [
         {
@@ -8587,7 +8587,7 @@
       "unit_sha256": "4287d1d3cdba8f953dfda31836c9c8c61f880b084cebd5c243bb1f751f4ee117",
       "disposition": "reworded",
       "destination": "SKILL.md",
-      "note": "Running or importing a [script](scripts/README.md#consent) from `scripts/` needs the owner's explicit authorization (an explicit plan or run request authorizes `scripts/lint.py` for it); prefer an equivalent harness capability.",
+      "note": "Running or importing a [script](scripts/README.md#consent) from `scripts/` needs explicit owner authorization (an explicit plan/run request authorizes `scripts/lint.py` and `scripts/record.py` for it); prefer an equivalent harness capability.",
       "destination_unit_sha256": null
     },
     {
@@ -9472,7 +9472,7 @@
       "unit_sha256": "228d578dc9c27b2a65fd15630cfd7e9f047dd8d68ac2fb0940b3143226899f7f",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
-      "note": "A prior general request to plan or run does not count unless it names the script use, except for `lint.py` below.",
+      "note": "A prior general request to plan or run does not count unless it names the script use, except for the plan/run uses below.",
       "destination_unit_sha256": null
     },
     {
@@ -12017,7 +12017,7 @@
       "line": 62,
       "unit_sha256": "0f282dbef849574f5dd6f308147fd2bd6fb39f7ef499fbe9715013d0bc7dd6b7",
       "disposition": "reworded",
-      "destination": "references/task.tmpl.md",
+      "destination": "references/guides/usage-observability.md",
       "note": "Record each selected clause's id, revision and hash at compile time.",
       "destination_unit_sha256": null
     },
@@ -12026,7 +12026,7 @@
       "line": 62,
       "unit_sha256": "523011d3e35ef9bf2b28891345d8d5768912db4cf9acd11fe9b9f8d756f5a4be",
       "disposition": "reworded",
-      "destination": "references/task.tmpl.md",
+      "destination": "references/guides/usage-observability.md",
       "note": "Inline only applicable clauses; never copy a whole guide or edit a compiled clause independently.",
       "destination_unit_sha256": null,
       "dropped": [
@@ -12041,7 +12041,7 @@
       "line": 71,
       "unit_sha256": "efa8b884511c00bc0e2b268ae3a854dc788facb1d3c8649d513970fcc9281bf1",
       "disposition": "reworded",
-      "destination": "references/task.tmpl.md",
+      "destination": "references/guides/usage-observability.md",
       "note": "The compiler supersedes and regenerates a changed authoritative clause; a worker never repairs a hash or clause locally.",
       "destination_unit_sha256": null
     },
@@ -20230,7 +20230,7 @@
       "line": 73,
       "unit_sha256": "8d47c60125e6a69c81d0eb7efe5e428b4a22717fe543395d45f19d9b58a7022d",
       "disposition": "reworded",
-      "destination": "references/task.tmpl.md",
+      "destination": "references/guides/usage-observability.md",
       "note": "The compiler hashes the exact UTF-8 clause bytes, records the source path and hash beside the Task, and checks the digest before execution.",
       "destination_unit_sha256": null
     },
@@ -20447,6 +20447,375 @@
           "reason": "migration catalog target bumped to 10.4.0"
         }
       ]
+    },
+    {
+      "path": "references/task.tmpl.md",
+      "line": 69,
+      "unit_sha256": "bb8f6366e35bbee8044c3944aba7107b7f21457eaa1db38222744f9aa5e97ad5",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "bb8f6366e35bbee8044c3944aba7107b7f21457eaa1db38222744f9aa5e97ad5"
+    },
+    {
+      "path": "references/task.tmpl.md",
+      "line": 69,
+      "unit_sha256": "edab4263c16fcb425839ea722177592e5b91f284ed9ce08e31017293cbfdb920",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "edab4263c16fcb425839ea722177592e5b91f284ed9ce08e31017293cbfdb920"
+    },
+    {
+      "path": "references/task.tmpl.md",
+      "line": 75,
+      "unit_sha256": "b550a05bb22c219b067b70967105b88e101258e1da9ce7da274135d6f22721ac",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "b550a05bb22c219b067b70967105b88e101258e1da9ce7da274135d6f22721ac"
+    },
+    {
+      "path": "references/task.tmpl.md",
+      "line": 76,
+      "unit_sha256": "88f313ab8715c814556146d761c3fae8d8b05ee1c6ed7cbdd9e880c385489723",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "88f313ab8715c814556146d761c3fae8d8b05ee1c6ed7cbdd9e880c385489723"
+    },
+    {
+      "path": "references/task.tmpl.md",
+      "line": 78,
+      "unit_sha256": "1479d33d60e50db89c716a79a27a58435659faa35c246525fb720d2c1c77d50e",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "1479d33d60e50db89c716a79a27a58435659faa35c246525fb720d2c1c77d50e"
+    },
+    {
+      "path": "SKILL.md",
+      "line": 65,
+      "unit_sha256": "052eb5011dd593012d9e022f33464749dc0475d7644a3f473c633041a0abc353",
+      "disposition": "reworded",
+      "destination": "SKILL.md",
+      "note": "Running or importing a [script](scripts/README.md#consent) from `scripts/` needs explicit owner authorization (an explicit plan/run request authorizes `scripts/lint.py` and `scripts/record.py` for it); prefer an equivalent harness capability.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "MAINTAINING.md",
+      "line": 170,
+      "unit_sha256": "608fad064e2d448e4231464700bd5cd8fa783b2d9ab8f4b055c1189cf65e3032",
+      "disposition": "reworded",
+      "destination": "MAINTAINING.md",
+      "note": "Write records with `python3 -I skills/tackle/scripts/record.py --workspace PATH --spec RELATIVE_JSON`.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/resource-usage.tmpl.md",
+      "line": 4,
+      "unit_sha256": "5615e00c2461cbbeb07ed0520d775e99960408b6ea003ca37e13a0b38ea44b2e",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "5615e00c2461cbbeb07ed0520d775e99960408b6ea003ca37e13a0b38ea44b2e"
+    },
+    {
+      "path": "references/history.tmpl.md",
+      "line": 26,
+      "unit_sha256": "f9e77df0cbb443fe47e7e8ea31c058fbde617165bb5ab88b9b466d0314089333",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "f9e77df0cbb443fe47e7e8ea31c058fbde617165bb5ab88b9b466d0314089333"
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 184,
+      "unit_sha256": "182ca9c8bfcd64a50d9b7feb6dc9d46cd7b9ad175b74935cdca345e788aeb2bc",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "182ca9c8bfcd64a50d9b7feb6dc9d46cd7b9ad175b74935cdca345e788aeb2bc"
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 343,
+      "unit_sha256": "09475b15cbccf380288b958c6bd72c6659a3f464a230fbb0cc2c5d2472cd54fc",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "09475b15cbccf380288b958c6bd72c6659a3f464a230fbb0cc2c5d2472cd54fc"
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 354,
+      "unit_sha256": "701f914584a9dcf5a956ab9351d6d1fddb4492a89238fcd5b0d9fe844e805a58",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "701f914584a9dcf5a956ab9351d6d1fddb4492a89238fcd5b0d9fe844e805a58"
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 355,
+      "unit_sha256": "24c5d1547a0f671736c17d2b1f3bfb3eff567c5b84818463f1eeffb485b94169",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "24c5d1547a0f671736c17d2b1f3bfb3eff567c5b84818463f1eeffb485b94169"
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 356,
+      "unit_sha256": "f4aacf74186b41a9b03c886d36b7016bf7f55663bc51ed69f5206a4e502220f8",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "f4aacf74186b41a9b03c886d36b7016bf7f55663bc51ed69f5206a4e502220f8"
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 358,
+      "unit_sha256": "f90fe9afa50b1168d16fc8bd8aeba985df7aefc1428582d380282fdd9e6822b1",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "f90fe9afa50b1168d16fc8bd8aeba985df7aefc1428582d380282fdd9e6822b1"
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 363,
+      "unit_sha256": "fbcaee349af9085c08f3835b8ae92e33d822dabd5910d9030f7327fd71d1c446",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "fbcaee349af9085c08f3835b8ae92e33d822dabd5910d9030f7327fd71d1c446"
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 365,
+      "unit_sha256": "cbda11ea3ff36d480b2e3b1adf5265f19f19593112168630ef3ae78f3f2be279",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "cbda11ea3ff36d480b2e3b1adf5265f19f19593112168630ef3ae78f3f2be279"
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 369,
+      "unit_sha256": "0291b28f61ddcba7387f788488062dba0d6ad78384590125b6b9a7227c71d49e",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "0291b28f61ddcba7387f788488062dba0d6ad78384590125b6b9a7227c71d49e"
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 369,
+      "unit_sha256": "6129b1958cdae106d0a7e7cd6fb80b2843c7dafe81e2de79b8a7dd23fc26b56b",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "6129b1958cdae106d0a7e7cd6fb80b2843c7dafe81e2de79b8a7dd23fc26b56b"
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 369,
+      "unit_sha256": "b19a8aff53b95f3340ca7d5210cc87e4058eadb17582f5a46562a125fb8730af",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "b19a8aff53b95f3340ca7d5210cc87e4058eadb17582f5a46562a125fb8730af"
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 371,
+      "unit_sha256": "1599beac426f8f40e9b27bd6aba710dfb4953b22116a2b7746a0922d74f1f8c6",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "1599beac426f8f40e9b27bd6aba710dfb4953b22116a2b7746a0922d74f1f8c6"
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 373,
+      "unit_sha256": "2c608771cb9f69d1567a2b1ffb90126222e61aea78a4c00f9ffa223e6dcdb0a2",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "2c608771cb9f69d1567a2b1ffb90126222e61aea78a4c00f9ffa223e6dcdb0a2"
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 377,
+      "unit_sha256": "a6e68f19bd157d3ef876cb8bddb52b8f2a158dcd368030b1d66c30b1956a6699",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "a6e68f19bd157d3ef876cb8bddb52b8f2a158dcd368030b1d66c30b1956a6699"
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 377,
+      "unit_sha256": "ce39b5b23f88b373a4f69b1f4268b0754358adf4efbb1a7c225f063329aef686",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "ce39b5b23f88b373a4f69b1f4268b0754358adf4efbb1a7c225f063329aef686"
+    },
+    {
+      "path": "references/guides/run.md",
+      "line": 377,
+      "unit_sha256": "ad6b722ade99048757189b38a405e2b41e97cad15bb3b1de808e621b7e7b7349",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "ad6b722ade99048757189b38a405e2b41e97cad15bb3b1de808e621b7e7b7349"
+    },
+    {
+      "path": "references/resource-usage.tmpl.md",
+      "line": 15,
+      "unit_sha256": "588ee22e5ae82832805bd94042c311d3cbd3b2c123c7aae11e11fd7e5401ea2c",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "588ee22e5ae82832805bd94042c311d3cbd3b2c123c7aae11e11fd7e5401ea2c"
+    },
+    {
+      "path": "references/resource-usage.tmpl.md",
+      "line": 17,
+      "unit_sha256": "4515351f32cd83432f547ae9eeef73c935b3ab714e4e118587caa26f0f5e3d80",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "4515351f32cd83432f547ae9eeef73c935b3ab714e4e118587caa26f0f5e3d80"
+    },
+    {
+      "path": "references/resource-usage.tmpl.md",
+      "line": 18,
+      "unit_sha256": "0da3311aad301f9272a5133d3dfd352c72fa2ffab74d41a1a54800edd559e8e0",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "0da3311aad301f9272a5133d3dfd352c72fa2ffab74d41a1a54800edd559e8e0"
+    },
+    {
+      "path": "references/resource-usage.tmpl.md",
+      "line": 19,
+      "unit_sha256": "15653b5cb8806e3a6ab8ac9e5563516721473189b740ef340a5290c92b37bda1",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "15653b5cb8806e3a6ab8ac9e5563516721473189b740ef340a5290c92b37bda1"
+    },
+    {
+      "path": "references/resource-usage.tmpl.md",
+      "line": 20,
+      "unit_sha256": "20f7b09f6b0df5cb7547cccf3739c2a160e9aa66d67e9c3d304a78215e102d3a",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "20f7b09f6b0df5cb7547cccf3739c2a160e9aa66d67e9c3d304a78215e102d3a"
+    },
+    {
+      "path": "references/resource-usage.tmpl.md",
+      "line": 20,
+      "unit_sha256": "ef633d3a9625642303c80b9a99cc8b21d1630128869d0fe4a91660d3950deb31",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "ef633d3a9625642303c80b9a99cc8b21d1630128869d0fe4a91660d3950deb31"
+    },
+    {
+      "path": "references/resource-usage.tmpl.md",
+      "line": 22,
+      "unit_sha256": "1d413ca21b9e6b78fecc711aaa1e00301912e7ef5870a8e745382a09606bf785",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "1d413ca21b9e6b78fecc711aaa1e00301912e7ef5870a8e745382a09606bf785"
+    },
+    {
+      "path": "references/resource-usage.tmpl.md",
+      "line": 22,
+      "unit_sha256": "9e850c3b03673c4d7653d72a6e92028c5bf8e4ed229762a7acf95063b804c18b",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "9e850c3b03673c4d7653d72a6e92028c5bf8e4ed229762a7acf95063b804c18b"
+    },
+    {
+      "path": "references/resource-usage.tmpl.md",
+      "line": 25,
+      "unit_sha256": "073a22e63267401342216d5c2536a09954faa4a66fabd488d223f98a2504eb95",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "073a22e63267401342216d5c2536a09954faa4a66fabd488d223f98a2504eb95"
+    },
+    {
+      "path": "references/resource-usage.tmpl.md",
+      "line": 25,
+      "unit_sha256": "44048cf317255655564b76d86e5fb38b21944e2cf92ac4a6f17c6a2daea772ea",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "44048cf317255655564b76d86e5fb38b21944e2cf92ac4a6f17c6a2daea772ea"
+    },
+    {
+      "path": "references/guides/run-card.md",
+      "line": 50,
+      "unit_sha256": "62c342a95a79879fde81b7c017d779abe86878ba677f806b2341620934a42f88",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "62c342a95a79879fde81b7c017d779abe86878ba677f806b2341620934a42f88"
+    },
+    {
+      "path": "references/guides/run-card.md",
+      "line": 58,
+      "unit_sha256": "b9bd4ee06da7a9c1ab40e54924aea1b91e07ef33b6feb59d4986720fcc67e3f1",
+      "disposition": "merged",
+      "destination": "references/guides/usage-observability.md",
+      "note": null,
+      "destination_unit_sha256": "b9bd4ee06da7a9c1ab40e54924aea1b91e07ef33b6feb59d4986720fcc67e3f1"
+    },
+    {
+      "path": "skills/tackle/scripts/README.md",
+      "line": 43,
+      "unit_sha256": "b18e99d917529b6d419d2fd9c7366f9fc405323031589f64eb65189cd5160daa",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "A prior general request to plan or run does not count unless it names the script use, except for the plan/run uses below.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "skills/tackle/scripts/README.md",
+      "line": 46,
+      "unit_sha256": "ebe868ccae46b8603c05acdb8d02bd824ba03f8a7b0f003bde9cbe56924f4163",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "An explicit Tackle plan or run request authorizes [lint.py](lint.py) to run lint rows and [record.py](record.py) to write the six workspace forms in the [record format home](../references/guides/usage-observability.md#record-writing-and-manual-fallback). It authorizes no other script.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "skills/tackle/scripts/README.md",
+      "line": 57,
+      "unit_sha256": "f33d4b14dcce3fae44bb4d164c6478a9d3ba73ff472eb6d68028961cb0a6fa6b",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "Except for the standalone record writer, the scripts need Python 3.10 or later and the standard library only.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "skills/tackle/scripts/README.md",
+      "line": 57,
+      "unit_sha256": "970f72e09c55fb39ba4a851ecb656e4da338750ab7d691007c0b77dd50126781",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "The repository's full test registry runs on Python 3.10 and on the current Python; the record writer's Python 3.9 invocation is checked separately.",
+      "destination_unit_sha256": null
     }
   ]
 }

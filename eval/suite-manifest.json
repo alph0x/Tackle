@@ -503,14 +503,14 @@
       "purpose": "Mechanical workflow block execution and failure attribution on synthetic repositories."
     },
     {
-      "path": "eval/tests/tooling/maintaining/record-rows",
+      "path": "eval/tests/product/run/record-tool",
       "files": [
-        "test_record_rows.py"
+        "test_record_tool.py"
       ],
-      "tests": 2,
-      "source": "maintaining/record_rows.py",
-      "category": "tooling",
-      "purpose": "Record generation and evidence refusal through workspace lint rows."
+      "tests": 17,
+      "source": "skills/tackle/scripts/record.py",
+      "category": "product",
+      "purpose": "Confined six-kind workspace writes, lifecycle and correction evidence, closure and history invariants, exact telemetry attribution and compiled clauses through unchanged consumers."
     },
     {
       "path": "eval/tests/tooling/maintaining/release",

@@ -991,7 +991,7 @@
       "rule_id": "R-RUN-07",
       "statement": "Task, related regression and affected merged-tree integration checks pass before a task becomes Complete, and deliverable acceptance precedes initiative completion.",
       "statement_sha256": "d3301a1f5ebbba1c848bc0b74aecc74ef0aa2bbce18ca99a6a237e8064424f42",
-      "home": "references/guides/run-card.md:54",
+      "home": "references/guides/run-card.md:53",
       "home_fragment": "deliverable acceptance precedes initiative completion",
       "units": [],
       "mirrors": [
@@ -2973,16 +2973,16 @@
     },
     {
       "rule_id": "R-REL-05",
-      "statement": "Running or importing a [script](scripts/README.md#consent) from `scripts/` needs the owner's explicit authorization (an explicit plan or run request authorizes `scripts/lint.py` for it); prefer an equivalent harness capability.",
-      "statement_sha256": "052eb5011dd593012d9e022f33464749dc0475d7644a3f473c633041a0abc353",
+      "statement": "Running or importing a [script](scripts/README.md#consent) from `scripts/` needs explicit owner authorization (an explicit plan/run request authorizes `scripts/lint.py` and `scripts/record.py` for it); prefer an equivalent harness capability.",
+      "statement_sha256": "53ffbea0527df875fed1a4f61f58aec57f2eb5baef1cb3e0da3bc37acb06b9e4",
       "home": "SKILL.md:65",
       "home_fragment": "Running or importing a [script](scripts/README.m",
       "units": [
         "Running or importing a [script](scripts/README.m"
       ],
       "mirrors": [
-        "skills/tackle/scripts/README.md:41",
-        "skills/tackle/scripts/README.md:46",
+        "skills/tackle/scripts/README.md:42",
+        "skills/tackle/scripts/README.md:47",
         "references/guides/full-checks.md:4",
         "references/guides/full-checks.md:49",
         "references/guides/full-checks.md:59",
@@ -3399,7 +3399,7 @@
       "home_fragment": "only the owner's request or a confirmed closure fold",
       "units": [],
       "mirrors": [
-        "references/guides/run-card.md:52"
+        "references/guides/run-card.md:51"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -3503,7 +3503,7 @@
       "home_fragment": "Before an initiative is declared closed, and at every cold",
       "units": [],
       "mirrors": [
-        "references/guides/run-card.md:51",
+        "references/guides/run-card.md:50",
         "references/guides/status.md:73"
       ],
       "class": "behavioral",
@@ -4307,7 +4307,7 @@
       "rule_id": "R-RUN-25",
       "statement": "Closing a Complete task sets its map delta changes to done before any view rebuild.",
       "statement_sha256": "63123fa9f2c6cd6a7386247812b9f677fa94a2a95b651238865145ad81f2076c",
-      "home": "references/guides/run-card.md:52",
+      "home": "references/guides/run-card.md:51",
       "home_fragment": "Set a Complete task's `map-delta.json` changes to `done`",
       "units": [],
       "mirrors": [
@@ -4429,7 +4429,7 @@
       "units": [],
       "mirrors": [
         "references/guides/plan-card.md:82",
-        "references/task.tmpl.md:104"
+        "references/task.tmpl.md:98"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -5208,11 +5208,11 @@
       "rule_id": "R-RUN-32",
       "statement": "Each new attempt-journal line uses `correction cycle N of M: <failure> \u2192 <correction>; <validation command>: <result>`, where M is the default three or the explicitly approved total ceiling, while historical entries remain exact.",
       "statement_sha256": "a1629bb24afe42a074660c970fc0970c45a2ca3ec0619e71eb07efc9589d4fed",
-      "home": "references/guides/run.md:184",
+      "home": "references/guides/usage-observability.md:214",
       "home_fragment": "Each attempt-journal line takes the form",
       "units": [],
       "mirrors": [
-        "references/history.tmpl.md:61"
+        "references/guides/run.md:185"
       ],
       "class": "format",
       "hot_path": false,
@@ -5280,9 +5280,9 @@
     },
     {
       "rule_id": "R-MIGRATE-06",
-      "statement": "Use the `history.tmpl.md` journal form for new correction records, with three as the default ceiling or the explicitly approved total ceiling after an extension, and preserve older `attempt N:` and historical `N of 3` records.",
-      "statement_sha256": "4acf877020e77dffc9fe03f8a0a1a045afa65e7c90dd092537fa07bafda03e82",
-      "home": "references/history.tmpl.md:62",
+      "statement": "Use the usage-observability guide journal form for new correction records, with three as the default ceiling or the explicitly approved total ceiling after an extension, and preserve older `attempt N:` and historical `N of 3` records.",
+      "statement_sha256": "2cbf0504f4d7e86c87c66999a75022245477f8c2103d91ace8e3279915a01779",
+      "home": "references/guides/usage-observability.md:265",
       "home_fragment": "New records after an approved extension use",
       "units": [],
       "mirrors": [],
@@ -5303,12 +5303,14 @@
     },
     {
       "rule_id": "R-MIGRATE-07",
-      "statement": "Write lifecycle `At` clocks with seconds, `YYYY-MM-DDTHH:MM:SS[.fff](Z|\u00b1HH:MM)`, as `resource-usage.tmpl.md` states; minute-only and space-separated clocks remain unmeasured.",
-      "statement_sha256": "86593306f5e749466ffd792cb7ab29acca2082311e3b1f7753791803220f51de",
+      "statement": "Write lifecycle `At` clocks with seconds, `YYYY-MM-DDTHH:MM:SS[.fff](Z|\u00b1HH:MM)`, as `usage-observability.md` states; minute-only and space-separated clocks remain unmeasured.",
+      "statement_sha256": "e23d602faa54fce13b8fc014c75874dff42722ac9d19a42c5d81c3183ea23382",
       "home": "references/guides/migration-catalog.json:727",
       "home_fragment": "Write lifecycle At clocks with seconds",
       "units": [],
-      "mirrors": [],
+      "mirrors": [
+        "references/guides/usage-observability.md:169"
+      ],
       "class": "behavioral",
       "hot_path": false,
       "origin": {
@@ -5475,8 +5477,8 @@
       "home_fragment": "The symbol ledger of a brief that declares",
       "units": [],
       "mirrors": [
-        "references/task.tmpl.md:87",
-        "references/task.tmpl.md:89"
+        "references/task.tmpl.md:81",
+        "references/task.tmpl.md:83"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -5737,12 +5739,12 @@
       "rule_id": "R-RUN-33",
       "statement": "A brief whose task is Complete, Skipped or Unverifiable is a closed record: no agent edits it, a fix-applying agent included, until an active decision authorizes the edit, and after each authorized edit the Coordinator appends one `**Brief erratum**: D-xx \u00b7 sha256 <hash>` report line that names that decision and the edited brief's hash.",
       "statement_sha256": "33040197dc88d5c94be7b22578698e828a9eb68e50ed7f808c35b795537ea8c9",
-      "home": "references/guides/run.md:371",
+      "home": "references/guides/run.md:351",
       "home_fragment": "A brief whose task is Complete, Skipped or Unverifiable is",
       "units": [],
       "mirrors": [
         "references/guides/lint-spec.md:23",
-        "references/guides/run.md:358"
+        "references/guides/usage-observability.md:247"
       ],
       "class": "safety-invariant",
       "hot_path": false,
@@ -5765,11 +5767,11 @@
       "rule_id": "R-RUN-34",
       "statement": "At closure the Coordinator records the brief's sha256 on its own line in the task report and in the task's close entry of history.md; that recorded baseline is never edited or added again to match an edited brief, and lint row 14 reports a brief whose sha256 differs from the last erratum hash or, with none, from the recorded value.",
       "statement_sha256": "4699e955da026a1f8e54ed4868a94693b96e3b94209c7d4106d2245eecc7325f",
-      "home": "references/guides/run.md:363",
+      "home": "references/guides/usage-observability.md:239",
       "home_fragment": "At closure, the Coordinator records the brief's sha256",
       "units": [],
       "mirrors": [
-        "references/guides/run.md:350",
+        "references/guides/usage-observability.md:245",
         "references/guides/lint-spec.md:26",
         "references/guides/migration-catalog.json:352"
       ],
@@ -5871,7 +5873,7 @@
       "rule_id": "R-RUN-35",
       "statement": "At task close record the role\u2019s observed finish clock as `finishAt` with its Run ID; when either is unavailable use `n/a` with the reason, and never substitute validation end time.",
       "statement_sha256": "f149794a131d150f921d25f5da586911e4b98b55db3516ef26e81f2f96cec4dd",
-      "home": "references/guides/run-card.md:58",
+      "home": "references/guides/usage-observability.md:333",
       "home_fragment": "Capture the role's observed finish clock",
       "units": [],
       "mirrors": [
@@ -6600,7 +6602,7 @@
       "rule_id": "R-RUN-45",
       "statement": "Reviewer runs first; the verdict cites each record printed:",
       "statement_sha256": "c0da67b595fa0d32790d7a362a28bf90301f0c0c42d00cf45af6abfb80e50741",
-      "home": "references/task.tmpl.md:162",
+      "home": "references/task.tmpl.md:156",
       "home_fragment": "Reviewer runs first; the verdict cites each record printed:",
       "units": [],
       "mirrors": [],
@@ -6736,10 +6738,10 @@
     },
     {
       "rule_id": "R-REL-22",
-      "statement": "Write record rows with `maintaining/record_rows.py`.",
-      "statement_sha256": "608fad064e2d448e4231464700bd5cd8fa783b2d9ab8f4b055c1189cf65e3032",
+      "statement": "Write records with `python3 -I skills/tackle/scripts/record.py --workspace PATH --spec RELATIVE_JSON`.",
+      "statement_sha256": "21531cd15746f07b67de1aee49eb7236b5adb85e71049024fdb9f018fae87313",
       "home": "MAINTAINING.md:170",
-      "home_fragment": "Write record rows with `maintaining/record_rows.py",
+      "home_fragment": "Write records with `python3 -I skills/tackle/scripts/",
       "units": [],
       "mirrors": [],
       "class": "maintainer",

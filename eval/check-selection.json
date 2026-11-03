@@ -39,7 +39,7 @@
     "eval/tests/tooling/effects",
     "eval/tests/tooling/behavior/review-convergence",
     "eval/tests/tooling/maintaining/ci-mechanical",
-    "eval/tests/tooling/maintaining/record-rows",
+    "eval/tests/product/run/record-tool",
     "eval/tests/tooling/maintaining/release",
     "eval/tests/tooling/maintaining/brief-preflight",
     "eval/tests/tooling/maintaining/role-session",
@@ -994,22 +994,28 @@
     },
     {
       "patterns": [
-        "maintaining/record_rows.py",
+        "skills/tackle/scripts/record.py",
         "skills/tackle/scripts/lint.py",
         "eval/tests/product/lint/rows/test_lint_rows.py",
         "eval/lint/rows/fixtures/pass-full/**",
-        "eval/tests/tooling/maintaining/record-rows/test_record_rows.py",
+        "eval/tests/product/run/record-tool/test_record_tool.py",
         "maintaining/install_root.py",
+        "maintaining/field_report.py",
+        "eval/support/usage.py",
         "eval/support/lint.py",
         "skills/tackle/SKILL.md",
         "skills/tackle/references/task.tmpl.md",
+        "skills/tackle/references/guides/verify.md",
+        "skills/tackle/references/guides/usage-observability.md",
+        "skills/tackle/references/resource-usage.tmpl.md",
+        "skills/tackle/references/history.tmpl.md",
         "skills/tackle/scripts/**"
       ],
       "families": [
-        "eval/tests/tooling/maintaining/record-rows"
+        "eval/tests/product/run/record-tool"
       ],
       "exclude": [],
-      "reason": "Record generation and evidence refusal through workspace lint rows; also covers the lint script and the pass-full fixture the test consumes."
+      "reason": "Direct record writes and refusal through unchanged lint rows, literal clause seal and usage consumer; includes imported helpers, fixture, schema, templates and documented format contract."
     },
     {
       "patterns": [

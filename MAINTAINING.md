@@ -167,7 +167,7 @@ results; the release sweep closes with exactly:
 ## Task close checks
 
 At every task close, run `python3 -I -B maintaining/ci_mechanical.py --repo .`.
-Write record rows with `maintaining/record_rows.py`.
+Write records with `python3 -I skills/tackle/scripts/record.py --workspace PATH --spec RELATIVE_JSON`.
 
 ## Release procedure
 
