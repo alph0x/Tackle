@@ -162,6 +162,12 @@ def main():
         after = {k: sha(p.repo / k) for k in paths}
         p.run('second', edit + ['--records', str(p.out / 'receipt-second')], expect=1)
         p.fact('second application changed nothing', 'unchanged', {k: sha(p.repo / k) for k in paths} == after)
+        # MAINTAINING, Brief and role-session checks: the committed-text preflight runs before staging.
+        guard = p.run('committed-preflight', [PY310, '-I', '-B', str(TOOLS.parent / 'brief_preflight.py'), 'committed',
+                                              '--tree', str(p.repo), '--base', 'v' + cfg['from_version'],
+                                              '--workspace', str(WS), '--out', str(p.out / 'committed-preflight')])
+        if not (guard['complete'] and guard['native_exit'] == 0):
+            p.finish()
         p.run('stage', ['git', 'add', '--', *paths])
         status = git(p.repo, 'status', '--porcelain').stdout.splitlines()
         p.fact('only the part paths are staged', status, sorted(x[3:] for x in status) == sorted(paths) and all(x[1] == ' ' for x in status))

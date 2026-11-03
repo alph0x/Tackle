@@ -1035,6 +1035,12 @@
       "reason": "Preflight reads selection, committed-text and seal inputs."
     },
     {
+      "patterns": ["maintaining/brief_preflight.py", "eval/rules/committed_text.py"],
+      "families": ["eval/tests/tooling/maintaining/release"],
+      "exclude": [],
+      "reason": "Release parts run the committed-text preflight before staging."
+    },
+    {
       "patterns": ["maintaining/role_session_check.py"],
       "families": ["eval/tests/tooling/maintaining/role-session"],
       "exclude": [],
