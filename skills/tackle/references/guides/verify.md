@@ -204,6 +204,9 @@ optional depth artifact holding one table.
   when the cap is reached with an open or new HIGH or MEDIUM finding. The owner then receives one bounded
   choice through the [blocker recovery policy](communication.md#actionable-blocker-recovery): accept the
   named risk, narrow the selected tasks, or re-scope.
+- Include each brief's lock rounds in this same cap, retaining accumulated rounds across brief revisions,
+  reviewer changes and resumptions. At that stop, PLAN sends the owner the bounded decision packet instead
+  of preparing or locking again.
 - After findings are applied, in bulk or one by one, rerun every lint row before readiness is claimed. Then
   verify only the diff since the round began: each changed brief, contract or decision line against the step
   list above. A defect found there is a new finding of the next round and counts toward the cap.

@@ -145,6 +145,8 @@ complete script and hash it with its inputs so its evidence retains the executed
 and observed results, runtime, environment, raw child result, and input/output hashes. Its replay uses a
 disposable copy or fresh destination without overwriting the original raw record.
 
+Retain the pre-lock command/check rehearsal, named fault results and complete before/after tree identities.
+
 Once this heading is sealed at Ready, a protected acceptance edit requires a prior superseding `D-yy`
 decision; update the marker to `SEALED: D-yy supersedes D-xx`, regenerate compiled clauses and rerun the
 affected checks before proceeding.
