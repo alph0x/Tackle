@@ -122,9 +122,6 @@ When a declared corridor's budget is spent, report any run of three or more cons
 findings narrowed as convergence evidence for the owner's choice; inside the corridor such a run is not a
 reason to pause.
 
-Each extension request lists all prior extensions, cumulative pool spend and at least one alternative:
-descope, split, horizon or stop. Further extension requires narrowing observed since the previous extension.
-
 A capability change is a separate recommendation. Require a demonstrated capability limit after the
 brief is strengthened; missing requirements, validator contradictions, permissions and environment
 failures are not capability gaps. Follow the existing Escalation declaration and [tier limits](#tier-dispatch-and-escalation-limits):
@@ -184,7 +181,7 @@ The spent count comes from the task-linked failed correction-validation records,
 Each failed implementation correction appends an attempt-journal entry, naming the observed failure,
 correction, validation command, result and cycle count, before another attempt, and re-reads the earlier
 entries. A correction changing a contract or acceptance requires the authorized superseding decision
-first, then re-grounding and revalidation.
+first, then re-grounding and revalidation. Each attempt-journal line takes the form `correction cycle N of 3: <failure> → <correction>; <validation command>: <result>`.
 The three-cycle ceiling is the default; new records use `N of M` after an explicitly approved extension,
 while historical `N of 3` entries remain exact.
 
@@ -349,7 +346,10 @@ traversal or housekeeping after product acceptance without a relevant change, ne
 explicit release/audit request. Reuse unchanged PLAN readiness checks; this does not skip initial PLAN
 lint, required product/review checks, or the separately requested release sweep.
 
-Each observation links to its immutable raw record. Raw records are
+The local report contains, in order: authorization and preflight; implementation and target
+observation; surrounding and integration observations; correction journal and any failure packet;
+deliverable acceptance; independent semantic review when required; final status and unresolved risk,
+closed by the receipt. Each observation links to its immutable raw record. Raw records are
 append-never/overwrite-never artifacts named with a unique Run, Task, validation ordinal and observed
 timestamp. Record unknown telemetry as `n/a`; never infer duration, tokens, cost, actor,
 independence or success.
@@ -357,6 +357,29 @@ independence or success.
 Before RUN writes a receipt or a blocker report, it runs the [controlled-writing](controlled-writing.md)
 check on the text and fixes each finding or records the owner's acceptance.
 
-A brief whose task is Complete, Skipped or Unverifiable is a closed record. No agent edits it, fix agents included, until an erratum is recorded. An erratum is an active decision that authorizes the edit.
+The receipt ends with one `**Remains**:` line, on its own line outside any code fence: `none`, or the
+`O-NN` ids the task leaves `Open`, comma-separated. Each id is also a row of the board's obligations
+table and is named in the newest State snapshot; lint row 17 reads this line. A report ends like this:
+
+```text
+Final status: Complete. Next owner: the coordinator.
+**Remains**: O-02
+```
+
+At closure, the Coordinator records the brief's sha256 in the report, on its own line outside any code fence, right before the final status line:
+
+```text
+**Brief sha256**: <64 lowercase hex digits of the brief file's bytes>
+```
+
+The Coordinator also appends one line, `Brief sha256 T-NN: <the same hash>`, to that task's close entry in `history.md`, outside any code fence. History only grows, so the first such line is the protected baseline: never add a second one. To repair a wrong first value, set the report's `**Brief sha256**` line to that value, then record an erratum decision and an erratum line with the true hash.
+
+A brief whose task is Complete, Skipped or Unverifiable is a closed record. No agent edits it, fix agents included, until an erratum is recorded. An erratum is an active decision that authorizes the edit. After each authorized edit, the Coordinator appends one line to the report:
+
+```text
+**Brief erratum**: D-xx · sha256 <64 lowercase hex digits after the edit>
+```
+
+Lint row 14 compares the brief with the last erratum's hash, or with the `**Brief sha256**` value when there is none, and compares that value with the first history line of the task. It prints `rewritten brief hash` when the report's baseline differs from that history line or is missing, and then uses the history line as the expected hash. It requires the hash line only in a workspace stamped 10.2.0 or later, and a closure without a history line stays silent.
 
 When a plan view exists for the workspace, rebuild it after each board status change and each role start or finish, as the [plan view guide](plan-view.md#rebuild) states; an open view reloads itself.

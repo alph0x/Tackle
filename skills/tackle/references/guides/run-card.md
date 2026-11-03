@@ -47,15 +47,16 @@ RUN starts only after explicit execution intent, including a scoped PLAN+RUN req
      assertion and normalized output, with timestamps, paths and durations removed.
    - **Other causes** produce an escalation packet. The task becomes Blocked, or `Waiting on owner` when
      the owner must act.
-8. **Close.** A [reviewer's verdict](run.md#adversary-checkpoints) is its own artifact; the coordinator decides. Close with a receipt naming completion, `**Remains**:` and next owner.
+8. **Close.** A [reviewer's verdict](run.md#adversary-checkpoints) is its own artifact; the coordinator decides. The report ends with
+   a receipt: what is complete, what remains (the `**Remains**:` line), and who owns the next step.
    Set a Complete task's `map-delta.json` changes to `done` before any view rebuild. [Update the board](run.md#close-lint) with
    hash-before-write, then append one history line and the usage row, and rebuild an existing plan view. Loop. When no task remains,
    deliverable acceptance precedes initiative completion.
    Before closing the initiative, read every Complete task's brief, report and cited records as prose; an
    unmet owner request is an `Open` obligation raised with the owner; with a map delta or a requirements delta, also offer the
    owner its fold (`architecture-map.md` or `requirements-base.md`, Closure fold).
-   Record observed `finishAt` and Run ID, or `n/a` with reason. Never substitute validation end.
-   Use `record.py`; if unavailable, manually record lifecycle, correction, closure, history/snapshot, telemetry and clause compilation.
+   Capture the role's observed finish clock as `finishAt`; include Run ID, or `n/a` with reason
+   for unavailable fields. Never substitute validation end.
 
 ## State transitions
 
@@ -93,5 +94,3 @@ cycles.
 [acceptance](run.md#integration-and-deliverable-acceptance), [release gating](run.md#release-gating),
 [run record](run.md#run-record), [testing](testing.md), [limits](run.md#tier-dispatch-and-escalation-limits),
 [waiting-on-owner citation](status.md#queries), [resume](status.md#cold-resume-read-order).
-
-[Record formats](usage-observability.md#record-writing-and-manual-fallback).

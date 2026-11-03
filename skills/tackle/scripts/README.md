@@ -42,18 +42,19 @@ documented one-line check command, such as a retro metric command, is not a scri
 Running or importing a script needs the owner's explicit authorization, under the shared
 [decision and communication policy](../references/guides/communication.md). Prefer an equivalent
 harness capability when one exists. A prior general request to plan or run does not count unless it
-names the script use, except for the plan/run uses below.
+names the script use, except for `lint.py` below.
 
-An explicit Tackle plan or run request authorizes [lint.py](lint.py) to run lint rows and
-[record.py](record.py) to write the six workspace forms in the
-[record format home](../references/guides/usage-observability.md#record-writing-and-manual-fallback).
-It authorizes no other script. An explicit owner request for a feature whose documented procedure is
-a script authorizes that script for that request, such as the plan view, a migration, or a System One
-use that the workspace recorded `yes` for. Otherwise a general request to plan or run authorizes no
-script. A script being part of the install authorizes nothing.
+An explicit Tackle plan or run request authorizes [lint.py](lint.py), which runs the lint rows, for
+that request and authorizes no other script. An explicit owner request for a feature whose documented
+procedure is a script authorizes that script for that request, such as the plan view, a migration, or a
+System One use that the workspace recorded `yes` for. Otherwise a general request to plan or run
+authorizes no script. A script being part of the install authorizes nothing.
 
 Declining is a normal outcome. The affected record is reported unavailable or produced by another
 permitted route, such as an equivalent harness capability or the project's own tools; it is never faked.
+
+The optional [record writer](record.py) writes the six workspace forms after explicit authorization
+for that tool or its documented feature. Its [API and manual forms](../references/guides/usage-observability.md#record-writing-and-manual-fallback) do not change the consent policy above.
 
 ## Python version
 

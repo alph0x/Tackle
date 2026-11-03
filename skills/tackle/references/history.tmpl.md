@@ -23,7 +23,17 @@ Timestamps and model/effort come from actual observations or are `n/a`. Coordina
 Focused work uses its self-contained plan/history/resource-usage procedure; Direct work keeps a check summary
 without instantiating it.
 
-Use a verification-record summary with the command, streams, cwd, runtime, clocks, result, revisions and immutable raw record.
+````
+**Verification record** — `the literal command`
+```
+trimmed stdout/stderr (≤ 10 lines, keep counts and exit line)
+```
+cwd: `{{absolute cwd}}` · runtime: `{{tool/runtime or n/a}}`
+start: `{{UTC timestamp or n/a}}` · end: `{{UTC timestamp or n/a}}`
+exit: `{{exit code}}` · timeout: `{{true/false}}` · signal: `{{signal or n/a}}`
+revisions: input/code/config/dependency/contract `{{fingerprints or n/a}}`
+raw: `{{immutable raw check record path}}`
+````
 
 No verification block ⇒ the claim is an assertion, and the task may not become Complete. Keep one immutable
 raw check record per validation; unknown telemetry stays `n/a`. `references/guides/run.md` covers correction
@@ -47,7 +57,18 @@ counters, interrupted runs, integration evidence and deliverable acceptance.
 
 ### Blockers / open questions
 - {{see `questions.md`: Q-0x, ...}}
-<!-- Record failed correction events with record.py; if scripts cannot run, write the journal and escalation packet manually. -->
+<!-- Failed attempts: one journal line per attempt, each with its verification block:
+correction cycle N of 3: <failure> → <correction>; <validation command>: <result>
+New records after an approved extension use the approved total ceiling (`correction cycle N of M`);
+historical entries retain their original `N of 3` wording.
+On budget exhaustion or no-progress (two consecutive attempts with identical evidence
+output), the task becomes Blocked and the entry carries the escalation packet:
+### Escalation — T-NN
+- Attempts: N (budget M) · reason: budget | no-progress
+- Attempt journal: the per-attempt lines above (with verification blocks, last attempt at minimum)
+- Hypothesis: the current best explanation of the failure
+- Unblocking question: the smallest question that would unblock → Q-xx (user-owned if applicable)
+-->
 
 
 ### Next
