@@ -19,6 +19,9 @@ that inventory before writing implementation. Claim no exhaustiveness beyond the
 known interfaces; newly discovered failure modes update the inventory before the corresponding implementation
 change.
 
+Before building oracle self-tests or evaluator tests, run a smoke calibration of one or two development
+episodes per arm; if every arm solves or no arm falls, stop the build for redesign with the owner.
+
 A validator's readiness fixtures call it with the acceptance script's exact argv: the same revision
 names, such as an annotated tag where the script passes one, the tree under test, and a head that
 changes after validation. A convenient equivalent, such as a commit sha for the tag, does not exercise the

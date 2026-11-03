@@ -91,6 +91,13 @@ Set a selected prepared task **Ready to run** only when all of these are true:
 - the relevant clause, code, configuration, dependency, and input fingerprints are recorded;
 - no material contradiction or unowned global obligation remains.
 
+Before lock, rehearse every literal command as written, including failure and permitted retry paths.
+Run every coordinator check and oracle through its acceptance entry point on a passing reference and
+planted faults. Use a wrong implementation, fabricated record, failed sub-command and leftover sandbox;
+each fault must fail its named case. Give checker crashes a different exit code from failed cases.
+Record complete source, test, checker and input tree identities before and after rehearsal; any tree
+change invalidates it.
+
 PLAN also runs the [controlled-writing](controlled-writing.md) check over `plan.md`, the briefs and
 `design-contract.md`; a finding blocks Ready until the text is fixed or the owner accepts it.
 

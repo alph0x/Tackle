@@ -122,6 +122,9 @@ When a declared corridor's budget is spent, report any run of three or more cons
 findings narrowed as convergence evidence for the owner's choice; inside the corridor such a run is not a
 reason to pause.
 
+Each extension request lists all prior extensions, cumulative pool spend and at least one alternative:
+descope, split, horizon or stop. Further extension requires narrowing observed since the previous extension.
+
 A capability change is a separate recommendation. Require a demonstrated capability limit after the
 brief is strengthened; missing requirements, validator contradictions, permissions and environment
 failures are not capability gaps. Follow the existing Escalation declaration and [tier limits](#tier-dispatch-and-escalation-limits):
