@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import signal
 import subprocess
 import sys
 import tempfile
@@ -75,7 +76,15 @@ class CodexRouteTests(unittest.TestCase):
 
     def run_with_hook(self, cohort, hook):
         wrapper = self.root / 'inject-finalization.py'
-        wrapper.write_text('import os, pathlib, sys\n'
+        prelude = '''import json, os, pathlib, signal, sys
+signal.signal(signal.SIGINT, signal.default_int_handler)
+def send_signal(signum):
+    handler = signal.getsignal(signum)
+    name = getattr(handler, '__name__', getattr(handler, 'name', str(handler)))
+    pathlib.Path(%r).write_text(json.dumps({'signum': signum, 'handler': name}))
+    os.kill(os.getpid(), signum)
+''' % str(self.root / 'signal-ready.json')
+        wrapper.write_text(prelude
                            + 'sys.path.insert(0, ' + repr(str(ROUTE.parent)) + ')\n'
                            + 'import codex_login_route as route\n'
                            + hook + '\n'
@@ -83,7 +92,15 @@ class CodexRouteTests(unittest.TestCase):
         args = [sys.executable, '-I', str(wrapper), 'run', '--config', str(self.config),
                 '--cohort', str(cohort), '--repo', str(self.repo), '--out', str(self.root / 'run-output'),
                 '--stage', 'development', '--probe', str(self.root / 'out')]
-        return subprocess.run(args, capture_output=True, text=True)
+        return subprocess.run(args, capture_output=True, text=True,
+                              preexec_fn=lambda: signal.signal(signal.SIGINT, signal.SIG_IGN))
+
+    def assert_signal_ready(self, signum):
+        marker = self.root / 'signal-ready.json'
+        self.assertTrue(marker.exists(), 'signal window not reached')
+        ready = json.loads(marker.read_text())
+        self.assertEqual(ready['signum'], signum)
+        self.assertNotEqual(ready['handler'], 'SIG_IGN', ready['handler'])
 
     def assert_interrupted_record(self, cohort, tokens, overshoot):
         rows = (cohort / 'episodes.jsonl').read_text().splitlines()
@@ -335,26 +352,18 @@ time.sleep(5)
                         target = {'session':('route.RolloutTail','read'), 'settlement':('route.Ledger','settle'),
                                   'retention':('route','retain_session'), 'copy':('route','clean_tree'),
                                   'oracle':('route.sub','judge')}[window]
-                        wrapper = case.root / 'inject.py'
-                        wrapper.write_text(
-                            'import os, sys\n'
-                            + 'sys.path.insert(0, ' + repr(str(ROUTE.parent)) + ')\n'
-                            + 'import codex_login_route as route\n'
-                            + 'owner = ' + target[0] + '\n'
+                        hook = ('owner = ' + target[0] + '\n'
                             + 'original = getattr(owner, ' + repr(target[1]) + ')\n'
                             + 'fired = False\n'
                             + 'def injected(*args, **kwargs):\n'
                             + '    global fired\n'
                             + '    if not fired:\n'
                             + '        fired = True\n'
-                            + '        os.kill(os.getpid(), ' + str(signum) + ')\n'
+                            + '        send_signal(' + str(signum) + ')\n'
                             + '    return original(*args, **kwargs)\n'
-                            + 'setattr(owner, ' + repr(target[1]) + ', injected)\n'
-                            + 'sys.exit(route.main())\n')
-                        args = [sys.executable, '-I', str(wrapper), 'run', '--config', str(case.config),
-                                '--cohort', str(cohort), '--repo', str(case.repo), '--out', str(case.root / 'run-output'),
-                                '--stage', 'development', '--probe', str(case.root / 'out')]
-                        result = subprocess.run(args, capture_output=True, text=True)
+                            + 'setattr(owner, ' + repr(target[1]) + ', injected)')
+                        result = case.run_with_hook(cohort, hook)
+                        case.assert_signal_ready(signum)
                         self.assertEqual(result.returncode, 130, result.stderr)
                         records = (cohort / 'episodes.jsonl').read_text().splitlines()
                         self.assertEqual(len(records), 1)
@@ -482,10 +491,11 @@ pathlib.Path(paths[0]).write_text('escaped')
                             + '    value = original(*args, **kwargs)\n'
                             + '    if not fired:\n'
                             + '        fired = True\n'
-                            + '        os.kill(os.getpid(), ' + str(signum) + ')\n'
+                            + '        send_signal(' + str(signum) + ')\n'
                             + '    return value\n'
                             + 'setattr(owner, ' + repr(name) + ', injected)')
                         result = case.run_with_hook(cohort, hook)
+                        case.assert_signal_ready(signum)
                         self.assertEqual(result.returncode, 130, result.stderr)
                         record = case.assert_interrupted_record(cohort, 10, 0)
                         self.assertEqual((record['cost']['tokens_in'], record['cost']['tokens_out']), (7, 3))
@@ -510,7 +520,7 @@ pathlib.Path(paths[0]).write_text('escaped')
                                 + '    global calls\n'
                                 + '    if path.name == "auth.json":\n'
                                 + '        calls += 1\n'
-                                + '        if calls == 2: os.kill(os.getpid(), ' + str(signum) + ')\n'
+                                + '        if calls == 2: send_signal(' + str(signum) + ')\n'
                                 + '    return original(path, *args, **kwargs)\n'
                                 + 'pathlib.Path.unlink = injected')
                         else:
@@ -521,10 +531,11 @@ pathlib.Path(paths[0]).write_text('escaped')
                                 + '    global calls\n'
                                 + '    value = original(*args, **kwargs)\n'
                                 + '    calls += 1\n'
-                                + '    if calls == 2: os.kill(os.getpid(), ' + str(signum) + ')\n'
+                                + '    if calls == 2: send_signal(' + str(signum) + ')\n'
                                 + '    return value\n'
                                 + 'route.launch = injected')
                         result = case.run_with_hook(cohort, hook)
+                        case.assert_signal_ready(signum)
                         self.assertEqual(result.returncode, 130, result.stderr)
                         record = case.assert_interrupted_record(cohort, 20, 0)
                         self.assertEqual((record['cost']['tokens_in'], record['cost']['tokens_out']), (14, 6))
@@ -564,10 +575,11 @@ pathlib.Path(paths[0]).write_text('escaped')
                             + '    global fired\n'
                             + '    if not fired:\n'
                             + '        fired = True\n'
-                            + '        os.kill(os.getpid(), ' + str(signum) + ')\n'
+                            + '        send_signal(' + str(signum) + ')\n'
                             + '    return original(*args, **kwargs)\n'
                             + 'setattr(owner, ' + repr(name) + ', injected)')
                         result = case.run_with_hook(cohort, hook)
+                        case.assert_signal_ready(signum)
                         self.assertEqual(result.returncode, 130, result.stderr)
                         record = case.assert_interrupted_record(cohort, 300, 92)
                         self.assertEqual((record['cost']['tokens_in'], record['cost']['tokens_out']), (7, 3))
@@ -603,10 +615,11 @@ pathlib.Path(paths[0]).write_text('escaped')
                         + '    global calls\n'
                         + '    value = original(*args, **kwargs)\n'
                         + '    calls += 1\n'
-                        + '    if calls == 2: os.kill(os.getpid(), ' + str(signum) + ')\n'
+                        + '    if calls == 2: send_signal(' + str(signum) + ')\n'
                         + '    return value\n'
                         + 'route.sub.append_record = injected')
                     result = case.run_with_hook(cohort, hook)
+                    case.assert_signal_ready(signum)
                     self.assertEqual(result.returncode, 130, result.stderr)
                     lines = (cohort / 'episodes.jsonl').read_bytes().splitlines()
                     self.assertEqual(len(lines), 2)
