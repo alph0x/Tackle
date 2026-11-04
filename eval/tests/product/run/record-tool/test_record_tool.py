@@ -223,6 +223,32 @@ class RecordTool(unittest.TestCase):
         self.assertIn(f'Active obligations: {FIRST_OBLIGATION}, {SECOND_OBLIGATION}', (self.ws / 'history.md').read_text())
         self.lint(13, 17)
 
+    def test_write_modes_respect_umask_and_drop_special_bits(self):
+        telemetry = {'captured_at': '2026-10-01T12:30:00Z', 'collector': 'manual', 'source': 'receipt',
+                     'scope': 'session', 'scope_id': 'session-1', 'run_id': 'n/a',
+                     'metrics': {'input_tokens': 12}, 'provenance': 'observed session total'}
+        for mask, expected in ((0o077, 0o600), (0o022, 0o644)):
+            with self.subTest(umask=oct(mask)):
+                self.new_workspace()
+                sidecar = self.ws / 'resource-usage.telemetry.jsonl'
+                self.assertFalse(sidecar.exists())
+                (self.ws / 'input.json').write_text(json.dumps(
+                    {'schema': 'tackle-record/1', 'kind': 'telemetry', 'data': telemetry}))
+                result = subprocess.run(
+                    [sys.executable, '-I', '-B', str(SCRIPT), '--workspace', str(self.ws), '--spec', 'input.json'],
+                    capture_output=True, text=True, preexec_fn=lambda: os.umask(mask))
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(sidecar.stat().st_mode & 0o7777, expected)
+        for mode, expected in ((0o4644, 0o644), (0o640, 0o640)):
+            with self.subTest(existing_mode=oct(mode)):
+                self.new_workspace()
+                usage = self.ws / 'resource-usage.md'
+                before = usage.read_text()
+                usage.chmod(mode)
+                self.start()
+                self.assertNotEqual(usage.read_text(), before)
+                self.assertEqual(usage.stat().st_mode & 0o7777, expected)
+
     def test_telemetry_unallocated_and_invalid_metrics(self):
         data = {'captured_at': '2026-10-01T12:30:00Z', 'collector': 'manual', 'source': 'receipt',
                 'scope': 'session', 'scope_id': 'session-1', 'run_id': 'n/a',

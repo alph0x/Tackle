@@ -56,6 +56,14 @@ def append(text, added):
     return text + ('' if not text or text.endswith('\n') else '\n') + added
 
 
+def _umask():
+    if not hasattr(_umask, 'value'):
+        old = os.umask(0)
+        os.umask(old)
+        _umask.value = old
+    return _umask.value
+
+
 class Workspace:
     def __init__(self, path):
         require(os.path.isabs(path), 'workspace must be absolute')
@@ -145,7 +153,7 @@ class Workspace:
             with os.fdopen(child, 'wb') as stream:
                 stream.write(content)
                 stream.flush()
-                os.fchmod(stream.fileno(), stat.S_IMODE(info.st_mode) if info else 0o644)
+                os.fchmod(stream.fileno(), stat.S_IMODE(info.st_mode) & 0o777 if info else 0o666 & ~_umask())
                 os.fsync(stream.fileno())
             os.replace(tmp, name, src_dir_fd=fd, dst_dir_fd=fd)
             created = False
