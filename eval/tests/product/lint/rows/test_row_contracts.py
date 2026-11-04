@@ -165,6 +165,16 @@ class LifecycleRowTests(unittest.TestCase):
             with self.subTest(message=message):
                 self.assert_invalid(HEADER + body, message)
 
+    def test_reused_session_uses_new_runs_and_cannot_reopen_a_finished_run(self):
+        runs = [f's/T-A/review/{number}' for number in (1, 2, 3)]
+        moments = [event(run=run, role='Reviewer')
+                   + event('finish', run=run, role='Reviewer', source='session sess-1')
+                   for run in runs]
+        self.assert_valid(HEADER + ''.join(moments))
+        self.assert_invalid(HEADER + ''.join(moments[:2])
+                            + event('finish', run=runs[0], role='Reviewer', source='session sess-1'),
+                            'duplicate terminal')
+
     def test_a_pre_v2_header_after_v2_cannot_hide_bad_events(self):
         result = self.assert_invalid(HEADER + event() + CARRIED + event('finish', run='orphan'), 'terminal before start')
         self.assertIn('legacy header after v2', result.stdout)

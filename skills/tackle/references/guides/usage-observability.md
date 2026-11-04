@@ -57,6 +57,12 @@ Lifecycle recording never gates closure ([template](../resource-usage.tmpl.md)).
 The execution sequence and correction limits are owned by the [RUN
 card](run-card.md), with depth in `references/guides/run.md`.
 
+A role session reused for a later requested moment after its finish opens a new Run ID with its own
+start and terminal events; a finished Run ID never gets a second terminal and is never reopened.
+Each such run's finish Source names the same session id. The session's usage is one `scope: session`
+record captured at the session's real end, never repeated in each run's role record, and each run's
+duration comes from its own start and terminal.
+
 Validation clocks describe the validation child, not the enclosing role. An executor cannot observe
 its own future process termination, so its finish timestamp is `n/a` unless an external observer
 supplies an actual terminal event; Source names the limitation. Never copy a test end or take a

@@ -1793,7 +1793,7 @@
       "rule_id": "R-EVID-12",
       "statement": "Role-scoped telemetry joins only on an exact run id; a native provider id without an explicit mapping stays unjoined.",
       "statement_sha256": "5e395c05016c5291504026a85194d85f9c599201d4547b9b400ec229d8baa585",
-      "home": "references/guides/usage-observability.md:91",
+      "home": "references/guides/usage-observability.md:97",
       "home_fragment": "Role-scoped sidecar observations join only on an exact",
       "units": [],
       "mirrors": [],
@@ -4615,7 +4615,7 @@
       "rule_id": "R-EVID-17",
       "statement": "On a host that keeps local session transcripts, the coordinator records each subagent's usage from its local transcript as one role-scoped sidecar record joined by the Run ID it assigned, counting each request once by its last event per message id; a subagent that served several Run IDs and the coordinator's own session go to session scope, never divided into roles; only numbers, ids, model names and times are copied.",
       "statement_sha256": "bafc66de2e4ab5c0eff13d6664bca66f20481bbeb36b3c618c98e3ee953e3aba",
-      "home": "references/guides/usage-observability.md:121",
+      "home": "references/guides/usage-observability.md:127",
       "home_fragment": "Keep only the last",
       "units": [],
       "mirrors": [],
@@ -4631,6 +4631,29 @@
         "scenarios": [],
         "cohort_id": null,
         "as_of": "2026-10-08"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-EVID-25",
+      "statement": "A role session reused for a later requested moment after its finish opens a new Run ID with its own start and terminal events; a finished Run ID never gets a second terminal and is never reopened. Each such run's finish Source names the same session id. The session's usage is one `scope: session` record captured at the session's real end, never repeated in each run's role record, and each run's duration comes from its own start and terminal.",
+      "statement_sha256": "f7d9e059b03b960d6fb3a33821d1303cf04b627269ca3deb5e75868abf90cb3a",
+      "home": "references/guides/usage-observability.md:60",
+      "home_fragment": "A role session reused for a later requested moment",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.5.1",
+        "trigger": "One reviewer session across several checkpoints has no lifecycle shape after its finish",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-11-04"
       },
       "historical": []
     },
@@ -6692,7 +6715,7 @@
       "rule_id": "R-STATE-21",
       "statement": "The coordinator records the billed models of every role session, or `n/a` when the harness does not report them.",
       "statement_sha256": "c236c80bf5ab252f46c111478b460cd8588be9bb66d4963c877cfb0b8097fe8f",
-      "home": "references/guides/usage-observability.md:97",
+      "home": "references/guides/usage-observability.md:103",
       "home_fragment": "The coordinator records the billed models of every role",
       "units": [],
       "mirrors": [],
