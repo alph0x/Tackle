@@ -1318,59 +1318,93 @@ class RoundConsumerTests(unittest.TestCase):
                 connection.close()
             self.assertEqual(self.database_count(round_path), count)
 
-            gate = root / "release-race"
-            ready = [root / ("ready-%d" % index) for index in range(2)]
-            started = time.time_ns()
-            children = [subprocess.Popen(
-                [sys.executable, "-I", "-c", RACE_BOOTSTRAP, str(SCRIPT),
-                 str(round_path), str(event), str(marker), str(gate)],
-                cwd=root, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                for event, marker in zip(events, ready)]
-            deadline = time.monotonic() + 10
-            try:
-                while not all(path.exists() for path in ready):
-                    self.assertLess(time.monotonic(), deadline, "race startup incomplete")
-                    time.sleep(.01)
-                gate.write_bytes(b"go")
-                captures = []
-                for child in children:
-                    stdout, stderr = child.communicate(timeout=30)
-                    captures.append((child.returncode, stdout, stderr))
-                self.assertEqual(sum(code == 0 for code, _, _ in captures), 1, captures)
-                self.assertTrue(all(code in (0, 2, 3) for code, _, _ in captures), captures)
-                winners = []
-                for index, (code, stdout, stderr) in enumerate(captures):
-                    put(root / ("race-%d.json" % index), dict(
-                        argv=children[index].args, cwd=str(root), runtime=sys.version,
-                        actor="public-native-fixture", model="n/a", effort="n/a",
-                        source_sha256=digest(SCRIPT.read_bytes()),
-                        test_sha256=digest(Path(__file__).read_bytes()),
-                        start_ns=started, end_ns=time.time_ns(), exit=code,
-                        signal=-code if code < 0 else None, timeout=False,
-                        stdout_sha256=digest(stdout), stderr_sha256=digest(stderr)))
-                    (root / ("race-%d.stdout" % index)).write_bytes(stdout)
-                    (root / ("race-%d.stderr" % index)).write_bytes(stderr)
-                    if code == 0:
-                        child_receipt = subprocess.CompletedProcess(
-                            args=children[index].args, returncode=code,
-                            stdout=stdout, stderr=stderr)
-                        receipt = self.receipt(child_receipt, "record")
-                        self.assert_record_identity(round_path, submitted_events[index], receipt)
-                        self.assertTrue(receipt["dispatch_allowed"])
-                        winners.append(index)
-                self.assertEqual(self.database_count(round_path), count + 1)
-                duplicate = self.record(root, round_path, events[winners[0]])
-                self.assertEqual(duplicate["state"], "already-recorded")
-                self.assertFalse(duplicate["dispatch_allowed"])
-                result, path = self.compute(root, round_path, "running")
-                self.assertEqual(result["budgets"]["episodes"]["started_reserved"], 1)
-                self.assertEqual(result["budgets"]["episodes"]["remaining"], 3)
-                self.replay(root, round_path, path, "running")
-            finally:
-                for child in children:
-                    if child.poll() is None:
-                        child.kill()
-                        child.communicate(timeout=5)
+            winners = []
+            for phase in ("busy", "free"):
+                gate = root / ("release-" + phase)
+                ready = [root / ("%s-ready-%d" % (phase, index)) for index in range(2)]
+                before = inventory(round_path)
+                connection = None
+                children = []
+                try:
+                    if phase == "busy":
+                        connection = sqlite3.connect(database, timeout=0)
+                        connection.execute("BEGIN IMMEDIATE")
+                    started = time.time_ns()
+                    for event, marker in zip(events, ready):
+                        children.append(subprocess.Popen(
+                            [sys.executable, "-I", "-c", RACE_BOOTSTRAP, str(SCRIPT),
+                             str(round_path), str(event), str(marker), str(gate)],
+                            cwd=root, stdout=subprocess.PIPE, stderr=subprocess.PIPE))
+                    deadline = time.monotonic() + 10
+                    while not all(path.exists() for path in ready):
+                        self.assertLess(time.monotonic(), deadline, "race startup incomplete")
+                        time.sleep(.01)
+                    gate.write_bytes(b"go")
+                    captures = []
+                    for child in children:
+                        stdout, stderr = child.communicate(timeout=30)
+                        captures.append((child.returncode, stdout, stderr))
+                    for index, (code, stdout, stderr) in enumerate(captures):
+                        name = "%s-race-%d" % (phase, index)
+                        put(root / (name + ".json"), dict(
+                            argv=children[index].args, cwd=str(root), runtime=sys.version,
+                            actor="public-native-fixture", model="n/a", effort="n/a",
+                            source_sha256=digest(SCRIPT.read_bytes()),
+                            test_sha256=digest(Path(__file__).read_bytes()),
+                            start_ns=started, end_ns=time.time_ns(), exit=code,
+                            signal=-code if code < 0 else None, timeout=False,
+                            stdout_sha256=digest(stdout), stderr_sha256=digest(stderr)))
+                        (root / (name + ".stdout")).write_bytes(stdout)
+                        (root / (name + ".stderr")).write_bytes(stderr)
+                    if phase == "busy":
+                        self.assertTrue(all(code == 3 and
+                                            b"round store busy or unavailable" in stderr
+                                            for code, _, stderr in captures), captures)
+                        self.assertEqual(self.database_count(round_path), count)
+                        self.assertEqual(inventory(round_path), before)
+                    else:
+                        self.assertTrue(all(code in (0, 2, 3) for code, _, _ in captures),
+                                        captures)
+                        self.assertLessEqual(sum(code == 0 for code, _, _ in captures),
+                                             1, captures)
+                        for index, (code, stdout, stderr) in enumerate(captures):
+                            if code == 0:
+                                child_receipt = subprocess.CompletedProcess(
+                                    args=children[index].args, returncode=code,
+                                    stdout=stdout, stderr=stderr)
+                                receipt = self.receipt(child_receipt, "record")
+                                self.assert_record_identity(
+                                    round_path, submitted_events[index], receipt)
+                                self.assertTrue(receipt["dispatch_allowed"])
+                                winners.append(index)
+                        self.assertEqual(self.database_count(round_path), count + len(winners))
+                finally:
+                    for child in children:
+                        if child.poll() is None:
+                            child.kill()
+                            child.communicate(timeout=5)
+                    if connection is not None:
+                        connection.rollback()
+                        connection.close()
+
+            committed = bool(winners)
+            for index, event in enumerate(events):
+                if index in winners:
+                    receipt = self.record(root, round_path, event, expected=(0,))
+                    self.assertEqual(receipt["state"], "already-recorded")
+                    self.assertFalse(receipt["dispatch_allowed"])
+                elif committed:
+                    self.record(root, round_path, event, expected=(2,))
+                else:
+                    receipt = self.record(root, round_path, event, expected=(0,))
+                    self.assert_record_identity(round_path, submitted_events[index], receipt)
+                    self.assertTrue(receipt["dispatch_allowed"])
+                    committed = True
+            self.assertEqual(self.database_count(round_path), count + 1)
+            result, path = self.compute(root, round_path, "running")
+            self.assertEqual(result["budgets"]["episodes"]["started_reserved"], 1)
+            self.assertEqual(result["budgets"]["episodes"]["remaining"], 3)
+            self.replay(root, round_path, path, "running")
 
 
 if __name__ == "__main__":
