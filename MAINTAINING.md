@@ -173,6 +173,9 @@ Write records with `python3 -I skills/tackle/scripts/record.py --workspace PATH 
 
 Use the standing tools under `maintaining/release/`, driven by a per-release `tackle-release/1` configuration kept in the release workspace.
 Rehearse the release on a disposable clone.
+During PLAN, rehearse every standing phase of `maintaining/release/steps.py`, `candidate-rows` and the sweep included, on a disposable main copy that carries a copy of the real `docs/plans` tree and on a separate disposable candidate clone, and record each incompatibility before any brief locks.
+Pin every brief citation of a line the release changes to the base revision, as `path@<rev>:NN`.
+Before the parts, bring the README's installable-file count and scripts inventory up to date with the candidate's tracked `skills/tackle/` tree in a separate title-only commit; the `readme` part then changes the version tokens and refuses a README whose count or scripts table differs from that tree, leaving HEAD and index unchanged.
 Obtain one independent completion review of the candidate.
 
 When no task integrates shared paths, name and independently check each unique integration-review

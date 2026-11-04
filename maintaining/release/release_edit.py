@@ -171,19 +171,36 @@ elif part=='stamp':
     d=Dispositions([('Tackle '+OLD,'Tackle '+NEW)],'release version stamp bumped to '+NEW)
     d.rederive_live_notes();d.account([x[0][len('skills/tackle/'):] for x in plan]);d.write()
 elif part=='changelog':
-    entry=Path(cfg['changelog']['path']);report=Path(cfg['record']['path'])
+    inputs=[]
+    for key, value in (('changelog.path', cfg['changelog']['path']), ('record.path', cfg['record']['path'])):
+        try:
+            path=Path(value).resolve(strict=True)
+        except (OSError, RuntimeError) as error:
+            raise SystemExit(key+': '+str(error))
+        if not path.is_relative_to(workspace) or not path.is_file():
+            raise SystemExit(key+': expected a regular file inside the workspace')
+        inputs.append(path)
+    entry,report=inputs
+    relative_destination=Path(cfg['record']['destination'])
+    if relative_destination.is_absolute():raise SystemExit('record.destination: expected a relative path inside the candidate')
+    try:
+        destination=(root/relative_destination).resolve()
+    except (OSError, RuntimeError) as error:
+        raise SystemExit('record.destination: '+str(error))
+    if not destination.is_relative_to(root):raise SystemExit('record.destination: expected a path inside the candidate')
+    if destination.exists() or (root/relative_destination).is_symlink():raise SystemExit('release report already exists')
     if hashlib.sha256(entry.read_bytes()).hexdigest()!=cfg['changelog']['sha256'] or hashlib.sha256(report.read_bytes()).hexdigest()!=cfg['record']['sha256']:
         raise SystemExit('release prose drift')
-    destination=root/cfg['record']['destination']
-    if destination.exists() or destination.is_symlink():raise SystemExit('release report already exists')
+    # Destination containment and existence were checked before reading release prose.
     head='# Tackle changelog\n\n## Tackle '+OLD+'\n'
     replacement='# Tackle changelog\n\n'+entry.read_text()+'\n## Tackle '+OLD+'\n'
     apply([('CHANGELOG.md',head,replacement)])
     remember(destination);destination.write_bytes(report.read_bytes())
-    claims=root/'eval/records/claims.json';text=claims.read_text();data=json.loads(text)
-    if json.dumps(data,indent=1,ensure_ascii=False)+'\n'!=text:raise SystemExit('claims.json: unexpected formatting; nothing written')
-    if any(c.get('section')=='Tackle '+NEW for c in data['claims']):raise SystemExit('claims for the release already exist')
-    data['claims'][0:0]=cfg['claims'];remember(claims);claims.write_text(json.dumps(data,indent=1,ensure_ascii=False)+'\n')
+    if cfg['claims']:
+        claims=root/'eval/records/claims.json';text=claims.read_text();data=json.loads(text)
+        if json.dumps(data,indent=1,ensure_ascii=False)+'\n'!=text:raise SystemExit('claims.json: unexpected formatting; nothing written')
+        if any(c.get('section')=='Tackle '+NEW for c in data['claims']):raise SystemExit('claims for the release already exist')
+        data['claims'][0:0]=cfg['claims'];remember(claims);claims.write_text(json.dumps(data,indent=1,ensure_ascii=False)+'\n')
 elif part=='migrate':
     g='skills/tackle/references/guides/';c='skills/tackle/scripts/migrate/compact.py';k='maintaining/check_migration_catalog.py'
     plan=[(g+'migration-catalog.json','"target_methodology": "'+OLD+'"','"target_methodology": "'+NEW+'"'),
@@ -213,6 +230,10 @@ elif part=='migrate':
       'migration catalog target bumped to '+NEW)
     d.rederive_live_notes();d.account(['references/guides/migrate.md','references/guides/migration-catalog.json','MAINTAINING.md','skills/tackle/scripts/README.md']);d.write()
 elif part=='readme':
+    currency_spec=importlib.util.spec_from_file_location('readme_currency',Path(__file__).with_name('readme_currency.py'))
+    currency=importlib.util.module_from_spec(currency_spec);currency_spec.loader.exec_module(currency)
+    issues=currency.problems(root)
+    if issues:raise SystemExit('\n'.join(issues))
     if json.loads((root/'skills/tackle/references/guides/migration-catalog.json').read_text())['target_methodology']!=NEW:raise SystemExit('catalog target mismatch')
     apply([('README.md','**Tackle '+OLD+'** · Model-agnostic','**Tackle '+NEW+'** · Model-agnostic'),
       ('README.md',"Tackle.git#v"+OLD+"' --skill tackle","Tackle.git#v"+NEW+"' --skill tackle"),
@@ -220,6 +241,7 @@ elif part=='readme':
       ('README.md','migration catalog targets Tackle '+OLD+' and','migration catalog targets Tackle '+NEW+' and')])
 else:raise SystemExit('unsupported sealed release part')
 allowed={'format': {'eval/rules/unit-dispositions.json'}, 'stamp': {'skills/tackle/SKILL.md', 'skills/tackle/references/README.tmpl.md', 'eval/rules/unit-dispositions.json', 'skills/tackle/references/AGENTS.tmpl.md'}, 'changelog': {cfg['record']['destination'], 'CHANGELOG.md', 'eval/records/claims.json'}, 'migrate': {'skills/tackle/references/guides/migration-catalog.json', 'MAINTAINING.md', 'maintaining/check_migration_catalog.py', 'eval/rules/unit-dispositions.json', 'skills/tackle/scripts/README.md', 'skills/tackle/scripts/migrate/compact.py', 'skills/tackle/references/guides/migrate.md'}, 'readme': {'README.md'}}
+if not cfg['claims']:allowed['changelog'].remove('eval/records/claims.json')
 changed=set(subprocess.check_output(['git','diff','--name-only','HEAD'],cwd=root,text=True).splitlines())
 changed.update(subprocess.check_output(['git','ls-files','--others','--exclude-standard'],cwd=root,text=True).splitlines())
 support.require_candidate(root,args.candidate,clean=False)

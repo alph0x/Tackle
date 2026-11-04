@@ -156,6 +156,9 @@ The [`scripts/`](skills/tackle/scripts/README.md) folder holds the programs the 
 | System One state and decisions | `system_one_state.py`, `system_one_decide.py` |
 | Usage capture (native Codex Desktop and `codex exec --json` records) | `codex_usage.py` |
 | Retro confidence | `retro_confidence.py` |
+| Workspace lookup and reversible archive | `workspace_archive.py` |
+| Evaluation rounds | `evaluation_rounds.py` |
+| Prepared job example (interrupted apply-and-check recovery) | `prepared_job_example.py` |
 
 The [manifest](skills/tackle/scripts/README.md) lists every script with its sha256. An explicit plan or run request authorizes `scripts/lint.py` for that request; an explicit request for a feature whose procedure is a script authorizes that script for that request; you can also authorize a named script directly. A general request to plan or run authorizes no other script ([consent](skills/tackle/scripts/README.md#consent)).
 

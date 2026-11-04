@@ -107,7 +107,7 @@ def main():
     paths = {
         'format': ['eval/rules/unit-dispositions.json'],
         'stamp': ['eval/rules/unit-dispositions.json', 'skills/tackle/SKILL.md', 'skills/tackle/references/AGENTS.tmpl.md', 'skills/tackle/references/README.tmpl.md'],
-        'changelog': ['CHANGELOG.md', 'eval/records/claims.json', cfg['record']['destination']],
+        'changelog': ['CHANGELOG.md', *(['eval/records/claims.json'] if cfg['claims'] else []), cfg['record']['destination']],
         'migrate': ['MAINTAINING.md', 'eval/rules/unit-dispositions.json', 'maintaining/check_migration_catalog.py', 'skills/tackle/references/guides/migrate.md', 'skills/tackle/references/guides/migration-catalog.json', 'skills/tackle/scripts/README.md', 'skills/tackle/scripts/migrate/compact.py'],
         'readme': ['README.md'],
     }
