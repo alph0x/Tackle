@@ -2,6 +2,7 @@
 from pathlib import Path
 import argparse,hashlib,importlib.util,json
 spec=importlib.util.spec_from_file_location('support',Path(__file__).with_name('release_support.py'));support=importlib.util.module_from_spec(spec);spec.loader.exec_module(support)
+_prose_spec=importlib.util.spec_from_file_location('prose_tokens',Path(__file__).with_name('prose_tokens.py'));prose_tokens=importlib.util.module_from_spec(_prose_spec);_prose_spec.loader.exec_module(prose_tokens)
 parser=argparse.ArgumentParser()
 parser.add_argument('--config',required=True)
 for name in ('repo','workspace','candidate','records','version'):parser.add_argument('--'+name,required=True)
@@ -26,8 +27,10 @@ section=changelog[start:end+1]
 if section!=entry+b'\n':raise SystemExit('heading-bounded changelog entry differs from sealed notes')
 body=entry.split(b'\n\n',1)[1]
 if section.split(b'\n\n',1)[1][:-1]!=body:raise SystemExit('publication body drift')
+findings=[f'{name}:{line} {token}' for name,text in (('notes',body.decode('utf-8')),('report',Path(cfg['record']['path']).read_text(encoding='utf-8'))) for line,token,rule in prose_tokens.glued_tokens(text)]
+if findings:raise SystemExit('glued tokens in release prose: '+', '.join(findings))
 support.require_candidate(root,args.candidate)
 out.mkdir(parents=True);(out/'release-notes.md').write_bytes(body);(out/'changelog-entry.md').write_bytes(entry)
 support.require_candidate(root,args.candidate)
-report={'candidate':args.candidate,'version':args.version,'entry_sha256':hashlib.sha256(entry).hexdigest(),'notes_sha256':hashlib.sha256(body).hexdigest(),'heading_boundary_exact':True,'passed':True,'publication':False}
+report={'candidate':args.candidate,'version':args.version,'entry_sha256':hashlib.sha256(entry).hexdigest(),'notes_sha256':hashlib.sha256(body).hexdigest(),'heading_boundary_exact':True,'glued_tokens':0,'passed':True,'publication':False}
 (out/'results.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))

@@ -98,6 +98,11 @@ class ReleaseConfigTest(unittest.TestCase):
             cfg = sample()
             cfg['workspace'] = str(workspace)
             cfg['changelog'] = {'path': str(changelog), 'sha256': hashlib.sha256(entry).hexdigest()}
+            report = b'# Checks\n\nNo glued tokens here.\n'
+            report_path = root / 'report.md'
+            report_path.write_bytes(report)
+            cfg['record']['path'] = str(report_path)
+            cfg['record']['sha256'] = hashlib.sha256(report).hexdigest()
             for label in ('py310', 'py314'):
                 cfg['runtimes'][label] = {'path': sys.executable, 'version': list(sys.version_info[:3])}
             (root / 'release.json').write_text(json.dumps(cfg))
