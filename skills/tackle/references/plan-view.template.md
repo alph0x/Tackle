@@ -28,7 +28,7 @@ with others.
 
 The OFL allows the licensed fonts to be used, studied, modified and
 redistributed freely as long as they are not sold by themselves. The
-fonts, including any derivative works, can be bundled, embedded, 
+fonts, including any derivative works, can be bundled, embedded,
 redistributed and/or sold with any software provided that any reserved
 names are not used by derivative works. The fonts and derivatives,
 however, cannot be released under any other type of license. The
@@ -789,15 +789,17 @@ a.sibling-plan:hover,a.sibling-plan:focus-visible{border-color:var(--accent)}
 .report-meta dd{margin:0;padding:.6mm 4mm 2.4mm;border-bottom:.6pt solid var(--rule-print);font:600 9pt/1.3 var(--sans)}
 .report-meta dd:last-of-type{border-bottom:0}
 .report-body{display:block}
-.report-section{margin:0 0 6.5mm;break-inside:auto}
+.report-section{margin:0 0 6.5mm;break-inside:avoid;page-break-inside:avoid}
 .report-section h2{display:flex;align-items:center;gap:2.5mm;margin:0 0 3.5mm;padding-top:2.5mm;border-top:1.2pt solid var(--graphite-900);font:800 11pt/1.2 var(--sans);letter-spacing:.02em;text-transform:uppercase;break-after:avoid}
 .report-section h2::before{content:"";flex:none;width:2.6mm;height:2.6mm;background:var(--orange-600)}
 .report-section p{margin:0 0 2.5mm;max-width:170mm}
-.report-section ul{margin:0;padding:0;list-style:none;display:grid;gap:1.6mm}
-.report-section li{position:relative;padding-left:5mm}
+.report-section ul{margin:0;padding:0;list-style:none;display:block}
+.report-section li{position:relative;padding-left:5mm;margin:0 0 1.6mm;break-inside:avoid;page-break-inside:avoid}
+.report-section li:last-child{margin-bottom:0}
 .report-section li::before{content:"";position:absolute;left:0;top:.62em;width:2.6mm;height:.9pt;background:var(--graphite-900)}
-.executive-grid{display:grid;grid-template-columns:1fr 1fr;gap:4mm 7mm}
-.executive-item{padding:0 0 0 3.5mm;border-left:1.6pt solid var(--graphite-900);break-inside:avoid}
+.executive-grid{display:block;font-size:0}
+.executive-item{display:inline-block;width:calc(50% - 3.5mm);margin:0 7mm 4mm 0;vertical-align:top;font-size:10.5pt;box-sizing:border-box;padding:0 0 0 3.5mm;border-left:1.6pt solid var(--graphite-900);break-inside:avoid;page-break-inside:avoid}
+.executive-item:nth-child(2n){margin-right:0}
 .executive-item h3{margin:0 0 1mm;font:700 10.5pt/1.25 var(--sans)}
 .executive-item p{margin:0;color:var(--graphite-700);font-size:9.5pt}
 .executive-progress{display:block}
@@ -816,7 +818,7 @@ a.sibling-plan:hover,a.sibling-plan:focus-visible{border-color:var(--accent)}
 .print-report th,.print-report td{padding:1.4mm 2mm;border-bottom:.6pt solid var(--rule-print);text-align:left;vertical-align:top}
 .print-report thead{display:table-header-group}
 .print-report tr{break-inside:avoid}
-.report-part{display:flex;align-items:center;gap:3mm;margin:9mm 0 5mm;padding:2.6mm 4mm;background:var(--graphite-900);color:var(--white);font:800 10pt/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;break-after:avoid;break-before:auto}
+.report-part{display:flex;align-items:center;gap:3mm;margin:0 0 5mm;padding:2.6mm 4mm;background:var(--graphite-900);color:var(--white);font:800 10pt/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;break-after:avoid;break-before:page;page-break-before:always}
 .report-part::before{content:"";width:3mm;height:3mm;background:var(--orange-600)}
 .report-siblings .sibling-plans{margin:0;max-width:none}
 .report-siblings .sibling-plans-label,.report-siblings li::before{display:none}

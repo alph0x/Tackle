@@ -118,6 +118,8 @@ class PlanViewTests(unittest.TestCase):
             result, out = run_recipe(tmp, workspace_files(), 'coordinated')
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             page = out.read_text(encoding='utf-8')
+            trailing = [number for number, line in enumerate(page.splitlines(), 1) if line.endswith((' ', '\t'))]
+            self.assertEqual(trailing, [], 'lines with trailing whitespace: %s' % trailing)
             island = re.search(r'<script type="application/json" id="plan-view-data">(.*?)</script>', page, re.S).group(1)
             self.assertIsNone(re.search(r'[<>&]', island), 'the island holds a raw <, > or &')
             data = json.loads(island)
