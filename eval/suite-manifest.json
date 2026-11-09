@@ -505,7 +505,7 @@
       "files": [
         "test_record_tool.py"
       ],
-      "tests": 20,
+      "tests": 21,
       "source": "skills/tackle/scripts/record.py",
       "category": "product",
       "purpose": "Confined seven-kind workspace writes, lifecycle reconciliation and correction evidence, closure and history invariants, exact telemetry attribution and compiled clauses through unchanged consumers."

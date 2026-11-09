@@ -20610,7 +20610,7 @@
       "unit_sha256": "2998462474aa63b488dc0f13d34f5a9be7df4dd0cb8f30637202ac4f675fbedf",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
-      "note": "| [record.py](record.py) | `4dc8ff1387af1b01e4c55042d08b5b26775cdd3c950b702b12e5974b15fc9973` |",
+      "note": "| [record.py](record.py) | `3460c7dbe02f6103846358ddd170fd4344edc1a8e1a7415757e54d384ce6c6ca` |",
       "destination_unit_sha256": null
     },
     {
@@ -20753,7 +20753,12 @@
       "destination": "references/guides/usage-observability.md",
       "note": "The spec is workspace-relative JSON with schema `tackle-record/1`, a `kind` and `data`; the seven kinds are `lifecycle`, `correction`, `closure`, `history`, `telemetry`, `compile-clause` and `reconcile`.",
       "destination_unit_sha256": null,
-      "dropped": [{"token": "6", "reason": "the record writer gained the reconcile kind"}]
+      "dropped": [
+        {
+          "token": "6",
+          "reason": "the record writer gained the reconcile kind"
+        }
+      ]
     },
     {
       "path": "skills/tackle/scripts/README.md",
@@ -20761,7 +20766,7 @@
       "unit_sha256": "8b8467a26eca7bd1f9cc14fae92bef89950d2a91ebf5b7c305a038289b7c56be",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
-      "note": "| [record.py](record.py) | `4dc8ff1387af1b01e4c55042d08b5b26775cdd3c950b702b12e5974b15fc9973` |",
+      "note": "| [record.py](record.py) | `3460c7dbe02f6103846358ddd170fd4344edc1a8e1a7415757e54d384ce6c6ca` |",
       "destination_unit_sha256": null
     },
     {
@@ -20772,7 +20777,12 @@
       "destination": "skills/tackle/scripts/README.md",
       "note": "The optional [record writer](record.py) writes the seven workspace forms after explicit authorization for that tool or its documented feature.",
       "destination_unit_sha256": null,
-      "dropped": [{"token": "6", "reason": "the record writer gained the reconcile kind"}]
+      "dropped": [
+        {
+          "token": "6",
+          "reason": "the record writer gained the reconcile kind"
+        }
+      ]
     },
     {
       "path": "skills/tackle/scripts/README.md",
@@ -20781,6 +20791,15 @@
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
       "note": "| [migrate/compact.py](migrate/compact.py) | `3f724a213192672ce21946570d135252f6151afe3c37f7811a4f43ceadc85b18` |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "skills/tackle/scripts/README.md",
+      "line": 19,
+      "unit_sha256": "3aafa0882124fb05241b23c1a98d9eea8efdfc79d3c63673343531b4ed7d6f47",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "| [record.py](record.py) | `3460c7dbe02f6103846358ddd170fd4344edc1a8e1a7415757e54d384ce6c6ca` |",
       "destination_unit_sha256": null
     }
   ]

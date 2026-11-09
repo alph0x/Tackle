@@ -456,8 +456,19 @@ def reconcile(ws, d):
         pass
     else:
         raise Refusal('multiple ledger tables')
-    matching = [(i, dict(zip(cols, cells(lines[i])))) for i in range(start, end)
-                if len(cells(lines[i])) == len(cols) and cells(lines[i])[cols.index('Run ID')] == run]
+    matching = []
+    for i in range(start, len(lines)):
+        line = lines[i].strip()
+        if not line.startswith('|'):
+            continue
+        parts = line.split('|')
+        if len(parts) != len(cols) + 2:
+            continue
+        values = [part.strip() for part in parts[1:-1]]
+        if all(re.fullmatch(r':?-+:?', value) for value in values):
+            continue
+        if values[cols.index('Run ID')] == run:
+            matching.append((i, dict(zip(cols, values))))
     require(len(matching) == 1 and matching[0][1]['Event'] in ('finish', 'observe-incomplete'), 'not an orphan terminal')
     index, terminal = matching[0]
     history = ws.text('history.md')

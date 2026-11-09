@@ -205,8 +205,9 @@ The data fields are:
   `provenance`; use the optional-sidecar contract above.
 - `compile-clause`: `clause_id` and existing workspace-relative `brief`.
 - `reconcile`: `run_id`, `event_id`, `observed`; only a Run ID whose single ledger row is a
-  terminal can be repaired. It inserts a start immediately before the terminal, copying Task,
-  Role, Harness, Tier, Model and Effort, with At, Attempts, Rework and Verification `n/a`,
+  terminal can be repaired. Ledger rows are every table row after the v2 header, including rows
+  separated from it by blank lines or notes, as lint row 16 reads them. It inserts a start immediately
+  before the terminal, copying Task, Role, Harness, Tier, Model and Effort, with At, Attempts, Rework and Verification `n/a`,
   Outcome `running` and Source `history.md#event-<event_id>` naming the new `reconciled-start`
   history event containing Task ID, Run ID and Observed. It changes nothing else. The manual
   equivalent is the same inserted row and the same history event.

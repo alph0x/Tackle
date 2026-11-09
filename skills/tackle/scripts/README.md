@@ -16,7 +16,7 @@ a script adds or updates its row.
 | [system_one_decide.py](system_one_decide.py) | `3307da7275085ac410423f24736a27e62edf28a58017a5ff22588784b4569f84` |
 | [system_one_state.py](system_one_state.py) | `8c2fe8ec5e06ec50c50573f03237ab403508ec61375266cb7931b852b8cc7a3e` |
 | [codex_usage.py](codex_usage.py) | `2fca95fcb854a8157a1b12770ff590bf776fce2f1e4307de12161ad5f83255aa` |
-| [record.py](record.py) | `4dc8ff1387af1b01e4c55042d08b5b26775cdd3c950b702b12e5974b15fc9973` |
+| [record.py](record.py) | `3460c7dbe02f6103846358ddd170fd4344edc1a8e1a7415757e54d384ce6c6ca` |
 | [migrate/schema.py](migrate/schema.py) | `6e7c3d3de8ca67089f0a5f395ebb14bb00e581fadaf4d1e9272707666a0d4809` |
 | [migrate/step_3_to_4.py](migrate/step_3_to_4.py) | `effc084a74cb31c1aea0983e89bc94e0a08a3bd26137ec87ae9fc94b9c2846f5` |
 | [migrate/step_4_to_5.py](migrate/step_4_to_5.py) | `ae4dcf1ee639aa556fccf4ddbc1b70229b942d84e6a365c12009023af717501b` |

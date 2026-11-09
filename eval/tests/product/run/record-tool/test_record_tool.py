@@ -116,6 +116,54 @@ class RecordTool(unittest.TestCase):
         self.assertFalse((self.ws / 'resource-usage.telemetry.jsonl').exists())
         self.lint(16)
 
+    def test_reconcile_finds_orphan_terminal_across_ledger_blocks(self):
+        usage = self.ws / 'resource-usage.md'
+        history = self.ws / 'history.md'
+        prefix = usage.read_text()
+        old_history = history.read_text()
+
+        def row(run, event, empty=False):
+            outcome = 'running' if event == 'start' else 'success'
+            source = '' if empty else ' n/a '
+            return (f'| {run} | {event} | {TASK_ID} | Executor | demo | fast | model-a | high | '
+                    f'n/a | {outcome} | n/a | n/a | n/a |{source}|\n')
+
+        normal_start, normal_finish = row('normal-run', 'start'), row('normal-run', 'finish')
+        split_start, split_finish = row('split-run', 'start'), row('split-run', 'finish')
+        empty_start, empty_finish = row('empty-split', 'start', True), row('empty-split', 'finish')
+        near = row('near-orphan', 'finish', True)
+        far = row('far-orphan', 'finish')
+        first = normal_start + normal_finish + split_start + empty_start
+        second = split_finish + near
+        third = empty_finish + far
+        ledger = prefix + first + '\n' + second + '\nA note between blocks.\n\n' + third
+        usage.write_text(ledger)
+        verdict, child = base.run_row(16, self.root, None)
+        self.assertEqual(verdict, 'FAIL', (child.stdout, child.stderr))
+
+        for run in ('split-run', 'empty-split'):
+            before = self.snapshot()
+            result = self.invoke('reconcile', {'run_id': run, 'event_id': 'refused-' + run,
+                                                'observed': 'start exists'})
+            self.assertEqual(result.returncode, 2, result.stderr)
+            self.assertEqual(result.stdout, '')
+            self.assertEqual(result.stderr.strip(), 'record: not an orphan terminal')
+            self.assertEqual(self.snapshot(), before)
+
+        self.ok('reconcile', {'run_id': 'far-orphan', 'event_id': 'recovered-far',
+                              'observed': 'far start missing'})
+        self.ok('reconcile', {'run_id': 'near-orphan', 'event_id': 'recovered-near',
+                              'observed': 'near start missing'})
+        start_far = row('far-orphan', 'start').replace(' n/a |\n', ' history.md#event-recovered-far |\n')
+        start_near = row('near-orphan', 'start').replace(' n/a |\n', ' history.md#event-recovered-near |\n')
+        self.assertEqual(usage.read_text(), ledger.replace(far, start_far + far).replace(near, start_near + near))
+        events = (f'\n### Event recovered-far\nTask ID: {TASK_ID}\nRun ID: far-orphan\n'
+                  'Kind: reconciled-start\nObserved: far start missing\n'
+                  f'\n### Event recovered-near\nTask ID: {TASK_ID}\nRun ID: near-orphan\n'
+                  'Kind: reconciled-start\nObserved: near start missing\n')
+        self.assertEqual(history.read_text(), old_history + events)
+        self.lint(16)
+
     def test_reconcile_refusals_write_nothing(self):
         usage = self.ws / 'resource-usage.md'
         history = self.ws / 'history.md'
