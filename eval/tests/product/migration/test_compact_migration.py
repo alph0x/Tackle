@@ -1108,5 +1108,128 @@ class CompactMigrationTests(unittest.TestCase):
             self.assertEqual((candidate / 'history.md').read_bytes(), first)
 
 
+    def test_diagnose_writes_an_advisory_lint_preflight_beside_the_manifest(self):
+        import importlib.util
+        with self.lab() as lab:
+            installed = self.install(lab)
+            spec = importlib.util.spec_from_file_location('preflight_runner', installed / 'scripts/lint_runner.py')
+            runner = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(runner)
+            keys = {'schema', 'context', 'target', 'catalog_sha256', 'tool_sha256', 'install_sha256',
+                    'source', 'observed', 'obligations', 'actions', 'manual', 'write_paths',
+                    'preserved_paths', 'metrics', 'operation_id'}
+
+            def preflight(source, name, next_wave=True):
+                manifest, result, _ = self.plan(installed, source, lab / name, next_wave=next_wave)
+                stderr = (self.records / ('child-%04d' % self.serial) / 'stderr.bin').read_text()
+                self.assertEqual(set(result), keys)
+                self.assertEqual(manifest.read_bytes(), canonical(result))
+                sidecar = manifest.with_suffix('.lint.json')
+                report = read_json(sidecar)
+                self.assertEqual(sidecar.read_bytes(), canonical(report))
+                self.assertEqual(stat.S_IMODE(sidecar.stat().st_mode), 0o600)
+                self.assertEqual(set(report), {'schema', 'operation_id', 'source_sha256', 'workspace', 'skipped', 'rows'})
+                self.assertEqual((report['schema'], report['operation_id'], report['source_sha256'], report['workspace']),
+                                 ('tackle-migration-lint-preflight/1', result['operation_id'], result['source']['sha256'], str(source)))
+                for row in report['rows']:
+                    self.assertEqual(set(row), {'row', 'argv', 'child_exit', 'signal', 'timeout', 'launch_error',
+                                                'inputs_stable', 'verdict', 'stdout', 'stdout_sha256', 'stderr', 'stderr_sha256'})
+                    self.assertEqual(row['argv'], [sys.executable, '-I', str(installed / 'scripts/lint.py'), '--row', str(row['row']), source.name])
+                    out, err = row['stdout'].encode(), row['stderr'].encode()
+                    self.assertEqual((digest(out), digest(err)), (row['stdout_sha256'], row['stderr_sha256']))
+                    record = {k: row[k] for k in ('child_exit', 'signal', 'timeout', 'launch_error', 'inputs_stable')}
+                    self.assertEqual(row['verdict'], runner.lint_verdict(row['row'], dict(record, artifacts_present=True), out, err))
+                return result, report, stderr
+
+            project, source = self.fixture(lab, old=False)
+            self.semantic_edits(source)
+            temp = lab / 'preflight-tmp'
+            temp.mkdir()
+            previous = os.environ.get('TMPDIR')
+            os.environ['TMPDIR'] = str(temp)
+            try:
+                result, report, stderr = preflight(source, 'clean')
+            finally:
+                if previous is None:
+                    del os.environ['TMPDIR']
+                else:
+                    os.environ['TMPDIR'] = previous
+            self.assertEqual(list(temp.iterdir()), [])
+            self.assertIsNone(report['skipped'])
+            self.assertEqual([row['row'] for row in report['rows']], list(range(1, 20)))
+            for row in report['rows']:
+                self.assertIn(row['verdict'], {'PASS', 'WARN'} if row['row'] in {8, 13, 15} else {'PASS'}, row)
+            self.assertIn('FAIL rows none; ERROR rows none', stderr)
+            self.assertNotIn('reconcile', stderr)
+            pure = self.pure(installed, source, result['context'])
+            excluded = {'source', 'tool_sha256', 'install_sha256', 'operation_id'}
+            self.assertEqual({k: v for k, v in result.items() if k not in excluded},
+                             {k: v for k, v in pure.items() if k not in excluded})
+
+            _, readonly_source = self.fixture(lab, 'readonly', old=False)
+            self.semantic_edits(readonly_source)
+            retained = readonly_source / 'retained-content'
+            retained.mkdir()
+            (retained / 'payload.bin').write_bytes(b'retained\n')
+            retained.chmod(0o555)
+            readonly_before = inventory(readonly_source)
+            readonly_temp = lab / 'readonly-tmp'
+            readonly_temp.mkdir()
+            previous = os.environ.get('TMPDIR')
+            os.environ['TMPDIR'] = str(readonly_temp)
+            try:
+                _, readonly_report, _ = preflight(readonly_source, 'readonly-result')
+                self.assertIsNone(readonly_report['skipped'])
+                self.assertTrue((lab / 'readonly-result-manifest.json').is_file())
+                self.assertTrue((lab / 'readonly-result-manifest.lint.json').is_file())
+                self.assertEqual(inventory(readonly_source), readonly_before)
+                self.assertEqual(list(readonly_temp.iterdir()), [])
+            finally:
+                if previous is None:
+                    del os.environ['TMPDIR']
+                else:
+                    os.environ['TMPDIR'] = previous
+                retained.chmod(0o755)
+
+            neighbor = project / 'docs/plans/neighbor'
+            shutil.copytree(source, neighbor)
+            board = neighbor / 'task-board.md'
+            board.write_text(board.read_text().replace('| Draft |', '| In progress |'))
+            brief = neighbor / 'tasks' / ('{}-{:04d}.md'.format('T', 2))
+            brief.write_text(brief.read_text().replace('`owned/check-observed.txt`', '`/invalid-scope`'))
+            meta, out, err = self.run_child([sys.executable, '-I', installed / 'scripts/lint.py', '--row', '8', source.name], project, 0)
+            live = dict(child_exit=meta['exit'], signal=meta['signal'], timeout=meta['timeout'],
+                        launch_error=meta['launch_error'], inputs_stable=True, artifacts_present=True)
+            self.assertEqual(runner.lint_verdict(8, live, out, err), 'WARN')
+            _, report, _ = preflight(source, 'neighbor')
+            self.assertEqual(report['rows'][7]['verdict'], 'PASS')
+
+            usage = source / 'resource-usage.md'
+            usage.write_bytes(usage.read_bytes() + b'| orphan-run | finish | T-0001 | Executor | demo | n/a | n/a | high | n/a | success | 1 | 0 | reports/T-0001-report.md | history.md#cycle-alpha |\n')
+            _, report, stderr = preflight(source, 'orphan')
+            self.assertEqual(report['rows'][15]['verdict'], 'FAIL')
+            self.assertIn('terminal before start', report['rows'][15]['stdout'])
+            self.assertRegex(stderr, r'FAIL rows [0-9,]*16')
+            self.assertIn('record.py kind reconcile', stderr)
+            self.assertEqual(stderr.count('\n'), 1)
+
+            context, _ = self.context(source)
+            context_path = lab / 'refused-context.json'
+            write_json(context_path, context)
+            manifest = lab / 'refused-manifest.json'
+            manifest.with_suffix('.lint.json').write_bytes(b'prior\n')
+            before = inventory(source)
+            _, _, err = self.cli(installed, 'diagnose', ['--workspace', source, '--target', catalog_target(),
+                                                         '--context', context_path, '--output', manifest], 2)
+            self.assertIn(b'lint-preflight-must-be-new', err)
+            self.assertFalse(manifest.exists())
+            self.assertEqual(manifest.with_suffix('.lint.json').read_bytes(), b'prior\n')
+            self.assertEqual(inventory(source), before)
+
+            older = lab / 'older' / 'demo'
+            shutil.copytree(ROOT / 'eval/migration/fixtures/4-to-5/before', older)
+            _, report, _ = preflight(older, 'older-result', next_wave=False)
+            self.assertEqual((report['skipped'], report['rows']), ('structure-requires-migration', []))
+
 if __name__ == '__main__':
     unittest.main()

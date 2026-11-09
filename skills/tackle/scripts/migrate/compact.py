@@ -1062,8 +1062,64 @@ def _cmd_diagnose(args):
     _absolute(str(output.parent), "output-parent", exists=True, directory=True)
     if output.is_relative_to(root):
         raise MigrationError("output-must-be-external")
+    sidecar = output.with_suffix(".lint.json")
+    if sidecar.exists() or sidecar.is_symlink(): raise MigrationError("lint-preflight-must-be-new")
+    report = _lint_preflight(root, tree, plan)
     _atomic(output, _canonical(plan))
+    fd = os.open(sidecar, os.O_WRONLY | os.O_CREAT | os.O_EXCL | _NOFOLLOW, 0o600)
+    with os.fdopen(fd, "wb") as stream:
+        stream.write(_canonical(report)); stream.flush(); os.fsync(stream.fileno())
+    failed = ",".join(str(row["row"]) for row in report["rows"] if row["verdict"] == "FAIL") or "none"
+    errors = ",".join(str(row["row"]) for row in report["rows"] if row["verdict"] == "ERROR") or "none"
+    message = ("compact:lint-preflight advisory, verify remains the gate: FAIL rows " + failed
+               + "; ERROR rows " + errors + ": " + str(sidecar))
+    if any(row["row"] == 16 and row["verdict"] == "FAIL" and "terminal before start" in row["stdout"] for row in report["rows"]):
+        message += "; row 16 terminal before start: record.py kind reconcile repairs an orphan terminal"
+    print(message, file=sys.stderr)
     return 0
+
+def _lint_preflight(root, tree, plan):
+    report = {"schema": "tackle-migration-lint-preflight/1", "operation_id": plan["operation_id"],
+              "source_sha256": plan["source"]["sha256"], "workspace": str(root), "skipped": None, "rows": []}
+    if plan["observed"]["bucket"] not in {"5", "lite"}:
+        report["skipped"] = "structure-requires-migration"
+        return report
+    install = Path(__file__).resolve().parents[2]
+    script = install / "scripts" / "lint.py"
+    temporary = Path(tempfile.mkdtemp())
+    try:
+        parent = temporary / "docs" / "plans"
+        parent.mkdir(parents=True)
+        workspace = parent / root.name
+        _materialize(tree.files, workspace, tree.inventory)
+        before = _inventory_sha(_inventory(workspace))
+        for row in range(1, 20):
+            argv = [sys.executable, "-I", str(script), "--row", str(row), root.name]
+            stdout, stderr, child_exit, child_signal, timed_out, launch_error, _, _, _ = _run_lint_row(argv, temporary)
+            stable = before == _inventory_sha(_inventory(workspace)) and _install_identity(install) == plan["install_sha256"]
+            record = {"child_exit": child_exit, "signal": child_signal, "timeout": timed_out,
+                      "launch_error": launch_error, "inputs_stable": stable, "artifacts_present": True}
+            report["rows"].append({"row": row, "argv": argv, "child_exit": child_exit, "signal": child_signal,
+                                   "timeout": timed_out, "launch_error": launch_error, "inputs_stable": stable,
+                                   "verdict": lint_verdict(row, record, stdout, stderr),
+                                   "stdout": stdout.decode("utf-8", "replace"), "stdout_sha256": _sha(stdout),
+                                   "stderr": stderr.decode("utf-8", "replace"), "stderr_sha256": _sha(stderr)})
+    finally:
+        # The copied inventory can contain non-writable directories. Open only
+        # real directories in the owned tree and restore owner access before
+        # rmtree, without following copied symlinks into the source.
+        for _, directories, _, parent_fd in os.fwalk(temporary, topdown=True, follow_symlinks=False):
+            for name in directories:
+                info = os.stat(name, dir_fd=parent_fd, follow_symlinks=False)
+                if not stat.S_ISDIR(info.st_mode):
+                    continue
+                child_fd = os.open(name, os.O_RDONLY | _DIRECTORY | _NOFOLLOW, dir_fd=parent_fd)
+                try:
+                    os.fchmod(child_fd, stat.S_IMODE(info.st_mode) | 0o700)
+                finally:
+                    os.close(child_fd)
+        shutil.rmtree(temporary)
+    return report
 
 def _install_identity(root):
     root = Path(root)
@@ -1382,6 +1438,26 @@ def _validate_boundary(job, state, *, record=True):
         raise PendingError("context-not-at-boundary")
     return _record_ref(job, state, "boundary.json") if record else _ref(job, "boundary.json")
 
+def _run_lint_row(argv, cwd):
+    started = time.time(); monotonic = time.monotonic(); timed_out = False; launch_error = None
+    proc = None; stdout = stderr = b""
+    try:
+        proc = subprocess.Popen(argv, cwd=str(cwd), stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True)
+        try:
+            stdout, stderr = proc.communicate(timeout=300)
+        except subprocess.TimeoutExpired:
+            timed_out = True
+            with contextlib.suppress(ProcessLookupError): os.killpg(proc.pid, signal.SIGTERM)
+            try: stdout, stderr = proc.communicate(timeout=0.5)
+            except subprocess.TimeoutExpired:
+                with contextlib.suppress(ProcessLookupError): os.killpg(proc.pid, signal.SIGKILL)
+                stdout, stderr = proc.communicate(timeout=0.5)
+    except OSError as exc:
+        launch_error = str(exc); stdout = stderr = b""
+    ended = time.time(); child_exit = proc.returncode if proc is not None and proc.returncode is not None else 127
+    child_signal = -child_exit if child_exit < 0 else None
+    return stdout, stderr, child_exit, child_signal, timed_out, launch_error, started, ended, monotonic
+
 def _check_native(install, cwd, workspace_name, job, stage, workspace, source_hash, catalog_hash, install_hash_expected):
     install = Path(install); cwd = Path(cwd); workspace = Path(workspace)
     script = install / "scripts" / "lint.py"
@@ -1402,23 +1478,7 @@ def _check_native(install, cwd, workspace_name, job, stage, workspace, source_ha
             continue
         if any((Path(job) / (prefix + stream)).exists() for stream in ("stdout.bin", "stderr.bin")):
             raise PendingError("interrupted-native-capture-unresolved")
-        started = time.time(); monotonic = time.monotonic(); timed_out = False; launch_error = None
-        proc = None; stdout = stderr = b""
-        try:
-            proc = subprocess.Popen(argv, cwd=str(cwd), stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True)
-            try:
-                stdout, stderr = proc.communicate(timeout=300)
-            except subprocess.TimeoutExpired:
-                timed_out = True
-                with contextlib.suppress(ProcessLookupError): os.killpg(proc.pid, signal.SIGTERM)
-                try: stdout, stderr = proc.communicate(timeout=0.5)
-                except subprocess.TimeoutExpired:
-                    with contextlib.suppress(ProcessLookupError): os.killpg(proc.pid, signal.SIGKILL)
-                    stdout, stderr = proc.communicate(timeout=0.5)
-        except OSError as exc:
-            launch_error = str(exc); stdout = stderr = b""
-        ended = time.time(); child_exit = proc.returncode if proc is not None and proc.returncode is not None else 127
-        child_signal = -child_exit if child_exit < 0 else None
+        stdout, stderr, child_exit, child_signal, timed_out, launch_error, started, ended, monotonic = _run_lint_row(argv, cwd)
         prefix = "receipts/" + stage + "/row-%02d-" % row
         stdout_ref = _store_external(job, prefix + "stdout.bin", stdout)
         stderr_ref = _store_external(job, prefix + "stderr.bin", stderr)

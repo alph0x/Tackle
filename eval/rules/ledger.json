@@ -6574,6 +6574,20 @@
       "historical": []
     },
     {
+      "rule_id": "R-MIGRATE-17",
+      "statement": "Diagnose writes an advisory lint preflight of rows 1–19 from an isolated workspace copy for bucket 5 or Lite, otherwise records a structural skip, without changing the manifest or exit code; verify remains the gate.",
+      "statement_sha256": "8f2f86c659446a17cfe8d5c23d8af9597aacc42f1b9b1df776ed4fb67b3806a4",
+      "home": "references/guides/migrate.md:30",
+      "home_fragment": "`diagnose` also writes an advisory lint preflight",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {"added_in": "10.5.2", "trigger": "Owner request: surface at diagnose what would hold verify.", "discovered_by": []},
+      "evidence": {"status": "untested", "scenarios": [], "cohort_id": null, "as_of": "2026-11-09"},
+      "historical": []
+    },
+    {
       "rule_id": "R-RUN-42",
       "statement": "After a task's board, history and usage writes, run the workspace lint; fix or report findings before the close is reported.",
       "statement_sha256": "73572308f2228f3a558ed0addf6956fcea7e439a96689648acdc973dd75eab2a",
