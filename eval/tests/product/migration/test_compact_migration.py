@@ -314,7 +314,8 @@ class CompactMigrationTests(unittest.TestCase):
                     'at_boundary': at_boundary, 'quiescence': quiescence,
                     'observer': 'fixture-controller', 'evidence': []}
         value = dict(workspace=source.name, target=catalog_target(),
-                     next_wave=['{}-{:04d}'.format('T', 2)] if next_wave else [],
+                     next_wave=(['{}-{:04d}'.format('T', 2)] if next_wave is True else
+                                [] if next_wave is False else list(next_wave)),
                      boundary=dict(at_boundary=at_boundary, source_receipt_sha256=digest(canonical(boundary))),
                      optional_requests=list(requests), date='2026-09-27', run_id='compact-fixture')
         return value, boundary
@@ -357,8 +358,8 @@ class CompactMigrationTests(unittest.TestCase):
         self.assertTrue(output_file.with_suffix('.reads.json').is_file())
         return result
 
-    def prepared(self, installed, source, job):
-        manifest, plan, boundary = self.plan(installed, source, job)
+    def prepared(self, installed, source, job, next_wave=True):
+        manifest, plan, boundary = self.plan(installed, source, job, next_wave=next_wave)
         self.cli(installed, 'prepare', ['--manifest', manifest, '--job', job], 0)
         write_json(job / 'boundary.json', boundary)
         candidate = job / 'candidate-project/docs/plans' / source.name
@@ -444,6 +445,83 @@ class CompactMigrationTests(unittest.TestCase):
         self.semantic_edits(candidate)
         frozen = self.final_receipt(installed, source, job, candidate, plan)
         return plan, candidate, frozen
+
+    def test_current_board_vocabulary_matches_the_board_template(self):
+        expected = {
+            'Draft': 'selected-active', 'Ready to run': 'selected-active',
+            'In progress': 'started', 'Checking': 'interrupted',
+            'Complete': 'selected-active', 'Blocked': 'started',
+            'Interrupted': 'interrupted', 'Skipped': 'selected-active',
+            'Unverifiable': 'selected-active', 'Waiting on owner': 'started',
+        }
+        with self.lab() as lab:
+            installed = self.install(lab)
+            template = (installed / 'references/task-board.tmpl.md').read_text()
+            states = re.search(r'^States: (.*?)\.', template, re.M | re.S).group(1)
+            self.assertEqual(set(re.split(r',\s*', states)), set(expected))
+            _, source = self.fixture(lab, old=False)
+            board = source / 'task-board.md'
+            original = board.read_text()
+            for index, (state, classification) in enumerate([*expected.items(), ('Paused', 'unknown'), ('\U0001F7E1', 'unknown')]):
+                with self.subTest(state=state):
+                    board.write_text(original.replace('| Complete |', '| ' + state + ' |'))
+                    manifest, result, _ = self.plan(installed, source, lab / ('vocabulary-' + str(index)), next_wave=False)
+                    self.assertEqual(result['observed']['bucket'], '5')
+                    self.assertEqual(result['observed']['classification'], classification)
+                    if state == 'Waiting on owner':
+                        first = manifest.read_bytes()
+                        self.plan(installed, source, lab / 'vocabulary-repeat', next_wave=False)
+                        self.assertEqual((lab / 'vocabulary-repeat-manifest.json').read_bytes(), first)
+            older = lab / 'older/docs/plans/demo'
+            shutil.copytree(ROOT / 'eval/migration/fixtures/4-to-5/before', older)
+            board = older / 'task-board.md'
+            board.write_text(board.read_text().replace('| Ready to run |', '| Waiting on owner |', 1))
+            _, result, _ = self.plan(installed, older, lab / 'older-job', next_wave=False)
+            self.assertEqual(result['observed']['bucket'], '4')
+            self.assertEqual(result['observed']['classification'], 'unknown')
+
+    def test_waiting_on_owner_survives_adoption_and_holds_its_dependent(self):
+        with self.lab() as lab:
+            installed = self.install(lab)
+            _, source = self.fixture(lab, old=False)
+            board = source / 'task-board.md'
+            board.write_text(board.read_text().replace(
+                '| reports/T-0001-report.md | Complete |',
+                '| waiting: questions.md#q-0001 | Waiting on owner |'))
+            question = b'<a id="q-0001"></a>\n## Q-0001 - Decision needed\n\nOwner: project owner\nReason: choose the direction.\nInvestigated: existing alternatives.\n'
+            (source / 'questions.md').write_bytes(question)
+            waiting_row = next(line for line in board.read_bytes().splitlines(keepends=True)
+                               if b'| T-0001 |' in line)
+            decisions = (source / 'decisions.md').read_bytes()
+            job = lab / 'adoption-job'
+            plan, candidate = self.prepared(installed, source, job, next_wave=False)
+            self.assertEqual(plan['observed']['classification'], 'started')
+            self.semantic_edits(candidate)
+            self.final_receipt(installed, source, job, candidate, plan)
+            self.cli(installed, 'adopt', ['--job', job], 0)
+            self.assertIn(waiting_row, (source / 'task-board.md').read_bytes().splitlines(keepends=True))
+            self.assertEqual((source / 'questions.md').read_bytes(), question)
+            self.assertEqual((source / 'decisions.md').read_bytes(), decisions)
+            before = inventory(source)
+            job = lab / 'dependent-job'
+            plan, candidate = self.prepared(installed, source, job)
+            self.assertEqual(plan['observed']['classification'], 'started')
+            self.semantic_edits(candidate)
+            self.cli(installed, 'verify', ['--job', job], 1)
+            readiness = read_json(job / 'receipts/readiness.json')
+            self.assertIn('T-0002:dependency-not-complete:T-0001', readiness['findings'])
+            self.assertEqual(readiness['next_wave'][0]['task'], 'T-0002')
+            self.assertIn({'task': 'T-0001', 'state': 'Waiting on owner'},
+                          readiness['next_wave'][0]['dependencies'])
+            self.assertEqual(inventory(source), before)
+            context, _ = self.context(source, next_wave=['T-0001'])
+            context_path = lab / 'waiting-context.json'
+            write_json(context_path, context)
+            meta, out, err = self.cli(installed, 'diagnose', ['--workspace', source, '--target', catalog_target(),
+                '--context', context_path, '--output', lab / 'waiting-manifest.json'])
+            self.assertNotEqual(meta['exit'], 0)
+            self.assertIn(b'next-wave-task-not-unstarted:T-0001', out + err)
+            self.assertEqual(inventory(source), before)
 
     def test_catalog_preserves_all_obligations_and_supported_origins(self):
         with self.lab() as lab:

@@ -451,16 +451,18 @@ def _board_observation(files):
         states = []
         seen = set()
         valid = True
+        current = schema.schema_of(files) == "5"
+        allowed = schema.VALID_STATES + ("Waiting on owner",) if current else schema.VALID_STATES
         for _, cells in rows:
             task = cells[ic].strip() if ic is not None and ic < len(cells) else ""
             status = cells[sc].strip() if sc < len(cells) else ""
-            if status in schema.LEGACY_STATE_MAP: status = schema.LEGACY_STATE_MAP[status]
+            if not current and status in schema.LEGACY_STATE_MAP: status = schema.LEGACY_STATE_MAP[status]
             if task:
                 if not re.fullmatch(schema.ID_RE, task):
                     continue
                 if task in seen: valid = False
                 seen.add(task)
-            if status not in schema.VALID_STATES: valid = False
+            if status not in allowed: valid = False
             states.append((task, status))
         return board_name, "observed" if valid else "unknown", states
     except (ValueError, UnicodeError, IndexError):
@@ -577,7 +579,7 @@ def diagnose(files, context, catalog):
     requested = set(context["optional_requests"])
     selected_states = {"Draft", "Ready to run"}
     interrupted_states = {"Interrupted", "Checking"}
-    started_states = {"In progress", "Blocked"}
+    started_states = {"In progress", "Blocked", "Waiting on owner"}
     active = any(state in selected_states | interrupted_states | started_states for state in state_by_id.values())
     lite_state = _lite_state(files) if bucket == "lite" else None
     if bucket == "lite" and lite_state in {"Ready", "running", "blocked"}:
