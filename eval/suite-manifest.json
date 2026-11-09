@@ -505,10 +505,10 @@
       "files": [
         "test_record_tool.py"
       ],
-      "tests": 18,
+      "tests": 20,
       "source": "skills/tackle/scripts/record.py",
       "category": "product",
-      "purpose": "Confined six-kind workspace writes, lifecycle and correction evidence, closure and history invariants, exact telemetry attribution and compiled clauses through unchanged consumers."
+      "purpose": "Confined seven-kind workspace writes, lifecycle reconciliation and correction evidence, closure and history invariants, exact telemetry attribution and compiled clauses through unchanged consumers."
     },
     {
       "path": "eval/tests/tooling/maintaining/release",

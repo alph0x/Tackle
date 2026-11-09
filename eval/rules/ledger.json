@@ -4658,6 +4658,29 @@
       "historical": []
     },
     {
+      "rule_id": "R-EVID-26",
+      "statement": "The reconcile record repairs a single orphan lifecycle terminal by inserting its missing start immediately before it and appending a reconciled-start history event without changing other ledger or history bytes.",
+      "statement_sha256": "218415ba20670d9ffc1caa857b7f0fa99bbf355d562baa508085d9baffe80b1d",
+      "home": "references/guides/usage-observability.md:207",
+      "home_fragment": "- `reconcile`: `run_id`, `event_id`, `observed`",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.5.2",
+        "trigger": "Owner request: repair an orphan lifecycle terminal without a manual ledger edit.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-11-09"
+      },
+      "historical": []
+    },
+    {
       "rule_id": "R-INTAKE-09",
       "statement": "Before sizing, check once per workspace for a System One configuration signal, as [system-one.md](system-one.md#integration) defines it. Use the host's own tools and check presence only. When there is a signal, a selected workspace and no recorded answer, ask the System One question in PLAN or RUN, then record it. The record is one line in the workspace's `AGENTS.md`, in the exact form that [the state script](../../scripts/system_one_state.py) reads: `System One consent: yes \u00b7 date=YYYY-MM-DD \u00b7 actor=\"name\"`, with `no` for a refusal. A new initiative has a workspace only after the scaffold, so ask right after the scaffold creates it. Without a signal, record nothing and continue.",
       "statement_sha256": "e24104e78e69ca35780fed9c975e23c2f790c76ac43a8c2aef284609d1cd4b2f",

@@ -175,11 +175,11 @@ sidecar is valid and never a task-level failure.
 ## Record writing and manual fallback
 
 `record.py` is an optional writer for lifecycle, correction, closure, history/snapshot,
-telemetry and compiled-clause records. With explicit authorization for this tool, use
+telemetry, compiled-clause and reconciled-start records. With explicit authorization for this tool, use
 `python3 -I skills/tackle/scripts/record.py --workspace PATH --spec RELATIVE_JSON`.
 The spec is workspace-relative JSON with schema `tackle-record/1`, a `kind` and `data`;
-the six kinds are `lifecycle`, `correction`, `closure`, `history`, `telemetry` and
-`compile-clause`. Supply observed facts rather than inferred values. Manual records remain valid:
+the seven kinds are `lifecycle`, `correction`, `closure`, `history`, `telemetry`,
+`compile-clause` and `reconcile`. Supply observed facts rather than inferred values. Manual records remain valid:
 use the original [lifecycle](../resource-usage.tmpl.md), [history](../history.tmpl.md),
 [clause](../task.tmpl.md#shared-clauses-compiled) and [RUN record](run.md#run-record) forms.
 
@@ -204,6 +204,12 @@ The data fields are:
 - `telemetry`: `captured_at`, `collector`, `source`, `scope`, `scope_id`, `run_id`, `metrics`,
   `provenance`; use the optional-sidecar contract above.
 - `compile-clause`: `clause_id` and existing workspace-relative `brief`.
+- `reconcile`: `run_id`, `event_id`, `observed`; only a Run ID whose single ledger row is a
+  terminal can be repaired. It inserts a start immediately before the terminal, copying Task,
+  Role, Harness, Tier, Model and Effort, with At, Attempts, Rework and Verification `n/a`,
+  Outcome `running` and Source `history.md#event-<event_id>` naming the new `reconciled-start`
+  history event containing Task ID, Run ID and Observed. It changes nothing else. The manual
+  equivalent is the same inserted row and the same history event.
 
 The tool writes workspace records and prints paths and digests; it does not establish the truth of
 the supplied facts. Unknown data stays `n/a`, never an invented zero, model, terminal time or cost.

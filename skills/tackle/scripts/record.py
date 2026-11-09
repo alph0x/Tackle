@@ -438,6 +438,39 @@ def lifecycle(ws, d):
     return writes
 
 
+def reconcile(ws, d):
+    fields(d, ('run_id', 'event_id', 'observed'))
+    run = id_value(d['run_id'], 'run id')
+    eid = id_value(d['event_id'], 'event id')
+    observed = d['observed']
+    require(isinstance(observed, str) and bool(observed.strip()) and not any(c in observed for c in '\r\n'), 'invalid observation')
+    usage = ws.text('resource-usage.md')
+    columns = ('Run ID', 'Event', 'Task', 'Role', 'Harness', 'Tier', 'Model', 'Effort',
+               'At', 'Outcome', 'Attempts', 'Rework', 'Verification', 'Source')
+    require('Schema: tackle-observability/2' in usage, 'missing ledger schema')
+    lines, cols, start, end = table(usage, columns)
+    require(set(cols) == set(columns) and len(cols) == len(columns), 'invalid ledger header')
+    try:
+        table(''.join(lines[start:]), columns)
+    except Refusal:
+        pass
+    else:
+        raise Refusal('multiple ledger tables')
+    matching = [(i, dict(zip(cols, cells(lines[i])))) for i in range(start, end)
+                if len(cells(lines[i])) == len(cols) and cells(lines[i])[cols.index('Run ID')] == run]
+    require(len(matching) == 1 and matching[0][1]['Event'] in ('finish', 'observe-incomplete'), 'not an orphan terminal')
+    index, terminal = matching[0]
+    history = ws.text('history.md')
+    require(not any(r.get('eventid') == eid for r in records(history)), 'duplicate event')
+    event = ('\n### Event ' + eid + '\nTask ID: ' + terminal['Task'] + '\nRun ID: ' + run
+             + '\nKind: reconciled-start\nObserved: ' + observed + '\n')
+    updated_history = append_record(history, event, reader='counter')
+    row = dict(terminal, Event='start', At='n/a', Outcome='running', Attempts='n/a',
+               Rework='n/a', Verification='n/a', Source='history.md#event-' + eid)
+    lines.insert(index, '| ' + ' | '.join(row[col] for col in cols) + ' |\n')
+    return {'resource-usage.md': ''.join(lines), 'history.md': updated_history}
+
+
 def correction(ws, d):
     keys = ('event_id', 'task', 'run_id', 'failure_id', 'observed_failure', 'correction', 'validation_command', 'result')
     fields(d, keys)
@@ -612,7 +645,7 @@ def main():
         fields(spec, ('schema', 'kind', 'data'))
         require(spec['schema'] == 'tackle-record/1', 'unknown schema')
         kind = spec['kind']
-        functions = {'lifecycle': lifecycle, 'correction': correction, 'closure': closure, 'history': history_entry, 'compile-clause': compile_clause}
+        functions = {'lifecycle': lifecycle, 'correction': correction, 'closure': closure, 'history': history_entry, 'compile-clause': compile_clause, 'reconcile': reconcile}
         if kind == 'telemetry':
             path, content = sidecar(ws, telemetry(spec['data']))
             changes = {path: content}

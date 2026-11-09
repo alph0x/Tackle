@@ -20610,7 +20610,7 @@
       "unit_sha256": "2998462474aa63b488dc0f13d34f5a9be7df4dd0cb8f30637202ac4f675fbedf",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
-      "note": "| [record.py](record.py) | `3f4b1bb0056e7acb781cdf831177600a128cecf8951fba656a5fffd02124ca0d` |",
+      "note": "| [record.py](record.py) | `4dc8ff1387af1b01e4c55042d08b5b26775cdd3c950b702b12e5974b15fc9973` |",
       "destination_unit_sha256": null
     },
     {
@@ -20735,6 +20735,44 @@
       "destination": "skills/tackle/scripts/README.md",
       "note": "| [migrate/compact.py](migrate/compact.py) | `99cf317ee49564530c971fbab943cce44cb594756ba79641b3abbc68d3b7f67d` |",
       "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 177,
+      "unit_sha256": "ff6875e3794e91e025957f3cd51b6d0cb80079d3927d37f8d6a18df2df4fcde7",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "`record.py` is an optional writer for lifecycle, correction, closure, history/snapshot, telemetry, compiled-clause and reconciled-start records.",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "references/guides/usage-observability.md",
+      "line": 180,
+      "unit_sha256": "2cac6abb1af51ee44842e773b04d5f0fe29b99846f13e5281ddd7f913f1d4c70",
+      "disposition": "reworded",
+      "destination": "references/guides/usage-observability.md",
+      "note": "The spec is workspace-relative JSON with schema `tackle-record/1`, a `kind` and `data`; the seven kinds are `lifecycle`, `correction`, `closure`, `history`, `telemetry`, `compile-clause` and `reconcile`.",
+      "destination_unit_sha256": null,
+      "dropped": [{"token": "6", "reason": "the record writer gained the reconcile kind"}]
+    },
+    {
+      "path": "skills/tackle/scripts/README.md",
+      "line": 19,
+      "unit_sha256": "8b8467a26eca7bd1f9cc14fae92bef89950d2a91ebf5b7c305a038289b7c56be",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "| [record.py](record.py) | `4dc8ff1387af1b01e4c55042d08b5b26775cdd3c950b702b12e5974b15fc9973` |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "skills/tackle/scripts/README.md",
+      "line": 56,
+      "unit_sha256": "0489d17faffdea42e7aa11ab1cf11fd49a882c262950c2928450d9b0841d458e",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "The optional [record writer](record.py) writes the seven workspace forms after explicit authorization for that tool or its documented feature.",
+      "destination_unit_sha256": null,
+      "dropped": [{"token": "6", "reason": "the record writer gained the reconcile kind"}]
     }
   ]
 }

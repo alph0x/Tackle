@@ -93,6 +93,58 @@ class RecordTool(unittest.TestCase):
                 'failure_id': 'fault-' + event_id, 'observed_failure': failure,
                 'correction': correction, 'validation_command': command, 'result': 'exit 1'})
 
+    def test_reconcile_inserts_start_before_each_orphan_terminal(self):
+        usage = self.ws / 'resource-usage.md'
+        history = self.ws / 'history.md'
+        prefix = usage.read_text()
+        old_history = history.read_text()
+        first = f'| orphan-run | finish | {TASK_ID} | Executor | demo | fast | model-a | high | 2026-10-01T10:00:00Z | success | n/a | n/a | n/a | n/a |\n'
+        normal_start = f'| normal-run  | start | {TASK_ID} | Executor | demo | fast | model-a | high | n/a | running | n/a | n/a | n/a | n/a |\n'
+        normal_finish = f'| normal-run | finish  | {TASK_ID} | Executor | demo | fast | model-a | high | n/a | success | n/a | n/a | n/a | n/a |\n'
+        last = f'| missing-run | observe-incomplete | {TASK_ID} | Executor | demo | fast | model-a | high | n/a | incomplete | n/a | n/a | n/a | n/a |\n'
+        usage.write_text(prefix + first + normal_start + normal_finish + last)
+        verdict, child = base.run_row(16, self.root, None)
+        self.assertEqual(verdict, 'FAIL', (child.stdout, child.stderr))
+        self.ok('reconcile', {'run_id': 'orphan-run', 'event_id': 'recovered-first', 'observed': 'start was not recorded'})
+        self.ok('reconcile', {'run_id': 'missing-run', 'event_id': 'recovered-last', 'observed': 'start | absent'})
+        start_first = f'| orphan-run | start | {TASK_ID} | Executor | demo | fast | model-a | high | n/a | running | n/a | n/a | n/a | history.md#event-recovered-first |\n'
+        start_last = f'| missing-run | start | {TASK_ID} | Executor | demo | fast | model-a | high | n/a | running | n/a | n/a | n/a | history.md#event-recovered-last |\n'
+        self.assertEqual(usage.read_text(), prefix + start_first + first + normal_start + normal_finish + start_last + last)
+        event_first = f'\n### Event recovered-first\nTask ID: {TASK_ID}\nRun ID: orphan-run\nKind: reconciled-start\nObserved: start was not recorded\n'
+        event_last = f'\n### Event recovered-last\nTask ID: {TASK_ID}\nRun ID: missing-run\nKind: reconciled-start\nObserved: start | absent\n'
+        self.assertEqual(history.read_text(), old_history + event_first + event_last)
+        self.assertFalse((self.ws / 'resource-usage.telemetry.jsonl').exists())
+        self.lint(16)
+
+    def test_reconcile_refusals_write_nothing(self):
+        usage = self.ws / 'resource-usage.md'
+        history = self.ws / 'history.md'
+        prefix = usage.read_text()
+        terminal = f'| orphan-run | finish | {TASK_ID} | Executor | demo | fast | model-a | high | n/a | success | n/a | n/a | n/a | n/a |\n'
+        start = terminal.replace(' | finish |', ' | start |').replace(' | success |', ' | running |')
+        incomplete = terminal.replace(' | finish |', ' | observe-incomplete |').replace(' | success |', ' | incomplete |')
+        data = {'run_id': 'orphan-run', 'event_id': 'recovered', 'observed': 'start missing'}
+        cases = [
+            (prefix, data),
+            (prefix + start + terminal, data),
+            (prefix + terminal + incomplete, data),
+            (prefix + start, data),
+            (prefix + terminal, dict(data, observed='')),
+            (prefix + terminal, dict(data, observed='two\nlines')),
+            (prefix + terminal, {'run_id': 'orphan-run', 'event_id': 'recovered'}),
+            ((prefix + terminal).replace('Schema: tackle-observability/2', ''), data),
+            ('# Resource usage\n\n| Task | Role |\n|---|---|\n', data),
+            (prefix + terminal + '\n' + '\n'.join(prefix.splitlines()[4:6]) + '\n', data),
+            (prefix + terminal + '\n'.join(prefix.splitlines()[4:6]) + '\n', data),
+        ]
+        for ledger, spec in cases:
+            with self.subTest(ledger=ledger, spec=spec):
+                usage.write_text(ledger)
+                self.refused('reconcile', spec)
+        usage.write_text(prefix + terminal)
+        history.write_text(history.read_text() + '\n### Event recovered\nTask ID: ' + TASK_ID + '\n')
+        self.refused('reconcile', data)
+
     def test_legacy_zero_one_two_cycles_reach_real_lint(self):
         for attempts in (0, 1, 2):
             with self.subTest(attempts=attempts):

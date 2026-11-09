@@ -148,7 +148,7 @@ The [`scripts/`](skills/tackle/scripts/README.md) folder holds the programs the 
 | Captured lint-row runner (needs its own authorization, not covered by the lint grant) | `lint_runner.py` |
 | Check and evidence capture | `capture.py`, `evidence_capture.py` |
 | Records and context bundle | `record_store.py`, `context_bundle.py` |
-| Optional six-form record writer (requires explicit script or documented-feature authorization) | `record.py` |
+| Optional seven-form record writer (requires explicit script or documented-feature authorization) | `record.py` |
 | Task consistency, corrections and adversary checkpoints | `decompose_check.py`, `correction_lineage.py`, `adversary_checkpoints.py` |
 | Migration | `migrate/` |
 | Requirements base | `requirements_base.py` |
