@@ -462,6 +462,34 @@ class CompactMigrationTests(unittest.TestCase):
         frozen = self.final_receipt(installed, source, job, candidate, plan)
         return plan, candidate, frozen
 
+    def test_plain_active_decision_authorizes_a_closed_brief_erratum(self):
+        with self.lab() as lab:
+            installed = self.install(lab)
+            for superseded in (False, True):
+                _, source = self.fixture(lab, 'superseded' if superseded else 'active')
+                decisions = source / 'decisions.md'
+                text = decisions.read_text().replace('✅ active', 'active' + (' · superseded by ' + 'D' + '-' + '02' if superseded else ''), 1)
+                decisions.write_text(text)
+                self.semantic_edits(source)
+                job = lab / ('job-superseded' if superseded else 'job-active')
+                plan, candidate = self.prepared(installed, source, job)
+                self.semantic_edits(candidate)
+                task = '{}-{:04d}'.format('T', 1)
+                brief = candidate / 'tasks' / (task + '.md')
+                brief.write_bytes(brief.read_bytes() + b'\nUpdated content.\n')
+                report = candidate / 'reports' / (task + '-report.md')
+                with report.open('a') as stream:
+                    stream.write('**Brief erratum**: {} · sha256 {}\n'.format('D' + '-' + '01', digest(brief.read_bytes())))
+                self.assertEqual((candidate / 'decisions.md').read_bytes(), decisions.read_bytes())
+                if superseded:
+                    self.cli(installed, 'verify', ['--job', job], 1)
+                    findings = read_json(job / 'receipts/physical.json')['findings']
+                    self.assertIn('closed-brief-changed-without-authorized-erratum:' + task, findings['A'])
+                else:
+                    self.final_receipt(installed, source, job, candidate, plan)
+                    self.assertEqual(read_json(job / 'state.json')['phase'], 'verified')
+                    self.assertEqual((candidate / 'decisions.md').read_bytes(), decisions.read_bytes())
+
     def test_readme_is_an_allowed_carrier_stamped_with_agents(self):
         with self.lab() as lab:
             installed = self.install(lab)

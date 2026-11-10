@@ -496,6 +496,14 @@ def correction(ws, d):
     return {'history.md': append_record(history, text, reader='counter')}
 
 
+def active_erratum_decision(decisions, decision):
+    for heading in re.findall(r'^## ' + re.escape(decision) + r'(?=[ \t]|$)[^\r\n]*', decisions, re.M):
+        if ('⤴' not in heading and 'superseded by' not in heading.casefold()
+                and any(segment.strip() in ('✅ active', 'active') for segment in heading.split('·')[1:])):
+            return True
+    return False
+
+
 def closure(ws, d):
     fields(d, ('task', 'remains'), ('erratum',))
     task = id_value(d['task'], 'task')
@@ -527,13 +535,13 @@ def closure(ws, d):
     if errata:
         decisions = visible_text(ws.text('decisions.md'))
         for decision, unused in errata:
-            require(re.search(r'^## ' + re.escape(decision) + r' [^\r\n]*✅ active', decisions, re.M) is not None, 'erratum decision not active')
+            require(active_erratum_decision(decisions, decision), 'erratum decision not active')
     effective = errata[-1][1] if errata else original
     if effective != digest:
         decision = d.get('erratum')
         require(isinstance(decision, str) and re.fullmatch(r'D-[0-9]+', decision), 'active erratum required')
         decisions = visible_text(ws.text('decisions.md'))
-        require(re.search(r'^## ' + re.escape(decision) + r' [^\r\n]*✅ active', decisions, re.M) is not None, 'erratum decision not active')
+        require(active_erratum_decision(decisions, decision), 'erratum decision not active')
         report = append_record(report, '\n**Brief erratum**: ' + decision + ' · sha256 ' + digest + '\n')
     else:
         require('erratum' not in d, 'unnecessary erratum')

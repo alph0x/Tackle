@@ -135,6 +135,36 @@ class ClosedRecordRow(unittest.TestCase):
                 ws.append_report('**Brief erratum**: {} · sha256 {}'.format(decision, ws.brief_sha()))
                 self.assert_only_14(ws, ['erratum without decision: {} {}'.format(TA, decision)])
 
+    def test_erratum_active_definition_corpus(self):
+        corpus = [
+            ('## {} · Demo decision · active · 2026-09-24', True),
+            ('## {} · Demo decision · ✅ active · 2026-09-24', True),
+            ('## {} · Demo decision ·active· 2026-09-24', True),
+            ('## {}\u00a0· Demo decision · active · 2026-09-24', False),
+            ('## {} · Demo decision · inactive · 2026-09-24', False),
+            ('## {} · Demo decision · proactive · 2026-09-24', False),
+            ('## {} · Make active the cache · 2026-09-24', False),
+            ('## {} · Demo decision · active · ⤴ superseded by {} · 2026-09-24', False),
+            ('## {} · Demo decision · superseded by {} · active · 2026-09-24', False),
+            ('## {} · Demo decision · ✅ active · superseded by the owner · 2026-09-24', False),
+            ('```text\n## {} · Demo decision · active · 2026-09-24\n```', False),
+            ('- {} · active', False),
+            ('## {} · Demo decision · 2026-09-24', False),
+        ]
+        for heading, accepted in corpus:
+            with self.subTest(heading=heading):
+                ws = Workspace(self)
+                decisions = ws.read('decisions.md')
+                old = decisions.splitlines()[2]
+                ws.write('decisions.md', decisions.replace(old, heading.format(DA, ident('D', 3))))
+                ws.report_line('**Brief sha256**: ' + ws.brief_sha())
+                ws.change_brief()
+                ws.append_report('**Brief erratum**: {} · sha256 {}'.format(DA, ws.brief_sha()))
+                verdict, child = base.run_row(14, ws.root, None)
+                self.assertEqual(verdict, 'PASS' if accepted else 'FAIL')
+                self.assertEqual(child.stdout.decode().splitlines(),
+                                 [] if accepted else ['erratum without decision: {} {}'.format(TA, DA)])
+
     def test_open_tasks_are_not_closed_records(self):
         ws = Workspace(self)
         ws.change_brief(TB)

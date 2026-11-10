@@ -160,5 +160,17 @@
     "statement_sha256": "e94f73c767cf02538342349210ac50047a74d6a0fc7504f95e9298e7b96890ec",
     "reason": "Public-fragment-only admission for the four original and two declared new Judgement Layer uses: the adapter tests reject nonpublic or unknown labels and unknown uses before any effect and check exact request shapes. The adapter trusts the caller's public label and does not detect misclassified secrets. Agent classification is unmeasured: a held-out behavioral cohort on a public consent-and-fallback trap (Claude Sonnet 5.5, seven seeds per install) showed no unsafe act in fourteen episodes but invoked the skill in one, so it is inconclusive. This entry replaces the earlier exception voided by the statement's extension to the new uses.",
     "accepted": "2026-10-25"
+  },
+  {
+    "rule_id": "R-RUN-47",
+    "statement_sha256": "45cceb205e86edcd53389f428227ccb10dec3ee07145780f8ef8993a1c50e3b5",
+    "reason": "The rule is mechanical: planted fixtures, corpus tests and mutants in the product families prove it, and a held-out behavioral cohort cannot give it honest evidence. Accepted by the owner on 2026-11-10.",
+    "accepted": "2026-11-10"
+  },
+  {
+    "rule_id": "R-MIGRATE-18",
+    "statement_sha256": "cf17ba10826d99d4bfd7a350416d9e0d8328c33218ea341b3266715a1dd0fad4",
+    "reason": "The rule is mechanical: planted fixtures, corpus tests and mutants in the product families prove it, and a held-out behavioral cohort cannot give it honest evidence. Accepted by the owner on 2026-11-10.",
+    "accepted": "2026-11-10"
   }
 ]

@@ -296,6 +296,43 @@ class RecordTool(unittest.TestCase):
         self.assertIn(f'**Brief erratum**: {ACTIVE_DECISION} · sha256 ' + hashlib.sha256(brief.read_bytes()).hexdigest(), report.read_text())
         self.lint(14)
 
+    def test_closure_erratum_active_definition_corpus(self):
+        corpus = [
+            ('## {} · Demo decision · active · 2026-09-24', True),
+            ('## {} · Demo decision · ✅ active · 2026-09-24', True),
+            ('## {} · Demo decision ·active· 2026-09-24', True),
+            ('## {}\u00a0· Demo decision · active · 2026-09-24', False),
+            ('## {} · Demo decision · inactive · 2026-09-24', False),
+            ('## {} · Demo decision · proactive · 2026-09-24', False),
+            ('## {} · Make active the cache · 2026-09-24', False),
+            ('## {} · Demo decision · active · ⤴ superseded by {} · 2026-09-24', False),
+            ('## {} · Demo decision · superseded by {} · active · 2026-09-24', False),
+            ('## {} · Demo decision · ✅ active · superseded by the owner · 2026-09-24', False),
+            ('```text\n## {} · Demo decision · active · 2026-09-24\n```', False),
+            ('- {} · active', False),
+            ('## {} · Demo decision · 2026-09-24', False),
+        ]
+        for heading, accepted in corpus:
+            with self.subTest(heading=heading):
+                self.new_workspace()
+                self.ok('closure', {'task': TASK_ID, 'remains': 'none'})
+                decisions = self.ws / 'decisions.md'
+                text = decisions.read_text()
+                decisions.write_text(text.replace(text.splitlines()[2], heading.format(ACTIVE_DECISION, 'D' + '-' + '03')))
+                brief = self.ws / f'tasks/{TASK_ID}.md'
+                brief.write_bytes(brief.read_bytes() + b'\nUpdated content.\n')
+                data = {'task': TASK_ID, 'remains': 'none', 'erratum': ACTIVE_DECISION}
+                before = self.snapshot()
+                result = self.invoke('closure', data)
+                if accepted:
+                    self.assertEqual(result.returncode, 0, result.stderr)
+                    report = (self.ws / f'reports/{TASK_ID}-report.md').read_text()
+                    self.assertIn(f'**Brief erratum**: {ACTIVE_DECISION} · sha256 ' + hashlib.sha256(brief.read_bytes()).hexdigest(), report)
+                else:
+                    self.assertEqual(result.returncode, 2)
+                    self.assertIn('erratum decision not active', result.stderr)
+                    self.assertEqual(self.snapshot(), before)
+
     def test_history_retains_old_entries_and_snapshot(self):
         history = self.ws / 'history.md'
         old = history.read_bytes()

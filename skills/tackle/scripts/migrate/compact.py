@@ -2069,8 +2069,8 @@ def _closed_erratum_authorized(job, state, manifest, expected, current, task, pa
     decisions = current.get("decisions.md")
     if decisions is None: return False
     headings = [line for line in schema.unfenced_lines(schema.decode(decisions), strict=True)
-                if re.match(r"^## " + re.escape(decision) + r"(?:\s|$)", line)]
-    if len(headings) != 1 or "✅ active" not in headings[0] or "superseded by" in headings[0].casefold() or "⤴" in headings[0]: return False
+                if re.match(r"^## " + re.escape(decision) + r"(?:[ \t]|$)", line)]
+    if len(headings) != 1 or not any(segment.strip() in ("✅ active", "active") for segment in headings[0].split("·")[1:]) or "superseded by" in headings[0].casefold() or "⤴" in headings[0]: return False
     if not any(result["row"] == 14 and result["verdict"] == "PASS" for result in native): return False
     # The baseline is already present in the sealed pre-event history, and the
     # immutable checkpoint carries its exact actual pre-edit brief bytes.
