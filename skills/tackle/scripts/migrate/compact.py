@@ -416,12 +416,15 @@ def _methodology(files):
 def _supported_methodology(files, target):
     """Keep observed structure independent; never rewrite a known future stamp."""
     observed = _methodology(files)
-    if observed is None: return None
-    match = re.fullmatch(r"Tackle (0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:\.(0|[1-9][0-9]*))?(?: candidate)?", observed)
-    if match is not None:
-        version = tuple(int(value or 0) for value in match.groups())
-        target_version = tuple(int(value) for value in target.split("."))
-        if version > target_version: raise MigrationError("unsupported-newer-source-methodology:" + observed)
+    readme = schema.root_files(files).get("README.md")
+    readme_match = schema.METHODOLOGY_RE.search(schema.decode(readme)) if readme is not None else None
+    for name, value in (("", observed), ("README.md:", readme_match.group(2) if readme_match else None)):
+        if value is None: continue
+        match = re.fullmatch(r"Tackle (0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:\.(0|[1-9][0-9]*))?(?: candidate)?", value)
+        if match is not None:
+            version = tuple(int(part or 0) for part in match.groups())
+            target_version = tuple(int(part) for part in target.split("."))
+            if version > target_version: raise MigrationError("unsupported-newer-source-methodology:" + name + value)
     return observed
 
 def _lite_state(files):
@@ -661,6 +664,9 @@ def diagnose(files, context, catalog):
     obligations.sort(key=lambda row: (FAMILIES.index(row["family"]), row["id"]))
     if family_apply["Z"]:
         paths = [name for name in ("history.md", "AGENTS.md") if name in preview]
+        readme = files.get("README.md")
+        if readme is not None and schema.METHODOLOGY_RE.search(schema.decode(readme)):
+            paths.append("README.md")
         if paths:
             actions.append({"family": "Z", "effect": "candidate-marker-and-stamp", "paths": paths,
                             "preconditions": ["existing history carrier", "pre-stamp captures retained", "dated history order valid"],
@@ -1790,6 +1796,13 @@ def _append_marker_and_stamp(candidate, state, manifest, catalog, job):
             try: text = agents.decode("utf-8")
             except UnicodeError as exc: raise PendingError("methodology-file-not-utf8") from exc
             stamped = schema.set_methodology(text, "Tackle " + catalog["target_methodology"]).encode("utf-8")
+        readme = files.get("README.md")
+        source_readme = expected.get("README.md")
+        stamped_readme = readme
+        if readme is not None and source_readme is not None and schema.METHODOLOGY_RE.search(schema.decode(source_readme)):
+            try: text = readme.decode("utf-8")
+            except UnicodeError as exc: raise PendingError("methodology-file-not-utf8") from exc
+            stamped_readme = schema.set_methodology(text, "Tackle " + catalog["target_methodology"]).encode("utf-8")
         # Seal the exact allowed transition before its first effect. A resumed
         # transition recognizes only those recorded whole-tree states.
         transition_path = Path(job) / "receipts/transition.json"
@@ -1814,10 +1827,16 @@ def _append_marker_and_stamp(candidate, state, manifest, catalog, job):
             before_inventory = _inventory(candidate)
             history_inventory = dict(before_inventory)
             history_inventory["history.md"] = dict(history_inventory["history.md"], sha256=_sha(new_history))
-            final_inventory = dict(history_inventory)
-            if agents is not None: final_inventory["AGENTS.md"] = dict(final_inventory["AGENTS.md"], sha256=_sha(stamped))
+            agents_inventory = dict(history_inventory)
+            if agents is not None: agents_inventory["AGENTS.md"] = dict(agents_inventory["AGENTS.md"], sha256=_sha(stamped))
+            final_inventory = dict(agents_inventory)
+            if readme is not None: final_inventory["README.md"] = dict(final_inventory["README.md"], sha256=_sha(stamped_readme))
+            inventories = [before_inventory, history_inventory]
+            if stamped != agents and stamped_readme != readme:
+                inventories.append(agents_inventory)
+            inventories.append(final_inventory)
             transition = {"schema": "tackle-migration-transition/1", "operation_id": state["operation_id"],
-                          "marker": marker, "allowed_inventory_sha256": [_inventory_sha(i) for i in (before_inventory, history_inventory, final_inventory)],
+                          "marker": marker, "allowed_inventory_sha256": [_inventory_sha(i) for i in inventories],
                           "before_inventory": before_inventory, "final_inventory": final_inventory,
                           "history_before": _store_external(job, "receipts/history-before.bin", history),
                           "history_after": _store_external(job, "receipts/history-after.bin", new_history)}
@@ -1834,6 +1853,8 @@ def _append_marker_and_stamp(candidate, state, manifest, catalog, job):
         marker_ref = _store_external(job, "receipts/marker.json", _canonical({"schema": "tackle-migration-marker/1", "path": str(candidate / "history.md"), "operation_id": state["operation_id"], "target_methodology": catalog["target_methodology"], "revision": catalog["revision"], **marker}))
         if agents is not None and stamped != agents:
             _atomic_preserve(candidate / "AGENTS.md", stamped)
+        if readme is not None and stamped_readme != readme:
+            _atomic_preserve(candidate / "README.md", stamped_readme)
         if _inventory(candidate) != transition["final_inventory"]:
             raise PendingError("marker-stamp-postinventory-conflict")
     return marker_ref
@@ -2153,7 +2174,7 @@ def _physical_findings(job, state, manifest, catalog):
     except ValueError as exc: failures["A"].append(str(exc))
     # Opaque records, snapshots and directories retain their original bytes/modes;
     # only the declared current procedure carriers may have operator preparation.
-    allowed = {"AGENTS.md", "task-board.md", "plan.md", "design-contract.md", "decisions.md", "questions.md", "reference.md",
+    allowed = {"AGENTS.md", "README.md", "task-board.md", "plan.md", "design-contract.md", "decisions.md", "questions.md", "reference.md",
                "history.md", "resource-usage.md", "current-work.md", "handoff-brief.md", "map-delta.json", "requirements-delta.md",
                "plan-view.html", "plan-view.stamp.js", ".context-lock"}
     bindings = _declared_briefs(expected)

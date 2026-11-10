@@ -152,6 +152,22 @@ sys.argv=[module_path,operation,'--job',job]
 runpy.run_path(module_path,run_name='__main__')
 '''
 
+INTERRUPT_STAMP = r'''
+import os,runpy,sys
+from pathlib import Path
+module_path,job,candidate=sys.argv[1:]
+real=os.replace
+def replace(src,dst,*args,**kwargs):
+    result=real(src,dst,*args,**kwargs)
+    if str(dst)==str(Path(candidate)/'AGENTS.md'):
+        os._exit(99)
+    return result
+os.replace=replace
+sys.path.insert(0,str(Path(module_path).parent))
+sys.argv=[module_path,'verify','--job',job]
+runpy.run_path(module_path,run_name='__main__')
+'''
+
 LOCK = r'''
 import json,os,runpy,sys,time
 from pathlib import Path
@@ -445,6 +461,80 @@ class CompactMigrationTests(unittest.TestCase):
         self.semantic_edits(candidate)
         frozen = self.final_receipt(installed, source, job, candidate, plan)
         return plan, candidate, frozen
+
+    def test_readme_is_an_allowed_carrier_stamped_with_agents(self):
+        with self.lab() as lab:
+            installed = self.install(lab)
+            _, source = self.fixture(lab)
+            readme = ('# Demo\n\n> **Methodology: Tackle 10.1.0.** See `AGENTS.md`.\n\n'
+                      '## Reading order\n\n1. plan.md\n2. task-board.md\n\n'
+                      '## Notes\n\nMethodology: Tackle 9.1.1 was used before.\n')
+            (source / 'README.md').write_text(readme)
+            job = lab / 'carrier'
+            plan, candidate = self.prepared(installed, source, job)
+            self.assertEqual((candidate / 'README.md').read_bytes(), (source / 'README.md').read_bytes())
+            action = next(a for a in plan['actions'] if a['family'] == 'Z')
+            self.assertEqual(action['paths'], ['history.md', 'AGENTS.md', 'README.md'])
+            path = candidate / 'README.md'
+            path.write_text(readme.replace('1. plan.md\n2. task-board.md', 'Follow the cold-resume read order in status.md.'))
+            self.semantic_edits(candidate)
+            before = inventory(candidate)
+            boot = lab / 'interrupt-stamp.py'
+            boot.write_text(INTERRUPT_STAMP)
+            self.run_child([sys.executable, '-I', '-B', boot, installed / 'scripts/migrate/compact.py', job, candidate], lab, 99)
+            transition = read_json(job / 'receipts/transition.json')
+            intermediate = dict(before)
+            intermediate['history.md'] = dict(intermediate['history.md'], sha256=transition['marker']['after_sha256'])
+            intermediate['AGENTS.md'] = transition['final_inventory']['AGENTS.md']
+            self.assertEqual(inventory(candidate), intermediate)
+            self.assertEqual(path.read_text(), readme.replace('1. plan.md\n2. task-board.md', 'Follow the cold-resume read order in status.md.'))
+            self.final_receipt(installed, source, job, candidate, plan)
+            self.assertIn('Methodology: Tackle ' + catalog_target(), path.read_text())
+            self.assertIn('Methodology: Tackle 9.1.1 was used before.', path.read_text())
+            self.assertIn('Methodology: Tackle ' + catalog_target(), (candidate / 'AGENTS.md').read_text())
+            self.assertEqual(inventory(candidate), transition['final_inventory'])
+            self.assertEqual(transition['final_inventory']['README.md']['sha256'], digest(path.read_bytes()))
+            self.assertEqual((candidate / 'history.md').read_text().count('Prepared candidate: operation ' + plan['operation_id'] + ';'), 1)
+            other = lab / 'opaque'
+            _, other_candidate = self.prepared(installed, source, other)
+            self.semantic_edits(other_candidate)
+            (other_candidate / 'legacy-kept/raw.bin').write_bytes(b'changed')
+            self.cli(installed, 'verify', ['--job', other], 1)
+            findings = read_json(other / 'receipts/physical.json')['findings']
+            self.assertIn('preserved-bytes-drift:legacy-kept/raw.bin', findings['A'])
+
+    def test_unstamped_readme_keeps_manifest_and_bytes(self):
+        with self.lab() as lab:
+            installed = self.install(lab)
+            for name, content in [('absent', None), ('unstamped', '# Demo\n\nNo stamp here.\n')]:
+                _, source = self.fixture(lab, name)
+                if content is not None:
+                    (source / 'README.md').write_text(content)
+                first, plan, _ = self.plan(installed, source, lab / (name + '-first'))
+                second, _, _ = self.plan(installed, source, lab / (name + '-second'))
+                self.assertEqual(first.read_bytes(), second.read_bytes())
+                self.assertEqual(next(a for a in plan['actions'] if a['family'] == 'Z')['paths'], ['history.md', 'AGENTS.md'])
+                if content is not None:
+                    job = lab / (name + '-job')
+                    plan, candidate = self.prepared(installed, source, job)
+                    self.semantic_edits(candidate)
+                    self.cli(installed, 'verify', ['--job', job], 1)
+                    self.assertEqual((candidate / 'README.md').read_text(), content)
+
+    def test_newer_readme_stamp_is_refused(self):
+        with self.lab() as lab:
+            installed = self.install(lab)
+            _, source = self.fixture(lab)
+            (source / 'README.md').write_text('Methodology: Tackle 99.0.0\n')
+            context, _ = self.context(source)
+            context_path = lab / 'future-context.json'
+            manifest = lab / 'future-manifest.json'
+            write_json(context_path, context)
+            meta, _, err = self.cli(installed, 'diagnose', ['--workspace', source, '--target', catalog_target(),
+                                                             '--context', context_path, '--output', manifest])
+            self.assertNotEqual(meta['exit'], 0)
+            self.assertIn(b'unsupported-newer-source-methodology:README.md:Tackle 99.0.0', err)
+            self.assertFalse(manifest.exists())
 
     def test_current_board_vocabulary_matches_the_board_template(self):
         expected = {

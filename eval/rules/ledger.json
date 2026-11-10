@@ -6602,6 +6602,20 @@
       "historical": []
     },
     {
+      "rule_id": "R-MIGRATE-19",
+      "statement": "The final stamp also sets the first methodology stamp of a stamped README, and README is a candidate carrier.",
+      "statement_sha256": "143707dd82c95ad4fa30a7b9f6013a2f040f2ce7b679222dfe6fe69735a3f894",
+      "home": "references/guides/migrate.md:42",
+      "home_fragment": "The final stamp sets the methodology stamp of",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {"added_in": "10.5.2", "trigger": "Owner request: finish 10.5.2 by migrating Rootbound (K2).", "discovered_by": []},
+      "evidence": {"status": "untested", "scenarios": [], "cohort_id": null, "as_of": "2026-11-10"},
+      "historical": []
+    },
+    {
       "rule_id": "R-RUN-42",
       "statement": "After a task's board, history and usage writes, run the workspace lint; fix or report findings before the close is reported.",
       "statement_sha256": "73572308f2228f3a558ed0addf6956fcea7e439a96689648acdc973dd75eab2a",
