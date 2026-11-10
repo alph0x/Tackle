@@ -1652,14 +1652,81 @@ def _check_native(install, cwd, workspace_name, job, stage, workspace, source_ha
     return checks
 
 def _newest_snapshot(lines):
-    starts = [index for index, line in enumerate(lines) if line.startswith("### State snapshot")]
+    visible = []
+    comment = False
+    for line in lines:
+        remaining = line
+        outside = ""
+        while remaining:
+            if comment:
+                end = remaining.find("-->")
+                if end < 0: break
+                remaining = remaining[end + 3:]
+                comment = False
+            else:
+                start = remaining.find("<!--")
+                if start < 0:
+                    outside += remaining
+                    break
+                outside += remaining[:start]
+                remaining = remaining[start + 4:]
+                comment = True
+        visible.append(outside if outside.strip() or not line.strip() else None)
+    starts = [index for index, line in enumerate(visible) if line is not None and line.startswith("### State snapshot")]
     if not starts: return None
     start = starts[-1]
-    stop = next((index for index in range(start + 1, len(lines)) if re.match(r"^#{1,6} ", lines[index])), len(lines))
-    body = lines[start + 1:stop]
-    while body and not body[0].strip(): body.pop(0)
+    body = []
+    for index in range(start + 1, len(lines)):
+        line = visible[index]
+        if line is None: break
+        if line.strip() and not line.startswith(("- ", " ", "\t")): break
+        body.append(lines[index])
     while body and not body[-1].strip(): body.pop()
     return [lines[start]] + body
+
+def _snapshot_is_current(lines, expected_history, board_changed):
+    comment = False
+    newest = None
+    later_heading = False
+    for index, line in enumerate(lines):
+        remaining = line
+        outside = ""
+        while remaining:
+            if comment:
+                end = remaining.find("-->")
+                if end < 0: break
+                remaining = remaining[end + 3:]
+                comment = False
+            else:
+                start = remaining.find("<!--")
+                if start < 0:
+                    outside += remaining
+                    break
+                outside += remaining[:start]
+                remaining = remaining[start + 4:]
+                comment = True
+        if outside.startswith("### State snapshot"):
+            newest = index
+            later_heading = False
+        elif outside.startswith("## ") and newest is not None:
+            later_heading = True
+    if newest is None: return True
+    if later_heading: return False
+    return not board_changed or newest >= len(schema.unfenced_lines(expected_history.decode("utf-8"), strict=True))
+
+def _stamp_preconditions(candidate, state, manifest, catalog):
+    files = _tree(candidate).files
+    _supported_methodology(files, catalog["target_methodology"])
+    expected = _transformed_checkpoint(state, manifest)
+    prefix_findings = _history_usage_prefix_findings(expected, files)
+    if prefix_findings: raise PendingError(";".join(prefix_findings))
+    history = files.get("history.md")
+    if history is None: raise PendingError("existing-history-carrier-required")
+    new_history, _ = _dated_history(history, manifest["context"]["date"], state["operation_id"], state["source_sha256"], catalog["target_methodology"], catalog["revision"])
+    if new_history == history: raise PendingError("unbound-existing-history-marker")
+    lines = schema.unfenced_lines(history.decode("utf-8"), strict=True)
+    if not _snapshot_is_current(lines, expected.get("history.md", b""), files.get("task-board.md") != expected.get("task-board.md")):
+        raise PendingError("state-snapshot-not-current")
 
 def _dated_history(data, date, operation_id, source_hash, target, revision):
     try:
@@ -1741,6 +1808,9 @@ def _append_marker_and_stamp(candidate, state, manifest, catalog, job):
                 raise PendingError("marker-transition-history-conflict")
         else:
             if new_history == history: raise PendingError("unbound-existing-history-marker")
+            lines = schema.unfenced_lines(history.decode("utf-8"), strict=True)
+            if not _snapshot_is_current(lines, expected.get("history.md", b""), files.get("task-board.md") != expected.get("task-board.md")):
+                raise PendingError("state-snapshot-not-current")
             before_inventory = _inventory(candidate)
             history_inventory = dict(before_inventory)
             history_inventory["history.md"] = dict(history_inventory["history.md"], sha256=_sha(new_history))
@@ -2199,6 +2269,8 @@ def _verify_locked(job, st):
         if not any(ref["path"] == "receipts/admission.json" for ref in st["receipts"]): raise PendingError("verified-admission-missing")
         return 0
     if not (job / "handoff.json").exists():
+        if not (job / "receipts/transition.json").exists():
+            _stamp_preconditions(candidate, st, manifest, catalog)
         source_project = job / "source-project/docs/plans" / source_path.name
         if _inventory_sha(_inventory(source_project)) != st["source_sha256"]: raise PendingError("source-diagnostic-copy-drift")
         source_ref = _capture_stage(job, st, source_project, "source-diagnostic", "source-capture.json")

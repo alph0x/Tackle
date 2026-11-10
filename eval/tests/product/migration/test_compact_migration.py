@@ -1063,6 +1063,110 @@ class CompactMigrationTests(unittest.TestCase):
         history.write_text(history.read_text() + SNAPSHOT)
         return project, source
 
+    def test_stamp_copies_only_the_snapshot_block(self):
+        with self.lab() as lab:
+            installed = self.install(lab)
+            _, source = self.snapshot_fixture(lab, 'source')
+            job = lab / 'job'
+            _, candidate = self.prepared(installed, source, job)
+            self.semantic_edits(candidate)
+            history = candidate / 'history.md'
+            history.write_text(history.read_text() + '\nTrailing prose paragraph.\n<!--\n### State snapshot\n- Task state: commented\n-->\n')
+            self.cli(installed, 'verify', ['--job', job], 1)
+            text = history.read_text()
+            self.assertEqual(text.rsplit(ENTRY, 1)[1].split('\n\n', 2)[-1].strip(), SNAPSHOT.strip())
+            for fragment in ('Brief sha256 T-0001:', 'Trailing prose paragraph.', 'commented'):
+                self.assertEqual(text.count(fragment), 1)
+            meta, out, err = self.run_child([sys.executable, '-I', str(installed / 'scripts/lint.py'),
+                                             '--row', '13', candidate.name], job / 'candidate-project')
+            self.assertEqual((meta['exit'], out, err), (0, b'', b''))
+
+    def test_stale_snapshot_refuses_before_any_capture(self):
+        for variant in ('dated', 'undated', 'board', 'absent'):
+            with self.subTest(variant=variant), self.lab() as lab:
+                installed = self.install(lab)
+                _, source = (self.fixture(lab) if variant == 'absent' else self.snapshot_fixture(lab, 'source'))
+                job = lab / 'job'
+                _, candidate = self.prepared(installed, source, job)
+                history = candidate / 'history.md'
+                if variant in ('board', 'absent'):
+                    board = candidate / 'task-board.md'
+                    board.write_text(board.read_text() + '\nA board note.\n')
+                else:
+                    heading = '## 2026-09-26 · later session' if variant == 'dated' else '## State snapshot · Session 9'
+                    history.write_text(history.read_text() + '\n' + heading + '\n\n- Note: no snapshot.\n')
+                before = inventory(candidate)
+                meta, out, err = self.cli(installed, 'verify', ['--job', job], 1)
+                if variant == 'absent':
+                    self.assertNotIn(b'state-snapshot-not-current', err)
+                    continue
+                self.assertIn(b'state-snapshot-not-current', err)
+                self.assertEqual(inventory(candidate), before)
+                for name in ('source-capture.json', 'pre-stamp.json', 'transition.json'):
+                    self.assertFalse((job / 'receipts' / name).exists())
+                history.write_text(history.read_text() + '\n## 2026-09-27 · migration preparation\n' + SNAPSHOT)
+                self.cli(installed, 'verify', ['--job', job], 1)
+                self.assertTrue((job / 'receipts/post-stamp.json').exists())
+                self.assertEqual(history.read_text().rsplit(ENTRY, 1)[1].split('\n\n', 2)[-1].strip(), SNAPSHOT.strip())
+
+    def test_stamp_preconditions_run_before_the_pre_stamp_capture(self):
+        for variant in ('newline', 'own-event'):
+            with self.subTest(variant=variant), self.lab() as lab:
+                installed = self.install(lab)
+                _, source = self.fixture(lab)
+                job = lab / 'job'
+                _, candidate = self.prepared(installed, source, job)
+                history = candidate / 'history.md'
+                if variant == 'newline':
+                    self.semantic_edits(candidate)
+                    original = history.read_bytes()
+                    checkpoint = Path(read_json(job / 'state.json')['checkpoint']) / 'history.md'
+                    history.write_bytes(original[:-1])
+                    self.assertTrue(history.read_bytes().startswith(checkpoint.read_bytes()))
+                    refusal = b'history-final-line-not-terminated'
+                else:
+                    original = history.read_bytes()
+                    state = read_json(job / 'state.json')
+                    catalog = read_json(installed / 'references/guides/migration-catalog.json')
+                    event = ('\n' + ENTRY + '\n\n- Prepared candidate: operation ' + state['operation_id']
+                             + '; source sha256 ' + state['source_sha256'] + '; target Tackle '
+                             + catalog['target_methodology'] + '; catalog revision ' + str(catalog['revision']) + '.\n')
+                    history.write_bytes(original + event.encode())
+                    refusal = b'unbound-existing-history-marker'
+                before = inventory(candidate)
+                _, _, err = self.cli(installed, 'verify', ['--job', job], 1)
+                self.assertIn(refusal, err)
+                self.assertEqual(inventory(candidate), before)
+                for name in ('source-capture.json', 'pre-stamp.json', 'transition.json'):
+                    self.assertFalse((job / 'receipts' / name).exists())
+                history.write_bytes(original)
+                self.cli(installed, 'verify', ['--job', job], 1)
+                self.assertTrue((job / 'receipts/post-stamp.json').exists())
+
+    def test_frozen_candidate_changes_through_a_new_job(self):
+        with self.lab() as lab:
+            installed = self.install(lab)
+            _, source = self.fixture(lab)
+            job = lab / 'job'
+            plan, candidate = self.prepared(installed, source, job)
+            source_before = inventory(source)
+            self.semantic_edits(candidate)
+            self.cli(installed, 'verify', ['--job', job], 1)
+            history = candidate / 'history.md'
+            history.write_text(history.read_text() + '\nA later edit.\n')
+            _, _, err = self.cli(installed, 'verify', ['--job', job], 1)
+            self.assertIn(b'frozen-candidate-drift', err)
+            manifest = job.parent / (job.name + '-manifest.json')
+            self.cli(installed, 'prepare', ['--manifest', manifest, '--job', job], 1)
+            new_job = lab / 'new-job'
+            self.cli(installed, 'prepare', ['--manifest', manifest, '--job', new_job], 0)
+            write_json(new_job / 'boundary.json', read_json(job / 'boundary.json'))
+            new_candidate = new_job / 'candidate-project/docs/plans' / source.name
+            self.semantic_edits(new_candidate)
+            self.final_receipt(installed, source, new_job, new_candidate, plan)
+            self.assertEqual(read_json(new_job / 'state.json')['phase'], 'verified')
+            self.assertEqual(inventory(source), source_before)
+
     def test_snapshot_bearing_candidate_leaves_row_13_silent(self):
         with self.lab() as lab:
             installed = self.install(lab)

@@ -6588,6 +6588,20 @@
       "historical": []
     },
     {
+      "rule_id": "R-MIGRATE-18",
+      "statement": "The first verify copies only the block of a current State snapshot, refuses a stale one before any capture, then stamps and freezes the candidate; a frozen candidate changes only through a new job.",
+      "statement_sha256": "cf17ba10826d99d4bfd7a350416d9e0d8328c33218ea341b3266715a1dd0fad4",
+      "home": "references/guides/migrate.md:44",
+      "home_fragment": "The first `verify` captures the candidate as it stands",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {"added_in": "10.5.2", "trigger": "Owner request: finish 10.5.2 by migrating Rootbound (K1, K6).", "discovered_by": []},
+      "evidence": {"status": "untested", "scenarios": [], "cohort_id": null, "as_of": "2026-11-10"},
+      "historical": []
+    },
+    {
       "rule_id": "R-RUN-42",
       "statement": "After a task's board, history and usage writes, run the workspace lint; fix or report findings before the close is reported.",
       "statement_sha256": "73572308f2228f3a558ed0addf6956fcea7e439a96689648acdc973dd75eab2a",
