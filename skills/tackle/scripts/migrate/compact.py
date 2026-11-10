@@ -1078,9 +1078,159 @@ def _cmd_diagnose(args):
     print(message, file=sys.stderr)
     return 0
 
+def _mirror_citations(source, workspace):
+    source = Path(source); workspace = Path(workspace)
+    if source.parent.name != "plans" or source.parent.parent.name != "docs":
+        return []
+    project = source.parents[2]; target = workspace.parents[2]
+    paths = set()
+    plan_data = None
+    try:
+        workspace_fd = _open_chain(workspace)
+    except OSError:
+        return []
+    try:
+        for group in ("root", "tasks"):
+            if group == "tasks":
+                if plan_data is not None and plan_data.splitlines()[:1] == [b"Gate: Lite"]:
+                    break
+                try:
+                    carrier_fd = os.open("tasks", os.O_RDONLY | _DIRECTORY | _NOFOLLOW | os.O_NONBLOCK,
+                                         dir_fd=workspace_fd)
+                except OSError:
+                    continue
+                names = sorted(name for name in os.listdir(carrier_fd)
+                               if not name.startswith(".") and name.endswith(".md"))
+            else:
+                carrier_fd = workspace_fd
+                names = ("plan.md", "reference.md")
+            try:
+                for name in names:
+                    try:
+                        child = os.open(name, os.O_RDONLY | _NOFOLLOW | os.O_NONBLOCK, dir_fd=carrier_fd)
+                    except OSError:
+                        continue
+                    try:
+                        if not stat.S_ISREG(os.fstat(child).st_mode):
+                            continue
+                        with os.fdopen(child, "rb", closefd=False) as stream:
+                            data = stream.read()
+                    finally:
+                        os.close(child)
+                    if group == "root" and name == "plan.md":
+                        plan_data = data
+                    text = data.decode("utf-8", "replace")
+                    paths.update(re.findall(r'([A-Za-z0-9_/.-]+\.[a-z]+):[0-9]+(?:-[0-9]+)? — "[^"\n]+"', text))
+            finally:
+                if group == "tasks":
+                    os.close(carrier_fd)
+    finally:
+        os.close(workspace_fd)
+    mirrored = []
+    for rel in sorted(paths):
+        try:
+            _safe_relative(rel)
+        except MigrationError:
+            continue
+        if rel.startswith("docs/plans/"):
+            continue
+        parts = rel.split("/")
+        fd = _open_chain(project)
+        try:
+            try:
+                for part in parts[:-1]:
+                    child = os.open(part, os.O_RDONLY | _DIRECTORY | _NOFOLLOW | os.O_NONBLOCK, dir_fd=fd)
+                    os.close(fd); fd = child
+                child = os.open(parts[-1], os.O_RDONLY | _NOFOLLOW | os.O_NONBLOCK, dir_fd=fd)
+                try:
+                    if not stat.S_ISREG(os.fstat(child).st_mode):
+                        continue
+                    with os.fdopen(child, "rb", closefd=False) as stream:
+                        data = stream.read()
+                finally:
+                    os.close(child)
+            except OSError:
+                continue
+        finally:
+            os.close(fd)
+        fd = _open_chain(target)
+        try:
+            try:
+                for part in parts[:-1]:
+                    try:
+                        os.mkdir(part, dir_fd=fd)
+                    except FileExistsError:
+                        pass
+                    child = os.open(part, os.O_RDONLY | _DIRECTORY | _NOFOLLOW | os.O_NONBLOCK, dir_fd=fd)
+                    os.close(fd); fd = child
+                try:
+                    _create_file(fd, parts[-1], rel, data, 0o600)
+                except FileExistsError:
+                    child = os.open(parts[-1], os.O_RDONLY | _NOFOLLOW | os.O_NONBLOCK, dir_fd=fd)
+                    try:
+                        if not stat.S_ISREG(os.fstat(child).st_mode):
+                            raise OSError("not a regular file")
+                        with os.fdopen(child, "rb", closefd=False) as stream:
+                            if stream.read() != data:
+                                raise OSError("different bytes")
+                    finally:
+                        os.close(child)
+            except OSError as exc:
+                raise PendingError("mirrored-citation-conflict:" + rel) from exc
+        finally:
+            os.close(fd)
+        mirrored.append({"project_path": rel, "sha256": _sha(data)})
+    return mirrored
+
+
+def _validate_mirror(entry, cwd, stage):
+    rel = entry.get("project_path") if type(entry) is dict else None
+    try:
+        if type(entry) is not dict or set(entry) != {"project_path", "sha256"}:
+            raise ValueError("invalid entry")
+        _safe_relative(rel)
+        if rel.startswith("docs/plans/") or not re.fullmatch(r"[0-9a-f]{64}", entry["sha256"]):
+            raise ValueError("invalid mirror")
+        fd = _open_chain(cwd)
+        try:
+            parts = rel.split("/")
+            for part in parts[:-1]:
+                child = os.open(part, os.O_RDONLY | _DIRECTORY | _NOFOLLOW | os.O_NONBLOCK, dir_fd=fd)
+                os.close(fd); fd = child
+            child = os.open(parts[-1], os.O_RDONLY | _NOFOLLOW | os.O_NONBLOCK, dir_fd=fd)
+            try:
+                if not stat.S_ISREG(os.fstat(child).st_mode):
+                    raise ValueError("not regular")
+                with os.fdopen(child, "rb", closefd=False) as stream:
+                    if _sha(stream.read()) != entry["sha256"]:
+                        raise ValueError("changed")
+            finally:
+                os.close(child)
+        finally:
+            os.close(fd)
+    except (MigrationError, OSError, TypeError, ValueError) as exc:
+        raise PendingError("mirrored-citation-drift:" + stage + ":" + str(rel)) from exc
+
+
+def _recheck_mirrors(job):
+    for name, stage, project in (("source-capture.json", "source-diagnostic", "source-project"),
+                                 ("pre-stamp.json", "pre-stamp", "candidate-project"),
+                                 ("post-stamp.json", "post-stamp", "candidate-project"),
+                                 ("restore-diagnostic.json", "restore-diagnostic", "restore-diagnostic-project")):
+        path = Path(job) / "receipts" / name
+        if not path.exists() and not path.is_symlink():
+            continue
+        capture = _read_json(path)
+        cwd = Path(job) / project
+        if capture.get("stage") != stage or capture.get("cwd") != str(cwd) or type(capture.get("mirrored")) is not list:
+            raise PendingError("native-capture-binding-conflict:" + stage)
+        for entry in capture["mirrored"]:
+            _validate_mirror(entry, cwd, stage)
+
+
 def _lint_preflight(root, tree, plan):
     report = {"schema": "tackle-migration-lint-preflight/1", "operation_id": plan["operation_id"],
-              "source_sha256": plan["source"]["sha256"], "workspace": str(root), "skipped": None, "rows": []}
+              "source_sha256": plan["source"]["sha256"], "workspace": str(root), "skipped": None, "rows": [], "mirrored": []}
     if plan["observed"]["bucket"] not in {"5", "lite"}:
         report["skipped"] = "structure-requires-migration"
         return report
@@ -1092,6 +1242,7 @@ def _lint_preflight(root, tree, plan):
         parent.mkdir(parents=True)
         workspace = parent / root.name
         _materialize(tree.files, workspace, tree.inventory)
+        report["mirrored"] = _mirror_citations(root, workspace)
         before = _inventory_sha(_inventory(workspace))
         for row in range(1, 20):
             argv = [sys.executable, "-I", str(script), "--row", str(row), root.name]
@@ -1673,13 +1824,17 @@ def _semantic_review(job, state, manifest):
     return review, pending
 
 def _native_results(job, state, capture, workspace, cwd, stage, expected_hash):
-    _exact_keys(capture, {"schema", "stage", "workspace", "cwd", "source_sha256", "candidate_sha256", "install_sha256", "catalog_sha256", "checks"}, "capture")
+    _exact_keys(capture, {"schema", "stage", "workspace", "cwd", "source_sha256", "candidate_sha256", "install_sha256", "catalog_sha256", "checks", "mirrored"}, "capture")
     if (capture["schema"] != "tackle-migration-capture/1" or capture["stage"] != stage
             or capture["workspace"] != str(workspace) or capture["cwd"] != str(cwd)
             or capture["candidate_sha256"] != expected_hash
             or capture["source_sha256"] != state["source_sha256"]
             or capture["install_sha256"] != state["install_sha256"] or capture["catalog_sha256"] != state["catalog_sha256"]):
         raise PendingError("native-capture-binding-conflict:" + stage)
+    if type(capture["mirrored"]) is not list:
+        raise PendingError("native-capture-binding-conflict:" + stage)
+    for entry in capture["mirrored"]:
+        _validate_mirror(entry, cwd, stage)
     if type(capture["checks"]) is not list or [x.get("row") for x in capture["checks"]] != list(range(1, 20)):
         raise PendingError("native-capture-row-coverage:" + stage)
     script = Path(__file__).resolve().parents[2] / "scripts/lint.py"
@@ -1714,11 +1869,12 @@ def _capture_stage(job, state, workspace, stage, name):
     if path.exists():
         capture = _read_json(path)
     else:
+        mirrored = _mirror_citations(state["source"], workspace)
         checks = _check_native(Path(__file__).resolve().parents[2], cwd, workspace.name, job, stage, workspace,
                                state["source_sha256"], state["catalog_sha256"], state["install_sha256"])
         capture = {"schema": "tackle-migration-capture/1", "stage": stage, "workspace": str(workspace), "cwd": str(cwd),
                    "source_sha256": state["source_sha256"], "candidate_sha256": expected_hash,
-                   "install_sha256": state["install_sha256"], "catalog_sha256": state["catalog_sha256"], "checks": checks}
+                   "install_sha256": state["install_sha256"], "catalog_sha256": state["catalog_sha256"], "checks": checks, "mirrored": mirrored}
         _store_external(job, "receipts/" + name, _canonical(capture))
     _native_results(job, state, capture, workspace, cwd, stage, expected_hash)
     return _record_ref(job, state, "receipts/" + name)
@@ -1904,6 +2060,7 @@ def _closed_report_body_preserved(before, after, status):
     return suffix.strip(b"\n") == receipt.encode("utf-8")
 
 def _physical_findings(job, state, manifest, catalog):
+    _recheck_mirrors(job)
     candidate = Path(state["candidate"])
     checkpoint = Path(state["checkpoint"])
     original = _tree(checkpoint).files; current = _tree(candidate).files
@@ -2028,6 +2185,7 @@ def _cmd_verify(args):
 def _verify_locked(job, st):
     if st["phase"] not in {"prepared", "verified"}: raise PendingError("verify-phase-conflict")
     manifest, catalog = _revalidate_authority(job, st)
+    _recheck_mirrors(job)
     source_path = Path(st["source"])
     if not source_path.is_dir() or _inventory_sha(_inventory(source_path)) != st["source_sha256"]:
         raise PendingError("frozen-source-drift")

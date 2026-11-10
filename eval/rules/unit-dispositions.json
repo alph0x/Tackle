@@ -19960,7 +19960,7 @@
       "unit_sha256": "9deccb59e649367c15dbea01bd40feac4782c7ba65bba7bd907eb0173d24522b",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
-      "note": "| [migrate/compact.py](migrate/compact.py) | `3f724a213192672ce21946570d135252f6151afe3c37f7811a4f43ceadc85b18` |",
+      "note": "| [migrate/compact.py](migrate/compact.py) | `9187c525ddb7ade4e785ffcbc3e398b68d99199e51171b72ba021624552b6ba3` |",
       "destination_unit_sha256": null
     },
     {
@@ -20128,7 +20128,7 @@
       "unit_sha256": "46e8079f4bcd8647db25e8c95559e63298389ed9e8a85381e6b88dd84419854b",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
-      "note": "| [migrate/compact.py](migrate/compact.py) | `3f724a213192672ce21946570d135252f6151afe3c37f7811a4f43ceadc85b18` |",
+      "note": "| [migrate/compact.py](migrate/compact.py) | `9187c525ddb7ade4e785ffcbc3e398b68d99199e51171b72ba021624552b6ba3` |",
       "destination_unit_sha256": null
     },
     {
@@ -20601,7 +20601,7 @@
       "unit_sha256": "13e0b1087572131026e358a9ac9281a51ca28b19f54f35f218b28bc612938162",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
-      "note": "| [migrate/compact.py](migrate/compact.py) | `3f724a213192672ce21946570d135252f6151afe3c37f7811a4f43ceadc85b18` |",
+      "note": "| [migrate/compact.py](migrate/compact.py) | `9187c525ddb7ade4e785ffcbc3e398b68d99199e51171b72ba021624552b6ba3` |",
       "destination_unit_sha256": null
     },
     {
@@ -20724,7 +20724,7 @@
       "unit_sha256": "b003ffa2b39476b4519d9de9a7427943483ed1c80be1764bab2ac96a5f466d6e",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
-      "note": "| [migrate/compact.py](migrate/compact.py) | `3f724a213192672ce21946570d135252f6151afe3c37f7811a4f43ceadc85b18` |",
+      "note": "| [migrate/compact.py](migrate/compact.py) | `9187c525ddb7ade4e785ffcbc3e398b68d99199e51171b72ba021624552b6ba3` |",
       "destination_unit_sha256": null
     },
     {
@@ -20733,7 +20733,7 @@
       "unit_sha256": "514aff9b163c8bd42910504028ab9e30d52ec8dbc03c9f0098d6e2c40651a526",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
-      "note": "| [migrate/compact.py](migrate/compact.py) | `3f724a213192672ce21946570d135252f6151afe3c37f7811a4f43ceadc85b18` |",
+      "note": "| [migrate/compact.py](migrate/compact.py) | `9187c525ddb7ade4e785ffcbc3e398b68d99199e51171b72ba021624552b6ba3` |",
       "destination_unit_sha256": null
     },
     {
@@ -20790,7 +20790,7 @@
       "unit_sha256": "6e94179da15613b4417f0eab145d0fd6dc2f763b9d8194016ed32fd51a91ca30",
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
-      "note": "| [migrate/compact.py](migrate/compact.py) | `3f724a213192672ce21946570d135252f6151afe3c37f7811a4f43ceadc85b18` |",
+      "note": "| [migrate/compact.py](migrate/compact.py) | `9187c525ddb7ade4e785ffcbc3e398b68d99199e51171b72ba021624552b6ba3` |",
       "destination_unit_sha256": null
     },
     {
@@ -20800,6 +20800,15 @@
       "disposition": "reworded",
       "destination": "skills/tackle/scripts/README.md",
       "note": "| [record.py](record.py) | `3460c7dbe02f6103846358ddd170fd4344edc1a8e1a7415757e54d384ce6c6ca` |",
+      "destination_unit_sha256": null
+    },
+    {
+      "path": "skills/tackle/scripts/README.md",
+      "line": 24,
+      "unit_sha256": "90834172abf8a59850a0d29d2d12e234288242f102b056200260ccbe21f95a4d",
+      "disposition": "reworded",
+      "destination": "skills/tackle/scripts/README.md",
+      "note": "| [migrate/compact.py](migrate/compact.py) | `9187c525ddb7ade4e785ffcbc3e398b68d99199e51171b72ba021624552b6ba3` |",
       "destination_unit_sha256": null
     }
   ]

@@ -1108,6 +1108,132 @@ class CompactMigrationTests(unittest.TestCase):
             self.assertEqual((candidate / 'history.md').read_bytes(), first)
 
 
+    def test_isolated_lint_copies_hold_cited_project_files(self):
+        with self.lab() as lab:
+            installed = self.install(lab)
+            project, source = self.fixture(lab, 'cited', old=False)
+            cited = project / 'docs/notes/brief.md'
+            cited.parent.mkdir(parents=True)
+            cited.write_bytes(b'citation payload\n')
+            citation = '\ndocs/notes/brief.md:1 — "citation payload"\n'
+            for path in (source / 'plan.md', source / 'tasks/T-0002.md'):
+                path.write_text(path.read_text() + citation)
+            self.semantic_edits(source)
+            expected = [{'project_path': 'docs/notes/brief.md', 'sha256': digest(cited.read_bytes())}]
+            before = inventory(project)
+            manifest, _, _ = self.plan(installed, source, lab / 'preflight')
+            report = read_json(manifest.with_suffix('.lint.json'))
+            self.assertEqual(report.get('mirrored'), expected, report['rows'][3])
+            self.assertEqual(report['rows'][3]['verdict'], 'PASS')
+
+            other, other_source = self.fixture(lab, 'excluded', old=False)
+            valid = other / 'docs/notes/brief.md'
+            valid.parent.mkdir(parents=True)
+            valid.write_bytes(cited.read_bytes())
+            neighbor = other / 'docs/plans/neighbor/x.md'
+            neighbor.parent.mkdir()
+            neighbor.write_text('neighbor payload\n')
+            linked = other / 'linked'
+            linked.symlink_to(valid.parent, target_is_directory=True)
+            extra = ('\ndocs/plans/neighbor/x.md:1 — "neighbor payload"\n'
+                     'linked/brief.md:1 — "citation payload"\n'
+                     './docs/notes/brief.md:1 — "citation payload"\n'
+                     'docs//notes/brief.md:1 — "citation payload"\n'
+                     '../outside.md:1 — "outside"\n')
+            (other_source / 'plan.md').write_text((other_source / 'plan.md').read_text() + citation + extra)
+            other_before = inventory(other)
+            manifest, _, _ = self.plan(installed, other_source, lab / 'excluded-result')
+            self.assertEqual(read_json(manifest.with_suffix('.lint.json'))['mirrored'], expected)
+            self.assertEqual(inventory(other), other_before)
+
+            job = lab / 'complete-job'
+            plan, candidate = self.prepared(installed, source, job)
+            self.semantic_edits(candidate)
+            self.final_receipt(installed, source, job, candidate, plan)
+            for name in ('source-capture', 'pre-stamp', 'post-stamp', 'restore-diagnostic'):
+                capture = read_json(job / 'receipts' / (name + '.json'))
+                self.assertEqual(capture['mirrored'], expected)
+                for check in capture['checks']:
+                    result = read_json(job / check['result']['path'])
+                    self.assertIn(result['verdict'], {'PASS', 'WARN'} if check['row'] in {8, 13, 15} else {'PASS'})
+            (job / 'candidate-project/docs/notes/brief.md').write_bytes(b'drift\n')
+            _, _, err = self.cli(installed, 'verify', ['--job', job], 1)
+            self.assertIn(b'mirrored-citation-drift:', err)
+
+            for location in ('candidate-project', 'source-project'):
+                job = lab / (location + '-job')
+                plan, candidate = self.prepared(installed, source, job)
+                self.semantic_edits(candidate)
+                self.cli(installed, 'verify', ['--job', job], 1)
+                frozen = tree_sha(candidate)
+                evidence_path = job / 'manual-review.json'
+                write_json(evidence_path, {'candidate_sha256': frozen})
+                evidence = [{'path': 'manual-review.json', 'sha256': digest(evidence_path.read_bytes())}]
+                write_json(job / 'semantic-review.json', dict(
+                    schema='tackle-migration-review/1', reviewer='external-fixture-reviewer',
+                    candidate_sha256=frozen, source_sha256=plan['source']['sha256'],
+                    catalog_sha256=plan['catalog_sha256'],
+                    decisions=[dict(id=x['id'], state='satisfied', evidence=evidence)
+                               for x in plan['obligations'] if (x['kind'] == 'required' or x['family'] in plan['context']['optional_requests']) and x['state'] != 'not-applicable']))
+                (job / location / 'docs/notes/brief.md').write_bytes(b'drift\n')
+                _, _, err = self.cli(installed, 'verify', ['--job', job], 1)
+                self.assertIn(b'mirrored-citation-drift:', err)
+                self.assertEqual(read_json(job / 'state.json')['phase'], 'prepared')
+
+            job = lab / 'conflict-job'
+            _, candidate = self.prepared(installed, source, job)
+            self.semantic_edits(candidate)
+            target = job / 'candidate-project/docs/notes/brief.md'
+            target.parent.mkdir(parents=True)
+            target.write_bytes(b'conflict\n')
+            _, _, err = self.cli(installed, 'verify', ['--job', job], 1)
+            self.assertIn(b'mirrored-citation-conflict:', err)
+            self.assertEqual(target.read_bytes(), b'conflict\n')
+            after = inventory(project)
+            self.assertEqual(after.pop('docs/plans/.tackle-migrate-demo.lock')['type'], 'file')
+            self.assertEqual(after, before)
+
+            race_script = r'''
+import importlib.util, json, sys
+from pathlib import Path
+script, source, workspace, outside, carrier_name = sys.argv[1:]
+spec = importlib.util.spec_from_file_location('race_compact', script)
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+workspace = Path(workspace)
+carrier = workspace / carrier_name
+outside = Path(outside)
+count = 0
+swapped = False
+def audit(event, args):
+    global count, swapped
+    if event != 'open' or swapped:
+        return
+    if args[0] == str(carrier):
+        count += 1
+        trigger = count == (2 if carrier_name == 'plan.md' else 1)
+    else:
+        trigger = args[0] == carrier.name
+    if trigger:
+        carrier.rename(carrier.with_suffix('.saved'))
+        carrier.symlink_to(outside)
+        swapped = True
+sys.addaudithook(audit)
+mirrored = module._mirror_citations(Path(source), workspace)
+print(json.dumps({'swapped': swapped, 'mirrored': mirrored}))
+'''
+            outside = lab / 'outside-carrier.md'
+            outside.write_text(citation)
+            for name in ('plan.md', 'reference.md', 'tasks/brief.md'):
+                workspace = lab / ('race-' + name.replace('/', '-')) / 'docs/plans/demo'
+                (workspace / 'tasks').mkdir(parents=True)
+                for carrier in ('plan.md', 'reference.md', 'tasks/brief.md'):
+                    (workspace / carrier).write_text('# No citations\n')
+                _, out, _ = self.run_child(
+                    [sys.executable, '-I', '-B', '-c', race_script,
+                     installed / 'scripts/migrate/compact.py', source, workspace, outside, name], lab, 0)
+                self.assertEqual(json.loads(out), {'swapped': True, 'mirrored': []})
+
     def test_diagnose_writes_an_advisory_lint_preflight_beside_the_manifest(self):
         import importlib.util
         with self.lab() as lab:
@@ -1128,7 +1254,7 @@ class CompactMigrationTests(unittest.TestCase):
                 report = read_json(sidecar)
                 self.assertEqual(sidecar.read_bytes(), canonical(report))
                 self.assertEqual(stat.S_IMODE(sidecar.stat().st_mode), 0o600)
-                self.assertEqual(set(report), {'schema', 'operation_id', 'source_sha256', 'workspace', 'skipped', 'rows'})
+                self.assertEqual(set(report), {'schema', 'operation_id', 'source_sha256', 'workspace', 'skipped', 'rows', 'mirrored'})
                 self.assertEqual((report['schema'], report['operation_id'], report['source_sha256'], report['workspace']),
                                  ('tackle-migration-lint-preflight/1', result['operation_id'], result['source']['sha256'], str(source)))
                 for row in report['rows']:
