@@ -178,5 +178,11 @@
     "statement_sha256": "b262c2de71a50dd5c0fbca60499bde242ae172e1d3f459fa2dc83320e5a71861",
     "reason": "The rule is mechanical: planted fixtures, tests and mutants in the migration family prove it, and a held-out behavioral cohort cannot give it honest evidence. Accepted by the owner on 2026-11-10.",
     "accepted": "2026-11-10"
+  },
+  {
+    "rule_id": "R-MIGRATE-21",
+    "statement_sha256": "98e5ad63cd0f12bc8bc2fa1474ab60dec097a8a0576bdbc0ff5d63d9780652de",
+    "reason": "The rule is mechanical: planted fixtures, tests and mutants in the migration family prove it, and a held-out behavioral cohort cannot give it honest evidence. Accepted by the owner on 2026-11-10.",
+    "accepted": "2026-11-10"
   }
 ]

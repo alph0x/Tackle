@@ -462,6 +462,106 @@ class CompactMigrationTests(unittest.TestCase):
         frozen = self.final_receipt(installed, source, job, candidate, plan)
         return plan, candidate, frozen
 
+    def test_diagnose_names_closed_receipt_gaps(self):
+        cases = {
+            'report-only': 'history-line-missing', 'neither': 'report-receipt-missing',
+            'conflict': 'history-line-conflict', 'duplicate': 'duplicate-history-line',
+            'archive': None, 'fenced': 'history-line-missing', 'missing-report': 'report-missing',
+            'malformed': 'report-receipt-missing', 'multiple': 'report-receipt-missing',
+            'skipped': None, 'unverifiable': None,
+        }
+        with self.lab() as lab:
+            installed = self.install(lab)
+            for shape, gap in cases.items():
+                with self.subTest(shape=shape):
+                    _, source = self.fixture(lab, 'shape-' + shape)
+                    report, history = source / 'reports/T-0001-report.md', source / 'history.md'
+                    baseline = digest((source / 'tasks/T-0001.md').read_bytes())
+                    marker = '**Brief sha256**: ' + baseline + '\n'
+                    line = 'Brief sha256 T-0001: ' + baseline + '\n'
+                    if shape not in ('neither', 'skipped', 'unverifiable'):
+                        report.write_text(report.read_text().replace('**Remains**:', marker + '**Remains**:', 1))
+                    if shape == 'conflict': history.write_text(history.read_text() + 'Brief sha256 T-0001: ' + 'f' * 64 + '\n' + line)
+                    if shape == 'duplicate': history.write_text(history.read_text() + line + line)
+                    if shape == 'archive': (source / 'history-archive.md').write_text(line)
+                    if shape == 'fenced': history.write_text(history.read_text() + '```text\n' + line + '```\n')
+                    if shape == 'missing-report': report.unlink()
+                    if shape == 'malformed': report.write_text(report.read_text().replace(marker, '**Brief sha256**: bad\n'))
+                    if shape == 'multiple': report.write_text(report.read_text() + marker)
+                    if shape in ('skipped', 'unverifiable'):
+                        board = source / 'task-board.md'
+                        board.write_text(board.read_text().replace('| Complete |', '| ' + shape.capitalize() + ' |'))
+                    context, _ = self.context(source)
+                    context_path, output = lab / ('context-' + shape), lab / ('manifest-' + shape)
+                    write_json(context_path, context)
+                    _, _, err = self.cli(installed, 'diagnose', ['--workspace', source, '--target', catalog_target(),
+                        '--context', context_path, '--output', output], 0)
+                    rows = [x for x in read_json(output)['manual'] if x['id'].startswith('R:')]
+                    expected = [] if gap is None else [dict(id='R:T-0001', family='R', state='pending',
+                        required=True, reason='closed T-0001: ' + gap)]
+                    self.assertEqual(rows, expected)
+                    if gap:
+                        self.assertTrue(err.decode().rstrip().endswith('; closed receipts pending: T-0001 ' + gap), err)
+                    else:
+                        self.assertNotIn(b'closed receipts pending:', err)
+
+    def test_verify_holds_closed_receipt_gaps_before_10_2(self):
+        with self.lab() as lab:
+            installed = self.install(lab)
+            for label, stamp in (('legacy', '10.1.0'), ('target', catalog_target()),
+                                 ('exact', '10.2.0'), ('short', '10.2'), ('unstamped', None)):
+                with self.subTest(source=label):
+                    _, source = self.fixture(lab, 'admission-' + label, old=False)
+                    (source / 'AGENTS.md').write_text('# Agents\n\n' +
+                        ('**Methodology: Tackle ' + stamp + '**\n' if stamp else 'No methodology stamp.\n'))
+                    job = lab / ('job-' + label)
+                    report = source / 'reports/T-0001-report.md'
+                    marker = '**Brief sha256**: ' + digest((source / 'tasks/T-0001.md').read_bytes()) + '\n'
+                    report.write_text(report.read_text().replace('**Remains**:', marker + '**Remains**:', 1))
+                    plan, candidate = self.prepared(installed, source, job)
+                    self.semantic_edits(candidate)
+                    line = 'Brief sha256 T-0001: ' + digest((candidate / 'tasks/T-0001.md').read_bytes()) + '\n'
+                    history = candidate / 'history.md'
+                    history.write_text(history.read_text().replace(line, ''))
+                    self.cli(installed, 'verify', ['--job', job], 1)
+                    findings = read_json(job / 'receipts/physical.json')['findings']['A']
+                    frozen = tree_sha(candidate)
+                    observation = job / 'manual-review.json'
+                    write_json(observation, dict(candidate_sha256=frozen, source_sha256=plan['source']['sha256'],
+                        consumer='isolated-fixture-reviewer', check_sentinel_absent=True,
+                        native_lint_receipts=[dict(path='receipts/' + phase + '.json',
+                            sha256=digest((job / 'receipts' / (phase + '.json')).read_bytes()))
+                            for phase in ('pre-stamp', 'post-stamp')],
+                        checkpoint_sha256=tree_sha(job / 'checkpoint'), restoration_sha256=tree_sha(job / 'restore-probe')))
+                    evidence = [dict(path='manual-review.json', sha256=digest(observation.read_bytes()))]
+                    write_json(job / 'semantic-review.json', dict(schema='tackle-migration-review/1',
+                        reviewer='external-fixture-reviewer', candidate_sha256=frozen,
+                        source_sha256=plan['source']['sha256'], catalog_sha256=plan['catalog_sha256'],
+                        decisions=[dict(id=x['id'], state='satisfied', evidence=evidence)
+                            for x in plan['obligations'] if (x['kind'] == 'required' or
+                            x['family'] in plan['context']['optional_requests']) and x['state'] != 'not-applicable']))
+                    held = label in ('legacy', 'unstamped')
+                    self.cli(installed, 'verify', ['--job', job], 1 if held else 0)
+                    self.assertEqual(read_json(job / 'state.json')['phase'], 'prepared' if held else 'verified')
+                    self.assertEqual('closed-receipt-incomplete:T-0001' in findings, held)
+                    self.assertNotIn(line, history.read_text())
+                    if held:
+                        before = inventory(source)
+                        self.cli(installed, 'adopt', ['--job', job], 1)
+                        self.assertEqual(inventory(source), before)
+                    rows = [x for x in plan['manual'] if x['id'] == 'R:T-0001']
+                    self.assertEqual(len(rows), 1)
+                    self.assertEqual(rows[0]['reason'], 'closed T-0001: history-line-missing')
+                    if label == 'legacy':
+                        paired_job = lab / 'paired-job'
+                        self.cli(installed, 'prepare', ['--manifest', lab / 'job-legacy-manifest.json',
+                                                       '--job', paired_job], 0)
+                        _, boundary = self.context(source)
+                        write_json(paired_job / 'boundary.json', boundary)
+                        paired = paired_job / 'candidate-project/docs/plans' / source.name
+                        self.semantic_edits(paired)
+                        self.final_receipt(installed, source, paired_job, paired, plan)
+
     def test_prepare_retains_selection_and_neighbor_sentinel(self):
         with self.lab() as lab:
             installed = self.install(lab)

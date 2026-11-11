@@ -6630,6 +6630,20 @@
       "historical": []
     },
     {
+      "rule_id": "R-MIGRATE-21",
+      "statement": "Diagnose names closed-task receipt gaps; for an unstamped source or one older than 10.2.0 verify holds until the report baseline and the first history line agree, and the migration writes neither.",
+      "statement_sha256": "98e5ad63cd0f12bc8bc2fa1474ab60dec097a8a0576bdbc0ff5d63d9780652de",
+      "home": "references/guides/migrate.md:44",
+      "home_fragment": "When the R family applies, `diagnose` names Complete tasks",
+      "units": [],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {"added_in": "10.5.2", "trigger": "Owner request: finish 10.5.2 by migrating Rootbound (K7).", "discovered_by": []},
+      "evidence": {"status": "untested", "scenarios": [], "cohort_id": null, "as_of": "2026-11-10"},
+      "historical": []
+    },
+    {
       "rule_id": "R-RUN-47",
       "statement": "An erratum names an active decision: its heading has a trimmed segment exactly ✅ active or active and no supersession marker in any case; lint row 14, record.py and the migration share the definition.",
       "statement_sha256": "45cceb205e86edcd53389f428227ccb10dec3ee07145780f8ef8993a1c50e3b5",

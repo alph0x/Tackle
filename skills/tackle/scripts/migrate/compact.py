@@ -643,6 +643,10 @@ def diagnose(files, context, catalog):
             obligations.append({"id": ref, "family": f, "kind": rule["kind"], "state": state, "sources": [ref], "consumer": "installed compact migration route", "check": f, "evidence": []})
         if applies and state in {"unknown", "pending"}:
             manual.append({"id": f, "family": f, "state": state, "required": rule["kind"] == "required", "reason": "required current evidence or owner decision is not established by source facts"})
+    if family_apply["R"]:
+        for task, gap in _closed_receipt_gaps(files):
+            manual.append({"id": "R:" + task, "family": "R", "state": "pending",
+                           "required": True, "reason": "closed " + task + ": " + gap})
     # Only real structural transformations become write effects here. Other families
     # remain obligations/manual facts until their independent evidence is supplied.
     preview = dict(files)
@@ -1081,6 +1085,10 @@ def _cmd_diagnose(args):
                + "; ERROR rows " + errors + ": " + str(sidecar))
     if any(row["row"] == 16 and row["verdict"] == "FAIL" and "terminal before start" in row["stdout"] for row in report["rows"]):
         message += "; row 16 terminal before start: record.py kind reconcile repairs an orphan terminal"
+    gaps = [row for row in plan["manual"] if row["id"].startswith("R:")]
+    if gaps:
+        message += "; closed receipts pending: " + ", ".join(
+            row["id"][2:] + " " + row["reason"].split(": ", 1)[1] for row in gaps)
     print(message, file=sys.stderr)
     return 0
 
@@ -2248,6 +2256,36 @@ def _history_brief_baselines(files, task):
                 values.append(value)
     return values
 
+def _closed_receipt_gaps(files):
+    """Classify one receipt gap per Complete board task, in board order."""
+    _, _, rows = _board_observation(files)
+    gaps = []
+    for task, status in rows:
+        if not task or status != "Complete": continue
+        report = files.get("reports/" + task + "-report.md")
+        if report is None:
+            gap = "report-missing"
+        else:
+            lines = schema.unfenced_lines(schema.decode(report), strict=True)
+            baseline_data = "\n".join(line for line in lines if line.startswith("**Brief sha256**:")).encode("utf-8")
+            receipt = _brief_receipt_lines(baseline_data)
+            if receipt is None or len(receipt[0]) != 1:
+                gap = "report-receipt-missing"
+            else:
+                history = _history_brief_baselines(files, task)
+                if history is None:
+                    gap = "history-line-conflict"
+                elif not history:
+                    gap = "history-line-missing"
+                elif history[0] != receipt[0][0][0]:
+                    gap = "history-line-conflict"
+                elif len(history) > 1:
+                    gap = "duplicate-history-line"
+                else:
+                    continue
+        gaps.append((task, gap))
+    return gaps
+
 def _closed_erratum_authorized(job, state, manifest, expected, current, task, path, native):
     """The existing R receipt/decision/row14 consumers permit only this delta.
 
@@ -2371,6 +2409,10 @@ def _physical_findings(job, state, manifest, catalog):
     _supported_methodology(original, catalog["target_methodology"])
     _supported_methodology(current, catalog["target_methodology"])
     failures["A"].extend(_history_usage_prefix_findings(expected, current))
+    methodology = manifest["observed"]["methodology"]
+    version = re.fullmatch(r"Tackle (0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:\.(0|[1-9][0-9]*))?(?: candidate)?", methodology) if methodology else None
+    if methodology is None or (version and tuple(int(part or 0) for part in version.groups()) < (10, 2, 0)):
+        failures["A"].extend("closed-receipt-incomplete:" + task for task, _ in _closed_receipt_gaps(current))
     candidate_root = candidate.parents[2]
     pre = _read_json(Path(job) / "receipts/pre-stamp.json")
     post = _read_json(Path(job) / "receipts/post-stamp.json")
