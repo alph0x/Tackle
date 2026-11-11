@@ -43,6 +43,58 @@ class Row8Symlinks(unittest.TestCase):
         verdict, child = base.run_row(8, root, None)
         return verdict, child.stdout.decode(), child.stderr.decode()
 
+    def test_row8_listing_stays_under_tmpdir(self):
+        from unittest.mock import patch
+
+        root = self.root()
+        self.write_workspace(root, 'plan-a', '`linked/file.py`')
+        self.write_workspace(root, 'plan-b', '`linked/file.py`')
+        with tempfile.TemporaryDirectory(prefix='row8-listing-') as temporary:
+            scratch = Path(temporary)
+            requested = scratch / 'requested'
+            fallback = scratch / 'fallback'
+            bin_dir = scratch / 'bin'
+            for directory in (requested, fallback, bin_dir):
+                directory.mkdir()
+            log = scratch / 'mktemp.log'
+            shim = bin_dir / 'mktemp'
+            shim.write_text(
+                '#!/bin/sh\n'
+                'printf "argc=%s\\n" "$#" >> "$SHIM_LOG"\n'
+                'printf "arg=%s\\n" "$@" >> "$SHIM_LOG"\n'
+                'if [ "$#" -eq 0 ] || [ "$1" = /tmp/tackle-row08.XXXXXX ]; then\n'
+                '  set -- "$SHIM_FALLBACK/native.XXXXXX"\n'
+                'fi\n'
+                'created=$(/usr/bin/mktemp "$@") || exit $?\n'
+                'printf "created=%s\\n" "$created" >> "$SHIM_LOG"\n'
+                'if [ -f "$created" ]; then echo exists=yes >> "$SHIM_LOG"; fi\n'
+                'printf "%s\\n" "$created"\n'
+            )
+            shim.chmod(0o755)
+            baseline = scratch / 'baseline.py'
+            source = base.ROW_SOURCE.read_text()
+            baseline.write_text(source.replace(
+                'l=$(mktemp "${TMPDIR:-/tmp}/tackle-row08.XXXXXX");',
+                'l=$(mktemp);'))
+            env = {'TMPDIR': str(requested), 'SHIM_LOG': str(log),
+                   'SHIM_FALLBACK': str(fallback),
+                   'PATH': str(bin_dir) + os.pathsep + os.environ['PATH']}
+            with patch.dict(os.environ, env):
+                with patch.object(base, 'ROW_SOURCE', baseline):
+                    baseline_verdict, baseline_child = base.run_row(8, root, None)
+                log.write_text('')
+                verdict, child = base.run_row(8, root, None)
+            self.assertEqual((verdict, child.stdout, child.stderr, child.returncode),
+                             (baseline_verdict, baseline_child.stdout, baseline_child.stderr,
+                              baseline_child.returncode))
+            entries = log.read_text().splitlines()
+            self.assertIn('exists=yes', entries)
+            self.assertEqual([entry[4:] for entry in entries if entry.startswith('arg=')],
+                             [str(requested / 'tackle-row08.XXXXXX')])
+            created = Path(next(entry[8:] for entry in entries if entry.startswith('created=')))
+            self.assertEqual(created.parent, requested)
+            self.assertEqual(list(requested.iterdir()), [])
+
     def test_each_symlink_component_is_unresolved_scope(self):
         for scope in ('linked/file.py', 'dangling', 'dangling/file.py', 'src/inner/deep/file.py'):
             with self.subTest(scope=scope):

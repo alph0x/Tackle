@@ -25,8 +25,8 @@ a script adds or updates its row.
 | [workspace_archive.py](workspace_archive.py) | `c103d8917aa252bae62ca2bb54c565ed155124e81522bbbfc6ffef99a34f4aad` |
 | [capture.py](capture.py) | `5fd79dbbd5edd2efb308e22d9bb71e5007a80f425fde41aa5b297adc02cb755d` |
 | [evidence_capture.py](evidence_capture.py) | `a897f23a881a59bd173c74ed3c09393677efa24f57a17737302698c2f2eedd20` |
-| [lint_runner.py](lint_runner.py) | `77f56edc57d8b42c999389bfe291137ab959b91c113e85cf3587723ddc0a34b4` |
-| [lint.py](lint.py) | `5479e370a3777d4b53d6605d3172d3dadd91bb16b85e565beb422d69963d14d5` |
+| [lint_runner.py](lint_runner.py) | `bca706e2e6bbaa5f238ae994db7603034fca898bd8e194c03ddf94601f3301e0` |
+| [lint.py](lint.py) | `1be06f9520c1d5d5aecc87561abeda90db6b7e958cbcc20040b8d8aecee16d2e` |
 | [context_bundle.py](context_bundle.py) | `5bed1907877c5bb016d8555969eef0c564f70b11aa7bf707849b3cf4b1c0d63f` |
 | [record_store.py](record_store.py) | `8983f36d60a19894cbc215b8d34a3805d82fa50d03195650af9c58d3b8e4d640` |
 | [decompose_check.py](decompose_check.py) | `22a9efddfbcf7ef33dfeac625c3c2fcdd786b99bb3beda6f555b872f2c15a6f5` |
