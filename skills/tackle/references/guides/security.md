@@ -37,7 +37,7 @@ stays local. The plan view loads nothing from the network, and Tackle never publ
 
 ## Dynamic execution
 
-Two shipped mechanisms run fixed program text and take none from the workspace: the [captured lint-row runner](full-checks.md) reads the row programs of the hash-pinned `scripts/lint.py` as string constants, writes each to `row-NN.sh` in its record directory and runs it with `sh`; and the retro "Attempts over budget" recipe in [the retro template](../retro.tmpl.md) passes a fixed Python program to `python3 -c 'exec(...)'`. A task check is different by design: its argument list comes from the workspace's check specification and may run an interpreter with program text, as What runs describes.
+Three shipped mechanisms run fixed program text and take none from the workspace: the [captured lint-row runner](full-checks.md) reads the row programs of the hash-pinned `scripts/lint.py` as string constants, writes each to `row-NN.sh` in its record directory and runs it with `sh`; the retro "Attempts over budget" recipe in [the retro template](../retro.tmpl.md) passes a fixed Python program to `python3 -c 'exec(...)'`; and migration `verify` runs the retro template's fixed Lifecycle coverage command with `sh`. A task check is different by design: its argument list comes from the workspace's check specification and may run an interpreter with program text, as What runs describes.
 
 ## File writes
 

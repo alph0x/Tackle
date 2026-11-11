@@ -6616,6 +6616,20 @@
       "historical": []
     },
     {
+      "rule_id": "R-MIGRATE-20",
+      "statement": "Prepare retains a selection record with a neighbor sentinel whose drift holds verify and adopt, and the first verify retains the installed lifecycle diagnostic, holding on a failed or malformed run.",
+      "statement_sha256": "b262c2de71a50dd5c0fbca60499bde242ae172e1d3f459fa2dc83320e5a71861",
+      "home": "references/guides/migrate.md:44",
+      "home_fragment": "`prepare` also retains `receipts/selection.json`",
+      "units": [],
+      "mirrors": [],
+      "class": "safety-invariant",
+      "hot_path": false,
+      "origin": {"added_in": "10.5.2", "trigger": "Owner request: finish 10.5.2 by migrating Rootbound (K4, K5).", "discovered_by": []},
+      "evidence": {"status": "untested", "scenarios": [], "cohort_id": null, "as_of": "2026-11-10"},
+      "historical": []
+    },
+    {
       "rule_id": "R-RUN-47",
       "statement": "An erratum names an active decision: its heading has a trimmed segment exactly ✅ active or active and no supersession marker in any case; lint row 14, record.py and the migration share the definition.",
       "statement_sha256": "45cceb205e86edcd53389f428227ccb10dec3ee07145780f8ef8993a1c50e3b5",

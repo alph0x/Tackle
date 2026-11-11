@@ -1285,7 +1285,7 @@ def _install_identity(root):
                 "scripts/migrate/step_pre3_to_3.py", "scripts/migrate/step_3_to_4.py", "scripts/migrate/step_4_to_5.py",
                 "scripts/context_bundle.py", "scripts/lint_runner.py", "scripts/lint.py", "scripts/decompose_check.py",
                 "references/guides/run-card.md", "references/guides/plan-card.md",
-                "references/guides/migrate.md", "references/guides/migration-catalog.json")
+                "references/guides/migrate.md", "references/guides/migration-catalog.json", "references/retro.tmpl.md")
     for name in required:
         resource = root / name
         if resource.is_symlink() or not resource.is_file():
@@ -1299,6 +1299,211 @@ def _install_identity(root):
             if path.is_file() and "__pycache__" not in path.parts and path.suffix != ".pyc":
                 selected[path.relative_to(root).as_posix()] = path.read_bytes()
     return _source_digest(selected)
+
+def _neighbor_sentinel(source):
+    source = Path(source)
+    result = {}
+    fd = _open_chain(source.parent)
+    try:
+        for name in sorted(os.listdir(fd)):
+            if name.startswith(".") or name == source.name:
+                continue
+            info = os.stat(name, dir_fd=fd, follow_symlinks=False)
+            if stat.S_ISLNK(info.st_mode):
+                result[name] = "link:" + os.readlink(name, dir_fd=fd)
+            elif stat.S_ISDIR(info.st_mode):
+                child = _open_entry(fd, name, info, name, _DIRECTORY)
+                try:
+                    files, entries = {}, {}
+                    _scan_dir(child, "", files, entries)
+                    result[name] = _inventory_sha(entries)
+                finally:
+                    os.close(child)
+            elif stat.S_ISREG(info.st_mode):
+                child = _open_entry(fd, name, info, name, 0)
+                with os.fdopen(child, "rb") as stream:
+                    result[name] = _sha(stream.read())
+            else:
+                result[name] = ("fifo" if stat.S_ISFIFO(info.st_mode) else
+                                "socket" if stat.S_ISSOCK(info.st_mode) else
+                                "character-device" if stat.S_ISCHR(info.st_mode) else
+                                "block-device" if stat.S_ISBLK(info.st_mode) else "unknown")
+    finally:
+        os.close(fd)
+    return result
+
+
+def _selection(manifest, files, neighbors):
+    names = {"task-board.md", "board.md", "AGENTS.md", "README.md", "history.md",
+             "history-archive.md", "log.md", "log-archive.md", "usage.md", "resource-usage.md",
+             "resource-usage.telemetry.jsonl", "usage.telemetry.jsonl",
+             "design-contract.md", "decisions.md"}
+    carriers = {path: _sha(data) for path, data in sorted(files.items())
+                if path in names or path.startswith(("tasks/", "points/", "reports/", "history/", "history-archive/"))}
+    bindings = _declared_briefs(files)
+    _, _, rows = _board_observation(files)
+    paths = {}
+    for task, _ in rows:
+        if not task:
+            continue
+        path = _brief_path(files, task, bindings, required=False)
+        if path is None:
+            candidates = [name for name in files if re.fullmatch(
+                r"points/" + re.escape(task) + r"(?:-[^/]*)?\.md", name)]
+            if len(candidates) == 1:
+                path = candidates[0]
+        if path is not None:
+            paths[task] = path
+    discovered = {}
+    for path, data in sorted(files.items()):
+        match = re.fullmatch(r"(?:tasks|points)/([^/]+)\.md|tasks/([^/]+)/brief\.md", path)
+        if not match or path in paths.values() or path in bindings.values():
+            continue
+        name = match.group(1) or match.group(2)
+        try:
+            heading = None
+            for line in schema.decode(data).split("\n"):
+                stripped = line.strip()
+                if not stripped or stripped.startswith("<a id="):
+                    continue
+                heading = re.match(r"^#\s*(?:(?:Task|Point)\s+)?(" + schema.ID_RE + r")", line)
+                break
+        except UnicodeDecodeError:
+            continue
+        task = heading.group(1) if heading else name.removesuffix("-brief")
+        if not re.fullmatch(schema.ID_RE, task) or task in paths or task in bindings:
+            continue
+        if name != task and not name.startswith(task + "-"):
+            continue
+        discovered.setdefault(task, []).append(path)
+    paths.update((task, candidates[0]) for task, candidates in discovered.items() if len(candidates) == 1)
+    procedure = {}
+    for task, path in sorted(paths.items()):
+        lines = schema.unfenced_lines(schema.decode(files[path]), strict=True)
+        values = [m.group(1) for line in lines if not line.lstrip().startswith(">")
+                  for m in [re.match(r"^\s*(?:-\s*)?\*\*Procedure revision(?:\*\*\s*:|:\*\*)\s*(.*?)\s*$", line)]
+                  if m]
+        if len(values) > 1:
+            raise MigrationError("ambiguous-procedure-revision:" + task)
+        procedure[task] = values[0] if values else None
+    return {"schema": "tackle-migration-selection/1", "source_path": manifest["source"]["path"],
+            "source_sha256": manifest["source"]["sha256"], "files_sha256": manifest["source"]["files_sha256"],
+            "bucket": manifest["observed"]["bucket"], "methodology": manifest["observed"]["methodology"],
+            "install_sha256": manifest["install_sha256"], "catalog_sha256": manifest["catalog_sha256"],
+            "carriers": carriers, "procedure": procedure,
+            "diagnostic": "The source diagnostic is the installed one captured by verify on the frozen source copy; a pinned-revision diagnostic is not available to the installed route.",
+            "neighbors": neighbors}
+
+
+def _lifecycle_command():
+    template = (Path(__file__).resolve().parents[2] / "references/retro.tmpl.md").read_bytes()
+    text = template.decode("utf-8")
+    prefix = "| **Lifecycle coverage** | `"
+    if text.count(prefix) != 1:
+        raise MigrationError("invalid-lifecycle-template")
+    command = text.split(prefix, 1)[1].split("`", 1)[0].encode("utf-8")
+    return template, command
+
+
+def _lifecycle_verdict(result, stdout, stderr):
+    pattern = rb"tokens (?:[0-9]+/[0-9]+ \([0-9]+%\)|0/N \(0%\))\nduration (?:[0-9]+/[0-9]+ \([0-9]+%\)|0/N \(0%\))\n"
+    return ("PASS" if result["exit"] == 0 and not result["signal"] and not result["timeout"]
+            and not result["launch_error"] and not stderr and re.fullmatch(pattern, stdout)
+            and result["workspace_sha256_before"] == result["workspace_sha256_after"] else "ERROR")
+
+
+def _capture_lifecycle(job, state, candidate):
+    prefix = "receipts/post-stamp/lifecycle-coverage"
+    names = [prefix + suffix for suffix in (".sh", "-stdout.bin", "-stderr.bin", "-result.json")]
+    existing = [(Path(job) / name).exists() for name in names]
+    if any(existing):
+        if not all(existing):
+            raise PendingError("lifecycle-incomplete-evidence")
+        for name in names:
+            _record_ref(job, state, name)
+        result = _read_json(Path(job) / names[-1])
+        template, command = _lifecycle_command()
+        if (result.get("schema") != "tackle-migration-lifecycle/1"
+                or result.get("argv") != ["sh", "-c", command.decode("utf-8")]
+                or result.get("cwd") != str(candidate)
+                or result.get("template_sha256") != _sha(template)
+                or result.get("command_sha256") != _sha(command)
+                or result.get("install_sha256") != state["install_sha256"]
+                or result.get("workspace_sha256_before") != state["candidate_sha256"]
+                or (Path(job) / names[0]).read_bytes() != command
+                or result.get("stdout") != _ref(job, names[1]) or result.get("stderr") != _ref(job, names[2])
+                or result.get("verdict") != _lifecycle_verdict(result, (Path(job) / names[1]).read_bytes(),
+                                                               (Path(job) / names[2]).read_bytes())):
+            raise PendingError("lifecycle-binding-conflict")
+        return
+    template, command = _lifecycle_command()
+    before = _inventory_sha(_inventory(candidate))
+    argv = ["sh", "-c", command.decode("utf-8")]
+    stdout, stderr, exit_code, child_signal, timeout, launch_error, _, _, _ = _run_lint_row(argv, candidate)
+    after = _inventory_sha(_inventory(candidate))
+    command_ref = _store_external(job, names[0], command)
+    stdout_ref = _store_external(job, names[1], stdout)
+    stderr_ref = _store_external(job, names[2], stderr)
+    result = {"schema": "tackle-migration-lifecycle/1", "argv": argv, "cwd": str(candidate),
+              "template_sha256": _sha(template), "command_sha256": command_ref["sha256"],
+              "exit": exit_code, "signal": child_signal, "timeout": timeout, "launch_error": launch_error,
+              "stdout": stdout_ref, "stderr": stderr_ref, "workspace_sha256_before": before,
+              "workspace_sha256_after": after, "install_sha256": state["install_sha256"], "verdict": None}
+    result["verdict"] = _lifecycle_verdict(result, stdout, stderr)
+    _store_external(job, names[3], _canonical(result))
+    for name in names:
+        _record_ref(job, state, name)
+
+
+def _require_lifecycle_receipts(job, state):
+    prefix = "receipts/post-stamp/lifecycle-coverage"
+    names = [prefix + suffix for suffix in (".sh", "-stdout.bin", "-stderr.bin", "-result.json")]
+    registered = {ref["path"] for ref in state["receipts"]}
+    if any(name not in registered or not (Path(job) / name).is_file() for name in names):
+        raise PendingError("V:lifecycle-diagnostic:MISSING")
+
+
+def _lifecycle_finding(job, state, carrier):
+    prefix = "receipts/post-stamp/lifecycle-coverage"
+    names = [prefix + suffix for suffix in (".sh", "-stdout.bin", "-stderr.bin", "-result.json")]
+    registered = {ref["path"]: ref for ref in state["receipts"]}
+    if any(name not in registered or not (Path(job) / name).is_file() for name in names):
+        return ["lifecycle-diagnostic:MISSING"]
+    try:
+        data = [_validate_reference_graph(job, state, registered[name]) for name in names]
+        result = _json_bytes(data[3])
+        _exact_keys(result, {"schema", "argv", "cwd", "template_sha256", "command_sha256", "exit", "signal",
+                             "timeout", "launch_error", "stdout", "stderr", "workspace_sha256_before",
+                             "workspace_sha256_after", "install_sha256", "verdict"}, "lifecycle")
+        template, command = _lifecycle_command()
+        if (result["schema"] != "tackle-migration-lifecycle/1" or data[0] != command
+                or result["argv"] != ["sh", "-c", command.decode("utf-8")]
+                or result["cwd"] != state["candidate"] or result["template_sha256"] != _sha(template)
+                or result["command_sha256"] != _sha(command) or result["stdout"] != registered[names[1]]
+                or result["stderr"] != registered[names[2]] or result["install_sha256"] != state["install_sha256"]
+                or result["workspace_sha256_before"] != state["candidate_sha256"]
+                or result["workspace_sha256_after"] != state["candidate_sha256"]
+                or _inventory_sha(_inventory(carrier)) != state["candidate_sha256"]
+                or result["verdict"] != _lifecycle_verdict(result, data[1], data[2])):
+            return ["lifecycle-diagnostic:ERROR"]
+        return [] if result["verdict"] == "PASS" else ["lifecycle-diagnostic:ERROR"]
+    except (OSError, ValueError, KeyError, TypeError, MigrationError):
+        return ["lifecycle-diagnostic:ERROR"]
+
+
+def _selection_lifecycle_findings(job, state, manifest, carrier):
+    name = "receipts/selection.json"
+    refs = [ref for ref in state["receipts"] if ref["path"] == name]
+    if len(refs) != 1:
+        raise PendingError("selection-receipt-missing")
+    selection = _json_bytes(_validate_reference_graph(job, state, refs[0]))
+    expected = _selection(manifest, _tree(state["checkpoint"]).files, selection.get("neighbors"))
+    if selection != expected or type(selection["neighbors"]) is not dict:
+        raise PendingError("selection-receipt-invalid")
+    actual = _neighbor_sentinel(state["source"])
+    failures = ["neighbor-sentinel-drift:" + name for name in sorted(set(actual) | set(selection["neighbors"]))
+                if actual.get(name) != selection["neighbors"].get(name)]
+    return failures + _lifecycle_finding(job, state, carrier)
 
 def _cmd_prepare(args):
     manifest = _manifest(args.manifest, allow_source_missing=True)
@@ -1360,6 +1565,9 @@ def _cmd_prepare(args):
         source_sha = manifest["source"]["sha256"]
         st = {"schema": JOB_SCHEMA, "operation_id": manifest["operation_id"], "operation": "adopt", "phase": "prepared", "source": str(src), "checkpoint": str(checkpoint), "candidate": str(candidate), "original_backup": str(job / "original-backup"), "adopted_backup": str(job / "adopted-backup"), "restore_stage": str(job / "restore-stage"), "source_sha256": source_sha, "candidate_sha256": _inventory_sha(_inventory(candidate)), "checkpoint_sha256": _inventory_sha(_inventory(checkpoint)), "install_sha256": manifest["install_sha256"], "catalog_sha256": manifest["catalog_sha256"], "context_sha256": _sha(_canonical(manifest["context"])), "boundary_sha256": manifest["context"]["boundary"]["source_receipt_sha256"], "receipts": []}
         _atomic(job / "manifest.json", _canonical(manifest))
+        _store_external(job, "receipts/selection.json",
+                        _canonical(_selection(manifest, tree.files, _neighbor_sentinel(src))))
+        _record_ref(job, st, "receipts/selection.json")
         _write_state(job, st)
         return 0
 
@@ -2159,6 +2367,7 @@ def _physical_findings(job, state, manifest, catalog):
     directories = {path: dict(meta) for path, meta in source_inventory.items() if meta["type"] != "file"}
     expected = _adapter_chain(original, manifest["observed"]["methodology"], manifest["context"], directories=directories)
     failures = {family: [] for family in ("S", "A", "V", "Z")}
+    failures["V"].extend(_selection_lifecycle_findings(job, state, manifest, candidate))
     _supported_methodology(original, catalog["target_methodology"])
     _supported_methodology(current, catalog["target_methodology"])
     failures["A"].extend(_history_usage_prefix_findings(expected, current))
@@ -2238,7 +2447,7 @@ def _physical_findings(job, state, manifest, catalog):
     _dated_history(current["history.md"], manifest["context"]["date"], state["operation_id"], state["source_sha256"], catalog["target_methodology"], catalog["revision"])
     return failures, readiness
 
-def _completed(job, state):
+def _completed(job, state, *, retained_conditions=False):
     """Validate a recorded terminal poststate without publishing or repairing it."""
     _revalidate_authority(job, state)
     src, candidate = Path(state["source"]), Path(state["candidate"])
@@ -2263,13 +2472,20 @@ def _completed(job, state):
     manifest = _manifest(Path(job) / "manifest.json", allow_source_missing=True)
     _, pending = _semantic_review(job, state, manifest)
     if pending: raise PendingError("completed-semantic-admission-conflict")
+    if retained_conditions:
+        carrier = src if state["phase"] == "adopted" else adopted
+        findings = _selection_lifecycle_findings(job, state, manifest, carrier)
+        if findings:
+            raise PendingError("physical-admission-no-longer-valid:V:" + ",V:".join(findings))
     return 0
 
 def _cmd_verify(args):
     job = _absolute(args.job, "job", exists=True, directory=True)
     state = _load_state(job)
     with _parent_lock(state["source"]), _existing_context_locks(state["source"], state["candidate"], state["original_backup"], state["adopted_backup"]):
-        if state["phase"] in {"adopted", "restored"}: return _completed(job, state)
+        if state["phase"] in {"verified", "adopted", "restored"} or (state["phase"] == "prepared" and (job / "handoff.json").exists()):
+            _require_lifecycle_receipts(job, state)
+        if state["phase"] in {"adopted", "restored"}: return _completed(job, state, retained_conditions=True)
         with _context_lock(state["candidate"], required=True):
             return _verify_locked(job, state)
 
@@ -2288,6 +2504,10 @@ def _verify_locked(job, st):
         if pending: raise PendingError("verified-semantic-admission-conflict")
         _validate_boundary(job, st, record=False)
         if not any(ref["path"] == "receipts/admission.json" for ref in st["receipts"]): raise PendingError("verified-admission-missing")
+        findings = _selection_lifecycle_findings(job, st, manifest, candidate)
+        if findings:
+            print("pending physical checks: V:" + ",V:".join(findings), file=sys.stderr)
+            return 1
         return 0
     if not (job / "handoff.json").exists():
         if not (job / "receipts/transition.json").exists():
@@ -2309,6 +2529,7 @@ def _verify_locked(job, st):
         _record_ref(job, st, "receipts/marker.json")
         st["candidate_sha256"] = _inventory_sha(_inventory(candidate))
         _capture_stage(job, st, candidate, "post-stamp", "post-stamp.json")
+        _capture_lifecycle(job, st, candidate)
         probe = job / "restore-probe"
         if not probe.exists(): _copy_bytes(st["checkpoint"], probe)
         if _inventory_sha(_inventory(probe)) != st["checkpoint_sha256"]: raise PendingError("restore-probe-inventory-mismatch")
@@ -2375,12 +2596,14 @@ def _cmd_adopt(args):
     job = _absolute(args.job, "job", exists=True, directory=True); st = _load_state(job)
     if st["phase"] in {"adopted", "restored"}:
         with _parent_lock(st["source"]), _existing_context_locks(st["source"], st["original_backup"], st["adopted_backup"]):
-            return _completed(job, st)
+            _require_lifecycle_receipts(job, st)
+            return _completed(job, st, retained_conditions=True)
     if st["operation"] != "adopt": raise PendingError("wrong-operation")
     if st["phase"] not in {"verified", "adopt-intent", "original-backed-up", "candidate-promoted", "adopted"}:
         raise PendingError("adoption-not-verified")
     src, candidate, backup = Path(st["source"]), Path(st["candidate"]), Path(st["original_backup"])
     with _parent_lock(src), _existing_context_locks(src, candidate, backup):
+        _require_lifecycle_receipts(job, st)
         if Path(st["restore_stage"]).exists() or Path(st["adopted_backup"]).exists():
             raise PendingError("adopt-unexpected-restore-carrier")
         manifest, catalog = _revalidate_authority(job, st)
@@ -2393,6 +2616,10 @@ def _cmd_adopt(args):
             with _context_lock(candidate, required=True):
                 failures, _ = _physical_findings(job, st, manifest, catalog)
                 if any(failures.values()): raise PendingError("physical-admission-no-longer-valid")
+        else:
+            findings = _selection_lifecycle_findings(job, st, manifest, src)
+            if findings:
+                raise PendingError("physical-admission-no-longer-valid:V:" + ",V:".join(findings))
         source_exists, cand_exists, backup_exists = src.exists(), candidate.exists(), backup.exists()
         src_hash = _inventory_sha(_inventory(src)) if source_exists else None
         cand_hash = _inventory_sha(_inventory(candidate)) if cand_exists else None

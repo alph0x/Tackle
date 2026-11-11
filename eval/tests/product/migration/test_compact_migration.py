@@ -462,6 +462,316 @@ class CompactMigrationTests(unittest.TestCase):
         frozen = self.final_receipt(installed, source, job, candidate, plan)
         return plan, candidate, frozen
 
+    def test_prepare_retains_selection_and_neighbor_sentinel(self):
+        with self.lab() as lab:
+            installed = self.install(lab)
+            _, source = self.fixture(lab)
+            brief = source / 'tasks/T-0001.md'
+            brief.write_text(re.sub(r'^- \*\*Procedure revision\*\*:.*$', '- **Procedure revision**: Tackle 9.2.0 RUN card.', brief.read_text(), flags=re.M))
+            other_brief = source / 'tasks/T-0002.md'
+            other_brief.write_text(re.sub(r'^- \*\*Procedure revision\*\*:.*\n', '', other_brief.read_text(), flags=re.M))
+            orphan_literal = source / 'tasks/T-0003.md'
+            orphan_literal.write_text('# Task T-0003\n\n- **Procedure revision**: Literal orphan revision.\n')
+            orphan_null = source / 'tasks/T-0004.md'
+            orphan_null.write_text('# Task T-0004\n\nNo procedure field.\n')
+            (source / 'history').mkdir(exist_ok=True)
+            (source / 'history/archive.md').write_text('retained archive\n')
+            source_before = inventory(source)
+            neighbor = source.parent / 'neighbor'
+            neighbor.mkdir()
+            (neighbor / 'notes.md').write_text('original\n')
+            (source.parent / 'index.md').write_text('index\n')
+            (source.parent / '.hidden').write_text('hidden\n')
+            job = lab / 'selection'
+            plan, candidate = self.prepared(installed, source, job)
+            selection = read_json(job / 'receipts/selection.json')
+            self.assertEqual(inventory(source), source_before)
+            self.assertEqual(read_json(job / 'state.json')['phase'], 'prepared')
+            self.assertEqual(selection['procedure']['T-0003'], 'Literal orphan revision.')
+            self.assertIsNone(selection['procedure']['T-0004'])
+            for path in (orphan_literal, orphan_null):
+                self.assertEqual(selection['carriers'][path.relative_to(source).as_posix()], digest(path.read_bytes()))
+            self.assertEqual(set(selection), {'schema', 'source_path', 'source_sha256', 'files_sha256',
+                'bucket', 'methodology', 'install_sha256', 'catalog_sha256', 'carriers',
+                'procedure', 'diagnostic', 'neighbors'})
+            self.assertEqual(selection['schema'], 'tackle-migration-selection/1')
+            self.assertEqual(selection['procedure']['T-0001'], 'Tackle 9.2.0 RUN card.')
+            self.assertIsNone(selection['procedure']['T-0002'])
+            self.assertEqual(selection['neighbors'], {'neighbor': tree_sha(neighbor),
+                'index.md': digest((source.parent / 'index.md').read_bytes())})
+            self.assertEqual(selection['carriers']['history/archive.md'], digest((source / 'history/archive.md').read_bytes()))
+            for path, value in selection['carriers'].items():
+                self.assertEqual(value, digest((source / path).read_bytes()))
+            self.assertIn('receipts/selection.json', [r['path'] for r in read_json(job / 'state.json')['receipts']])
+            self.semantic_edits(candidate)
+            (neighbor / 'notes.md').write_text('changed\n')
+            self.cli(installed, 'verify', ['--job', job], 1)
+            self.assertIn('neighbor-sentinel-drift:neighbor',
+                          read_json(job / 'receipts/physical.json')['findings']['V'])
+            for change in ('added', 'removed', 'hidden'):
+                with self.subTest(change=change):
+                    _, other = self.fixture(lab, 'project-' + change)
+                    (other.parent / 'index.md').write_text('index\n')
+                    (other.parent / '.hidden').write_text('old\n')
+                    other_job = lab / ('job-' + change)
+                    _, other_candidate = self.prepared(installed, other, other_job)
+                    self.semantic_edits(other_candidate)
+                    if change == 'added':
+                        (other.parent / 'added').mkdir()
+                        (other.parent / 'added/x.md').write_text('new\n')
+                    elif change == 'removed':
+                        (other.parent / 'index.md').unlink()
+                    else:
+                        (other.parent / '.hidden').write_text('new\n')
+                    self.cli(installed, 'verify', ['--job', other_job], 1)
+                    findings = read_json(other_job / 'receipts/physical.json')['findings']['V']
+                    if change == 'hidden':
+                        self.assertFalse(any(x.startswith('neighbor-sentinel-drift:') for x in findings))
+                    else:
+                        self.assertIn('neighbor-sentinel-drift:' + ('added' if change == 'added' else 'index.md'), findings)
+            _, verified_source = self.fixture(lab, 'verified-project')
+            verified_neighbor = verified_source.parent / 'neighbor'
+            verified_neighbor.mkdir()
+            (verified_neighbor / 'notes.md').write_text('original\n')
+            verified_job = lab / 'verified-job'
+            _, verified_candidate, _ = self.ready(installed, verified_source, verified_job)
+            (verified_neighbor / 'notes.md').write_text('changed\n')
+            outcome = self.cli(installed, 'verify', ['--job', verified_job], 1)
+            self.assertIn(b'V:neighbor-sentinel-drift:neighbor', outcome[1] + outcome[2])
+            self.cli(installed, 'adopt', ['--job', verified_job], 1)
+            self.assertTrue(verified_source.is_dir())
+            self.assertTrue(verified_candidate.is_dir())
+            self.assertFalse((verified_job / 'original-backup').exists())
+            legacy = lab / 'legacy-project/docs/plans/demo'
+            shutil.copytree(ROOT / 'eval/migration/fixtures/pre3-to-3/before', legacy)
+            legacy_cases = (
+                ('P-control-descriptive.md', 'P-control', '# P-control', 'Space control literal.'),
+                ('P-orphan-descriptive.md', 'P-orphan', '#P-orphan', 'No-space literal.'),
+                ('P-underscore-extra_details.md', 'P-underscore', '# P-underscore', 'Underscore literal.'),
+                ('P-dot-extra.details.md', 'P-dot', '# P-dot', 'Dot literal.'),
+                ('P-space-extra details.md', 'P-space', '# P-space', 'Space descriptor literal.'),
+            )
+            for filename, identity, heading, value in legacy_cases:
+                (legacy / 'points' / filename).write_text(
+                    '<a id="{}"></a>\n\n{} Legacy source brief\n\n- **Procedure revision**: {}\n'.format(
+                        identity, heading, value))
+            legacy_before = inventory(legacy)
+            legacy_job = lab / 'legacy-job'
+            self.prepared(installed, legacy, legacy_job, next_wave=False)
+            legacy_selection = read_json(legacy_job / 'receipts/selection.json')
+            self.assertEqual(inventory(legacy), legacy_before)
+            legacy_state = read_json(legacy_job / 'state.json')
+            self.assertEqual(legacy_state['phase'], 'prepared')
+            self.assertIn('receipts/selection.json', [r['path'] for r in legacy_state['receipts']])
+            for filename, identity, _, value in legacy_cases:
+                path = 'points/' + filename
+                self.assertEqual(legacy_selection['carriers'][path], digest((legacy / path).read_bytes()))
+                self.assertEqual(legacy_selection['procedure'][identity], value)
+                self.assertNotIn(filename[:-3], legacy_selection['procedure'])
+            required = {'board.md', 'AGENTS.md', 'log.md', 'usage.md', 'decisions.md',
+                        'reports/{}-{:02d}-report.md'.format('T', 4),
+                        'reports/{}-{:02d}-report.md'.format('P', 3)}
+            required.update(path.relative_to(legacy).as_posix() for path in (legacy / 'points').glob('*.md'))
+            self.assertTrue(required <= set(legacy_selection['carriers']))
+            for path in required:
+                self.assertEqual(legacy_selection['carriers'][path], digest((legacy / path).read_bytes()))
+            for label, count, mode in (('intent', 1, 'before'), ('backed', 1, 'after'),
+                                       ('promoted', 2, 'after'), ('promoted-state', 2, 'state')):
+                with self.subTest(shape=label):
+                    _, cut_source = self.fixture(lab, 'cut-' + label)
+                    cut_neighbor = cut_source.parent / 'neighbor'
+                    cut_neighbor.mkdir()
+                    (cut_neighbor / 'notes').write_text('original')
+                    cut_job = lab / ('cut-job-' + label)
+                    _, cut_candidate, frozen = self.ready(installed, cut_source, cut_job)
+                    boot = lab / ('interrupt-' + label + '.py')
+                    signal_file = lab / ('interrupt-' + label + '.signal')
+                    if mode == 'state':
+                        boot.write_text("""import json,os,runpy,sys
+from pathlib import Path
+module,job=sys.argv[1:]
+real=os.replace
+def replace(src,dst,*args,**kwargs):
+    value=real(src,dst,*args,**kwargs)
+    if str(dst)==str(Path(job)/'state.json') and json.loads(Path(dst).read_bytes())['phase']=='candidate-promoted':
+        os._exit(99)
+    return value
+os.replace=replace
+sys.path.insert(0,str(Path(module).parent))
+sys.argv=[module,'adopt','--job',job]
+runpy.run_path(module,run_name='__main__')
+""")
+                        self.run_child([sys.executable, '-I', '-B', boot, installed / 'scripts/migrate/compact.py',
+                                        cut_job], lab, 99)
+                        self.assertEqual(read_json(cut_job / 'state.json')['phase'], 'candidate-promoted')
+                    else:
+                        boot.write_text(INTERRUPT)
+                        self.run_child([sys.executable, '-I', '-B', boot, installed / 'scripts/migrate/compact.py',
+                                        'adopt', cut_job, str(count), mode, signal_file], lab, 99)
+                    state_path = cut_job / 'state.json'
+                    original_state = state_path.read_bytes()
+                    for relative in ('receipts/selection.json', 'receipts/post-stamp/lifecycle-coverage-result.json'):
+                        for defect in ('unregistered', 'missing', 'tampered'):
+                            with self.subTest(receipt=relative, defect=defect):
+                                receipt_path = cut_job / relative
+                                contents = receipt_path.read_bytes()
+                                if defect == 'unregistered':
+                                    state = read_json(state_path)
+                                    state['receipts'] = [ref for ref in state['receipts'] if ref['path'] != relative]
+                                    write_json(state_path, state)
+                                elif defect == 'missing':
+                                    receipt_path.unlink()
+                                else:
+                                    receipt_path.write_bytes(contents + b' ')
+                                refused = self.cli(installed, 'adopt', ['--job', cut_job], 1)
+                                if relative.endswith('lifecycle-coverage-result.json') and defect != 'tampered':
+                                    self.assertIn(b'V:lifecycle-diagnostic:MISSING', refused[1] + refused[2])
+                                if defect == 'tampered':
+                                    self.assertIn(b'receipt-drift', refused[1] + refused[2])
+                                receipt_path.write_bytes(contents)
+                                state_path.write_bytes(original_state)
+                    before = {key: tree_sha(path) for key, path in
+                              [('source', cut_source), ('candidate', cut_candidate),
+                               ('backup', cut_job / 'original-backup')] if path.exists()}
+                    (cut_neighbor / 'notes').write_text('changed')
+                    self.cli(installed, 'adopt', ['--job', cut_job], 1)
+                    self.assertEqual(before, {key: tree_sha(path) for key, path in
+                                     [('source', cut_source), ('candidate', cut_candidate),
+                                      ('backup', cut_job / 'original-backup')] if path.exists()})
+                    (cut_neighbor / 'notes').write_text('original')
+                    self.cli(installed, 'adopt', ['--job', cut_job], 0)
+                    self.assertEqual(tree_sha(cut_source), frozen)
+                    lifecycle_before = (cut_job / 'receipts/post-stamp/lifecycle-coverage-result.json').read_bytes()
+                    for terminal_phase in ('adopted', 'restored'):
+                        if terminal_phase == 'restored':
+                            self.cli(installed, 'restore', ['--job', cut_job], 0)
+                        self.assertEqual(read_json(state_path)['phase'], terminal_phase)
+                        self.cli(installed, 'verify', ['--job', cut_job], 0)
+                        self.cli(installed, 'adopt', ['--job', cut_job], 0)
+                        self.assertEqual((cut_job / 'receipts/post-stamp/lifecycle-coverage-result.json').read_bytes(), lifecycle_before)
+                        terminal_state = state_path.read_bytes()
+                        for relative in ('receipts/selection.json', 'receipts/post-stamp/lifecycle-coverage-result.json'):
+                            for defect in ('unregistered', 'missing', 'tampered'):
+                                with self.subTest(terminal=terminal_phase, receipt=relative, defect=defect):
+                                    receipt_path = cut_job / relative
+                                    contents = receipt_path.read_bytes()
+                                    if defect == 'unregistered':
+                                        state = read_json(state_path)
+                                        state['receipts'] = [ref for ref in state['receipts'] if ref['path'] != relative]
+                                        write_json(state_path, state)
+                                    elif defect == 'missing':
+                                        receipt_path.unlink()
+                                    else:
+                                        receipt_path.write_bytes(contents + b' ')
+                                    for operation in ('verify', 'adopt'):
+                                        refused = self.cli(installed, operation, ['--job', cut_job], 1)
+                                        if relative.endswith('lifecycle-coverage-result.json') and defect != 'tampered':
+                                            self.assertIn(b'V:lifecycle-diagnostic:MISSING', refused[1] + refused[2])
+                                        if defect == 'tampered':
+                                            self.assertIn(b'receipt-drift', refused[1] + refused[2])
+                                    receipt_path.write_bytes(contents)
+                                    state_path.write_bytes(terminal_state)
+                        (cut_neighbor / 'notes').write_text('changed')
+                        self.cli(installed, 'verify', ['--job', cut_job], 1)
+                        self.cli(installed, 'adopt', ['--job', cut_job], 1)
+                        (cut_neighbor / 'notes').write_text('original')
+
+    def test_verify_retains_the_lifecycle_diagnostic(self):
+        with self.lab() as lab:
+            installed = self.install(lab)
+            _, source = self.fixture(lab)
+            job = lab / 'lifecycle'
+            plan, candidate = self.prepared(installed, source, job)
+            self.semantic_edits(candidate)
+            self.cli(installed, 'verify', ['--job', job], 1)
+            frozen = tree_sha(candidate)
+            base_path = job / 'receipts/post-stamp'
+            self.assertTrue((base_path / 'lifecycle-coverage-result.json').is_file())
+            result = read_json(base_path / 'lifecycle-coverage-result.json')
+            self.assertEqual(result['schema'], 'tackle-migration-lifecycle/1')
+            self.assertEqual(result['cwd'], str(candidate))
+            self.assertEqual(result['workspace_sha256_before'], frozen)
+            self.assertEqual(result['workspace_sha256_after'], frozen)
+            self.assertEqual(result['verdict'], 'PASS')
+            template = (installed / 'references/retro.tmpl.md').read_text()
+            row = next(line for line in template.splitlines() if line.startswith('| **Lifecycle coverage** |'))
+            command = row.split('`', 2)[1].encode()
+            self.assertEqual((base_path / 'lifecycle-coverage.sh').read_bytes(), command)
+            stdout = (job / result['stdout']['path']).read_text()
+            self.assertRegex(stdout, r'^tokens (?:[0-9]+/[0-9]+ \([0-9]+%\)|0/N \(0%\))\nduration (?:[0-9]+/[0-9]+ \([0-9]+%\)|0/N \(0%\))\n$')
+            self.assertEqual(stdout, 'tokens 0/N (0%)\nduration 0/N (0%)\n')
+            self.assertEqual(self.final_receipt(installed, source, job, candidate, plan), frozen)
+            state_path = job / 'state.json'
+            original_state = state_path.read_bytes()
+            for relative in ('receipts/selection.json', 'receipts/post-stamp/lifecycle-coverage-result.json'):
+                for defect in ('unregistered', 'missing'):
+                    with self.subTest(receipt=relative, defect=defect):
+                        receipt_path = job / relative
+                        contents = receipt_path.read_bytes()
+                        if defect == 'unregistered':
+                            state = read_json(state_path)
+                            state['receipts'] = [ref for ref in state['receipts'] if ref['path'] != relative]
+                            write_json(state_path, state)
+                        else:
+                            receipt_path.unlink()
+                        for operation in ('verify', 'adopt'):
+                            refused = self.cli(installed, operation, ['--job', job], 1)
+                            if relative.endswith('lifecycle-coverage-result.json'):
+                                self.assertIn(b'V:lifecycle-diagnostic:MISSING', refused[1] + refused[2])
+                        receipt_path.write_bytes(contents)
+                        state_path.write_bytes(original_state)
+            self.assertIn('receipts/post-stamp/lifecycle-coverage-result.json',
+                          [r['path'] for r in read_json(job / 'handoff.json')['receipts']])
+            result_path = base_path / 'lifecycle-coverage-result.json'
+            original = result_path.read_bytes()
+            result_path.write_bytes(original + b' ')
+            tamper = self.cli(installed, 'verify', ['--job', job], 1)
+            self.assertIn(b'receipt-drift', tamper[1] + tamper[2])
+            for number, command in enumerate(("false", "printf '%s\\n' 'tokens 0/N (0%)'",
+                    "printf '%s\\n' 'tokens 0/N (0%)' 'duration 0/N (0%)' extra",
+                    "printf '%s\\n' 'tokens 0/N (0%)' 'duration 0/N (0%)'; printf '%s\\n' error >&2")):
+                with self.subTest(command=command):
+                    faulty_install = lab / ('install-' + str(number))
+                    shutil.copytree(installed, faulty_install)
+                    template_path = faulty_install / 'references/retro.tmpl.md'
+                    text = template_path.read_text()
+                    row = next(line for line in text.splitlines() if line.startswith('| **Lifecycle coverage** |'))
+                    old = row.split('`', 2)[1]
+                    template_path.write_text(text.replace(row, row.replace('`' + old + '`', '`' + command + '`'), 1))
+                    _, bad_source = self.fixture(lab, 'bad-project-' + str(number))
+                    bad_job = lab / ('bad-job-' + str(number))
+                    plan, bad_candidate = self.prepared(faulty_install, bad_source, bad_job)
+                    self.semantic_edits(bad_candidate)
+                    self.cli(faulty_install, 'verify', ['--job', bad_job], 1)
+                    physical = read_json(bad_job / 'receipts/physical.json')
+                    self.assertIn('lifecycle-diagnostic:ERROR', physical['findings']['V'])
+                    frozen = tree_sha(bad_candidate)
+                    observation = bad_job / 'manual-review.json'
+                    write_json(observation, dict(candidate_sha256=frozen, source_sha256=plan['source']['sha256'],
+                        consumer='isolated-fixture-reviewer', check_sentinel_absent=True,
+                        native_lint_receipts=[dict(path='receipts/' + phase + '.json',
+                            sha256=digest((bad_job / 'receipts' / (phase + '.json')).read_bytes()))
+                            for phase in ('pre-stamp', 'post-stamp')],
+                        checkpoint_sha256=tree_sha(bad_job / 'checkpoint'),
+                        restoration_sha256=tree_sha(bad_job / 'restore-probe')))
+                    evidence = [dict(path='manual-review.json', sha256=digest(observation.read_bytes()))]
+                    receipt = dict(schema='tackle-migration-review/1', reviewer='external-fixture-reviewer',
+                        candidate_sha256=frozen, source_sha256=plan['source']['sha256'],
+                        catalog_sha256=plan['catalog_sha256'],
+                        decisions=[dict(id=x['id'], state='satisfied', evidence=evidence)
+                            for x in plan['obligations'] if (x['kind'] == 'required' or
+                                x['family'] in plan['context']['optional_requests']) and x['state'] != 'not-applicable'])
+                    write_json(bad_job / 'semantic-review.json', receipt)
+                    retained = {p.name: p.read_bytes() for p in (bad_job / 'receipts/post-stamp').glob('lifecycle-coverage*')}
+                    repeat = self.cli(faulty_install, 'verify', ['--job', bad_job], 1)
+                    self.assertIn(b'V:lifecycle-diagnostic:ERROR', repeat[1] + repeat[2])
+                    self.assertEqual(read_json(bad_job / 'state.json')['phase'], 'prepared')
+                    self.cli(faulty_install, 'adopt', ['--job', bad_job], 1)
+                    self.assertEqual(tree_sha(bad_candidate), frozen)
+                    self.assertEqual(tree_sha(bad_source), plan['source']['sha256'])
+                    self.assertFalse((bad_job / 'original-backup').exists())
+                    self.assertEqual(retained, {p.name: p.read_bytes() for p in (bad_job / 'receipts/post-stamp').glob('lifecycle-coverage*')})
+
     def test_plain_active_decision_authorizes_a_closed_brief_erratum(self):
         with self.lab() as lab:
             installed = self.install(lab)
