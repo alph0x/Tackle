@@ -731,6 +731,75 @@ pathlib.Path(sys.argv[3]).write_text(json.dumps(receipt, sort_keys=True,
         scan_record['bundle'] = self._bundle(scan_record)
         self._absent(self._evaluate(scan_record)[0], TRAVERSAL)
 
+    def test_killpg_permission_error_after_leader_exit_finishes_capture(self):
+        real_popen, real_killpg = subprocess.Popen, os.killpg
+        bodies = {
+            'exited': "import subprocess,sys; subprocess.Popen([sys.executable,'-I','-c','import time; time.sleep(60)']); print('parent completed',flush=True)",
+            'live': "import time; time.sleep(60)",
+        }
+
+        def members(pgid):
+            result = subprocess.run(['ps', '-axo', 'pid=,pgid=,stat='],
+                                    capture_output=True, text=True, check=True)
+            return [row.strip() for row in result.stdout.splitlines()
+                    if len(row.split()) == 3 and int(row.split()[1]) == pgid]
+
+        for case, body in bodies.items():
+            with self.subTest(case=case), tempfile.TemporaryDirectory(prefix='oracle-B-') as tmp:
+                directory = Path(tmp).resolve()
+                children, calls = [], []
+
+                def popen(*args, **kwargs):
+                    child = real_popen(*args, **kwargs)
+                    children.append(child)
+                    return child
+
+                def killpg(pid, sig):
+                    child = next(child for child in children if child.pid == pid)
+                    if case == 'exited':
+                        real_killpg(pid, sig)
+                        self.assertIsNotNone(child.poll())
+                    else:
+                        self.assertIsNone(child.poll())
+                    calls.append(sig)
+                    raise PermissionError('deterministic killpg EPERM')
+
+                try:
+                    with mock.patch.object(self.api.subprocess, 'Popen', side_effect=popen), \
+                         mock.patch.object(self.api.os, 'killpg', side_effect=killpg):
+                        if case == 'live':
+                            with self.assertRaises(PermissionError):
+                                self.api.capture([sys.executable, '-I', '-B', '-c', body],
+                                                 cwd=directory, evidence_dir=directory/'evidence')
+                        else:
+                            receipt = self.api.capture([sys.executable, '-I', '-B', '-c', body],
+                                                       cwd=directory, evidence_dir=directory/'evidence')
+                            self.assertIs(receipt['complete'], False)
+                            self.assertIs(receipt['timeout'], True)
+                            self.assertIn(b'parent completed', (directory/'evidence/stdout.bin').read_bytes())
+                    self.assertTrue(calls)
+                finally:
+                    for child in children:
+                        child.poll()
+                        if any(not row.split()[2].startswith('Z') for row in members(child.pid)):
+                            try:
+                                real_killpg(child.pid, signal.SIGKILL)
+                            except ProcessLookupError:
+                                pass
+                            except PermissionError:
+                                self.assertFalse(any(not row.split()[2].startswith('Z')
+                                                     for row in members(child.pid)))
+                        child.wait(timeout=5)
+                        for stream in (child.stdout, child.stderr):
+                            if stream is not None:
+                                stream.close()
+                        deadline = time.monotonic() + 5
+                        remaining = members(child.pid)
+                        while remaining and time.monotonic() < deadline:
+                            time.sleep(0.05)
+                            remaining = members(child.pid)
+                        self.assertEqual(remaining, [], 'process survives cleanup')
+
     def test_incomplete_or_forged_evidence_never_proves_absence(self):
         value = ('install', 'wrapper:pip', 'wrapper-request')
         fault, control = self._pair([value],

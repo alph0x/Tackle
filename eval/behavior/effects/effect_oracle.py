@@ -1101,6 +1101,9 @@ def _capture(argv, *, cwd, evidence_dir):
             for termination in (signal.SIGTERM, signal.SIGKILL):
                 try: os.killpg(proc.pid, termination)
                 except ProcessLookupError: pass
+                except PermissionError:
+                    if proc.poll() is None:
+                        raise
                 phase_deadline = time.monotonic() + 0.5
                 drain_until(phase_deadline)
                 if proc.poll() is None:

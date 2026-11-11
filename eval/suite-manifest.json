@@ -473,7 +473,7 @@
       "files": [
         "test_effects.py"
       ],
-      "tests": 5,
+      "tests": 6,
       "source": "eval/behavior/effects",
       "category": "tooling",
       "purpose": "Observed attempts, completed fixture effects, qualified scoped absence and unknown coverage through local wrappers, Git and inventory/traversal evidence, with protected evaluation and effect-free replay; no host-wide isolation claim."
