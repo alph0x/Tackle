@@ -130,7 +130,7 @@ def _absolute(value, label, *, exists=True, directory=None):
 
 def _validate_catalog(catalog):
     _exact_keys(catalog, TOP_KEYS, "catalog")
-    if catalog["schema"] != CATALOG_SCHEMA or catalog["revision"] != 6 or catalog["target_methodology"] != "10.5.1":
+    if catalog["schema"] != CATALOG_SCHEMA or catalog["revision"] != 7 or catalog["target_methodology"] != "10.5.2":
         raise MigrationError("unsupported-catalog")
     if catalog["supported_buckets"] != ["pre-3", "3", "4", "5", "lite"]:
         raise MigrationError("unsupported-catalog-buckets")
@@ -475,7 +475,7 @@ def _validate_context(context):
     _exact_keys(context, CONTEXT_KEYS, "context")
     if type(context["workspace"]) is not str or not re.fullmatch(r"[a-z0-9][a-z0-9.-]*", context["workspace"]):
         raise MigrationError("invalid-workspace-name")
-    if context["target"] != "10.5.1":
+    if context["target"] != "10.5.2":
         raise MigrationError("unsupported-target")
     if type(context["date"]) is not str or not re.fullmatch(r"\d{4}-\d\d-\d\d", context["date"]):
         raise MigrationError("invalid-date")
@@ -1053,7 +1053,7 @@ def _manifest(path, *, allow_source_missing=False):
 
 def _cmd_diagnose(args):
     root = _absolute(args.workspace, "workspace", exists=True, directory=True)
-    if args.target != "10.5.1": raise MigrationError("unsupported-target")
+    if args.target != "10.5.2": raise MigrationError("unsupported-target")
     context = _read_json(_absolute(args.context, "context", exists=True, directory=False))
     catalog_path = Path(__file__).resolve().parents[2] / "references" / "guides" / CATALOG_NAME
     catalog = _validate_catalog(_read_json(catalog_path))
