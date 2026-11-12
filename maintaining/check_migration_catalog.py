@@ -109,7 +109,7 @@ CURRENT_RECIPES = {'I-owner-archetypes': 'Before any separately owner-controlled
                           'keep its original authoritative. Work only on a disposable copy; the original '
                           'remains unchanged before separately validated cutover. Before candidate edits, '
                           'record the canonical path, selection rationale, source/contract revision, pinned '
-                          'task procedure and current diagnostic under that procedure; hash board, briefs, '
+                          'task procedure and the current source diagnostic; that diagnostic is the one the installed route records on the frozen source copy; a diagnostic under the pinned procedure\'s own revision is not required; hash board, briefs, '
                           'reports, AGENTS.md/model map, history, usage, raw evidence and any '
                           'sidecars/snapshots that exist. Preserve exact checks, test/replay inputs, '
                           'correction lineage and historical completed/blocked/skipped/interrupted states; '
