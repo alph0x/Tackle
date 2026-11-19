@@ -4,7 +4,7 @@ Schema: tackle-workspace/5
 
 **Canonical current task state.** `task-board.md` owns task status, the plan requirements and coverage,
 history the original events. The authorized coordinator updates this board; STATUS, Next and plain Resume
-inspect only. An older board is migrated before it runs ([forward only](guides/migrate.md#forward-only)).
+inspect only. An older board is migrated before it runs (forward only: `references/guides/migrate.md#forward-only`).
 
 States: Draft, Ready to run, In progress, Checking, Complete, Blocked, Interrupted, Skipped,
 Unverifiable, Waiting on owner. The Status cell holds exactly one state token, without a reason suffix;

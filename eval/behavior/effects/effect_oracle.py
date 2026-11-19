@@ -1102,7 +1102,9 @@ def _capture(argv, *, cwd, evidence_dir):
                 try: os.killpg(proc.pid, termination)
                 except ProcessLookupError: pass
                 except PermissionError:
-                    if proc.poll() is None:
+                    try: os.killpg(proc.pid, 0)
+                    except ProcessLookupError: pass
+                    else:
                         raise
                 phase_deadline = time.monotonic() + 0.5
                 drain_until(phase_deadline)

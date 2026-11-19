@@ -13,6 +13,7 @@ import json
 import os
 from pathlib import Path
 import re
+import stat
 import sys
 import tempfile
 from types import SimpleNamespace
@@ -101,6 +102,50 @@ class SystemOneIntegration(unittest.TestCase):
                 self.assertEqual(seen, {'answer': value, 'date': '2026-10-06', 'actor': 'Owner'})
                 self.assertEqual(meta, seen)
 
+        question_text = 'keep before\n- Open [system-one-consent] ask\nkeep after\n'
+        modes = [(0o644, 0o644), (0o4644, 0o644), (0o644, 0o4644),
+                 (0o640, 0o604), (0o604, 0o640)]
+        for index, (agents_mode, questions_mode) in enumerate(modes):
+            with self.subTest(agents_mode=oct(agents_mode), questions_mode=oct(questions_mode)):
+                workspace = self.root / f'consent-modes-{index}'
+                workspace.mkdir()
+                agents = workspace / 'AGENTS.md'
+                questions = workspace / 'questions.md'
+                agents.write_text(original)
+                questions.write_text(question_text)
+                agents.chmod(agents_mode)
+                questions.chmod(questions_mode)
+                actual_modes = (stat.S_IMODE(agents.stat().st_mode),
+                                stat.S_IMODE(questions.stat().st_mode))
+                if actual_modes != (agents_mode, questions_mode) and 0o4644 in (agents_mode, questions_mode):
+                    self.skipTest('Filesystem cannot represent the requested special-bit fixture')
+                self.assertEqual(actual_modes, (agents_mode, questions_mode))
+                self.ns['record_consent'](workspace, 'yes', 'Owner', '2026-10-06')
+                self.assertEqual((stat.S_IMODE(agents.stat().st_mode),
+                                  stat.S_IMODE(questions.stat().st_mode)),
+                                 (agents_mode, questions_mode))
+                self.assertTrue(agents.read_text().startswith(original))
+                self.assertEqual(questions.read_text(), 'keep before\nkeep after\n')
+                snapshot = (agents.read_bytes(), questions.read_bytes())
+                self.ns['record_consent'](workspace, 'yes', 'Owner', '2026-10-06')
+                self.assertEqual((agents.read_bytes(), questions.read_bytes()), snapshot)
+                self.assertEqual((stat.S_IMODE(agents.stat().st_mode),
+                                  stat.S_IMODE(questions.stat().st_mode)),
+                                 (agents_mode, questions_mode))
+
+        for operation in ('fchmod', 'replace'):
+            with self.subTest(failure=operation):
+                workspace = self.root / f'consent-failure-{operation}'
+                workspace.mkdir()
+                agents = workspace / 'AGENTS.md'
+                agents.write_text(original)
+                before = (agents.read_bytes(), stat.S_IMODE(agents.stat().st_mode))
+                with patch.object(os, operation, side_effect=OSError('injected failure')):
+                    with self.assertRaises((ValueError, OSError)):
+                        self.ns['record_consent'](workspace, 'yes', 'Owner', '2026-10-06')
+                self.assertEqual((agents.read_bytes(), stat.S_IMODE(agents.stat().st_mode)), before)
+                self.assertEqual(list(workspace.glob('.system-one-*')), [])
+
     def test_consent_conflicts_malformed_and_neighbor_workspace(self):
         self.answer()
         content = (self.workspace/'AGENTS.md').read_bytes()
@@ -124,6 +169,33 @@ class SystemOneIntegration(unittest.TestCase):
         (self.workspace/'AGENTS.md').unlink()
         os.mkfifo(self.workspace/'AGENTS.md')
         with self.assertRaises(ValueError): self.answer()
+
+        for target in ('AGENTS.md', 'questions.md'):
+            for kind in ('symlink', 'directory'):
+                with self.subTest(target=target, kind=kind):
+                    workspace = self.root / f'consent-refusal-{target}-{kind}'
+                    workspace.mkdir()
+                    other_name = 'questions.md' if target == 'AGENTS.md' else 'AGENTS.md'
+                    other_file = workspace / other_name
+                    other_file.write_text('keep before\n- Open [system-one-consent] ask\nkeep after\n'
+                                          if other_name == 'questions.md' else 'Owner content\n')
+                    other_before = other_file.read_bytes()
+                    sentinel = self.root / f'sentinel-{target}-{kind}'
+                    sentinel.write_text('external content\n')
+                    sentinel.chmod(0o640)
+                    sentinel_before = (sentinel.read_bytes(), stat.S_IMODE(sentinel.stat().st_mode),
+                                       sentinel.stat().st_ino)
+                    suspect = workspace / target
+                    if kind == 'symlink':
+                        suspect.symlink_to(sentinel)
+                    else:
+                        suspect.mkdir()
+                    with self.assertRaises((ValueError, OSError)):
+                        self.ns['record_consent'](workspace, 'yes', 'Owner', '2026-10-06')
+                    self.assertEqual((sentinel.read_bytes(), stat.S_IMODE(sentinel.stat().st_mode),
+                                      sentinel.stat().st_ino), sentinel_before)
+                    self.assertTrue(suspect.is_symlink() if kind == 'symlink' else suspect.is_dir())
+                    self.assertEqual(other_file.read_bytes(), other_before)
 
     def test_one_pending_question_and_readonly_status(self):
         prepare = self.ns['prepare_consent']

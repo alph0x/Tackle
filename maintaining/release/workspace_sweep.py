@@ -1,4 +1,4 @@
-"""Read-only per-row lint sweep for the 10.3.0 release, preserving native results and explicit release scope.
+"""Read-only per-row lint sweep for a release, preserving native results and explicit release scope.
 
 Discovery goes through the installed archive helper's `list_workspaces(..., state="active")` (MAINTAINING, Release
 sweep: not a raw docs/plans glob, so the reserved archive store is not an active workspace and unfamiliar ordinary
@@ -46,7 +46,7 @@ stamp_match=re.search(r'^\*\*Tackle ([0-9]+[.][0-9]+[.][0-9]+)\*\*',(root/'skill
 if stamp_match is None or stamp_match[1]!=args.version:raise SystemExit('candidate methodology/version argument mismatch')
 if subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()!=args.candidate:raise SystemExit('candidate HEAD mismatch')
 
-MAIN=workspace.parents[2];SELECTED=workspace.name;RELEASE=root;RECORDS=Path(args.records).resolve()
+MAIN=workspace.parents[2];SELECTED={workspace.name, *cfg.get('selected_workspaces', [])};RELEASE=root;RECORDS=Path(args.records).resolve()
 support.require_candidate(RELEASE,args.candidate)
 SCRIPT = RELEASE / 'skills/tackle/scripts/lint.py'
 HELPER = RELEASE / 'skills/tackle/scripts/workspace_archive.py'
@@ -72,11 +72,20 @@ unknown = [d for d in discovery['diagnostics'] if d['code'] != 'unqualified-acti
 if unknown:
     raise SystemExit('archive discovery is incomplete: %s' % unknown)
 paths = sorted(Path(e['path']) for e in discovery['entries'])
-if SELECTED not in [p.name for p in paths]:
-    raise SystemExit('the selected workspace %s is not an active workspace of this repository' % SELECTED)
 for p in paths:
     if p.resolve(strict=True).parent != (MAIN / 'docs/plans').resolve():
         raise SystemExit('discovered path outside docs/plans: %s' % p)
+if any(not slug_ok.fullmatch(slug) for slug in SELECTED):
+    raise SystemExit('invalid selected workspace slug')
+discovered = {p.name: p for p in paths}
+missing = SELECTED - discovered.keys()
+if missing:
+    raise SystemExit('selected workspaces are not active workspaces of this repository: %s' % ', '.join(sorted(missing)))
+for slug in SELECTED:
+    if discovered[slug].resolve(strict=True) != (MAIN / 'docs/plans' / slug):
+        raise SystemExit('selected workspace identity mismatch: %s' % slug)
+if discovered[workspace.name].resolve(strict=True) != workspace:
+    raise SystemExit('selected workspace identity mismatch: %s' % workspace.name)
 ROW_ROOT = MAIN
 if args.rows_tree == 'candidate':
     overlay = None
@@ -179,7 +188,7 @@ def run(workspace):
     record = OUT / slug
     record.mkdir()
     active = board_active(workspace)
-    selected = slug == SELECTED
+    selected = slug in SELECTED
     base = dict(workspace=slug, active=active, selected=selected, gating=active or selected,
                 script_sha256=digest, siblings=siblings(workspace), rows_tree=args.rows_tree, candidate=args.candidate)
     if not slug_ok.match(slug):

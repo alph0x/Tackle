@@ -10,6 +10,7 @@ metrics remain n/a. Filesystem: escapes and links must not mutate targets; a spa
 workspace and replacement of a hardlink are valid.
 """
 import hashlib
+import importlib.util
 import json
 import os
 import shutil
@@ -181,6 +182,8 @@ class RecordTool(unittest.TestCase):
             (prefix + terminal, dict(data, observed='two\nlines')),
             (prefix + terminal, {'run_id': 'orphan-run', 'event_id': 'recovered'}),
             ((prefix + terminal).replace('Schema: tackle-observability/2', ''), data),
+            ((prefix + terminal).replace('Schema: tackle-observability/2', 'Schema: tackle-observability/2-invalid'), data),
+            ((prefix + terminal).replace('Schema: tackle-observability/2', 'prefix Schema: tackle-observability/2'), data),
             ('# Resource usage\n\n| Task | Role |\n|---|---|\n', data),
             (prefix + terminal + '\n' + '\n'.join(prefix.splitlines()[4:6]) + '\n', data),
             (prefix + terminal + '\n'.join(prefix.splitlines()[4:6]) + '\n', data),
@@ -234,6 +237,19 @@ class RecordTool(unittest.TestCase):
         self.ok('lifecycle', dict(common, event='finish', outcome='blocked', at='2026-10-01T10:00:00.125+05:30'))
         self.refused('lifecycle', dict(common, event='observe-incomplete'))
         self.lint(16)
+        for marker in ('Schema: tackle-observability/2-invalid',
+                       'prefix Schema: tackle-observability/2'):
+            with self.subTest(marker=marker):
+                self.new_workspace()
+                usage = self.ws / 'resource-usage.md'
+                usage.write_text(usage.read_text().replace('Schema: tackle-observability/2', marker))
+                before = usage.read_bytes()
+                stat = usage.stat()
+                self.refused('lifecycle', dict(common, event='start'))
+                after = usage.stat()
+                self.assertEqual(usage.read_bytes(), before)
+                self.assertEqual((after.st_ino, after.st_mode, after.st_mtime_ns),
+                                 (stat.st_ino, stat.st_mode, stat.st_mtime_ns))
 
     def test_correction_duplicate_and_passing_result_refused(self):
         self.event('cycle-new', 'missing marker', 'add marker', 'check')
@@ -282,6 +298,46 @@ class RecordTool(unittest.TestCase):
         self.assertIn(digest, report.read_text())
         self.assertEqual(before, board.read_text())
         self.lint(10, 14, 17)
+        spec = importlib.util.spec_from_file_location('record_tool_cells_test', SCRIPT)
+        record = importlib.util.module_from_spec(spec)
+        sys.modules[spec.name] = record
+        try:
+            spec.loader.exec_module(record)
+            self.assertEqual(record.cells('| a | tail' + chr(92) + '|'), ['a', 'tail|'])
+            self.assertEqual(record.cells('| a ||'), ['a', ''])
+            cases = (
+                ('a' + chr(92) + '|b', 'a|b'),
+                ('a' + chr(92) + '|', 'a|'),
+                ('a' + chr(92) + chr(92) + '|b', 'a' + chr(92) + '|b'),
+            )
+            for raw, decoded in cases:
+                with self.subTest(raw=raw):
+                    self.assertEqual(record.cells('| ' + raw + ' | tail |'), [decoded, 'tail'])
+                    self.new_workspace()
+                    base.materialize(self.root, 'pass-full')
+                    board = self.ws / 'task-board.md'
+                    report = self.ws / f'reports/{TASK_ID}-report.md'
+                    before = board.read_text()
+                    lines = before.splitlines(keepends=True)
+                    header = next(line for line in lines if 'What' in line and 'Verification' in line)
+                    verification = [cell.strip() for cell in header.split('|')].index('Verification')
+                    row = next(line for line in lines if TASK_ID in line and 'Standard work' in line)
+                    other = next(line for line in lines if OTHER_TASK_ID in line)
+                    expected_row = row.replace('Standard work', raw, 1)
+                    expected = before.replace(row, expected_row, 1)
+                    pending_cells = row.split('|')
+                    pending_cells[verification] = ' pending '
+                    pending_row = '|'.join(pending_cells).replace('Standard work', raw, 1)
+                    board.write_text(before.replace(row, pending_row, 1))
+                    digest = hashlib.sha256((self.ws / f'tasks/{TASK_ID}.md').read_bytes()).hexdigest()
+                    self.ok('closure', {'task': TASK_ID, 'remains': 'none'})
+                    self.assertEqual(board.read_text(), expected)
+                    self.assertIn(other, board.read_text())
+                    self.assertIn('Reviewer: demo.', report.read_text())
+                    self.assertIn(digest, report.read_text())
+                    self.lint(1, 2, 3, 5, 7, 8, 10, 11, 12, 14, 17, 18, 19)
+        finally:
+            sys.modules.pop(spec.name, None)
 
     def test_closure_active_erratum_preserves_original_seal(self):
         self.ok('closure', {'task': TASK_ID, 'remains': 'none'})

@@ -91,6 +91,36 @@ class CandidateRows(unittest.TestCase):
         self.assertEqual(self.git('status', '--porcelain', '--ignored'), before)
         self.assertFalse(list(self.root.glob('tackle-candidate-rows-*')))
 
+    def test_explicit_selection_adds_inactive_workspace_and_preserves_active_gating(self):
+        selected = self.main / 'docs/plans/selected'
+        selected.mkdir()
+        active = self.main / 'docs/plans/active'
+        active.mkdir()
+        (active / 'task-board.md').write_text('| Task | Status |\n| --- | --- |\n| Work | In progress |\n')
+        historical = self.main / 'docs/plans/historical'
+        historical.mkdir()
+        config = json.loads(self.config.read_text())
+        config['selected_workspaces'] = ['selected']
+        self.config.write_text(json.dumps(config))
+        result, records = self.sweep('main', 'selected-records')
+        self.assertIn(result.returncode, (0, 1), result.stderr)
+        rows = {row['workspace']: row for row in json.loads((records / 'workspace-sweep/results.json').read_text())}
+        self.assertTrue(rows['example']['selected'])
+        self.assertTrue(rows['selected']['selected'])
+        self.assertTrue(rows['selected']['gating'])
+        self.assertFalse(rows['active']['selected'])
+        self.assertTrue(rows['active']['gating'])
+        self.assertFalse(rows['historical']['gating'])
+
+    def test_absent_explicit_selection_fails_before_records(self):
+        config = json.loads(self.config.read_text())
+        config['selected_workspaces'] = ['absent']
+        self.config.write_text(json.dumps(config))
+        result, records = self.sweep('main', 'absent-records')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('absent', result.stderr)
+        self.assertFalse((records / 'workspace-sweep').exists())
+
     def test_candidate_citation_passes(self):
         (self.workspace / 'plan.md').write_text('citation.txt:1 — "candidate text"\n')
         result, records = self.sweep('candidate', 'matching-records')

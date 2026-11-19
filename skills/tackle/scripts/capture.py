@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 import hashlib
 import json
+import math
 import os
 import re
 import subprocess
@@ -192,8 +193,12 @@ def capture(spec_path):
     spec_path = local(root, spec_path)
     spec = json.loads(spec_path.read_text())
     argv = spec['argv']
-    if not argv or not all(isinstance(x, str) for x in argv):
+    if not isinstance(argv, list) or not argv or not all(isinstance(x, str) for x in argv):
         raise ValueError('argv must be a nonempty string list')
+    timeout = spec['timeout_seconds']
+    if (type(timeout) not in (int, float) or timeout <= 0
+            or (type(timeout) is float and not math.isfinite(timeout))):
+        raise ValueError('timeout_seconds must be a finite positive number')
     if 'workspace' in spec:
         workspace = local(root, spec['workspace']).resolve()
         if not workspace.is_dir():

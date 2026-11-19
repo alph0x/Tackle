@@ -64,6 +64,13 @@ class ManifestImpactTests(unittest.TestCase):
         baseline['suites'][0]['files'] = ['test_a.py']
         baseline['suites'][0]['tests'] = 1
         (self.case_root / 'baseline.json').write_text(json.dumps(baseline, indent=2) + '\n')
+        for directory in ('eval/a', 'eval/b', 'eval/c', 'eval/g', 'eval/elsewhere'):
+            source = self.case_root / directory
+            source.mkdir(parents=True)
+            (source / 'input.py').write_text('# Fixture source\n')
+        subprocess.run(['git', 'init', '-q'], cwd=self.case_root, check=True)
+        subprocess.run(['git', '-c', 'core.excludesFile=/dev/null', 'add', '-f', '--', '.'],
+                       cwd=self.case_root, check=True)
         return manifest, baseline
 
     def invoke(self, changed, *, phase='development', baseline=True, dry_run=False, digest_override=None,

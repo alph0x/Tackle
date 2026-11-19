@@ -1200,12 +1200,15 @@
     },
     {
       "rule_id": "R-RUN-14",
-      "statement": "New tests follow red, green, refactor: the chosen failing test is seen failing before the implementation, and an opt-out needs a decision recorded first.",
-      "statement_sha256": "c33bea5f8bef201516b6c34e8f5345884dbb59406f0c985bddb840e073df8ae6",
+      "statement": "New tests follow red, green, refactor: the chosen failing test is seen failing before the implementation, and an opt-out needs a decision recorded first. Never write a unit test after implementing the behavior it covers; a general test-first opt-out does not authorize post-implementation unit tests.",
+      "statement_sha256": "1234444b42df4614b44107e7e9ba76de8c519fc1073b64e279476a56021be332",
       "home": "references/guides/testing.md:38",
       "home_fragment": "red \u2192 green \u2192 refactor is the Executor's default shape",
       "units": [],
-      "mirrors": [],
+      "mirrors": [
+        "references/guides/testing.md:46",
+        "references/guides/migration-catalog.json:752"
+      ],
       "class": "behavioral",
       "hot_path": false,
       "origin": {
@@ -1724,7 +1727,7 @@
       "rule_id": "R-EVID-10",
       "statement": "A suite run is evidence only if the arm's condition actually held, audited before scoring.",
       "statement_sha256": "03e6510f3f23404667d2ce4dacabdbea1ced18ffb29a21d8aeb3ab1cd2ad91af",
-      "home": "references/guides/judge.md:43",
+      "home": "references/guides/judge.md:45",
       "home_fragment": "A run is evidence only if the arm's condition actually",
       "units": [],
       "mirrors": [],
@@ -1757,7 +1760,7 @@
       "rule_id": "R-EVID-11",
       "statement": "The answer sheet is never visible to the agent under test.",
       "statement_sha256": "5e2db81002e311e96a7103d0fe9809a2c487d3ea0759698fc2a6d00064976ec5",
-      "home": "references/guides/judge.md:39",
+      "home": "references/guides/judge.md:41",
       "home_fragment": "The answer sheet must never be visible to the agent under",
       "units": [],
       "mirrors": [],
@@ -2260,7 +2263,10 @@
       "units": [
         "**Learning consent** \u2014 select applicable, curren"
       ],
-      "mirrors": [],
+      "mirrors": [
+        "references/guides/intake-and-gate.md:53",
+        "references/profile.tmpl.md:10"
+      ],
       "class": "behavioral",
       "hot_path": true,
       "origin": {
@@ -3371,7 +3377,7 @@
       "units": [],
       "mirrors": [
         "references/guides/plan-view.md:35",
-        "references/guides/plan-view.md:136",
+        "references/guides/plan-view.md:135",
         "references/guides/run-card.md:49",
         "references/guides/plan-view.md:16",
         "references/guides/plan-card.md:99"
@@ -3527,7 +3533,7 @@
       "rule_id": "R-STATUS-10",
       "statement": "Full and Focused views use the same template and export a self-contained executive presentation of the plan, its current progress or both through a separate light print report independent of screen filters, theme and collapsed sections, with original page title, temporary print attributes and focus restored after printing, cancellation or a print exception. The Full export uses its required curated summary; a Focused export may use source-derived fallback without curation.",
       "statement_sha256": "4683407f0b5940e458f1f0e39166785af03c2aaeea7742cd6918fc48e4421ef4",
-      "home": "references/guides/plan-view.md:122",
+      "home": "references/guides/plan-view.md:121",
       "home_fragment": "Full and Focused views use the same template",
       "units": [],
       "mirrors": [],
@@ -3961,7 +3967,7 @@
       "home_fragment": "The coordinator updates `view/summary.json` and",
       "units": [],
       "mirrors": [
-        "references/guides/plan-view.md:139"
+        "references/guides/plan-view.md:138"
       ],
       "class": "behavioral",
       "hot_path": false,
@@ -3986,7 +3992,7 @@
       "home_fragment": "Under the standing view request, the coordinator runs",
       "units": [],
       "mirrors": [
-        "references/guides/plan-view.md:68",
+        "references/guides/plan-view.md:67",
         "references/guides/plan-card.md:101"
       ],
       "class": "behavioral",
@@ -4031,7 +4037,7 @@
       "rule_id": "R-STATUS-20",
       "statement": "The plan view shows a Waiting on you section read from the files: open questions from questions.md with their Determines line, open unless the state carries a resolved mark, tasks Waiting on owner or Blocked with their Verification cell, and Open board obligations with owner and trigger; when nothing is open one line says so, a Focused plan shows its open questions only, and the PDF report keeps its own obligations table.",
       "statement_sha256": "206bec52b78fc5b5fb02cbd953c30ffbac75d71c31f1471db5b1437f60adb9fb",
-      "home": "references/guides/plan-view.md:109",
+      "home": "references/guides/plan-view.md:108",
       "home_fragment": "A Waiting on you section lists open questions",
       "units": [],
       "mirrors": [],
@@ -4054,7 +4060,7 @@
       "rule_id": "R-STATUS-21",
       "statement": "The Progress and Both reports of the PDF carry the same note. The build and its check also name, on stderr, each task whose state differs from the states a summary declares.",
       "statement_sha256": "05320f189fdd6c016ff9d60ddb136f59e81e4973780846df92a12a14e3215a0d",
-      "home": "references/guides/plan-view.md:141",
+      "home": "references/guides/plan-view.md:140",
       "home_fragment": "The Progress and Both reports of the PDF carry the same note",
       "units": [],
       "mirrors": [],
@@ -4077,7 +4083,7 @@
       "rule_id": "R-STATUS-22",
       "statement": "The export is read by people who do not know the plan, so its prose names no task, decision, question or requirement ids, file paths, backticks or workspace names. The build warns on stderr for each field that contains one and never fails.",
       "statement_sha256": "f80a21add416a374605a056aa2d366d6962d229b42122ec98e7e5082a945fdf4",
-      "home": "references/guides/plan-view.md:142",
+      "home": "references/guides/plan-view.md:141",
       "home_fragment": "The export is read by people who do not know the plan, so it",
       "units": [],
       "mirrors": [],
@@ -4100,7 +4106,7 @@
       "rule_id": "R-STATUS-23",
       "statement": "When a plan view exists, an authorized auxiliary page for the plan, such as a proposals, comparison or review page, uses the plan view's visual base by default without a question about style, built with the plan-view recipe's page mode.",
       "statement_sha256": "6d9aae937cffab5ddb9c49d27e9d2d133c3789d01990dcdd6918aa2dfe218437",
-      "home": "references/guides/plan-view.md:154",
+      "home": "references/guides/plan-view.md:153",
       "home_fragment": "When a plan view exists, an authorized auxiliary page for th",
       "units": [],
       "mirrors": [],
@@ -4123,7 +4129,7 @@
       "rule_id": "R-STATUS-24",
       "statement": "Each diagram the page draws, the task graph and each architecture picture, offers its Mermaid text to copy or download; the page never renders Mermaid and loads nothing.",
       "statement_sha256": "2ebe1b2bf811c5cb696900b5be1f51997ab88af77f7acb411f2b6e59c5d34aa8",
-      "home": "references/guides/plan-view.md:174",
+      "home": "references/guides/plan-view.md:173",
       "home_fragment": "Each diagram the page draws, the task graph and each archite",
       "units": [],
       "mirrors": [],
@@ -4146,7 +4152,7 @@
       "rule_id": "R-STATUS-25",
       "statement": "A dependency on a sibling workspace's task is drawn as an external node with the sibling's name and that task's state; it has no inspector.",
       "statement_sha256": "0da04e082040a4cc38a6b5c1e454229ff808b95748d4120377299469cab52f4a",
-      "home": "references/guides/plan-view.md:178",
+      "home": "references/guides/plan-view.md:177",
       "home_fragment": "A dependency on a sibling workspace's task is drawn as an ex",
       "units": [],
       "mirrors": [],
@@ -4169,7 +4175,7 @@
       "rule_id": "R-STATUS-26",
       "statement": "`--initiative` writes one page over the workspace and the siblings it declares, one hop; `--template` stays required, and `--initiative` takes no `--page`, `--map` or `--map-scope`.",
       "statement_sha256": "4db0a958fcdc0b570735e906af6e459a06ec2e7e7fba139545fe875997eaa832",
-      "home": "references/guides/plan-view.md:192",
+      "home": "references/guides/plan-view.md:191",
       "home_fragment": "`--initiative` writes one page over the workspace and t",
       "units": [],
       "mirrors": [],
@@ -4192,7 +4198,7 @@
       "rule_id": "R-STATUS-27",
       "statement": "Members are read only; a sibling's own declaration that names a workspace outside the initiative prints `outside the initiative: <slug>` once on stderr and is not followed.",
       "statement_sha256": "26ae9af961c110babd0a428011f42624bed604e583f2573c45ba3b02763a4c2f",
-      "home": "references/guides/plan-view.md:193",
+      "home": "references/guides/plan-view.md:192",
       "home_fragment": "Members are read only; a sibling's own declaration that",
       "units": [],
       "mirrors": [],
@@ -4215,7 +4221,7 @@
       "rule_id": "R-STATUS-28",
       "statement": "Tasks are keyed `<key>:T-NN`: the root's key is its folder name, and a sibling's key is the slug the root declares for it.",
       "statement_sha256": "0d709027369def9ba36eca40591e1d8c5273654d04e598521d4db4db843eae8e",
-      "home": "references/guides/plan-view.md:194",
+      "home": "references/guides/plan-view.md:193",
       "home_fragment": "Tasks are keyed `<key>:T-NN`: the root's key is its fol",
       "units": [],
       "mirrors": [],
@@ -4238,7 +4244,7 @@
       "rule_id": "R-STATUS-29",
       "statement": "A member with no `tackle-workspace/5` board is refused once, the root included, with the line above; a cycle across members is refused as `cycle across workspaces: <a> -> ... -> <a>`.",
       "statement_sha256": "4882ecea737d640c948650bd441bbc411c3c20ba3eabf911a81eb87bfbe6894d",
-      "home": "references/guides/plan-view.md:195",
+      "home": "references/guides/plan-view.md:194",
       "home_fragment": "A member with no `tackle-workspace/5` board is refused ",
       "units": [],
       "mirrors": [],
@@ -4261,7 +4267,7 @@
       "rule_id": "R-STATUS-30",
       "statement": "`--initiative --check` prints `view current` or `view stale: <keys>` with the single-page exit codes; its keys cover each member's `task-board.md`, `plan.md`, `AGENTS.md` and each brief its board names.",
       "statement_sha256": "62a36f7ff6ab64770304dd8aabba4e8e559ad45da946118faecf6f54900a81ef",
-      "home": "references/guides/plan-view.md:196",
+      "home": "references/guides/plan-view.md:195",
       "home_fragment": "`--initiative --check` prints `view current` or `view s",
       "units": [],
       "mirrors": [],
@@ -4284,7 +4290,7 @@
       "rule_id": "R-STATUS-31",
       "statement": "An initiative-view request is its own owner request and the owner's authorization for the script for that request; it does not add or remove scope relative to the single-workspace request.",
       "statement_sha256": "9ff4e09d1473b9f6defe974ca9301986de5a76257294000f8205aa3b2ba8ce9f",
-      "home": "references/guides/plan-view.md:197",
+      "home": "references/guides/plan-view.md:196",
       "home_fragment": "An initiative-view request is its own owner request and",
       "units": [],
       "mirrors": [],
@@ -6594,7 +6600,7 @@
       "home": "references/guides/migrate.md:44",
       "home_fragment": "The first `verify` captures the candidate as it stands",
       "units": [],
-      "mirrors": [],
+      "mirrors": ["references/guides/migration-catalog.json:1261", "references/guides/migration-catalog.json:1267", "references/guides/migration-catalog.json:1273", "references/guides/migration-catalog.json:1287", "references/guides/migration-catalog.json:1293", "references/guides/migration-catalog.json:1299", "references/guides/migration-catalog.json:1305", "references/guides/migration-catalog.json:1311", "references/guides/migration-catalog.json:1317", "references/guides/migration-catalog.json:1323"],
       "class": "safety-invariant",
       "hot_path": false,
       "origin": {"added_in": "10.5.2", "trigger": "Owner request: finish 10.5.2 by migrating Rootbound (K1, K6).", "discovered_by": []},
@@ -6641,6 +6647,29 @@
       "hot_path": false,
       "origin": {"added_in": "10.5.2", "trigger": "Owner request: finish 10.5.2 by migrating Rootbound (K7).", "discovered_by": []},
       "evidence": {"status": "untested", "scenarios": [], "cohort_id": null, "as_of": "2026-11-10"},
+      "historical": []
+    },
+    {
+      "rule_id": "R-MIGRATE-22",
+      "statement": "When a file has no current counterpart, retain it as historical data or map it to a real current artifact under an explicit recorded decision. Retaining a file as historical data requires a D-xx that marks that file as historical.",
+      "statement_sha256": "6e72a3a7645a0416bdf95407cd4e752c8797670b7429552082daeea496024fc8",
+      "home": "references/guides/migration-catalog.json:135",
+      "home_fragment": "For retained files, record a D-xx",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.6.0",
+        "trigger": "Restore the explicit historical-file decision marker in the installed migration instruction.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-11-16"
+      },
       "historical": []
     },
     {
@@ -6730,7 +6759,7 @@
       "rule_id": "R-RUN-45",
       "statement": "Reviewer runs first; the verdict cites each record printed:",
       "statement_sha256": "c0da67b595fa0d32790d7a362a28bf90301f0c0c42d00cf45af6abfb80e50741",
-      "home": "references/task.tmpl.md:162",
+      "home": "references/task.tmpl.md:174",
       "home_fragment": "Reviewer runs first; the verdict cites each record printed:",
       "units": [],
       "mirrors": [],
@@ -7135,6 +7164,100 @@
       "hot_path": false,
       "origin": {"added_in": "10.5.1", "trigger": "README currency outside version tokens has no standing part", "discovered_by": []},
       "evidence": {"status": "untested", "scenarios": [], "cohort_id": null, "as_of": "2026-11-04"},
+      "historical": []
+    },
+    {
+      "rule_id": "R-STATUS-33",
+      "statement": "The static plan view marks sessions with a start and no finish or observe-incomplete event as open. It reports current activity as unconfirmed and distinguishes the session label from the task state in both languages.",
+      "statement_sha256": "12bf1c707185eb797402b7f6178c03638fd636f2d15eaf5c26aed7fbb3f6e836",
+      "home": "references/guides/plan-view.md:104",
+      "home_fragment": "The page marks tasks associated with an open run",
+      "units": [],
+      "mirrors": [],
+      "class": "format",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.6.0",
+        "trigger": "A static view presented a session with no terminal record as current activity.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-11-18"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-EVID-27",
+      "statement": "Suite mode requires the Tackle repository, so if `eval/scenarios` is unavailable, report that suite mode is unavailable, point to the repository, and stop without inventing scenarios or scores.",
+      "statement_sha256": "ad902a81b34c288609e1b00d75c68d5a2d2f9ad4ed8719f7c3293a9dea7731a3",
+      "home": "references/guides/judge.md:37",
+      "home_fragment": "Suite mode requires the Tackle repository",
+      "units": [],
+      "mirrors": [],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.6.0",
+        "trigger": "Installed guidance and task-template compatibility review",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-11-18"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-PLAN-47",
+      "statement": "The task template emits the complete write scope as comma-separated repository-relative paths, each enclosed in backticks. Its rollout section identifies shipped paths.",
+      "statement_sha256": "4e53d340f5059e233e5bb54c10f7880bd49c30820a35efca5a27d71a1661b760",
+      "home": "references/task.tmpl.md:12",
+      "home_fragment": "- **Write scope**: {{complete write set as comma",
+      "units": [],
+      "mirrors": [],
+      "class": "format",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.6.0",
+        "trigger": "Installed guidance and task-template compatibility review",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-11-18"
+      },
+      "historical": []
+    },
+    {
+      "rule_id": "R-LEARN-13",
+      "statement": "Report available usage once per distinct cited session, with measured and eligible sessions for each field. Keep role coverage separate.",
+      "statement_sha256": "57a1c2d45b48baf91e1b3145214238134dafa570e56ca018ec573e04a69da86f",
+      "home": "references/guides/retro.md:193",
+      "home_fragment": "Report available usage once per distinct cited session",
+      "units": [],
+      "mirrors": [
+        "references/retro.tmpl.md:62"
+      ],
+      "class": "behavioral",
+      "hot_path": false,
+      "origin": {
+        "added_in": "10.6.0",
+        "trigger": "Record reconciliation: report observable shared-session usage without duplicating it across roles.",
+        "discovered_by": []
+      },
+      "evidence": {
+        "status": "untested",
+        "scenarios": [],
+        "cohort_id": null,
+        "as_of": "2026-11-18"
+      },
       "historical": []
     }
   ],

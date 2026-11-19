@@ -79,7 +79,7 @@ class SchemaDetectionTests(unittest.TestCase):
     def bucket(self, name):
         return SCHEMA['schema_of'](load_files(FIXTURES / 'detect' / name))
 
-    def test_pre3(self):
+    def test_detect_legacy_board_schema(self):
         self.assertEqual(self.bucket('pre3'), 'pre-3')
 
     def test_three(self):
@@ -620,7 +620,7 @@ class Step4To5Tests(unittest.TestCase):
 class IdempotenceTests(unittest.TestCase):
     """C5: every step, run on its own output, is a byte-identical no-op and verify reports no error."""
 
-    def test_pre3_to_3(self):
+    def test_legacy_board_migration_is_idempotent(self):
         before = load_files(FIXTURES / 'pre3-to-3/before')
         after, _ = STEP_PRE3_TO_3['transform'](before, CONTEXT_84)
         second, renames = STEP_PRE3_TO_3['transform'](after, SCHEMA['PoisonContext']())

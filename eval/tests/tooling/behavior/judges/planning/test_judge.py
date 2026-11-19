@@ -178,14 +178,14 @@ class JudgmentShapeTests(Synthetic):
 
 
 class ReadOnlyTests(Synthetic):
-    def test_c7_the_judged_tree_is_unchanged(self):
+    def test_the_judged_tree_is_unchanged(self):
         work = self.work('def double(x):\n    return 2 * x\n')
         before = tree_sha(work)
         self.judge_work(work)
         self.assertEqual(tree_sha(work), before)
         self.assertFalse(list(work.rglob('__pycache__')))
 
-    def test_c8_the_hidden_tree_comes_from_the_git_index(self):
+    def test_the_hidden_tree_comes_from_the_git_index(self):
         first = self.judge_work(self.work('def double(x):\n    return x + 2\n'))
         (self.repo / self.hidden / 'test_demo.py').write_text(DEMO_TEST.replace('4)', '4) if False else None'))
         second = self.judge_work(self.work('def double(x):\n    return x + 2\n'))
@@ -194,7 +194,7 @@ class ReadOnlyTests(Synthetic):
 
 
 class CountingTests(Synthetic):
-    def test_c9_a_skipped_test_falls(self):
+    def test_a_skipped_test_falls(self):
         self.stage_hidden({'test_demo.py': DEMO_TEST.replace(
             '    def test_double_negative(self):', '    @unittest.skip("later")\n    def test_double_negative(self):')},
             tests=2)
@@ -202,18 +202,18 @@ class CountingTests(Synthetic):
         self.assertEqual(judgment['outcome'], 'fell')
         self.assertEqual(judgment['details']['hidden']['skipped'], 1)
 
-    def test_c9_fewer_tests_than_declared_falls(self):
+    def test_fewer_tests_than_declared_falls(self):
         self.stage_hidden({'test_demo.py': DEMO_TEST}, tests=3)
         judgment = self.judge_work(self.work('def double(x):\n    return 2 * x\n'))
         self.assertEqual(judgment['outcome'], 'fell')
         self.assertEqual(judgment['details']['hidden']['ran'], 2)
 
-    def test_c9_an_import_error_falls(self):
+    def test_an_import_error_falls(self):
         judgment = self.judge_work(self.work('raise ImportError("broken")\n'))
         self.assertEqual(judgment['outcome'], 'fell')
         self.assertGreater(judgment['details']['hidden']['errors'], 0)
 
-    def test_c10_a_hang_falls_within_the_timeout(self):
+    def test_a_hang_falls_within_the_timeout(self):
         self.stage_hidden({'test_demo.py': DEMO_TEST}, tests=2, timeout=2)
         started = time.monotonic()
         judgment = self.judge_work(self.work('import time\n\n\ndef double(x):\n    time.sleep(60)\n    return 2 * x\n'))
@@ -223,17 +223,17 @@ class CountingTests(Synthetic):
 
 
 class RunnerHardeningTests(Synthetic):
-    def test_c18_a_sitecustomize_cannot_fake_a_success(self):
+    def test_a_sitecustomize_cannot_fake_a_success(self):
         fake = ('import os, sys\nsys.stderr.write("Ran 2 tests in 0.001s\\n\\nOK\\n")\nos._exit(0)\n')
         judgment = self.judge_work(self.work('def double(x):\n    return x + 2\n', {'sitecustomize.py': fake}))
         self.assertEqual(judgment['outcome'], 'fell')
 
-    def test_c18_a_unittest_shadow_cannot_fake_a_success(self):
+    def test_a_unittest_shadow_cannot_fake_a_success(self):
         shadow = 'import os\nos._exit(0)\n'
         judgment = self.judge_work(self.work('def double(x):\n    return x + 2\n', {'unittest.py': shadow}))
         self.assertEqual(judgment['outcome'], 'fell')
 
-    def test_c18_an_early_exit_during_import_falls(self):
+    def test_an_early_exit_during_import_falls(self):
         judgment = self.judge_work(self.work('import os\nos._exit(0)\n'))
         self.assertEqual(judgment['outcome'], 'fell')
         self.assertEqual(judgment['details']['hidden']['result'], 'missing')
@@ -247,24 +247,24 @@ class RefusalTests(Synthetic):
         self.assertIn('judge: refused:', result.stderr)
         self.assertFalse(out.exists())
 
-    def test_c11_an_unknown_variant_is_refused(self):
+    def test_an_unknown_variant_is_refused(self):
         self.refuse('--scenario', 's99-demo', '--variant', 'h9', '--work', self.work('x = 1\n'), '--repo', self.repo)
 
-    def test_c11_a_missing_hidden_json_is_refused(self):
+    def test_a_missing_hidden_json_is_refused(self):
         git(self.repo, 'rm', '-q', '--cached', self.hidden + 'hidden.json')
         self.refuse('--scenario', 's99-demo', '--variant', 'v1', '--work', self.work('x = 1\n'), '--repo', self.repo)
 
-    def test_c11_a_malformed_hidden_json_is_refused(self):
+    def test_a_malformed_hidden_json_is_refused(self):
         (self.repo / self.hidden / 'hidden.json').write_text('{"schema": "tackle-hidden-tests/1", "tests": "six"}')
         git(self.repo, 'add', '-A')
         self.refuse('--scenario', 's99-demo', '--variant', 'v1', '--work', self.work('x = 1\n'), '--repo', self.repo)
 
-    def test_c11_a_repo_that_is_not_a_git_work_tree_is_refused(self):
+    def test_a_repo_that_is_not_a_git_work_tree_is_refused(self):
         plain = self.tmp / 'plain'
         plain.mkdir()
         self.refuse('--scenario', 's99-demo', '--variant', 'v1', '--work', self.work('x = 1\n'), '--repo', plain)
 
-    def test_c11_a_missing_work_tree_is_refused(self):
+    def test_a_missing_work_tree_is_refused(self):
         self.refuse('--scenario', 's99-demo', '--variant', 'v1', '--work', self.tmp / 'absent', '--repo', self.repo)
 
     def test_an_existing_output_is_never_overwritten(self):
@@ -322,33 +322,33 @@ class TranscriptTests(Synthetic):
         self.judged('--episode', episode, '--repo', self.repo)
         return json.loads((episode / 'judgment.json').read_text())
 
-    def test_c12_claude_code_counts_check_runs_and_cycles(self):
+    def test_claude_code_counts_check_runs_and_cycles(self):
         details = self.episode('claude-code', [claude_stream(STEPS)])['details']
         self.assertEqual((details['check_runs'], details['correction_cycles'], details['transcript_format']),
                          (3, 2, 'claude-code'))
 
-    def test_c12_codex_counts_check_runs_and_cycles(self):
+    def test_codex_counts_check_runs_and_cycles(self):
         details = self.episode('codex', [codex_stream(STEPS[:4]), codex_stream(STEPS[4:])])['details']
         self.assertEqual((details['check_runs'], details['correction_cycles'], details['transcript_format']),
                          (3, 2, 'codex'))
 
-    def test_c12_subagent_transcripts_use_the_claude_code_parser(self):
+    def test_subagent_transcripts_use_the_claude_code_parser(self):
         details = self.episode('subagent', [claude_stream(STEPS)])['details']
         self.assertEqual((details['check_runs'], details['correction_cycles'], details['transcript_format']),
                          (3, 2, 'subagent'))
 
-    def test_c12_a_final_failure_is_not_a_cycle(self):
+    def test_a_final_failure_is_not_a_cycle(self):
         details = self.episode('codex', [codex_stream([('python3 -m unittest', False)])])['details']
         self.assertEqual((details['check_runs'], details['correction_cycles']), (1, 0))
 
-    def test_c12_fake_and_unknown_formats_are_na(self):
+    def test_fake_and_unknown_formats_are_na(self):
         fake = json.dumps({'type': 'tool', 'name': 'write'}) + '\n' + json.dumps({'type': 'result'}) + '\n'
         for adapter, stream in (('fake', fake), ('someday', codex_stream(STEPS))):
             details = self.episode(adapter, [stream])['details']
             self.assertEqual((details['check_runs'], details['correction_cycles'], details['transcript_format']),
                              ('n/a', 'n/a', 'n/a'), adapter)
 
-    def test_c12_an_unreadable_transcript_is_na(self):
+    def test_an_unreadable_transcript_is_na(self):
         details = self.episode('claude-code', ['not json at all\n'])['details']
         self.assertEqual(details['correction_cycles'], 'n/a')
 
@@ -405,13 +405,13 @@ class PlanningScenarioTests(Base):
             self.assertTrue(all(v['stageable'] for v in entry['variants']), scenario)
             self.assertTrue(tracked(ROOT, 'eval/scenarios/%s/GROUND-TRUTH.md' % scenario), scenario)
 
-    def test_c1_the_untouched_fixture_falls(self):
+    def test_the_untouched_fixture_falls(self):
         for scenario, variant in self.each_variant():
             judgment = self.judge(scenario, variant, self.fixture(scenario, variant))
             self.assertEqual(judgment['outcome'], 'fell', '%s/%s: the hidden tests pass on the untouched fixture'
                              % (scenario, variant))
 
-    def test_c2_c3_both_references_are_avoided(self):
+    def test_both_references_are_avoided(self):
         for scenario, variant in self.each_variant():
             expected = self.hidden_spec(scenario, variant)['tests']
             self.assertTrue(4 <= expected <= 10, '%s/%s: %d hidden tests' % (scenario, variant, expected))
@@ -421,7 +421,7 @@ class PlanningScenarioTests(Base):
                                  (expected, 0, 0, 0), '%s/%s: reference %s is not avoided (counts %s)'
                                  % (scenario, variant, overlay, [hidden[k] for k in ('ran', 'failures', 'errors', 'skipped')]))
 
-    def test_c4_the_visible_tests_pass(self):
+    def test_the_visible_tests_pass(self):
         for scenario, variant in self.each_variant():
             command = self.hidden_spec(scenario, variant)['visible']
             self.assertTrue(command, '%s/%s: no visible test command' % (scenario, variant))
@@ -434,7 +434,7 @@ class PlanningScenarioTests(Base):
                 self.assertEqual(result.returncode, 0, '%s/%s: visible tests exit %d (%s)'
                                  % (scenario, variant, result.returncode, overlay or 'untouched'))
 
-    def test_c5_hidden_content_stays_out_of_the_input(self):
+    def test_hidden_content_stays_out_of_the_input(self):
         for scenario, variant in self.each_variant():
             root = variant_root(scenario, variant)
             inputs = {name: staged(ROOT, name) for name in tracked(ROOT, root + 'input/')}
@@ -465,7 +465,7 @@ class PlanningScenarioTests(Base):
                         self.assertNotEqual(staged(ROOT, name), inputs[original], '%s/%s: reference %s repeats %s'
                                             % (scenario, variant, overlay, name[len(prefix):]))
 
-    def test_c6_standard_library_only(self):
+    def test_standard_library_only(self):
         stdlib = set(sys.stdlib_module_names)
         for scenario, variant in self.each_variant():
             root = variant_root(scenario, variant)
@@ -536,7 +536,7 @@ class IntegrationTests(Base):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         return result
 
-    def test_c13_a_fell_and_an_avoided_episode_are_recorded_and_checked(self):
+    def test_a_fell_and_an_avoided_episode_are_recorded_and_checked(self):
         scenario, variant = PLANNING[0], 'v1'
         entry = planning_entries()[scenario]
         digest = next(v['fixture_sha256'] for v in entry['variants'] if v['variant_id'] == variant)
@@ -562,7 +562,7 @@ class IntegrationTests(Base):
 
 
 class RegistryTests(unittest.TestCase):
-    def test_c17_the_hidden_tests_are_never_discovered(self):
+    def test_the_hidden_tests_are_never_discovered(self):
         registry = json.loads((ROOT / 'eval/suite-manifest.json').read_text())
         self.assertIn('eval/scenarios', registry['excluded_directories'])
         self.assertIn('eval/tests/tooling/behavior/judges/planning', [suite['path'] for suite in registry['suites']])

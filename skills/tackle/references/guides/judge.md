@@ -34,6 +34,8 @@ Format: the verdict first; then a claims table (claim, what was observed); then 
 
 `judge suite <target>` runs the trap suite in `eval/scenarios/` against a target configuration: a newly installed skill, a different model, a modified prompt. Staging, diff, audit and the judge packet follow this manual checklist; the judgment is never delegated. The one absolute rule: **the executor never sees `GROUND-TRUTH.md`.**
 
+Suite mode requires the Tackle repository, so if `eval/scenarios` is unavailable, report that suite mode is unavailable, point to the repository, and stop without inventing scenarios or scores.
+
 For each scenario directory `eval/scenarios/<id>/`:
 
 1. **Stage the scratch copies.** Copy every fixture file except `GROUND-TRUTH.md` into a fresh `eval/scratch/<id>-<arm>-<seed>/` directory per arm. The answer sheet must never be visible to the agent under test.

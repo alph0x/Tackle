@@ -45,15 +45,27 @@ def _read(path):
 def _write(path, text):
     # Refuse nonregular targets before atomic replacement; leave other files alone.
     _read(path)
-    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=path.parent,
-                                     prefix=".system-one-", delete=False) as stream:
-        temporary = Path(stream.name)
-        stream.write(text)
     try:
+        metadata = path.lstat()
+    except FileNotFoundError:
+        mode = None
+    else:
+        if not stat.S_ISREG(metadata.st_mode):
+            raise ValueError("system-one-storage")
+        mode = stat.S_IMODE(metadata.st_mode)
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=path.parent,
+                                         prefix=".system-one-", delete=False) as stream:
+            temporary = Path(stream.name)
+            stream.write(text)
+            stream.flush()
+            if mode is not None:
+                os.fchmod(stream.fileno(), mode)
         os.replace(temporary, path)
     finally:
-        if temporary.exists():
-            temporary.unlink()
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
 
 
 def _consent(text):
@@ -197,7 +209,7 @@ def _canonical(value):
 def _closed_scope(scope):
     return (type(scope) is dict and set(scope) == {"owner", "identity", "contract_sha256"}
             and all(type(scope[key]) is str and scope[key] for key in scope)
-            and re.fullmatch(r"T-[A-Za-z0-9]+", scope["owner"]) is not None
+            and re.fullmatch(r"T-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*", scope["owner"]) is not None
             and re.fullmatch(r"[0-9a-f]{64}", scope["contract_sha256"]) is not None)
 
 

@@ -4,6 +4,7 @@ import contextlib, functools, hashlib, importlib.util, json, os, shutil, sys, te
 from unittest import mock
 ROOT = Path(__file__).resolve().parents[4]
 sys.path.insert(0, str(ROOT))
+from eval.support.lint import published_row_ids
 from eval.tests.product.migration import test_compact_migration as fixture
 spec = importlib.util.spec_from_file_location('compact_content_links', ROOT / 'skills/tackle/scripts/migrate/compact.py')
 compact = importlib.util.module_from_spec(spec)
@@ -528,6 +529,6 @@ class ContentSymlinkTests(unittest.TestCase):
                 (target / 'evidence.md').write_bytes(b'ordinary retained evidence\n')
                 nanoid(source)
                 checks = compact._check_native(installed, project, source.name, job, 'candidate', source, 'a' * 64, 'b' * 64, compact._install_identity(installed))
-                self.assertEqual([row['row'] for row in checks], list(range(1, 20)))
+                self.assertEqual([row['row'] for row in checks], list(published_row_ids()))
 if __name__ == '__main__':
     unittest.main()

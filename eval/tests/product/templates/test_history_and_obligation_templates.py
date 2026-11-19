@@ -251,7 +251,7 @@ class RetroRecipeTests(unittest.TestCase):
         for fragment in absent:
             self.assertFalse(any(fragment in l for l in out), fragment)
 
-    def test_a1_both_journal_forms_count_across_the_archive_then_the_history(self):
+    def test_both_journal_forms_count_across_the_archive_then_the_history(self):
         files = {'history-archive.md': ['# History archive', '', '## 2026-10-01 · session 1',
                                         '- T-0042 attempt 1: lint failed'],
                  'history.md': ['# History', '', '## 2026-10-02 · session 2',
@@ -264,7 +264,7 @@ class RetroRecipeTests(unittest.TestCase):
                                      ('history.md', '- T-0042 correction 4 of 3: still red')],
                              {'T-0042': 4}, over=['T-0042'])
 
-    def test_a2_state_snapshot_lines_are_skipped_whatever_their_case(self):
+    def test_state_snapshot_lines_are_skipped_whatever_their_case(self):
         history = ['# History', '', '## 2026-10-02 · session 1', '- T-0042 attempt 1: x failed', '',
                    '### State snapshot', '- Active obligations: 1 of 3 for T-0042 (attempt 1: x failed)',
                    '- Blocked on: nothing.', '', '## 2026-10-03 · session 2', '- T-0042 Attempt 2: y failed']
@@ -272,7 +272,7 @@ class RetroRecipeTests(unittest.TestCase):
                              [('history.md', '- T-0042 attempt 1: x failed'),
                               ('history.md', '- T-0042 Attempt 2: y failed')], {'T-0042': 2})
 
-    def test_a3_only_attempt_and_cycle_lines_with_a_number_of_at_least_one_count(self):
+    def test_only_attempt_and_cycle_lines_with_a_number_of_at_least_one_count(self):
         history = ['# History', '', '## 2026-10-05 · session 1',
                    '- T-0042 correction cycle 1 of 3: lint red → fix import; python3 -m unittest: fail',
                    '- T-0042 attempt 2: retry with a clean cache', '- T-0042 attempt : noise',
@@ -280,28 +280,28 @@ class RetroRecipeTests(unittest.TestCase):
         self.assert_attempts({'history.md': history}, [('history.md', history[3]), ('history.md', history[4])],
                              {'T-0042': 2})
 
-    def test_a4_a_history_without_counted_lines_prints_none(self):
+    def test_a_history_without_counted_lines_prints_none(self):
         self.assert_attempts({'history.md': ['# History', '', '## 2026-10-06 · session 1', '- T-0042 started']},
                              [], {})
 
-    def test_a5_an_idless_counted_line_takes_the_ids_of_its_entry(self):
+    def test_an_idless_counted_line_takes_the_ids_of_its_entry(self):
         history = ['# History', '', '## 2026-10-07 · session 1', '- T-0042 started',
                    '- correction cycle 1 of 3: lint red → fix; python3 -m unittest: pass']
         self.assert_attempts({'history.md': history}, [('history.md', history[4])], {'T-0042': 1})
 
-    def test_a6_several_ids_are_credited_and_an_entry_without_ids_is_unattributed(self):
+    def test_several_ids_are_credited_and_an_entry_without_ids_is_unattributed(self):
         history = ['# History', '', '## 2026-10-08 · session 1', '- T-0042 and T-0043 share the parser',
                    '- attempt 1: parser fix failed', '', '## 2026-10-09 · session 2', '- attempt 1: unowned failure']
         self.assert_attempts({'history.md': history}, [('history.md', history[4]), ('history.md', history[7])],
                              {'T-0042': 1, 'T-0043': 1}, unattributed=['unattributed history.md:8'])
 
-    def test_a7_exactly_three_counted_lines_are_not_over_the_cap(self):
+    def test_exactly_three_counted_lines_are_not_over_the_cap(self):
         history = ['# History', '', '## 2026-10-10 · session 1', '- T-0042 attempt 1: a', '- T-0042 attempt 2: b',
                    '- T-0042 correction cycle 3 of 3: c → d; make test: fail']
         self.assert_attempts({'history.md': history}, [('history.md', history[3]), ('history.md', history[4]),
                                                        ('history.md', history[5])], {'T-0042': 3})
 
-    def test_a8_a_snapshot_ends_at_the_next_subheading_and_at_the_end_of_the_file(self):
+    def test_a_snapshot_ends_at_the_next_subheading_and_at_the_end_of_the_file(self):
         archive = ['## 2026-10-10 · session 1', '- T-0042 attempt 1: a failed', '### State snapshot',
                    '- Obligations: T-0042 (attempt 1: a failed)']
         history = ['# History', '- T-0042 attempt 2: b failed', '', '## 2026-10-11 · session 2', '### State snapshot',
@@ -310,7 +310,7 @@ class RetroRecipeTests(unittest.TestCase):
                              [('history-archive.md', archive[1]), ('history.md', history[1]),
                               ('history.md', history[7])], {'T-0042': 3})
 
-    def test_a9_a_task_named_twice_on_one_counted_line_is_credited_once(self):
+    def test_a_task_named_twice_on_one_counted_line_is_credited_once(self):
         history = ['# History', '', '## 2026-10-12 · session 1',
                    '- T-0042 correction cycle 2: T-0042 test red',
                    '- T-0042 and T-0042 attempt 1: x',
@@ -318,7 +318,7 @@ class RetroRecipeTests(unittest.TestCase):
         self.assert_attempts({'history.md': history}, [('history.md', history[3]), ('history.md', history[4]),
                                                        ('history.md', history[5])], {'T-0042': 3})
 
-    def test_g1_a_full_gate_below_line_one_counts_distinct_session_labels_and_dates(self):
+    def test_a_full_gate_below_line_one_counts_distinct_session_labels_and_dates(self):
         plan = ['# Action plan — Fixture', '', 'Gate: Full', '', '## 1. Objective']
         history = ['# History', '', '## 2026-10-18 · session 1', '- T-0042 started; the gate held',
                    '## 2026-10-18 · session 1', '- continued after a break', '## 2026-10-19 · session 2',
@@ -329,19 +329,19 @@ class RetroRecipeTests(unittest.TestCase):
         self.assert_gate({'plan.md': plan, 'history.md': history, 'task-board.md': board}, 'Gate: Full', 4,
                          undated=['undated heading: history.md:9'], present=['the gate held'], absent=['delegate'])
 
-    def test_g2_a_lite_plan_without_a_board_reports_completed_as_not_applicable(self):
+    def test_a_lite_plan_without_a_board_reports_completed_as_not_applicable(self):
         self.assert_gate({'plan.md': ['Gate: Lite', '', '# Lite fixture'],
                           'history.md': ['# History', '', '## 2026-10-20 · session 1', '- T-0042 Complete']},
                          'Gate: Lite', 1, completed='n/a')
 
-    def test_g3_a_plan_without_a_gate_line_prints_gate_not_applicable_and_no_delegate_match(self):
+    def test_a_plan_without_a_gate_line_prints_gate_not_applicable_and_no_delegate_match(self):
         board = ['Schema: tackle-workspace/4', '', '| Task | What | Brief | Depends on | Verification | Status |',
                  '|---|---|---|---|---|---|', '| T-0042 | Parser work | tasks/T-0042.md | none | pending | Complete |']
         self.assert_gate({'plan.md': ['# Action plan — Fixture', '', '## 1. Objective', '- delegate the investigation'],
                           'history.md': ['# History', '', '## 2026-10-22 · session 1', '- we delegate this to the reviewer'],
                           'task-board.md': board}, 'gate n/a', 1, absent=['delegate'])
 
-    def test_g4_an_undated_archive_heading_counts_and_fenced_or_commented_headings_do_not(self):
+    def test_an_undated_archive_heading_counts_and_fenced_or_commented_headings_do_not(self):
         plan = ['# Action plan — Fixture', '', 'Gate: Full', '', '## 1. Objective']
         archive = ['# History archive', '', '## Notes', '- legacy note', '', '## 2026-10-01 · session 1', '- a']
         history = ['# History', '', '## 2026-10-02 · session 2', '```text', '## not a heading', '```', '<!--',
@@ -351,7 +351,7 @@ class RetroRecipeTests(unittest.TestCase):
         self.assert_gate({'plan.md': plan, 'history-archive.md': archive, 'history.md': history, 'task-board.md': board},
                          'Gate: Full', 2, undated=['undated heading: history-archive.md:3'])
 
-    def test_g5_labels_shared_by_the_archive_and_the_history_count_once(self):
+    def test_labels_shared_by_the_archive_and_the_history_count_once(self):
         board = ['Schema: tackle-workspace/4', '', '| Task | What | Brief | Depends on | Verification | Status |',
                  '|---|---|---|---|---|---|', '| T-0042 | Parser work | tasks/T-0042.md | none | pending | Complete |']
         self.assert_gate({'plan.md': ['Gate: Full', '', '## 1. Objective'], 'task-board.md': board,
@@ -361,7 +361,7 @@ class RetroRecipeTests(unittest.TestCase):
 
 
 
-    def test_t1_the_plan_template_puts_the_full_gate_on_line_three_and_keeps_its_title_and_first_section(self):
+    def test_the_plan_template_puts_the_full_gate_on_line_three_and_keeps_its_title_and_first_section(self):
         lines = text(REF / 'plan.tmpl.md').splitlines()
         self.assertEqual(lines[0], '# Action plan — {{TITLE}}')
         self.assertEqual(lines[2], 'Gate: Full')

@@ -5,6 +5,7 @@ import html
 import json
 import os
 import re
+import stat
 import sys
 from pathlib import Path
 
@@ -18,8 +19,8 @@ UI = {
         skip='Skip to content', theme='Switch between light and dark', progress='Progress', kicker='Plan',
         n_overview='Outcomes', n_requirements='Requirements', n_decisions='Decisions', n_export='Export',
         n_graph='Flow', n_tasks='Tasks', n_now='Status', n_tech='Details', n_arch='Architecture',
-        working='Working now', working_none='No session works on this plan right now.', plan_scope='The plan',
-        run_scope='The run', live='Live', graph='How the work flows',
+        working='Open sessions (current activity unconfirmed)', working_none='No open sessions recorded.', plan_scope='The plan',
+        run_scope='The run', live='Open session', graph='How the work flows',
         graph_note='Each arrow points from a task to the work that needs it. Select a task to trace it.', mission_purpose='Purpose', mission_complete='{done} of {total} recorded tasks are complete.', mission_remaining='{count} recorded tasks remain open or unfinished.', mission_achievements='Recorded achievements', mission_open_work='Open work', mission_next='Next recorded steps', mission_raw_snapshot='Raw recorded snapshot', mission_no_board='No task board is available; this view remains a focused snapshot.', stale_prose='The written status summary describes an earlier board ({as_of}); the task states have changed since, so the recorded facts below replace it until it is updated.',
         graph_reduced='An arrow that a longer path already implies is left out. Each task lists everything it needs.',
         graph_none='This plan has no task board, so the view shows no graph.', clear='Clear the trace',
@@ -50,7 +51,7 @@ UI = {
                  'package': 'Installable files', 'page': 'Page', 'capability': 'Capability', 'component': 'Component'},
         status='Status', verification='Verification', decisions='Decision log', decision='Decision', state='State',
         date='Date', made_with='Made with Tackle', built='Built',
-        st_done='Tasks complete', st_cov='Requirements with a task', st_dec='Decisions', st_open='Sessions at work',
+        st_done='Tasks complete', st_cov='Requirements with a task', st_dec='Decisions', st_open='Open sessions',
         st_reqs='Requirements', st_checks='Checks',
         complete='complete', bar_caption='{done} of {total} tasks are complete.', unknown='Unknown',
         outcomes='What this plan makes possible', now='Now', next='Next', owner='You',
@@ -111,8 +112,8 @@ UI = {
         skip='Ir al contenido', theme='Cambiar entre claro y oscuro', progress='Avance', kicker='Plan',
         n_overview='Resultados', n_requirements='Requisitos', n_decisions='Decisiones', n_export='Exportar',
         n_graph='Flujo', n_tasks='Tareas', n_now='Estado', n_tech='Detalle', n_arch='Arquitectura',
-        working='En marcha ahora', working_none='Ninguna sesión trabaja en este plan ahora.', plan_scope='El plan',
-        run_scope='La ejecución', live='En marcha', graph='Cómo fluye el trabajo',
+        working='Sesiones abiertas (actividad actual sin confirmar)', working_none='No hay sesiones abiertas registradas.', plan_scope='El plan',
+        run_scope='La ejecución', live='Sesión abierta', graph='Cómo fluye el trabajo',
         graph_note='Cada flecha va de una tarea al trabajo que la necesita. Elige una tarea para seguir su traza.', mission_purpose='Propósito', mission_complete='{done} de {total} tareas registradas están completas.', mission_remaining='{count} tareas registradas siguen abiertas o incompletas.', mission_achievements='Logros registrados', mission_open_work='Trabajo abierto', mission_next='Siguientes pasos registrados', mission_raw_snapshot='Instantánea registrada en bruto', mission_no_board='No hay un tablero de tareas; esta vista conserva una instantánea enfocada.', stale_prose='El resumen escrito del estado describe un tablero anterior ({as_of}); los estados de las tareas cambiaron desde entonces, así que los hechos registrados de abajo lo reemplazan hasta que se actualice.',
         graph_reduced='Se omite la flecha que un camino más largo ya implica. Cada tarea lista todo lo que necesita.',
         graph_none='Este plan no tiene tablero de tareas, así que la vista no muestra grafo.', clear='Quitar la traza',
@@ -145,7 +146,7 @@ UI = {
                  'package': 'Archivos instalables', 'page': 'Página', 'capability': 'Capacidad', 'component': 'Componente'},
         status='Estado', verification='Verificación', decisions='Registro de decisiones', decision='Decisión', state='Estado',
         date='Fecha', made_with='Hecho con Tackle', built='Generado',
-        st_done='Tareas completas', st_cov='Requisitos con tarea', st_dec='Decisiones', st_open='Sesiones en marcha',
+        st_done='Tareas completas', st_cov='Requisitos con tarea', st_dec='Decisiones', st_open='Sesiones abiertas',
         st_reqs='Requisitos', st_checks='Comprobaciones',
         complete='completo', bar_caption='{done} de {total} tareas están completas.', unknown='Desconocido',
         outcomes='Lo que este plan hace posible', now='Ahora', next='Siguiente', owner='Tú',
@@ -211,9 +212,9 @@ EXPORT_UI = {
                report_method='Methodology', report_printable='Printable report', report_tasks='Task progress',
                report_task='Task', report_what='What', report_status='Status', report_brief='Brief',
                report_dependencies='Depends on', report_verification='Verification', report_snapshot='Latest recorded state',
-               report_roles='Open sessions', report_obligations='Open obligations', report_obligation='Obligation', report_owner='Owner', report_trigger='Trigger',
+               report_roles='Open sessions (current activity unconfirmed)', report_obligations='Open obligations', report_obligation='Obligation', report_owner='Owner', report_trigger='Trigger',
                report_discharge='Discharge check', report_reference='Reference', report_no_tasks='No task board is available.',
-               report_no_snapshot='No state snapshot is recorded.', report_no_roles='No sessions are active.',
+               report_no_snapshot='No state snapshot is recorded.', report_no_roles='No open sessions recorded.',
                report_no_obligations='No open obligations are recorded.', report_lite='State and validation',
                report_state='State', report_validation='Validation', report_requirements='Requirements',
                report_requirement='Requirement', report_check='Check', report_no_validation='No validation command is recorded.',
@@ -230,9 +231,9 @@ EXPORT_UI = {
                report_method='Metodología', report_printable='Informe imprimible', report_tasks='Avance de tareas',
                report_task='Tarea', report_what='Qué', report_status='Estado', report_brief='Brief',
                report_dependencies='Depende de', report_verification='Verificación', report_snapshot='Último estado registrado',
-               report_roles='Sesiones abiertas', report_obligations='Obligaciones abiertas', report_obligation='Obligación', report_owner='Responsable', report_trigger='Disparador',
+               report_roles='Sesiones abiertas (actividad actual sin confirmar)', report_obligations='Obligaciones abiertas', report_obligation='Obligación', report_owner='Responsable', report_trigger='Disparador',
                report_discharge='Comprobación de cierre', report_reference='Referencia', report_no_tasks='No hay un tablero de tareas.',
-               report_no_snapshot='No hay una instantánea de estado registrada.', report_no_roles='No hay sesiones activas.',
+               report_no_snapshot='No hay una instantánea de estado registrada.', report_no_roles='No hay sesiones abiertas registradas.',
                report_no_obligations='No hay obligaciones abiertas registradas.', report_lite='Estado y validación',
                report_state='Estado', report_validation='Validación', report_requirements='Requisitos',
                report_requirement='Requisito', report_check='Comprobación', report_no_validation='No se registró un comando de validación.',
@@ -323,16 +324,58 @@ def parse_board(text, problems):
     return states, rows
 
 
+def board_bytes(ws):
+    """Read a regular board without following symlinks in its path, or return None when absent."""
+    try:
+        directory_flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+        leaf_flags = os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
+        directory = os.open(os.path.sep, directory_flags)
+        try:
+            for component in os.path.abspath(ws).split(os.path.sep):
+                if component:
+                    next_directory = os.open(component, directory_flags, dir_fd=directory)
+                    os.close(directory)
+                    directory = next_directory
+            fd = os.open('task-board.md', leaf_flags, dir_fd=directory)
+            try:
+                if not stat.S_ISREG(os.fstat(fd).st_mode):
+                    raise OSError('unsafe task board')
+                chunks = []
+                while True:
+                    chunk = os.read(fd, 1024 * 1024)
+                    if not chunk:
+                        break
+                    chunks.append(chunk)
+                return b''.join(chunks)
+            finally:
+                os.close(fd)
+        finally:
+            os.close(directory)
+    except FileNotFoundError:
+        return None
+
+
+def board_digest(ws):
+    """Digest a confined board, preserving missing and unreadable states."""
+    import hashlib
+    try:
+        data = board_bytes(ws)
+    except OSError:
+        return 'unreadable'
+    return 'absent' if data is None else hashlib.sha256(data).hexdigest()
+
+
 def read_board(ws, problems, lenient=False):
     """The board text, its states and its task rows; a lenient read never fails and gives empty text when unreadable."""
-    path = ws / 'task-board.md'
-    if not lenient:
-        text = read(ws, 'task-board.md')
-    else:
-        try:
-            text = path.read_bytes().decode('utf-8', 'replace') if path.is_file() else ''
-        except OSError:
-            text = ''
+    try:
+        data = board_bytes(ws)
+        text = '' if data is None else data.decode('utf-8', 'replace' if lenient else 'strict')
+        if not lenient:
+            text = text.replace('\r\n', '\n').replace('\r', '\n')
+    except OSError:
+        if not lenient:
+            raise
+        text = ''
     states, rows = parse_board(text, problems)
     return text, states, rows
 
@@ -428,7 +471,8 @@ def sibling_plans(ws, ui):
 
 def sibling_board(folder):
     """The rows of a sibling's board when it declares tackle-workspace/5, else None; its own problems never reach the view."""
-    text = read(folder, 'task-board.md')
+    data = board_bytes(folder)
+    text = '' if data is None else data.decode('utf-8').replace('\r\n', '\n').replace('\r', '\n')
     if not re.search(r'^Schema: tackle-workspace/5[ \t]*$', text, re.M):
         return None
     return parse_board(text, [])[1]
@@ -872,7 +916,8 @@ def input_digests(ws, template_path, map_base, map_scope):
     The scripts are digested from this script's folder; without --map the default base under the repository root is
     recorded present or absent."""
     siblings = read_siblings(ws)
-    inputs = {name: file_digest(ws / name) for name in WORKSPACE_INPUTS}
+    inputs = {name: board_digest(ws) if name == 'task-board.md' else file_digest(ws / name)
+              for name in WORKSPACE_INPUTS}
     rows = read_board(ws, [], lenient=True)[2]
     for row in rows:
         if not row['brief']:
@@ -880,7 +925,7 @@ def input_digests(ws, template_path, map_base, map_scope):
         path, key, outside = resolve_brief(ws, row['brief'], siblings)
         inputs[key] = 'outside the workspace' if outside else file_digest(path)
     for slug, folder in siblings.items():
-        inputs['%s:task-board.md' % slug] = file_digest(folder / 'task-board.md')
+        inputs['%s:task-board.md' % slug] = board_digest(folder)
         inputs['%s:plan-view.html' % slug] = 'present' if sibling_view(folder) else 'absent'
     return finish_record(inputs, ws, template_path, map_base, map_scope)
 

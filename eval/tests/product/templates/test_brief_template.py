@@ -5,6 +5,7 @@ one's own acceptance command passes valid output and rejects invalid output.
 """
 from pathlib import Path
 import re
+import shlex
 import shutil
 import subprocess
 import sys
@@ -119,6 +120,58 @@ class BriefTemplateContractTests(unittest.TestCase):
         self.assertNotEqual(missing_json.returncode, 0)
         self.assertNotIn('PASS task', missing_json.stdout)
         self.assertEqual(run_generated_unit_tests().returncode, 0)
+
+    def test_rendered_native_example_reports_discovery_and_failures(self):
+        template = TEMPLATE.read_text()
+        example = template.split('Illustrative rendered example', 1)[1].split('```text\n', 1)[1].split('\n```', 1)[0]
+        command = next(line.removeprefix('Command: ') for line in example.splitlines()
+                       if line.startswith('Command: '))
+        self.assertIn('four tests discovered and passed, with no skips', example)
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            checkout = root / 'checkout'
+            tests = checkout / 'tests'
+            tests.mkdir(parents=True)
+            record = root / 'records' / 'native-unittest-001'
+            record.mkdir(parents=True)
+            fixture = tests / 'test_example.py'
+            fixture.write_text('import unittest\nclass Cases(unittest.TestCase):\n' + ''.join(
+                f'    def test_{i}(self): self.assertTrue(True)\n' for i in range(4)))
+
+            def run():
+                return subprocess.run(shlex.split(command), cwd=checkout, capture_output=True, text=True, timeout=10)
+
+            def accepted(result):
+                return (result.returncode == 0 and re.search(r'^Ran 4 tests in ', result.stderr, re.M) is not None
+                        and re.search(r'^OK$', result.stderr, re.M) is not None)
+
+            good = run()
+            for name, content in [('stdout', good.stdout), ('stderr', good.stderr), ('exit', str(good.returncode))]:
+                (record / name).write_text(content)
+            self.assertTrue(accepted(good), good.stderr)
+            self.assertEqual((record / 'stdout').read_text(), good.stdout)
+            self.assertEqual((record / 'stderr').read_text(), good.stderr)
+            self.assertEqual((record / 'exit').read_text(), '0')
+            fixture.rename(tests / 'absent.py')
+            empty = run()
+            self.assertIn('Ran 0 tests', empty.stderr)
+            self.assertFalse(accepted(empty))
+            fixture.write_text('import unittest\nclass Cases(unittest.TestCase):\n'
+                               '    def test_failure(self): self.fail("synthetic failure")\n')
+            failed = run()
+            self.assertNotEqual(failed.returncode, 0)
+            self.assertIn('synthetic failure', failed.stderr)
+            self.assertFalse(accepted(failed))
+            fixture.write_text(fixture.read_text() + ''.join(
+                f'    def test_valid_{i}(self): pass\n' for i in range(3)))
+            masked = subprocess.run(['sh', '-c', command + '; exit 0'], cwd=checkout,
+                                    capture_output=True, text=True, timeout=10)
+            self.assertEqual(masked.returncode, 0)
+            self.assertRegex(masked.stderr, r'Ran 4 tests in ')
+            self.assertIn('FAILED', masked.stderr)
+            self.assertFalse(accepted(masked))
+        # Scope CLI coverage belongs to the existing maintainer preflight family;
+        # integration exercises the rendered scope in a disposable git checkout.
 
     def test_template_has_reviewer_literal_first_block(self):
         template = TEMPLATE.read_text()

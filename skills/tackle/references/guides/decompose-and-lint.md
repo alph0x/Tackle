@@ -3,7 +3,7 @@
 
 The card's steps 5 and 6 link here for the decomposition and lint procedure in full.
 
-- Skeleton board first: T-0N / What / Depends-on / Write scope / acceptance check. Existing P workspaces keep their IDs.
+- Skeleton board first: T-0N / What / Depends-on / Write scope / acceptance check. Preserve existing P IDs in archival records; migrate the current workspace to T IDs before running it.
 - Then compile sufficient task briefs for the selected readiness scope.
 - Cut for parallelism by crossing artifacts, interfaces and configuration consumers; a disjoint
   `Write scope` alone never establishes semantic independence. Name every produced/consumed artifact
@@ -26,7 +26,7 @@ every Task id is present.
 **Loop-worthiness test first** — a loop task earns its cost only when ALL four hold; otherwise decompose as a standard task:
 1. **The task repeats** (or recurs within the initiative) — a one-shot job is one good standard task.
 2. **Verification is automated** — a command fails the work without a human in the room.
-3. **The budget absorbs the waste** — loops retry and re-read; `Rounds:` caps it.
+3. **The budget absorbs the waste** — loops retry and re-read; materialize a finite `Rounds:` cap, choosing the documented default when appropriate.
 4. **The agent has real tools** — it can run the thing it changes and see what breaks.
 
 When worthy, pick the reference plan:

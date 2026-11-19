@@ -9,6 +9,7 @@ import stat
 import sys
 import tempfile
 from types import SimpleNamespace
+from types import ModuleType
 import unittest
 from unittest.mock import patch
 from test_system_one_functional import load_recipe, state
@@ -441,6 +442,68 @@ class JudgmentSupportTests(unittest.TestCase):
         self.answer('yes')
         policy = evidence_policy()
         scope = budget_scope('budget-error-restart-01')
+
+        local_workspace = self.root / 'budget-local'
+        local_workspace.mkdir()
+        sdk = ModuleType('typesafe_sdk')
+        sdk.Choice = sdk.Score = object
+        sdk.RetryPolicy = lambda **kwargs: kwargs
+        sends = []
+
+        class Client:
+            def system_one(self, **kwargs):
+                sends.append(kwargs)
+                return object()
+
+            def close(self):
+                pass
+
+        def decide(state, use, fragment, local, transport=None, **kwargs):
+            if transport is None:
+                return {'reason': 'transport-unavailable'}
+            transport({'fragment': fragment})
+            return {'reason': 'response', 'source': 'remote'}
+
+        def run(owner, identity='same', digest='a' * 64, use='bounded-recovery', **extra):
+            local_scope = dict(owner=owner, identity=identity, contract_sha256=digest, **extra)
+            return self.ns['_new_use'](
+                local_workspace, {}, use, 'public fixture', 'local', 'public',
+                decide, lambda **kwargs: Client(), {}, local_scope)
+
+        with patch.dict(sys.modules, {'typesafe_sdk': sdk}), \
+             patch.dict(self.ns, {'_question': lambda *args, **kwargs: None,
+                                  '_normalized': lambda *args, **kwargs: {}}):
+            for owner in ('T-0001', 'T-api-02'):
+                with self.subTest(owner=owner):
+                    self.assertEqual(run(owner)['reason'], 'response')
+                    scope_file = next((local_workspace / 'verification-records' / owner).rglob('scope.json'))
+                    record = json.loads(scope_file.read_text())
+                    self.assertEqual((record['owner'], record['identity'], record['contract_sha256']),
+                                     (owner, 'same', 'a' * 64))
+                    before_sends = len(sends)
+                    before_files = {p.relative_to(local_workspace) for p in local_workspace.rglob('*')}
+                    self.assertEqual(run(owner)['reason'], 'budget-unavailable')
+                    self.assertEqual(run(owner, digest='b' * 64)['reason'], 'budget-unavailable')
+                    self.assertEqual(len(sends), before_sends)
+                    self.assertEqual({p.relative_to(local_workspace) for p in local_workspace.rglob('*')},
+                                     before_files)
+                    record['identity'] = 'other'
+                    scope_file.write_bytes(canonical_bytes(record))
+                    tampered = scope_file.read_bytes()
+                    self.assertEqual(run(owner, use='evidence-signal')['reason'], 'budget-unavailable')
+                    self.assertEqual(scope_file.read_bytes(), tampered)
+                    self.assertFalse((scope_file.parent / 'evidence-signal.reservation.json').exists())
+                    self.assertEqual(len(sends), before_sends)
+            before_sends = len(sends)
+            before_files = {p.relative_to(local_workspace) for p in local_workspace.rglob('*')}
+            for owner in ('T-', 'T-api--02', 'T-../bad', 'T-api/02'):
+                with self.subTest(invalid_owner=owner):
+                    self.assertEqual(run(owner)['reason'], 'budget-unavailable')
+            self.assertEqual(run('T-0001', extra='x')['reason'], 'budget-unavailable')
+            self.assertEqual(len(sends), before_sends)
+            self.assertEqual({p.relative_to(local_workspace) for p in local_workspace.rglob('*')},
+                             before_files)
+
         if self.sdk_absent():
             constructed = []
             absent = self.call('evidence-signal', policy, scope['identity'],

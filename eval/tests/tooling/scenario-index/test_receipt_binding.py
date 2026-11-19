@@ -13,7 +13,7 @@ def mapping_digest(mapping):
 def load_json(path):
     return json.loads(path.read_text(encoding="utf-8"))
 class ReceiptBoundScenarioIndex(unittest.TestCase):
-    def test_s75_variants_match_public_projection(self):
+    def test_variants_match_public_projection(self):
         meta=load_json(META)
         self.assertEqual(meta["schema"],"tackle-measurement-binding/1")
         self.assertEqual(meta["receipt_sha256"],RECEIPT_SHA)

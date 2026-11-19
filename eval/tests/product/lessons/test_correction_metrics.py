@@ -3,6 +3,7 @@ from pathlib import Path
 import contextlib, json, os, subprocess, sys, tempfile, unittest
 ROOT = Path(__file__).resolve().parents[4]
 sys.path.insert(0, str(ROOT))
+from eval.support.lint import literal_command
 from maintaining.install_root import current_root
 TEMPLATE = current_root(ROOT) / 'references/retro.tmpl.md'
 
@@ -64,6 +65,53 @@ class CorrectionCandidateRecipeTests(unittest.TestCase):
 
     def candidates(self, output):
         return [json.loads(line[len('structured candidate: '):]) for line in output.splitlines() if line.startswith('structured candidate: ')]
+
+    def test_retro_and_lint_resolve_the_same_event_reference(self):
+        template = TEMPLATE.read_text()
+        recipe = template.split('| Attempts over budget | `', 1)[1].split('`', 1)[0]
+        lint = literal_command(16, (current_root(ROOT) / 'scripts/lint.py').read_text())
+        task = FIXTURE_TASK_1
+        event_id = task + '-1'
+        header = ('Schema: tackle-observability/2\n'
+                  '| Run ID | Event | Task | Role | Harness | Tier | Model | Effort | At | Outcome | '
+                  'Attempts | Rework | Verification | Source |\n' + '|---' * 14 + '|\n')
+        run_id = 'run/' + task + '/1'
+        start = f'| {run_id} | start | {task} | executor | synthetic | standard | model | n/a | n/a | running | n/a | n/a | n/a | fixture |\n'
+        finish = f'| {run_id} | finish | {task} | executor | synthetic | standard | model | n/a | n/a | success | 1 | n/a | n/a | history-archive.md#'
+        references = [(event_id, True), ('event-' + event_id, True),
+                      ('event-' + event_id.lower(), False), ('event-event-' + event_id, False),
+                      ('absent', False)]
+        with tempfile.TemporaryDirectory() as scratch:
+            root = Path(scratch)
+            workspace = root / 'docs/plans/demo'
+            workspace.mkdir(parents=True)
+            (workspace / 'history.md').write_text('# History\n')
+            (workspace / 'history-archive.md').write_text(event(task, 1))
+            for reference, expected in references:
+                (workspace / 'resource-usage.md').write_text(header + start + finish + reference + ' |\n')
+                row = subprocess.run(['sh', '-c', lint.replace('<slug>', 'demo')], cwd=root,
+                                     capture_output=True, text=True, timeout=30)
+                retro = subprocess.run(['sh', '-c', recipe], cwd=workspace, capture_output=True,
+                                       text=True, timeout=30)
+                self.assertEqual(row.returncode == 0, expected, (reference, row.stdout, row.stderr))
+                self.assertEqual((retro.returncode, retro.stderr), (0, ''), reference)
+                self.assertEqual('unresolved' not in retro.stdout, expected, (reference, retro.stdout))
+                candidates = self.candidates(retro.stdout)
+                self.assertEqual([candidate['id'] for candidate in candidates],
+                                 [event_id] if expected else [], reference)
+                self.assertIn('Attempts over budget: n/a;', retro.stdout)
+                self.assertNotRegex(retro.stdout, rf'(?m)^{task} [0-9]+$')
+
+            # Four reported attempts exceed the fixture budget of three. An
+            # unresolved citation supplies neither a candidate nor a count.
+            for reference, candidate_ids in [('absent', []), (event_id, [event_id])]:
+                over_budget = finish.replace('success | 1 |', 'success | 4 |')
+                (workspace / 'resource-usage.md').write_text(header + start + over_budget + reference + ' |\n')
+                result = subprocess.run(['sh', '-c', recipe], cwd=workspace, capture_output=True,
+                                        text=True, timeout=30, check=True)
+                self.assertEqual([item['id'] for item in self.candidates(result.stdout)], candidate_ids)
+                self.assertIn('Attempts over budget: n/a;', result.stdout)
+                self.assertNotRegex(result.stdout, rf'(?m)^{task} [0-9]+$')
 
     def test_markdown_source_and_report_reveal_41_plus_one_reviewable_events(self):
         output = self.execute({'resource-usage.md': usage(f'{FIXTURE_TASK_3}', f'verification-records/{FIXTURE_TASK_3}/events.md#{FIXTURE_TASK_3}-41', 41), f'verification-records/{FIXTURE_TASK_3}/events.md': ''.join((event(f'{FIXTURE_TASK_3}', n) for n in range(1, 42))), f'reports/{FIXTURE_TASK_14}-report.md': event(f'{FIXTURE_TASK_14}', 1, claim=False)})

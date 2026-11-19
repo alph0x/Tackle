@@ -87,7 +87,7 @@ class Workspace:
 
     def rows(self):
         out = {}
-        for number in range(1, 20):
+        for number in base.published_row_ids():
             verdict, child = base.run_row(number, self.root, None)
             out[number] = (verdict, [line for line in child.stdout.decode().splitlines() if line])
         return out
@@ -104,6 +104,124 @@ class LedgerAndOwnershipRows(unittest.TestCase):
         ws = Workspace(self)
         ws.adopt()
         self.assert_only(ws, 18, [])
+
+    def test_row_18_accepts_inline_and_block_producers(self):
+        for producer in (
+            '- **Produces**:\n  - `demo/output` — the demo line\n',
+            '- **Produces**: `demo/output` — the demo line\n',
+            '- **Produces**: `demo/output` — **Purpose**: demo line\n',
+        ):
+            with self.subTest(producer=producer):
+                ws = Workspace(self)
+                ws.adopt(ledger01=producer + '- **Consumes**: none\n')
+                self.assert_only(ws, 18, [])
+
+    def test_example_fence_cannot_supply_producer(self):
+        example = (
+            '````markdown\n'
+            '```sh\n'
+            '- **Produces**:\n'
+            '  - `demo/output` — example only\n'
+            '```\n'
+            '````\n'
+        )
+        missing = ['missing producer: demo/output in %s' % TB]
+        cases = [
+            ('example only', EMPTY + example, 'FAIL', missing),
+            ('no example or producer', EMPTY, 'FAIL', missing),
+        ]
+        for form, producer in (
+            ('inline', '- **Produces**: `demo/output` — the demo line\n'),
+            ('block', '- **Produces**:\n  - `demo/output` — the demo line\n'),
+        ):
+            ledger = producer + '- **Consumes**: none\n'
+            cases.extend([
+                (form + ' before example', ledger + example, 'PASS', []),
+                (form + ' after example', example + ledger, 'PASS', []),
+            ])
+
+        for name, ledger, expected_verdict, expected_lines in cases:
+            with self.subTest(case=name):
+                ws = Workspace(self)
+                ws.adopt(ledger01=ledger)
+                verdict, child = base.run_row(18, ws.root, None)
+                lines = [line for line in child.stdout.decode().splitlines() if line]
+                self.assertEqual(verdict, expected_verdict)
+                self.assertEqual(lines, expected_lines)
+
+        real_inline = '- **Produces**: `demo/output` — the demo line\n- **Consumes**: none\n'
+        real_block = '- **Produces**:\n  - `demo/output` — the demo line\n- **Consumes**: none\n'
+        fake_block = '- **Produces**:\n  - `demo/output` — example only\n'
+        commented = '<!--\n' + fake_block + '-->\n'
+        consumer = '- **Produces**: none\n- **Consumes**:\n  - `demo/output` from %s\n' % TA
+        tail_consumer = consumer + '  - `demo/tail` from %s\n' % TA
+        tail_producer = real_inline + '- **Produces**: `demo/tail` — hidden\n'
+        missing_tail = ['missing producer: demo/tail in %s' % TB]
+        malformed = ['malformed consume: plan in %s' % TB]
+        citation_prefix = consumer + '  - `plan` exists `plan.md'
+        cases = [
+            ('backtick equal close', EMPTY + '```\n' + fake_block + '```\n' + real_inline, consumer, []),
+            ('backtick longer close', EMPTY + '```\n' + fake_block + '````\n' + real_inline, consumer, []),
+            ('backtick shorter close', EMPTY + '````\n```\n' + fake_block + '````\n', consumer, missing),
+            ('mismatched close', EMPTY + '```\n~~~\n' + fake_block + '```\n', consumer, missing),
+            ('tilde nested example', EMPTY + '~~~~markdown\n~~~sh\n' + fake_block + '~~~\n~~~~\n', consumer, missing),
+            ('tilde equal close', EMPTY + '~~~\n' + fake_block + '~~~\n' + real_inline, consumer, []),
+            ('tilde longer close', EMPTY + '~~~\n' + fake_block + '~~~~\n' + real_inline, consumer, []),
+            ('tilde mismatched close', EMPTY + '~~~\n```\n' + fake_block + '~~~\n', consumer, missing),
+            ('closing text stays fenced', EMPTY + '```\n``` text\n' + fake_block + '```\n', consumer, missing),
+            ('closing whitespace', EMPTY + '```\n' + fake_block + '``` \t\n' + real_inline, consumer, []),
+            ('commented producer', EMPTY + commented, consumer, missing),
+            ('comment token inside example', EMPTY + '```\n<!--\n```\n' + real_inline, consumer, []),
+            ('comment token in fence metadata', EMPTY + '```markdown <!--\n' + fake_block + '```\n' + real_inline, consumer, []),
+            ('backticks after comment terminator', EMPTY + '<!--\n-->```\n' + real_inline, consumer, []),
+            ('tildes after comment terminator', EMPTY + '<!--\n-->~~~\n' + real_inline, consumer, []),
+            ('adjacent examples', EMPTY + '```\nexample\n```\n~~~\n' + fake_block + '~~~\n', consumer, missing),
+            ('unclosed fence', EMPTY + '```\n' + fake_block, consumer, missing),
+            ('unclosed comment', EMPTY + '<!--\n' + fake_block, consumer, missing),
+            ('inline before comment', real_inline + commented, consumer, []),
+            ('inline after comment', commented + real_inline, consumer, []),
+            ('block before comment', real_block + commented, consumer, []),
+            ('block after comment', commented + real_block, consumer, []),
+            ('quoted opener', real_block, citation_prefix + ':1 — "<!--"`\n', []),
+            ('quoted single tick then opener', real_block, citation_prefix + ':1 — "a ` <!--"`\n', []),
+            ('quoted repeated tick then opener', real_block, citation_prefix + ':1 — "a ```` <!--"`\n', []),
+            ('quoted terminator', real_block, citation_prefix + ':1 — "-->"`\n', []),
+            ('quoted opener then terminator', real_block, citation_prefix + ':1 — "<!-- x -->"`\n', []),
+            ('quoted terminator then opener', real_block, citation_prefix + ':1 — "--> x <!--"`\n', []),
+            ('revision and range quote', real_block, citation_prefix + '@abc1234:1-2 — "a ` <!--"`\n', []),
+            ('empty quote', real_block, citation_prefix + ':1 — ""`\n', malformed),
+            ('two citations on one line', real_block, citation_prefix + ':1 — "first"` - `plan` exists `plan.md:1 — "second"`\n', malformed),
+            ('citation then unclosed outside comment', real_block, citation_prefix + ':1 — "first"` <!--\n', malformed),
+            ('citation inside true fence', real_block, consumer + '```\n  - `plan` exists `plan.md:1 — "a ` <!--"`\n```\n', []),
+            ('citation inside comment', real_block, consumer + '<!--\n  - `plan` exists `plan.md:1 — "a ` <!--"`\n-->\n', []),
+            ('unclosed fence after producer', real_inline + '```\n- **Produces**: `demo/tail` — hidden\n', tail_consumer, missing_tail),
+            ('unclosed comment after producer', real_inline + '<!--\n- **Produces**: `demo/tail` — hidden\n', tail_consumer, missing_tail),
+            ('commented consumes field', real_block, '- **Produces**: none\n<!--\n- **Consumes**:\n  - `plan` exists `plan.md:1 — "a ` <!--"`\n-->\n', ['missing ledger: %s' % TB]),
+        ]
+        for marker, label in (('<!--', 'opener'), ('-->', 'terminator')):
+            inline = '- **Produces**: `demo/%s` — literal symbol\n- **Consumes**: none\n- **Produces**: `demo/output` — actual following field\n' % marker
+            block = '- **Produces**:\n  - `demo/%s` — literal symbol\n  - `demo/output` — actual following subitem\n- **Consumes**: none\n' % marker
+            valid = '- **Produces**: none\n- **Consumes**:\n  - `demo/%s` from %s\n  - `demo/output` from %s\n' % (marker, TA, TA)
+            wrong = '- **Produces**: none\n- **Consumes**:\n  - `demo/%s` from %s\n  - `demo/output` from %s\n' % (marker, TZ, TA)
+            cases.extend([
+                ('inline producer ' + label + ' valid owner', inline, valid, []),
+                ('block consume ' + label + ' wrong owner', block, wrong,
+                 ['wrong producer: demo/%s in %s names %s, produced by %s' % (marker, TB, TZ, TA)]),
+            ])
+        cases.append((
+            'symbol span then real outside comment',
+            '- **Produces**:\n  - `demo/<!--` — literal symbol <!--\n- **Produces**:\n  - `demo/fake` — commented only\n-->\n- **Produces**: `demo/output` — actual following field\n- **Consumes**: none\n',
+            '- **Produces**: none\n- **Consumes**:\n  - `demo/output` from %s\n  - `demo/fake` from %s\n' % (TA, TA),
+            ['missing producer: demo/fake in %s' % TB],
+        ))
+        for name, ledger01, ledger02, expected_lines in cases:
+            with self.subTest(case=name):
+                ws = Workspace(self)
+                ws.adopt(ledger01=ledger01, ledger02=ledger02)
+                verdict, child = base.run_row(18, ws.root, None)
+                lines = [line for line in child.stdout.decode().splitlines() if line]
+                self.assertEqual(verdict, 'FAIL' if expected_lines else 'PASS')
+                self.assertEqual(lines, expected_lines)
 
     def test_legacy_briefs_and_decisions_are_silent(self):
         ws = Workspace(self)
@@ -184,6 +302,24 @@ class LedgerAndOwnershipRows(unittest.TestCase):
                '| Task | Responsibility | Traces to |\n|---|---|---|\n| %s | Standard work | `%s` |\n| %s | Experiment | `%s` |' % (TA, RA, TB, RB))
         ws.sub('task-board.md', ROW2, row(TB, 'Experiment', TA, 'pending', 'Skipped'))
         self.assert_only(ws, 2, ['dead requirement owner: %s' % RB])
+
+    def test_row_2_counts_only_unfenced_requirement_definitions(self):
+        definition = '### REQ-FIXTURE-4101 · Sentinel requirement\n\nTask: T-4101\nState: open\n\nScenario: example\n'
+        examples = ('Mention REQ-FIXTURE-4101 here.\n\n'
+                    '```\n### REQ-FIXTURE-4101 · Example\n```\n'
+                    '````markdown\n```sh\n### REQ-FIXTURE-4101 · Nested example\n```\n````\n'
+                    '~~~~markdown\n<!--\n~~~\n### REQ-FIXTURE-4101 · Nested example\n~~~~~\n'
+                    '<!--\n### REQ-FIXTURE-4101 · Comment\n-->\n')
+        for content, expected in (
+            (definition + examples, []),
+            (definition + examples + definition, ['duplicate requirement definition: REQ-FIXTURE-4101']),
+        ):
+            with self.subTest(expected=expected):
+                ws = Workspace(self)
+                ws.write('requirements-delta.md', content)
+                verdict, child = base.run_row(2, ws.root, None)
+                self.assertEqual(child.stdout.decode().splitlines(), expected)
+                self.assertEqual(verdict, 'FAIL' if expected else 'PASS')
 
 
 if __name__ == '__main__':

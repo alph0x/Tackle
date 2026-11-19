@@ -187,3 +187,165 @@ Everything is batch-confirmed by the user before writing — present the referen
 All of the above are outside the installed skill; none is a write under the install tree. Report
 the useful findings and pending consent concisely per the communication contract — link to
 `retro.md`, don't paste it.
+
+## Shared session measurement
+
+Report available usage once per distinct cited session, with measured and eligible sessions for each field. Keep role coverage separate.
+
+Run this recipe from the plan workspace. The optional telemetry file supplies measured values. Each field has a numerator, denominator and percentage. An empty denominator has no percentage. An unavailable or conflicting field remains unmeasured. The report names unmapped finishes separately. An explicit session citation stays known without telemetry. A bare ID needs a matching session observation; without it the finish stays unmapped.
+
+```sh
+python3 -I -B - <<'PYTHON'
+import json
+import math
+import os
+import re
+import stat
+from collections import defaultdict
+
+FIELDS = ("input_tokens", "output_tokens", "reasoning_tokens", "cache_read_tokens",
+          "cache_write_tokens", "requests", "tool_calls", "compactions", "context_tokens", "cost")
+SESSION = re.compile(r"session\s+([^\s;]+)(?:\s*;(.*))?", re.I)
+MISSING, CONFLICT = "unavailable", "conflicting observations"
+
+
+def fixed_bytes(name):
+    if not hasattr(os, 'O_NOFOLLOW') or not hasattr(os, 'O_NONBLOCK'):
+        raise OSError('safe file reads are unavailable')
+    with os.fdopen(os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK), "rb") as f:
+        if not stat.S_ISREG(os.fstat(f.fileno()).st_mode):
+            raise ValueError("expected a regular file")
+        return f.read()
+
+
+def cells(line):
+    body = line.strip().removeprefix("|")
+    if body.endswith("|") and not body.endswith(r"\|"):
+        body = body[:-1]
+    return [c.strip().replace(r"\|", "|") for c in re.split(r"(?<!\\)\|", body)]
+
+
+def finish_sources(text):
+    lines = text.splitlines()
+    for i, line in enumerate(lines[:-1]):
+        header = cells(line)
+        if not {"Run ID", "Event", "Source"} <= set(header) or not {"Task", "Point"}.intersection(header):
+            continue
+        sep = cells(lines[i + 1])
+        if len(sep) != len(header) or not all(re.fullmatch(r":?-+:?", c) for c in sep):
+            continue
+        if len(set(header)) != len(header):
+            raise ValueError("duplicate lifecycle columns")
+        for line in lines[i + 2:]:
+            if not line.lstrip().startswith("|"):
+                break
+            row = cells(line)
+            if len(row) != len(header):
+                raise ValueError("incomplete lifecycle row")
+            if row[header.index("Event")] == "finish":
+                yield row[header.index("Source")]
+        return
+    raise ValueError("v2 lifecycle table unavailable")
+
+
+def session_observation(rec):
+    if not isinstance(rec, dict) or rec.get("schema") != "tackle-observability-telemetry/1":
+        raise ValueError("unknown observation")
+    if rec.get("scope") != "session":
+        return None
+    sid, metrics = rec["scope_id"], rec["metrics"]
+    if not isinstance(sid, str) or not sid.strip() or sid == "n/a" or not isinstance(metrics, dict):
+        raise ValueError("invalid session observation")
+    if "run_id" in rec and (not isinstance(rec["run_id"], str) or not rec["run_id"].strip()):
+        raise ValueError("invalid run id")
+    collector = rec.get("collector")
+    if any(not isinstance(rec.get(key), str) or not rec[key].strip() or rec[key] == "n/a"
+           for key in ("collector", "captured_at", "source")) or not rec.get("provenance") or rec["provenance"] == "n/a":
+        raise ValueError("missing observation envelope")
+    values = {}
+    for field in FIELDS:
+        value = metrics.get(field, "n/a")
+        if value == "n/a":
+            continue
+        if type(value) not in (int, float) or value < 0 or (type(value) is float and not math.isfinite(value)):
+            raise ValueError("invalid metric")
+        currency = metrics.get("currency") if field == "cost" else None
+        if field == "cost" and (not isinstance(currency, str) or not currency or currency == "n/a"):
+            continue
+        basis = json.dumps(rec.get("provenance"), sort_keys=True) if field == "cost" else None
+        values[field] = (collector, currency, value, basis)
+    return sid, values
+
+
+def observations():
+    for name in ("resource-usage.telemetry.jsonl", "usage.telemetry.jsonl"):
+        try:
+            data = fixed_bytes(name)
+            break
+        except FileNotFoundError:
+            continue
+    else:
+        return {}, "absent"
+    result = defaultdict(lambda: defaultdict(set))
+    damaged = False
+    for line in data.splitlines():
+        if not line.strip():
+            continue
+        try:
+            obs = session_observation(json.loads(line.decode("utf-8")))
+        except (ValueError, KeyError, TypeError):
+            damaged = True
+            continue
+        if obs is not None:
+            sid, values = obs
+            fields = result[sid]
+            for field, value in values.items():
+                fields[field].add(value)
+    if damaged:
+        return result, "partial" if result else "unavailable"
+    return result, "read"
+
+
+try:
+    sources = list(finish_sources(fixed_bytes("resource-usage.md").decode("utf-8")))
+except (OSError, UnicodeError, ValueError, KeyError, TypeError):
+    print("Session report unavailable: missing, unreadable or malformed input.")
+    raise SystemExit
+
+try:
+    observed, telemetry_status = observations()
+except (OSError, UnicodeError, ValueError, KeyError, TypeError):
+    observed, telemetry_status = {}, "unavailable"
+
+cited, unmapped = set(), 0
+for source in sources:
+    tag = SESSION.fullmatch(source)
+    if tag and tag[1] != "n/a" and not any(SESSION.fullmatch(note.strip()) for note in (tag[2] or "").split(";")):
+        cited.add(tag[1])
+    elif not tag and source in observed:
+        cited.add(source)
+    else:
+        unmapped += 1
+
+rows, coverage = {}, defaultdict(int)
+for sid in sorted(cited):
+    row = {}
+    for field, values in observed.get(sid, {}).items():
+        if len(values) == 1:
+            collector, currency, value, _ = next(iter(values))
+            row[field] = {"value": value, "collector": collector}
+            if currency is not None:
+                row[field]["currency"] = currency
+                row[field]["qualification"] = "Source-reported amount; comparability unverified."
+            coverage[field] += 1
+        else:
+            row[field] = CONFLICT
+    rows[sid] = row or MISSING
+measured = sum(isinstance(row, dict) and any(isinstance(v, dict) for v in row.values()) for row in rows.values())
+print(json.dumps({"telemetry": telemetry_status, "measured_sessions": measured, "known_sessions": len(cited),
+                  "coverage": {f: [coverage[f], len(cited)] for f in FIELDS},
+                  "coverage_percent": {f: ((200 * coverage[f] + len(cited)) // (2 * len(cited))
+                                            if cited else None) for f in FIELDS},
+                  "unmapped_finishes": unmapped, "sessions": rows}, sort_keys=True))
+PYTHON
+```

@@ -7,7 +7,7 @@
 A profile stores hypotheses and directives distilled from retros, read during intake and updated only during the `retro` workflow; nothing here is ever written silently.
 
 ## Rules
-
+Select profile entries by applicability, current procedure, supporting evidence and supersession before ranking confidence.
 - **Single write path**: the `retro` workflow is the only action that writes to this file.
 - **Batch-confirmed**: every candidate is confirmed by the user before it is recorded.
 - **Top-K limit**: only the top ≤ 10 entries by confidence enter a session.

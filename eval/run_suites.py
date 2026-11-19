@@ -54,11 +54,41 @@ def validate(root, manifest):
             raise ValueError('only explicit synthetic fixture or trial-output trees may be excluded')
         excluded.append(safe_path(root, relative))
     expected, paths = set(), set()
+    tracked = None
     for suite in manifest['suites']:
         directory = safe_path(root, suite['path'])
         if not directory.is_dir() or suite['path'] in paths:
             raise ValueError('missing or duplicate suite: ' + suite['path'])
         paths.add(suite['path'])
+        if 'source' in suite:
+            source = suite['source']
+            if not isinstance(source, str) or not source:
+                raise ValueError('invalid suite source: ' + repr(source))
+            relative = Path(source)
+            if relative.is_absolute() or '..' in relative.parts:
+                raise ValueError('suite source must remain inside repository: ' + source)
+            candidate = root / relative
+            if not candidate.resolve().is_relative_to(root.resolve()):
+                raise ValueError('suite source escapes repository: ' + source)
+            if tracked is None:
+                output = subprocess.check_output(
+                    ['git', 'ls-files', '--cached', '-z'], cwd=root)
+                tracked = {entry.decode('utf-8', 'surrogateescape')
+                           for entry in output.split(b'\0') if entry}
+            name = relative.as_posix()
+            prefix = '' if not relative.parts else name.rstrip('/') + '/'
+            if candidate.is_file():
+                valid_source = name in tracked
+            elif candidate.is_dir():
+                valid_source = any(
+                    item.startswith(prefix)
+                    and (root / item).is_file()
+                    and (root / item).resolve().is_relative_to(root.resolve())
+                    for item in tracked)
+            else:
+                valid_source = False
+            if not valid_source:
+                raise ValueError('suite source has no tracked inputs: ' + source)
         if not suite.get('files') or type(suite.get('tests')) is not int or suite['tests'] <= 0:
             raise ValueError('suite needs explicit files and positive expected test count')
         for filename in suite['files']:

@@ -273,18 +273,26 @@ class ArchitectureMapTests(unittest.TestCase):
             for needle in (PAYLOAD, '<svg onload', '</script><script>alert(4)', 'onmouseover="alert(2)"'):
                 self.assertNotIn(needle, page)
 
-    def test_the_spanish_page_names_live_work_en_marcha(self):
+    def test_open_session_labels_do_not_claim_current_activity(self):
         spanish = ('# Plan — Migración\n\nEl plan describe los pasos de la migración. Cada tarea tiene una verificación. '
                    'La configuración queda lista después de la revisión.\n\n| `%s` | uno | o |\n' % req_id(1))
         with tempfile.TemporaryDirectory() as tmp:
             result, page, _ = run_view(tmp, 'es', None, plan_text=spanish, running=True)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             static = static_part(page)
-            self.assertIn('<span class="live">En marcha</span>', static)
+            self.assertIn('<span class="live">Sesión abierta</span>', static)
+            self.assertIn('Sesiones abiertas (actividad actual sin confirmar)', static)
+            self.assertNotIn('<span class="live">En marcha</span>', static)
             self.assertNotIn('<span class="live">En curso</span>', static)
             self.assertIn('En curso', re.sub(r'<[^>]*>', ' ', static))
             result, page, _ = run_view(tmp, 'en', None, running=True)
-            self.assertIn('<span class="live">Live</span>', static_part(page))
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            static = static_part(page)
+            self.assertIn('<span class="live">Open session</span>', static)
+            self.assertIn('Open sessions (current activity unconfirmed)', static)
+            self.assertNotIn('<span class="live">Live</span>', static)
+            self.assertNotIn('<span class="live">In progress</span>', static)
+            self.assertIn('In progress', re.sub(r'<[^>]*>', ' ', static))
 
 
 def wide_base():

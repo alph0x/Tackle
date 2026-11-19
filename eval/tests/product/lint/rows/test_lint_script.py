@@ -41,7 +41,7 @@ class LintScriptTests(unittest.TestCase):
     def test_row_mode_passes_every_row_through_on_a_clean_workspace(self):
         for fixture, fixture_base in base.PASSES:
             root = self.workspace(fixture, fixture_base)
-            for number in range(1, 20):
+            for number in base.published_row_ids():
                 with self.subTest(fixture=fixture, row=number):
                     self.assert_row_parity(root, number)
 
@@ -52,7 +52,7 @@ class LintScriptTests(unittest.TestCase):
                 ran = self.assert_row_parity(self.workspace(fixture, fixture_base), number)
                 self.assertIn(expected.encode(), ran.stdout + ran.stderr)
                 seen.add(number)
-        self.assertEqual(seen, set(range(1, 20)))
+        self.assertEqual(seen, set(base.published_row_ids()))
 
     def test_all_rows_mode_reports_each_row_and_exits_zero_on_a_clean_workspace(self):
         ran = script(self.workspace('pass-full'), base.SLUG)

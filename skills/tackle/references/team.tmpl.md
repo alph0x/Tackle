@@ -1,7 +1,7 @@
 # Team capabilities — {{TITLE}}
 
 This template binds role capabilities and state ownership. The sole execution lifecycle, correction budget,
-evidence contract, integration checks and closure rules live in the [RUN card](guides/run-card.md), with depth
+evidence contract, integration checks and closure rules live in the RUN card (`references/guides/run-card.md`), with depth
 in `references/guides/run.md`; copy no execution protocol here. The workspace (`task-board.md`, `history.md`,
 the Task file, touched files) is the source of truth; messaging is only coordination.
 

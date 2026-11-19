@@ -105,6 +105,101 @@ class PartPreflight(unittest.TestCase):
         phase = json.loads((records / ('part-' + part) / 'phase.json').read_text())
         return base, result, [item['name'] for item in phase['results']], {item['name']: item for item in phase['results']}
 
+    def intercept_editor(self, mode):
+        tools = self.root / 'maintaining'
+        shutil.copytree(ROOT / 'maintaining', tools)
+        release = tools / 'release'
+        editor = release / 'release_edit.py'
+        editor.rename(release / 'release_edit_original.py')
+        editor.write_text('''import os, pathlib, runpy, sys, threading
+mode = os.environ['PART_TEST_MODE']
+record = pathlib.Path(sys.argv[sys.argv.index('--records') + 1]).name
+if mode == 'first' and record == 'receipt':
+    sys.exit(7)
+if mode == 'missing' and record == 'receipt':
+    repo = pathlib.Path(sys.argv[sys.argv.index('--repo') + 1])
+    (repo / 'README.md').unlink()
+    sys.exit(0)
+if record == 'receipt-second':
+    if mode == 'success':
+        sys.exit(0)
+    if mode == 'changed':
+        repo = pathlib.Path(sys.argv[sys.argv.index('--repo') + 1])
+        with (repo / 'README.md').open('a') as output:
+            output.write('unexpected change\\n')
+        sys.exit(1)
+    if mode == 'timeout':
+        print('before timeout', flush=True)
+        print('error before timeout', file=sys.stderr, flush=True)
+        threading.Event().wait()
+runpy.run_path(str(pathlib.Path(__file__).with_name('release_edit_original.py')), run_name='__main__')
+''')
+        steps = release / 'steps.py'
+        if mode == 'timeout':
+            wrapper = release / 'test_steps.py'
+            wrapper.write_text('''import importlib.util, pathlib
+spec = importlib.util.spec_from_file_location('steps_under_test', pathlib.Path(__file__).with_name('steps.py'))
+steps = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(steps)
+original_run = steps.Phase.run
+def run(self, name, argv, *args, **kwargs):
+    if name == 'second':
+        kwargs['timeout'] = 10
+    return original_run(self, name, argv, *args, **kwargs)
+steps.Phase.run = run
+steps.main()
+''')
+            steps = wrapper
+        original = globals()['STEPS']
+        self.addCleanup(lambda: globals().__setitem__('STEPS', original))
+        globals()['STEPS'] = steps
+        self.env['PART_TEST_MODE'] = mode
+
+    def assert_part_stopped(self, mode, last):
+        self.intercept_editor(mode)
+        before = self.git('ls-files', '-s')
+        base, result, order, facts = self.part()
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertEqual(order[-1], last)
+        self.assertFalse(facts[last]['met'])
+        self.assertNotIn('committed-preflight', order)
+        self.assertNotIn('stage', order)
+        self.assertNotIn('commit', order)
+        self.assertEqual(self.git('rev-parse', 'HEAD'), base)
+        self.assertEqual(self.git('diff', '--cached', '--name-only'), '')
+        self.assertEqual(self.git('ls-files', '-s'), before)
+        return facts
+
+    def test_failed_first_application_stops_before_second(self):
+        facts = self.assert_part_stopped('first', 'apply')
+        self.assertEqual(facts['apply']['native_exit'], 7)
+
+    def test_missing_file_after_first_application_stops_before_second(self):
+        facts = self.assert_part_stopped('missing', 'first application produced readable files')
+        self.assertTrue(facts['apply']['met'])
+        self.assertNotIn('second', facts)
+
+    def test_unexpected_second_success_stops_before_preflight(self):
+        facts = self.assert_part_stopped('success', 'second')
+        self.assertEqual(facts['second']['native_exit'], 0)
+
+    def test_refusal_that_changes_bytes_stops_before_preflight(self):
+        facts = self.assert_part_stopped('changed', 'second application changed nothing')
+        self.assertTrue(facts['second']['met'])
+
+    def test_incomplete_second_application_stops_and_retains_capture(self):
+        facts = self.assert_part_stopped('timeout', 'second')
+        self.assertTrue(facts['second']['timeout'])
+        self.assertFalse(facts['second']['complete'])
+        self.assertLess(facts['second']['native_exit'], 0)
+        output = self.root / 'records/part-readme'
+        capture = json.loads((output / 'second.json').read_text())
+        self.assertTrue(capture['timeout'])
+        self.assertFalse(capture['complete'])
+        self.assertEqual(capture['signal'], -facts['second']['native_exit'])
+        self.assertEqual((output / 'second.stdout').read_text(), 'before timeout\n')
+        self.assertEqual((output / 'second.stderr').read_text(), 'error before timeout\n')
+
     def test_identifier_added_since_release_blocks_before_staging(self):
         (self.repo / 'notes.md').write_text('Carried over from ' + '-'.join(('T', str(7).zfill(2))) + '.\n')
         self.git('add', 'notes.md')

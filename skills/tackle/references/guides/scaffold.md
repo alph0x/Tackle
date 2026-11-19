@@ -17,7 +17,7 @@ append `docs/plans/` to `.gitignore`; if no, record the decision in `decisions.m
 ```
 
 Never silently skip this question or invent a prior answer. Reuse an existing authorized decision, and apply
-the same gitignore treatment to `docs/seeds/` when repository convention 9 requires it.
+the same gitignore treatment to `docs/seeds/` as part of the same decision.
 
 Public documentation and examples must not disclose private initiative state from `docs/plans/` or
 `docs/seeds/`: keep those artifacts outside the installed Markdown package and use synthetic examples.

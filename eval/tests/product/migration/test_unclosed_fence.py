@@ -97,7 +97,7 @@ class StepRefusalTests(unittest.TestCase):
     """Every board-reading step's transform refuses a board whose fenced example never closes, and
     no row past the break is ever silently folded into a successful result."""
 
-    def test_pre3_detect_and_transform_both_raise_on_its_own_board(self):
+    def test_legacy_board_detect_and_transform_both_raise_on_its_own_board(self):
         files = {'board.md': pre3_board_with_open_fence()}
         with self.assertRaisesRegex(ValueError, '^unclosed fenced example$'):
             STEP_PRE3_TO_3['detect'](files)

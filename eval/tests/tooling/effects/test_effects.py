@@ -1,6 +1,6 @@
 """Qualify effects, attempts, scoped absence and unknown on disposable fixtures.
 
-Five native methods retain independent endpoint and command evidence.
+Native methods retain independent endpoint and command evidence.
 Fixture helpers do not reduce effects.
 """
 import builtins
@@ -16,6 +16,7 @@ import stat
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 import unittest
 from unittest import mock
@@ -755,10 +756,23 @@ pathlib.Path(sys.argv[3]).write_text(json.dumps(receipt, sort_keys=True,
                     return child
 
                 def killpg(pid, sig):
+                    if sig == 0:
+                        return real_killpg(pid, sig)
                     child = next(child for child in children if child.pid == pid)
                     if case == 'exited':
                         real_killpg(pid, sig)
                         self.assertIsNotNone(child.poll())
+                        deadline = time.monotonic() + 5
+                        while True:
+                            try:
+                                real_killpg(pid, 0)
+                            except ProcessLookupError:
+                                break
+                            except PermissionError:
+                                pass
+                            if time.monotonic() >= deadline:
+                                self.fail('owned process group did not disappear')
+                            time.sleep(0.01)
                     else:
                         self.assertIsNone(child.poll())
                     calls.append(sig)
@@ -799,6 +813,238 @@ pathlib.Path(sys.argv[3]).write_text(json.dumps(receipt, sort_keys=True,
                             time.sleep(0.05)
                             remaining = members(child.pid)
                         self.assertEqual(remaining, [], 'process survives cleanup')
+
+    def test_owned_group_cleanup_reports_denial_and_accepts_absence(self):
+        subscription_path = ROOT / 'eval/behavior/harness/subscription_route.py'
+        spec = importlib.util.spec_from_file_location('effects_subscription_control',
+                                                      subscription_path)
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        subscription = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(subscription)
+        real_popen, real_killpg = subprocess.Popen, os.killpg
+        real_start = threading.Thread.start
+        observations = []
+        capture_program = r'''import os,sys,time
+child = os.fork()
+if child:
+ if sys.argv[2] == 'exit': os._exit(0)
+ while True: time.sleep(1)
+if sys.argv[2] == 'exit':
+ while os.getppid() != 1: time.sleep(.005)
+with open(sys.argv[1], 'w') as marker: marker.write(str(os.getpid()))
+sys.stdout.write('x' * 2097152); sys.stdout.flush()
+while True: time.sleep(1)
+'''
+        subscription_program = r'''import os,sys,time
+child = os.fork()
+if child:
+ while not os.path.exists(sys.argv[1]): time.sleep(.005)
+ if sys.argv[2] == 'live':
+  while True: time.sleep(1)
+ os._exit(0)
+os.close(0); os.close(1); os.close(2)
+with open(sys.argv[1], 'w') as marker: marker.write(str(os.getpid()))
+while True: time.sleep(1)
+'''
+
+        def absent(pgid, probes, label):
+            deadline = time.monotonic() + 5
+            while True:
+                try:
+                    real_killpg(pgid, 0)
+                except ProcessLookupError:
+                    probes.append({'phase': label, 'result': 'absent'})
+                    return True
+                except PermissionError:
+                    probes.append({'phase': label, 'result': 'permission_denied'})
+                    if time.monotonic() >= deadline:
+                        return False
+                    time.sleep(0.01)
+                    continue
+                if time.monotonic() >= deadline:
+                    probes.append({'phase': label, 'result': 'present'})
+                    return False
+                time.sleep(0.01)
+
+        try:
+            for consumer in ('capture', 'subscription'):
+                for case in ('normal', 'live-leader-denial',
+                             'exited-leader-denial', 'exited-race',
+                             'probe-denial'):
+                    with self.subTest(consumer=consumer, case=case):
+                        directory = self.base / (consumer + '-' + case)
+                        directory.mkdir()
+                        marker = directory / 'child.pid'
+                        leader_mode = ('live' if case == 'live-leader-denial' or
+                                       (consumer == 'capture' and case == 'normal')
+                                       else 'exit')
+                        program = (capture_program if consumer == 'capture'
+                                   else subscription_program)
+                        argv = [sys.executable, '-I', '-B', '-c', program,
+                                str(marker), leader_mode]
+                        children, threads, calls, probes = [], [], [], []
+                        observation = {
+                            'consumer': consumer, 'case': case, 'argv': argv,
+                            'cwd': str(directory), 'exit': None, 'raised': None,
+                            'error': None, 'signals': calls, 'probes': probes,
+                            'leader_pid': None, 'owned_pgid': None,
+                            'descendant_pid': None,
+                            'descendant_alive': False, 'leader_exited': None,
+                            'group_absent_after_cleanup': False,
+                        }
+                        observations.append(observation)
+
+                        def popen(*args, **kwargs):
+                            self.assertTrue(kwargs.get('start_new_session'))
+                            child = real_popen(*args, **kwargs)
+                            children.append(child)
+                            observation['leader_pid'] = child.pid
+                            observation['owned_pgid'] = child.pid
+                            return child
+
+                        def start(thread):
+                            threads.append(thread)
+                            return real_start(thread)
+
+                        def boundary(pgid, sig):
+                            self.assertEqual(len(children), 1)
+                            child = children[0]
+                            self.assertEqual(pgid, child.pid)
+                            calls.append(int(sig))
+                            if sig == 0:
+                                if case == 'probe-denial':
+                                    probes.append({'phase': 'subject', 'result': 'permission_denied'})
+                                    raise PermissionError('injected owned-group probe denial')
+                                try:
+                                    result = real_killpg(pgid, 0)
+                                except ProcessLookupError:
+                                    probes.append({'phase': 'subject', 'result': 'absent'})
+                                    raise
+                                except PermissionError:
+                                    probes.append({'phase': 'subject', 'result': 'permission_denied'})
+                                    raise
+                                probes.append({'phase': 'subject', 'result': 'present'})
+                                return result
+                            if not observation['descendant_alive']:
+                                deadline = time.monotonic() + 5
+                                while not marker.exists() and time.monotonic() < deadline:
+                                    time.sleep(0.01)
+                                self.assertTrue(marker.exists(), 'child marker was not created')
+                                descendant = int(marker.read_text())
+                                observation['descendant_pid'] = descendant
+                                os.kill(descendant, 0)
+                                observation['descendant_alive'] = True
+                                if leader_mode == 'exit':
+                                    while child.poll() is None and time.monotonic() < deadline:
+                                        time.sleep(0.01)
+                                observation['leader_exited'] = child.poll() is not None
+                                self.assertEqual(observation['leader_exited'],
+                                                 leader_mode == 'exit')
+                            if case == 'normal':
+                                return real_killpg(pgid, sig)
+                            if case == 'exited-race':
+                                try:
+                                    real_killpg(pgid, signal.SIGKILL)
+                                except ProcessLookupError:
+                                    pass
+                                child.wait(timeout=5)
+                                self.assertTrue(absent(pgid, probes, 'before-denial'),
+                                                'group survived injected race')
+                            raise PermissionError('injected owned-group denial')
+
+                        try:
+                            with mock.patch.object(subprocess, 'Popen', side_effect=popen), \
+                                 mock.patch.object(os, 'killpg', side_effect=boundary), \
+                                 mock.patch.object(threading.Thread, 'start', new=start):
+                                try:
+                                    if consumer == 'capture':
+                                        result = self.api._capture(
+                                            argv, cwd=directory,
+                                            evidence_dir=directory / 'evidence')
+                                        observation.update({
+                                            'exit': result['exit'],
+                                            'signal': result['signal'],
+                                            'timeout': result['timeout'],
+                                            'complete': result['complete'],
+                                            'overflow': result['overflow'],
+                                            'cleanup': result.get('cleanup'),
+                                        })
+                                    else:
+                                        result = subscription.launch(
+                                            argv, directory, {'PATH': os.defpath}, b'',
+                                            .1 if case == 'live-leader-denial' else 5)
+                                        observation.update({
+                                            'exit': result.exit,
+                                            'timeout': result.timed_out,
+                                            'error': result.error,
+                                        })
+                                except PermissionError as error:
+                                    observation['raised'] = type(error).__name__
+                        finally:
+                            for child in children:
+                                try:
+                                    real_killpg(child.pid, signal.SIGKILL)
+                                except ProcessLookupError:
+                                    pass
+                                except PermissionError:
+                                    self.assertTrue(
+                                        absent(child.pid, probes, 'fixture-cleanup-denial'),
+                                        'group remained after fixture cleanup denial')
+                                observation['cleanup_leader_returncode'] = child.wait(timeout=5)
+                            for thread in threads:
+                                thread.join(timeout=5)
+                            for child in children:
+                                for stream in (child.stdin, child.stdout, child.stderr):
+                                    if stream is not None and not stream.closed:
+                                        stream.close()
+                            if children:
+                                observation['group_absent_after_cleanup'] = all(
+                                    absent(child.pid, probes, 'fixture-cleanup')
+                                    for child in children)
+                            observation['threads_finished'] = all(
+                                not thread.is_alive() for thread in threads)
+
+                        self.assertEqual(len(children), 1)
+                        self.assertTrue(calls)
+                        self.assertTrue(any(sig != 0 for sig in calls))
+                        self.assertTrue(observation['descendant_alive'])
+                        self.assertTrue(observation['group_absent_after_cleanup'])
+                        self.assertTrue(observation['threads_finished'])
+                        if case == 'probe-denial':
+                            self.assertIn(
+                                {'phase': 'subject', 'result': 'permission_denied'},
+                                probes)
+                        if case in ('live-leader-denial', 'exited-leader-denial',
+                                    'probe-denial'):
+                            self.assertTrue(
+                                observation['raised'] == 'PermissionError' or
+                                observation.get('cleanup') in ('failed', 'unknown') or
+                                observation['error'] in (
+                                    'cleanup_failed', 'cleanup_unknown',
+                                    'controller_PermissionError'),
+                                observation)
+                        else:
+                            self.assertIsNone(observation['raised'])
+                            if consumer == 'capture':
+                                self.assertFalse(observation['complete'])
+                                self.assertTrue(observation['overflow'])
+                                self.assertNotIn(observation.get('cleanup'),
+                                                 ('failed', 'unknown'))
+                            else:
+                                self.assertEqual(observation['exit'], 0)
+                                self.assertFalse(observation['timeout'])
+                                self.assertFalse(observation['error'])
+        finally:
+            record = {
+                'cases': observations,
+                'source_sha256': {
+                    'effect_oracle': sha(ORACLE.read_bytes()),
+                    'subscription_route': sha(subscription_path.read_bytes()),
+                },
+            }
+            (self.base / 'owned-group-cleanup.json').write_bytes(canonical(record))
+            print('OWNED_GROUP_CLEANUP ' + json.dumps(record, sort_keys=True))
 
     def test_incomplete_or_forged_evidence_never_proves_absence(self):
         value = ('install', 'wrapper:pip', 'wrapper-request')

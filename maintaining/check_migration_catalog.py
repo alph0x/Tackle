@@ -122,9 +122,10 @@ CURRENT_RECIPES = {'I-owner-archetypes': 'Before any separately owner-controlled
                        'legacy table when present. A legacy row without an exact run_id remains '
                        'legacy-scoped. Copy and hash these bytes before transformation; never rewrite, '
                        'backfill, re-grade or reorder them, and leave the original and neighbors unchanged.',
- 'P-historical-only': 'For files without a current counterpart, including context.md or reference.md, retain '
-                      'them as historical data or map them to a real current artifact under an explicit '
-                      'recorded decision. Preserve the original bytes and mapping; never silently delete '
+ 'P-historical-only': 'For files without a current counterpart, including context.md or reference.md, choose '
+                      'retention as historical data or mapping to a real current artifact. Record an explicit '
+                      'decision for the chosen disposition. For retained files, record a D-xx that marks each '
+                      'file as historical. Preserve the original bytes and mapping; never silently delete '
                       'them, treat them as a second current state source or require a closed workspace to '
                       'migrate.',
  'S-supported-adapters': 'Determine structure with the installed schema.schema_of, separately from the '
@@ -423,7 +424,8 @@ CURRENT_RECIPES = {'I-owner-archetypes': 'Before any separately owner-controlled
                      'quota. Before adding an isolated test, state its uncovered obligation, why E2E cannot '
                      'observe it and each identified failure mode/valid alternative with expected result. Do '
                      'not add late tests merely mirroring implemented behavior or alter protected '
-                     'expectations to fit output.',
+                     'expectations to fit output. Never write a unit test after implementing the behavior it '
+                     'covers. A test-first opt-out does not authorize that exception.',
  'E-replay': 'Retain each actual acceptance command/script, resolved cwd, runtime/environment, stable '
              'fixtures, contract-derived expected and observed results, raw child '
              'stdout/stderr/exit/signal/timeout and source/input/output hashes. Keep wrapper and child '
@@ -583,10 +585,14 @@ CURRENT_RECIPES = {'I-owner-archetypes': 'Before any separately owner-controlled
                'source/candidate/install/catalog/context identities and actual pre-stamp checks. Append '
                'exactly once the candidate-only preparation event to its existing root history carrier, '
                'preserving the entire old byte prefix and any separate structural-adoption entry. Append the '
-               'exact UTF-8 preparation suffix with one leading LF and final LF: `\\n## {date} · Compact '
+               'exact suffix below without changing its UTF-8 bytes. Include one leading LF and one final LF: `\\n## {date} · Compact '
                'migration candidate\\n\\n- Prepared candidate: operation {operation_id}; source sha256 '
-               '{source_sha256}; target Tackle {target_methodology}; catalog revision {revision}.\\n`. The '
-               'displayed \\n denotes an actual LF. Use the validated context date, manifest-bound 64-hex '
+               '{source_sha256}; target Tackle {target_methodology}; catalog revision {revision}.\\n{snapshot_suffix}`. The '
+               'displayed \\n denotes an actual LF. `{snapshot_suffix}` is empty only when no State snapshot '
+               'block exists at this encoding stage. Otherwise it is one LF, the exact validated current State '
+               'snapshot block joined with LF, and one final LF. A present stale snapshot refuses before any '
+               'capture; the empty encoding never waives snapshot or admission prerequisites. No other bytes '
+               'are appended. Use the validated context date, manifest-bound 64-hex '
                'operation_id/source_sha256, and validated pinned catalog semver target_methodology/positive '
                'integer revision, not caller text. It records candidate preparation only, never adoption, '
                'Ready or acceptance; a quoted/fenced occurrence is not the event. Validate actual unfenced '
@@ -610,10 +616,14 @@ CURRENT_RECIPES = {'I-owner-archetypes': 'Before any separately owner-controlled
                   'source/candidate/install/catalog/context identities and actual pre-stamp checks. Append '
                   'exactly once the candidate-only preparation event to its existing root history carrier, '
                   'preserving the entire old byte prefix and any separate structural-adoption entry. Append '
-                  'the exact UTF-8 preparation suffix with one leading LF and final LF: `\\n## {date} · '
+                  'the exact suffix below without changing its UTF-8 bytes. Include one leading LF and one final LF: `\\n## {date} · '
                   'Compact migration candidate\\n\\n- Prepared candidate: operation {operation_id}; source '
                   'sha256 {source_sha256}; target Tackle {target_methodology}; catalog revision '
-                  '{revision}.\\n`. The displayed \\n denotes an actual LF. Use the validated context date, '
+                  '{revision}.\\n{snapshot_suffix}`. The displayed \\n denotes an actual LF. `{snapshot_suffix}` '
+                  'is empty only when no State snapshot block exists at this encoding stage. Otherwise it is '
+                  'one LF, the exact validated current State snapshot block joined with LF, and one final LF. '
+                  'A present stale snapshot refuses before any capture; the empty encoding never waives '
+                  'snapshot or admission prerequisites. No other bytes are appended. Use the validated context date, '
                   'manifest-bound 64-hex operation_id/source_sha256, and validated pinned catalog semver '
                   'target_methodology/positive integer revision, not caller text. It records candidate '
                   'preparation only, never adoption, Ready or acceptance; a quoted/fenced occurrence is not '
@@ -639,10 +649,14 @@ CURRENT_RECIPES = {'I-owner-archetypes': 'Before any separately owner-controlled
                    'source/candidate/install/catalog/context identities and actual pre-stamp checks. Append '
                    'exactly once the candidate-only preparation event to its existing root history carrier, '
                    'preserving the entire old byte prefix and any separate structural-adoption entry. Append '
-                   'the exact UTF-8 preparation suffix with one leading LF and final LF: `\\n## {date} · '
+                   'the exact suffix below without changing its UTF-8 bytes. Include one leading LF and one final LF: `\\n## {date} · '
                    'Compact migration candidate\\n\\n- Prepared candidate: operation {operation_id}; source '
                    'sha256 {source_sha256}; target Tackle {target_methodology}; catalog revision '
-                   '{revision}.\\n`. The displayed \\n denotes an actual LF. Use the validated context date, '
+                   '{revision}.\\n{snapshot_suffix}`. The displayed \\n denotes an actual LF. `{snapshot_suffix}` '
+                   'is empty only when no State snapshot block exists at this encoding stage. Otherwise it is '
+                   'one LF, the exact validated current State snapshot block joined with LF, and one final LF. '
+                   'A present stale snapshot refuses before any capture; the empty encoding never waives '
+                   'snapshot or admission prerequisites. No other bytes are appended. Use the validated context date, '
                    'manifest-bound 64-hex operation_id/source_sha256, and validated pinned catalog semver '
                    'target_methodology/positive integer revision, not caller text. It records candidate '
                    'preparation only, never adoption, Ready or acceptance; a quoted/fenced occurrence is not '
@@ -667,11 +681,15 @@ CURRENT_RECIPES = {'I-owner-archetypes': 'Before any separately owner-controlled
                          'source/candidate/install/catalog/context identities and actual pre-stamp checks. '
                          'Append exactly once the candidate-only preparation event to its existing root '
                          'history carrier, preserving the entire old byte prefix and any separate '
-                         'structural-adoption entry. Append the exact UTF-8 preparation suffix with one '
-                         'leading LF and final LF: `\\n## {date} · Compact migration candidate\\n\\n- '
+                         'structural-adoption entry. Append the exact suffix below without changing its UTF-8 bytes. '
+                         'Include one leading LF and one final LF: `\\n## {date} · Compact migration candidate\\n\\n- '
                          'Prepared candidate: operation {operation_id}; source sha256 {source_sha256}; '
-                         'target Tackle {target_methodology}; catalog revision {revision}.\\n`. The '
-                         'displayed \\n denotes an actual LF. Use the validated context date, manifest-bound '
+                         'target Tackle {target_methodology}; catalog revision {revision}.\\n{snapshot_suffix}`. The '
+                         'displayed \\n denotes an actual LF. `{snapshot_suffix}` is empty only when no State '
+                         'snapshot block exists at this encoding stage. Otherwise it is one LF, the exact '
+                         'validated current State snapshot block joined with LF, and one final LF. A present '
+                         'stale snapshot refuses before any capture; the empty encoding never waives snapshot '
+                         'or admission prerequisites. No other bytes are appended. Use the validated context date, manifest-bound '
                          '64-hex operation_id/source_sha256, and validated pinned catalog semver '
                          'target_methodology/positive integer revision, not caller text. It records '
                          'candidate preparation only, never adoption, Ready or acceptance; a quoted/fenced '
@@ -695,11 +713,15 @@ CURRENT_RECIPES = {'I-owner-archetypes': 'Before any separately owner-controlled
                            'source/candidate/install/catalog/context identities and actual pre-stamp checks. '
                            'Append exactly once the candidate-only preparation event to its existing root '
                            'history carrier, preserving the entire old byte prefix and any separate '
-                           'structural-adoption entry. Append the exact UTF-8 preparation suffix with one '
-                           'leading LF and final LF: `\\n## {date} · Compact migration candidate\\n\\n- '
+                           'structural-adoption entry. Append the exact suffix below without changing its UTF-8 bytes. '
+                           'Include one leading LF and one final LF: `\\n## {date} · Compact migration candidate\\n\\n- '
                            'Prepared candidate: operation {operation_id}; source sha256 {source_sha256}; '
-                           'target Tackle {target_methodology}; catalog revision {revision}.\\n`. The '
-                           'displayed \\n denotes an actual LF. Use the validated context date, '
+                           'target Tackle {target_methodology}; catalog revision {revision}.\\n{snapshot_suffix}`. The '
+                           'displayed \\n denotes an actual LF. `{snapshot_suffix}` is empty only when no State '
+                           'snapshot block exists at this encoding stage. Otherwise it is one LF, the exact '
+                           'validated current State snapshot block joined with LF, and one final LF. A present '
+                           'stale snapshot refuses before any capture; the empty encoding never waives snapshot '
+                           'or admission prerequisites. No other bytes are appended. Use the validated context date, '
                            'manifest-bound 64-hex operation_id/source_sha256, and validated pinned catalog '
                            'semver target_methodology/positive integer revision, not caller text. It records '
                            'candidate preparation only, never adoption, Ready or acceptance; a quoted/fenced '
@@ -727,10 +749,14 @@ CURRENT_RECIPES = {'I-owner-archetypes': 'Before any separately owner-controlled
                   'source/candidate/install/catalog/context identities and actual pre-stamp checks. Append '
                   'exactly once the candidate-only preparation event to its existing root history carrier, '
                   'preserving the entire old byte prefix and any separate structural-adoption entry. Append '
-                  'the exact UTF-8 preparation suffix with one leading LF and final LF: `\\n## {date} · '
+                  'the exact suffix below without changing its UTF-8 bytes. Include one leading LF and one final LF: `\\n## {date} · '
                   'Compact migration candidate\\n\\n- Prepared candidate: operation {operation_id}; source '
                   'sha256 {source_sha256}; target Tackle {target_methodology}; catalog revision '
-                  '{revision}.\\n`. The displayed \\n denotes an actual LF. Use the validated context date, '
+                  '{revision}.\\n{snapshot_suffix}`. The displayed \\n denotes an actual LF. `{snapshot_suffix}` '
+                  'is empty only when no State snapshot block exists at this encoding stage. Otherwise it is '
+                  'one LF, the exact validated current State snapshot block joined with LF, and one final LF. '
+                  'A present stale snapshot refuses before any capture; the empty encoding never waives '
+                  'snapshot or admission prerequisites. No other bytes are appended. Use the validated context date, '
                   'manifest-bound 64-hex operation_id/source_sha256, and validated pinned catalog semver '
                   'target_methodology/positive integer revision, not caller text. It records candidate '
                   'preparation only, never adoption, Ready or acceptance; a quoted/fenced occurrence is not '
@@ -1051,7 +1077,7 @@ def instruction_text(text, recipe):
     if recipe.startswith("Z-"):
         event = (r"\n## {date} · Compact migration candidate\n\n"
                  r"- Prepared candidate: operation {operation_id}; source sha256 {source_sha256}; "
-                 r"target Tackle {target_methodology}; catalog revision {revision}.\n")
+                 r"target Tackle {target_methodology}; catalog revision {revision}.\n{snapshot_suffix}")
         if event not in text:
             fail("exact candidate preparation event missing")
 
@@ -1278,7 +1304,7 @@ def validate(root):
         fail("catalog source mapping mismatch")
     readme = (root / "skills/tackle/scripts/README.md").read_text(encoding="utf-8")
     compact_hash = digest((root / "skills/tackle/scripts/migrate/compact.py").read_bytes())
-    archive_hash = "c103d8917aa252bae62ca2bb54c565ed155124e81522bbbfc6ffef99a34f4aad"
+    archive_hash = digest((root / "skills/tackle/scripts/workspace_archive.py").read_bytes())
     compact_rows = re.findall(r"^\| \[migrate/compact\.py\]\(migrate/compact\.py\) \| `([0-9a-f]{64})` \|$", readme, re.M)
     archive_rows = re.findall(r"^\| \[workspace_archive\.py\]\(workspace_archive\.py\) \| `([0-9a-f]{64})` \|$", readme, re.M)
     if compact_rows != [compact_hash] or archive_rows != [archive_hash]:

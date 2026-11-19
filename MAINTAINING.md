@@ -1,7 +1,7 @@
 # Maintaining Tackle
 
 This file documents Tackle's own release process: the release sweep, the nine self-lint
-gates, the deletion gate, and the one migration bridge.
+gates, the change gate, and the one migration bridge.
 It does not ship with the installed skill (`SKILL.md`, `references/` and `scripts/`).
 
 ## Migration bridge
@@ -202,3 +202,40 @@ The tools under `maintaining/release/`, `maintaining/ci_mechanical.py`, `maintai
 Before dispatching a task, run `python3 -I -B maintaining/brief_preflight.py scope` on its brief and `worktree` on the executor's checkout, which is created with git's own `worktree add`, never a wrapper that copies ignored content; resolve every finding first.
 Before staging a task's tree, run `python3 -I -B maintaining/brief_preflight.py committed` on it.
 Accept a role session's verdict or report only when `python3 -I -B maintaining/role_session_check.py` exits 0 on its transcript.
+
+## Tool usage notes
+
+In a clean clone without a context graph, `graft build` populates it for `graft map` and graph queries. The release phase runner, `maintaining/release/steps.py`, takes `--config`, `--phase`, `--repo` and `--records`; other options depend on the phase. The latest available CI log can identify the hosted runner's interpreter before push; the candidate's actual hosted result appears in its CI logs after the owner-authorized push in step 6.
+
+The suite runner supports optional changed-path selection during development and records the selected scope in its selection report. Integration and release execution use the full registry.
+
+For example, the following preflight commands run from the repository root. The paths identify the repository, plan workspace, brief and executor checkout; `BASE` identifies the base commit. Each output path is a distinct directory that does not yet exist. The successful worktree check establishes the checkout used by the subsequent scope check at that base.
+
+```sh
+set -eu
+REPO=/absolute/path/to/repository
+WORKSPACE="$REPO/docs/plans/example-plan"
+BRIEF="$WORKSPACE/tasks/example-task.md"
+CHECKOUT=/absolute/path/to/executor-checkout
+BASE=base-commit
+WORKTREE_OUT="$WORKSPACE/preflight-worktree-example-task"
+SCOPE_OUT="$WORKSPACE/preflight-scope-example-task"
+COMMITTED_OUT="$WORKSPACE/preflight-committed-example-task"
+
+cd "$REPO"
+python3 -I -B maintaining/brief_preflight.py worktree \
+  --repo "$REPO" --tree "$CHECKOUT" --base "$BASE" --out "$WORKTREE_OUT"
+python3 -I -B maintaining/brief_preflight.py scope \
+  --tree "$CHECKOUT" --workspace "$WORKSPACE" --brief "$BRIEF" --out "$SCOPE_OUT"
+```
+
+Before staging, the committed check can use the same shell variables and its own fresh output directory:
+
+```sh
+set -eu
+cd "$REPO"
+python3 -I -B maintaining/brief_preflight.py committed \
+  --tree "$CHECKOUT" --base "$BASE" --workspace "$WORKSPACE" --out "$COMMITTED_OUT"
+```
+
+The [historical migration checklists](maintaining/migrations.md) include the 8.3 → 8.4 through 9.2.0 → 9.2.1 checklists moved from `migrate.md` in 10.0, earlier and later retained material, and original guide context through 10.2.

@@ -55,7 +55,7 @@ class EffortOnlyDeviationTests(unittest.TestCase):
         self.assertTrue(lines[0].endswith(suffix), out)
 
     # --- /5, deviates, unreasoned ---
-    def test_v5_deviation_without_tier_or_reason_fails(self):
+    def test_deviation_without_tier_or_reason_fails(self):
         verdict, child = self.run12(DEVIATING)
         self.assertEqual(verdict, 'FAIL', child.stdout)
         self.assert_single_finding(child.stdout, 'demo.md' + MESSAGE)
@@ -73,14 +73,14 @@ class EffortOnlyDeviationTests(unittest.TestCase):
                 self.assertNotIn(MESSAGE.encode(), child.stdout)
 
     # --- /5, at the default ---
-    def test_v5_default_effort_is_clean(self):
+    def test_default_effort_is_clean(self):
         verdict, child = self.run12(DEFAULT_EFFORT)
         self.assertEqual(verdict, 'PASS', child.stdout)
 
     # --- /5, Tier present with its own reason has no new finding; the same
     # Tier with no reason still hits only the pre-existing orphan path, never
     # the new one (proves the new check's !tier guard is load-bearing) ---
-    def test_v5_tier_present_governs_independently_of_the_new_check(self):
+    def test_tier_present_governs_independently_of_the_new_check(self):
         verdict, child = self.run12(brief_with('T-A', effort='- **Effort**: high', tier='standard',
                                                 tier_reason='default'))
         self.assertEqual(verdict, 'PASS', child.stdout)
@@ -90,12 +90,12 @@ class EffortOnlyDeviationTests(unittest.TestCase):
         self.assertNotIn('Effort without Tier reason', child.stdout.decode())
 
     # --- /5, Tier reason alone (incl. the literal word "default") ---
-    def test_v5_tier_reason_alone_has_no_new_finding(self):
+    def test_tier_reason_alone_has_no_new_finding(self):
         verdict, child = self.run12(brief_with('T-A', effort='- **Effort**: high', tier_reason='default'))
         self.assertEqual(verdict, 'PASS', child.stdout)
 
     # --- /5, deviation only inside a fenced example ---
-    def test_v5_fenced_deviation_is_not_a_real_declaration(self):
+    def test_fenced_deviation_is_not_a_real_declaration(self):
         trailer = '\n```text\n- **Effort**: high\n```\n'
         verdict, child = self.run12(brief_with('T-A', effort='- **Effort**: low', trailer=trailer))
         self.assertEqual(verdict, 'PASS', child.stdout)

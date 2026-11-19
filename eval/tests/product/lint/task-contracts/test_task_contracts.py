@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[5]
 import sys
 sys.path.insert(0, str(ROOT))
 from maintaining.install_root import current_root  # noqa: E402
-from eval.support.lint import lint_namespace, write_files, run_lint_row  # noqa: E402
+from eval.support.lint import lint_namespace, write_files, run_lint_row, published_row_ids  # noqa: E402
 INSTALL = current_root(ROOT)
 
 
@@ -317,13 +317,13 @@ class TaskContracts(unittest.TestCase):
         files = layout(**{'task-board.md': task_board('Ready to run', 'ready: readiness record'),
                           'tasks/T-A.md': '# Task T-A\n- **Depends on**: none\n- **Write scope**: src/\n- **Effort**: low\n',
                           'decisions.md': '# Decisions\n', 'reference.md': '# References\n'})
-        for number in range(1, 20):
+        for number in published_row_ids():
             result = row(number, files)
             record = dict(child_exit=result.returncode, timeout=False, launch_error=None,
                           signal=None, inputs_stable=True, artifacts_present=True)
             verdict = LINT['lint_verdict'](number, record, result.stdout.encode(), result.stderr.encode())
             self.assertEqual(verdict, 'PASS', (number, result.stdout, result.stderr))
-        self.assertEqual(set(commands), set(range(1, 20)))
+        self.assertEqual(set(commands), set(published_row_ids()))
 
     def test_new_status_declaration_outside_board_is_rejected(self):
         files = {'plan.md': '# Plan\n', 'task-board.md': task_board('Draft'),
@@ -376,7 +376,7 @@ class TaskContracts(unittest.TestCase):
                 if metric == 'Comprehension debt':
                     self.assertNotIn('T-C', result.stdout)
 
-    def test_b1_blocked_durations_ignore_state_snapshot_lines(self):
+    def test_blocked_durations_ignore_state_snapshot_lines(self):
         template = (INSTALL / 'references/retro.tmpl.md').read_text()
         command = template.split('| Blocked durations | `', 1)[1].split('`', 1)[0]
         history = ['# History', '', '## 2026-10-04 · session 1', '- T-0042 Blocked: waiting on the owner', '',

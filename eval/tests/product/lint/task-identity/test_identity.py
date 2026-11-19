@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[5]
 import sys
 sys.path.insert(0, str(ROOT))
 from maintaining.install_root import current_root  # noqa: E402
-from eval.support.lint import lint_namespace, write_files, run_lint_row  # noqa: E402
+from eval.support.lint import lint_namespace, write_files, run_lint_row, published_row_ids  # noqa: E402
 INSTALL = current_root(ROOT)
 
 SOURCE = (INSTALL / "scripts/lint.py").read_bytes()
@@ -60,7 +60,7 @@ class TaskIdentityTests(unittest.TestCase):
         self.write("resource-usage.md", "Schema: tackle-observability/2\n\n| Run ID | Event | Task | Role | Harness | Tier | Model | Effort | At | Outcome | Attempts | Rework | Verification | Source |\n")
         self.write("tasks/T-A.md", "# Task T-A — Work\n\n- **Depends on**: none\n- **Effort**: low\n")
         self.write("reference.md", "# Sources\n")
-        for number in range(1, 20):
+        for number in published_row_ids():
             with self.subTest(row=number):
                 result = self.row(number)
                 expected_exit = 1 if number == 5 else 0

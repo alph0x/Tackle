@@ -137,14 +137,14 @@ saving its report alongside the workspaces it just read, does exactly this).
 
 | Case | Test(s) |
 |---|---|
-| C1 states | `WorkspaceFieldTests.test_c1_*`, `test_docs_plans_help_shaped_empty_workspace_never_crashes` |
-| C2 ledger | `WorkspaceFieldTests.test_c2_*` |
-| C3 reopenings | `WorkspaceFieldTests.test_c3_*` |
-| C4 telemetry | `WorkspaceFieldTests.test_c4_*` |
-| C5 split | `EffortSplitTests.*` (a disposable, isolated git repository the test itself creates and commits to) |
-| C6 read-only | `ReadOnlyAndDeterminismTests.test_c6_plans_tree_is_untouched_by_a_run`, `test_own_test_family_directory_is_never_modified` |
-| C7 refusal | `RefusalTests.*` |
-| C8 real run | not a unit test: a one-off command over the actual repository's commit history and its local `docs/plans/` workspaces, run and recorded separately from this test suite |
+| States | `WorkspaceFieldTests.test_bucket_and_every_legacy_state`, `WorkspaceFieldTests.test_bucket_and_counts`, `WorkspaceFieldTests.test_bucket_and_every_canonical_state`, `WorkspaceFieldTests.test_bucket_and_waiting_on_owner`, `WorkspaceFieldTests.test_lite_bucket_has_no_board`, `WorkspaceFieldTests.test_unknown_bucket_on_a_workspace_with_no_recognized_file`, `WorkspaceFieldTests.test_two_board_files_is_unknown_not_a_guess`, `test_docs_plans_help_shaped_empty_workspace_never_crashes` |
+| Ledger | `WorkspaceFieldTests.test_ledger_sums_integers_and_counts_used_and_skipped_rows`, `WorkspaceFieldTests.test_no_v2_ledger_is_n_a` |
+| Reopenings | `WorkspaceFieldTests.test_counts_complete_to_earlier_state_reopenings_and_ignores_from_state_prose`, `WorkspaceFieldTests.test_transition_lines_with_no_reopening_is_zero_not_n_a`, `WorkspaceFieldTests.test_history_with_no_transition_lines_is_n_a_but_names_the_source`, `WorkspaceFieldTests.test_absent_history_is_n_a_with_no_source` |
+| Telemetry | `WorkspaceFieldTests.test_sums_two_role_scoped_captures`, `WorkspaceFieldTests.test_no_sidecar_is_n_a`, `WorkspaceFieldTests.test_cumulative_session_snapshots_use_latest_not_sum` |
+| Effort split | `EffortSplitTests.*` (a disposable, isolated git repository the test itself creates and commits to) |
+| Read only | `ReadOnlyAndDeterminismTests.test_plans_tree_is_untouched_by_a_run`, `test_own_test_family_directory_is_never_modified` |
+| Refusal | `RefusalTests.*` |
+| Recorded real run | not a unit test: a one-off command over the actual repository's commit history and its local `docs/plans/` workspaces, run and recorded separately from this test suite |
 
 `fixtures/plans/` holds one synthetic workspace directory per theme (for example `ws-pre3` for every
 legacy state token, `ws-four` for the ledger and a reopening history, `ws-telemetry-cumulative` for the

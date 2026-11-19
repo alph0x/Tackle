@@ -22,7 +22,10 @@ cwd = Path.cwd().resolve()
 if len(sys.argv) != 2:
     raise SystemExit("supply the existing authorized initiative workspace")
 workspace = Path(sys.argv[1]).resolve()
-workspace.relative_to(cwd)
+try:
+    workspace.relative_to(cwd)
+except ValueError:
+    raise SystemExit("authorized workspace must be within the current directory")
 if not workspace.is_dir():
     raise SystemExit("authorized workspace must already exist")
 destination = workspace / "evidence"

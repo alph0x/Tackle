@@ -1,8 +1,8 @@
 # Plan view
 
 The plan view is one local HTML page that shows a workspace: its task graph, requirement coverage,
-decision log, newest State snapshot and the role runs that work now. It reads the board, plan, briefs,
-decisions, questions, history and `resource-usage.md`.
+decision log, newest State snapshot and open role runs, whose current activity is unconfirmed. It reads the
+board, plan, briefs, decisions, questions, history and `resource-usage.md`.
 
 ## Request
 
@@ -52,7 +52,7 @@ time.
 Running the script needs the owner's explicit authorization; an explicit plan-view request grants it for that request ([script consent](../../scripts/README.md#consent)). Prefer an equivalent harness capability. With that authorization, run [`<skill>/scripts/plan_view.py`](../../scripts/plan_view.py) with the [template](../plan-view.template.md), where `<skill>` is the installed skill folder:
 
 ```sh
-python3 -I <skill>/scripts/plan_view.py --template <skill>/references/plan-view.template.md <workspace> <workspace>/plan-view.html
+python3 -I -B <skill>/scripts/plan_view.py --template <skill>/references/plan-view.template.md <workspace> <workspace>/plan-view.html
 ```
 
 The script imports `architecture_map.py` from its own folder; nothing is copied or extracted.
@@ -62,8 +62,7 @@ workspace, with `--map-scope all` or, for a [large project](architecture-map.md#
 when asked before the first build.
 Without that file, pass no `--map`.
 
-Exit 0 writes the view, exit 1 refuses and writes no file, exit 2 reports a usage error. The script uses only
-the standard library, makes no network access and writes only the output file.
+On exit 0, build mode writes the view and its `<stem>.stamp.js` sidecar. Exit 1 reports a refusal or a stale view. Exit 2 reports an input or output error. A failed write can leave one output in place. The script uses only the standard library and makes no network access. Check mode writes no files.
 
 The page records one sha256 for each input and one overall digest. With `--check` and the build's arguments, the
 script compares them with the inputs now and writes nothing. It prints `view current` and exits 0. Otherwise it
@@ -102,10 +101,10 @@ names no requirement id, the script refuses with the Focused reason; it invents 
   between its ends. It needs no network. A click opens a task; the trace buttons follow
   what the task needs and what it unblocks.
 - Status filters, the coverage table and the decision log work with the same data.
-- The page marks the tasks a role run works on now and lists every open run: one whose `start` row has no
-  `finish` or `observe-incomplete` row.
-- The page names a running role `Live`, or `En marcha` on a Spanish page, so the badge never reads like the
-  In progress state.
+- The page marks tasks associated with an open run and lists every open run: one whose `start` row has no
+  `finish` or `observe-incomplete` row; its current activity is unconfirmed.
+- The page labels an open run `Open session`, or `Sesión abierta` on a Spanish page, so the badge never reads like
+  the In progress state.
 - A Waiting on you section lists open questions from `questions.md` with their Determines line. It also lists tasks
   that are Waiting on owner or Blocked, with their Verification cell, and Open board obligations with owner and trigger.
   A question is open unless its state carries 🟢 or ✅. When nothing is open, one line says so. A Focused plan
@@ -158,7 +157,7 @@ The script writes the page from the plan view's marked base in the template, wit
 Give the page's heading the plan view's section markup: a `<header class="sec-head">` holding an optional `<p class="kicker">`, an `<h2>` and a `<p class="sec-lede">`, as the plan view's sections do. The base styles these classes, so the heading reads like the view's section headings. The page's `<title>` comes from the fragment's first `<h1>` if it has one, and otherwise from the plan title.
 
 ```sh
-python3 -I <skill>/scripts/plan_view.py --template <skill>/references/plan-view.template.md --page <fragment.html> <workspace> <output.html>
+python3 -I -B <skill>/scripts/plan_view.py --template <skill>/references/plan-view.template.md --page <fragment.html> <workspace> <output.html>
 ```
 
 Add `--check` before the paths to compare the page with the workspace and the fragment without writing anything; the output is `view current` or `view stale: <inputs>`. The page mode needs a built `plan-view.html` in the workspace and refuses, with exit 2, an output path that is the plan view itself. A page records its template, its script and its fragment, so a later change to the plan's title or language does not mark the page stale; rebuild the page on request.

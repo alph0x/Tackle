@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[5]
 import sys
 sys.path.insert(0, str(ROOT))
 from maintaining.install_root import current_root  # noqa: E402
-from eval.support.lint import lint_namespace, lint_rows, write_files, brief_base, run_lint_row  # noqa: E402
+from eval.support.lint import lint_namespace, lint_rows, published_row_ids, write_files, brief_base, run_lint_row  # noqa: E402
 INSTALL = current_root(ROOT)
 
 HERE = (Path(__file__).resolve().parents[5] / 'eval/lint/rows')
@@ -109,6 +109,7 @@ GENERATED = {
     'pass-full': {'tasks/T-01.md': lambda: brief('T-01', clause_sha=clause_sha(CONTRACT_CLAUSE)) + FENCED_EXAMPLE,
                   'tasks/T-02.md': lambda: brief('T-02', kind='experiment', depends='T-01',
                                                  scope='src/demo.txt')},
+    'pass-full-5': {'questions.md': lambda: '# Questions\n\n## {}-{:02d} · Synthetic awaited owner choice · open\n\nA synthetic owner choice is awaited.\n'.format('Q', 1)},
     'fail-9': {'tasks/T-02.md': lambda: brief('T-02', kind='experiment', fields=False, depends='T-01')},
     'fail-9b': {'tasks/T-02.md': lambda: brief('T-02', kind='discovery', fields=False, depends='T-01')},
     'fail-12': {'tasks/T-02.md': lambda: brief('T-02', effort='- **Effort**: inherit', depends='T-01')},
@@ -259,7 +260,23 @@ class LintRowTests(unittest.TestCase):
                     self.assertIn(expected, child.stdout.decode())
 
     def test_every_row_has_a_planted_defect(self):
-        self.assertEqual({number for _, _, number, _, _ in FAILS}, set(range(1, 20)))
+        published = published_row_ids()
+        self.assertEqual(published, (1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+                                     11, 12, 13, 14, 15, 16, 17, 18, 19))
+        synthetic = ('| Check | Pass condition |\n|---|---|\n'
+                     '| 1 · First | pass |\n| 2 · Second | pass |\n| 3 · Third | pass |\n')
+        self.assertEqual(published_row_ids(synthetic), (1, 2, 3))
+        invalid_specs = (
+            'No check table\n',
+            '| Check | Pass condition |\n|---|---|\n',
+            synthetic.replace('| 2 · Second | pass |\n', ''),
+            synthetic.replace('| 2 · Second | pass |', '| two · Second | pass |'),
+            synthetic.replace('| 2 · Second | pass |', '| 1 · Second | pass |'),
+        )
+        for invalid in invalid_specs:
+            with self.subTest(spec=invalid), self.assertRaises(ValueError):
+                published_row_ids(invalid)
+        self.assertEqual({number for _, _, number, _, _ in FAILS}, set(published))
         self.assertTrue(all(wanted == ('WARN' if number in WARN_ROWS else wanted) for _, _, number, _, wanted in FAILS))
 
     def test_template_faithful_brief_passes_row_2(self):
@@ -289,7 +306,7 @@ class LintRowTests(unittest.TestCase):
         blocking = set()
         for low, high in re.findall(r'(\d+)(?:–(\d+))?', line.split('a failure in rows', 1)[1].split('blocks', 1)[0]):
             blocking.update(range(int(low), int(high or low) + 1))
-        self.assertEqual(blocking, set(range(1, 20)) - WARN_ROWS)
+        self.assertEqual(blocking, set(published_row_ids()) - WARN_ROWS)
 
     def test_seal_integrity_command(self):
         command = seal_command().replace('<slug>', SLUG)

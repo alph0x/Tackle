@@ -25,9 +25,9 @@ Last-verified: {{YYYY-MM-DD}}
 
 ## Quality tooling (how each fired dimension gets verified here)
 Last-verified: {{YYYY-MM-DD}}
-<!-- Discovered in the Step 5 quality-dimensions pass. Per-point done-signal fragments map to
+<!-- Discovered in the Step 5 quality-dimensions pass. Per-task done-signal fragments map to
      these. Note a MISSING mechanism explicitly — that absence is a finding, not a blank.
-     Delete rows no point in this initiative fires. -->
+     Delete rows no task in this initiative fires. -->
 
 - **Tests**: {{runner + invocation — e.g. `npm test`, `swift test --filter <Suite>`}}.
 - **Lint / format / style**: {{linter/formatter + how to run it; the self-documenting check}}.

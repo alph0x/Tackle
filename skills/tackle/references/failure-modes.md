@@ -1,13 +1,13 @@
 # Failure modes — symptom → Tackle rule
 
-Common execution failures, how each looks from outside, and the Tackle rule that prevents it: a checklist for `verify`, audits and point reviews.
+Common execution failures, how each looks from outside, and the Tackle rule that prevents it: a checklist for `verify`, audits and task reviews.
 
 | # | Failure mode | Symptom | Prevented by |
 |---|---|---|---|
-| 1 | **Unprompted fixing** | User asked "why?"; agent edited files | INTENT gate (point briefing) + intake classification (question shape changes nothing) |
+| 1 | **Unprompted fixing** | User asked "why?"; agent edited files | INTENT gate (task briefing) + intake classification (question shape changes nothing) |
 | 2 | **Wrong-deliverable guess** | Agent built interpretation A; user meant B | Intake gate: ask one pointed question with a recommended interpretation |
 | 3 | **Re-litigating settled decisions** | Agent reopens choices the user made | Intake: extract decisions already made; never re-derive |
-| 4 | **Fake "done"** | Nobody can say how the result was checked | Two-halves verification (point briefing acceptance), named per point |
+| 4 | **Fake "done"** | Nobody can say how the result was checked | Two-halves verification (task briefing acceptance), named per task |
 | 5 | **Invented APIs / facts** | Code calls nonexistent endpoints or cites nonexistent figures | Ground every claim in `file:line`; primary sources beat memory |
 | 6 | **Sequential crawling** | One lookup at a time; long tasks drag | Parallelize independent reads/lookups; subagents for whole work units |
 | 7 | **Context flooding** | Whole files and logs dumped into the conversation | Read narrow, never re-read; quote load-bearing lines only |
@@ -19,7 +19,7 @@ Common execution failures, how each looks from outside, and the Tackle rule that
 | 13 | **Verification theater** | "This should work now" with nothing run; target passes but build breaks | Target/surround and merged-tree integration observations (`guides/run-card.md` step 6, `guides/run.md` §Integration and deliverable acceptance) |
 | 14 | **Spec betrayal** | Code changed to satisfy a check that contradicts the spec/README | INTENT-gate authority order: user > spec > tests > current code |
 | 15 | **Compliance theater** | INTENT lines and evidence blocks written plausibly without running anything; maker and checker share one model's blind spots | Actual command/process/artifact observations with provenance; semantic review is independent only when its required isolation exists. Same-agent observations stay honestly labeled; missing capability blocks that evidence. |
-| 16 | **Fake edge** | A point claims `Depends-on` for graph position, but nothing crosses the edge | Verify check 5 (edge audit): every `Depends-on` names its crossing artifact; a legitimate ordering-only edge is recorded as a `D-xx` waiver, never silently waived |
+| 16 | **Fake edge** | A task claims `Depends-on` for graph position, but nothing crosses the edge | Verify check 5 (edge audit): every `Depends-on` names its crossing artifact; a legitimate ordering-only edge is recorded as a `D-xx` waiver, never silently waived |
 | 17 | **Currency mismatch** | Producer emits cents, consumer expects dollars; local unit suites are green | Deliverable acceptance exercises integrated producers and consumers on the merged tree; unit green is insufficient |
 | 18 | **Hidden child failure** | Wrapper prints PASS while its child exits nonzero, times out or gets a signal | Capture wrapper and child status independently; the real child return code is part of acceptance |
 | 19 | **Interrupted side effect** | Session ends after an irreversible action with no terminal message; rerun duplicates it | Inspect tree, process result and raw evidence before repeating; append `observe-incomplete` when occurrence is unknown |

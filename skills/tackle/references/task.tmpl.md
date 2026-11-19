@@ -9,7 +9,7 @@
 - **Depends on**: {{none / T-NN — name the artifact consumed}}.
 - **Traces to**: {{spec, ticket, or constitution anchor}}.
 - **Detail**: {{full or interface; bare token without trailing punctuation}}
-- **Write scope**: {{complete write set; flag shipped paths}}.
+- **Write scope**: {{complete write set as comma-separated repository-relative paths, each enclosed in backticks}}
 - **Repository**: {{repository id from the workspace Repositories table; omit this field in a single-repository workspace}}.
 - **Autonomy**: {{resolved concrete value; production paths cap at L2}}.
 - **Effort**: {{low / medium / high / max; bare token without trailing punctuation}}
@@ -159,6 +159,18 @@ affected checks before proceeding.
 {{direct command or checked script; prerequisites, contract cases and native pass condition}}
 ```
 
+Illustrative rendered example (data, not an additional task check):
+
+```text
+Starting directory: /absolute/path/to/starting-directory
+Checkout and command cwd: /absolute/path/to/checkout
+Records root: /absolute/path/to/records
+Fresh record: /absolute/path/to/records/native-unittest-001
+Command: python3 -B -m unittest discover -s tests -p 'test_*.py'
+Expected: native exit 0; four tests discovered and passed, with no skips.
+Use the existing capture facility to retain complete stdout, complete stderr and exit in the fresh record.
+```
+
 Reviewer runs first; the verdict cites each record printed:
 
 1. `{{acceptance record facts command}}`
@@ -166,7 +178,7 @@ Reviewer runs first; the verdict cites each record printed:
 
 ### Rollout and reversibility (only for a shipped path)
 
-{{Revert procedure, enablement default, coexistence, and the check proving disabled behavior unchanged.
+{{Flag shipped paths here. Name the revert procedure, enablement default, coexistence, and the check proving disabled behavior unchanged.
 Omit this section when the Write scope has no shipped path.}}
 
 - **Task check**: {{the Task-specific observable and expected result}}.
@@ -180,7 +192,7 @@ Omit this section when the Write scope has no shipped path.}}
   substitute file existence, keywords or counts. If required review capability or isolation is unavailable,
   mark that evidence obligation blocked rather than assigning a grade.
 - **Recovery**: follow the declared bounded correction budget, or the corridor's total budget. When it is exhausted or yields repeated
-  no-progress observations, stop and report as the Intent gate requires. [Recovery](guides/run.md#correction-recovery).
+  no-progress observations, stop and report as the Intent gate requires. Recovery (`references/guides/run.md#correction-recovery`).
 
 ### Definition of ready
 

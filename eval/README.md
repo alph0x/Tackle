@@ -50,11 +50,11 @@ These folders serve the release rather than one feature, and each keeps its name
 | `validation-integrity/` | `acceptance.py`, and the lint-row and release-gate shell cells it runs | `MAINTAINING.md` names `acceptance.py` as the release's trust anchor |
 | `records/` | the hash and claim registers of the historical run records ([records](records/README.md)) | CI runs `check_currency.py`, and its registers pin each record's path |
 | `scenario-index/` | `check_index.py`, the catalog check of `scenarios/INDEX.json` | the harness loads the checker by this path |
-| `maintaining/` | `maintaining/field-report`, the field report's checks, and `maintaining/suite-integrity`, the registry's discovery and the credential guard | it checks the repository's own maintainer tools, not a shipped feature |
+| `maintaining/` | `maintaining/field-report`, the field report's checks, and maintainer test tools and fixtures; current tests are under `tests/tooling/maintaining/` | it checks the repository's own maintainer tools, not a shipped feature |
 
 `run_suites.py` runs the strict registry, `suite-manifest.json`: every family's exact test files and a
 positive test count. A missing file, an unregistered test, zero discovery or a failing test fails the run,
-which keeps each command, exit, count, input hash and complete output. CI and `acceptance.py` run it:
+which keeps each command, exit, count, input hash and complete output. [Testing](TESTING.md) describes live source and selector admission. CI and `acceptance.py` run it:
 
 ```sh
 python3 eval/run_suites.py --output /absolute/new/suite-results
@@ -253,8 +253,22 @@ scenario tests a rule that left the install.
 
 ## Moved paths
 
-Each path below moved once; a reader of an older record finds the file at its new path. Earlier manual
-trap paths and a retired protocol were removed from this file, and git history keeps them.
+The historical table records individual move steps; its destinations are not necessarily current paths.
+The [suite index](tests/README.md) lists the complete current test families. Earlier manual trap paths
+and a retired protocol were removed from this file, and git history keeps them.
+
+### Current paths for selected former aliases and test files
+
+| Former path | Current tracked destination |
+|---|---|
+| `lint/task-identity/` | `tests/product/lint/task-identity/` |
+| `maintaining/suite-integrity/` | `tests/tooling/maintaining/suite-integrity/` |
+| `lint/task-contracts/` | `tests/product/lint/task-contracts/` |
+| `plan/test_plan.py` | `tests/product/plan/test_plan.py` |
+| `run/card/test_run.py` | `tests/product/run/card/test_run.py` |
+| `migration/test_migration.py` | `tests/product/migration/test_migration.py` |
+
+### Historical moves
 
 | Old path | New path | Moved |
 |---|---|---|

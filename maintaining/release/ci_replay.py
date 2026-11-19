@@ -46,15 +46,12 @@ out.mkdir(parents=True, exist_ok=False)
 runtime_bin.mkdir();(runtime_bin/'python3').symlink_to(Path(args.interpreter314).resolve());(runtime_bin/'python3.10').symlink_to(Path(args.interpreter310).resolve())
 env['PATH']=str(runtime_bin)+os.pathsep+env.get('PATH','')
 workflow = (tree / '.github/workflows/ci.yml').read_text()
-marker = '      - name: Run the documented mechanical release checks\n        run: |\n'
-if workflow.count(marker) != 1:
-    raise SystemExit('ci.yml: the mechanical block was not found exactly once')
-block = []
-for line in workflow.split(marker, 1)[1].splitlines():
-    if not line.startswith('          '):
-        break
-    block.append(line[10:])
-mechanical = '\n'.join(block) + '\n'
+_mechanical_spec=importlib.util.spec_from_file_location('ci_mechanical',Path(__file__).resolve().parents[1]/'ci_mechanical.py')
+ci_mechanical=importlib.util.module_from_spec(_mechanical_spec);_mechanical_spec.loader.exec_module(ci_mechanical)
+try:
+    mechanical = '\n'.join(ci_mechanical.block(workflow)) + '\n'
+except ValueError as error:
+    raise SystemExit('ci.yml: ' + str(error))
 (out / 'mechanical.sh').write_text(mechanical)
 
 
@@ -74,7 +71,7 @@ def workflow_steps(text):
 
 
 def run(name,argv):
-    return support.capture(name,argv,tree,out,env=env,timeout=900)['exit']
+    return support.capture(name,argv,tree,out,env=env,timeout=None)['exit']
 
 
 def registry(record):
@@ -91,7 +88,7 @@ steps = [
      {'command': 'bash mechanical.sh', 'status': 'replayed', 'exit': lambda: run('mechanical', ['bash', str(out / 'mechanical.sh')])}),
     ('sweep', 'Install every awk the lint-row suite exercises', {'status': 'not replayed', 'reason': NO_SUDO}),
     ('sweep', 'Run every registered deterministic suite with strict discovery (verifies fixtures and harnesses, not agent behavior)',
-     {'status': 'covered', 'reason': 'the full registry under the local candidate for the runner python3 (3.14)',
+     {'status': 'covered', 'reason': 'the full registry under the local candidate using the configured runner python3',
       'covered_by': lambda: registry(reg314)}),
     ('sweep', 'Check evidence-record currency (verifies records and claims, not agent behavior)',
      {'command': 'python3 eval/records/check_currency.py --repo .', 'status': 'replayed',
@@ -105,7 +102,7 @@ steps = [
     ('sweep', 'Preserve deterministic outcomes and raw command streams', UPLOAD),
     ('registry-floor', 'uses actions/checkout@v7', CHECKOUT),
     ('registry-floor', 'Use the minimum Python that scripts/README.md declares',
-     {'status': 'not replayed', 'reason': 'setup-python is hosted only; local python3.10 is used instead'}),
+     {'status': 'not replayed', 'reason': 'the setup-python action is not replayed; local python3.10 is used instead'}),
     ('registry-floor', 'Install every awk the lint-row suite exercises', {'status': 'not replayed', 'reason': NO_SUDO}),
     ('registry-floor', 'Run every registered deterministic suite on the minimum Python (verifies fixtures and harnesses, not agent behavior)',
      {'status': 'covered', 'reason': 'the full registry under python3.10 (the python3 assertion of this step runs below)',

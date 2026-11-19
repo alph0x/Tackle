@@ -439,13 +439,32 @@ def _lite_state(files):
     match = re.fullmatch(r"(Ready|running|blocked|complete)(?:[ \t]+.+)?", values[0])
     return match[1] if match else None
 
+def _parse_board(files, text):
+    lines, header_index, header, rows = schema.parse_board(text)
+    if schema.schema_of(files) != "5":
+        return lines, header_index, header, rows
+
+    def current_cells(index):
+        if type(index) is not int or not 0 <= index < len(lines):
+            raise ValueError("invalid board line index")
+        body = lines[index].strip()
+        if body.startswith("|"):
+            body = body[1:]
+        if body.endswith("|") and (len(body) < 2 or body[-2] != "\\"):
+            body = body[:-1]
+        return [cell.strip().replace("\\|", "|") for cell in re.split(r"(?<!\\)\|", body)]
+
+    return lines, header_index, current_cells(header_index), [
+        (index, current_cells(index)) for index, _ in rows
+    ]
+
 def _board_observation(files):
     roots = schema.root_files(files)
     board_name = "task-board.md" if "task-board.md" in roots else "board.md" if "board.md" in roots else None
     if not board_name:
         return None, "unknown", []
     try:
-        _, _, header, rows = schema.parse_board(schema.decode(roots[board_name]))
+        _, _, header, rows = _parse_board(files, schema.decode(roots[board_name]))
         sc = schema.column_index(header, "Status")
         ic = schema.column_index(header, "Task")
         if ic is None: ic = schema.column_index(header, "Point")
@@ -502,7 +521,7 @@ def _validate_context(context):
 def _declared_briefs(files):
     board, quality, _ = _board_observation(files)
     if board is None or quality != "observed": return {}
-    _, _, header, rows = schema.parse_board(schema.decode(files[board]))
+    _, _, header, rows = _parse_board(files, schema.decode(files[board]))
     task_col = schema.column_index(header, "Task")
     if task_col is None: task_col = schema.column_index(header, "Point")
     brief_col = schema.column_index(header, "Brief")
@@ -691,16 +710,22 @@ def _atomic(path, data, mode=0o600):
         return
     fd, tmp = tempfile.mkstemp(prefix="." + path.name + ".", dir=str(path.parent))
     try:
-        os.fchmod(fd, mode)
-        with os.fdopen(fd, "wb") as f:
-            f.write(data); f.flush(); os.fsync(f.fileno())
+        f = os.fdopen(fd, "wb")
+        fd = None
+        with f:
+            f.write(data); f.flush()
+            os.fchmod(f.fileno(), mode)
+            os.fsync(f.fileno())
         os.replace(tmp, path)
         dfd = os.open(path.parent, os.O_RDONLY)
         try: os.fsync(dfd)
         finally: os.close(dfd)
-    except Exception:
+    except BaseException:
         with contextlib.suppress(OSError): os.unlink(tmp)
         raise
+    finally:
+        if fd is not None:
+            with contextlib.suppress(OSError): os.close(fd)
 
 def _write_state(job, state):
     _atomic(Path(job) / "state.json", _canonical(state))
@@ -2081,13 +2106,19 @@ def _atomic_preserve(path, data):
     mode = stat.S_IMODE(path.lstat().st_mode)
     fd, temporary = tempfile.mkstemp(prefix="." + path.name + ".", dir=str(path.parent))
     try:
-        os.fchmod(fd, mode)
-        with os.fdopen(fd, "wb") as stream:
-            stream.write(data); stream.flush(); os.fsync(stream.fileno())
+        stream = os.fdopen(fd, "wb")
+        fd = None
+        with stream:
+            stream.write(data); stream.flush()
+            os.fchmod(stream.fileno(), mode)
+            os.fsync(stream.fileno())
         os.replace(temporary, path); _fsync_dir(path.parent)
     except BaseException:
         with contextlib.suppress(OSError): os.unlink(temporary)
         raise
+    finally:
+        if fd is not None:
+            with contextlib.suppress(OSError): os.close(fd)
 
 def _semantic_review(job, state, manifest):
     path = Path(job) / "semantic-review.json"

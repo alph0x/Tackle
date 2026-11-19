@@ -7,8 +7,8 @@ acceptance to their existing owners. Historical sources remain available in
 
 Historical checklists for older workspaces are in the repository's `maintaining/migrations.md`; they remain readable historical context and cannot bypass the current selection, pinning, history or rollback guards.
 
-`improve this plan`, `migrate`, and `upgrade` route to PLAN preparation. An unstructured source is
-ingested through PLAN. See [invocation.md](invocation.md) for the current skill entry.
+`improve this plan` and unstructured intake use PLAN; `migrate` and `upgrade` use the explicitly selected
+catalog-driven copy-first route. See [invocation.md](invocation.md) for the current skill entry.
 
 Use the [compact migration route](#compact-migration) as the installed bridge; the historical archive does not select another execution procedure.
 
@@ -128,7 +128,7 @@ Ambiguous structure, collisions, unknown required facts and CRLF/alias/fence dia
 never normalize original bytes silently, downgrade or infer a supported source below `pre-3`.
 Closed work remains historical data; archive candidacy needs no upgrade, and archival requires separate authorization.
 
-PLAN, RUN and STATUS refuse any other workspace with `migrate first` and point here, and lint rows 1, 2, 3, 5, 10, 11, 12, 14 and 17 print that refusal.
+PLAN, RUN and STATUS refuse any other workspace with `migrate first` and point here; lint rows 2, 3, 5, 10, 11, 12, 14, 17, 18 and 19 print that refusal.
 
 Before migration or an archive-related decision, read the required
 [migration boundaries and capabilities](#migration-boundaries-and-capabilities).
@@ -145,7 +145,7 @@ historical data and requires no upgrade merely to become an archive candidate; a
 is a separately authorized operation. A CRLF/alias/fence diagnostic remains a hold until its owner
 resolves it in allowed scope, not permission to normalize original bytes silently.
 
-PLAN, RUN and STATUS refuse any other workspace with `migrate first` and point here, and lint rows 1, 2, 3, 5, 10, 11, 12, 14 and 17 print that refusal.
+PLAN, RUN and STATUS refuse any other workspace with `migrate first` and point here; lint rows 2, 3, 5, 10, 11, 12, 14, 17, 18 and 19 print that refusal.
 
 Lint row 1’s placeholder scan skips every `legacy-*/` directory. That scan exclusion is distinct from the adapters’ legacy-excluding projections; neither exclusion makes old snapshots current evidence. See the row’s current contract in [lint-spec.md](lint-spec.md).
 

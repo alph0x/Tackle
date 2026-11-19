@@ -2,6 +2,7 @@
 import fnmatch
 import json
 from pathlib import PurePosixPath
+import subprocess
 
 MANIFEST_PATH = 'eval/suite-manifest.json'
 
@@ -140,9 +141,20 @@ def select(root, manifest, changed, phase, *, manifest_baseline=None,
         mapping = json.loads((root / 'eval/check-selection.json').read_text())
         if mapping.get('version') != 1 or len(mapping['families']) != len(families) or set(mapping['families']) != set(families):
             raise ValueError('selection families differ from full registry; review the dependency map')
+        tracked = None
         for rule in mapping['rules']:
             if set(rule['families']) - set(families):
                 raise ValueError('selection names unregistered family')
+            for pattern in rule['patterns']:
+                if tracked is None:
+                    output = subprocess.check_output(
+                        ['git', 'ls-files', '--cached', '-z'], cwd=root)
+                    tracked = [entry.decode('utf-8', 'surrogateescape')
+                               for entry in output.split(b'\0') if entry]
+                if not any(fnmatch.fnmatchcase(path, pattern) and not any(
+                        fnmatch.fnmatchcase(path, exclusion) for exclusion in rule.get('exclude', []))
+                        for path in tracked):
+                    raise ValueError('selection rule pattern has no tracked matches: ' + pattern)
             if any(fnmatch.fnmatchcase(MANIFEST_PATH, pattern) for pattern in rule['patterns']) and not any(
                     fnmatch.fnmatchcase(MANIFEST_PATH, pattern) for pattern in rule.get('exclude', [])):
                 manifest_reader_families.extend(rule['families'])

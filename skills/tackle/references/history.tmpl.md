@@ -11,7 +11,7 @@ Never log secrets. **The task board `task-board.md` is canonical current state; 
 RUN may move entries older than the last five sessions **verbatim** to `history-archive.md`, or to indexed
 immutable segments when growth warrants. STATUS never archives. Preserve original order, headings, event
 references, failed attempts and budgets; never edit moved entries. Retain the newest State snapshot and record
-before/after sizes once. Follow [recoverable maintenance](guides/context-lifecycle.md#maintenance-and-interruption);
+before/after sizes once. Follow recoverable maintenance (`references/guides/context-lifecycle.md#maintenance-and-interruption`);
 archival never permits retiring verification data. Measure read, rewrite and retained bytes separately.
 A session entry longer than the entry budget (120 lines, or `History entry budget: N` in `AGENTS.md`) is a lint row 13 warning: keep the entry to its compact block and route narrative to `decisions.md`.
 

@@ -10,6 +10,7 @@ purpose-built synthetic fixture and its hand-derived golden, plus a mutated copy
 
 Standard library only; no network, container or model call.
 """
+import json
 import re
 import shutil
 import subprocess
@@ -152,6 +153,92 @@ class SharedRecipeTests(unittest.TestCase):
         self.assertIn(FIXTURE_RECIPE, section)
         self.assertNotIn("awk '", section)
         self.assertIn("awk '", extract_fixture_recipe_command())
+
+    def test_shared_session_usage_keeps_one_denominator_and_its_observed_fields(self):
+        guide = RETRO.read_text(encoding='utf-8')
+        section = guide.split('## Shared session measurement\n', 1)[1]
+        command = section.split('```sh\n', 1)[1].split('\n```', 1)[0]
+        self.assertIn('references/guides/retro.md#shared-session-measurement',
+                      RETRO_TMPL.read_text(encoding='utf-8'))
+        fixture = HERE / 'fixtures'
+        observations = [json.loads(line) for line in
+                        (fixture / 'coverage-sidecar.jsonl').read_text().splitlines()]
+        observed = next(row for row in observations if row['scope'] == 'session')
+        historical = observed
+        observed = dict(historical, provenance='synthetic observation for this test')
+        session = observed['scope_id']
+        lines = (fixture / 'coverage-lifecycle.md').read_text().splitlines()
+        finished = [i for i, line in enumerate(lines) if '| finish |' in line]
+        for i in finished[:2]:
+            cells = lines[i].split('|')
+            cells[-2] = f' session {session}; native measurement '
+            lines[i] = '|'.join(cells)
+        cases = [
+            ('available', [observed], 1, observed['metrics']),
+            ('attributed run', [dict(observed, run_id='run/worker/01')], 1, observed['metrics']),
+            ('session without run id', [{k: v for k, v in observed.items() if k != 'run_id'}],
+             1, observed['metrics']),
+            ('mixed', [observed, dict(observed, scope_id='unrelated', metrics={'requests': -1})],
+             1, observed['metrics']),
+            ('historical missing provenance', [historical], 0, {}),
+            ('truncated', '{', 0, {}),
+            ('invalid UTF-8', (json.dumps(observed) + '\n').encode('utf-8') + b'\xff\n',
+             1, observed['metrics']),
+            ('missing', None, 0, {}),
+            ('missing collector', [{k: v for k, v in observed.items() if k != 'collector'}], 0, {}),
+            ('repeated', [observed, observed], 1, observed['metrics']),
+            ('measured zero', [dict(observed, metrics={'requests': 0})], 1, {'requests': 0}),
+            ('conflicting', [observed, dict(observed, metrics={'input_tokens': 1})], 0, {}),
+        ]
+        for key in ('source', 'captured_at'):
+            cases.append((key, [{k: v for k, v in observed.items() if k != key}], 0, {}))
+        with tempfile.TemporaryDirectory() as scratch:
+            root = Path(scratch)
+            lifecycle = root / 'ledger.md'
+            lifecycle.write_text('\n'.join(lines) + '\n')
+            for label, records, count, fields in cases:
+                sidecar = None
+                if records is not None:
+                    sidecar = root / 'measurements.jsonl'
+                    if isinstance(records, bytes):
+                        sidecar.write_bytes(records)
+                    else:
+                        sidecar.write_text(records if isinstance(records, str) else
+                                           ''.join(json.dumps(row) + '\n' for row in records))
+                child = run_in_workspace(command, lifecycle, sidecar)
+                self.assertEqual((child.returncode, child.stderr), (0, ''), label)
+                result = json.loads(child.stdout)
+                self.assertEqual((result['measured_sessions'], result['known_sessions']), (count, 1), label)
+                self.assertEqual(list(result['sessions']), [session], label)
+                for key, pair in result['coverage'].items():
+                    self.assertEqual(pair, [int(key in fields), 1], (label, key))
+                for key, value in fields.items():
+                    self.assertEqual(result['sessions'][session][key]['value'], value, label)
+                if label in ('missing', 'truncated', 'available', 'attributed run', 'mixed', 'invalid UTF-8'):
+                    self.assertEqual(result['telemetry'], {'missing': 'absent', 'truncated': 'unavailable',
+                                                          'available': 'read', 'attributed run': 'read', 'mixed': 'partial', 'invalid UTF-8': 'partial'}[label])
+                    bare = root / 'bare.md'
+                    bare.write_text(lifecycle.read_text().replace('session ' + session + '; native measurement', session))
+                    raw = run_in_workspace(command, bare, sidecar)
+                    self.assertEqual((raw.returncode, raw.stderr), (0, ''), label)
+                    bare_report = json.loads(raw.stdout)
+                    self.assertEqual(bare_report['known_sessions'], int(label in ('available', 'attributed run', 'mixed', 'invalid UTF-8')))
+                    self.assertEqual(bare_report['unmapped_finishes'], result['unmapped_finishes'] +
+                                     (0 if label in ('available', 'attributed run', 'mixed', 'invalid UTF-8') else 2))
+                if label == 'missing':
+                    for note, eligible in [('session telemetry unavailable', 1), ('session other-id', 0)]:
+                        with self.subTest(note=note):
+                            noted = root / 'noted.md'
+                            noted.write_text(lifecycle.read_text().replace('native measurement', note))
+                            child = run_in_workspace(command, noted)
+                            self.assertEqual((child.returncode, child.stderr), (0, ''))
+                            report = json.loads(child.stdout)
+                            self.assertEqual(report['known_sessions'], eligible)
+                            self.assertEqual(report['coverage']['input_tokens'], [0, eligible])
+                if label == 'conflicting':
+                    self.assertEqual(result['sessions'][session]['input_tokens'], 'conflicting observations')
+                if label == 'missing':
+                    self.assertEqual(result['sessions'][session], 'unavailable')
 
     def test_exact_token_coverage_row_prints_only_the_tokens_line(self):
         command = extract_template_row_command('**Exact-token coverage**')

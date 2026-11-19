@@ -11,7 +11,7 @@ coordination, uncertain integration or a shared public contract upgrades to Full
 
 1. **Prepare.** Read the named spec, source and tests, relevant repository instructions and the existing
    Lite plan, history, resource usage and decisions. Before any write, stop with `migrate first`
-   ([forward only](guides/migrate.md#forward-only)) if the workspace still holds `log.md`, `log-archive.md` or
+   (forward only: `references/guides/migrate.md#forward-only`) if the workspace still holds `log.md`, `log-archive.md` or
    `usage.md`. Honor user > contract > protected tests > implementation. Confirm purpose, non-goals and
    scope; resolve user-owned ambiguity before the affected work. Reuse an authorized gitignore decision;
    otherwise ask once about docs/plans/ and apply it to docs/seeds/. Observe the repository root and
@@ -48,7 +48,7 @@ coordination, uncertain integration or a shared public contract upgrades to Full
    subprocess or explicit failure exit; `set -u`, `pipefail` or a final PASS alone is insufficient.
    Capture exact argv/script, cwd, observed runtime, input hashes before/after, output, child
    exit/timeout/signal and produced hashes. Before running the check, choose an accessible durable export
-   destination or the [capture script](guides/evidence-capture.md); either works, but raw evidence must be
+   destination or the capture script (`references/guides/evidence-capture.md`); either works, but raw evidence must be
    delivered. Generated receipts are evidence indexes: link them instead of retyping commands, output,
    clocks or hashes.
    Every E2E run produces a replayable artifact with its exact command or saved script, accessible
@@ -74,7 +74,7 @@ coordination, uncertain integration or a shared public contract upgrades to Full
    capture, or restart of an already-configured foreground tool after confirmed writer shutdown.
    Diagnose first and retry once per unchanged cause/command/input/environment signature, recording
    this separate allowance in the same journal; task/actor renaming cannot reset it. A failed retry
-    blocks the affected action. On a correction-budget or no-progress stop, use the [RUN recovery recommendation](guides/run.md#correction-recovery);
+    blocks the affected action. On a correction-budget or no-progress stop, use the RUN recovery recommendation (`references/guides/run.md#correction-recovery`);
     it recommends next steps without resuming the stopped work. No new install, credentials, restricted access or changed expectation
    is authorized. Before declaring complete, open each required evidence reference, confirm its
    actual result and final input/artifact revisions, and match it to the requirement it proves.
@@ -151,7 +151,7 @@ with the actual terminal event may supply its timestamp; never borrow the latest
 No exact telemetry, collector or model metadata is required to close a product task; ledger recording stays
 informative. A successful test alone does not establish product completion.
 Where the harness exposes native usage telemetry, attempt the optional literal
-[`codex-native-usage.md`](guides/codex-native-usage.md) script (one example) at start and after an externally
+`codex-native-usage.md` (`references/guides/codex-native-usage.md`) script (one example) at start and after an externally
 observed close. Link its receipt in Source, use only its directly observed configured binding
 and exactly mapped terminal event, and keep thread/turn tokens at session scope. A missing or
 failed capture leaves `n/a` and does not block closure.

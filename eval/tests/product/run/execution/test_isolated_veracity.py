@@ -76,7 +76,7 @@ class IsolatedVeracity(unittest.TestCase):
         self.assertEqual(record['child_exit'], 0)
         self.assertEqual(self.verdict(12, out, record), 'FAIL')
 
-    def test_row12_pattern_mutation_is_rejected(self):
+    def test_pattern_mutation_is_rejected(self):
         command = NS['canonical_rows'](SOURCE, SHA, 'demo')[12]['command']
         mutated = command.replace(b'Effort\\*\\*', b'Effort\\*')
         self.assertNotEqual(command, mutated)

@@ -163,13 +163,21 @@ class Workspace:
             os.close(fd)
 
 
+def split_row(line):
+    return re.split(r'(?<!\\)\|', line)
+
+
+def cell_value(value):
+    return value.strip().replace(r'\|', '|')
+
+
 def table(text, needed):
     lines = text.splitlines(keepends=True)
     for i in range(len(lines) - 1):
         if not lines[i].lstrip().startswith('|'):
             continue
-        cols = [x.strip() for x in lines[i].strip().strip('|').split('|')]
-        sep = [x.strip() for x in lines[i+1].strip().strip('|').split('|')]
+        cols = cells(lines[i])
+        sep = cells(lines[i+1])
         if set(needed) <= set(cols) and len(cols) == len(sep) and all(re.fullmatch(r':?-+:?', x) for x in sep):
             end = i + 2
             while end < len(lines) and lines[end].lstrip().startswith('|'):
@@ -179,7 +187,12 @@ def table(text, needed):
 
 
 def cells(line):
-    return [x.strip() for x in line.strip().strip('|').split('|')]
+    body = line.strip()
+    if body.startswith('|'):
+        body = body[1:]
+    if body.endswith('|') and not body.endswith('\\|'):
+        body = body[:-1]
+    return [cell_value(x) for x in split_row(body)]
 
 
 def board_info(ws):
@@ -390,7 +403,7 @@ def lifecycle(ws, d):
     verification = reference(d.get('verification', 'n/a'))
     usage = ws.text('resource-usage.md')
     lines, cols, start, end = table(usage, ('Run ID', 'Event', 'Task', 'Role', 'Outcome', 'Attempts', 'Rework', 'Verification', 'Source'))
-    require('Schema: tackle-observability/2' in usage, 'missing ledger schema')
+    require('Schema: tackle-observability/2' in usage.splitlines(), 'missing ledger schema')
     existing = [dict(zip(cols, cells(line))) for line in lines[start:end] if len(cells(line)) == len(cols)]
     matching = [row for row in existing if row['Run ID'] == run]
     require(all(row['Task'] == task and row['Role'] == role for row in matching), 'run identity changed')
@@ -447,7 +460,7 @@ def reconcile(ws, d):
     usage = ws.text('resource-usage.md')
     columns = ('Run ID', 'Event', 'Task', 'Role', 'Harness', 'Tier', 'Model', 'Effort',
                'At', 'Outcome', 'Attempts', 'Rework', 'Verification', 'Source')
-    require('Schema: tackle-observability/2' in usage, 'missing ledger schema')
+    require('Schema: tackle-observability/2' in usage.splitlines(), 'missing ledger schema')
     lines, cols, start, end = table(usage, columns)
     require(set(cols) == set(columns) and len(cols) == len(columns), 'invalid ledger header')
     try:
@@ -461,10 +474,10 @@ def reconcile(ws, d):
         line = lines[i].strip()
         if not line.startswith('|'):
             continue
-        parts = line.split('|')
+        parts = split_row(line)
         if len(parts) != len(cols) + 2:
             continue
-        values = [part.strip() for part in parts[1:-1]]
+        values = [cell_value(part) for part in parts[1:-1]]
         if all(re.fullmatch(r':?-+:?', value) for value in values):
             continue
         if values[cols.index('Run ID')] == run:
@@ -556,7 +569,7 @@ def closure(ws, d):
         report = append_record(report, '**Remains**: ' + remains + '\n')
     ref = 'reports/' + task + '-report.md'
     if row[cols.index('Verification')] != ref:
-        parts = lines[i].split('|')
+        parts = split_row(lines[i])
         pos = cols.index('Verification') + 1
         require(len(parts) == len(cols) + 2, 'malformed board row')
         old = parts[pos]

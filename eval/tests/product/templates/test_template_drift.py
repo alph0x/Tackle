@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[4]
 HERE = (Path(__file__).resolve().parents[4] / 'eval/templates')
 sys.path.insert(0, str(ROOT))
 from maintaining.install_root import current_root  # noqa: E402
-from eval.support.lint import lint_namespace, brief_base, run_lint_row  # noqa: E402
+from eval.support.lint import lint_namespace, brief_base, run_lint_row, published_row_ids  # noqa: E402
 
 INSTALL = current_root(ROOT)
 REF = INSTALL / 'references'
@@ -91,7 +91,7 @@ def clause_bytes(contract, cid):
 def lint(root):
     source = (REF.parent / 'scripts/lint.py').read_bytes()
     verdicts = {}
-    for number in range(1, 20):
+    for number in published_row_ids():
         child = run_lint_row(root, number, slug=SLUG, source=source, timeout=60)
         record = dict(child_exit=child.returncode, timeout=False, launch_error=None,
                       signal=(-child.returncode if child.returncode < 0 else None), inputs_stable=True, artifacts_present=True)

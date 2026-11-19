@@ -815,8 +815,15 @@ def feed(process, prompt, child):
 def kill_group(process, signum):
     try:
         os.killpg(process.pid, signum)
-    except OSError:
+    except ProcessLookupError:
         pass
+    except PermissionError:
+        try:
+            os.killpg(process.pid, 0)
+        except ProcessLookupError:
+            pass
+        else:
+            raise
 
 
 def launch(argv, cwd, env, prompt, seconds):

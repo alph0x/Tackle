@@ -1,7 +1,9 @@
 """Execute the shipped evidence script with controlled child processes."""
 import hashlib
 import json
+import os
 from pathlib import Path
+import shutil
 import signal
 import subprocess
 import sys
@@ -14,6 +16,50 @@ from maintaining.install_root import current_root  # noqa: E402
 INSTALL = current_root(REPO)
 
 RECIPE = (INSTALL / 'scripts/evidence_capture.py').read_text()
+
+CAPTURE_AUDITOR = r'''
+import json
+import os
+import runpy
+import sys
+
+script = sys.argv[1]
+sys.argv = [script, 'spec.json']
+events = []
+mutations = {'os.mkdir', 'os.remove', 'os.rmdir', 'os.rename', 'os.replace',
+             'os.link', 'os.symlink', 'os.chmod', 'os.chown', 'os.truncate'}
+
+def audit(event, args):
+    if event == 'open':
+        mode, flags = args[1:3]
+        if ((isinstance(mode, str) and any(c in mode for c in 'wax+'))
+                or (isinstance(flags, int) and flags & (os.O_WRONLY | os.O_RDWR
+                    | os.O_CREAT | os.O_TRUNC | os.O_APPEND))):
+            events.append([event, str(args[0]), str(mode), flags])
+    elif event in mutations or event in ('subprocess.Popen', 'os.system',
+                                          'os.posix_spawn', 'os.spawn',
+                                          'os.exec', 'os.fork'):
+        events.append([event, *[str(a) for a in args]])
+
+sys.addaudithook(audit)
+try:
+    runpy.run_path(script, run_name='__main__')
+finally:
+    print('BOUNDARY_EVENTS=' + json.dumps(events), file=sys.stderr)
+'''
+
+
+def snapshot(root):
+    entries = {}
+    for path in root.rglob('*'):
+        name = str(path.relative_to(root))
+        if path.is_symlink():
+            entries[name] = ('symlink', os.readlink(path))
+        elif path.is_dir():
+            entries[name] = ('directory',)
+        else:
+            entries[name] = ('file', path.read_bytes())
+    return entries
 
 
 class CaptureTests(unittest.TestCase):
@@ -114,6 +160,124 @@ class CaptureTests(unittest.TestCase):
         key = next(iter(first))
         self.assertEqual(first[key], second[key])
         self.assertEqual(json.loads(first[key]['result.json'])['artifacts']['output.bin'], hashlib.sha256(b'actual').hexdigest())
+
+    def assert_rejected_before_effect(self, root, script, name):
+        before = snapshot(root)
+        result = subprocess.run(
+            [sys.executable, '-I', '-B', '-c', CAPTURE_AUDITOR, str(script)],
+            cwd=root, capture_output=True, text=True, timeout=30)
+        markers = [line for line in result.stderr.splitlines()
+                   if line.startswith('BOUNDARY_EVENTS=')]
+        self.assertEqual(len(markers), 1, result.stderr)
+        events = json.loads(markers[0].split('=', 1)[1])
+        self.assertNotEqual(result.returncode, 0, name)
+        self.assertEqual(events, [], name)
+        self.assertEqual(snapshot(root), before, name)
+
+    def test_native_capture_rejects_invalid_inputs_before_effect(self):
+        command = [sys.executable, '-I', '-B', '-c',
+                   "from pathlib import Path; Path('launch-sentinel').write_text('ran')"]
+        cases = [
+            ('timeout-zero', 0, command),
+            ('timeout-negative', -1, command),
+            ('timeout-text', 'nonnumeric', command),
+            ('timeout-nan', float('nan'), command),
+            ('timeout-inf', float('inf'), command),
+            ('timeout-neg-inf', -float('inf'), command),
+            ('timeout-false', False, command),
+            ('timeout-true', True, command),
+            ('timeout-null', None, command),
+            ('timeout-list', [], command),
+            ('argv-empty', 2, []),
+            ('argv-nonstring-member', 2, [sys.executable, 4]),
+            ('argv-string', 2, 'not-a-list'),
+            ('argv-null', 2, None),
+            ('argv-number', 2, 3),
+            ('argv-bool', 2, True),
+            ('argv-object', 2, {}),
+            ('argv-bool-member', 2, [sys.executable, False]),
+        ]
+        for name, timeout, argv in cases:
+            with self.subTest(case=name), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                spec = {'argv': argv, 'selectors': [], 'artifacts': [],
+                        'destination': 'store', 'timeout_seconds': timeout}
+                (root / 'spec.json').write_text(json.dumps(spec))
+                self.assert_rejected_before_effect(
+                    root, INSTALL / 'scripts/capture.py', name)
+                self.assertFalse((root / 'launch-sentinel').exists(), name)
+
+    def test_native_capture_accepts_valid_input_and_records_output(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            command = [sys.executable, '-I', '-B', '-c',
+                       "import sys; print('native stdout'); print('native stderr', file=sys.stderr)"]
+            spec = {'argv': command, 'selectors': [], 'artifacts': [],
+                    'destination': 'store', 'timeout_seconds': 3}
+            (root / 'spec.json').write_text(json.dumps(spec))
+            result = subprocess.run(
+                [sys.executable, '-I', '-B', str(INSTALL / 'scripts/capture.py'),
+                 'spec.json'],
+                cwd=root, capture_output=True, timeout=30)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            records = list((root / 'store').glob('observation-*/result.json'))
+            self.assertEqual(len(records), 1)
+            record = json.loads(records[0].read_text())
+            self.assertEqual(record['argv'], command)
+            self.assertEqual(record['child_exit'], 0)
+            self.assertTrue(record['accepted'])
+            self.assertEqual((records[0].parent / 'stdout.bin').read_bytes(), b'native stdout\n')
+            self.assertEqual((records[0].parent / 'stderr.bin').read_bytes(), b'native stderr\n')
+
+    def test_native_runner_rejects_invalid_timeouts_before_effect(self):
+        cases = [
+            ('zero', 0),
+            ('negative', -1),
+            ('text', 'nonnumeric'),
+            ('nan', float('nan')),
+            ('inf', float('inf')),
+            ('neg-inf', -float('inf')),
+            ('false', False),
+            ('true', True),
+            ('null', None),
+            ('list', []),
+        ]
+        for name, timeout in cases:
+            with self.subTest(case=name), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                shutil.copytree(REPO / 'eval/lint/rows/fixtures/pass-full', root, dirs_exist_ok=True)
+                config = {
+                    'slug': 'demo',
+                    'workspace': 'docs/plans/demo',
+                    'selectors': [{'glob': 'docs/plans/demo/*.md', 'required': True}],
+                    'rows': [1],
+                    'timeout_seconds': timeout,
+                }
+                (root / 'spec.json').write_text(json.dumps(config))
+                self.assert_rejected_before_effect(
+                    root, INSTALL / 'scripts/lint_runner.py', name)
+
+    def test_native_runner_accepts_valid_timeout_and_records_pass(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            shutil.copytree(REPO / 'eval/lint/rows/fixtures/pass-full', root, dirs_exist_ok=True)
+            config = {
+                'slug': 'demo',
+                'workspace': 'docs/plans/demo',
+                'selectors': [{'glob': 'docs/plans/demo/*.md', 'required': True}],
+                'rows': [1],
+                'timeout_seconds': 2,
+            }
+            (root / 'spec.json').write_text(json.dumps(config))
+            result = subprocess.run(
+                [sys.executable, '-I', '-B', str(INSTALL / 'scripts/lint_runner.py'),
+                 'spec.json'],
+                cwd=root, capture_output=True, text=True, timeout=30)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            summary = json.loads((root / Path(result.stdout.strip())).read_text())
+            self.assertEqual(summary['total'], 1)
+            self.assertEqual(summary['passed'], 1)
+            self.assertEqual(summary['rows']['1']['verdict'], 'PASS')
 
 
 if __name__ == '__main__':

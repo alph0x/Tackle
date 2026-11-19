@@ -49,6 +49,37 @@ def run_row(number, files):
                               capture_output=True, text=True, timeout=10)
 
 
+class WaitingReferenceRowTests(unittest.TestCase):
+    def test_typed_question_references_resolve_exact_headings(self):
+        board = ('Schema: tackle-workspace/5\n\n'
+                 '| Task | What | Brief | Depends on | Status | Verification |\n'
+                 '|---|---|---|---|---|---|\n'
+                 '| T-4101 | Work | tasks/T-4101.md | none | Waiting on owner | %s |\n')
+        cases = (
+            ('waiting: Q-4101', '## Q-4101 · Fixture owner choice · open\n', False),
+            ('waiting: Q-4101', '## Q-4101 · Fixture owner choice · resolved\n', False),
+            ('waiting: Q-4101', '', True),
+            ('waiting: Q-4101', '## Q-41010 · Another question · open\n', True),
+            ('waiting: Q-4101', '```\n## Q-4101 · Example · open\n```\n', True),
+            ('waiting: Q-4101', '````markdown\n```sh\n## Q-4101 · Example · open\n```\n````\n', True),
+            ('waiting: Q-4101', '~~~~markdown\n<!--\n~~~\n## Q-4101 · Example · open\n~~~~~\n', True),
+            ('waiting: Q-4101', '````markdown\n```` extra\n## Q-4101 · Example · open\n````\n', True),
+            ('waiting: Q-4101', '````markdown\n<!--\n`````\n## Q-4101 · Real · resolved\n', False),
+            ('waiting: Q-4101', '## Q-4101 · Real · open\n````markdown\n```sh\n## Q-4101 · Example · open\n```\n````\n', False),
+            ('waiting: Q-4101', '<!--\n## Q-4101 · Example · open\n-->\n', True),
+            ('waiting: questions.md#owner-action', '', False),
+            ('waiting: D-4101', '', False),
+        )
+        for reference, questions, missing in cases:
+            with self.subTest(reference=reference, questions=questions):
+                child = run_row(10, {'task-board.md': board % reference, 'questions.md': questions})
+                self.assertEqual(child.returncode, 0, child.stderr)
+                if missing:
+                    self.assertIn('Q-4101', child.stdout)
+                else:
+                    self.assertEqual(child.stdout, '')
+
+
 class ChronologyRowTests(unittest.TestCase):
     def test_ordered_history_passes_and_reversed_or_newer_archive_or_missing_history_fails(self):
         valid = run_row(6, {'history.md': '## 2026-01-01 — start\n\n## 2026-01-02 — finish\n',

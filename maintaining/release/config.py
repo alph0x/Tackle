@@ -40,6 +40,8 @@ def load(path):
                'claims': sequence(claim), 'parts': sequence(string), 'install_count': integer,
                'expected_ledger_gate': string, 'expected_sweep': string,
                'gating_workspaces': sequence(string)}, 'config')
+    if 'selected_workspaces' in data:
+        sequence(string)(data['selected_workspaces'], 'config.selected_workspaces')
     for key, value in (
         ('workspace', data['workspace']),
         ('changelog.path', data['changelog']['path']),

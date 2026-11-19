@@ -1,6 +1,8 @@
 """Selection boundaries using the existing discovery fixture and native children."""
 import json
 from pathlib import Path
+import subprocess
+import sys
 import unittest
 
 import test_discovery as discovery
@@ -22,6 +24,13 @@ class SelectionTests(unittest.TestCase):
             'global_patterns': ['eval/run_suites.py'], 'ignored_patterns': ['docs/plans/**'],
             'test_source_regressions': ['eval/example']}
         self.save_map()
+        producer = self.root / 'src/producer.py'
+        producer.parent.mkdir(parents=True, exist_ok=True)
+        producer.write_text('# Fixture producer\n')
+        (self.root / 'eval/run_suites.py').touch(exist_ok=True)
+        subprocess.run(['git', 'init', '-q'], cwd=self.root, check=True)
+        subprocess.run(['git', '-c', 'core.excludesFile=/dev/null', 'add', '-f', '--', '.'],
+                       cwd=self.root, check=True)
 
     def save_map(self):
         (self.root / 'eval/check-selection.json').write_text(json.dumps(self.mapping))
@@ -83,21 +92,115 @@ class SelectionTests(unittest.TestCase):
         self.assertFalse(result['passed'])
         self.assertNotEqual(result['suites'][0]['exit'], 0)
 
+    def test_native_admission_of_sources_and_live_selection_rules(self):
+        marker = self.root / 'admission-children-ran'
+        children = [
+            ('example', self.test),
+            ('other', self.root / 'eval/other/test_other.py'),
+        ]
+        for name, child in children:
+            original = child.read_text()
+            child.write_text(
+                'from pathlib import Path\n'
+                f'with Path({str(marker)!r}).open("a") as marker:\n'
+                f'    marker.write({name + chr(10)!r})\n'
+                + original
+            )
+        subprocess.run(
+            ['git', '-c', 'core.excludesFile=/dev/null', 'add', '-f', '--',
+             'eval/example/test_example.py', 'eval/other/test_other.py'],
+            cwd=self.root, check=True,
+        )
+        (self.root / 'empty-source').mkdir()
+        (self.root / 'untracked-source.py').write_text('# Untracked fixture input\n')
+
+        cases = [
+            ('file', 'src/producer.py', None, None, 'src/producer.py', None),
+            ('directory', 'src', None, None, 'src/producer.py', None),
+            ('shared', 'src/producer.py', None, None, 'src/producer.py', None),
+            ('missing', 'missing-source.py', None, None, 'src/producer.py', 'source'),
+            ('empty', 'empty-source', None, None, 'src/producer.py', 'source'),
+            ('untracked', 'untracked-source.py', None, None, 'src/producer.py', 'source'),
+            ('dead-rule', 'src/producer.py', 'src/never-matches.py', None,
+             'src/producer.py', 'rule'),
+            ('excluded-rule', 'src/producer.py', 'src/producer.py', 'src/producer.py',
+             'src/producer.py', 'rule'),
+            ('ignored', 'src/producer.py', None, None, 'docs/plans/unmatched.md', None),
+        ]
+        for name, source, pattern, excluded, changed, failure in cases:
+            with self.subTest(case=name):
+                if marker.exists():
+                    marker.unlink()
+                manifest = json.loads(json.dumps(self.manifest))
+                manifest['suites'][0]['source'] = source
+                if name == 'shared':
+                    manifest['suites'][1]['source'] = source
+                mapping = json.loads(json.dumps(self.mapping))
+                if pattern is not None:
+                    mapping['rules'][0]['patterns'] = [pattern]
+                if excluded is not None:
+                    mapping['rules'][0]['exclude'] = [excluded]
+                (self.root / 'eval/check-selection.json').write_text(json.dumps(mapping))
+                manifest_path = self.root / f'admission-{name}.json'
+                manifest_path.write_text(json.dumps(manifest))
+                output = self.root / f'admission-output-{name}'
+                completed = subprocess.run(
+                    [sys.executable, '-I', '-B', str(ROOT / 'eval/run_suites.py'),
+                     '--root', str(self.root), '--manifest', str(manifest_path),
+                     '--output', str(output), '--changed', changed],
+                    cwd=self.root, capture_output=True, text=True,
+                )
+                result = json.loads((output / 'results.json').read_text())
+                if failure is not None:
+                    self.assertEqual(completed.returncode, 2, completed.stderr)
+                    self.assertFalse(result['passed'])
+                    self.assertEqual(result['tests'], 0)
+                    self.assertEqual(result['exit'], 2)
+                    details = completed.stdout + completed.stderr + result['error']
+                    if failure == 'source':
+                        self.assertIn('source', details.lower())
+                        self.assertIn(source, details)
+                    else:
+                        self.assertRegex(details.lower(), r'rule|pattern')
+                        self.assertIn(pattern, details)
+                    self.assertFalse(marker.exists())
+                elif name == 'ignored':
+                    self.assertEqual(completed.returncode, 0, completed.stderr)
+                    self.assertIsNone(result['passed'])
+                    self.assertEqual(result['tests'], 0)
+                    self.assertEqual(result['suites'], [])
+                    self.assertFalse(marker.exists())
+                else:
+                    self.assertEqual(completed.returncode, 0, completed.stderr)
+                    self.assertTrue(result['passed'])
+                    self.assertEqual(result['tests'], 2)
+                    self.assertEqual(
+                        {suite['path'] for suite in result['suites']},
+                        {'eval/example', 'eval/other'},
+                    )
+                    self.assertCountEqual(marker.read_text().splitlines(), ['example', 'other'])
+
     def test_real_map_retains_reviewed_consumers(self):
         manifest = json.loads((ROOT / 'eval/suite-manifest.json').read_text())
-        families = {s['source']: s['path'] for s in manifest['suites']}
         cases = {
-            'eval/protocol-v2/check.py': ['eval/protocol-v2', 'eval/behavior/harness',
-                'eval/behavior/judges/planning', 'eval/behavior/judges/resume', 'eval/records',
-                'eval/install/inventory', 'eval/cohorts/2026-09-candidate', 'eval/cohorts/2026-09-resume',
-                'eval/cohorts/2026-09-second-candidate', 'eval/cohorts/2026-09-third-candidate'],
-            'eval/support/lint.py': ['eval/lint/rows', 'eval/lint/task-contracts', 'eval/lint/task-identity',
-                'eval/maintaining/suite-integrity', 'eval/run/execution', 'eval/templates', 'eval/validation-integrity', 'skills/tackle/scripts/record.py'],
-            'skills/tackle/references/task.tmpl.md': ['eval/lint/task-identity', 'eval/lint/rows',
-                'eval/templates', 'eval/rules', 'eval/install/inventory', 'eval/install/reading-budget', 'skills/tackle/scripts/record.py']}
+            'eval/protocol-v2/check.py': ['eval/tests/tooling/protocol-v2', 'eval/tests/tooling/behavior/harness',
+                'eval/tests/tooling/behavior/judges/planning', 'eval/tests/tooling/behavior/judges/resume',
+                'eval/tests/tooling/records', 'eval/tests/product/install/inventory',
+                'eval/tests/historical/verdicts/cost-and-fall-rate',
+                'eval/tests/historical/verdicts/resume-comparison',
+                'eval/tests/historical/verdicts/escalation-and-completeness',
+                'eval/tests/historical/verdicts/no-regression'],
+            'eval/support/lint.py': ['eval/tests/product/lint/rows', 'eval/tests/product/lint/task-contracts',
+                'eval/tests/product/lint/task-identity', 'eval/tests/tooling/maintaining/suite-integrity',
+                'eval/tests/product/run/execution', 'eval/tests/product/templates',
+                'eval/tests/tooling/validation-integrity', 'eval/tests/product/run/record-tool'],
+            'skills/tackle/references/task.tmpl.md': ['eval/tests/product/lint/task-identity',
+                'eval/tests/product/lint/rows', 'eval/tests/product/templates', 'eval/tests/tooling/rules',
+                'eval/tests/product/install/inventory', 'eval/tests/tooling/install/reading-budget',
+                'eval/tests/product/run/record-tool']}
         for path, expected in cases.items():
             with self.subTest(path=path):
                 plan = runner.plan(ROOT, manifest, changed=[path])
-                self.assertEqual(set(plan['selected']), {families[f] for f in expected})
+                self.assertEqual(set(plan['selected']), set(expected))
                 self.assertEqual(plan['planned_tests'], sum(s['tests'] for s in manifest['suites']
                     if s['path'] in plan['selected']))

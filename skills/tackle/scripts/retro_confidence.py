@@ -163,6 +163,10 @@ def rows(text):
 
 
 def main(argv):
+    if len(argv) == 2 and argv[1] == '--help':
+        sys.stdout.write('usage: retro_confidence.py <profile-path>\n'
+                         'Print confidence statistics for profile entries.\n')
+        return 0
     if len(argv) != 2:
         sys.stderr.write('usage: retro_confidence.py <profile-path>\n')
         return 2

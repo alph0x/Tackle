@@ -29,6 +29,36 @@ def lint_namespace():
 ROW_SOURCE = INSTALL / 'scripts/lint.py'
 
 
+def published_row_ids(spec=None):
+    """Read ordered check IDs independently from the published lint specification."""
+    if spec is None:
+        spec = (INSTALL / 'references/guides/lint-spec.md').read_text(encoding='utf-8')
+    lines = spec.splitlines()
+    headers = [index for index, line in enumerate(lines)
+               if re.fullmatch(r'\s*\|\s*Check\s*\|\s*Pass condition\s*\|\s*', line)]
+    if len(headers) != 1:
+        raise ValueError('expected exactly one published check table')
+    index = headers[0] + 1
+    if index >= len(lines) or not re.fullmatch(
+            r'\s*\|\s*:?-+:?\s*\|\s*:?-+:?\s*\|\s*', lines[index]):
+        raise ValueError('malformed published check table separator')
+    index += 1
+    ids = []
+    while index < len(lines) and lines[index].lstrip().startswith('|'):
+        line = lines[index]
+        cells = line.split('|', 2)
+        if len(cells) != 3 or not line.rstrip().endswith('|'):
+            raise ValueError('malformed published check table row')
+        match = re.match(r'\s*([1-9][0-9]*)\s+·(?:\s|$)', cells[1])
+        if not match:
+            raise ValueError('malformed published check ID')
+        ids.append(int(match.group(1)))
+        index += 1
+    if not ids or any(number != position for position, number in enumerate(ids, 1)):
+        raise ValueError('published check IDs must be nonempty, unique and contiguous')
+    return tuple(ids)
+
+
 def lint_rows(slug, source=None):
     """Compile the rows from scripts/lint.py bytes (or a mutated copy of them) with the shipped extractor."""
     if source is None:

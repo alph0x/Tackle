@@ -3,7 +3,13 @@
 Tests live under `eval/tests/`, grouped by the guarantee they protect. Test tools,
 synthetic fixtures and frozen cohort implementations retain their original paths.
 `suite-manifest.json` is the complete discovery registry: its `path` locates tests,
-`source` locates their tools/fixtures, and `category` explains their purpose.
+`source` locates live tracked tools, fixtures or owned test inputs, and `category`
+explains their purpose. A source may be a repository-relative tracked file or a
+directory containing tracked inputs; an explicitly missing or empty source is
+rejected. Existing programmatic fixtures may omit it, multiple families may share
+one, and it is not a complete dependency graph. The development selector checks
+each required rule pattern for tracked matches after that rule's exclusions.
+Explicit unmatched ignored patterns retain their no-selection meaning.
 Every family also declares its functional `purpose`; [the suite index](tests/README.md)
 lists those guarantees. Name suites for behavior, such as `verdicts/no-regression`
 or `verdicts/resume-comparison`, without dates, session labels or candidate ordinals.

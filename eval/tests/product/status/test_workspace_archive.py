@@ -426,6 +426,121 @@ class WorkspaceArchiveTests(unittest.TestCase):
                         self.assertFalse((world['source'] / 'task-board.md').exists())
                         self.assertFalse((world['source'] / 'board.md').exists())
 
+            for escaped_what in ('a' + chr(92) + '|b', 'a' + chr(92) + '|'):
+                with self.subTest(escaped_what=escaped_what):
+                    world = self.world(lab, '5')
+                    board = world['source'] / 'task-board.md'
+                    lines = board.read_text(encoding='utf-8').splitlines(keepends=True)
+                    for index, line in enumerate(lines):
+                        if line.lstrip().startswith('| T-'):
+                            cells = line.split('|')
+                            cells[2] = ' ' + escaped_what + ' '
+                            lines[index] = '|'.join(cells)
+                            break
+                    else:
+                        self.fail('schema 5 fixture has no task row')
+                    board.write_text(''.join(lines), encoding='utf-8')
+                    world['original'] = inventory(world['source'])
+                    original = world['original']
+                    preview = self.preview(world)
+                    self.assertEqual(preview['inventory'], original)
+                    self.assertEqual(preview['source_revision'], digest(canonical(original)))
+                    self.assertEqual(inventory(world['source']), original)
+                    self.assertEqual(inventory(world['repo'] / 'docs/plans/neighbor'), world['neighbor'])
+                    self.assertEqual(inventory(world['outside']), world['outside_inventory'])
+
+            probe = Path(lab) / 'atomic-probe'
+            probe.mkdir()
+            alias = 'workspace_archive_atomic_probe_' + uuid.uuid4().hex
+            spec = importlib.util.spec_from_file_location(alias, MODULE)
+            module = importlib.util.module_from_spec(spec)
+            sys.modules[alias] = module
+            try:
+                spec.loader.exec_module(module)
+
+                missing = probe / 'missing'
+                module._atomic(missing, b'after')
+                self.assertEqual(missing.read_bytes(), b'after')
+                self.assertEqual(stat.S_IMODE(missing.stat().st_mode), 0o600)
+
+                for mode in (0o640, 0o644, 0o4644):
+                    with self.subTest(atomic_mode=oct(mode)):
+                        target = probe / ('mode-' + str(mode))
+                        target.write_bytes(b'before')
+                        target.chmod(mode)
+                        self.assertEqual(stat.S_IMODE(target.stat().st_mode), mode)
+                        module._atomic(target, b'after')
+                        self.assertEqual(target.read_bytes(), b'after')
+                        self.assertEqual(stat.S_IMODE(target.stat().st_mode), mode)
+
+                outside = probe / 'outside'
+                outside.write_bytes(b'outside sentinel')
+                outside.chmod(0o640)
+                outside_before = outside.stat()
+                link = probe / 'symlink'
+                link.symlink_to(outside)
+                directory = probe / 'directory'
+                directory.mkdir()
+                for target in (link, directory):
+                    with self.subTest(nonregular=target.name):
+                        entries = set(probe.iterdir())
+                        with self.assertRaises((ValueError, OSError)):
+                            module._atomic(target, b'after')
+                        self.assertEqual(set(probe.iterdir()), entries)
+                        self.assertEqual(outside.read_bytes(), b'outside sentinel')
+                        self.assertEqual(stat.S_IMODE(outside.stat().st_mode),
+                                         stat.S_IMODE(outside_before.st_mode))
+                        self.assertEqual(outside.stat().st_ino, outside_before.st_ino)
+
+                hardlink = probe / 'hardlink'
+                os.link(outside, hardlink)
+                module._atomic(hardlink, b'after')
+                self.assertEqual(hardlink.read_bytes(), b'after')
+                self.assertEqual(outside.read_bytes(), b'outside sentinel')
+                self.assertEqual(stat.S_IMODE(outside.stat().st_mode),
+                                 stat.S_IMODE(outside_before.st_mode))
+                self.assertEqual(outside.stat().st_ino, outside_before.st_ino)
+
+                for operation in ('fchmod', 'replace', 'fdopen'):
+                    with self.subTest(atomic_failure=operation):
+                        target = probe / ('failure-' + operation)
+                        target.write_bytes(b'before')
+                        target.chmod(0o640)
+                        before = target.stat()
+                        entries = set(probe.iterdir())
+                        captured_fds = []
+
+                        def fail(*args, **kwargs):
+                            if operation == 'fdopen':
+                                captured_fds.append(args[0])
+                            raise OSError(errno.EIO, 'injected ' + operation + ' failure')
+
+                        try:
+                            with patch.object(module.os, operation, side_effect=fail):
+                                with self.assertRaises(OSError):
+                                    module._atomic(target, b'after')
+                            after = target.stat()
+                            self.assertEqual(target.read_bytes(), b'before')
+                            self.assertEqual(
+                                (after.st_ino, after.st_mode, after.st_mtime_ns),
+                                (before.st_ino, before.st_mode, before.st_mtime_ns),
+                            )
+                            self.assertEqual(set(probe.iterdir()), entries)
+                            if operation == 'fdopen':
+                                self.assertEqual(len(captured_fds), 1)
+                                with self.assertRaises(OSError) as error:
+                                    os.fstat(captured_fds[0])
+                                self.assertEqual(error.exception.errno, errno.EBADF)
+                        finally:
+                            for fd in captured_fds:
+                                try:
+                                    os.close(fd)
+                                except OSError as error:
+                                    if error.errno != errno.EBADF:
+                                        raise
+            finally:
+                sys.modules.pop(alias, None)
+
     def test_closure_qualification_refuses_unresolved_work(self):
         with self.lab() as lab:
             failures = [('5', 'obligations_resolved'), ('5', 'maintenance_settled'),

@@ -150,6 +150,157 @@ class DefaultObservationTests(unittest.TestCase):
                      'artifacts = []', 'timeout_seconds = 30'):
             self.assertEqual(RECIPE.count(line), 1)
 
+    def snapshot_tree(self):
+        snapshot = {}
+        for path in [self.root, *sorted(self.root.rglob('*'))]:
+            stat = path.lstat()
+            snapshot[str(path.relative_to(self.root))] = (
+                stat.st_mode, stat.st_size, stat.st_mtime_ns,
+                path.read_bytes() if path.is_file() else None,
+            )
+        return snapshot
+
+    def test_external_workspace_refuses_before_effects(self):
+        cwd = self.root / 'cwd'
+        cwd.mkdir()
+        external = self.root / 'external'
+        external.mkdir()
+        (external / 'sentinel').write_text('keep')
+        for name in ('module.py', 'test_module.py', 'SPEC.md'):
+            (cwd / name).write_text('')
+        auditor = r'''
+import json, os, runpy, sys
+script, workspace = sys.argv[1:]
+sys.argv = [script, workspace]
+events = []
+mutations = {'os.mkdir', 'os.remove', 'os.rmdir', 'os.rename', 'os.replace',
+             'os.link', 'os.symlink', 'os.chmod', 'os.chown', 'os.truncate'}
+def audit(event, args):
+    if event == 'open':
+        mode, flags = args[1:3]
+        if (isinstance(mode, str) and any(c in mode for c in 'wax+')) or (isinstance(flags, int) and flags & (os.O_WRONLY | os.O_RDWR | os.O_CREAT | os.O_TRUNC | os.O_APPEND)):
+            events.append([event, str(args[0]), str(mode), flags])
+    elif event in mutations or event in ('subprocess.Popen', 'os.system', 'os.posix_spawn', 'os.spawn'):
+        events.append([event, *[str(a) for a in args]])
+sys.addaudithook(audit)
+try:
+    runpy.run_path(script, run_name='__main__')
+finally:
+    print('BOUNDARY_EVENTS=' + json.dumps(events), file=sys.stderr)
+'''
+        script = Path(__file__).resolve().parents[5] / 'skills/tackle/scripts/evidence_capture.py'
+        env = os.environ.copy()
+        env['PATH'] = str(self.bin) + os.pathsep + env.get('PATH', '')
+        before = self.snapshot_tree()
+        refused = subprocess.run(
+            [sys.executable, '-I', '-B', '-c', auditor, str(script), str(external)],
+            cwd=cwd, env=env, capture_output=True, timeout=20,
+        )
+        self.assertEqual(refused.returncode, 1, refused.stderr)
+        self.assertNotIn(b'Traceback', refused.stderr)
+        self.assertIn(b'workspace', refused.stderr.lower())
+        marker = b'BOUNDARY_EVENTS='
+        lines = [line for line in refused.stderr.splitlines() if line.startswith(marker)]
+        self.assertEqual(len(lines), 1, refused.stderr)
+        self.assertEqual(json.loads(lines[0][len(marker):]), [])
+        self.assertEqual(self.snapshot_tree(), before)
+        self.assertFalse(self.log.exists())
+
+        self.passing()
+        accepted, record = self.observe()
+        self.assertEqual(accepted.returncode, 0, accepted.stderr)
+        self.assertTrue(record['accepted'])
+        self.assertEqual(record['child_exit'], 0)
+
+    def test_usage_import_is_inert_and_cli_records_usage(self):
+        scripts = Path(__file__).resolve().parents[5] / 'skills/tackle/scripts'
+        ledger = self.workspace / 'resource-usage.md'
+        ledger.write_text('Schema: tackle-observability/2\n')
+        trace = self.root / 'events.jsonl'
+        trace.write_text('\n'.join(json.dumps(event) for event in [
+            {'type': 'thread.started', 'thread_id': 'cli-thread'},
+            {'type': 'turn.completed', 'usage': {'input_tokens': 12, 'output_tokens': 3}},
+        ]) + '\n')
+        env = os.environ.copy()
+        env.pop('CODEX_THREAD_ID', None)
+        code = r'''
+import importlib.util, os, sys
+p, w, t = sys.argv[1:]
+sys.argv = [p, w, t]
+mutations = {'os.mkdir', 'os.remove', 'os.rmdir', 'os.rename', 'os.replace',
+             'os.link', 'os.symlink', 'os.chmod', 'os.chown', 'os.truncate'}
+def audit(event, args):
+    if event == 'open':
+        path, mode, flags = args[:3]
+        if isinstance(path, (str, bytes, os.PathLike)):
+            path = os.path.abspath(os.fsdecode(path))
+            if path == t or path == w or path.startswith(w + os.sep):
+                raise PermissionError('import touched fixture')
+        if (isinstance(mode, str) and any(c in mode for c in 'wax+')) or (isinstance(flags, int) and flags & (os.O_WRONLY | os.O_RDWR | os.O_CREAT | os.O_TRUNC | os.O_APPEND)):
+            raise PermissionError('import wrote a file')
+    elif event in mutations or event in ('subprocess.Popen', 'os.system', 'os.posix_spawn', 'os.spawn'):
+        raise PermissionError('import caused an effect')
+sys.addaudithook(audit)
+spec = importlib.util.spec_from_file_location('subject', p)
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+'''
+        before = self.snapshot_tree()
+        imported = subprocess.run(
+            [sys.executable, '-I', '-B', '-c', code, str(scripts / 'codex_usage.py'),
+             str(self.workspace), str(trace)],
+            cwd=self.root, env=env, capture_output=True, timeout=20,
+        )
+        self.assertEqual((imported.returncode, imported.stdout, imported.stderr), (0, b'', b''))
+        self.assertEqual(self.snapshot_tree(), before)
+        cli = subprocess.run(
+            [sys.executable, '-I', '-B', str(scripts / 'codex_usage.py'),
+             str(self.workspace), str(trace)],
+            cwd=self.root, env=env, capture_output=True, timeout=20,
+        )
+        self.assertEqual(cli.returncode, 0, cli.stderr)
+        records = [json.loads(line) for line in
+                   (self.workspace / 'resource-usage.telemetry.jsonl').read_text().splitlines()]
+        self.assertEqual(records[0]['metrics']['input_tokens'], 12)
+
+    def test_retro_help_does_not_read_named_file_and_valid_profile_works(self):
+        script = Path(__file__).resolve().parents[5] / 'skills/tackle/scripts/retro_confidence.py'
+        sentinel = self.root / '--help'
+        sentinel.write_text('sentinel\n')
+        before = sentinel.stat()
+        args = [sys.executable, '-I', '-B', str(script)]
+        help_result = subprocess.run(args + ['--help'], cwd=self.root,
+                                     capture_output=True, timeout=20)
+        self.assertEqual(help_result.returncode, 0, help_result.stderr)
+        self.assertIn(b'usage', help_result.stdout.lower())
+        audit = r'''
+import os, runpy, sys
+p = sys.argv[1]
+sys.argv = [p, '--help']
+sentinel = os.path.abspath('--help')
+def check(event, args):
+    if event == 'open' and isinstance(args[0], (str, bytes, os.PathLike)):
+        if os.path.abspath(os.fsdecode(args[0])) == sentinel:
+            raise PermissionError('help sentinel read')
+sys.addaudithook(check)
+runpy.run_path(p, run_name='__main__')
+'''
+        audited = subprocess.run([sys.executable, '-I', '-B', '-c', audit, str(script)],
+                                 cwd=self.root, capture_output=True, timeout=20)
+        self.assertEqual(audited.returncode, 0, audited.stderr)
+        self.assertIn(b'usage', audited.stdout.lower())
+        after = sentinel.stat()
+        self.assertEqual((after.st_mode, after.st_size, after.st_mtime_ns),
+                         (before.st_mode, before.st_size, before.st_mtime_ns))
+        self.assertEqual(sentinel.read_bytes(), b'sentinel\n')
+        profile = self.root / 'profile.md'
+        profile.write_text('## Hypotheses\n\n- id: HX · fixture · confidence: x · '
+                           'observations: a:✓@2026-01-01 · status: active\n')
+        valid = subprocess.run(args + [str(profile)], cwd=self.root,
+                               capture_output=True, timeout=20)
+        self.assertEqual(valid.returncode, 0, valid.stderr)
+        self.assertIn(b'HX 1 0 1', valid.stdout)
+
 
 if __name__ == '__main__':
     unittest.main()

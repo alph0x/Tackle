@@ -84,7 +84,7 @@
     },
     {
       "patterns": [
-        "eval/lint/task-identity/**",
+        "eval/tests/product/lint/task-identity/**",
         "skills/tackle/references/AGENTS.tmpl.md",
         "skills/tackle/references/guides/lint-spec.md",
         "skills/tackle/references/guides/scaffold.md",
@@ -147,13 +147,19 @@
       "patterns": [
         "eval/run/evidence-capture/**",
         "skills/tackle/references/guides/evidence-capture.md",
-        "skills/tackle/scripts/evidence_capture.py"
+        "skills/tackle/scripts/evidence_capture.py",
+        "skills/tackle/scripts/capture.py",
+        "skills/tackle/scripts/lint_runner.py",
+        "skills/tackle/scripts/lint.py",
+        "skills/tackle/scripts/codex_usage.py",
+        "skills/tackle/scripts/retro_confidence.py",
+        "eval/lint/rows/fixtures/**"
       ],
       "families": [
         "eval/tests/product/run/evidence-capture"
       ],
       "exclude": [],
-      "reason": "Owned sources/fixtures and reviewed catalog/exact resource literals; fixture wildcard strings are excluded."
+      "reason": "Native capture and CLI tests consume these scripts and the existing static Full fixture; retain the whole family for those inputs and delivered entry points."
     },
     {
       "patterns": [
@@ -169,7 +175,7 @@
     },
     {
       "patterns": [
-        "eval/maintaining/suite-integrity/**",
+        "eval/tests/tooling/maintaining/suite-integrity/**",
         "eval/run_suites.py",
         "skills/tackle/scripts/lint.py",
         "skills/tackle/scripts/lint_runner.py"
@@ -194,7 +200,7 @@
     },
     {
       "patterns": [
-        "eval/lint/task-contracts/**",
+        "eval/tests/product/lint/task-contracts/**",
         "skills/tackle/references/guides/decompose-and-lint.md",
         "skills/tackle/references/guides/lint-spec.md",
         "skills/tackle/references/retro.tmpl.md",
@@ -741,13 +747,14 @@
         "eval/tests/tooling/behavior/harness",
         "eval/tests/tooling/behavior/judges/planning",
         "eval/tests/tooling/behavior/judges/resume",
-        "eval/tests/product/install/inventory"
+        "eval/tests/product/install/inventory",
+        "eval/tests/tooling/effects"
       ],
       "exclude": [
         "*/test_*.py",
         "*/fixtures/**"
       ],
-      "reason": "Harness implementation consumers; unit test edits do not traverse producer edges."
+      "reason": "Harness implementation consumers, including the imported native cleanup consumer; conservatively retain the whole effects family. Unit test edits do not traverse producer edges."
     },
     {
       "patterns": [
@@ -1001,7 +1008,6 @@
         "eval/tests/product/run/record-tool/test_record_tool.py",
         "maintaining/install_root.py",
         "maintaining/field_report.py",
-        "eval/support/usage.py",
         "eval/support/lint.py",
         "skills/tackle/SKILL.md",
         "skills/tackle/references/task.tmpl.md",

@@ -120,6 +120,10 @@ class SuiteIndexTests(unittest.TestCase):
                 '| {} | [{}]({}/) | Fixture behavior. |\n'.format(c, p.removeprefix('eval/tests/'), p.removeprefix('eval/tests/')) for p, _, _, c in families)
             index = root / INDEX
             index.write_text(table)
+            (root / 'eval/check-selection.json').write_text(json.dumps(fixed))
+            subprocess.run(['git', 'init', '-q'], cwd=root, check=True)
+            subprocess.run(['git', '-c', 'core.excludesFile=/dev/null', 'add', '-f', '--', '.'],
+                           cwd=root, check=True)
             archive = Path(os.environ['T11_FIXTURE_RECORDS']) if 'T11_FIXTURE_RECORDS' in os.environ else None
 
             def invoke(name, rules, changed, *, baseline_on=False):

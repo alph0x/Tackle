@@ -33,10 +33,269 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest() if path.exists() else None
 
 
+def _brief_declarations(text):
+    lines = text.splitlines(keepends=True)
+    offsets = []
+    position = 0
+    for line in lines:
+        offsets.append(position)
+        position += len(line)
+    offsets.append(position)
+    masked = list(lines)
+
+    def mask_line(index):
+        masked[index] = ''.join(char if char in '\r\n' else '\x00' for char in lines[index])
+
+    fences = {}
+    i = 0
+    while i < len(lines):
+        opening = re.match(r'^ {0,3}(`{3,}|~{3,})([^\n]*)$', lines[i].rstrip('\r\n'))
+        if not opening:
+            i += 1
+            continue
+        marker, info = opening.group(1), opening.group(2).strip()
+        char = marker[0]
+        closing = re.compile(r'^ {0,3}' + re.escape(char) + r'{' + str(len(marker)) + r',}[ \t]*$')
+        j = i + 1
+        while j < len(lines) and not closing.match(lines[j].rstrip('\r\n')):
+            j += 1
+        end = min(j + 1, len(lines))
+        for k in range(i, end):
+            mask_line(k)
+        fences[i] = (end, char, info, j < len(lines), ''.join(lines[i + 1:j]))
+        i = end
+
+    declarations = []
+    errors = []
+    headings = []
+    section = 0
+    section_bounds = [0]
+    label = r'(?:required[ \t]+command|command|check|run)'
+    label_re = re.compile(r'^[ \t]{0,3}(?:[-*+][ \t]+)?(?:\*\*[ \t]*(?P<bold>' + label + r')[ \t]*:?[ \t]*\*\*[ \t]*:|\*\*[ \t]*(?P<boldcolon>' + label + r')[ \t]*:[ \t]*\*\*|(?P<plain>' + label + r')[ \t]*:)[ \t]*(?P<rest>.*)$', re.I)
+    other_bold = re.compile(r'^[ \t]{0,3}[-*+][ \t]+\*\*')
+    inline = re.compile(r'^`([^`\n]+)`(?!`)')
+    ordered = re.compile(r'^[ \t]{0,3}\d+[.)][ \t]+(?:(?:[^`\n:]+):[ \t]*)?`([^`\n]+)`(?!`)')
+    bare = re.compile(r'^[ \t]{0,3}(?:[-*+][ \t]+)?`([^`\n]+)`(?!`)(.*)$')
+
+    def legacy_python(command):
+        return bool(re.match(r'^python3[ \t]+', command) and re.search(r'(?:^|\s)(?:\S+\.py(?:\s|$)|-m\s+\S+)', command))
+
+    def add(start, end, command, suffix='', subjects=None, diagnostic_lines=None):
+        declarations.append({
+            'start': offsets[start], 'end': offsets[end], 'section': section,
+            'line': start + 1, 'command': command, 'suffix': suffix,
+            'subjects': subjects if subjects is not None else [command],
+            'diagnostic_lines': diagnostic_lines if diagnostic_lines is not None else [command],
+        })
+
+    i = 0
+    while i < len(lines):
+        line = lines[i].rstrip('\r\n')
+        if i in fences:
+            end, char, info, complete, body = fences[i]
+            special = bool(headings and headings[-1][1])
+            shell = info in ('sh', 'shell', 'bash', 'zsh')
+            if char == '~' and shell and special:
+                errors.append({'kind': 'command-binding', 'detail': 'line %d: tilde shell fence is not admitted' % (i + 1)})
+            elif char == '`' and shell and complete:
+                script = body.strip()
+                physical = body.splitlines()
+                logical = []
+                pending = []
+                for part in physical:
+                    pending.append(part)
+                    if not part.rstrip().endswith('\\'):
+                        logical.append('\n'.join(pending))
+                        pending = []
+                if pending:
+                    logical.append('\n'.join(pending))
+                candidates = [part.strip() for part in logical if part.strip() and not part.lstrip().startswith('#')]
+                subjects = [part for part in candidates if legacy_python(part)]
+                add(i, end, script, subjects=subjects or [script], diagnostic_lines=candidates)
+            i = end
+            continue
+        heading = re.match(r'^ {0,3}(#{1,6})[ \t]+(.*?)[ \t]*$', line)
+        if heading:
+            level = len(heading.group(1))
+            title = re.sub(r'[ \t]+#+[ \t]*$', '', heading.group(2))
+            title = re.sub(r'[ \t]*<!--[\s\S]*?-->[ \t]*$', '', title)
+            title = re.sub(r'^\s*\d+(?:\.\d+)*[.)]?[ \t]+', '', title).strip()
+            while headings and headings[-1][0] >= level:
+                headings.pop()
+            family = None
+            if re.fullmatch(r'acceptance and recovery(?:\s*:\s*.*)?', title, re.I):
+                family = 'acceptance'
+            elif re.fullmatch(r'required (?:mechanical )?checks?(?:\s*:\s*.*)?', title, re.I):
+                family = 'required'
+            elif headings:
+                family = headings[-1][1]
+            headings.append((level, family))
+            section += 1
+            section_bounds.append(offsets[i])
+            i += 1
+            continue
+        if re.match(r'^(?: {4}|\t)', line):
+            mask_line(i)
+            i += 1
+            continue
+        family = headings[-1][1] if headings else None
+        match = label_re.match(line)
+        if match:
+            rest = match.group('rest')
+            command = inline.match(rest)
+            if command:
+                add(i, i + 1, command.group(1), rest[command.end():])
+                mask_line(i)
+            elif re.match(r'^review\s*:', rest, re.I) and (match.group('bold') or match.group('boldcolon') or match.group('plain')).lower() == 'check':
+                pass
+            elif not rest.strip():
+                j = i + 1
+                while j < len(lines) and not lines[j].strip():
+                    j += 1
+                fence = fences.get(j)
+                if not fence or fence[1] != '`' or fence[2] not in ('sh', 'shell', 'bash', 'zsh') or not fence[3]:
+                    errors.append({'kind': 'command-binding', 'detail': 'line %d: command introducer requires a complete shell fence' % (i + 1)})
+                mask_line(i)
+            else:
+                errors.append({'kind': 'command-binding', 'detail': 'line %d: invalid command declaration' % (i + 1)})
+            i += 1
+            continue
+        if other_bold.match(line):
+            i += 1
+            continue
+        match = ordered.match(line) if family else None
+        if match:
+            add(i, i + 1, match.group(1), line[match.end():])
+            mask_line(i)
+            i += 1
+            continue
+        match = bare.match(line)
+        if match:
+            command, suffix = match.group(1), match.group(2)
+            bullet = bool(re.match(r'^[ \t]{0,3}[-*+][ \t]+', line))
+            if family == 'required' or (not suffix.strip() and ((bullet and family) or legacy_python(command))):
+                add(i, i + 1, command, suffix)
+                mask_line(i)
+        i += 1
+    section_bounds.append(len(text))
+    return declarations, errors, ''.join(masked), section_bounds
+
+
+def command_bindings(text, findings):
+    if not re.search(r'(?im)^\s*[-*]\s*\*\*Detail\*\*\s*:\s*full\s*$', text):
+        return
+    declarations, errors, prose, bounds = _brief_declarations(text)
+    findings.extend(errors)
+
+    def paragraphs(value):
+        parts = []
+        for part in re.split(r'\n\s*\n', value):
+            cleaned = part.replace('\x00', '').strip()
+            if cleaned:
+                parts.append(cleaned)
+        return parts
+
+    shared_prose = list(prose)
+    for item in declarations:
+        suffix = item['suffix']
+        if suffix:
+            line_end = item['start'] + len(text[item['start']:item['end']].rstrip('\r\n'))
+            shared_prose[line_end - len(suffix):line_end] = suffix
+    shared = '\n\n'.join(part for part in paragraphs(''.join(shared_prose)) if re.search(r'(?i)\bcommon\b|\ball required mechanical checks\b|\b(?:default )?(?:cwd|working directory) for every command\b', part))
+
+    def applicable(value, command):
+        result = []
+        for paragraph in paragraphs(value):
+            scopes = re.findall(r'(?i)\bfor\s+`([^`]+)`\s+only\s*:', paragraph)
+            if scopes and any(scope != command for scope in scopes):
+                continue
+            result.append(paragraph)
+        return '\n\n'.join(result)
+
+    def has_cwd(value):
+        for line in value.splitlines():
+            match = re.search(r'(?i)\b(?:cwd|working directory)\b', line)
+            if not match:
+                continue
+            tail = line[match.end():]
+            if re.search(r'(?i)\b(?:not supplied|not specified|not provided|unknown|tbd|none)\b', tail):
+                continue
+            if re.search(r'`[^`\n]+`|(?:^|[\s:])(?:/|\./|\.\./)\S+', tail):
+                return True
+            if re.search(r'(?i)(?:\*\*)?\s*:\s*[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*\s*[.;]?\s*$', tail):
+                return True
+        return False
+
+    def has_pass(value):
+        return bool(re.search(r'(?i)\b(?:native pass condition|require[sd]?|pass(?:es|ing)?)\b[^\n]*(?:\b(?:exit(?:\s+status)?|return code)\s*\d+\b|\b(?:command\s+)?exits?\s+successfully\b)', value))
+
+    def words_for(command):
+        try:
+            return shlex.split(command)
+        except ValueError:
+            return command.split()
+
+    def command_path(command):
+        words = words_for(command)
+        scripts = [word for word in words if word.endswith(('.py', '.sh'))]
+        return scripts[-1] if scripts else words[0] if words else ''
+
+    names = [Path(command_path(subject)).stem for item in declarations for subject in item['subjects']]
+
+    def has_evidence(value, command):
+        evidence = r'(?i)\b(?:evidence destination|observe[dr]?|observer|record(?:s|ed)?|evidence suffix(?:es)?)\b[^\n]*(?:`[^`]+`|/\S+|\bsuffix(?:es)?\b)'
+        root = r'(?i)\b(?:evidence\s+)?records?\s+root\b'
+        for line in value.splitlines():
+            for part in line.split(';'):
+                if re.search(evidence, part) and not re.search(root, part):
+                    return True
+            if not re.search(root, line) or not re.search(evidence, line):
+                continue
+            path = command_path(command)
+            name = Path(path).stem if path else ''
+            if not name or names.count(name) != 1:
+                continue
+            mappings = re.findall(r'(?i)(?<![\w./-])`?([\w./-]+)`?\s+uses\s+`?([\w][\w./-]*)`?', line)
+            if mappings:
+                matches = [record.rstrip('.') for key, record in mappings if key in (name, Path(path).name)]
+                if len(matches) == 1 and sum(record.rstrip('.') == matches[0] for _, record in mappings) == 1:
+                    return True
+                continue
+            records = re.search(r'(?i)\bwith\b(.*?)\brecords\b', line)
+            if records and re.search(r'(?<![\w-])' + re.escape(name) + r'(?![\w-])', records.group(1)):
+                return True
+        return False
+
+    for index, item in enumerate(declarations):
+        section = item['section']
+        previous_item = next((other for other in reversed(declarations[:index]) if other['section'] == section and other['end'] <= item['start']), None)
+        previous = previous_item['end'] if previous_item else bounds[section]
+        following = next((other['start'] for other in declarations[index + 1:] if other['section'] == section and other['start'] >= item['end']), bounds[section + 1])
+        before_prose = prose[previous:item['start']]
+        before = paragraphs(before_prose)
+        if (previous_item
+                and '\n' not in text[previous_item['start']:previous_item['end']].rstrip('\r\n')
+                and not re.match(r'[ \t]*\r?\n', before_prose)):
+            before = before[1:]
+        after = paragraphs(prose[item['end']:following])
+        context = '\n\n'.join((shared, before[-1] if before else '', item['suffix'], after[0] if after else ''))
+        for subject in item['subjects']:
+            local = applicable(context, subject)
+            missing = [name for name, present in (('cwd', has_cwd(local)), ('native pass', has_pass(local)), ('evidence', has_evidence(local, subject))) if not present]
+            if missing:
+                findings.append({'kind': 'command-binding', 'detail': 'line %d: %s: missing %s' % (item['line'], subject, ', '.join(missing))})
+
+
 def commands(text, findings):
-    blocks = re.findall(r'```[^\n]*\n(.*?)```', text, re.S)
-    spans = re.findall(r'(?<!`)`([^`\n]+)`(?!`)', re.sub(r'```[^\n]*\n.*?```', '', text, flags=re.S))
-    for line in spans + [line for block in blocks for line in block.splitlines()]:
+    command_bindings(text, findings)
+    if re.search(r'(?im)^\s*[-*]\s*\*\*Detail\*\*\s*:\s*full\s*$', text):
+        declarations, _, _, _ = _brief_declarations(text)
+        candidates = [line for item in declarations for line in item['diagnostic_lines']]
+    else:
+        blocks = re.findall(r'```[^\n]*\n(.*?)```', text, re.S)
+        spans = re.findall(r'(?<!`)`([^`\n]+)`(?!`)', re.sub(r'```[^\n]*\n.*?```', '', text, flags=re.S))
+        candidates = spans + [line for block in blocks for line in block.splitlines()]
+    for line in candidates:
         try:
             lexer = shlex.shlex(line, posix=True, punctuation_chars=True)
             lexer.whitespace_split = True
@@ -46,8 +305,8 @@ def commands(text, findings):
         if not any(Path(word).name.startswith('python') for word in words):
             continue
         for i, word in enumerate(words):
-            if word == '-m' and words[i+1:i+2] == ['unittest']:
-                rest = words[i+2:]
+            if word == '-m' and words[i + 1:i + 2] == ['unittest']:
+                rest = words[i + 2:]
                 j = 0
                 while j < len(rest) and rest[j].startswith('-'):
                     j += 2 if rest[j] == '-k' else 1
@@ -55,13 +314,12 @@ def commands(text, findings):
                     findings.append({'kind': 'unittest-path-form', 'detail': line.strip()})
             if word == '--changed':
                 following = []
-                for item in words[i+1:]:
-                    if item.startswith('-') or item in (';', '&&', '|', '>'):
+                for candidate in words[i + 1:]:
+                    if candidate.startswith('-') or candidate in (';', '&&', '|', '>'):
                         break
-                    following.append(item)
+                    following.append(candidate)
                 if len(following) >= 2:
                     findings.append({'kind': 'changed-several-paths', 'detail': line.strip()})
-
 
 def main():
     parser = argparse.ArgumentParser()

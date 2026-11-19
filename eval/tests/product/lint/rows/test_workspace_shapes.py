@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[5]
 import sys
 sys.path.insert(0, str(ROOT))
 from maintaining.install_root import current_root  # noqa: E402
-from eval.support.lint import lint_namespace, write_files, run_lint_row  # noqa: E402
+from eval.support.lint import lint_namespace, published_row_ids, write_files, run_lint_row  # noqa: E402
 INSTALL = current_root(ROOT)
 
 SOURCE = (INSTALL / 'scripts/lint.py').read_bytes()
@@ -106,14 +106,14 @@ class DottedSlugTests(ShapeCase):
     def test_dotted_coordinated_workspace_passes_every_row(self):
         self.coordinated()
         self.rename('release-8.1')
-        for number in range(1, 20):
+        for number in published_row_ids():
             with self.subTest(row=number):
                 self.assert_pass(number)
 
     def test_dotted_focused_workspace_passes_every_row(self):
         self.focused()
         self.rename('release-8.1')
-        for number in range(1, 20):
+        for number in published_row_ids():
             with self.subTest(row=number):
                 self.assert_pass(number)
 
@@ -122,7 +122,7 @@ class FocusedWorkspaceTests(ShapeCase):
     def test_minimal_focused_workspace_passes_every_row_and_is_left_unchanged(self):
         self.focused()
         before = {p.name: p.read_bytes() for p in self.workspace.iterdir()}
-        for number in range(1, 20):
+        for number in published_row_ids():
             with self.subTest(row=number):
                 self.assert_pass(number)
         self.assertEqual(before, {p.name: p.read_bytes() for p in self.workspace.iterdir()})

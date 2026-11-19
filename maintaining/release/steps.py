@@ -10,8 +10,8 @@ spec = importlib.util.spec_from_file_location('config', HERE / 'config.py')
 config = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(config)
 
-D23_FILES = ['eval/tests/product/migration/test_compact_migration.py', 'eval/tests/product/migration/test_v101_v102_checklist.py',
-             'eval/tests/product/migration/test_v90_v91_checklist.py', 'eval/tests/product/templates/test_history_and_obligation_templates.py']
+MIGRATION_TEST_FILES = ['eval/tests/product/migration/test_compact_migration.py', 'eval/tests/product/migration/test_catalog_adoption_guarantees.py',
+             'eval/tests/product/migration/test_archived_adoption_obligations.py', 'eval/tests/product/templates/test_history_and_obligation_templates.py']
 
 
 def sha(path):
@@ -34,7 +34,7 @@ class Phase:
         self.out.mkdir(parents=True)
         self.results, self.ok = [], True
 
-    def run(self, name, argv, expect=0, env=None, timeout=2400):
+    def run(self, name, argv, expect=0, env=None, timeout=None):
         # Inherit TMPDIR: a temporary directory inside the records root lies inside the Tackle repository, where tests
         # that create temporary Git trees would find the parent repository (rehearsal-02).
         if env is None:
@@ -83,7 +83,7 @@ def tool(p, name, script, *extra):
     c = candidate(p.a)
     p.fact('candidate is HEAD', c, git(p.repo, 'rev-parse', 'HEAD').stdout.strip() == c)
     p.run(name, [PY310, '-I', '-B', str(TOOLS / script), '--config', p.a.config, '--repo', str(p.repo), *extra[0], '--candidate', c, *extra[1],
-                 '--records', str(p.out / name), *extra[2]], timeout=3600)
+                 '--records', str(p.out / name), *extra[2]])
 
 
 def main():
@@ -159,9 +159,23 @@ def main():
         edit = [PY310, '-I', '-B', str(TOOLS / 'release_edit.py'), '--repo', str(p.repo), *ws, '--candidate', parent,
                 '--version', cfg['version'], '--from-version', cfg['from_version'], '--config', a.config, '--part', a.part]
         p.run('apply', edit + ['--records', str(p.out / 'receipt')])
-        after = {k: sha(p.repo / k) for k in paths}
+        if not p.ok:
+            p.finish()
+        try:
+            after = {k: sha(p.repo / k) for k in paths}
+        except OSError:
+            p.fact('first application produced readable files', 'readable', False)
+            p.finish()
         p.run('second', edit + ['--records', str(p.out / 'receipt-second')], expect=1)
-        p.fact('second application changed nothing', 'unchanged', {k: sha(p.repo / k) for k in paths} == after)
+        if not p.ok:
+            p.finish()
+        try:
+            second = {k: sha(p.repo / k) for k in paths}
+        except OSError:
+            second = None
+        p.fact('second application changed nothing', 'unchanged', second == after)
+        if not p.ok:
+            p.finish()
         # MAINTAINING, Brief and role-session checks: the committed-text preflight runs before staging.
         guard = p.run('committed-preflight', [PY310, '-I', '-B', str(TOOLS.parent / 'brief_preflight.py'), 'committed',
                                               '--tree', str(p.repo), '--base', 'v' + cfg['from_version'],
@@ -169,6 +183,8 @@ def main():
         if not (guard['complete'] and guard['native_exit'] == 0):
             p.finish()
         p.run('stage', ['git', 'add', '--', *paths])
+        if not p.ok:
+            p.finish()
         status = git(p.repo, 'status', '--porcelain').stdout.splitlines()
         p.fact('only the part paths are staged', status, sorted(x[3:] for x in status) == sorted(paths) and all(x[1] == ' ' for x in status))
         if not p.ok:
@@ -287,7 +303,7 @@ def main():
         p.fact('clean candidate', git(p.repo, 'status', '--porcelain').stdout or 'clean', git(p.repo, 'status', '--porcelain').stdout == '')
         titles = [x for x in git(p.repo, 'log', '--format=%s', f'{MAIN}..{c}').stdout.split('\n') if x][::-1]
         p.fact('part commits in order', titles, titles == [PARTS[x][0] for x in ORDER])
-        for name in D23_FILES:
+        for name in MIGRATION_TEST_FILES:
             base = subprocess.check_output(['git', 'show', f'{MAIN}:{name}'], cwd=p.repo)
             got = subprocess.check_output(['git', 'show', f'{c}:{name}'], cwd=p.repo)
             p.fact(f'protected file {name}', 'equal' if got == base else 'DIFFERS', got == base)

@@ -1,8 +1,8 @@
 """End-to-end tests for `maintaining/field_report.py`, driven through the real CLI by subprocess so a
 red run before the tool exists is meaningful and a refusal's exit code is testable.
 
-Case matrix (see README.md): C1 states, C2 ledger, C3 reopenings, C4 telemetry, C5 split, C6
-read-only, C7 refusal. C8 (a real run against this repository, over its actual commit history and
+Case matrix (see README.md): States, Ledger, Reopenings, Telemetry, Effort split, Read only,
+Refusal. Recorded real run (a real run against this repository, over its actual commit history and
 local workspaces) is not here: it is a one-off command run from the working tree, not a unit test
 against synthetic fixtures.
 """
@@ -53,7 +53,7 @@ class RealRepoFixture:
 
 
 class WorkspaceFieldTests(unittest.TestCase):
-    """C1 states, C2 ledger, C3 reopenings, C4 telemetry: field-level checks against the static
+    """States, Ledger, Reopenings, Telemetry: field-level checks against the static
     fixtures under fixtures/plans/, run directly (read-only) with the real repository as --repo."""
 
     def setUp(self):
@@ -92,9 +92,9 @@ class WorkspaceFieldTests(unittest.TestCase):
         self.assertEqual(preserved.returncode, 0, preserved.stderr)
         self.assertEqual(json.loads((cwd / 'spelling.json').read_text())['repo']['path'], spelling)
 
-    # ---- C1: board states, every bucket, legacy emoji and words, ragged/unmapped rows ----
+    # ---- States: board states, every bucket, legacy emoji and words, ragged/unmapped rows ----
 
-    def test_c1_pre3_bucket_and_every_legacy_state(self):
+    def test_bucket_and_every_legacy_state(self):
         data, markdown = self.report(workspaces=['ws-pre3'])
         ws = data['workspaces']['ws-pre3']
         self.assertEqual(ws['bucket'], {'value': 'pre-3', 'source': str(FIXTURES / 'ws-pre3' / 'board.md')})
@@ -107,14 +107,14 @@ class WorkspaceFieldTests(unittest.TestCase):
         self.assertIn('ws-pre3', markdown)
         self.assertIn(str(FIXTURES / 'ws-pre3' / 'board.md'), markdown)
 
-    def test_c1_schema3_bucket_and_counts(self):
+    def test_bucket_and_counts(self):
         data, _ = self.report(workspaces=['ws-three'])
         ws = data['workspaces']['ws-three']
         self.assertEqual(ws['bucket']['value'], '3')
         self.assertEqual(ws['tasks']['value'], {'Draft': 1, 'Ready to run': 1, 'In progress': 1, 'Complete': 1})
         self.assertEqual(ws['tasks']['unmapped'], [])
 
-    def test_c1_schema4_bucket_and_every_canonical_state(self):
+    def test_bucket_and_every_canonical_state(self):
         data, _ = self.report(workspaces=['ws-four'])
         ws = data['workspaces']['ws-four']
         self.assertEqual(ws['bucket']['value'], '4')
@@ -123,19 +123,19 @@ class WorkspaceFieldTests(unittest.TestCase):
             'Blocked': 1, 'Interrupted': 1, 'Skipped': 1, 'Unverifiable': 1,
         })
 
-    def test_c1_schema5_bucket_and_waiting_on_owner(self):
+    def test_bucket_and_waiting_on_owner(self):
         data, _ = self.report(workspaces=['ws-five'])
         ws = data['workspaces']['ws-five']
         self.assertEqual(ws['bucket']['value'], '5')
         self.assertEqual(ws['tasks']['value'], {'Draft': 1, 'Waiting on owner': 1})
 
-    def test_c1_lite_bucket_has_no_board(self):
+    def test_lite_bucket_has_no_board(self):
         data, _ = self.report(workspaces=['ws-lite'])
         ws = data['workspaces']['ws-lite']
         self.assertEqual(ws['bucket'], {'value': 'lite', 'source': str(FIXTURES / 'ws-lite' / 'plan.md')})
         self.assertEqual(ws['tasks'], {'value': 'n/a', 'source': None, 'unmapped': []})
 
-    def test_c1_unknown_bucket_on_a_workspace_with_no_recognized_file(self):
+    def test_unknown_bucket_on_a_workspace_with_no_recognized_file(self):
         data, _ = self.report(workspaces=['ws-unknown'])
         ws = data['workspaces']['ws-unknown']
         self.assertEqual(ws['bucket'], {'value': 'unknown', 'source': None})
@@ -145,7 +145,7 @@ class WorkspaceFieldTests(unittest.TestCase):
         self.assertEqual(ws['reopenings'], {'value': 'n/a', 'source': None})
         self.assertEqual(ws['tokens'], {'value': 'n/a', 'source': None})
 
-    def test_c1_two_board_files_is_unknown_not_a_guess(self):
+    def test_two_board_files_is_unknown_not_a_guess(self):
         # migrate.md#schema-keyed-migration: "a workspace matching more than one row is unknown".
         data, _ = self.report(workspaces=['ws-ambiguous'])
         self.assertEqual(data['workspaces']['ws-ambiguous']['bucket']['value'], 'unknown')
@@ -162,9 +162,9 @@ class WorkspaceFieldTests(unittest.TestCase):
             self.assertEqual(ws['bucket'], {'value': 'unknown', 'source': None})
             self.assertEqual(ws['tasks']['value'], 'n/a')
 
-    # ---- C2: v2 ledger sums, used/skipped rows, integer/n-a/malformed cells ----
+    # ---- Ledger: v2 ledger sums, used/skipped rows, integer/n-a/malformed cells ----
 
-    def test_c2_ledger_sums_integers_and_counts_used_and_skipped_rows(self):
+    def test_ledger_sums_integers_and_counts_used_and_skipped_rows(self):
         data, markdown = self.report(workspaces=['ws-four'])
         ws = data['workspaces']['ws-four']
         source = str(FIXTURES / 'ws-four' / 'resource-usage.md')
@@ -172,36 +172,36 @@ class WorkspaceFieldTests(unittest.TestCase):
         self.assertEqual(ws['rework'], {'value': 8, 'rows_used': 2, 'rows_skipped': 1, 'source': source})
         self.assertIn(source, markdown)
 
-    def test_c2_no_v2_ledger_is_n_a(self):
+    def test_no_v2_ledger_is_n_a(self):
         data, _ = self.report(workspaces=['ws-three'])
         ws = data['workspaces']['ws-three']
         self.assertEqual(ws['attempts'], {'value': 'n/a', 'rows_used': 0, 'rows_skipped': 0, 'source': None})
         self.assertEqual(ws['rework'], {'value': 'n/a', 'rows_used': 0, 'rows_skipped': 0, 'source': None})
 
-    # ---- C3: reopenings from the strict "- <task id> -> <State>" history line ----
+    # ---- Reopenings: reopenings from the strict "- <task id> -> <State>" history line ----
 
-    def test_c3_counts_complete_to_earlier_state_reopenings_and_ignores_from_state_prose(self):
+    def test_counts_complete_to_earlier_state_reopenings_and_ignores_from_state_prose(self):
         data, _ = self.report(workspaces=['ws-four'])
         source = str(FIXTURES / 'ws-four' / 'history.md')
         self.assertEqual(data['workspaces']['ws-four']['reopenings'], {'value': 2, 'source': source})
 
-    def test_c3_transition_lines_with_no_reopening_is_zero_not_n_a(self):
+    def test_transition_lines_with_no_reopening_is_zero_not_n_a(self):
         data, _ = self.report(workspaces=['ws-five'])
         source = str(FIXTURES / 'ws-five' / 'history.md')
         self.assertEqual(data['workspaces']['ws-five']['reopenings'], {'value': 0, 'source': source})
 
-    def test_c3_history_with_no_transition_lines_is_n_a_but_names_the_source(self):
+    def test_history_with_no_transition_lines_is_n_a_but_names_the_source(self):
         data, _ = self.report(workspaces=['ws-no-transitions'])
         source = str(FIXTURES / 'ws-no-transitions' / 'history.md')
         self.assertEqual(data['workspaces']['ws-no-transitions']['reopenings'], {'value': 'n/a', 'source': source})
 
-    def test_c3_absent_history_is_n_a_with_no_source(self):
+    def test_absent_history_is_n_a_with_no_source(self):
         data, _ = self.report(workspaces=['ws-lite'])
         self.assertEqual(data['workspaces']['ws-lite']['reopenings'], {'value': 'n/a', 'source': None})
 
-    # ---- C4: telemetry sums, absence, and cumulative session-snapshot de-duplication ----
+    # ---- Telemetry: telemetry sums, absence, and cumulative session-snapshot de-duplication ----
 
-    def test_c4_sums_two_role_scoped_captures(self):
+    def test_sums_two_role_scoped_captures(self):
         data, markdown = self.report(workspaces=['ws-telemetry-two'])
         source = str(FIXTURES / 'ws-telemetry-two' / 'resource-usage.telemetry.jsonl')
         self.assertEqual(data['workspaces']['ws-telemetry-two']['tokens'], {
@@ -211,11 +211,11 @@ class WorkspaceFieldTests(unittest.TestCase):
         })
         self.assertIn(source, markdown)
 
-    def test_c4_no_sidecar_is_n_a(self):
+    def test_no_sidecar_is_n_a(self):
         data, _ = self.report(workspaces=['ws-telemetry-none'])
         self.assertEqual(data['workspaces']['ws-telemetry-none']['tokens'], {'value': 'n/a', 'source': None})
 
-    def test_c4_cumulative_session_snapshots_use_latest_not_sum(self):
+    def test_cumulative_session_snapshots_use_latest_not_sum(self):
         # A real capture's own provenance can label it a "session snapshot at capture"; this tool
         # reads that as a later capture for the same scope_id superseding an earlier one, not
         # adding to it (usage-observability.md: scopes are never mixed; "Session/account data is
@@ -232,7 +232,7 @@ class WorkspaceFieldTests(unittest.TestCase):
 
 
 class EffortSplitTests(unittest.TestCase):
-    """C5: a temporary git repository whose commits touch each class, including one commit that
+    """Effort split: a temporary git repository whose commits touch each class, including one commit that
     spans classes. Uses its own disposable git repository (a fresh `git init` in a temporary
     directory, never the real working tree), isolated from the operator's own git config so it
     depends on, and changes, nothing outside itself."""
@@ -261,7 +261,7 @@ class EffortSplitTests(unittest.TestCase):
         self.git('add', '-A')
         self.git('commit', '-q', '-m', message)
 
-    def test_c5_lines_and_commits_by_class_including_a_spanning_commit(self):
+    def test_lines_and_commits_by_class_including_a_spanning_commit(self):
         self.write('SKILL.md', 'line1\nline2\nline3\n')                 # skill: +3
         self.write('references/x.md', 'a\nb\n')                        # skill: +2
         self.commit('skill commit')                                     # commit A: skill
@@ -293,7 +293,7 @@ class EffortSplitTests(unittest.TestCase):
         self.assertIn('0.4000', markdown)
         self.assertIn('0.2667', markdown)
 
-    def test_c5_since_boundary_is_exclusive_and_empty_range_is_n_a_not_zero_division(self):
+    def test_since_boundary_is_exclusive_and_empty_range_is_n_a_not_zero_division(self):
         out = Path(self.tmp.name) / 'out2'
         out.mkdir()
         with tempfile.TemporaryDirectory() as plans_tmp:
@@ -307,11 +307,11 @@ class EffortSplitTests(unittest.TestCase):
 
 
 class ReadOnlyAndDeterminismTests(unittest.TestCase):
-    """C6: every fixture workspace, hashed before and after, is unchanged. Also a cheap,
+    """Read only: every fixture workspace, hashed before and after, is unchanged. Also a cheap,
     direct test of the Goal's "deterministic": two runs over the same inputs are byte-identical
     (no wall-clock stamp may leak into either output)."""
 
-    def test_c6_plans_tree_is_untouched_by_a_run(self):
+    def test_plans_tree_is_untouched_by_a_run(self):
         with tempfile.TemporaryDirectory() as tmp:
             plans = copy_plans(Path(tmp) / 'plans')
             before = hash_tree(plans)
@@ -356,10 +356,10 @@ class ReadOnlyAndDeterminismTests(unittest.TestCase):
 
 
 class RefusalTests(unittest.TestCase):
-    """C7: --repo that is not a git work tree exits 2 and writes nothing. Also two related,
+    """Refusal: --repo that is not a git work tree exits 2 and writes nothing. Also two related,
     cheap usage-error checks for the same "nothing is written" contract."""
 
-    def test_c7_repo_not_a_git_work_tree_refuses_and_writes_nothing(self):
+    def test_repo_not_a_git_work_tree_refuses_and_writes_nothing(self):
         with tempfile.TemporaryDirectory() as tmp:
             not_a_repo = Path(tmp) / 'not-a-repo'
             not_a_repo.mkdir()

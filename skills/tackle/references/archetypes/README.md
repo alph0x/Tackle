@@ -21,7 +21,7 @@ never under this installed `references/` tree. Sections, in order:
 Only the `retro` workflow writes reference plans, to `.tackle/archetypes/<name>.md` or
 `~/.tackle/archetypes/<name>.md` (the profile scope it was distilled alongside), offered at initiative close
 when the decomposition held. Never hand-author or hand-edit one outside a retro. The retro writes one only
-after the user's batch confirmation (see `guides/retro.md` §Reference plan candidates).
+after the user's batch confirmation (see `guides/retro.md` §Plan reference plan candidates (learning loop)).
 
 ## Read path — intake
 

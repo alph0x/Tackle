@@ -591,7 +591,16 @@ def _board_tasks(source):
         if schema not in ("tackle-workspace/4", "tackle-workspace/5"):
             _fail("unknown-task-board-schema")
         pre3 = False
-    split = lambda line: [cell.strip() for cell in line.strip().strip("|").split("|")]
+    if schema == "tackle-workspace/5":
+        def split(line):
+            body = line.strip()
+            if body.startswith("|"):
+                body = body[1:]
+            if body.endswith("|") and not body.endswith("\\|"):
+                body = body[:-1]
+            return [cell.strip().replace("\\|", "|") for cell in re.split(r"(?<!\\)\|", body)]
+    else:
+        split = lambda line: [cell.strip() for cell in line.strip().strip("|").split("|")]
     tables = []
     for index, line in enumerate(lines[:-1]):
         if not line.strip().startswith("|") or not re.fullmatch(r"\|?[\s:|-]+\|?", lines[index + 1].strip()) or "-" not in lines[index + 1]:
@@ -948,16 +957,30 @@ def _require_same_filesystem(left_parent, right_parent):
 
 
 def _atomic(path, raw):
+    try:
+        info = os.lstat(path)
+    except FileNotFoundError:
+        mode = None
+    else:
+        if not stat.S_ISREG(info.st_mode):
+            _fail("not-regular-file")
+        mode = stat.S_IMODE(info.st_mode)
     fd, temp_name = tempfile.mkstemp(prefix="." + path.name + ".", dir=path.parent)
     temp = Path(temp_name)
     try:
-        with os.fdopen(fd, "wb") as stream:
+        stream = os.fdopen(fd, "wb")
+        fd = None
+        with stream:
             stream.write(raw)
             stream.flush()
+            if mode is not None:
+                os.fchmod(stream.fileno(), mode)
             os.fsync(stream.fileno())
         os.replace(temp, path)
         _fsync_dir(path.parent)
     finally:
+        if fd is not None:
+            os.close(fd)
         try:
             temp.unlink()
         except FileNotFoundError:

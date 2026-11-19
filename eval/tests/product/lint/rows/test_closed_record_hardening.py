@@ -85,7 +85,7 @@ class Workspace:
 
     def rows(self):
         out = {}
-        for number in range(1, 20):
+        for number in base.published_row_ids():
             verdict, child = base.run_row(number, self.root, None)
             out[number] = (verdict, [line for line in child.stdout.decode().splitlines() if line])
         return out

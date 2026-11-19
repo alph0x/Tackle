@@ -6,6 +6,7 @@ at run time. The interactive behavior (click, trace, filter) is outside this ora
 """
 import importlib.util
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -167,6 +168,131 @@ class PlanViewTests(unittest.TestCase):
             self.assertEqual(result.returncode, 1)
             self.assertIn('Done', result.stdout)
             self.assertFalse(out.exists())
+
+            raw_read_board = load_script('plan_view_status_reader_probe')['read_board']
+
+            def read_board(path, lenient=False):
+                text, states, rows = raw_read_board(path, [], lenient=lenient)
+                return text, rows
+
+            workspace = Path(tmp).resolve() / 'reader-workspace'
+            workspace.mkdir()
+            board = workspace / 'task-board.md'
+            board_text = workspace_files()['task-board.md']
+            board.write_text(board_text, encoding='utf-8')
+            text, rows = read_board(workspace)
+            self.assertEqual(text, board_text)
+            self.assertTrue(rows)
+            self.assertIn(task_id(1), str(rows))
+
+            sentinel = Path(tmp).resolve() / 'outside-board'
+            sentinel_bytes = b'outside leaf sentinel\n'
+            sentinel.write_bytes(sentinel_bytes)
+            sentinel.chmod(0o640)
+            os.utime(sentinel, ns=(1_000_000_000, 2_000_000_000))
+            before = sentinel.stat()
+            board.unlink()
+            board.symlink_to(sentinel)
+            with self.assertRaises(OSError):
+                read_board(workspace)
+            text, rows = read_board(workspace, lenient=True)
+            self.assertEqual(text, '')
+            self.assertEqual(rows, [])
+            after = sentinel.stat()
+            self.assertEqual(
+                (after.st_ino, after.st_mode, after.st_mtime_ns, after.st_atime_ns),
+                (before.st_ino, before.st_mode, before.st_mtime_ns, before.st_atime_ns),
+            )
+            self.assertEqual(sentinel.read_bytes(), sentinel_bytes)
+
+            board.unlink()
+            board.write_text(board_text, encoding='utf-8')
+            text, rows = read_board(workspace)
+            self.assertEqual(text, board_text)
+            self.assertTrue(rows)
+            self.assertIn(task_id(1), str(rows))
+
+            outside = Path(tmp).resolve() / 'outside-workspace'
+            outside.mkdir()
+            outside_board = outside / 'task-board.md'
+            outside_bytes = b'outside parent sentinel\n'
+            outside_board.write_bytes(outside_bytes)
+            outside_board.chmod(0o640)
+            os.utime(outside_board, ns=(1_000_000_000, 2_000_000_000))
+            before = outside_board.stat()
+            alias = Path(tmp).resolve() / 'workspace-alias'
+            alias.symlink_to(outside, target_is_directory=True)
+            with self.assertRaises(OSError):
+                read_board(alias)
+            text, rows = read_board(alias, lenient=True)
+            self.assertEqual(text, '')
+            self.assertEqual(rows, [])
+            after = outside_board.stat()
+            self.assertEqual(
+                (after.st_ino, after.st_mode, after.st_mtime_ns, after.st_atime_ns),
+                (before.st_ino, before.st_mode, before.st_mtime_ns, before.st_atime_ns),
+            )
+            self.assertEqual(outside_board.read_bytes(), outside_bytes)
+
+            entrypoints = load_script('plan_view_status_entrypoints_probe')
+            ws = Path(tmp).resolve() / 'entrypoints-workspace'
+            ws.mkdir()
+            for name, content in workspace_files().items():
+                path = ws / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(content, encoding='utf-8')
+            out = Path(tmp).resolve() / 'entrypoints-page.html'
+            command = [sys.executable, '-I', '-B', str(SCRIPT), '--template',
+                       str(TEMPLATE), str(ws), str(out)]
+            result = subprocess.run(command, capture_output=True, text=True, timeout=60)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertTrue(out.is_file())
+            out.unlink()
+
+            external = Path(tmp).resolve() / 'entrypoints-sentinel'
+            external_bytes = ('Schema: tackle-workspace/5\n\n' + board_text).encode('utf-8')
+            external.write_bytes(external_bytes)
+            external.chmod(0o640)
+            os.utime(external, ns=(1_000_000_000, 2_000_000_000))
+            before = external.stat()
+            (ws / 'task-board.md').unlink()
+            (ws / 'task-board.md').symlink_to(external)
+
+            digest_function = entrypoints['input_digests']
+            digest_globals = digest_function.__globals__
+            original_finish_record = digest_globals['finish_record']
+            try:
+                digest_globals['finish_record'] = lambda inputs, *args: inputs
+                inputs = digest_function(ws, TEMPLATE, ws, None)
+            finally:
+                digest_globals['finish_record'] = original_finish_record
+            self.assertEqual(inputs['task-board.md'], 'unreadable')
+            try:
+                sibling_rows = entrypoints['sibling_board'](ws)
+            except OSError:
+                pass
+            else:
+                self.assertIsNone(sibling_rows)
+            result = subprocess.run(command, capture_output=True, text=True, timeout=60)
+            self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertFalse(out.exists())
+            after = external.stat()
+            self.assertEqual(
+                (after.st_ino, after.st_mode, after.st_mtime_ns, after.st_atime_ns),
+                (before.st_ino, before.st_mode, before.st_mtime_ns, before.st_atime_ns),
+            )
+            self.assertEqual(external.read_bytes(), external_bytes)
+
+            newline_ws = Path(tmp).resolve() / 'newline-workspace'
+            newline_ws.mkdir()
+            mixed_newlines = board_text.replace('\n', '\r\n').replace('\r\n', '\r', 1)
+            (newline_ws / 'task-board.md').write_bytes(mixed_newlines.encode('utf-8'))
+            text, rows = read_board(newline_ws)
+            self.assertEqual(text, board_text)
+            self.assertTrue(rows)
+            text, rows = read_board(newline_ws, lenient=True)
+            self.assertEqual(text, mixed_newlines)
+            self.assertTrue(rows)
 
 
 BOARD_HEAD = ('# Board\n\nStates: %s.\n\n| Task | What | Brief | Depends on | Status | Verification |\n|---|---|---|---|---|---|\n' % STATES)

@@ -43,7 +43,7 @@ class Row8Symlinks(unittest.TestCase):
         verdict, child = base.run_row(8, root, None)
         return verdict, child.stdout.decode(), child.stderr.decode()
 
-    def test_row8_listing_stays_under_tmpdir(self):
+    def test_listing_stays_under_tmpdir(self):
         from unittest.mock import patch
 
         root = self.root()

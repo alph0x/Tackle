@@ -266,7 +266,7 @@ h3,h4,h5{text-wrap:balance}
 .working h3{margin:0 0 8px;color:var(--mut)}
 .working p,.working ul{margin:0;padding:0;list-style:none;font-size:15px;color:var(--ink2)}
 .working li{display:flex;align-items:center;gap:10px;color:var(--ink)}
-.pulse,.live::before{flex:none;width:9px;height:9px;background:var(--accent);animation:pulse 1.6s ease-in-out infinite}
+.pulse,.live::before{flex:none;width:9px;height:9px;background:var(--accent)}
 @keyframes pulse{50%{opacity:.25}}
 .status-blocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));border-top:1.5px solid var(--ink)}
 .status-blocks:empty{display:none}
@@ -367,7 +367,7 @@ details>summary:hover{color:var(--accent-ink)}
 .s-prog .glyph-frame,.s-block .glyph-frame,.s-wait .glyph-frame{stroke:var(--accent)}
 .s-prog .glyph-fill,.s-block .glyph-fill,.s-wait .glyph-fill{fill:var(--accent)}
 .s-draft .glyph-frame{stroke:var(--mut);stroke-dasharray:2 2}
-.live-dot{fill:var(--accent);animation:pulse 1.6s ease-in-out infinite}
+.live-dot{fill:var(--accent)}
 .flow-svg.tracing .node{opacity:.22}
 .flow-svg.tracing .edge{opacity:.1}
 .flow-svg.tracing .node.sel,.flow-svg.tracing .node.up,.flow-svg.tracing .node.down,.flow-svg.tracing .node.covering{opacity:1}

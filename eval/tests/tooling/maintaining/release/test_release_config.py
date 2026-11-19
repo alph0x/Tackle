@@ -55,6 +55,15 @@ class ReleaseConfigTest(unittest.TestCase):
             path.write_text(json.dumps(value))
             return config.load(path)
 
+    def test_optional_selected_workspaces_type(self):
+        value = sample()
+        value['selected_workspaces'] = ['other']
+        self.assertEqual(self.read(value), value)
+        for invalid in (None, 'other', [None]):
+            value['selected_workspaces'] = invalid
+            with self.subTest(invalid=invalid), self.assertRaisesRegex(ValueError, 'expected'):
+                self.read(value)
+
     def test_complete_and_each_missing_or_wrong_type(self):
         original = sample()
         self.assertEqual(self.read(original), original)

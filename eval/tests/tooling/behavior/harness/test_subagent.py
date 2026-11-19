@@ -176,7 +176,7 @@ class PromptCases(Base):
     """C1: prompt for control and method on one staged episode is identical except the one arm sentence,
     and the preamble is byte-stable once each episode's own absolute path is tokenized out."""
 
-    def test_c1_prompt_identical_except_arm_sentence(self):
+    def test_prompt_identical_except_arm_sentence(self):
         self.repo.add('s90-demo', prompts=(('task.md', 'Do the task.\n'),))
         self.repo.seal()
         control = self.stage(arm='control', name='control')
@@ -201,7 +201,7 @@ class PromptCases(Base):
         self.assertTrue(control_norm.startswith(expected_preamble), control_norm)
         self.assertEqual(control_norm[len(expected_preamble):], 'Do the task.\n')
 
-    def test_c1_preamble_names_the_work_tree_as_the_repository(self):
+    def test_preamble_names_the_work_tree_as_the_repository(self):
         """The task's relative paths are relative to the fixture root, which staging puts in work/; the
         episode directory beside it also holds baseline/, an identical copy the judge never reads."""
         self.repo.add('s90-demo', prompts=(('task.md', 'Do the task.\n'),))
@@ -213,7 +213,7 @@ class PromptCases(Base):
         self.assertIn(str(control / 'work') + ':', preamble)
         self.assertIn('Work only inside %s:' % control, preamble)
 
-    def test_c1_the_method_sentence_asks_for_the_method(self):
+    def test_the_method_sentence_asks_for_the_method(self):
         """A sentence that only names the staged path did not make the executor read it;
         the treated arm asks for the method, as a user who invokes it does."""
         self.repo.add('s90-demo', prompts=(('task.md', 'Do the task.\n'),))
@@ -240,7 +240,7 @@ class FinishRunJson(Base):
     """C2: finish on a synthetic transcript; harness.py record accepts the run.json it writes; tokens
     equal usage.claude_code_transcript's own (requestId-deduplicated) figures; unknowns stay n/a."""
 
-    def test_c2_tokens_come_from_the_transcript_with_requestid_dedup(self):
+    def test_tokens_come_from_the_transcript_with_requestid_dedup(self):
         # r1 appears twice (a streamed duplicate); the row with the larger output_tokens wins, so a
         # naive "sum every usage row" mutant would double-count r1 and be caught by this assertion.
         transcript = write_transcript(self.tmp / 't1.jsonl', [
@@ -266,7 +266,7 @@ class FinishRunJson(Base):
         self.assertEqual(run['cost']['wall_seconds'], 60)
         self.assertEqual(run['sessions'][0]['wall_seconds'], 60.0)
 
-    def test_c2_unknown_usage_is_na_never_zero(self):
+    def test_unknown_usage_is_na_never_zero(self):
         transcript = write_transcript(self.tmp / 't2.jsonl', [
             {'type': 'assistant', 'message': {'content': [{'type': 'text', 'text': 'All done.'}]}}])
         self.repo.add('s90-demo')
@@ -276,7 +276,7 @@ class FinishRunJson(Base):
         run = load(episode / 'run.json')
         self.assertEqual((run['cost']['tokens_in'], run['cost']['tokens_out']), ('n/a', 'n/a'))
 
-    def test_c2_no_final_assistant_message_is_refused(self):
+    def test_no_final_assistant_message_is_refused(self):
         transcript = write_transcript(self.tmp / 't3.jsonl', [
             tool_row('tu1', 'Bash', {'command': 'echo hi'}), result_row('tu1')])
         self.repo.add('s90-demo')
@@ -371,7 +371,7 @@ class ExactSchema(Base):
 class AuditCases(Base):
     """C3-C5: the audit's outside_paths and skill_used, and their verdict."""
 
-    def test_c3_outside_path_via_read_tool_is_named_and_invalid(self):
+    def test_outside_path_via_read_tool_is_named_and_invalid(self):
         episode, _ = self.simple_method_episode(scenario='s91-audit-outside')
         transcript = write_transcript(self.tmp / 'a1.jsonl', [
             tool_row('tu1', 'Read', {'file_path': '/etc/super-secret-config'}),
@@ -384,7 +384,7 @@ class AuditCases(Base):
         raw = (episode / 'audit.json').read_text()
         self.assertNotIn('contents of the secret file', raw)
 
-    def test_c3_outside_path_via_home_and_dollar_home_in_bash(self):
+    def test_outside_path_via_home_and_dollar_home_in_bash(self):
         episode, _ = self.simple_method_episode(scenario='s91-audit-home')
         transcript = write_transcript(self.tmp / 'a2.jsonl', [
             tool_row('tu1', 'Bash', {'command': 'cat ~/.claude/skills/tackle/SKILL.md'}),
@@ -625,7 +625,7 @@ class AuditCases(Base):
         self.assertEqual(audit['outside_paths'], [])
         self.assertEqual(audit['verdict'], 'clean')
 
-    def test_c4_skill_tool_call_in_control_is_invalid(self):
+    def test_skill_tool_call_in_control_is_invalid(self):
         self.repo.add('s91-audit-skillcall')
         self.repo.seal()
         episode = self.stage(scenario='s91-audit-skillcall', arm='control')
@@ -648,7 +648,7 @@ class AuditCases(Base):
         self.assertTrue(audit['skill_used'])
         self.assertEqual(audit['verdict'], 'clean')
 
-    def test_c5_method_reading_its_own_staged_install_is_clean(self):
+    def test_method_reading_its_own_staged_install_is_clean(self):
         episode, _ = self.simple_method_episode(scenario='s91-audit-clean')
         staged = load(episode / 'stage.json')
         skill_md = str(episode / 'home' / staged['skill_dir'] / 'SKILL.md')
@@ -1016,7 +1016,7 @@ class SplitEpisodeCases(Base):
             result_row('tu-final-%d' % index), text_row(request_id='r-final-%d-text' % index)])
         return self.finish(episode, transcript, session=index, role='executor', tier=tier)
 
-    def test_c1_session_one_writes_only_its_session_files_and_defers_close(self):
+    def test_session_one_writes_only_its_session_files_and_defers_close(self):
         episode, _ = self.split_episode()
         result = self.planner(episode)
         self.assertIn('session 1 recorded', result.stdout)
@@ -1026,7 +1026,7 @@ class SplitEpisodeCases(Base):
         self.assertEqual((meta['role'], meta['tier'], meta['index']), ('planner', 'fast', 1))
         self.assertIn('work_sha256', meta)
 
-    def test_c2_two_clean_sessions_merge_into_one_run_with_two_roles_both_at_fast(self):
+    def test_two_clean_sessions_merge_into_one_run_with_two_roles_both_at_fast(self):
         episode, _ = self.split_episode()
         self.planner(episode)
         self.executor(episode)
@@ -1039,7 +1039,7 @@ class SplitEpisodeCases(Base):
         self.assertEqual(audit['verdict'], 'clean')
         self.assertEqual(run['outcome'], 'completed')
 
-    def test_c3_planner_prompt_never_offers_tier_or_escalation(self):
+    def test_planner_prompt_never_offers_tier_or_escalation(self):
         episode, _ = self.split_episode()
         out = self.run_subagent('prompt', '--episode', episode, '--session', '1')
         self.assertEqual(out.returncode, 0, out.stderr)
@@ -1047,7 +1047,7 @@ class SplitEpisodeCases(Base):
         self.assertNotIn('**Escalation**:', out.stdout)
         self.assertIn('paper plan', out.stdout)
 
-    def test_c4_executor_prompt_never_offers_escalate(self):
+    def test_executor_prompt_never_offers_escalate(self):
         episode, _ = self.split_episode()
         write_split_brief(episode)
         out = self.run_subagent('prompt', '--episode', episode, '--session', '2')
@@ -1055,7 +1055,7 @@ class SplitEpisodeCases(Base):
         self.assertNotIn('ESCALATE', out.stdout)
         self.assertIn('DONE', out.stdout)
 
-    def test_c5_freelance_escalate_with_no_declared_brief_is_invalid(self):
+    def test_freelance_escalate_with_no_declared_brief_is_invalid(self):
         episode, _ = self.split_episode()
         self.planner(episode, escalation=None)
         self.executor(episode, report='ESCALATE')
@@ -1064,7 +1064,7 @@ class SplitEpisodeCases(Base):
         self.assertEqual(audit['verdict'], 'invalid')
         self.assertIn('escalation without a declared brief', audit['reason'])
 
-    def test_c6_escalation_past_its_one_capped_retry_is_invalid(self):
+    def test_escalation_past_its_one_capped_retry_is_invalid(self):
         """Findings 2: a session-3 ESCALATE (a further escalation attempt past the one capped retry the
         shipped skill allows) used to be accepted, because no prior fixture ever exercised a real session
         3. Session 2's own legitimate escalation must not itself be flagged."""
@@ -1077,7 +1077,7 @@ class SplitEpisodeCases(Base):
         self.assertEqual(audit['verdict'], 'invalid')
         self.assertEqual(audit['reason'], 'escalation attempted past its one capped retry')
 
-    def test_c17_declared_escalation_with_a_real_third_session_is_accepted(self):
+    def test_declared_escalation_with_a_real_third_session_is_accepted(self):
         """Mirrors the tool's own pre-existing synthetic 3-session proof
         (RoutedEpisodeCases.test_declared_escalation_with_a_synthetic_third_session_is_accepted), now
         exercised for the new arm — the exact shape the live escalation mechanism episode's own merged
@@ -1093,7 +1093,7 @@ class SplitEpisodeCases(Base):
         self.assertEqual([r['tier'] for r in run['roles']], ['fast', 'fast', 'standard'])
         self.assertEqual(audit['verdict'], 'clean')
 
-    def test_c19_session_three_present_without_a_preceding_escalation_is_invalid(self):
+    def test_session_three_present_without_a_preceding_escalation_is_invalid(self):
         """Nothing used to couple 'a session 3 was recorded' to 'session 2 actually
         escalated' — a coordinator slip that dispatched a third session after an ordinary session 2 (final
         report DONE, not ESCALATE) merged into a clean 3-role record with no invalidity signal."""
@@ -1111,17 +1111,17 @@ class MultiSessionArmRefusals(Base):
     """The multi-session mechanism refuses every non-multi-session arm, generalizing the existing
     control-only and routed-only fixtures to MULTI_SESSION_ARMS."""
 
-    def test_c7_close_refuses_a_non_multi_session_arm(self):
+    def test_close_refuses_a_non_multi_session_arm(self):
         episode, _ = self.simple_method_episode(scenario='s93-refuse-close', arm='method:candidate')
         result = self.run_subagent('close', '--episode', episode)
         self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
 
-    def test_c8_finish_session_refuses_a_non_multi_session_arm(self):
+    def test_finish_session_refuses_a_non_multi_session_arm(self):
         episode, _ = self.simple_method_episode(scenario='s93-refuse-finish', arm='method:candidate')
         transcript = write_transcript(self.tmp / 'refuse-finish.jsonl', [handback_row('DONE')])
         self.finish(episode, transcript, session=2, role='executor', tier='fast', expect=1)
 
-    def test_c9_prompt_session_refuses_a_non_multi_session_arm(self):
+    def test_prompt_session_refuses_a_non_multi_session_arm(self):
         episode, _ = self.simple_method_episode(scenario='s93-refuse-prompt', arm='method:candidate')
         result = self.run_subagent('prompt', '--episode', episode, '--session', '2')
         self.assertEqual(result.returncode, 1, result.stdout + result.stderr)

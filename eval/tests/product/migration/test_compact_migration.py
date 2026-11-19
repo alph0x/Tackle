@@ -411,7 +411,7 @@ class CompactMigrationTests(unittest.TestCase):
             self.assertEqual(receipt['stage'], phase)
             self.assertEqual(receipt['cwd'], str(job / 'candidate-project'))
             self.assertEqual(receipt['workspace'], str(candidate))
-            self.assertEqual([c['row'] for c in receipt['checks']], list(range(1, 20)))
+            self.assertEqual([c['row'] for c in receipt['checks']], list(base.published_row_ids()))
             if phase == 'post-stamp':
                 self.assertEqual(receipt['candidate_sha256'], frozen)
             for check in receipt['checks']:
@@ -565,6 +565,57 @@ class CompactMigrationTests(unittest.TestCase):
     def test_prepare_retains_selection_and_neighbor_sentinel(self):
         with self.lab() as lab:
             installed = self.install(lab)
+            self.run_child(
+                [sys.executable, '-I', '-B', '-c', '''
+import hashlib
+import os
+import runpy
+import stat
+import sys
+from pathlib import Path
+
+installed = Path(sys.argv[1])
+root = Path(sys.argv[2]) / 'atomic-mode-probe'
+root.mkdir()
+compact = runpy.run_path(str(installed / 'scripts/migrate/compact.py'))
+
+for mode in (0o640, 0o4644):
+    preserved = root / ('preserved-' + str(mode))
+    preserved.write_bytes(b'before')
+    os.chmod(preserved, mode)
+    assert stat.S_IMODE(preserved.stat().st_mode) == mode
+    compact['_atomic_preserve'](preserved, b'preserved')
+    assert preserved.read_bytes() == b'preserved'
+    assert stat.S_IMODE(preserved.stat().st_mode) == mode
+
+    explicit = root / ('explicit-' + str(mode))
+    explicit.write_bytes(b'before')
+    os.chmod(explicit, mode)
+    assert stat.S_IMODE(explicit.stat().st_mode) == mode
+    compact['_atomic'](explicit, b'explicit', mode=mode)
+    assert explicit.read_bytes() == b'explicit'
+    assert stat.S_IMODE(explicit.stat().st_mode) == mode
+
+    control = root / ('materialize-control-' + str(mode))
+    control.write_bytes(b'control')
+    os.chmod(control, mode)
+    assert stat.S_IMODE(control.stat().st_mode) == mode
+    data = b'materialized'
+    inv = {'file': {'type': 'file', 'mode': mode,
+                    'sha256': hashlib.sha256(data).hexdigest()}}
+    destination = root / ('materialized-' + str(mode))
+    compact['_materialize']({'file': data}, destination, inv)
+    assert (destination / 'file').read_bytes() == data
+    assert stat.S_IMODE((destination / 'file').stat().st_mode) == mode
+
+missing = root / 'missing'
+assert not missing.exists()
+compact['_atomic'](missing, b'default')
+assert missing.read_bytes() == b'default'
+assert stat.S_IMODE(missing.stat().st_mode) == 0o600
+''', str(installed), str(lab)],
+                cwd=lab, expected=0,
+            )
             _, source = self.fixture(lab)
             brief = source / 'tasks/T-0001.md'
             brief.write_text(re.sub(r'^- \*\*Procedure revision\*\*:.*$', '- **Procedure revision**: Tackle 9.2.0 RUN card.', brief.read_text(), flags=re.M))
@@ -1000,6 +1051,24 @@ runpy.run_path(module,run_name='__main__')
                         first = manifest.read_bytes()
                         self.plan(installed, source, lab / 'vocabulary-repeat', next_wave=False)
                         self.assertEqual((lab / 'vocabulary-repeat-manifest.json').read_bytes(), first)
+            escaped_cases = (
+                (r'middle \| title', 'Complete', 'selected-active'),
+                (r'terminal \|', 'Waiting on owner', 'started'),
+                (r'two \\\\| title', 'Paused', 'unknown'),
+            )
+            for index, (title, state, classification) in enumerate(escaped_cases):
+                with self.subTest(title=title, state=state):
+                    lines = original.splitlines(keepends=True)
+                    row_index = next(i for i, line in enumerate(lines) if '| Complete |' in line)
+                    fields = lines[row_index].split('|')
+                    fields[2] = ' ' + title + ' '
+                    status_index = next(i for i, field in enumerate(fields) if field.strip() == 'Complete')
+                    fields[status_index] = ' ' + state + ' '
+                    lines[row_index] = '|'.join(fields)
+                    board.write_text(''.join(lines))
+                    _, result, _ = self.plan(installed, source, lab / ('escaped-vocabulary-' + str(index)), next_wave=False)
+                    self.assertEqual(result['observed']['bucket'], '5')
+                    self.assertEqual(result['observed']['classification'], classification)
             older = lab / 'older/docs/plans/demo'
             shutil.copytree(ROOT / 'eval/migration/fixtures/4-to-5/before', older)
             board = older / 'task-board.md'
@@ -1513,6 +1582,78 @@ runpy.run_path(module,run_name='__main__')
             self.cli(installed, 'adopt', ['--job', lab / 'valid-job'], 1)
             self.assertEqual(tree_sha(source), plan['source']['sha256'])
 
+    def test_catalog_checker_validates_installed_contracts_and_script_digests(self):
+        with self.lab() as lab:
+            self.install(lab)
+            repo = lab / 'repo'
+            (repo / 'maintaining').mkdir(parents=True)
+            shutil.copytree(current_root(ROOT), repo / 'skills/tackle', symlinks=True)
+            shutil.copyfile(ROOT / 'maintaining/check_migration_catalog.py', repo / 'maintaining/check_migration_catalog.py')
+            shutil.copyfile(ROOT / 'maintaining/migrations.md', repo / 'maintaining/migrations.md')
+            command = [sys.executable, '-I', '-B', str(repo / 'maintaining/check_migration_catalog.py'), '--repo', str(repo)]
+            self.run_child(command, repo, 0)
+
+            scripts = repo / 'skills/tackle/scripts'
+            archive = scripts / 'workspace_archive.py'
+            compact = scripts / 'migrate/compact.py'
+            readme = scripts / 'README.md'
+            archive_bytes = archive.read_bytes()
+            changed_archive = archive_bytes + b'\n# Additional archive fixture content.\n'
+            original_readme = readme.read_text(encoding='utf-8')
+            archive_row = f'| [workspace_archive.py](workspace_archive.py) | `{digest(archive_bytes)}` |'
+            compact_row = f'| [migrate/compact.py](migrate/compact.py) | `{digest(compact.read_bytes())}` |'
+            self.assertEqual(original_readme.count(archive_row), 1)
+            self.assertEqual(original_readme.count(compact_row), 1)
+            bad_compact_hash = '0' * 64
+            self.assertNotEqual(bad_compact_hash, digest(compact.read_bytes()))
+
+            cases = (
+                ('stale archive row', changed_archive, digest(archive_bytes), digest(compact.read_bytes()), 1),
+                ('updated archive row', changed_archive, digest(changed_archive), digest(compact.read_bytes()), 0),
+                ('bad compact row', archive_bytes, digest(archive_bytes), bad_compact_hash, 1),
+            )
+            for name, content, archive_hash, compact_hash, expected in cases:
+                with self.subTest(case=name):
+                    archive.write_bytes(content)
+                    updated = original_readme.replace(
+                        archive_row, f'| [workspace_archive.py](workspace_archive.py) | `{archive_hash}` |')
+                    updated = updated.replace(
+                        compact_row, f'| [migrate/compact.py](migrate/compact.py) | `{compact_hash}` |')
+                    readme.write_text(updated, encoding='utf-8')
+                    _, _, stderr = self.run_child(command, repo, expected)
+                    if expected:
+                        self.assertIn(
+                            b'script README digest rows do not match the installed compact/archive sources',
+                            stderr)
+
+            archive.write_bytes(archive_bytes)
+            readme.write_text(original_readme, encoding='utf-8')
+            catalog = repo / 'skills/tackle/references/guides/migration-catalog.json'
+            original_catalog = catalog.read_bytes()
+            old_literal_cases = (
+                (
+                    'P', 4, 'P-historical-only',
+                    'For files without a current counterpart, including context.md or reference.md, retain them as historical data or map them to a real current artifact under an explicit recorded decision. Preserve the original bytes and mapping; never silently delete them, treat them as a second current state source or require a closed workspace to migrate.',
+                ),
+                (
+                    'E', 6, 'E-test-selection',
+                    'For remaining code work choose contract checks before the next implementation edit. Prefer one public-boundary E2E when it observes the contract; a feasible complex integrated feature requires one. Retain sufficient existing regressions without a unit quota. Before adding an isolated test, state its uncovered obligation, why E2E cannot observe it and each identified failure mode/valid alternative with expected result. Do not add late tests merely mirroring implemented behavior or alter protected expectations to fit output.',
+                ),
+            )
+            try:
+                for family, index, recipe, old_literal in old_literal_cases:
+                    with self.subTest(family=family, instruction=index + 1):
+                        value = json.loads(original_catalog)
+                        rule = next(rule for rule in value['rules'] if rule['id'] == family)
+                        rule['instructions'][index]['text'] = old_literal
+                        write_json(catalog, value)
+                        meta, out, err = self.run_child(command, repo, 1)
+                        self.assertIn(
+                            b'incomplete or conflicting current instruction: ' + recipe.encode(),
+                            err)
+            finally:
+                catalog.write_bytes(original_catalog)
+
     def test_catalog_release_gates_discriminate_fault_and_valid_representation(self):
         with self.lab() as lab:
             self.install(lab)
@@ -1590,6 +1731,50 @@ runpy.run_path(module,run_name='__main__')
         history = source / 'history.md'
         history.write_text(history.read_text() + SNAPSHOT)
         return project, source
+
+    def test_catalog_preparation_suffix_matches_first_verify(self):
+        for has_snapshot in (True, False):
+            with self.subTest(has_snapshot=has_snapshot), self.lab() as lab:
+                installed = self.install(lab)
+                _, source = (self.snapshot_fixture(lab, 'source') if has_snapshot
+                             else self.fixture(lab))
+                job = lab / 'job'
+                plan, candidate = self.prepared(installed, source, job)
+                history = candidate / 'history.md'
+                before = history.read_bytes()
+                catalog = read_json(installed / 'references/guides/migration-catalog.json')
+                instructions = next(rule for rule in catalog['rules']
+                                    if rule['id'] == 'Z')['instructions']
+                self.assertEqual(len(instructions), 10)
+
+                self.cli(installed, 'verify', ['--job', job], 1)
+                actual = history.read_bytes()
+                snapshot = '\n' + SNAPSHOT.strip('\n') + '\n' if has_snapshot else ''
+                values = dict(date=plan['context']['date'],
+                              operation_id=plan['operation_id'],
+                              source_sha256=plan['source']['sha256'],
+                              target_methodology=catalog['target_methodology'],
+                              revision=catalog['revision'],
+                              snapshot_suffix=snapshot)
+
+                def expand(template, substitutions):
+                    return template.replace(r'\n', '\n').format(**substitutions).encode('utf-8')
+
+                for index, instruction in enumerate(instructions):
+                    with self.subTest(instruction=index):
+                        templates = [part for part in instruction['text'].split('`')
+                                     if part.startswith(
+                                         r'\n## {date} · Compact migration candidate\n')]
+                        self.assertEqual(len(templates), 1)
+                        template = templates[0]
+                        self.assertEqual(actual, before + expand(template, values))
+                        if has_snapshot:
+                            old_template = template.replace('{snapshot_suffix}', '')
+                            self.assertNotEqual(actual, before + expand(old_template, values))
+                            wrong_values = dict(
+                                values, snapshot_suffix=snapshot.replace(
+                                    'fixture checkpoint', 'incorrect checkpoint'))
+                            self.assertNotEqual(actual, before + expand(template, wrong_values))
 
     def test_stamp_copies_only_the_snapshot_block(self):
         with self.lab() as lab:
@@ -1914,7 +2099,7 @@ print(json.dumps({'swapped': swapped, 'mirrored': mirrored}))
                     os.environ['TMPDIR'] = previous
             self.assertEqual(list(temp.iterdir()), [])
             self.assertIsNone(report['skipped'])
-            self.assertEqual([row['row'] for row in report['rows']], list(range(1, 20)))
+            self.assertEqual([row['row'] for row in report['rows']], list(base.published_row_ids()))
             for row in report['rows']:
                 self.assertIn(row['verdict'], {'PASS', 'WARN'} if row['row'] in {8, 13, 15} else {'PASS'}, row)
             self.assertIn('FAIL rows none; ERROR rows none', stderr)

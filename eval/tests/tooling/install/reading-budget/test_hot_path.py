@@ -295,7 +295,7 @@ class DuplicateDetectorTests(unittest.TestCase):
 class RepositoryTests(unittest.TestCase):
     """C1, C3 and C5 on this checkout."""
 
-    def test_c1_the_run_chain_is_within_budget(self):
+    def test_the_run_chain_is_within_budget(self):
         result = run_tool('load_chain.py', '--repo', ROOT)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         match = re.fullmatch(r'run-chain words=(\d+) card=(\d+) mandatory=(\S+)\n', result.stdout)
@@ -303,14 +303,14 @@ class RepositoryTests(unittest.TestCase):
         self.assertLessEqual(int(match.group(1)), load_chain.CHAIN_LIMIT)
         self.assertLessEqual(int(match.group(2)), load_chain.CARD_LIMIT)
 
-    def test_c3_the_run_chain_has_no_near_duplicate_unit(self):
+    def test_the_run_chain_has_no_near_duplicate_unit(self):
         result = run_tool('duplicates.py', '--repo', ROOT, '--chain', 'run')
         self.assertEqual((result.returncode, result.stdout), (0, 'duplicates=0\n'), result.stderr)
 
-    def test_c5_the_card_transition_table_is_complete(self):
+    def test_the_card_transition_table_is_complete(self):
         self.assertEqual(transition_problems(CARD.read_text(encoding='utf-8')), [])
 
-    def test_c5_the_structural_check_rejects_an_incomplete_table(self):
+    def test_the_structural_check_rejects_an_incomplete_table(self):
         text = CARD.read_text(encoding='utf-8')
         rows = [line for line in text.split('\n') if line.startswith('| Unverifiable |')]
         self.assertTrue(rows)

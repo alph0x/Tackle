@@ -1,5 +1,6 @@
 import ast
 import hashlib
+import math
 import re
 from pathlib import Path
 import json
@@ -88,13 +89,17 @@ def captured_lint_verdict(source, expected_sha256, slug, row, script, record, ob
 
 def run_lint(config_path):
     root = Path.cwd().resolve()
-    trusted_capture_sha256 = '3b0aaef26047e779c96735aa612858903db922c9e6921ed5a4d408aeaa304aea'
-    trusted_lint_sha256 = '1be06f9520c1d5d5aecc87561abeda90db6b7e958cbcc20040b8d8aecee16d2e'
+    trusted_capture_sha256 = 'aa26abd5716abd0c3090ccd2723b75d9c0b625896ecf44509b6a16000ce28379'
+    trusted_lint_sha256 = 'bfccde4c1ae400b6327049edff0c9b1c5e350a6c7a5e539d7bc1aaebc82c8755'
     def local(name):
         path = (root / name).resolve()
         path.relative_to(root)
         return path
     config = json.loads(local(config_path).read_text())
+    timeout = config.get('timeout_seconds')
+    if (type(timeout) not in (int, float) or timeout <= 0
+            or (type(timeout) is float and not math.isfinite(timeout))):
+        raise ValueError('timeout_seconds must be a finite positive number')
     if 'source' in config or 'source_sha256' in config:
         raise ValueError('the lint source is the pinned lint.py beside the runner; remove source and source_sha256 from the configuration')
     source = Path(__file__).resolve().with_name('lint.py').read_bytes()
