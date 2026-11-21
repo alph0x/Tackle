@@ -5,7 +5,9 @@ at folder beta and its sibling gamma, which declares the root as core. Tasks are
 The checks read the page, its data island, its drawn edges, its refusal lines, its --check digests and its layout.
 """
 import hashlib
+import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -15,7 +17,7 @@ from pathlib import Path
 import test_plan_layout_stability as layout
 from plan_view_dom import run_scenario
 from test_plan_siblings import AGENTS_HEAD, HEAD, PLAN, BRIEF, island, run, stage_labels, write_files
-from test_plan_view import TEMPLATE, script_source, write_script
+from test_plan_view import TEMPLATE, file_identity, script_source, write_script
 from test_plan_layout_stability import hidden_empty_statuses, reflow_problems
 
 PAGE = 'initiative-view.html'
@@ -372,6 +374,27 @@ class InitiativeViewTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             after = {name: tree_state(plans_of(tmp) / name) for name in ('alpha', 'beta', 'gamma')}
             self.assertEqual(after, before)
+
+    def test_initiative_never_opens_a_member_board_that_is_a_link(self):
+        tmp = Path(tempfile.mkdtemp()).resolve()
+        self.addCleanup(shutil.rmtree, tmp, True)
+        make(tmp)
+        sentinel = Path(tmp) / 'outside-board'
+        sentinel_bytes = default_files()['beta/task-board.md'].encode('utf-8')
+        sentinel.write_bytes(sentinel_bytes)
+        sentinel.chmod(0o640)
+        os.utime(sentinel, ns=(1_000_000_000, 2_000_000_000))
+        before = file_identity(sentinel)
+        member_board = plans_of(tmp) / 'beta' / 'task-board.md'
+        member_board.unlink()
+        member_board.symlink_to(sentinel)
+        result, out = run(tmp, plans_of(tmp) / 'alpha', options=('--initiative',), output=Path(tmp) / PAGE)
+        self.assertEqual(file_identity(sentinel), before)
+        self.assertEqual(sentinel.read_bytes(), sentinel_bytes)
+        self.assertNotIn('Traceback', result.stderr)
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn('refused: sibling api has no tackle-workspace/5 task-board.md at docs/plans/beta', result.stdout)
+        self.assertFalse(out.exists())
 
     def test_initiative_rejects_page_and_map(self):
         for extra in (('--page', 'x.html'), ('--map', 'm.json')):

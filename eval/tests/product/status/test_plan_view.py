@@ -112,6 +112,25 @@ def run_recipe(tmp, files, case):
     return result, out
 
 
+def file_identity(path):
+    """The inode, mode, modification and access times of a file, read without opening it."""
+    found = Path(path).stat()
+    return (found.st_ino, found.st_mode, found.st_mtime_ns, found.st_atime_ns)
+
+
+def write_workspace(workspace, files):
+    for name, text in files.items():
+        path = Path(workspace) / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text, encoding='utf-8')
+
+
+def run_view(tmp, workspace, out, options=()):
+    script = write_script(Path(tmp) / 'view-under-test.py')
+    return subprocess.run([sys.executable, '-I', '-B', str(script), '--template', str(TEMPLATE), *options, str(workspace), str(out)],
+                          capture_output=True, text=True, timeout=60)
+
+
 class PlanViewTests(unittest.TestCase):
     def test_the_shipped_recipe_writes_a_faithful_view_of_a_fixture_workspace(self):
         first_task, second_task, third_task = task_id(1), task_id(2), task_id(3)
@@ -154,6 +173,66 @@ class PlanViewTests(unittest.TestCase):
             self.assertIn('target="_blank"', footer)
             self.assertRegex(footer, r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}')
             self.assertNotRegex(page, r'<script\b[^>]*\bsrc=')
+
+    def test_a_workspace_under_a_linked_ancestor_builds_and_checks_current(self):
+        tmp = Path(tempfile.mkdtemp()).resolve()
+        self.addCleanup(shutil.rmtree, tmp, True)
+        real = tmp / 'real-ancestor'
+        real.mkdir()
+        (tmp / 'link-ancestor').symlink_to(real, target_is_directory=True)
+        workspace = tmp / 'link-ancestor' / 'ws'
+        write_workspace(workspace, workspace_files())
+        out = workspace / 'plan-view.html'
+        built = run_view(tmp, workspace, out)
+        self.assertEqual(built.returncode, 0, built.stdout + built.stderr)
+        self.assertNotIn('Traceback', built.stderr)
+        self.assertTrue(out.is_file())
+        checked = run_view(tmp, workspace, out, ('--check',))
+        self.assertEqual(checked.returncode, 0, checked.stdout + checked.stderr)
+        self.assertIn('view current', checked.stdout)
+
+    def test_a_linked_workspace_folder_is_refused_with_a_message_and_its_board_is_not_opened(self):
+        tmp = Path(tempfile.mkdtemp()).resolve()
+        self.addCleanup(shutil.rmtree, tmp, True)
+        outside = tmp / 'outside-workspace'
+        files = workspace_files()
+        write_workspace(outside, files)
+        sentinel = outside / 'task-board.md'
+        sentinel.chmod(0o640)
+        os.utime(sentinel, ns=(1_000_000_000, 2_000_000_000))
+        before = file_identity(sentinel)
+        alias = tmp / 'workspace-alias'
+        alias.symlink_to(outside, target_is_directory=True)
+        out = tmp / 'alias-page.html'
+        result = run_view(tmp, alias, out)
+        self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+        self.assertNotIn('Traceback', result.stderr)
+        lines = [line for line in result.stderr.splitlines() if line]
+        self.assertEqual(len(lines), 1, result.stderr)
+        self.assertTrue(lines[0].startswith('cannot read the task board:'), result.stderr)
+        self.assertFalse(out.exists())
+        self.assertEqual(file_identity(sentinel), before)
+        self.assertEqual(sentinel.read_text(encoding='utf-8'), files['task-board.md'])
+
+    def test_a_board_replaced_by_a_link_leaves_the_page_and_reports_it_stale(self):
+        tmp = Path(tempfile.mkdtemp()).resolve()
+        self.addCleanup(shutil.rmtree, tmp, True)
+        workspace = tmp / 'ws'
+        write_workspace(workspace, workspace_files())
+        out = workspace / 'plan-view.html'
+        built = run_view(tmp, workspace, out)
+        self.assertEqual(built.returncode, 0, built.stdout + built.stderr)
+        page = out.read_bytes()
+        sentinel = tmp / 'outside-board'
+        sentinel.write_bytes(b'outside leaf sentinel\n')
+        board = workspace / 'task-board.md'
+        board.unlink()
+        board.symlink_to(sentinel)
+        checked = run_view(tmp, workspace, out, ('--check',))
+        self.assertEqual(checked.returncode, 1, checked.stdout + checked.stderr)
+        self.assertIn('view stale: task-board.md', checked.stdout)
+        self.assertNotIn('Traceback', checked.stderr)
+        self.assertEqual(out.read_bytes(), page)
 
     def test_the_shipped_recipe_refuses_inconsistent_sources_and_writes_nothing(self):
         unknown = task_id(9)

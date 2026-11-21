@@ -325,17 +325,21 @@ def parse_board(text, problems):
 
 
 def board_bytes(ws):
-    """Read a regular board without following symlinks in its path, or return None when absent."""
+    """Read a regular board of a folder that is not itself a link, or return None when absent. The folders above the
+    workspace resolve as the system resolves them; the workspace folder and the board are opened without following links."""
     try:
         directory_flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
         leaf_flags = os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
-        directory = os.open(os.path.sep, directory_flags)
+        parent, name = os.path.split(os.path.abspath(ws))
+        if name:
+            parent_directory = os.open(parent, os.O_RDONLY | os.O_DIRECTORY)
+            try:
+                directory = os.open(name, directory_flags, dir_fd=parent_directory)
+            finally:
+                os.close(parent_directory)
+        else:
+            directory = os.open(parent, os.O_RDONLY | os.O_DIRECTORY)
         try:
-            for component in os.path.abspath(ws).split(os.path.sep):
-                if component:
-                    next_directory = os.open(component, directory_flags, dir_fd=directory)
-                    os.close(directory)
-                    directory = next_directory
             fd = os.open('task-board.md', leaf_flags, dir_fd=directory)
             try:
                 if not stat.S_ISREG(os.fstat(fd).st_mode):
@@ -471,7 +475,10 @@ def sibling_plans(ws, ui):
 
 def sibling_board(folder):
     """The rows of a sibling's board when it declares tackle-workspace/5, else None; its own problems never reach the view."""
-    data = board_bytes(folder)
+    try:
+        data = board_bytes(folder)
+    except OSError:
+        return None
     text = '' if data is None else data.decode('utf-8').replace('\r\n', '\n').replace('\r', '\n')
     if not re.search(r'^Schema: tackle-workspace/5[ \t]*$', text, re.M):
         return None
@@ -2829,11 +2836,11 @@ def member_digests(members):
     found = {}
     for key, folder in members:
         for name in ('task-board.md', 'plan.md', 'AGENTS.md'):
-            found['%s:%s' % (key, name)] = file_digest(folder / name)
+            found['%s:%s' % (key, name)] = board_digest(folder) if name == 'task-board.md' else file_digest(folder / name)
         declared = declared_siblings(folder)
         for slug, (target, _) in declared.items():
             if target not in keys:
-                found['%s:task-board.md' % slug] = file_digest(target / 'task-board.md')
+                found['%s:task-board.md' % slug] = board_digest(target)
         siblings = {slug: target for slug, (target, _) in declared.items()}
         for row in read_board(folder, [], lenient=True)[2]:
             if not row['brief']:
@@ -2846,7 +2853,8 @@ def member_digests(members):
 def initiative_digests(members, template_path, map_base, map_scope):
     """The digest record of an initiative page: the root's workspace inputs, then every member's inputs."""
     root_key, root = members[0]
-    inputs = {'%s:%s' % (root_key, name): file_digest(root / name) for name in WORKSPACE_INPUTS}
+    inputs = {'%s:%s' % (root_key, name): board_digest(root) if name == 'task-board.md' else file_digest(root / name)
+              for name in WORKSPACE_INPUTS}
     inputs.update(member_digests(members))
     return finish_record(inputs, root, template_path, map_base, map_scope)
 
@@ -3012,7 +3020,11 @@ def main():
         if args.initiative:
             board, states, tasks, externals, members_progress = initiative_gather(members, problems)
         else:
-            board, states, tasks = read_board(ws, problems)
+            try:
+                board, states, tasks = read_board(ws, problems)
+            except OSError as problem:
+                print('cannot read the task board: %s' % problem, file=sys.stderr)
+                return 2
         root_refused = args.initiative and sibling_board(ws) is None
         if not board and not root_refused:
             problems.append('task-board.md is missing or empty')

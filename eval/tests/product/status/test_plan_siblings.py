@@ -7,14 +7,16 @@ the sibling workspaces clause. Ids are four digits; the sibling slug differs fro
 import hashlib
 import html
 import json
+import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
 import unittest
 from pathlib import Path
 
-from test_plan_view import REPO, TEMPLATE, load_script, write_script
+from test_plan_view import REPO, TEMPLATE, file_identity, load_script, write_script
 
 HEAD = ('# Task board\n\nSchema: tackle-workspace/5\n\nStates: Draft, Ready to run, In progress, Checking, Complete, '
         'Blocked, Interrupted, Skipped, Unverifiable, Waiting on owner.\n\n'
@@ -354,6 +356,28 @@ class SiblingWorkspaceTests(unittest.TestCase):
                 result, _ = run(tmp, alpha)
                 self.assertEqual(result.returncode, 1)
                 self.assertIn('refused: task T-0002 depends on unknown task T-0007', result.stdout)
+
+    def test_a_linked_sibling_folder_is_refused_without_opening_its_board(self):
+        for second_deps, label in (('T-0001', 'unreferenced'), ('T-0001, T-0007 [api]', 'referenced')):
+            with self.subTest(case=label):
+                tmp = Path(tempfile.mkdtemp()).resolve()
+                self.addCleanup(shutil.rmtree, tmp, True)
+                alpha, beta_dir = build(tmp, second_deps=second_deps)
+                real = beta_dir.with_name('beta-real')
+                beta_dir.rename(real)
+                beta_dir.symlink_to(real, target_is_directory=True)
+                target_board = real / 'task-board.md'
+                os.utime(target_board, ns=(1_000_000_000, 2_000_000_000))
+                before = file_identity(target_board)
+                result, out = run(tmp, alpha)
+                self.assertNotIn('Traceback', result.stderr)
+                if label == 'referenced':
+                    self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+                    self.assertEqual(result.stdout.count('refused: ' + NO_BOARD), 1, result.stdout)
+                else:
+                    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                    self.assertTrue(out.is_file())
+                self.assertEqual(file_identity(target_board), before)
 
     def test_a_plan_without_sibling_references_draws_no_external_node_or_digest(self):
         with tempfile.TemporaryDirectory() as tmp:

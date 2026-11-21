@@ -10,7 +10,7 @@ a script adds or updates its row. The manifest hashes every byte of each file. T
 | [evaluation_rounds.py](evaluation_rounds.py) | `b8f68b367b91eb6cf27687a7680dac54a4d56fb6cb6e3ff93382bc66c771ef0e` |
 | [correction_lineage.py](correction_lineage.py) | `38ad0d5ecc95ee721d9c15ad338c750b1dea78e96df3c8abdda9d087771eea60` |
 | [adversary_checkpoints.py](adversary_checkpoints.py) | `8be44a5b646ad3aabf179bbf899f4e80c3d34382ce5b636c9eadb26e5d0a92dd` |
-| [plan_view.py](plan_view.py) | `98992946b560529a6f3418c0171f65170ccebea524e8f7bb9c27606d33693dca` |
+| [plan_view.py](plan_view.py) | `64243dbc57c289f2bd0b55f8cb3b828ade5195931ca0a94621652b3f840a0f79` |
 | [architecture_map.py](architecture_map.py) | `e3a82e160b486413e366c7d4eaee8561144555947b40a6ef329bfa44d03f532c` |
 | [prepared_job_example.py](prepared_job_example.py) | `a737473be8d4a927a9a17415e6f055405e25232cc90ac872bb9e0d8d9209d751` |
 | [system_one_decide.py](system_one_decide.py) | `3307da7275085ac410423f24736a27e62edf28a58017a5ff22588784b4569f84` |
