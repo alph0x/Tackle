@@ -21,7 +21,7 @@ a script adds or updates its row. The manifest hashes every byte of each file. T
 | [migrate/step_3_to_4.py](migrate/step_3_to_4.py) | `effc084a74cb31c1aea0983e89bc94e0a08a3bd26137ec87ae9fc94b9c2846f5` |
 | [migrate/step_4_to_5.py](migrate/step_4_to_5.py) | `ae4dcf1ee639aa556fccf4ddbc1b70229b942d84e6a365c12009023af717501b` |
 | [migrate/step_pre3_to_3.py](migrate/step_pre3_to_3.py) | `b08e63d7182d5a51d30a1973ba3f098448a174e208e9739783688d7ca82ab4b3` |
-| [migrate/compact.py](migrate/compact.py) | `0f9fa5da06b0223ed46db6644218cab4f282b3addbe599ea9c6d5787863329e5` |
+| [migrate/compact.py](migrate/compact.py) | `d49b17cfe91f7945ce8f1fa5069102c7699e2580c235f7cb13908962bb2e0180` |
 | [workspace_archive.py](workspace_archive.py) | `7a2be3c7317fc21581375b4935c876fdc533e41b7020b2dad6e3849eaec6136d` |
 | [capture.py](capture.py) | `2f802364c3c0dd7a994e7d1de7c8914d75752f6a0791ec1c00a4636c39d10acd` |
 | [evidence_capture.py](evidence_capture.py) | `235a2d594c346dd8437b98e0d2b124a2b9530f230580ffc916ada48277ce9835` |
